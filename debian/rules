@@ -21,10 +21,10 @@ ifneq "$(wildcard /usr/share/misc/config.guess)" ""
 endif
 	./configure $(CROSS) --prefix=/usr --mandir=\$${prefix}/share/man \
 	--with-gconf-schema-file-dir=/etc/gconf/schemas \
+	--disable-schemas-install \
 	--enable-mediathek-plugin \
 	CFLAGS="$(CFLAGS)"
 
-#Architecture
 build: build-arch build-indep
 
 build-arch: build-arch-stamp
@@ -44,21 +44,23 @@ clean: #unpatch
 	rm -f config.sub config.guess
 	dh_clean
 
-install: install-indep install-arch
+# I wonder how to make a install-indep and install-arch seperate correctly..
+# install-indep is empty for now
+install: install-arch
 install-indep:
 	dh_testdir
 	dh_testroot
-	dh_prep -i
+	dh_prep
 	dh_installdirs -i
+	$(MAKE) DESTDIR=$(CURDIR)/debian/tmp install
+	-find $(CURDIR)/debian/tmp -name '*.la' | xargs rm -f
 	dh_install -i
 
-install-arch:
+install-arch: install-indep
 	dh_testdir
 	dh_testroot
-	dh_prep -s
 	dh_installdirs -s
-	$(MAKE) DESTDIR=$(CURDIR)/debian/tmp install
-	dh_install -s --list-missing
+	dh_install -s --sourcedir=debian/tmp
 	dh_gconf -prygel -Prygel
 
 # Must not depend on anything. This is to be called by

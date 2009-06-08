@@ -1,3 +1,4 @@
-usr/share/vala/vapi
-usr/lib/pkgconfig
-usr/include/rygel-1.0
+usr/include/rygel-*/*
+usr/lib/pkgconfig/*.pc
+usr/share/vala/vapi/*.deps
+usr/share/vala/vapi/*.vapi

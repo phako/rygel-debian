@@ -97,7 +97,7 @@ update-patch-series:
 	git rm -rf $(CURDIR)/debian/patches || true
 	mkdir -p $(CURDIR)/debian/patches
 	git format-patch -o $(CURDIR)/debian/patches patches ^upstream | \
-		xargs -n 1 basename > $(CURDIR)/debian/patches/series
+		xargs -r -n 1 basename > $(CURDIR)/debian/patches/series
 	git add $(CURDIR)/debian/patches/*
 
 .PHONY: build clean binary-indep binary-arch binary install install-indep install-arch update-patch-series

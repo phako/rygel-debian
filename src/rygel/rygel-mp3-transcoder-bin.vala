@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2009 Nokia Corporation, all rights reserved.
+ * Copyright (C) 2009 Nokia Corporation.
  *
  * Author: Zeeshan Ali (Khattak) <zeeshanak@gnome.org>
  *                               <zeeshan.ali@nokia.com>
@@ -20,7 +20,7 @@
  * along with this program; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
-using Rygel;
+
 using Gst;
 
 internal enum Rygel.MP3Layer {
@@ -40,11 +40,13 @@ internal class Rygel.MP3TranscoderBin : Gst.Bin {
 
     private dynamic Element audio_enc;
 
-    public MP3TranscoderBin (Element src,
+    public MP3TranscoderBin (MediaItem     item,
+                             Element       src,
                              MP3Transcoder transcoder) throws Error {
         Element decodebin = GstUtils.create_element (DECODEBIN, DECODEBIN);
 
-        this.audio_enc = transcoder.create_encoder (AUDIO_SRC_PAD,
+        this.audio_enc = transcoder.create_encoder (item,
+                                                    AUDIO_SRC_PAD,
                                                     AUDIO_SINK_PAD);
 
         this.add_many (src, decodebin, this.audio_enc);

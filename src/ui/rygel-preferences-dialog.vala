@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2009 Nokia Corporation, all rights reserved.
+ * Copyright (C) 2009 Nokia Corporation.
  *
  * Author: Zeeshan Ali (Khattak) <zeeshanak@gnome.org>
  *                               <zeeshan.ali@nokia.com>
@@ -28,13 +28,13 @@ public class Rygel.PreferencesDialog : GLib.Object {
     const string UI_FILE = BuildConfig.DATA_DIR + "/rygel-preferences.ui";
     const string DIALOG = "preferences-dialog";
 
+    UserConfig config;
     Builder builder;
     Dialog dialog;
     ArrayList<PreferencesSection> sections;
 
     public PreferencesDialog () throws Error {
-        var config = Configuration.get_default ();
-
+        this.config = new UserConfig (false);
         this.builder = new Builder ();
 
         this.builder.add_from_file (UI_FILE);
@@ -43,49 +43,20 @@ public class Rygel.PreferencesDialog : GLib.Object {
         assert (this.dialog != null);
 
         this.sections = new ArrayList<PreferencesSection> ();
-        this.sections.add (new GeneralPrefSection (this.builder, config));
-        this.sections.add (new PluginPrefSection (this.builder,
-                                                  config,
-                                                  "Tracker"));
-        this.sections.add (new PluginPrefSection (this.builder,
-                                                  config,
-                                                  "DVB"));
-        this.sections.add (new FolderPrefSection (this.builder,
-                                                  config));
-
-        this.dialog.response += this.on_response;
-        this.dialog.delete_event += (dialog, event) => {
-                                Gtk.main_quit ();
-                                return false;
-        };
-
-        this.dialog.show_all ();
-
+        this.sections.add (new GeneralPrefSection (this.builder, this.config));
+        this.sections.add (new TrackerPrefSection (this.builder, this.config));
+        this.sections.add (new MediaExportPrefSection (this.builder,
+                                                       this.config));
     }
 
-    private void on_response (Dialog dialog, int response_id) {
-        switch (response_id) {
-            case ResponseType.CANCEL:
-                Gtk.main_quit ();
-                break;
-            case ResponseType.OK:
-                apply_settings ();
-                Gtk.main_quit ();
-                break;
-            case ResponseType.APPLY:
-                apply_settings ();
-                break;
-        }
-    }
+    public void run () {
+        this.dialog.run ();
 
-    private void apply_settings () {
         foreach (var section in this.sections) {
             section.save ();
         }
-    }
 
-    public new void run () {
-        Gtk.main ();
+        this.config.save ();
     }
 
     public static int main (string[] args) {

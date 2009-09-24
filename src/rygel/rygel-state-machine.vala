@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008, 2009 Nokia Corporation, all rights reserved.
+ * Copyright (C) 2008, 2009 Nokia Corporation.
  *
  * Author: Zeeshan Ali (Khattak) <zeeshanak@gnome.org>
  *                               <zeeshan.ali@nokia.com>
@@ -21,8 +21,6 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-using Rygel;
-
 /**
  * StateMachine interface.
  */
@@ -30,6 +28,9 @@ public interface Rygel.StateMachine: GLib.Object {
     // Signals
     public signal void completed ();
 
-    public abstract void run (Cancellable? cancellable);
+    // Props
+    public abstract Cancellable cancellable { get; set; }
+
+    public abstract void run ();
 }
 

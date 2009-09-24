@@ -24,8 +24,8 @@
 #include <glib-object.h>
 #include <stdlib.h>
 #include <string.h>
+#include <gee.h>
 #include <gst/gst.h>
-#include <gee/arraylist.h>
 #include <libgupnp-av/gupnp-av.h>
 
 
@@ -61,28 +61,72 @@ typedef struct _RygelMediaItem RygelMediaItem;
 typedef struct _RygelMediaItemClass RygelMediaItemClass;
 typedef struct _RygelMediaItemPrivate RygelMediaItemPrivate;
 
+#define RYGEL_TYPE_ICON_INFO (rygel_icon_info_get_type ())
+#define RYGEL_ICON_INFO(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_ICON_INFO, RygelIconInfo))
+#define RYGEL_ICON_INFO_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TYPE_ICON_INFO, RygelIconInfoClass))
+#define RYGEL_IS_ICON_INFO(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TYPE_ICON_INFO))
+#define RYGEL_IS_ICON_INFO_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_TYPE_ICON_INFO))
+#define RYGEL_ICON_INFO_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_TYPE_ICON_INFO, RygelIconInfoClass))
+
+typedef struct _RygelIconInfo RygelIconInfo;
+typedef struct _RygelIconInfoClass RygelIconInfoClass;
+
+#define RYGEL_TYPE_THUMBNAIL (rygel_thumbnail_get_type ())
+#define RYGEL_THUMBNAIL(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_THUMBNAIL, RygelThumbnail))
+#define RYGEL_THUMBNAIL_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TYPE_THUMBNAIL, RygelThumbnailClass))
+#define RYGEL_IS_THUMBNAIL(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TYPE_THUMBNAIL))
+#define RYGEL_IS_THUMBNAIL_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_TYPE_THUMBNAIL))
+#define RYGEL_THUMBNAIL_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_TYPE_THUMBNAIL, RygelThumbnailClass))
+
+typedef struct _RygelThumbnail RygelThumbnail;
+typedef struct _RygelThumbnailClass RygelThumbnailClass;
+#define _g_free0(var) (var = (g_free (var), NULL))
+#define _g_object_unref0(var) ((var == NULL) ? NULL : (var = (g_object_unref (var), NULL)))
+#define _gst_object_unref0(var) ((var == NULL) ? NULL : (var = (gst_object_unref (var), NULL)))
+
+#define RYGEL_TYPE_THUMBNAILER (rygel_thumbnailer_get_type ())
+#define RYGEL_THUMBNAILER(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_THUMBNAILER, RygelThumbnailer))
+#define RYGEL_THUMBNAILER_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TYPE_THUMBNAILER, RygelThumbnailerClass))
+#define RYGEL_IS_THUMBNAILER(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TYPE_THUMBNAILER))
+#define RYGEL_IS_THUMBNAILER_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_TYPE_THUMBNAILER))
+#define RYGEL_THUMBNAILER_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_TYPE_THUMBNAILER, RygelThumbnailerClass))
+
+typedef struct _RygelThumbnailer RygelThumbnailer;
+typedef struct _RygelThumbnailerClass RygelThumbnailerClass;
+#define _rygel_icon_info_unref0(var) ((var == NULL) ? NULL : (var = (rygel_icon_info_unref (var), NULL)))
+#define _g_error_free0(var) ((var == NULL) ? NULL : (var = (g_error_free (var), NULL)))
+
+#define RYGEL_TYPE_TRANSCODER (rygel_transcoder_get_type ())
+#define RYGEL_TRANSCODER(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_TRANSCODER, RygelTranscoder))
+#define RYGEL_TRANSCODER_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TYPE_TRANSCODER, RygelTranscoderClass))
+#define RYGEL_IS_TRANSCODER(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TYPE_TRANSCODER))
+#define RYGEL_IS_TRANSCODER_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_TYPE_TRANSCODER))
+#define RYGEL_TRANSCODER_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_TYPE_TRANSCODER, RygelTranscoderClass))
+
+typedef struct _RygelTranscoder RygelTranscoder;
+typedef struct _RygelTranscoderClass RygelTranscoderClass;
+typedef struct _RygelIconInfoPrivate RygelIconInfoPrivate;
+typedef struct _RygelThumbnailPrivate RygelThumbnailPrivate;
+
 typedef enum  {
 	RYGEL_MEDIA_ITEM_ERROR_BAD_URI
 } RygelMediaItemError;
 #define RYGEL_MEDIA_ITEM_ERROR rygel_media_item_error_quark ()
-/**
- * Represents a media object (container and item).
- */
 struct _RygelMediaObject {
 	GObject parent_instance;
 	RygelMediaObjectPrivate * priv;
 	char* id;
 	char* title;
+	guint64 modified;
+	GeeArrayList* uris;
 	RygelMediaContainer* parent;
+	RygelMediaContainer* parent_ref;
 };
 
 struct _RygelMediaObjectClass {
 	GObjectClass parent_class;
 };
 
-/**
- * Represents a media (Music, Video and Image) item.
- */
 struct _RygelMediaItem {
 	RygelMediaObject parent_instance;
 	RygelMediaItemPrivate * priv;
@@ -90,8 +134,8 @@ struct _RygelMediaItem {
 	char* album;
 	char* date;
 	char* upnp_class;
-	GeeArrayList* uris;
 	char* mime_type;
+	char* dlna_profile;
 	glong size;
 	glong duration;
 	gint bitrate;
@@ -101,20 +145,60 @@ struct _RygelMediaItem {
 	gint track_number;
 	gint width;
 	gint height;
+	gint pixel_width;
+	gint pixel_height;
 	gint color_depth;
+	GeeArrayList* thumbnails;
 };
 
 struct _RygelMediaItemClass {
 	RygelMediaObjectClass parent_class;
 	GstElement* (*create_stream_source) (RygelMediaItem* self);
+	gboolean (*should_stream) (RygelMediaItem* self);
+};
+
+struct _RygelIconInfo {
+	GTypeInstance parent_instance;
+	volatile int ref_count;
+	RygelIconInfoPrivate * priv;
+	char* mime_type;
+	char* path;
+	glong size;
+	gint width;
+	gint height;
+	gint depth;
+};
+
+struct _RygelIconInfoClass {
+	GTypeClass parent_class;
+	void (*finalize) (RygelIconInfo *self);
+};
+
+struct _RygelThumbnail {
+	RygelIconInfo parent_instance;
+	RygelThumbnailPrivate * priv;
+	char* uri;
+	char* dlna_profile;
+};
+
+struct _RygelThumbnailClass {
+	RygelIconInfoClass parent_class;
 };
 
 
+static gpointer rygel_media_item_parent_class = NULL;
 
 GQuark rygel_media_item_error_quark (void);
 GType rygel_media_object_get_type (void);
 GType rygel_media_container_get_type (void);
 GType rygel_media_item_get_type (void);
+gpointer rygel_icon_info_ref (gpointer instance);
+void rygel_icon_info_unref (gpointer instance);
+GParamSpec* rygel_param_spec_icon_info (const gchar* name, const gchar* nick, const gchar* blurb, GType object_type, GParamFlags flags);
+void rygel_value_set_icon_info (GValue* value, gpointer v_object);
+gpointer rygel_value_get_icon_info (const GValue* value);
+GType rygel_icon_info_get_type (void);
+GType rygel_thumbnail_get_type (void);
 enum  {
 	RYGEL_MEDIA_ITEM_DUMMY_PROPERTY
 };
@@ -122,18 +206,31 @@ enum  {
 #define RYGEL_MEDIA_ITEM_VIDEO_CLASS "object.item.videoItem"
 #define RYGEL_MEDIA_ITEM_AUDIO_CLASS "object.item.audioItem"
 #define RYGEL_MEDIA_ITEM_MUSIC_CLASS "object.item.audioItem.musicTrack"
+RygelMediaObject* rygel_media_object_construct (GType object_type);
 RygelMediaItem* rygel_media_item_new (const char* id, RygelMediaContainer* parent, const char* title, const char* upnp_class);
 RygelMediaItem* rygel_media_item_construct (GType object_type, const char* id, RygelMediaContainer* parent, const char* title, const char* upnp_class);
-RygelMediaItem* rygel_media_item_new (const char* id, RygelMediaContainer* parent, const char* title, const char* upnp_class);
+static inline void _dynamic_set_tcp_timeout1 (GstElement* obj, gint64 value);
 GstElement* rygel_media_item_create_stream_source (RygelMediaItem* self);
 static GstElement* rygel_media_item_real_create_stream_source (RygelMediaItem* self);
+gboolean rygel_media_item_should_stream (RygelMediaItem* self);
+static gboolean rygel_media_item_real_should_stream (RygelMediaItem* self);
+GType rygel_thumbnailer_get_type (void);
+RygelThumbnailer* rygel_thumbnailer_get_default (void);
+RygelThumbnail* rygel_thumbnailer_get_thumbnail (RygelThumbnailer* self, const char* uri, GError** error);
+void rygel_media_item_add_uri (RygelMediaItem* self, const char* uri, RygelThumbnail* thumbnail);
+GType rygel_transcoder_get_type (void);
+guint rygel_transcoder_get_distance (RygelTranscoder* self, RygelMediaItem* item);
+gint rygel_media_item_compare_transcoders (RygelMediaItem* self, void* a, void* b);
 static char* rygel_media_item_get_protocol_for_uri (RygelMediaItem* self, const char* uri, GError** error);
-GUPnPDIDLLiteResource rygel_media_item_create_res (RygelMediaItem* self, const char* uri, GError** error);
-static gpointer rygel_media_item_parent_class = NULL;
+GUPnPDIDLLiteResource* rygel_media_item_add_resource (RygelMediaItem* self, GUPnPDIDLLiteItem* didl_item, const char* uri, const char* protocol, GError** error);
+GUPnPDIDLLiteResource* rygel_thumbnail_add_resource (RygelThumbnail* self, GUPnPDIDLLiteItem* didl_item, const char* protocol);
+void rygel_media_item_add_resources (RygelMediaItem* self, GUPnPDIDLLiteItem* didl_item, gboolean allow_internal, GError** error);
+static GUPnPProtocolInfo* rygel_media_item_get_protocol_info (RygelMediaItem* self, const char* uri, const char* protocol);
 static void rygel_media_item_finalize (GObject* obj);
 static void _vala_array_destroy (gpointer array, gint array_length, GDestroyNotify destroy_func);
 static void _vala_array_free (gpointer array, gint array_length, GDestroyNotify destroy_func);
 static gint _vala_array_length (gpointer array);
+static int _vala_strcmp0 (const char * str1, const char * str2);
 
 
 
@@ -144,30 +241,20 @@ GQuark rygel_media_item_error_quark (void) {
 
 RygelMediaItem* rygel_media_item_construct (GType object_type, const char* id, RygelMediaContainer* parent, const char* title, const char* upnp_class) {
 	RygelMediaItem * self;
+	char* _tmp0_;
 	char* _tmp1_;
-	const char* _tmp0_;
-	char* _tmp3_;
-	const char* _tmp2_;
-	char* _tmp5_;
-	const char* _tmp4_;
-	GeeArrayList* _tmp6_;
+	char* _tmp2_;
+	GeeArrayList* _tmp3_;
 	g_return_val_if_fail (id != NULL, NULL);
 	g_return_val_if_fail (parent != NULL, NULL);
 	g_return_val_if_fail (title != NULL, NULL);
 	g_return_val_if_fail (upnp_class != NULL, NULL);
-	self = g_object_newv (object_type, 0, NULL);
-	_tmp1_ = NULL;
-	_tmp0_ = NULL;
-	((RygelMediaObject*) self)->id = (_tmp1_ = (_tmp0_ = id, (_tmp0_ == NULL) ? NULL : g_strdup (_tmp0_)), ((RygelMediaObject*) self)->id = (g_free (((RygelMediaObject*) self)->id), NULL), _tmp1_);
+	self = (RygelMediaItem*) rygel_media_object_construct (object_type);
+	((RygelMediaObject*) self)->id = (_tmp0_ = g_strdup (id), _g_free0 (((RygelMediaObject*) self)->id), _tmp0_);
 	((RygelMediaObject*) self)->parent = parent;
-	_tmp3_ = NULL;
-	_tmp2_ = NULL;
-	((RygelMediaObject*) self)->title = (_tmp3_ = (_tmp2_ = title, (_tmp2_ == NULL) ? NULL : g_strdup (_tmp2_)), ((RygelMediaObject*) self)->title = (g_free (((RygelMediaObject*) self)->title), NULL), _tmp3_);
-	_tmp5_ = NULL;
-	_tmp4_ = NULL;
-	self->upnp_class = (_tmp5_ = (_tmp4_ = upnp_class, (_tmp4_ == NULL) ? NULL : g_strdup (_tmp4_)), self->upnp_class = (g_free (self->upnp_class), NULL), _tmp5_);
-	_tmp6_ = NULL;
-	self->uris = (_tmp6_ = gee_array_list_new (G_TYPE_STRING, (GBoxedCopyFunc) g_strdup, g_free, g_direct_equal), (self->uris == NULL) ? NULL : (self->uris = (g_object_unref (self->uris), NULL)), _tmp6_);
+	((RygelMediaObject*) self)->title = (_tmp1_ = g_strdup (title), _g_free0 (((RygelMediaObject*) self)->title), _tmp1_);
+	self->upnp_class = (_tmp2_ = g_strdup (upnp_class), _g_free0 (self->upnp_class), _tmp2_);
+	self->thumbnails = (_tmp3_ = gee_array_list_new (RYGEL_TYPE_THUMBNAIL, (GBoxedCopyFunc) rygel_icon_info_ref, rygel_icon_info_unref, g_direct_equal), _g_object_unref0 (self->thumbnails), _tmp3_);
 	return self;
 }
 
@@ -177,11 +264,34 @@ RygelMediaItem* rygel_media_item_new (const char* id, RygelMediaContainer* paren
 }
 
 
-/* Live media items need to provide a nice working implementation of this
- method if they can/do no provide a valid URI*/
+static inline void _dynamic_set_tcp_timeout1 (GstElement* obj, gint64 value) {
+	g_object_set (obj, "tcp-timeout", value, NULL);
+}
+
+
 static GstElement* rygel_media_item_real_create_stream_source (RygelMediaItem* self) {
+	GstElement* result;
+	GstElement* src;
+	gboolean _tmp2_;
 	g_return_val_if_fail (self != NULL, NULL);
-	return NULL;
+	src = NULL;
+	if (gee_collection_get_size ((GeeCollection*) ((RygelMediaObject*) self)->uris) != 0) {
+		GstElement* _tmp1_;
+		char* _tmp0_;
+		src = (_tmp1_ = gst_element_make_from_uri (GST_URI_SRC, _tmp0_ = (char*) gee_abstract_list_get ((GeeAbstractList*) ((RygelMediaObject*) self)->uris, 0), NULL), _gst_object_unref0 (src), _tmp1_);
+		_g_free0 (_tmp0_);
+	}
+	_tmp2_ = FALSE;
+	if (src != NULL) {
+		_tmp2_ = _vala_strcmp0 (g_type_name (G_TYPE_FROM_INSTANCE ((GObject*) src)), "GstRTSPSrc") == 0;
+	} else {
+		_tmp2_ = FALSE;
+	}
+	if (_tmp2_) {
+		_dynamic_set_tcp_timeout1 (src, (gint64) 60000000);
+	}
+	result = src;
+	return result;
 }
 
 
@@ -190,88 +300,251 @@ GstElement* rygel_media_item_create_stream_source (RygelMediaItem* self) {
 }
 
 
-GUPnPDIDLLiteResource rygel_media_item_create_res (RygelMediaItem* self, const char* uri, GError** error) {
+static gboolean rygel_media_item_real_should_stream (RygelMediaItem* self) {
+	gboolean result;
+	g_return_val_if_fail (self != NULL, FALSE);
+	result = self->size <= 0;
+	return result;
+}
+
+
+gboolean rygel_media_item_should_stream (RygelMediaItem* self) {
+	return RYGEL_MEDIA_ITEM_GET_CLASS (self)->should_stream (self);
+}
+
+
+void rygel_media_item_add_uri (RygelMediaItem* self, const char* uri, RygelThumbnail* thumbnail) {
 	GError * _inner_error_;
-	GUPnPDIDLLiteResource _tmp0_ = {0};
-	GUPnPDIDLLiteResource res;
-	char* _tmp2_;
-	const char* _tmp1_;
-	char* _tmp4_;
-	const char* _tmp3_;
+	g_return_if_fail (self != NULL);
+	g_return_if_fail (uri != NULL);
 	_inner_error_ = NULL;
-	res = (memset (&_tmp0_, 0, sizeof (GUPnPDIDLLiteResource)), _tmp0_);
-	gupnp_didl_lite_resource_reset (&res);
-	_tmp2_ = NULL;
-	_tmp1_ = NULL;
-	res.uri = (_tmp2_ = (_tmp1_ = uri, (_tmp1_ == NULL) ? NULL : g_strdup (_tmp1_)), res.uri = (g_free (res.uri), NULL), _tmp2_);
-	_tmp4_ = NULL;
-	_tmp3_ = NULL;
-	res.mime_type = (_tmp4_ = (_tmp3_ = self->mime_type, (_tmp3_ == NULL) ? NULL : g_strdup (_tmp3_)), res.mime_type = (g_free (res.mime_type), NULL), _tmp4_);
-	res.size = self->size;
-	res.duration = self->duration;
-	res.bitrate = self->bitrate;
-	res.sample_freq = self->sample_freq;
-	res.bits_per_sample = self->bits_per_sample;
-	res.n_audio_channels = self->n_audio_channels;
-	res.width = self->width;
-	res.height = self->height;
-	res.color_depth = self->color_depth;
-	/* Protocol info */
-	if (res.uri != NULL) {
-		char* protocol;
-		char* _tmp6_;
-		const char* _tmp5_;
-		protocol = rygel_media_item_get_protocol_for_uri (self, res.uri, &_inner_error_);
-		if (_inner_error_ != NULL) {
-			g_propagate_error (error, _inner_error_);
-			gupnp_didl_lite_resource_destroy (&res);
-			return;
-		}
-		_tmp6_ = NULL;
-		_tmp5_ = NULL;
-		res.protocol = (_tmp6_ = (_tmp5_ = protocol, (_tmp5_ == NULL) ? NULL : g_strdup (_tmp5_)), res.protocol = (g_free (res.protocol), NULL), _tmp6_);
-		protocol = (g_free (protocol), NULL);
-	}
-	if (g_str_has_prefix (self->upnp_class, RYGEL_MEDIA_ITEM_IMAGE_CLASS)) {
-		res.dlna_flags = res.dlna_flags | GUPNP_DLNA_FLAG_INTERACTIVE_TRANSFER_MODE;
+	gee_abstract_collection_add ((GeeAbstractCollection*) ((RygelMediaObject*) self)->uris, uri);
+	if (thumbnail != NULL) {
+		gee_abstract_collection_add ((GeeAbstractCollection*) self->thumbnails, thumbnail);
 	} else {
-		res.dlna_flags = res.dlna_flags | GUPNP_DLNA_FLAG_STREAMING_TRANSFER_MODE;
+		gboolean _tmp0_;
+		_tmp0_ = FALSE;
+		if (g_str_has_prefix (self->upnp_class, RYGEL_MEDIA_ITEM_IMAGE_CLASS)) {
+			_tmp0_ = TRUE;
+		} else {
+			_tmp0_ = g_str_has_prefix (self->upnp_class, RYGEL_MEDIA_ITEM_VIDEO_CLASS);
+		}
+		if (_tmp0_) {
+			RygelThumbnailer* thumbnailer;
+			thumbnailer = rygel_thumbnailer_get_default ();
+			if (thumbnailer == NULL) {
+				_g_object_unref0 (thumbnailer);
+				return;
+			}
+			{
+				RygelThumbnail* thumb;
+				thumb = rygel_thumbnailer_get_thumbnail (thumbnailer, uri, &_inner_error_);
+				if (_inner_error_ != NULL) {
+					goto __catch28_g_error;
+					goto __finally28;
+				}
+				gee_abstract_collection_add ((GeeAbstractCollection*) self->thumbnails, thumb);
+				_rygel_icon_info_unref0 (thumb);
+			}
+			goto __finally28;
+			__catch28_g_error:
+			{
+				GError * err;
+				err = _inner_error_;
+				_inner_error_ = NULL;
+				{
+					_g_error_free0 (err);
+				}
+			}
+			__finally28:
+			if (_inner_error_ != NULL) {
+				_g_object_unref0 (thumbnailer);
+				g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, _inner_error_->message);
+				g_clear_error (&_inner_error_);
+				return;
+			}
+			_g_object_unref0 (thumbnailer);
+		}
 	}
-	if (res.size > 0) {
-		res.dlna_operation = GUPNP_DLNA_OPERATION_RANGE;
-		res.dlna_flags = res.dlna_flags | GUPNP_DLNA_FLAG_BACKGROUND_TRANSFER_MODE;
+}
+
+
+static gpointer _g_object_ref0 (gpointer self) {
+	return self ? g_object_ref (self) : NULL;
+}
+
+
+gint rygel_media_item_compare_transcoders (RygelMediaItem* self, void* a, void* b) {
+	gint result;
+	RygelTranscoder* transcoder1;
+	RygelTranscoder* transcoder2;
+	g_return_val_if_fail (self != NULL, 0);
+	transcoder1 = _g_object_ref0 (RYGEL_TRANSCODER (a));
+	transcoder2 = _g_object_ref0 (RYGEL_TRANSCODER (b));
+	result = ((gint) rygel_transcoder_get_distance (transcoder1, self)) - ((gint) rygel_transcoder_get_distance (transcoder2, self));
+	_g_object_unref0 (transcoder1);
+	_g_object_unref0 (transcoder2);
+	return result;
+}
+
+
+void rygel_media_item_add_resources (RygelMediaItem* self, GUPnPDIDLLiteItem* didl_item, gboolean allow_internal, GError** error) {
+	GError * _inner_error_;
+	g_return_if_fail (self != NULL);
+	g_return_if_fail (didl_item != NULL);
+	_inner_error_ = NULL;
+	{
+		GeeIterator* _uri_it;
+		_uri_it = gee_abstract_collection_iterator ((GeeAbstractCollection*) ((RygelMediaObject*) self)->uris);
+		while (TRUE) {
+			char* uri;
+			char* protocol;
+			gboolean _tmp0_;
+			if (!gee_iterator_next (_uri_it)) {
+				break;
+			}
+			uri = (char*) gee_iterator_get (_uri_it);
+			protocol = rygel_media_item_get_protocol_for_uri (self, uri, &_inner_error_);
+			if (_inner_error_ != NULL) {
+				g_propagate_error (error, _inner_error_);
+				_g_free0 (uri);
+				_g_object_unref0 (_uri_it);
+				return;
+			}
+			_tmp0_ = FALSE;
+			if (allow_internal) {
+				_tmp0_ = TRUE;
+			} else {
+				_tmp0_ = _vala_strcmp0 (protocol, "internal") != 0;
+			}
+			if (_tmp0_) {
+				GUPnPDIDLLiteResource* _tmp1_;
+				_tmp1_ = rygel_media_item_add_resource (self, didl_item, uri, protocol, &_inner_error_);
+				if (_inner_error_ != NULL) {
+					g_propagate_error (error, _inner_error_);
+					_g_free0 (uri);
+					_g_free0 (protocol);
+					_g_object_unref0 (_uri_it);
+					return;
+				}
+				_g_object_unref0 (_tmp1_);
+			}
+			_g_free0 (uri);
+			_g_free0 (protocol);
+		}
+		_g_object_unref0 (_uri_it);
 	}
-	return res;
+	{
+		GeeIterator* _thumbnail_it;
+		_thumbnail_it = gee_abstract_collection_iterator ((GeeAbstractCollection*) self->thumbnails);
+		while (TRUE) {
+			RygelThumbnail* thumbnail;
+			char* protocol;
+			gboolean _tmp2_;
+			if (!gee_iterator_next (_thumbnail_it)) {
+				break;
+			}
+			thumbnail = (RygelThumbnail*) gee_iterator_get (_thumbnail_it);
+			protocol = rygel_media_item_get_protocol_for_uri (self, thumbnail->uri, &_inner_error_);
+			if (_inner_error_ != NULL) {
+				g_propagate_error (error, _inner_error_);
+				_rygel_icon_info_unref0 (thumbnail);
+				_g_object_unref0 (_thumbnail_it);
+				return;
+			}
+			_tmp2_ = FALSE;
+			if (allow_internal) {
+				_tmp2_ = TRUE;
+			} else {
+				_tmp2_ = _vala_strcmp0 (protocol, "internal") != 0;
+			}
+			if (_tmp2_) {
+				GUPnPDIDLLiteResource* _tmp3_;
+				_tmp3_ = rygel_thumbnail_add_resource (thumbnail, didl_item, protocol);
+				_g_object_unref0 (_tmp3_);
+			}
+			_rygel_icon_info_unref0 (thumbnail);
+			_g_free0 (protocol);
+		}
+		_g_object_unref0 (_thumbnail_it);
+	}
+}
+
+
+GUPnPDIDLLiteResource* rygel_media_item_add_resource (RygelMediaItem* self, GUPnPDIDLLiteItem* didl_item, const char* uri, const char* protocol, GError** error) {
+	GUPnPDIDLLiteResource* result;
+	GUPnPDIDLLiteResource* res;
+	GUPnPProtocolInfo* _tmp0_;
+	g_return_val_if_fail (self != NULL, NULL);
+	g_return_val_if_fail (didl_item != NULL, NULL);
+	g_return_val_if_fail (protocol != NULL, NULL);
+	res = gupnp_didl_lite_object_add_resource ((GUPnPDIDLLiteObject*) didl_item);
+	if (uri != NULL) {
+		gupnp_didl_lite_resource_set_uri (res, uri);
+	}
+	gupnp_didl_lite_resource_set_size (res, self->size);
+	gupnp_didl_lite_resource_set_duration (res, self->duration);
+	gupnp_didl_lite_resource_set_bitrate (res, self->bitrate);
+	gupnp_didl_lite_resource_set_sample_freq (res, self->sample_freq);
+	gupnp_didl_lite_resource_set_bits_per_sample (res, self->bits_per_sample);
+	gupnp_didl_lite_resource_set_audio_channels (res, self->n_audio_channels);
+	gupnp_didl_lite_resource_set_width (res, self->width);
+	gupnp_didl_lite_resource_set_height (res, self->height);
+	gupnp_didl_lite_resource_set_color_depth (res, self->color_depth);
+	gupnp_didl_lite_resource_set_protocol_info (res, _tmp0_ = rygel_media_item_get_protocol_info (self, uri, protocol));
+	_g_object_unref0 (_tmp0_);
+	result = res;
+	return result;
+}
+
+
+static GUPnPProtocolInfo* rygel_media_item_get_protocol_info (RygelMediaItem* self, const char* uri, const char* protocol) {
+	GUPnPProtocolInfo* result;
+	GUPnPProtocolInfo* protocol_info;
+	g_return_val_if_fail (self != NULL, NULL);
+	g_return_val_if_fail (protocol != NULL, NULL);
+	protocol_info = gupnp_protocol_info_new ();
+	gupnp_protocol_info_set_mime_type (protocol_info, self->mime_type);
+	gupnp_protocol_info_set_dlna_profile (protocol_info, self->dlna_profile);
+	gupnp_protocol_info_set_protocol (protocol_info, protocol);
+	if (g_str_has_prefix (self->upnp_class, RYGEL_MEDIA_ITEM_IMAGE_CLASS)) {
+		gupnp_protocol_info_set_dlna_flags (protocol_info, gupnp_protocol_info_get_dlna_flags (protocol_info) | GUPNP_DLNA_FLAGS_INTERACTIVE_TRANSFER_MODE);
+	} else {
+		gupnp_protocol_info_set_dlna_flags (protocol_info, gupnp_protocol_info_get_dlna_flags (protocol_info) | GUPNP_DLNA_FLAGS_STREAMING_TRANSFER_MODE);
+	}
+	if (!rygel_media_item_should_stream (self)) {
+		gupnp_protocol_info_set_dlna_operation (protocol_info, GUPNP_DLNA_OPERATION_RANGE);
+		gupnp_protocol_info_set_dlna_flags (protocol_info, gupnp_protocol_info_get_dlna_flags (protocol_info) | GUPNP_DLNA_FLAGS_BACKGROUND_TRANSFER_MODE);
+	}
+	result = protocol_info;
+	return result;
 }
 
 
 static char* rygel_media_item_get_protocol_for_uri (RygelMediaItem* self, const char* uri, GError** error) {
+	char* result;
 	GError * _inner_error_;
 	g_return_val_if_fail (self != NULL, NULL);
 	g_return_val_if_fail (uri != NULL, NULL);
 	_inner_error_ = NULL;
 	if (g_str_has_prefix (uri, "http")) {
-		return g_strdup ("http-get");
+		result = g_strdup ("http-get");
+		return result;
 	} else {
 		if (g_str_has_prefix (uri, "file")) {
-			return g_strdup ("internal");
+			result = g_strdup ("internal");
+			return result;
 		} else {
 			if (g_str_has_prefix (uri, "rtsp")) {
-				/* FIXME: Assuming that RTSP is always accompanied with RTP over UDP*/
-				return g_strdup ("rtsp-rtp-udp");
+				result = g_strdup ("rtsp-rtp-udp");
+				return result;
 			} else {
-				char** _tmp4_;
+				char** _tmp1_;
 				gint tokens_size;
 				gint tokens_length1;
-				char** _tmp3_;
+				char** _tmp0_;
 				char** tokens;
-				const char* _tmp5_;
-				char* _tmp6_;
-				g_warning ("rygel-media-item.vala:129: Failed to probe protocol for URI %s", uri);
-				/* Assume the protocol to be the scheme of the URI*/
-				_tmp4_ = NULL;
-				_tmp3_ = NULL;
-				tokens = (_tmp4_ = _tmp3_ = g_strsplit (uri, ":", 2), tokens_length1 = _vala_array_length (_tmp3_), tokens_size = tokens_length1, _tmp4_);
+				tokens = (_tmp1_ = _tmp0_ = g_strsplit (uri, ":", 2), tokens_length1 = _vala_array_length (_tmp0_), tokens_size = tokens_length1, _tmp1_);
 				if (tokens[0] == NULL) {
 					_inner_error_ = g_error_new (RYGEL_MEDIA_ITEM_ERROR, RYGEL_MEDIA_ITEM_ERROR_BAD_URI, "Bad URI: %s", uri);
 					if (_inner_error_ != NULL) {
@@ -280,9 +553,10 @@ static char* rygel_media_item_get_protocol_for_uri (RygelMediaItem* self, const 
 						return NULL;
 					}
 				}
-				_tmp5_ = NULL;
-				_tmp6_ = NULL;
-				return (_tmp6_ = (_tmp5_ = tokens[0], (_tmp5_ == NULL) ? NULL : g_strdup (_tmp5_)), tokens = (_vala_array_free (tokens, tokens_length1, (GDestroyNotify) g_free), NULL), _tmp6_);
+				g_warning ("rygel-media-item.vala:223: Failed to probe protocol for URI %s. Assuming '%s'", uri, tokens[0]);
+				result = g_strdup (tokens[0]);
+				tokens = (_vala_array_free (tokens, tokens_length1, (GDestroyNotify) g_free), NULL);
+				return result;
 			}
 		}
 	}
@@ -292,6 +566,7 @@ static char* rygel_media_item_get_protocol_for_uri (RygelMediaItem* self, const 
 static void rygel_media_item_class_init (RygelMediaItemClass * klass) {
 	rygel_media_item_parent_class = g_type_class_peek_parent (klass);
 	RYGEL_MEDIA_ITEM_CLASS (klass)->create_stream_source = rygel_media_item_real_create_stream_source;
+	RYGEL_MEDIA_ITEM_CLASS (klass)->should_stream = rygel_media_item_real_should_stream;
 	G_OBJECT_CLASS (klass)->finalize = rygel_media_item_finalize;
 }
 
@@ -306,6 +581,8 @@ static void rygel_media_item_instance_init (RygelMediaItem * self) {
 	self->track_number = -1;
 	self->width = -1;
 	self->height = -1;
+	self->pixel_width = -1;
+	self->pixel_height = -1;
 	self->color_depth = -1;
 }
 
@@ -313,12 +590,13 @@ static void rygel_media_item_instance_init (RygelMediaItem * self) {
 static void rygel_media_item_finalize (GObject* obj) {
 	RygelMediaItem * self;
 	self = RYGEL_MEDIA_ITEM (obj);
-	self->author = (g_free (self->author), NULL);
-	self->album = (g_free (self->album), NULL);
-	self->date = (g_free (self->date), NULL);
-	self->upnp_class = (g_free (self->upnp_class), NULL);
-	(self->uris == NULL) ? NULL : (self->uris = (g_object_unref (self->uris), NULL));
-	self->mime_type = (g_free (self->mime_type), NULL);
+	_g_free0 (self->author);
+	_g_free0 (self->album);
+	_g_free0 (self->date);
+	_g_free0 (self->upnp_class);
+	_g_free0 (self->mime_type);
+	_g_free0 (self->dlna_profile);
+	_g_object_unref0 (self->thumbnails);
 	G_OBJECT_CLASS (rygel_media_item_parent_class)->finalize (obj);
 }
 
@@ -360,6 +638,17 @@ static gint _vala_array_length (gpointer array) {
 		}
 	}
 	return length;
+}
+
+
+static int _vala_strcmp0 (const char * str1, const char * str2) {
+	if (str1 == NULL) {
+		return -(str1 != str2);
+	}
+	if (str2 == NULL) {
+		return str1 != str2;
+	}
+	return strcmp (str1, str2);
 }
 
 

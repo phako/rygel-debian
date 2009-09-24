@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2009 Zeeshan Ali (Khattak) <zeeshanak@gnome.org>.
- * Copyright (C) 2009 Nokia Corporation, all rights reserved.
+ * Copyright (C) 2009 Nokia Corporation.
  *
  * Author: Zeeshan Ali (Khattak) <zeeshanak@gnome.org>
  *                               <zeeshan.ali@nokia.com>
@@ -73,7 +73,8 @@ public class ExternalPluginFactory {
         }
 
         foreach (var service in services) {
-            if (service.has_prefix (SERVICE_PREFIX)) {
+            if (service.has_prefix (SERVICE_PREFIX) &&
+                this.loader.get_plugin_by_name (service) == null) {
                 this.loader.add_plugin (new ExternalPlugin (this.connection,
                                                             service));
             }

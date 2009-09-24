@@ -34,14 +34,18 @@ public class Rygel.ConnectionManager : Service {
                     "urn:schemas-upnp-org:service:ConnectionManager:2";
     public const string DESCRIPTION_PATH = "xml/ConnectionManager.xml";
 
-    protected string source_protocol_info;
     protected string sink_protocol_info;
     protected string connection_ids;
+
+    protected string source_protocol_info {
+        owned get {
+            return this.get_http_server ().get_protocol_info ();
+        }
+    }
 
     public override void constructed () {
         this.sink_protocol_info   = "";
         this.connection_ids       = "0";
-        this.source_protocol_info = "http-get:*:*:*";
 
         this.query_variable["SourceProtocolInfo"] +=
                         this.query_source_protocol_info_cb;
@@ -113,5 +117,21 @@ public class Rygel.ConnectionManager : Service {
                     "Status",                typeof (string), "Unknown");
 
         action.return ();
+    }
+
+    private HTTPServer get_http_server () {
+        HTTPServer server = null;
+
+        var root_device = (Rygel.RootDevice) this.root_device;
+
+        // Find the ContentDirectory service attached to this root device.
+        foreach (var service in root_device.services) {
+            if (service.get_type().is_a (typeof (Rygel.ContentDirectory))) {
+                var content_directory = (Rygel.ContentDirectory) service;
+                server = content_directory.http_server;
+            }
+        }
+
+        return server;
     }
 }

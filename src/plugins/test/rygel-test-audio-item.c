@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2008 Zeeshan Ali (Khattak) <zeeshanak@gnome.org>.
- * Copyright (C) 2008 Nokia Corporation, all rights reserved.
+ * Copyright (C) 2008 Nokia Corporation.
  *
  * Author: Zeeshan Ali (Khattak) <zeeshanak@gnome.org>
  *                               <zeeshan.ali@nokia.com>
@@ -51,10 +51,8 @@ typedef struct _RygelTestItemPrivate RygelTestItemPrivate;
 typedef struct _RygelTestAudioItem RygelTestAudioItem;
 typedef struct _RygelTestAudioItemClass RygelTestAudioItemClass;
 typedef struct _RygelTestAudioItemPrivate RygelTestAudioItemPrivate;
+#define _g_error_free0(var) ((var == NULL) ? NULL : (var = (g_error_free (var), NULL)))
 
-/**
- * Represents Test item.
- */
 struct _RygelTestItem {
 	RygelMediaItem parent_instance;
 	RygelTestItemPrivate * priv;
@@ -64,9 +62,6 @@ struct _RygelTestItemClass {
 	RygelMediaItemClass parent_class;
 };
 
-/**
- * Represents Test audio item.
- */
 struct _RygelTestAudioItem {
 	RygelTestItem parent_instance;
 	RygelTestAudioItemPrivate * priv;
@@ -77,6 +72,7 @@ struct _RygelTestAudioItemClass {
 };
 
 
+static gpointer rygel_test_audio_item_parent_class = NULL;
 
 GType rygel_test_item_get_type (void);
 GType rygel_test_audio_item_get_type (void);
@@ -84,14 +80,10 @@ enum  {
 	RYGEL_TEST_AUDIO_ITEM_DUMMY_PROPERTY
 };
 #define RYGEL_TEST_AUDIO_ITEM_TEST_MIMETYPE "audio/x-wav"
-RygelTestItem* rygel_test_item_new (const char* id, RygelMediaContainer* parent, const char* title, const char* mime, const char* upnp_class);
 RygelTestItem* rygel_test_item_construct (GType object_type, const char* id, RygelMediaContainer* parent, const char* title, const char* mime, const char* upnp_class);
 RygelTestAudioItem* rygel_test_audio_item_new (const char* id, RygelMediaContainer* parent, const char* title);
 RygelTestAudioItem* rygel_test_audio_item_construct (GType object_type, const char* id, RygelMediaContainer* parent, const char* title);
-RygelTestAudioItem* rygel_test_audio_item_new (const char* id, RygelMediaContainer* parent, const char* title);
-static inline void _dynamic_set_is_live0 (GstElement* obj, gboolean value);
 static GstElement* rygel_test_audio_item_real_create_stream_source (RygelMediaItem* base);
-static gpointer rygel_test_audio_item_parent_class = NULL;
 
 
 
@@ -110,60 +102,41 @@ RygelTestAudioItem* rygel_test_audio_item_new (const char* id, RygelMediaContain
 }
 
 
-static inline void _dynamic_set_is_live0 (GstElement* obj, gboolean value) {
-	g_object_set (obj, "is-live", value, NULL);
-}
-
-
 static GstElement* rygel_test_audio_item_real_create_stream_source (RygelMediaItem* base) {
 	RygelTestAudioItem * self;
-	GstBin* bin;
-	GstElement* src;
-	GstElement* encoder;
-	gboolean _tmp0_;
-	GstElement* _tmp3_;
-	GstElement* _tmp2_;
-	GstPad* pad;
-	char* _tmp5_;
-	char* _tmp4_;
-	GstGhostPad* _tmp6_;
-	GstGhostPad* ghost;
-	GstPad* _tmp7_;
-	GstElement* _tmp8_;
+	GstElement* result;
+	GError * _inner_error_;
 	self = (RygelTestAudioItem*) base;
-	bin = (GstBin*) gst_bin_new (((RygelMediaObject*) self)->title);
-	src = gst_element_factory_make ("audiotestsrc", NULL);
-	encoder = gst_element_factory_make ("wavenc", NULL);
-	_tmp0_ = FALSE;
-	if (src == NULL) {
-		_tmp0_ = TRUE;
-	} else {
-		_tmp0_ = encoder == NULL;
+	_inner_error_ = NULL;
+	{
+		GstElement* _tmp0_;
+		_tmp0_ = gst_parse_bin_from_description ("audiotestsrc is-live=1 ! wavenc", TRUE, &_inner_error_);
+		if (_inner_error_ != NULL) {
+			goto __catch0_g_error;
+			goto __finally0;
+		}
+		result = _tmp0_;
+		return result;
 	}
-	if (_tmp0_) {
-		GstElement* _tmp1_;
-		g_warning ("rygel-test-audio-item.vala:53: Required plugin missing");
-		_tmp1_ = NULL;
-		return (_tmp1_ = NULL, (bin == NULL) ? NULL : (bin = (gst_object_unref (bin), NULL)), (src == NULL) ? NULL : (src = (gst_object_unref (src), NULL)), (encoder == NULL) ? NULL : (encoder = (gst_object_unref (encoder), NULL)), _tmp1_);
+	goto __finally0;
+	__catch0_g_error:
+	{
+		GError * err;
+		err = _inner_error_;
+		_inner_error_ = NULL;
+		{
+			g_warning ("rygel-test-audio-item.vala:49: Required plugin missing (%s)", err->message);
+			result = NULL;
+			_g_error_free0 (err);
+			return result;
+		}
 	}
-	/* Tell the source to behave like a live source*/
-	_dynamic_set_is_live0 (src, TRUE);
-	/* Add elements to our source bin*/
-	_tmp3_ = NULL;
-	_tmp2_ = NULL;
-	gst_bin_add_many (bin, (_tmp2_ = src, (_tmp2_ == NULL) ? NULL : gst_object_ref (_tmp2_)), (_tmp3_ = encoder, (_tmp3_ == NULL) ? NULL : gst_object_ref (_tmp3_)), NULL);
-	/* Link them*/
-	gst_element_link (src, encoder);
-	/* Now add the encoder's src pad to the bin*/
-	pad = gst_element_get_static_pad (encoder, "src");
-	_tmp5_ = NULL;
-	_tmp4_ = NULL;
-	_tmp6_ = NULL;
-	ghost = (_tmp6_ = (GstGhostPad*) gst_ghost_pad_new (_tmp5_ = g_strconcat (_tmp4_ = g_strconcat (gst_object_get_name ((GstObject*) bin), ".", NULL), gst_object_get_name ((GstObject*) pad), NULL), pad), _tmp5_ = (g_free (_tmp5_), NULL), _tmp4_ = (g_free (_tmp4_), NULL), _tmp6_);
-	_tmp7_ = NULL;
-	gst_element_add_pad ((GstElement*) bin, (_tmp7_ = (GstPad*) ghost, (_tmp7_ == NULL) ? NULL : gst_object_ref (_tmp7_)));
-	_tmp8_ = NULL;
-	return (_tmp8_ = (GstElement*) bin, (src == NULL) ? NULL : (src = (gst_object_unref (src), NULL)), (encoder == NULL) ? NULL : (encoder = (gst_object_unref (encoder), NULL)), (pad == NULL) ? NULL : (pad = (gst_object_unref (pad), NULL)), (ghost == NULL) ? NULL : (ghost = (gst_object_unref (ghost), NULL)), _tmp8_);
+	__finally0:
+	if (_inner_error_ != NULL) {
+		g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, _inner_error_->message);
+		g_clear_error (&_inner_error_);
+		return NULL;
+	}
 }
 
 

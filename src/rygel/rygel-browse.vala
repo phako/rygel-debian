@@ -22,7 +22,6 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-using Rygel;
 using GUPnP;
 using Gee;
 using Soup;
@@ -55,24 +54,20 @@ internal class Rygel.Browse: GLib.Object, Rygel.StateMachine {
     private ServiceAction action;
     private Rygel.DIDLLiteWriter didl_writer;
 
-    private Cancellable cancellable;
+    public Cancellable cancellable { get; set; }
 
     public Browse (ContentDirectory    content_dir,
                    owned ServiceAction action) {
         this.root_container = content_dir.root_container;
         this.system_update_id = content_dir.system_update_id;
+        this.cancellable = content_dir.cancellable;
         this.action = (owned) action;
 
         this.didl_writer =
                 new Rygel.DIDLLiteWriter (content_dir.http_server);
     }
 
-    public void run (Cancellable? cancellable) {
-        this.cancellable = cancellable;
-
-        /* Start DIDL-Lite fragment */
-        this.didl_writer.start_didl_lite (null, null, true);
-
+    public void run () {
         /* Start by parsing the 'in' arguments */
         this.parse_args ();
     }
@@ -106,7 +101,7 @@ internal class Rygel.Browse: GLib.Object, Rygel.StateMachine {
                                          this.on_media_object_found);
     }
 
-    private void on_media_object_found (Object      source_object,
+    private void on_media_object_found (Object?     source_object,
                                         AsyncResult res) {
         var container = (MediaContainer) source_object;
 
@@ -201,8 +196,8 @@ internal class Rygel.Browse: GLib.Object, Rygel.StateMachine {
     }
 
     private void conclude () {
-        /* End DIDL-Lite fragment */
-        this.didl_writer.end_didl_lite ();
+        // Apply the filter from the client
+        this.didl_writer.filter (this.filter);
 
         /* Retrieve generated string */
         string didl = this.didl_writer.get_string ();
@@ -267,7 +262,7 @@ internal class Rygel.Browse: GLib.Object, Rygel.StateMachine {
                                 this.on_children_fetched);
     }
 
-    private void on_children_fetched (Object      source_object,
+    private void on_children_fetched (Object?     source_object,
                                       AsyncResult res) {
         var container = (MediaContainer) source_object;
 
@@ -275,7 +270,7 @@ internal class Rygel.Browse: GLib.Object, Rygel.StateMachine {
             var children = container.get_children_finish (res);
             this.number_returned = children.size;
 
-            serialize_children (children);
+            this.serialize_children (children);
         } catch (Error err) {
             this.handle_error (err);
         }

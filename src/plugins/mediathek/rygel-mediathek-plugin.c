@@ -34,6 +34,8 @@
 
 typedef struct _RygelMediathekContentDir RygelMediathekContentDir;
 typedef struct _RygelMediathekContentDirClass RygelMediathekContentDirClass;
+#define _g_object_unref0(var) ((var == NULL) ? NULL : (var = (g_object_unref (var), NULL)))
+#define _rygel_resource_info_unref0(var) ((var == NULL) ? NULL : (var = (rygel_resource_info_unref (var), NULL)))
 typedef struct _RygelMediathekContentDirPrivate RygelMediathekContentDirPrivate;
 
 #define RYGEL_TYPE_MEDIATHEK_ROOT_CONTAINER (rygel_mediathek_root_container_get_type ())
@@ -56,20 +58,18 @@ struct _RygelMediathekContentDirClass {
 };
 
 
+static gpointer rygel_mediathek_content_dir_parent_class = NULL;
 
 GType rygel_mediathek_content_dir_get_type (void);
 void module_init (RygelPluginLoader* loader);
 enum  {
 	RYGEL_MEDIATHEK_CONTENT_DIR_DUMMY_PROPERTY
 };
-RygelMediathekRootContainer* rygel_mediathek_root_container_new (void);
-RygelMediathekRootContainer* rygel_mediathek_root_container_construct (GType object_type);
 GType rygel_mediathek_root_container_get_type (void);
+RygelMediathekRootContainer* rygel_mediathek_root_container_get_instance (void);
 static RygelMediaContainer* rygel_mediathek_content_dir_real_create_root_container (RygelContentDirectory* base);
 RygelMediathekContentDir* rygel_mediathek_content_dir_new (void);
 RygelMediathekContentDir* rygel_mediathek_content_dir_construct (GType object_type);
-RygelMediathekContentDir* rygel_mediathek_content_dir_new (void);
-static gpointer rygel_mediathek_content_dir_parent_class = NULL;
 
 
 
@@ -77,19 +77,21 @@ void module_init (RygelPluginLoader* loader) {
 	RygelPlugin* plugin;
 	RygelResourceInfo* resource_info;
 	g_return_if_fail (loader != NULL);
-	plugin = rygel_plugin_new ("ZDFMediathek", "ZDF Mediathek");
+	plugin = rygel_plugin_new_MediaServer ("ZDFMediathek", "ZDF Mediathek");
 	resource_info = rygel_resource_info_new (RYGEL_CONTENT_DIRECTORY_UPNP_ID, RYGEL_CONTENT_DIRECTORY_UPNP_TYPE, RYGEL_CONTENT_DIRECTORY_DESCRIPTION_PATH, RYGEL_TYPE_MEDIATHEK_CONTENT_DIR);
 	rygel_plugin_add_resource (plugin, resource_info);
 	rygel_plugin_loader_add_plugin (loader, plugin);
-	(plugin == NULL) ? NULL : (plugin = (g_object_unref (plugin), NULL));
-	(resource_info == NULL) ? NULL : (resource_info = (rygel_resource_info_unref (resource_info), NULL));
+	_g_object_unref0 (plugin);
+	_rygel_resource_info_unref0 (resource_info);
 }
 
 
 static RygelMediaContainer* rygel_mediathek_content_dir_real_create_root_container (RygelContentDirectory* base) {
 	RygelMediathekContentDir * self;
+	RygelMediaContainer* result;
 	self = (RygelMediathekContentDir*) base;
-	return (RygelMediaContainer*) rygel_mediathek_root_container_new ();
+	result = (RygelMediaContainer*) rygel_mediathek_root_container_get_instance ();
+	return result;
 }
 
 

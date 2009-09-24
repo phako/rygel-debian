@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2009 Zeeshan Ali (Khattak) <zeeshanak@gnome.org>.
- * Copyright (C) 2009 Nokia Corporation, all rights reserved.
+ * Copyright (C) 2009 Nokia Corporation.
  *
  * Author: Zeeshan Ali (Khattak) <zeeshanak@gnome.org>
  *                               <zeeshan.ali@nokia.com>
@@ -27,8 +27,6 @@
 #include <rygel.h>
 #include <dbus/dbus-glib-lowlevel.h>
 #include <dbus/dbus-glib.h>
-#include <stdlib.h>
-#include <string.h>
 #include <gobject/gvaluecollector.h>
 
 
@@ -41,17 +39,21 @@
 
 typedef struct _TrackerPluginFactory TrackerPluginFactory;
 typedef struct _TrackerPluginFactoryClass TrackerPluginFactoryClass;
+#define _tracker_plugin_factory_unref0(var) ((var == NULL) ? NULL : (var = (tracker_plugin_factory_unref (var), NULL)))
+#define _g_error_free0(var) ((var == NULL) ? NULL : (var = (g_error_free (var), NULL)))
 typedef struct _TrackerPluginFactoryPrivate TrackerPluginFactoryPrivate;
+#define _g_object_unref0(var) ((var == NULL) ? NULL : (var = (g_object_unref (var), NULL)))
+#define _dbus_g_connection_unref0(var) ((var == NULL) ? NULL : (var = (dbus_g_connection_unref (var), NULL)))
 
-#define TYPE_TRACKER_PLUGIN (tracker_plugin_get_type ())
-#define TRACKER_PLUGIN(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), TYPE_TRACKER_PLUGIN, TrackerPlugin))
-#define TRACKER_PLUGIN_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), TYPE_TRACKER_PLUGIN, TrackerPluginClass))
-#define IS_TRACKER_PLUGIN(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), TYPE_TRACKER_PLUGIN))
-#define IS_TRACKER_PLUGIN_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), TYPE_TRACKER_PLUGIN))
-#define TRACKER_PLUGIN_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), TYPE_TRACKER_PLUGIN, TrackerPluginClass))
+#define RYGEL_TYPE_TRACKER_PLUGIN (rygel_tracker_plugin_get_type ())
+#define RYGEL_TRACKER_PLUGIN(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_TRACKER_PLUGIN, RygelTrackerPlugin))
+#define RYGEL_TRACKER_PLUGIN_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TYPE_TRACKER_PLUGIN, RygelTrackerPluginClass))
+#define RYGEL_IS_TRACKER_PLUGIN(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TYPE_TRACKER_PLUGIN))
+#define RYGEL_IS_TRACKER_PLUGIN_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_TYPE_TRACKER_PLUGIN))
+#define RYGEL_TRACKER_PLUGIN_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_TYPE_TRACKER_PLUGIN, RygelTrackerPluginClass))
 
-typedef struct _TrackerPlugin TrackerPlugin;
-typedef struct _TrackerPluginClass TrackerPluginClass;
+typedef struct _RygelTrackerPlugin RygelTrackerPlugin;
+typedef struct _RygelTrackerPluginClass RygelTrackerPluginClass;
 typedef struct _ParamSpecTrackerPluginFactory ParamSpecTrackerPluginFactory;
 
 struct _TrackerPluginFactory {
@@ -66,7 +68,7 @@ struct _TrackerPluginFactoryClass {
 };
 
 struct _TrackerPluginFactoryPrivate {
-	DBusGProxy* dbus_obj;
+	DBusGProxy* tracker;
 	RygelPluginLoader* loader;
 };
 
@@ -75,33 +77,31 @@ struct _ParamSpecTrackerPluginFactory {
 };
 
 
-
 extern TrackerPluginFactory* plugin_factory;
 TrackerPluginFactory* plugin_factory = NULL;
-TrackerPluginFactory* tracker_plugin_factory_new (RygelPluginLoader* loader, GError** error);
-TrackerPluginFactory* tracker_plugin_factory_construct (GType object_type, RygelPluginLoader* loader, GError** error);
+static gpointer tracker_plugin_factory_parent_class = NULL;
+
 gpointer tracker_plugin_factory_ref (gpointer instance);
 void tracker_plugin_factory_unref (gpointer instance);
 GParamSpec* param_spec_tracker_plugin_factory (const gchar* name, const gchar* nick, const gchar* blurb, GType object_type, GParamFlags flags);
 void value_set_tracker_plugin_factory (GValue* value, gpointer v_object);
 gpointer value_get_tracker_plugin_factory (const GValue* value);
 GType tracker_plugin_factory_get_type (void);
+TrackerPluginFactory* tracker_plugin_factory_new (RygelPluginLoader* loader, GError** error);
+TrackerPluginFactory* tracker_plugin_factory_construct (GType object_type, RygelPluginLoader* loader, GError** error);
 void module_init (RygelPluginLoader* loader);
 #define TRACKER_PLUGIN_FACTORY_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), TYPE_TRACKER_PLUGIN_FACTORY, TrackerPluginFactoryPrivate))
 enum  {
 	TRACKER_PLUGIN_FACTORY_DUMMY_PROPERTY
 };
-#define TRACKER_PLUGIN_FACTORY_DBUS_SERVICE "org.freedesktop.DBus"
-#define TRACKER_PLUGIN_FACTORY_DBUS_OBJECT "/org/freedesktop/DBus"
-#define TRACKER_PLUGIN_FACTORY_DBUS_IFACE "org.freedesktop.DBus"
 #define TRACKER_PLUGIN_FACTORY_TRACKER_SERVICE "org.freedesktop.Tracker"
-static void tracker_plugin_factory_start_service_cb (TrackerPluginFactory* self, guint32 status, GError* err);
-void _dynamic_StartServiceByName3 (DBusGProxy* self, const char* param1, guint32 param2, gpointer param3, void* param3_target, GError** error);
-TrackerPluginFactory* tracker_plugin_factory_new (RygelPluginLoader* loader, GError** error);
-TrackerPlugin* tracker_plugin_new (void);
-TrackerPlugin* tracker_plugin_construct (GType object_type);
-GType tracker_plugin_get_type (void);
-static gpointer tracker_plugin_factory_parent_class = NULL;
+#define TRACKER_PLUGIN_FACTORY_TRACKER_OBJECT "/org/freedesktop/Tracker"
+#define TRACKER_PLUGIN_FACTORY_TRACKER_IFACE "org.freedesktop.Tracker"
+static void tracker_plugin_factory_get_version_cb (TrackerPluginFactory* self, gint32 version, GError* err);
+void _dynamic_GetVersion5 (DBusGProxy* self, gpointer param1, void* param1_target, GError** error);
+RygelTrackerPlugin* rygel_tracker_plugin_new (void);
+RygelTrackerPlugin* rygel_tracker_plugin_construct (GType object_type);
+GType rygel_tracker_plugin_get_type (void);
 static void tracker_plugin_factory_finalize (TrackerPluginFactory* obj);
 
 
@@ -112,27 +112,28 @@ void module_init (RygelPluginLoader* loader) {
 	_inner_error_ = NULL;
 	{
 		TrackerPluginFactory* _tmp0_;
-		_tmp0_ = NULL;
-		plugin_factory = (_tmp0_ = tracker_plugin_factory_new (loader, &_inner_error_), (plugin_factory == NULL) ? NULL : (plugin_factory = (tracker_plugin_factory_unref (plugin_factory), NULL)), _tmp0_);
+		TrackerPluginFactory* _tmp1_;
+		_tmp0_ = tracker_plugin_factory_new (loader, &_inner_error_);
 		if (_inner_error_ != NULL) {
 			if (_inner_error_->domain == DBUS_GERROR) {
-				goto __catch4_dbus_gerror;
+				goto __catch6_dbus_gerror;
 			}
-			goto __finally4;
+			goto __finally6;
 		}
+		plugin_factory = (_tmp1_ = _tmp0_, _tracker_plugin_factory_unref0 (plugin_factory), _tmp1_);
 	}
-	goto __finally4;
-	__catch4_dbus_gerror:
+	goto __finally6;
+	__catch6_dbus_gerror:
 	{
 		GError * _error_;
 		_error_ = _inner_error_;
 		_inner_error_ = NULL;
 		{
 			g_critical ("rygel-tracker-plugin-factory.vala:36: Failed to fetch list of external services: %s\n", _error_->message);
-			(_error_ == NULL) ? NULL : (_error_ = (g_error_free (_error_), NULL));
+			_g_error_free0 (_error_);
 		}
 	}
-	__finally4:
+	__finally6:
 	if (_inner_error_ != NULL) {
 		g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, _inner_error_->message);
 		g_clear_error (&_inner_error_);
@@ -141,17 +142,22 @@ void module_init (RygelPluginLoader* loader) {
 }
 
 
-static void _tracker_plugin_factory_start_service_cb_cb (DBusGProxy* proxy, DBusGProxyCall* call, void* user_data) {
-	GError* error;
-	guint32 status;
-	error = NULL;
-	dbus_g_proxy_end_call (proxy, call, &error, G_TYPE_UINT, &status, G_TYPE_INVALID);
-	tracker_plugin_factory_start_service_cb (user_data, status, error);
+static gpointer _g_object_ref0 (gpointer self) {
+	return self ? g_object_ref (self) : NULL;
 }
 
 
-void _dynamic_StartServiceByName3 (DBusGProxy* self, const char* param1, guint32 param2, gpointer param3, void* param3_target, GError** error) {
-	dbus_g_proxy_begin_call (self, "StartServiceByName", _tracker_plugin_factory_start_service_cb_cb, param3_target, NULL, G_TYPE_STRING, param1, G_TYPE_UINT, param2, G_TYPE_INVALID, G_TYPE_INVALID);
+static void _tracker_plugin_factory_get_version_cb_cb (DBusGProxy* proxy, DBusGProxyCall* call, void* user_data) {
+	GError* error;
+	gint32 version;
+	error = NULL;
+	dbus_g_proxy_end_call (proxy, call, &error, G_TYPE_INT, &version, G_TYPE_INVALID);
+	tracker_plugin_factory_get_version_cb (user_data, version, error);
+}
+
+
+void _dynamic_GetVersion5 (DBusGProxy* self, gpointer param1, void* param1_target, GError** error) {
+	dbus_g_proxy_begin_call (self, "GetVersion", _tracker_plugin_factory_get_version_cb_cb, param1_target, NULL, G_TYPE_INVALID, G_TYPE_INVALID);
 	if (*error) {
 		return;
 	}
@@ -163,7 +169,6 @@ TrackerPluginFactory* tracker_plugin_factory_construct (GType object_type, Rygel
 	TrackerPluginFactory* self;
 	DBusGConnection* connection;
 	DBusGProxy* _tmp0_;
-	RygelPluginLoader* _tmp2_;
 	RygelPluginLoader* _tmp1_;
 	g_return_val_if_fail (loader != NULL, NULL);
 	_inner_error_ = NULL;
@@ -179,25 +184,22 @@ TrackerPluginFactory* tracker_plugin_factory_construct (GType object_type, Rygel
 			return NULL;
 		}
 	}
-	_tmp0_ = NULL;
-	self->priv->dbus_obj = (_tmp0_ = dbus_g_proxy_new_for_name (connection, TRACKER_PLUGIN_FACTORY_DBUS_SERVICE, TRACKER_PLUGIN_FACTORY_DBUS_OBJECT, TRACKER_PLUGIN_FACTORY_DBUS_IFACE), (self->priv->dbus_obj == NULL) ? NULL : (self->priv->dbus_obj = (g_object_unref (self->priv->dbus_obj), NULL)), _tmp0_);
-	_tmp2_ = NULL;
-	_tmp1_ = NULL;
-	self->priv->loader = (_tmp2_ = (_tmp1_ = loader, (_tmp1_ == NULL) ? NULL : g_object_ref (_tmp1_)), (self->priv->loader == NULL) ? NULL : (self->priv->loader = (g_object_unref (self->priv->loader), NULL)), _tmp2_);
-	_dynamic_StartServiceByName3 (self->priv->dbus_obj, TRACKER_PLUGIN_FACTORY_TRACKER_SERVICE, (guint32) 0, tracker_plugin_factory_start_service_cb, self, &_inner_error_);
+	self->priv->tracker = (_tmp0_ = dbus_g_proxy_new_for_name (connection, TRACKER_PLUGIN_FACTORY_TRACKER_SERVICE, TRACKER_PLUGIN_FACTORY_TRACKER_OBJECT, TRACKER_PLUGIN_FACTORY_TRACKER_IFACE), _g_object_unref0 (self->priv->tracker), _tmp0_);
+	self->priv->loader = (_tmp1_ = _g_object_ref0 (loader), _g_object_unref0 (self->priv->loader), _tmp1_);
+	_dynamic_GetVersion5 (self->priv->tracker, tracker_plugin_factory_get_version_cb, self, &_inner_error_);
 	if (_inner_error_ != NULL) {
 		if (_inner_error_->domain == DBUS_GERROR) {
 			g_propagate_error (error, _inner_error_);
-			(connection == NULL) ? NULL : (connection = (dbus_g_connection_unref (connection), NULL));
+			_dbus_g_connection_unref0 (connection);
 			return;
 		} else {
-			(connection == NULL) ? NULL : (connection = (dbus_g_connection_unref (connection), NULL));
+			_dbus_g_connection_unref0 (connection);
 			g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, _inner_error_->message);
 			g_clear_error (&_inner_error_);
 			return NULL;
 		}
 	}
-	(connection == NULL) ? NULL : (connection = (dbus_g_connection_unref (connection), NULL));
+	_dbus_g_connection_unref0 (connection);
 	return self;
 }
 
@@ -207,17 +209,16 @@ TrackerPluginFactory* tracker_plugin_factory_new (RygelPluginLoader* loader, GEr
 }
 
 
-static void tracker_plugin_factory_start_service_cb (TrackerPluginFactory* self, guint32 status, GError* err) {
-	TrackerPlugin* _tmp0_;
+static void tracker_plugin_factory_get_version_cb (TrackerPluginFactory* self, gint32 version, GError* err) {
+	RygelTrackerPlugin* _tmp0_;
 	g_return_if_fail (self != NULL);
 	if (err != NULL) {
-		g_warning ("rygel-tracker-plugin-factory.vala:66: Failed to start Tracker service: %s\n", err->message);
-		g_warning ("rygel-tracker-plugin-factory.vala:68: Tracker plugin disabled.\n");
+		g_warning ("rygel-tracker-plugin-factory.vala:62: Failed to start Tracker service: %s\n", err->message);
+		g_warning ("rygel-tracker-plugin-factory.vala:64: Tracker plugin disabled.\n");
 		return;
 	}
-	_tmp0_ = NULL;
-	rygel_plugin_loader_add_plugin (self->priv->loader, (RygelPlugin*) (_tmp0_ = tracker_plugin_new ()));
-	(_tmp0_ == NULL) ? NULL : (_tmp0_ = (g_object_unref (_tmp0_), NULL));
+	rygel_plugin_loader_add_plugin (self->priv->loader, (RygelPlugin*) (_tmp0_ = rygel_tracker_plugin_new ()));
+	_g_object_unref0 (_tmp0_);
 }
 
 
@@ -330,8 +331,8 @@ static void tracker_plugin_factory_instance_init (TrackerPluginFactory * self) {
 static void tracker_plugin_factory_finalize (TrackerPluginFactory* obj) {
 	TrackerPluginFactory * self;
 	self = TRACKER_PLUGIN_FACTORY (obj);
-	(self->priv->dbus_obj == NULL) ? NULL : (self->priv->dbus_obj = (g_object_unref (self->priv->dbus_obj), NULL));
-	(self->priv->loader == NULL) ? NULL : (self->priv->loader = (g_object_unref (self->priv->loader), NULL));
+	_g_object_unref0 (self->priv->tracker);
+	_g_object_unref0 (self->priv->loader);
 }
 
 

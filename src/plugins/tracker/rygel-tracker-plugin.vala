@@ -20,17 +20,16 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-using Rygel;
 using Gee;
 using CStuff;
 
-public class TrackerPlugin : Plugin {
+public class Rygel.TrackerPlugin : Rygel.Plugin {
     // class-wide constants
     private const string ICON = BuildConfig.DATA_DIR + // Path
                                 "/icons/hicolor/48x48/apps/tracker.png";
 
     public TrackerPlugin () {
-        base ("Tracker", "@REALNAME@'s media");
+        base.MediaServer ("Tracker", "@REALNAME@'s media");
 
         // We only implement a ContentDirectory service
         var resource_info = new ResourceInfo (ContentDirectory.UPNP_ID,
@@ -40,11 +39,12 @@ public class TrackerPlugin : Plugin {
 
         this.add_resource (resource_info);
 
-        var icon_info = new IconInfo ("image/png", // Mimetype
-                                      48,          // width
-                                      48,          // height
-                                      24,          // depth
-                                      ICON);       // Icon Path
+        var icon_info = new IconInfo ("image/png");
+
+        icon_info.path = ICON;
+        icon_info.width = 48;
+        icon_info.height = 48;
+        icon_info.depth = 24;
 
         this.add_icon (icon_info);
     }

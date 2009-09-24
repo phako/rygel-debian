@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2009 Nokia Corporation, all rights reserved.
+ * Copyright (C) 2009 Nokia Corporation.
  *
  * Author: Zeeshan Ali (Khattak) <zeeshanak@gnome.org>
  *                               <zeeshan.ali@nokia.com>
@@ -23,12 +23,12 @@
 using Gtk;
 
 public abstract class Rygel.PreferencesSection : GLib.Object {
-    protected Configuration config;
+    protected UserConfig config;
 
     public string name;
 
-    public PreferencesSection (Configuration config,
-                               string        name) {
+    public PreferencesSection (UserConfig config,
+                               string     name) {
         this.name = name;
         this.config = config;
     }

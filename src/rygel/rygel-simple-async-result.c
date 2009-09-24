@@ -35,18 +35,16 @@
 typedef struct _RygelSimpleAsyncResult RygelSimpleAsyncResult;
 typedef struct _RygelSimpleAsyncResultClass RygelSimpleAsyncResultClass;
 typedef struct _RygelSimpleAsyncResultPrivate RygelSimpleAsyncResultPrivate;
+#define _g_object_unref0(var) ((var == NULL) ? NULL : (var = (g_object_unref (var), NULL)))
+#define _g_error_free0(var) ((var == NULL) ? NULL : (var = (g_error_free (var), NULL)))
 
-/**
- * A simple implementation of GLib.AsyncResult, very similar to
- * GLib.SimpleAsyncResult that provides holders for generic and error
- * reference/values.
- */
 struct _RygelSimpleAsyncResult {
 	GObject parent_instance;
 	RygelSimpleAsyncResultPrivate * priv;
 	GObject* source_object;
 	GAsyncReadyCallback callback;
 	gpointer callback_target;
+	GDestroyNotify callback_target_destroy_notify;
 	gpointer data;
 	GError* error;
 };
@@ -62,6 +60,8 @@ struct _RygelSimpleAsyncResultPrivate {
 };
 
 
+static gpointer rygel_simple_async_result_parent_class = NULL;
+static GAsyncResultIface* rygel_simple_async_result_g_async_result_parent_iface = NULL;
 
 GType rygel_simple_async_result_get_type (void);
 #define RYGEL_SIMPLE_ASYNC_RESULT_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), RYGEL_TYPE_SIMPLE_ASYNC_RESULT, RygelSimpleAsyncResultPrivate))
@@ -73,53 +73,34 @@ enum  {
 };
 RygelSimpleAsyncResult* rygel_simple_async_result_new (GType g_type, GBoxedCopyFunc g_dup_func, GDestroyNotify g_destroy_func, GObject* source_object, GAsyncReadyCallback callback, void* callback_target);
 RygelSimpleAsyncResult* rygel_simple_async_result_construct (GType object_type, GType g_type, GBoxedCopyFunc g_dup_func, GDestroyNotify g_destroy_func, GObject* source_object, GAsyncReadyCallback callback, void* callback_target);
-RygelSimpleAsyncResult* rygel_simple_async_result_new (GType g_type, GBoxedCopyFunc g_dup_func, GDestroyNotify g_destroy_func, GObject* source_object, GAsyncReadyCallback callback, void* callback_target);
 static GObject* rygel_simple_async_result_real_get_source_object (GAsyncResult* base);
 static void* rygel_simple_async_result_real_get_user_data (GAsyncResult* base);
 void rygel_simple_async_result_complete (RygelSimpleAsyncResult* self);
 static gboolean rygel_simple_async_result_idle_func (RygelSimpleAsyncResult* self);
 static gboolean _rygel_simple_async_result_idle_func_gsource_func (gpointer self);
 void rygel_simple_async_result_complete_in_idle (RygelSimpleAsyncResult* self);
-static gpointer rygel_simple_async_result_parent_class = NULL;
-static GAsyncResultIface* rygel_simple_async_result_g_async_result_parent_iface = NULL;
 static void rygel_simple_async_result_finalize (GObject* obj);
 static void rygel_simple_async_result_get_property (GObject * object, guint property_id, GValue * value, GParamSpec * pspec);
 static void rygel_simple_async_result_set_property (GObject * object, guint property_id, const GValue * value, GParamSpec * pspec);
 
 
 
+static gpointer _g_object_ref0 (gpointer self) {
+	return self ? g_object_ref (self) : NULL;
+}
+
+
 RygelSimpleAsyncResult* rygel_simple_async_result_construct (GType object_type, GType g_type, GBoxedCopyFunc g_dup_func, GDestroyNotify g_destroy_func, GObject* source_object, GAsyncReadyCallback callback, void* callback_target) {
-	GParameter * __params;
-	GParameter * __params_it;
 	RygelSimpleAsyncResult * self;
-	GObject* _tmp1_;
 	GObject* _tmp0_;
-	GAsyncReadyCallback _tmp2_;
+	GAsyncReadyCallback _tmp1_;
 	g_return_val_if_fail (source_object != NULL, NULL);
-	__params = g_new0 (GParameter, 3);
-	__params_it = __params;
-	__params_it->name = "g-type";
-	g_value_init (&__params_it->value, G_TYPE_GTYPE);
-	g_value_set_gtype (&__params_it->value, g_type);
-	__params_it++;
-	__params_it->name = "g-dup-func";
-	g_value_init (&__params_it->value, G_TYPE_POINTER);
-	g_value_set_pointer (&__params_it->value, g_dup_func);
-	__params_it++;
-	__params_it->name = "g-destroy-func";
-	g_value_init (&__params_it->value, G_TYPE_POINTER);
-	g_value_set_pointer (&__params_it->value, g_destroy_func);
-	__params_it++;
-	self = g_object_newv (object_type, __params_it - __params, __params);
-	_tmp1_ = NULL;
-	_tmp0_ = NULL;
-	self->source_object = (_tmp1_ = (_tmp0_ = source_object, (_tmp0_ == NULL) ? NULL : g_object_ref (_tmp0_)), (self->source_object == NULL) ? NULL : (self->source_object = (g_object_unref (self->source_object), NULL)), _tmp1_);
-	self->callback = (_tmp2_ = callback, self->callback_target = callback_target, _tmp2_);
-	while (__params_it > __params) {
-		--__params_it;
-		g_value_unset (&__params_it->value);
-	}
-	g_free (__params);
+	self = (RygelSimpleAsyncResult*) g_object_new (object_type, NULL);
+	self->priv->g_type = g_type;
+	self->priv->g_dup_func = g_dup_func;
+	self->priv->g_destroy_func = g_destroy_func;
+	self->source_object = (_tmp0_ = _g_object_ref0 (source_object), _g_object_unref0 (self->source_object), _tmp0_);
+	self->callback = (_tmp1_ = callback, ((self->callback_target_destroy_notify == NULL) ? NULL : self->callback_target_destroy_notify (self->callback_target), self->callback = NULL, self->callback_target = NULL, self->callback_target_destroy_notify = NULL), self->callback_target = callback_target, self->callback_target_destroy_notify = NULL, _tmp1_);
 	return self;
 }
 
@@ -131,15 +112,19 @@ RygelSimpleAsyncResult* rygel_simple_async_result_new (GType g_type, GBoxedCopyF
 
 static GObject* rygel_simple_async_result_real_get_source_object (GAsyncResult* base) {
 	RygelSimpleAsyncResult * self;
+	GObject* result;
 	self = (RygelSimpleAsyncResult*) base;
-	return self->source_object;
+	result = self->source_object;
+	return result;
 }
 
 
 static void* rygel_simple_async_result_real_get_user_data (GAsyncResult* base) {
 	RygelSimpleAsyncResult * self;
+	void* result;
 	self = (RygelSimpleAsyncResult*) base;
-	return NULL;
+	result = NULL;
+	return result;
 }
 
 
@@ -161,9 +146,11 @@ void rygel_simple_async_result_complete_in_idle (RygelSimpleAsyncResult* self) {
 
 
 static gboolean rygel_simple_async_result_idle_func (RygelSimpleAsyncResult* self) {
+	gboolean result;
 	g_return_val_if_fail (self != NULL, FALSE);
 	rygel_simple_async_result_complete (self);
-	return FALSE;
+	result = FALSE;
+	return result;
 }
 
 
@@ -194,9 +181,13 @@ static void rygel_simple_async_result_instance_init (RygelSimpleAsyncResult * se
 static void rygel_simple_async_result_finalize (GObject* obj) {
 	RygelSimpleAsyncResult * self;
 	self = RYGEL_SIMPLE_ASYNC_RESULT (obj);
-	(self->source_object == NULL) ? NULL : (self->source_object = (g_object_unref (self->source_object), NULL));
+	_g_object_unref0 (self->source_object);
+	(self->callback_target_destroy_notify == NULL) ? NULL : self->callback_target_destroy_notify (self->callback_target);
+	self->callback = NULL;
+	self->callback_target = NULL;
+	self->callback_target_destroy_notify = NULL;
 	((self->data == NULL) || (self->priv->g_destroy_func == NULL)) ? NULL : (self->data = (self->priv->g_destroy_func (self->data), NULL));
-	(self->error == NULL) ? NULL : (self->error = (g_error_free (self->error), NULL));
+	_g_error_free0 (self->error);
 	G_OBJECT_CLASS (rygel_simple_async_result_parent_class)->finalize (obj);
 }
 
@@ -215,7 +206,6 @@ GType rygel_simple_async_result_get_type (void) {
 
 static void rygel_simple_async_result_get_property (GObject * object, guint property_id, GValue * value, GParamSpec * pspec) {
 	RygelSimpleAsyncResult * self;
-	gpointer boxed;
 	self = RYGEL_SIMPLE_ASYNC_RESULT (object);
 	switch (property_id) {
 		default:

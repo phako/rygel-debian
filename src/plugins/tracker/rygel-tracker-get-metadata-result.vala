@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2009 Nokia Corporation, all rights reserved.
+ * Copyright (C) 2009 Nokia Corporation.
  *
  * Author: Zeeshan Ali (Khattak) <zeeshanak@gnome.org>
  *
@@ -20,8 +20,6 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-using Rygel;
-
 /**
  * Handles Tracker Metadata.Get method results.
  *
@@ -29,11 +27,13 @@ using Rygel;
 public class Rygel.TrackerGetMetadataResult :
              Rygel.SimpleAsyncResult<MediaObject> {
     protected string item_id;
+    protected string item_path;
+    protected string item_service;
 
-    public TrackerGetMetadataResult (TrackerCategory    category,
-                                     AsyncReadyCallback callback,
-                                     string             item_id) {
-        base (category, callback);
+    public TrackerGetMetadataResult (TrackerSearchContainer search_container,
+                                     AsyncReadyCallback     callback,
+                                     string                 item_id) {
+        base (search_container, callback);
         this.item_id = item_id;
     }
 
@@ -45,10 +45,11 @@ public class Rygel.TrackerGetMetadataResult :
             return;
         }
 
-        TrackerCategory category = (TrackerCategory) this.source_object;
+        var search_container = (TrackerSearchContainer) this.source_object;
 
-        string path = category.get_item_path (item_id);
-        this.data = category.create_item (path, metadata);
+        this.data = search_container.create_item (this.item_service,
+                                                  this.item_path,
+                                                  metadata);
 
         this.complete ();
     }

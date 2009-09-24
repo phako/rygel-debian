@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2008 Zeeshan Ali <zeenix@gmail.com>.
- * Copyright (C) 2008 Nokia Corporation, all rights reserved.
+ * Copyright (C) 2008 Nokia Corporation.
  *
  * Author: Zeeshan Ali <zeenix@gmail.com>
  *
@@ -39,6 +39,7 @@
 typedef struct _RygelMediaTracker RygelMediaTracker;
 typedef struct _RygelMediaTrackerClass RygelMediaTrackerClass;
 typedef struct _RygelMediaTrackerPrivate RygelMediaTrackerPrivate;
+#define _g_object_unref0(var) ((var == NULL) ? NULL : (var = (g_object_unref (var), NULL)))
 
 #define RYGEL_TYPE_TRACKER_ROOT_CONTAINER (rygel_tracker_root_container_get_type ())
 #define RYGEL_TRACKER_ROOT_CONTAINER(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_TRACKER_ROOT_CONTAINER, RygelTrackerRootContainer))
@@ -49,10 +50,8 @@ typedef struct _RygelMediaTrackerPrivate RygelMediaTrackerPrivate;
 
 typedef struct _RygelTrackerRootContainer RygelTrackerRootContainer;
 typedef struct _RygelTrackerRootContainerClass RygelTrackerRootContainerClass;
+#define _g_free0(var) (var = (g_free (var), NULL))
 
-/**
- * Implementation of Tracker-based ContentDirectory service.
- */
 struct _RygelMediaTracker {
 	RygelContentDirectory parent_instance;
 	RygelMediaTrackerPrivate * priv;
@@ -63,6 +62,7 @@ struct _RygelMediaTrackerClass {
 };
 
 
+static gpointer rygel_media_tracker_parent_class = NULL;
 
 GType rygel_media_tracker_get_type (void);
 enum  {
@@ -74,32 +74,25 @@ GType rygel_tracker_root_container_get_type (void);
 static RygelMediaContainer* rygel_media_tracker_real_create_root_container (RygelContentDirectory* base);
 RygelMediaTracker* rygel_media_tracker_new (void);
 RygelMediaTracker* rygel_media_tracker_construct (GType object_type);
-RygelMediaTracker* rygel_media_tracker_new (void);
-static gpointer rygel_media_tracker_parent_class = NULL;
 
 
 
-/* Pubic methods */
 static RygelMediaContainer* rygel_media_tracker_real_create_root_container (RygelContentDirectory* base) {
 	RygelMediaTracker * self;
+	RygelMediaContainer* result;
 	GUPnPRootDevice* _tmp1_;
 	GUPnPRootDevice* _tmp0_;
 	char* _tmp2_;
 	char* friendly_name;
-	RygelMediaContainer* _tmp3_;
 	self = (RygelMediaTracker*) base;
-	_tmp1_ = NULL;
 	_tmp0_ = NULL;
-	_tmp2_ = NULL;
-	friendly_name = (_tmp2_ = gupnp_device_info_get_friendly_name ((GUPnPDeviceInfo*) (_tmp1_ = (g_object_get ((GUPnPService*) self, "root-device", &_tmp0_, NULL), _tmp0_))), (_tmp1_ == NULL) ? NULL : (_tmp1_ = (g_object_unref (_tmp1_), NULL)), _tmp2_);
-	_tmp3_ = NULL;
-	return (_tmp3_ = (RygelMediaContainer*) rygel_tracker_root_container_new (friendly_name), friendly_name = (g_free (friendly_name), NULL), _tmp3_);
+	friendly_name = (_tmp2_ = gupnp_device_info_get_friendly_name ((GUPnPDeviceInfo*) (_tmp1_ = (g_object_get ((GUPnPService*) self, "root-device", &_tmp0_, NULL), _tmp0_))), _g_object_unref0 (_tmp1_), _tmp2_);
+	result = (RygelMediaContainer*) rygel_tracker_root_container_new (friendly_name);
+	_g_free0 (friendly_name);
+	return result;
 }
 
 
-/**
- * Implementation of Tracker-based ContentDirectory service.
- */
 RygelMediaTracker* rygel_media_tracker_construct (GType object_type) {
 	RygelMediaTracker * self;
 	self = (RygelMediaTracker*) rygel_content_directory_construct (object_type);

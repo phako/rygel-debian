@@ -21,7 +21,6 @@
  */
 
 using GLib;
-using Rygel;
 using Xml;
 
 public errordomain Rygel.MediathekVideoItemError {
@@ -122,7 +121,7 @@ public class Rygel.MediathekVideoItem : Rygel.MediaItem {
 
         video_item = new MediathekVideoItem (parent, title);
         foreach (string uri in asx.uris) {
-            video_item.uris.add (uri);
+            video_item.add_uri (uri, null);
         }
 
         return video_item;

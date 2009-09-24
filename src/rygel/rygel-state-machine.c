@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008, 2009 Nokia Corporation, all rights reserved.
+ * Copyright (C) 2008, 2009 Nokia Corporation.
  *
  * Author: Zeeshan Ali (Khattak) <zeeshanak@gnome.org>
  *                               <zeeshan.ali@nokia.com>
@@ -34,23 +34,34 @@
 typedef struct _RygelStateMachine RygelStateMachine;
 typedef struct _RygelStateMachineIface RygelStateMachineIface;
 
-/**
- * StateMachine interface.
- */
 struct _RygelStateMachineIface {
 	GTypeInterface parent_iface;
-	void (*run) (RygelStateMachine* self, GCancellable* cancellable);
+	void (*run) (RygelStateMachine* self);
+	GCancellable* (*get_cancellable) (RygelStateMachine* self);
+	void (*set_cancellable) (RygelStateMachine* self, GCancellable* value);
 };
 
 
 
 GType rygel_state_machine_get_type (void);
-void rygel_state_machine_run (RygelStateMachine* self, GCancellable* cancellable);
+void rygel_state_machine_run (RygelStateMachine* self);
+GCancellable* rygel_state_machine_get_cancellable (RygelStateMachine* self);
+void rygel_state_machine_set_cancellable (RygelStateMachine* self, GCancellable* value);
 
 
 
-void rygel_state_machine_run (RygelStateMachine* self, GCancellable* cancellable) {
-	RYGEL_STATE_MACHINE_GET_INTERFACE (self)->run (self, cancellable);
+void rygel_state_machine_run (RygelStateMachine* self) {
+	RYGEL_STATE_MACHINE_GET_INTERFACE (self)->run (self);
+}
+
+
+GCancellable* rygel_state_machine_get_cancellable (RygelStateMachine* self) {
+	return RYGEL_STATE_MACHINE_GET_INTERFACE (self)->get_cancellable (self);
+}
+
+
+void rygel_state_machine_set_cancellable (RygelStateMachine* self, GCancellable* value) {
+	RYGEL_STATE_MACHINE_GET_INTERFACE (self)->set_cancellable (self, value);
 }
 
 
@@ -58,6 +69,7 @@ static void rygel_state_machine_base_init (RygelStateMachineIface * iface) {
 	static gboolean initialized = FALSE;
 	if (!initialized) {
 		initialized = TRUE;
+		g_object_interface_install_property (iface, g_param_spec_object ("cancellable", "cancellable", "cancellable", G_TYPE_CANCELLABLE, G_PARAM_STATIC_NAME | G_PARAM_STATIC_NICK | G_PARAM_STATIC_BLURB | G_PARAM_READABLE | G_PARAM_WRITABLE));
 		g_signal_new ("completed", RYGEL_TYPE_STATE_MACHINE, G_SIGNAL_RUN_LAST, 0, NULL, NULL, g_cclosure_marshal_VOID__VOID, G_TYPE_NONE, 0);
 	}
 }

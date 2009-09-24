@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2009 Zeeshan Ali (Khattak) <zeeshanak@gnome.org>.
- * Copyright (C) 2009 Nokia Corporation, all rights reserved.
+ * Copyright (C) 2009 Nokia Corporation.
  *
  * Author: Zeeshan Ali (Khattak) <zeeshanak@gnome.org>
  *                               <zeeshan.ali@nokia.com>
@@ -22,22 +22,35 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-using Rygel;
 using GUPnP;
 using DBus;
 
 /**
  * Represents External item.
  */
-public class Rygel.ExternalItem : MediaItem {
+public class Rygel.ExternalItem : Rygel.MediaItem {
     private static string PROPS_IFACE = "org.freedesktop.DBus.Properties";
     private static string OBJECT_IFACE = "org.gnome.UPnP.MediaObject1";
     private static string ITEM_IFACE = "org.gnome.UPnP.MediaItem1";
 
-    public ExternalItem (string            object_path,
-                         ExternalContainer parent)
-                         throws GLib.Error {
-        base (object_path,
+    public ExternalItem.for_path (string            object_path,
+                                  ExternalContainer parent) throws GLib.Error {
+        this ("item:" + object_path, object_path, parent);
+    }
+
+    public ExternalItem.for_id (string            id,
+                                ExternalContainer parent) throws GLib.Error {
+        var object_path = id.str ("/");
+        assert (object_path != null);
+
+        this (id, object_path, parent);
+    }
+
+    private ExternalItem (string            id,
+                          string            object_path,
+                          ExternalContainer parent)
+                          throws GLib.Error {
+        base (id,
               parent,
               "Unknown",        /* Title Unknown at this point */
               "Unknown");       /* UPnP Class Unknown at this point */
@@ -77,8 +90,85 @@ public class Rygel.ExternalItem : MediaItem {
         for (var i = 0; uris[i] != null; i++) {
             var tmp = uris[i].replace ("@ADDRESS@", parent.host_ip);
 
-            this.uris.add (tmp);
+            this.add_uri (tmp, null);
         }
+
+        // Optional properties
+        //
+        // FIXME: Handle:
+        //
+        // MeidaItem1.Genre
+        // MediaItem1.Thumbnail
+        // MediaItem1.AlbumArt
+        //
+
+        value = item_props.lookup ("DLNAProfile");
+        if (value != null) {
+            this.dlna_profile = value.get_string ();
+        }
+
+        value = item_props.lookup ("Size");
+        if (value != null) {
+            this.size = value.get_int ();
+        }
+
+        value = item_props.lookup ("Artist");
+        if (value != null) {
+            this.author = value.get_string ();
+        }
+
+        value = item_props.lookup ("Album");
+        if (value != null) {
+            this.album = value.get_string ();
+        }
+
+        value = item_props.lookup ("Date");
+        if (value != null) {
+            this.date = value.get_string ();
+        }
+
+        // Properties specific to video and audio/music
+
+        value = item_props.lookup ("Duration");
+        if (value != null) {
+            this.duration = value.get_int ();
+        }
+
+        value = item_props.lookup ("Bitrate");
+        if (value != null) {
+            this.bitrate = value.get_int ();
+        }
+
+        value = item_props.lookup ("SampleRate");
+        if (value != null) {
+            this.sample_freq = value.get_int ();
+        }
+
+        value = item_props.lookup ("BitsPerSample");
+        if (value != null) {
+            this.bits_per_sample = value.get_int ();
+        }
+
+        // Properties specific to video and image
+
+        value = item_props.lookup ("Width");
+        if (value != null) {
+            this.width = value.get_int ();
+        }
+
+        value = item_props.lookup ("Height");
+        if (value != null) {
+            this.height = value.get_int ();
+        }
+
+        value = item_props.lookup ("ColorDepth");
+        if (value != null) {
+            this.color_depth = value.get_int ();
+        }
+    }
+
+    public static bool id_valid (string id) {
+        return id.has_prefix ("item:/");
     }
 }
 

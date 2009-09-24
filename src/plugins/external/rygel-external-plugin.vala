@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2009 Zeeshan Ali (Khattak) <zeeshanak@gnome.org>.
- * Copyright (C) 2009 Nokia Corporation, all rights reserved.
+ * Copyright (C) 2009 Nokia Corporation.
  *
  * Author: Zeeshan Ali (Khattak) <zeeshanak@gnome.org>
  *                               <zeeshan.ali@nokia.com>
@@ -22,9 +22,7 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-using Rygel;
-
-public class ExternalPlugin : Plugin {
+public class Rygel.ExternalPlugin : Rygel.Plugin {
     // class-wide constants
     private const string PROPS_IFACE = "org.freedesktop.DBus.Properties";
     private const string OBJECT_IFACE = "org.gnome.UPnP.MediaObject1";
@@ -45,7 +43,7 @@ public class ExternalPlugin : Plugin {
         props.Get (OBJECT_IFACE, "DisplayName", out value);
         var title = value.get_string ();
 
-        base (service_name, title);
+        base.MediaServer (service_name, title);
 
         this.service_name = service_name;
         this.root_object = root_object;

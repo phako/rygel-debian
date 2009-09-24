@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008 Nokia Corporation, all rights reserved.
+ * Copyright (C) 2008 Nokia Corporation.
  *
  * Author: Zeeshan Ali (Khattak) <zeeshanak@gnome.org>
  *                               <zeeshan.ali@nokia.com>
@@ -38,12 +38,9 @@
 typedef struct _RygelResourceInfo RygelResourceInfo;
 typedef struct _RygelResourceInfoClass RygelResourceInfoClass;
 typedef struct _RygelResourceInfoPrivate RygelResourceInfoPrivate;
+#define _g_free0(var) (var = (g_free (var), NULL))
 typedef struct _RygelParamSpecResourceInfo RygelParamSpecResourceInfo;
 
-/**
- * Holds information about a particular resource (device and service)
- * implementation.
- */
 struct _RygelResourceInfo {
 	GTypeInstance parent_instance;
 	volatile int ref_count;
@@ -64,6 +61,7 @@ struct _RygelParamSpecResourceInfo {
 };
 
 
+static gpointer rygel_resource_info_parent_class = NULL;
 
 gpointer rygel_resource_info_ref (gpointer instance);
 void rygel_resource_info_unref (gpointer instance);
@@ -76,33 +74,22 @@ enum  {
 };
 RygelResourceInfo* rygel_resource_info_new (const char* upnp_id, const char* upnp_type, const char* description_path, GType type);
 RygelResourceInfo* rygel_resource_info_construct (GType object_type, const char* upnp_id, const char* upnp_type, const char* description_path, GType type);
-RygelResourceInfo* rygel_resource_info_new (const char* upnp_id, const char* upnp_type, const char* description_path, GType type);
-static gpointer rygel_resource_info_parent_class = NULL;
 static void rygel_resource_info_finalize (RygelResourceInfo* obj);
 
 
 
 RygelResourceInfo* rygel_resource_info_construct (GType object_type, const char* upnp_id, const char* upnp_type, const char* description_path, GType type) {
 	RygelResourceInfo* self;
+	char* _tmp0_;
 	char* _tmp1_;
-	const char* _tmp0_;
-	char* _tmp3_;
-	const char* _tmp2_;
-	char* _tmp5_;
-	const char* _tmp4_;
+	char* _tmp2_;
 	g_return_val_if_fail (upnp_id != NULL, NULL);
 	g_return_val_if_fail (upnp_type != NULL, NULL);
 	g_return_val_if_fail (description_path != NULL, NULL);
 	self = (RygelResourceInfo*) g_type_create_instance (object_type);
-	_tmp1_ = NULL;
-	_tmp0_ = NULL;
-	self->upnp_type = (_tmp1_ = (_tmp0_ = upnp_type, (_tmp0_ == NULL) ? NULL : g_strdup (_tmp0_)), self->upnp_type = (g_free (self->upnp_type), NULL), _tmp1_);
-	_tmp3_ = NULL;
-	_tmp2_ = NULL;
-	self->upnp_id = (_tmp3_ = (_tmp2_ = upnp_id, (_tmp2_ == NULL) ? NULL : g_strdup (_tmp2_)), self->upnp_id = (g_free (self->upnp_id), NULL), _tmp3_);
-	_tmp5_ = NULL;
-	_tmp4_ = NULL;
-	self->description_path = (_tmp5_ = (_tmp4_ = description_path, (_tmp4_ == NULL) ? NULL : g_strdup (_tmp4_)), self->description_path = (g_free (self->description_path), NULL), _tmp5_);
+	self->upnp_type = (_tmp0_ = g_strdup (upnp_type), _g_free0 (self->upnp_type), _tmp0_);
+	self->upnp_id = (_tmp1_ = g_strdup (upnp_id), _g_free0 (self->upnp_id), _tmp1_);
+	self->description_path = (_tmp2_ = g_strdup (description_path), _g_free0 (self->description_path), _tmp2_);
 	self->type = type;
 	return self;
 }
@@ -220,9 +207,9 @@ static void rygel_resource_info_instance_init (RygelResourceInfo * self) {
 static void rygel_resource_info_finalize (RygelResourceInfo* obj) {
 	RygelResourceInfo * self;
 	self = RYGEL_RESOURCE_INFO (obj);
-	self->upnp_type = (g_free (self->upnp_type), NULL);
-	self->upnp_id = (g_free (self->upnp_id), NULL);
-	self->description_path = (g_free (self->description_path), NULL);
+	_g_free0 (self->upnp_type);
+	_g_free0 (self->upnp_id);
+	_g_free0 (self->description_path);
 }
 
 

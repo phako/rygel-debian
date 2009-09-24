@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2008 Zeeshan Ali (Khattak) <zeeshanak@gnome.org>.
- * Copyright (C) 2008 Nokia Corporation, all rights reserved.
+ * Copyright (C) 2008 Nokia Corporation.
  *
  * Author: Zeeshan Ali (Khattak) <zeeshanak@gnome.org>
  *                               <zeeshan.ali@nokia.com>
@@ -39,10 +39,8 @@
 typedef struct _RygelTestItem RygelTestItem;
 typedef struct _RygelTestItemClass RygelTestItemClass;
 typedef struct _RygelTestItemPrivate RygelTestItemPrivate;
+#define _g_free0(var) (var = (g_free (var), NULL))
 
-/**
- * Represents Test item.
- */
 struct _RygelTestItem {
 	RygelMediaItem parent_instance;
 	RygelTestItemPrivate * priv;
@@ -53,41 +51,30 @@ struct _RygelTestItemClass {
 };
 
 
+static gpointer rygel_test_item_parent_class = NULL;
 
 GType rygel_test_item_get_type (void);
 enum  {
 	RYGEL_TEST_ITEM_DUMMY_PROPERTY
 };
 #define RYGEL_TEST_ITEM_TEST_AUTHOR "Zeeshan Ali (Khattak)"
-RygelTestItem* rygel_test_item_new (const char* id, RygelMediaContainer* parent, const char* title, const char* mime, const char* upnp_class);
 RygelTestItem* rygel_test_item_construct (GType object_type, const char* id, RygelMediaContainer* parent, const char* title, const char* mime, const char* upnp_class);
-RygelTestItem* rygel_test_item_new (const char* id, RygelMediaContainer* parent, const char* title, const char* mime, const char* upnp_class);
-static gpointer rygel_test_item_parent_class = NULL;
 
 
 
 RygelTestItem* rygel_test_item_construct (GType object_type, const char* id, RygelMediaContainer* parent, const char* title, const char* mime, const char* upnp_class) {
 	RygelTestItem * self;
+	char* _tmp0_;
 	char* _tmp1_;
-	const char* _tmp0_;
-	char* _tmp2_;
 	g_return_val_if_fail (id != NULL, NULL);
 	g_return_val_if_fail (parent != NULL, NULL);
 	g_return_val_if_fail (title != NULL, NULL);
 	g_return_val_if_fail (mime != NULL, NULL);
 	g_return_val_if_fail (upnp_class != NULL, NULL);
 	self = (RygelTestItem*) rygel_media_item_construct (object_type, id, parent, title, upnp_class);
-	_tmp1_ = NULL;
-	_tmp0_ = NULL;
-	((RygelMediaItem*) self)->mime_type = (_tmp1_ = (_tmp0_ = mime, (_tmp0_ == NULL) ? NULL : g_strdup (_tmp0_)), ((RygelMediaItem*) self)->mime_type = (g_free (((RygelMediaItem*) self)->mime_type), NULL), _tmp1_);
-	_tmp2_ = NULL;
-	((RygelMediaItem*) self)->author = (_tmp2_ = g_strdup (RYGEL_TEST_ITEM_TEST_AUTHOR), ((RygelMediaItem*) self)->author = (g_free (((RygelMediaItem*) self)->author), NULL), _tmp2_);
+	((RygelMediaItem*) self)->mime_type = (_tmp0_ = g_strdup (mime), _g_free0 (((RygelMediaItem*) self)->mime_type), _tmp0_);
+	((RygelMediaItem*) self)->author = (_tmp1_ = g_strdup (RYGEL_TEST_ITEM_TEST_AUTHOR), _g_free0 (((RygelMediaItem*) self)->author), _tmp1_);
 	return self;
-}
-
-
-RygelTestItem* rygel_test_item_new (const char* id, RygelMediaContainer* parent, const char* title, const char* mime, const char* upnp_class) {
-	return rygel_test_item_construct (RYGEL_TYPE_TEST_ITEM, id, parent, title, mime, upnp_class);
 }
 
 

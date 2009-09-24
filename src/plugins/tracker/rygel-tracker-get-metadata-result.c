@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2009 Nokia Corporation, all rights reserved.
+ * Copyright (C) 2009 Nokia Corporation.
  *
  * Author: Zeeshan Ali (Khattak) <zeeshanak@gnome.org>
  *
@@ -38,25 +38,26 @@
 typedef struct _RygelTrackerGetMetadataResult RygelTrackerGetMetadataResult;
 typedef struct _RygelTrackerGetMetadataResultClass RygelTrackerGetMetadataResultClass;
 typedef struct _RygelTrackerGetMetadataResultPrivate RygelTrackerGetMetadataResultPrivate;
+#define _g_free0(var) (var = (g_free (var), NULL))
 
-#define RYGEL_TYPE_TRACKER_CATEGORY (rygel_tracker_category_get_type ())
-#define RYGEL_TRACKER_CATEGORY(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_TRACKER_CATEGORY, RygelTrackerCategory))
-#define RYGEL_TRACKER_CATEGORY_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TYPE_TRACKER_CATEGORY, RygelTrackerCategoryClass))
-#define RYGEL_IS_TRACKER_CATEGORY(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TYPE_TRACKER_CATEGORY))
-#define RYGEL_IS_TRACKER_CATEGORY_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_TYPE_TRACKER_CATEGORY))
-#define RYGEL_TRACKER_CATEGORY_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_TYPE_TRACKER_CATEGORY, RygelTrackerCategoryClass))
+#define RYGEL_TYPE_TRACKER_SEARCH_CONTAINER (rygel_tracker_search_container_get_type ())
+#define RYGEL_TRACKER_SEARCH_CONTAINER(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_TRACKER_SEARCH_CONTAINER, RygelTrackerSearchContainer))
+#define RYGEL_TRACKER_SEARCH_CONTAINER_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TYPE_TRACKER_SEARCH_CONTAINER, RygelTrackerSearchContainerClass))
+#define RYGEL_IS_TRACKER_SEARCH_CONTAINER(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TYPE_TRACKER_SEARCH_CONTAINER))
+#define RYGEL_IS_TRACKER_SEARCH_CONTAINER_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_TYPE_TRACKER_SEARCH_CONTAINER))
+#define RYGEL_TRACKER_SEARCH_CONTAINER_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_TYPE_TRACKER_SEARCH_CONTAINER, RygelTrackerSearchContainerClass))
 
-typedef struct _RygelTrackerCategory RygelTrackerCategory;
-typedef struct _RygelTrackerCategoryClass RygelTrackerCategoryClass;
+typedef struct _RygelTrackerSearchContainer RygelTrackerSearchContainer;
+typedef struct _RygelTrackerSearchContainerClass RygelTrackerSearchContainerClass;
+#define _g_error_free0(var) ((var == NULL) ? NULL : (var = (g_error_free (var), NULL)))
+#define _g_object_unref0(var) ((var == NULL) ? NULL : (var = (g_object_unref (var), NULL)))
 
-/**
- * Handles Tracker Metadata.Get method results.
- *
- */
 struct _RygelTrackerGetMetadataResult {
 	RygelSimpleAsyncResult parent_instance;
 	RygelTrackerGetMetadataResultPrivate * priv;
 	char* item_id;
+	char* item_path;
+	char* item_service;
 };
 
 struct _RygelTrackerGetMetadataResultClass {
@@ -64,65 +65,61 @@ struct _RygelTrackerGetMetadataResultClass {
 };
 
 
+static gpointer rygel_tracker_get_metadata_result_parent_class = NULL;
 
 GType rygel_tracker_get_metadata_result_get_type (void);
 enum  {
 	RYGEL_TRACKER_GET_METADATA_RESULT_DUMMY_PROPERTY
 };
-GType rygel_tracker_category_get_type (void);
-RygelTrackerGetMetadataResult* rygel_tracker_get_metadata_result_new (RygelTrackerCategory* category, GAsyncReadyCallback callback, void* callback_target, const char* item_id);
-RygelTrackerGetMetadataResult* rygel_tracker_get_metadata_result_construct (GType object_type, RygelTrackerCategory* category, GAsyncReadyCallback callback, void* callback_target, const char* item_id);
-RygelTrackerGetMetadataResult* rygel_tracker_get_metadata_result_new (RygelTrackerCategory* category, GAsyncReadyCallback callback, void* callback_target, const char* item_id);
-char* rygel_tracker_category_get_item_path (RygelTrackerCategory* self, const char* item_id);
-RygelMediaItem* rygel_tracker_category_create_item (RygelTrackerCategory* self, const char* path, char** metadata, int metadata_length1);
+GType rygel_tracker_search_container_get_type (void);
+RygelTrackerGetMetadataResult* rygel_tracker_get_metadata_result_new (RygelTrackerSearchContainer* search_container, GAsyncReadyCallback callback, void* callback_target, const char* item_id);
+RygelTrackerGetMetadataResult* rygel_tracker_get_metadata_result_construct (GType object_type, RygelTrackerSearchContainer* search_container, GAsyncReadyCallback callback, void* callback_target, const char* item_id);
+RygelMediaItem* rygel_tracker_search_container_create_item (RygelTrackerSearchContainer* self, const char* service, const char* path, char** metadata, int metadata_length1);
 void rygel_tracker_get_metadata_result_ready (RygelTrackerGetMetadataResult* self, char** metadata, int metadata_length1, GError* _error_);
-static gpointer rygel_tracker_get_metadata_result_parent_class = NULL;
 static void rygel_tracker_get_metadata_result_finalize (GObject* obj);
 
 
 
-RygelTrackerGetMetadataResult* rygel_tracker_get_metadata_result_construct (GType object_type, RygelTrackerCategory* category, GAsyncReadyCallback callback, void* callback_target, const char* item_id) {
+RygelTrackerGetMetadataResult* rygel_tracker_get_metadata_result_construct (GType object_type, RygelTrackerSearchContainer* search_container, GAsyncReadyCallback callback, void* callback_target, const char* item_id) {
 	RygelTrackerGetMetadataResult * self;
-	char* _tmp1_;
-	const char* _tmp0_;
-	g_return_val_if_fail (category != NULL, NULL);
+	char* _tmp0_;
+	g_return_val_if_fail (search_container != NULL, NULL);
 	g_return_val_if_fail (item_id != NULL, NULL);
-	self = (RygelTrackerGetMetadataResult*) rygel_simple_async_result_construct (object_type, RYGEL_TYPE_MEDIA_OBJECT, (GBoxedCopyFunc) g_object_ref, g_object_unref, (GObject*) category, callback, callback_target);
-	_tmp1_ = NULL;
-	_tmp0_ = NULL;
-	self->item_id = (_tmp1_ = (_tmp0_ = item_id, (_tmp0_ == NULL) ? NULL : g_strdup (_tmp0_)), self->item_id = (g_free (self->item_id), NULL), _tmp1_);
+	self = (RygelTrackerGetMetadataResult*) rygel_simple_async_result_construct (object_type, RYGEL_TYPE_MEDIA_OBJECT, (GBoxedCopyFunc) g_object_ref, g_object_unref, (GObject*) search_container, callback, callback_target);
+	self->item_id = (_tmp0_ = g_strdup (item_id), _g_free0 (self->item_id), _tmp0_);
 	return self;
 }
 
 
-RygelTrackerGetMetadataResult* rygel_tracker_get_metadata_result_new (RygelTrackerCategory* category, GAsyncReadyCallback callback, void* callback_target, const char* item_id) {
-	return rygel_tracker_get_metadata_result_construct (RYGEL_TYPE_TRACKER_GET_METADATA_RESULT, category, callback, callback_target, item_id);
+RygelTrackerGetMetadataResult* rygel_tracker_get_metadata_result_new (RygelTrackerSearchContainer* search_container, GAsyncReadyCallback callback, void* callback_target, const char* item_id) {
+	return rygel_tracker_get_metadata_result_construct (RYGEL_TYPE_TRACKER_GET_METADATA_RESULT, search_container, callback, callback_target, item_id);
+}
+
+
+static gpointer _g_error_copy0 (gpointer self) {
+	return self ? g_error_copy (self) : NULL;
+}
+
+
+static gpointer _g_object_ref0 (gpointer self) {
+	return self ? g_object_ref (self) : NULL;
 }
 
 
 void rygel_tracker_get_metadata_result_ready (RygelTrackerGetMetadataResult* self, char** metadata, int metadata_length1, GError* _error_) {
-	RygelTrackerCategory* _tmp2_;
-	RygelTrackerCategory* category;
-	char* path;
-	RygelMediaObject* _tmp3_;
+	RygelTrackerSearchContainer* search_container;
+	RygelMediaObject* _tmp1_;
 	g_return_if_fail (self != NULL);
 	if (_error_ != NULL) {
-		GError* _tmp1_;
 		GError* _tmp0_;
-		_tmp1_ = NULL;
-		_tmp0_ = NULL;
-		((RygelSimpleAsyncResult*) self)->error = (_tmp1_ = (_tmp0_ = _error_, (_tmp0_ == NULL) ? ((gpointer) _tmp0_) : g_error_copy (_tmp0_)), (((RygelSimpleAsyncResult*) self)->error == NULL) ? NULL : (((RygelSimpleAsyncResult*) self)->error = (g_error_free (((RygelSimpleAsyncResult*) self)->error), NULL)), _tmp1_);
+		((RygelSimpleAsyncResult*) self)->error = (_tmp0_ = _g_error_copy0 (_error_), _g_error_free0 (((RygelSimpleAsyncResult*) self)->error), _tmp0_);
 		rygel_simple_async_result_complete ((RygelSimpleAsyncResult*) self);
 		return;
 	}
-	_tmp2_ = NULL;
-	category = (_tmp2_ = RYGEL_TRACKER_CATEGORY (((RygelSimpleAsyncResult*) self)->source_object), (_tmp2_ == NULL) ? NULL : g_object_ref (_tmp2_));
-	path = rygel_tracker_category_get_item_path (category, self->item_id);
-	_tmp3_ = NULL;
-	((RygelSimpleAsyncResult*) self)->data = (_tmp3_ = (RygelMediaObject*) rygel_tracker_category_create_item (category, path, metadata, metadata_length1), (((RygelSimpleAsyncResult*) self)->data == NULL) ? NULL : (((RygelSimpleAsyncResult*) self)->data = (g_object_unref (((RygelSimpleAsyncResult*) self)->data), NULL)), _tmp3_);
+	search_container = _g_object_ref0 (RYGEL_TRACKER_SEARCH_CONTAINER (((RygelSimpleAsyncResult*) self)->source_object));
+	((RygelSimpleAsyncResult*) self)->data = (_tmp1_ = (RygelMediaObject*) rygel_tracker_search_container_create_item (search_container, self->item_service, self->item_path, metadata, metadata_length1), _g_object_unref0 (((RygelSimpleAsyncResult*) self)->data), _tmp1_);
 	rygel_simple_async_result_complete ((RygelSimpleAsyncResult*) self);
-	(category == NULL) ? NULL : (category = (g_object_unref (category), NULL));
-	path = (g_free (path), NULL);
+	_g_object_unref0 (search_container);
 }
 
 
@@ -139,7 +136,9 @@ static void rygel_tracker_get_metadata_result_instance_init (RygelTrackerGetMeta
 static void rygel_tracker_get_metadata_result_finalize (GObject* obj) {
 	RygelTrackerGetMetadataResult * self;
 	self = RYGEL_TRACKER_GET_METADATA_RESULT (obj);
-	self->item_id = (g_free (self->item_id), NULL);
+	_g_free0 (self->item_id);
+	_g_free0 (self->item_path);
+	_g_free0 (self->item_service);
 	G_OBJECT_CLASS (rygel_tracker_get_metadata_result_parent_class)->finalize (obj);
 }
 

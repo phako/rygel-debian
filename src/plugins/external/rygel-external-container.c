@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2009 Zeeshan Ali (Khattak) <zeeshanak@gnome.org>.
- * Copyright (C) 2009 Nokia Corporation, all rights reserved.
+ * Copyright (C) 2009 Nokia Corporation.
  *
  * Author: Zeeshan Ali (Khattak) <zeeshanak@gnome.org>
  *                               <zeeshan.ali@nokia.com>
@@ -29,12 +29,8 @@
 #include <dbus/dbus-glib.h>
 #include <stdlib.h>
 #include <string.h>
-#include <gee/arraylist.h>
-#include <gee/list.h>
+#include <gee.h>
 #include <gio/gio.h>
-#include <gee/iterable.h>
-#include <gee/iterator.h>
-#include <gee/collection.h>
 
 
 #define RYGEL_TYPE_EXTERNAL_CONTAINER (rygel_external_container_get_type ())
@@ -47,6 +43,10 @@
 typedef struct _RygelExternalContainer RygelExternalContainer;
 typedef struct _RygelExternalContainerClass RygelExternalContainerClass;
 typedef struct _RygelExternalContainerPrivate RygelExternalContainerPrivate;
+#define _g_object_unref0(var) ((var == NULL) ? NULL : (var = (g_object_unref (var), NULL)))
+#define _g_free0(var) (var = (g_free (var), NULL))
+#define _dbus_g_connection_unref0(var) ((var == NULL) ? NULL : (var = (dbus_g_connection_unref (var), NULL)))
+#define _g_error_free0(var) ((var == NULL) ? NULL : (var = (g_error_free (var), NULL)))
 
 #define RYGEL_TYPE_EXTERNAL_ITEM (rygel_external_item_get_type ())
 #define RYGEL_EXTERNAL_ITEM(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_EXTERNAL_ITEM, RygelExternalItem))
@@ -57,10 +57,8 @@ typedef struct _RygelExternalContainerPrivate RygelExternalContainerPrivate;
 
 typedef struct _RygelExternalItem RygelExternalItem;
 typedef struct _RygelExternalItemClass RygelExternalItemClass;
+#define _g_regex_unref0(var) ((var == NULL) ? NULL : (var = (g_regex_unref (var), NULL)))
 
-/**
- * Represents an external container.
- */
 struct _RygelExternalContainer {
 	RygelMediaContainer parent_instance;
 	RygelExternalContainerPrivate * priv;
@@ -76,41 +74,44 @@ struct _RygelExternalContainerClass {
 
 struct _RygelExternalContainerPrivate {
 	char* object_path;
-	GeeArrayList* media_objects;
+	GeeArrayList* containers;
 };
 
 
+static char* rygel_external_container_PROPS_IFACE;
+static char* rygel_external_container_PROPS_IFACE = NULL;
+static gpointer rygel_external_container_parent_class = NULL;
 
 GType rygel_external_container_get_type (void);
 #define RYGEL_EXTERNAL_CONTAINER_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), RYGEL_TYPE_EXTERNAL_CONTAINER, RygelExternalContainerPrivate))
 enum  {
 	RYGEL_EXTERNAL_CONTAINER_DUMMY_PROPERTY
 };
-static char* rygel_external_container_PROPS_IFACE;
-static char* rygel_external_container_PROPS_IFACE = NULL;
 #define RYGEL_EXTERNAL_CONTAINER_OBJECT_IFACE "org.gnome.UPnP.MediaObject1"
 #define RYGEL_EXTERNAL_CONTAINER_CONTAINER_IFACE "org.gnome.UPnP.MediaContainer1"
 #define RYGEL_EXTERNAL_CONTAINER_ITEM_IFACE "org.gnome.UPnP.MediaItem1"
 void _dynamic_Get0 (DBusGProxy* self, const char* param1, const char* param2, GValue* param3, GError** error);
 char* rygel_external_container_substitute_keywords (RygelExternalContainer* self, const char* title);
-static void rygel_external_container_fetch_media_objects (RygelExternalContainer* self, GError** error);
+static void rygel_external_container_update_container (RygelExternalContainer* self, GError** error);
 static void rygel_external_container_on_container_updated (RygelExternalContainer* self, DBusGProxy* actual_container);
 static void _rygel_external_container_on_container_updated_dynamic_Updated0_ (DBusGProxy* _sender, gpointer self);
 void _dynamic_Updated1_connect (gpointer obj, const char * signal_name, GCallback handler, gpointer data);
 RygelExternalContainer* rygel_external_container_new (const char* id, const char* service_name, const char* object_path, const char* host_ip, RygelExternalContainer* parent);
 RygelExternalContainer* rygel_external_container_construct (GType object_type, const char* id, const char* service_name, const char* object_path, const char* host_ip, RygelExternalContainer* parent);
-RygelExternalContainer* rygel_external_container_new (const char* id, const char* service_name, const char* object_path, const char* host_ip, RygelExternalContainer* parent);
+void _dynamic_Get1 (DBusGProxy* self, const char* param1, const char* param2, GValue* param3, GError** error);
+RygelExternalItem* rygel_external_item_new_for_path (const char* object_path, RygelExternalContainer* parent, GError** error);
+RygelExternalItem* rygel_external_item_construct_for_path (GType object_type, const char* object_path, RygelExternalContainer* parent, GError** error);
+GType rygel_external_item_get_type (void);
 static void rygel_external_container_real_get_children (RygelMediaContainer* base, guint offset, guint max_count, GCancellable* cancellable, GAsyncReadyCallback callback, void* callback_target);
 static GeeList* rygel_external_container_real_get_children_finish (RygelMediaContainer* base, GAsyncResult* res, GError** error);
-static RygelMediaObject* rygel_external_container_find_object_sync (RygelExternalContainer* self, const char* id);
+static RygelMediaContainer* rygel_external_container_find_container (RygelExternalContainer* self, const char* id);
+gboolean rygel_external_item_id_valid (const char* id);
+RygelExternalItem* rygel_external_item_new_for_id (const char* id, RygelExternalContainer* parent, GError** error);
+RygelExternalItem* rygel_external_item_construct_for_id (GType object_type, const char* id, RygelExternalContainer* parent, GError** error);
 static void rygel_external_container_real_find_object (RygelMediaContainer* base, const char* id, GCancellable* cancellable, GAsyncReadyCallback callback, void* callback_target);
 static RygelMediaObject* rygel_external_container_real_find_object_finish (RygelMediaContainer* base, GAsyncResult* res, GError** error);
-GHashTable* _dynamic_GetAll1 (DBusGProxy* self, const char* param1, GError** error);
-static GValue* _g_value_dup (GValue* self);
-RygelExternalItem* rygel_external_item_new (const char* object_path, RygelExternalContainer* parent, GError** error);
-RygelExternalItem* rygel_external_item_construct (GType object_type, const char* object_path, RygelExternalContainer* parent, GError** error);
-GType rygel_external_item_get_type (void);
-static gpointer rygel_external_container_parent_class = NULL;
+void _dynamic_Get2 (DBusGProxy* self, const char* param1, const char* param2, GValue* param3, GError** error);
+void _dynamic_Get3 (DBusGProxy* self, const char* param1, const char* param2, GValue* param3, GError** error);
 static void rygel_external_container_finalize (GObject* obj);
 static int _vala_strcmp0 (const char * str1, const char * str2);
 
@@ -139,85 +140,64 @@ void _dynamic_Updated1_connect (gpointer obj, const char * signal_name, GCallbac
 RygelExternalContainer* rygel_external_container_construct (GType object_type, const char* id, const char* service_name, const char* object_path, const char* host_ip, RygelExternalContainer* parent) {
 	GError * _inner_error_;
 	RygelExternalContainer * self;
+	char* _tmp0_;
 	char* _tmp1_;
-	const char* _tmp0_;
-	char* _tmp3_;
-	const char* _tmp2_;
-	char* _tmp5_;
-	const char* _tmp4_;
-	GeeArrayList* _tmp6_;
+	char* _tmp2_;
+	GeeArrayList* _tmp3_;
 	g_return_val_if_fail (id != NULL, NULL);
 	g_return_val_if_fail (service_name != NULL, NULL);
 	g_return_val_if_fail (object_path != NULL, NULL);
 	g_return_val_if_fail (host_ip != NULL, NULL);
 	_inner_error_ = NULL;
 	self = (RygelExternalContainer*) rygel_media_container_construct (object_type, id, (RygelMediaContainer*) parent, "Uknown", (guint) 0);
-	_tmp1_ = NULL;
-	_tmp0_ = NULL;
-	self->service_name = (_tmp1_ = (_tmp0_ = service_name, (_tmp0_ == NULL) ? NULL : g_strdup (_tmp0_)), self->service_name = (g_free (self->service_name), NULL), _tmp1_);
-	_tmp3_ = NULL;
-	_tmp2_ = NULL;
-	self->priv->object_path = (_tmp3_ = (_tmp2_ = object_path, (_tmp2_ == NULL) ? NULL : g_strdup (_tmp2_)), self->priv->object_path = (g_free (self->priv->object_path), NULL), _tmp3_);
-	_tmp5_ = NULL;
-	_tmp4_ = NULL;
-	self->host_ip = (_tmp5_ = (_tmp4_ = host_ip, (_tmp4_ == NULL) ? NULL : g_strdup (_tmp4_)), self->host_ip = (g_free (self->host_ip), NULL), _tmp5_);
-	_tmp6_ = NULL;
-	self->priv->media_objects = (_tmp6_ = gee_array_list_new (RYGEL_TYPE_MEDIA_OBJECT, (GBoxedCopyFunc) g_object_ref, g_object_unref, g_direct_equal), (self->priv->media_objects == NULL) ? NULL : (self->priv->media_objects = (g_object_unref (self->priv->media_objects), NULL)), _tmp6_);
+	self->service_name = (_tmp0_ = g_strdup (service_name), _g_free0 (self->service_name), _tmp0_);
+	self->priv->object_path = (_tmp1_ = g_strdup (object_path), _g_free0 (self->priv->object_path), _tmp1_);
+	self->host_ip = (_tmp2_ = g_strdup (host_ip), _g_free0 (self->host_ip), _tmp2_);
+	self->priv->containers = (_tmp3_ = gee_array_list_new (RYGEL_TYPE_EXTERNAL_CONTAINER, (GBoxedCopyFunc) g_object_ref, g_object_unref, g_direct_equal), _g_object_unref0 (self->priv->containers), _tmp3_);
 	{
 		DBusGConnection* connection;
-		DBusGProxy* _tmp7_;
+		DBusGProxy* _tmp4_;
 		GValue value = {0};
-		GValue _tmp9_ = {0};
-		GValue _tmp8_ = {0};
-		char* _tmp10_;
-		DBusGProxy* _tmp11_;
+		GValue _tmp6_;
+		GValue _tmp5_ = {0};
+		char* _tmp7_;
+		DBusGProxy* _tmp8_;
 		connection = dbus_g_bus_get (DBUS_BUS_SESSION, &_inner_error_);
 		if (_inner_error_ != NULL) {
-			if (_inner_error_->domain == DBUS_GERROR) {
-				goto __catch0_dbus_gerror;
-			}
+			goto __catch0_g_error;
 			goto __finally0;
 		}
-		/* Create proxy to MediaObject iface to get the display name through*/
-		_tmp7_ = NULL;
-		self->props = (_tmp7_ = dbus_g_proxy_new_for_name (connection, service_name, object_path, rygel_external_container_PROPS_IFACE), (self->props == NULL) ? NULL : (self->props = (g_object_unref (self->props), NULL)), _tmp7_);
-		_dynamic_Get0 (self->props, RYGEL_EXTERNAL_CONTAINER_OBJECT_IFACE, "DisplayName", &_tmp8_, &_inner_error_);
-		value = (_tmp9_ = _tmp8_, G_IS_VALUE (&value) ? (g_value_unset (&value), NULL) : NULL, _tmp9_);
+		self->props = (_tmp4_ = dbus_g_proxy_new_for_name (connection, service_name, object_path, rygel_external_container_PROPS_IFACE), _g_object_unref0 (self->props), _tmp4_);
+		_dynamic_Get0 (self->props, RYGEL_EXTERNAL_CONTAINER_OBJECT_IFACE, "DisplayName", &_tmp5_, &_inner_error_);
+		value = (_tmp6_ = _tmp5_, G_IS_VALUE (&value) ? (g_value_unset (&value), NULL) : NULL, _tmp6_);
 		if (_inner_error_ != NULL) {
-			(connection == NULL) ? NULL : (connection = (dbus_g_connection_unref (connection), NULL));
+			_dbus_g_connection_unref0 (connection);
 			G_IS_VALUE (&value) ? (g_value_unset (&value), NULL) : NULL;
-			if (_inner_error_->domain == DBUS_GERROR) {
-				goto __catch0_dbus_gerror;
-			}
+			goto __catch0_g_error;
 			goto __finally0;
 		}
-		_tmp10_ = NULL;
-		((RygelMediaObject*) self)->title = (_tmp10_ = rygel_external_container_substitute_keywords (self, g_value_get_string (&value)), ((RygelMediaObject*) self)->title = (g_free (((RygelMediaObject*) self)->title), NULL), _tmp10_);
-		/* Now proxy to MediaContainer iface for the rest of the stuff*/
-		_tmp11_ = NULL;
-		self->actual_container = (_tmp11_ = dbus_g_proxy_new_for_name (connection, service_name, object_path, RYGEL_EXTERNAL_CONTAINER_CONTAINER_IFACE), (self->actual_container == NULL) ? NULL : (self->actual_container = (g_object_unref (self->actual_container), NULL)), _tmp11_);
-		rygel_external_container_fetch_media_objects (self, &_inner_error_);
+		((RygelMediaObject*) self)->title = (_tmp7_ = rygel_external_container_substitute_keywords (self, g_value_get_string (&value)), _g_free0 (((RygelMediaObject*) self)->title), _tmp7_);
+		self->actual_container = (_tmp8_ = dbus_g_proxy_new_for_name (connection, service_name, object_path, RYGEL_EXTERNAL_CONTAINER_CONTAINER_IFACE), _g_object_unref0 (self->actual_container), _tmp8_);
+		rygel_external_container_update_container (self, &_inner_error_);
 		if (_inner_error_ != NULL) {
-			(connection == NULL) ? NULL : (connection = (dbus_g_connection_unref (connection), NULL));
+			_dbus_g_connection_unref0 (connection);
 			G_IS_VALUE (&value) ? (g_value_unset (&value), NULL) : NULL;
-			if (_inner_error_->domain == DBUS_GERROR) {
-				goto __catch0_dbus_gerror;
-			}
+			goto __catch0_g_error;
 			goto __finally0;
 		}
 		_dynamic_Updated1_connect (self->actual_container, "Updated", (GCallback) _rygel_external_container_on_container_updated_dynamic_Updated0_, self);
-		(connection == NULL) ? NULL : (connection = (dbus_g_connection_unref (connection), NULL));
+		_dbus_g_connection_unref0 (connection);
 		G_IS_VALUE (&value) ? (g_value_unset (&value), NULL) : NULL;
 	}
 	goto __finally0;
-	__catch0_dbus_gerror:
+	__catch0_g_error:
 	{
-		GError * _error_;
-		_error_ = _inner_error_;
+		GError * err;
+		err = _inner_error_;
 		_inner_error_ = NULL;
 		{
-			g_critical ("rygel-external-container.vala:83: Failed to fetch root media objects: %s\n", _error_->message);
-			(_error_ == NULL) ? NULL : (_error_ = (g_error_free (_error_), NULL));
+			g_critical ("rygel-external-container.vala:82: Failed to fetch information about container '%s': %s\n", ((RygelMediaObject*) self)->id, err->message);
+			_g_error_free0 (err);
 		}
 	}
 	__finally0:
@@ -235,79 +215,212 @@ RygelExternalContainer* rygel_external_container_new (const char* id, const char
 }
 
 
+void _dynamic_Get1 (DBusGProxy* self, const char* param1, const char* param2, GValue* param3, GError** error) {
+	dbus_g_proxy_call (self, "Get", error, G_TYPE_STRING, param1, G_TYPE_STRING, param2, G_TYPE_INVALID, G_TYPE_VALUE, param3, G_TYPE_INVALID);
+	if (*error) {
+		return;
+	}
+}
+
+
+static gpointer _g_object_ref0 (gpointer self) {
+	return self ? g_object_ref (self) : NULL;
+}
+
+
 static void rygel_external_container_real_get_children (RygelMediaContainer* base, guint offset, guint max_count, GCancellable* cancellable, GAsyncReadyCallback callback, void* callback_target) {
 	RygelExternalContainer * self;
+	GError * _inner_error_;
+	GeeArrayList* media_objects;
+	GValue value = {0};
+	GValue _tmp1_;
+	GValue _tmp0_ = {0};
+	GPtrArray* obj_paths;
 	guint stop;
-	GeeList* containers;
+	GeeList* children;
 	RygelSimpleAsyncResult* res;
-	GeeList* _tmp1_;
-	GeeList* _tmp0_;
+	GeeList* _tmp3_;
 	self = (RygelExternalContainer*) base;
+	_inner_error_ = NULL;
+	media_objects = gee_array_list_new (RYGEL_TYPE_MEDIA_OBJECT, (GBoxedCopyFunc) g_object_ref, g_object_unref, g_direct_equal);
+	gee_abstract_collection_add_all ((GeeAbstractCollection*) media_objects, (GeeCollection*) self->priv->containers);
+	_dynamic_Get1 (self->props, RYGEL_EXTERNAL_CONTAINER_CONTAINER_IFACE, "Items", &_tmp0_, &_inner_error_);
+	value = (_tmp1_ = _tmp0_, G_IS_VALUE (&value) ? (g_value_unset (&value), NULL) : NULL, _tmp1_);
+	if (_inner_error_ != NULL) {
+		_g_object_unref0 (media_objects);
+		G_IS_VALUE (&value) ? (g_value_unset (&value), NULL) : NULL;
+		g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, _inner_error_->message);
+		g_clear_error (&_inner_error_);
+		return;
+	}
+	obj_paths = (GPtrArray*) g_value_get_boxed (&value);
+	if (obj_paths->len > 0) {
+		{
+			gint i;
+			i = 0;
+			{
+				gboolean _tmp2_;
+				_tmp2_ = TRUE;
+				while (TRUE) {
+					char* obj_path;
+					if (!_tmp2_) {
+						i++;
+					}
+					_tmp2_ = FALSE;
+					if (!(i < obj_paths->len)) {
+						break;
+					}
+					obj_path = g_strdup ((const char*) obj_paths->pdata[i]);
+					{
+						RygelExternalItem* item;
+						item = rygel_external_item_new_for_path (obj_path, self, &_inner_error_);
+						if (_inner_error_ != NULL) {
+							goto __catch1_g_error;
+							goto __finally1;
+						}
+						gee_abstract_collection_add ((GeeAbstractCollection*) media_objects, (RygelMediaObject*) item);
+						_g_object_unref0 (item);
+					}
+					goto __finally1;
+					__catch1_g_error:
+					{
+						GError * err;
+						err = _inner_error_;
+						_inner_error_ = NULL;
+						{
+							g_warning ("rygel-external-container.vala:111: Error initializable item at '%s': %s. Ignoring..", obj_path, err->message);
+							_g_error_free0 (err);
+						}
+					}
+					__finally1:
+					if (_inner_error_ != NULL) {
+						_g_free0 (obj_path);
+						_g_object_unref0 (media_objects);
+						G_IS_VALUE (&value) ? (g_value_unset (&value), NULL) : NULL;
+						g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, _inner_error_->message);
+						g_clear_error (&_inner_error_);
+						return;
+					}
+					_g_free0 (obj_path);
+				}
+			}
+		}
+	}
 	stop = offset + max_count;
 	stop = CLAMP (stop, (guint) 0, ((RygelMediaContainer*) self)->child_count);
-	containers = gee_list_slice ((GeeList*) self->priv->media_objects, (gint) offset, (gint) stop);
+	children = gee_abstract_list_slice ((GeeAbstractList*) media_objects, (gint) offset, (gint) stop);
 	res = rygel_simple_async_result_new (GEE_TYPE_LIST, (GBoxedCopyFunc) g_object_ref, g_object_unref, (GObject*) self, callback, callback_target);
-	_tmp1_ = NULL;
-	_tmp0_ = NULL;
-	res->data = (_tmp1_ = (_tmp0_ = containers, (_tmp0_ == NULL) ? NULL : g_object_ref (_tmp0_)), (res->data == NULL) ? NULL : (res->data = (g_object_unref (res->data), NULL)), _tmp1_);
+	res->data = (_tmp3_ = _g_object_ref0 (children), _g_object_unref0 (res->data), _tmp3_);
 	rygel_simple_async_result_complete_in_idle (res);
-	(containers == NULL) ? NULL : (containers = (g_object_unref (containers), NULL));
-	(res == NULL) ? NULL : (res = (g_object_unref (res), NULL));
+	_g_object_unref0 (media_objects);
+	G_IS_VALUE (&value) ? (g_value_unset (&value), NULL) : NULL;
+	_g_object_unref0 (children);
+	_g_object_unref0 (res);
 }
 
 
 static GeeList* rygel_external_container_real_get_children_finish (RygelMediaContainer* base, GAsyncResult* res, GError** error) {
 	RygelExternalContainer * self;
-	RygelSimpleAsyncResult* _tmp0_;
+	GeeList* result;
 	RygelSimpleAsyncResult* simple_res;
-	GeeList* _tmp1_;
-	GeeList* _tmp2_;
 	self = (RygelExternalContainer*) base;
 	g_return_val_if_fail (res != NULL, NULL);
-	_tmp0_ = NULL;
-	simple_res = (_tmp0_ = RYGEL_SIMPLE_ASYNC_RESULT (res), (_tmp0_ == NULL) ? NULL : g_object_ref (_tmp0_));
-	_tmp1_ = NULL;
-	_tmp2_ = NULL;
-	return (_tmp2_ = (_tmp1_ = (GeeList*) simple_res->data, (_tmp1_ == NULL) ? NULL : g_object_ref (_tmp1_)), (simple_res == NULL) ? NULL : (simple_res = (g_object_unref (simple_res), NULL)), _tmp2_);
+	simple_res = _g_object_ref0 (RYGEL_SIMPLE_ASYNC_RESULT (res));
+	result = _g_object_ref0 ((GeeList*) simple_res->data);
+	_g_object_unref0 (simple_res);
+	return result;
+}
+
+
+static gpointer _g_error_copy0 (gpointer self) {
+	return self ? g_error_copy (self) : NULL;
 }
 
 
 static void rygel_external_container_real_find_object (RygelMediaContainer* base, const char* id, GCancellable* cancellable, GAsyncReadyCallback callback, void* callback_target) {
 	RygelExternalContainer * self;
-	RygelMediaObject* media_object;
+	GError * _inner_error_;
 	RygelSimpleAsyncResult* res;
-	RygelMediaObject* _tmp1_;
-	RygelMediaObject* _tmp0_;
+	RygelMediaObject* media_object;
+	gboolean _tmp0_;
+	RygelMediaObject* _tmp4_;
 	self = (RygelExternalContainer*) base;
 	g_return_if_fail (id != NULL);
-	media_object = rygel_external_container_find_object_sync (self, id);
+	_inner_error_ = NULL;
 	res = rygel_simple_async_result_new (RYGEL_TYPE_MEDIA_OBJECT, (GBoxedCopyFunc) g_object_ref, g_object_unref, (GObject*) self, callback, callback_target);
-	_tmp1_ = NULL;
-	_tmp0_ = NULL;
-	res->data = (_tmp1_ = (_tmp0_ = media_object, (_tmp0_ == NULL) ? NULL : g_object_ref (_tmp0_)), (res->data == NULL) ? NULL : (res->data = (g_object_unref (res->data), NULL)), _tmp1_);
+	media_object = (RygelMediaObject*) rygel_external_container_find_container (self, id);
+	_tmp0_ = FALSE;
+	if (media_object == NULL) {
+		_tmp0_ = rygel_external_item_id_valid (id);
+	} else {
+		_tmp0_ = FALSE;
+	}
+	if (_tmp0_) {
+		{
+			RygelExternalItem* _tmp1_;
+			RygelMediaObject* _tmp2_;
+			_tmp1_ = rygel_external_item_new_for_id (id, self, &_inner_error_);
+			if (_inner_error_ != NULL) {
+				goto __catch2_g_error;
+				goto __finally2;
+			}
+			media_object = (_tmp2_ = (RygelMediaObject*) _tmp1_, _g_object_unref0 (media_object), _tmp2_);
+		}
+		goto __finally2;
+		__catch2_g_error:
+		{
+			GError * err;
+			err = _inner_error_;
+			_inner_error_ = NULL;
+			{
+				GError* _tmp3_;
+				res->error = (_tmp3_ = _g_error_copy0 (err), _g_error_free0 (res->error), _tmp3_);
+				_g_error_free0 (err);
+			}
+		}
+		__finally2:
+		if (_inner_error_ != NULL) {
+			_g_object_unref0 (res);
+			_g_object_unref0 (media_object);
+			g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, _inner_error_->message);
+			g_clear_error (&_inner_error_);
+			return;
+		}
+	}
+	res->data = (_tmp4_ = _g_object_ref0 (media_object), _g_object_unref0 (res->data), _tmp4_);
 	rygel_simple_async_result_complete_in_idle (res);
-	(media_object == NULL) ? NULL : (media_object = (g_object_unref (media_object), NULL));
-	(res == NULL) ? NULL : (res = (g_object_unref (res), NULL));
+	_g_object_unref0 (res);
+	_g_object_unref0 (media_object);
 }
 
 
 static RygelMediaObject* rygel_external_container_real_find_object_finish (RygelMediaContainer* base, GAsyncResult* res, GError** error) {
 	RygelExternalContainer * self;
-	RygelSimpleAsyncResult* _tmp0_;
+	RygelMediaObject* result;
+	GError * _inner_error_;
 	RygelSimpleAsyncResult* simple_res;
-	RygelMediaObject* _tmp1_;
-	RygelMediaObject* _tmp2_;
 	self = (RygelExternalContainer*) base;
 	g_return_val_if_fail (res != NULL, NULL);
-	_tmp0_ = NULL;
-	simple_res = (_tmp0_ = RYGEL_SIMPLE_ASYNC_RESULT (res), (_tmp0_ == NULL) ? NULL : g_object_ref (_tmp0_));
-	_tmp1_ = NULL;
-	_tmp2_ = NULL;
-	return (_tmp2_ = (_tmp1_ = (RygelMediaObject*) simple_res->data, (_tmp1_ == NULL) ? NULL : g_object_ref (_tmp1_)), (simple_res == NULL) ? NULL : (simple_res = (g_object_unref (simple_res), NULL)), _tmp2_);
+	_inner_error_ = NULL;
+	simple_res = _g_object_ref0 (RYGEL_SIMPLE_ASYNC_RESULT (res));
+	if (simple_res->error != NULL) {
+		_inner_error_ = _g_error_copy0 (simple_res->error);
+		if (_inner_error_ != NULL) {
+			g_propagate_error (error, _inner_error_);
+			_g_object_unref0 (simple_res);
+			return NULL;
+		}
+	} else {
+		result = _g_object_ref0 ((RygelMediaObject*) simple_res->data);
+		_g_object_unref0 (simple_res);
+		return result;
+	}
+	_g_object_unref0 (simple_res);
 }
 
 
 static char* string_replace (const char* self, const char* old, const char* replacement) {
+	char* result;
 	GError * _inner_error_;
 	g_return_val_if_fail (self != NULL, NULL);
 	g_return_val_if_fail (old != NULL, NULL);
@@ -318,39 +431,37 @@ static char* string_replace (const char* self, const char* old, const char* repl
 		GRegex* _tmp1_;
 		GRegex* regex;
 		char* _tmp2_;
-		char* _tmp3_;
-		_tmp0_ = NULL;
-		_tmp1_ = NULL;
-		regex = (_tmp1_ = g_regex_new (_tmp0_ = g_regex_escape_string (old, -1), 0, 0, &_inner_error_), _tmp0_ = (g_free (_tmp0_), NULL), _tmp1_);
+		regex = (_tmp1_ = g_regex_new (_tmp0_ = g_regex_escape_string (old, -1), 0, 0, &_inner_error_), _g_free0 (_tmp0_), _tmp1_);
 		if (_inner_error_ != NULL) {
 			if (_inner_error_->domain == G_REGEX_ERROR) {
-				goto __catch1_g_regex_error;
+				goto __catch3_g_regex_error;
 			}
-			goto __finally1;
+			goto __finally3;
 		}
 		_tmp2_ = g_regex_replace_literal (regex, self, (glong) (-1), 0, replacement, 0, &_inner_error_);
 		if (_inner_error_ != NULL) {
-			(regex == NULL) ? NULL : (regex = (g_regex_unref (regex), NULL));
+			_g_regex_unref0 (regex);
 			if (_inner_error_->domain == G_REGEX_ERROR) {
-				goto __catch1_g_regex_error;
+				goto __catch3_g_regex_error;
 			}
-			goto __finally1;
+			goto __finally3;
 		}
-		_tmp3_ = NULL;
-		return (_tmp3_ = _tmp2_, (regex == NULL) ? NULL : (regex = (g_regex_unref (regex), NULL)), _tmp3_);
+		result = _tmp2_;
+		_g_regex_unref0 (regex);
+		return result;
 	}
-	goto __finally1;
-	__catch1_g_regex_error:
+	goto __finally3;
+	__catch3_g_regex_error:
 	{
 		GError * e;
 		e = _inner_error_;
 		_inner_error_ = NULL;
 		{
 			g_assert_not_reached ();
-			(e == NULL) ? NULL : (e = (g_error_free (e), NULL));
+			_g_error_free0 (e);
 		}
 	}
-	__finally1:
+	__finally3:
 	if (_inner_error_ != NULL) {
 		g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, _inner_error_->message);
 		g_clear_error (&_inner_error_);
@@ -360,137 +471,128 @@ static char* string_replace (const char* self, const char* old, const char* repl
 
 
 char* rygel_external_container_substitute_keywords (RygelExternalContainer* self, const char* title) {
+	char* result;
 	char* new_title;
 	char* _tmp0_;
 	char* _tmp1_;
 	g_return_val_if_fail (self != NULL, NULL);
 	g_return_val_if_fail (title != NULL, NULL);
 	new_title = string_replace (title, "@REALNAME@", g_get_real_name ());
-	_tmp0_ = NULL;
-	new_title = (_tmp0_ = string_replace (new_title, "@USERNAME@", g_get_user_name ()), new_title = (g_free (new_title), NULL), _tmp0_);
-	_tmp1_ = NULL;
-	new_title = (_tmp1_ = string_replace (new_title, "@HOSTNAME@", g_get_host_name ()), new_title = (g_free (new_title), NULL), _tmp1_);
-	return new_title;
-}
-
-
-/* Private methods*/
-static RygelMediaObject* rygel_external_container_find_object_sync (RygelExternalContainer* self, const char* id) {
-	RygelMediaObject* obj;
-	g_return_val_if_fail (self != NULL, NULL);
-	g_return_val_if_fail (id != NULL, NULL);
-	obj = NULL;
-	{
-		GeeIterator* _tmp_it;
-		_tmp_it = gee_iterable_iterator ((GeeIterable*) self->priv->media_objects);
-		while (gee_iterator_next (_tmp_it)) {
-			RygelMediaObject* tmp;
-			tmp = (RygelMediaObject*) gee_iterator_get (_tmp_it);
-			if (_vala_strcmp0 (id, tmp->id) == 0) {
-				RygelMediaObject* _tmp1_;
-				RygelMediaObject* _tmp0_;
-				_tmp1_ = NULL;
-				_tmp0_ = NULL;
-				obj = (_tmp1_ = (_tmp0_ = tmp, (_tmp0_ == NULL) ? NULL : g_object_ref (_tmp0_)), (obj == NULL) ? NULL : (obj = (g_object_unref (obj), NULL)), _tmp1_);
-			} else {
-				if (RYGEL_IS_EXTERNAL_CONTAINER (tmp)) {
-					RygelExternalContainer* _tmp2_;
-					RygelExternalContainer* container;
-					RygelMediaObject* _tmp3_;
-					/* Check it's children*/
-					_tmp2_ = NULL;
-					container = (_tmp2_ = RYGEL_EXTERNAL_CONTAINER (tmp), (_tmp2_ == NULL) ? NULL : g_object_ref (_tmp2_));
-					_tmp3_ = NULL;
-					obj = (_tmp3_ = rygel_external_container_find_object_sync (container, id), (obj == NULL) ? NULL : (obj = (g_object_unref (obj), NULL)), _tmp3_);
-					(container == NULL) ? NULL : (container = (g_object_unref (container), NULL));
-				}
-			}
-			if (obj != NULL) {
-				(tmp == NULL) ? NULL : (tmp = (g_object_unref (tmp), NULL));
-				break;
-			}
-			(tmp == NULL) ? NULL : (tmp = (g_object_unref (tmp), NULL));
-		}
-		(_tmp_it == NULL) ? NULL : (_tmp_it = (g_object_unref (_tmp_it), NULL));
-	}
-	return obj;
-}
-
-
-GHashTable* _dynamic_GetAll1 (DBusGProxy* self, const char* param1, GError** error) {
-	GHashTable* result;
-	dbus_g_proxy_call (self, "GetAll", error, G_TYPE_STRING, param1, G_TYPE_INVALID, dbus_g_type_get_map ("GHashTable", G_TYPE_STRING, G_TYPE_VALUE), &result, G_TYPE_INVALID);
-	if (*error) {
-		return NULL;
-	}
+	new_title = (_tmp0_ = string_replace (new_title, "@USERNAME@", g_get_user_name ()), _g_free0 (new_title), _tmp0_);
+	new_title = (_tmp1_ = string_replace (new_title, "@HOSTNAME@", g_get_host_name ()), _g_free0 (new_title), _tmp1_);
+	result = new_title;
 	return result;
 }
 
 
-static GValue* _g_value_dup (GValue* self) {
-	return g_boxed_copy (G_TYPE_VALUE, self);
+static RygelMediaContainer* rygel_external_container_find_container (RygelExternalContainer* self, const char* id) {
+	RygelMediaContainer* result;
+	RygelMediaContainer* container;
+	g_return_val_if_fail (self != NULL, NULL);
+	g_return_val_if_fail (id != NULL, NULL);
+	container = NULL;
+	{
+		GeeIterator* _tmp_it;
+		_tmp_it = gee_abstract_collection_iterator ((GeeAbstractCollection*) self->priv->containers);
+		while (TRUE) {
+			RygelExternalContainer* tmp;
+			if (!gee_iterator_next (_tmp_it)) {
+				break;
+			}
+			tmp = (RygelExternalContainer*) gee_iterator_get (_tmp_it);
+			if (_vala_strcmp0 (id, ((RygelMediaObject*) tmp)->id) == 0) {
+				RygelMediaContainer* _tmp0_;
+				container = (_tmp0_ = _g_object_ref0 ((RygelMediaContainer*) tmp), _g_object_unref0 (container), _tmp0_);
+			} else {
+				RygelMediaContainer* _tmp1_;
+				container = (_tmp1_ = rygel_external_container_find_container (tmp, id), _g_object_unref0 (container), _tmp1_);
+			}
+			if (container != NULL) {
+				_g_object_unref0 (tmp);
+				break;
+			}
+			_g_object_unref0 (tmp);
+		}
+		_g_object_unref0 (_tmp_it);
+	}
+	result = container;
+	return result;
 }
 
 
-static void rygel_external_container_fetch_media_objects (RygelExternalContainer* self, GError** error) {
-	GError * _inner_error_;
-	GHashTable* all_props;
-	GValue* _tmp0_;
-	GValue* value;
-	GPtrArray* obj_paths;
-	GValue* _tmp3_;
-	GValue* _tmp2_;
-	g_return_if_fail (self != NULL);
-	_inner_error_ = NULL;
-	all_props = _dynamic_GetAll1 (self->props, RYGEL_EXTERNAL_CONTAINER_CONTAINER_IFACE, &_inner_error_);
-	if (_inner_error_ != NULL) {
-		g_propagate_error (error, _inner_error_);
+void _dynamic_Get2 (DBusGProxy* self, const char* param1, const char* param2, GValue* param3, GError** error) {
+	dbus_g_proxy_call (self, "Get", error, G_TYPE_STRING, param1, G_TYPE_STRING, param2, G_TYPE_INVALID, G_TYPE_VALUE, param3, G_TYPE_INVALID);
+	if (*error) {
 		return;
 	}
-	_tmp0_ = NULL;
-	value = (_tmp0_ = (GValue*) g_hash_table_lookup (all_props, "Containers"), (_tmp0_ == NULL) ? NULL : _g_value_dup (_tmp0_));
-	obj_paths = (GPtrArray*) g_value_get_boxed (value);
+}
+
+
+void _dynamic_Get3 (DBusGProxy* self, const char* param1, const char* param2, GValue* param3, GError** error) {
+	dbus_g_proxy_call (self, "Get", error, G_TYPE_STRING, param1, G_TYPE_STRING, param2, G_TYPE_INVALID, G_TYPE_VALUE, param3, G_TYPE_INVALID);
+	if (*error) {
+		return;
+	}
+}
+
+
+static void rygel_external_container_update_container (RygelExternalContainer* self, GError** error) {
+	GError * _inner_error_;
+	GValue value = {0};
+	GValue _tmp1_;
+	GValue _tmp0_ = {0};
+	GPtrArray* obj_paths;
+	GValue _tmp6_;
+	GValue _tmp5_ = {0};
+	g_return_if_fail (self != NULL);
+	_inner_error_ = NULL;
+	gee_abstract_collection_clear ((GeeAbstractCollection*) self->priv->containers);
+	_dynamic_Get2 (self->props, RYGEL_EXTERNAL_CONTAINER_CONTAINER_IFACE, "Containers", &_tmp0_, &_inner_error_);
+	value = (_tmp1_ = _tmp0_, G_IS_VALUE (&value) ? (g_value_unset (&value), NULL) : NULL, _tmp1_);
+	if (_inner_error_ != NULL) {
+		g_propagate_error (error, _inner_error_);
+		G_IS_VALUE (&value) ? (g_value_unset (&value), NULL) : NULL;
+		return;
+	}
+	obj_paths = (GPtrArray*) g_value_get_boxed (&value);
 	if (obj_paths->len > 0) {
 		{
 			gint i;
 			i = 0;
-			for (; i < obj_paths->len; i++) {
-				const char* _tmp1_;
-				char* obj_path;
-				RygelExternalContainer* container;
-				_tmp1_ = NULL;
-				obj_path = (_tmp1_ = (const char*) obj_paths->pdata[i], (_tmp1_ == NULL) ? NULL : g_strdup (_tmp1_));
-				container = rygel_external_container_new (obj_path, self->service_name, obj_path, self->host_ip, self);
-				gee_collection_add ((GeeCollection*) self->priv->media_objects, (RygelMediaObject*) container);
-				obj_path = (g_free (obj_path), NULL);
-				(container == NULL) ? NULL : (container = (g_object_unref (container), NULL));
+			{
+				gboolean _tmp2_;
+				_tmp2_ = TRUE;
+				while (TRUE) {
+					char* obj_path;
+					char* _tmp3_;
+					RygelExternalContainer* _tmp4_;
+					RygelExternalContainer* container;
+					if (!_tmp2_) {
+						i++;
+					}
+					_tmp2_ = FALSE;
+					if (!(i < obj_paths->len)) {
+						break;
+					}
+					obj_path = g_strdup ((const char*) obj_paths->pdata[i]);
+					container = (_tmp4_ = rygel_external_container_new (_tmp3_ = g_strconcat ("container:", (const char*) obj_path, NULL), self->service_name, obj_path, self->host_ip, self), _g_free0 (_tmp3_), _tmp4_);
+					gee_abstract_collection_add ((GeeAbstractCollection*) self->priv->containers, container);
+					_g_free0 (obj_path);
+					_g_object_unref0 (container);
+				}
 			}
 		}
 	}
-	_tmp3_ = NULL;
-	_tmp2_ = NULL;
-	value = (_tmp3_ = (_tmp2_ = (GValue*) g_hash_table_lookup (all_props, "Items"), (_tmp2_ == NULL) ? NULL : _g_value_dup (_tmp2_)), (value == NULL) ? NULL : (value = (g_free (value), NULL)), _tmp3_);
-	obj_paths = (GPtrArray*) g_value_get_boxed (value);
-	if (obj_paths->len > 0) {
-		{
-			gint i;
-			i = 0;
-			for (; i < obj_paths->len; i++) {
-				const char* _tmp4_;
-				char* obj_path;
-				RygelExternalItem* _tmp5_;
-				_tmp4_ = NULL;
-				obj_path = (_tmp4_ = (const char*) obj_paths->pdata[i], (_tmp4_ == NULL) ? NULL : g_strdup (_tmp4_));
-				_tmp5_ = NULL;
-				gee_collection_add ((GeeCollection*) self->priv->media_objects, (RygelMediaObject*) (_tmp5_ = rygel_external_item_new (obj_path, self, &_inner_error_)));
-				(_tmp5_ == NULL) ? NULL : (_tmp5_ = (g_object_unref (_tmp5_), NULL));
-				obj_path = (g_free (obj_path), NULL);
-			}
-		}
+	((RygelMediaContainer*) self)->child_count = (guint) gee_collection_get_size ((GeeCollection*) self->priv->containers);
+	_dynamic_Get3 (self->props, RYGEL_EXTERNAL_CONTAINER_CONTAINER_IFACE, "ItemCount", &_tmp5_, &_inner_error_);
+	value = (_tmp6_ = _tmp5_, G_IS_VALUE (&value) ? (g_value_unset (&value), NULL) : NULL, _tmp6_);
+	if (_inner_error_ != NULL) {
+		g_propagate_error (error, _inner_error_);
+		G_IS_VALUE (&value) ? (g_value_unset (&value), NULL) : NULL;
+		return;
 	}
-	((RygelMediaContainer*) self)->child_count = (guint) gee_collection_get_size ((GeeCollection*) self->priv->media_objects);
-	(all_props == NULL) ? NULL : (all_props = (g_hash_table_unref (all_props), NULL));
-	(value == NULL) ? NULL : (value = (g_free (value), NULL));
+	((RygelMediaContainer*) self)->child_count = ((RygelMediaContainer*) self)->child_count + g_value_get_uint (&value);
+	G_IS_VALUE (&value) ? (g_value_unset (&value), NULL) : NULL;
 }
 
 
@@ -499,33 +601,30 @@ static void rygel_external_container_on_container_updated (RygelExternalContaine
 	g_return_if_fail (self != NULL);
 	g_return_if_fail (actual_container != NULL);
 	_inner_error_ = NULL;
-	/* Re-fetch the objects*/
-	gee_collection_clear ((GeeCollection*) self->priv->media_objects);
 	{
-		rygel_external_container_fetch_media_objects (self, &_inner_error_);
+		rygel_external_container_update_container (self, &_inner_error_);
 		if (_inner_error_ != NULL) {
-			goto __catch2_g_error;
-			goto __finally2;
+			goto __catch4_g_error;
+			goto __finally4;
 		}
 	}
-	goto __finally2;
-	__catch2_g_error:
+	goto __finally4;
+	__catch4_g_error:
 	{
 		GError * err;
 		err = _inner_error_;
 		_inner_error_ = NULL;
 		{
-			g_warning ("rygel-external-container.vala:197: Failed to re-fetch media objects: %s\n", err->message);
-			(err == NULL) ? NULL : (err = (g_error_free (err), NULL));
+			g_warning ("rygel-external-container.vala:226: Failed to update information about container '%s': %s\n", ((RygelMediaObject*) self)->id, err->message);
+			_g_error_free0 (err);
 		}
 	}
-	__finally2:
+	__finally4:
 	if (_inner_error_ != NULL) {
 		g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, _inner_error_->message);
 		g_clear_error (&_inner_error_);
 		return;
 	}
-	/* and signal the clients*/
 	rygel_media_container_updated ((RygelMediaContainer*) self);
 }
 
@@ -550,12 +649,12 @@ static void rygel_external_container_instance_init (RygelExternalContainer * sel
 static void rygel_external_container_finalize (GObject* obj) {
 	RygelExternalContainer * self;
 	self = RYGEL_EXTERNAL_CONTAINER (obj);
-	(self->actual_container == NULL) ? NULL : (self->actual_container = (g_object_unref (self->actual_container), NULL));
-	(self->props == NULL) ? NULL : (self->props = (g_object_unref (self->props), NULL));
-	self->host_ip = (g_free (self->host_ip), NULL);
-	self->service_name = (g_free (self->service_name), NULL);
-	self->priv->object_path = (g_free (self->priv->object_path), NULL);
-	(self->priv->media_objects == NULL) ? NULL : (self->priv->media_objects = (g_object_unref (self->priv->media_objects), NULL));
+	_g_object_unref0 (self->actual_container);
+	_g_object_unref0 (self->props);
+	_g_free0 (self->host_ip);
+	_g_free0 (self->service_name);
+	_g_free0 (self->priv->object_path);
+	_g_object_unref0 (self->priv->containers);
 	G_OBJECT_CLASS (rygel_external_container_parent_class)->finalize (obj);
 }
 

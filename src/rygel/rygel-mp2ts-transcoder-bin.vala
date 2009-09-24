@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2009 Nokia Corporation, all rights reserved.
+ * Copyright (C) 2009 Nokia Corporation.
  *
  * Author: Zeeshan Ali (Khattak) <zeeshanak@gnome.org>
  *                               <zeeshan.ali@nokia.com>
@@ -20,7 +20,7 @@
  * along with this program; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
-using Rygel;
+
 using Gst;
 
 /**
@@ -38,14 +38,16 @@ internal class Rygel.MP2TSTranscoderBin : Gst.Bin {
     private dynamic Element video_enc;
     private dynamic Element muxer;
 
-    public MP2TSTranscoderBin (Element         src,
+    public MP2TSTranscoderBin (MediaItem       item,
+                               Element         src,
                                MP2TSTranscoder transcoder)
                                throws Error {
         Element decodebin = GstUtils.create_element (DECODEBIN, DECODEBIN);
         var mp3_transcoder = new MP3Transcoder (MP3Layer.TWO);
-        this.audio_enc = mp3_transcoder.create_encoder (null,
+        this.audio_enc = mp3_transcoder.create_encoder (item,
+                                                        null,
                                                         AUDIO_ENC_SINK);
-        this.video_enc = transcoder.create_encoder (null, VIDEO_ENC_SINK);
+        this.video_enc = transcoder.create_encoder (item, null, VIDEO_ENC_SINK);
         this.muxer = GstUtils.create_element (MUXER, MUXER);
 
         this.add_many (src,

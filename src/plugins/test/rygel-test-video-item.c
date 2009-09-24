@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2008 Zeeshan Ali (Khattak) <zeeshanak@gnome.org>.
- * Copyright (C) 2008 Nokia Corporation, all rights reserved.
+ * Copyright (C) 2008 Nokia Corporation.
  *
  * Author: Zeeshan Ali (Khattak) <zeeshanak@gnome.org>
  *                               <zeeshan.ali@nokia.com>
@@ -51,10 +51,8 @@ typedef struct _RygelTestItemPrivate RygelTestItemPrivate;
 typedef struct _RygelTestVideoItem RygelTestVideoItem;
 typedef struct _RygelTestVideoItemClass RygelTestVideoItemClass;
 typedef struct _RygelTestVideoItemPrivate RygelTestVideoItemPrivate;
+#define _g_error_free0(var) ((var == NULL) ? NULL : (var = (g_error_free (var), NULL)))
 
-/**
- * Represents Test item.
- */
 struct _RygelTestItem {
 	RygelMediaItem parent_instance;
 	RygelTestItemPrivate * priv;
@@ -64,9 +62,6 @@ struct _RygelTestItemClass {
 	RygelMediaItemClass parent_class;
 };
 
-/**
- * Represents Test video item.
- */
 struct _RygelTestVideoItem {
 	RygelTestItem parent_instance;
 	RygelTestVideoItemPrivate * priv;
@@ -77,6 +72,7 @@ struct _RygelTestVideoItemClass {
 };
 
 
+static gpointer rygel_test_video_item_parent_class = NULL;
 
 GType rygel_test_item_get_type (void);
 GType rygel_test_video_item_get_type (void);
@@ -84,14 +80,10 @@ enum  {
 	RYGEL_TEST_VIDEO_ITEM_DUMMY_PROPERTY
 };
 #define RYGEL_TEST_VIDEO_ITEM_TEST_MIMETYPE "video/mpeg"
-RygelTestItem* rygel_test_item_new (const char* id, RygelMediaContainer* parent, const char* title, const char* mime, const char* upnp_class);
 RygelTestItem* rygel_test_item_construct (GType object_type, const char* id, RygelMediaContainer* parent, const char* title, const char* mime, const char* upnp_class);
 RygelTestVideoItem* rygel_test_video_item_new (const char* id, RygelMediaContainer* parent, const char* title);
 RygelTestVideoItem* rygel_test_video_item_construct (GType object_type, const char* id, RygelMediaContainer* parent, const char* title);
-RygelTestVideoItem* rygel_test_video_item_new (const char* id, RygelMediaContainer* parent, const char* title);
-static inline void _dynamic_set_is_live1 (GstElement* obj, gboolean value);
 static GstElement* rygel_test_video_item_real_create_stream_source (RygelMediaItem* base);
-static gpointer rygel_test_video_item_parent_class = NULL;
 
 
 
@@ -110,71 +102,41 @@ RygelTestVideoItem* rygel_test_video_item_new (const char* id, RygelMediaContain
 }
 
 
-static inline void _dynamic_set_is_live1 (GstElement* obj, gboolean value) {
-	g_object_set (obj, "is-live", value, NULL);
-}
-
-
 static GstElement* rygel_test_video_item_real_create_stream_source (RygelMediaItem* base) {
 	RygelTestVideoItem * self;
-	GstBin* bin;
-	GstElement* src;
-	GstElement* encoder;
-	GstElement* muxer;
-	gboolean _tmp0_;
-	gboolean _tmp1_;
-	GstElement* _tmp5_;
-	GstElement* _tmp4_;
-	GstElement* _tmp3_;
-	GstPad* pad;
-	char* _tmp7_;
-	char* _tmp6_;
-	GstGhostPad* _tmp8_;
-	GstGhostPad* ghost;
-	GstPad* _tmp9_;
-	GstElement* _tmp10_;
+	GstElement* result;
+	GError * _inner_error_;
 	self = (RygelTestVideoItem*) base;
-	bin = (GstBin*) gst_bin_new (((RygelMediaObject*) self)->title);
-	src = gst_element_factory_make ("videotestsrc", NULL);
-	encoder = gst_element_factory_make ("ffenc_mpeg2video", NULL);
-	muxer = gst_element_factory_make ("mpegtsmux", NULL);
-	_tmp0_ = FALSE;
-	_tmp1_ = FALSE;
-	if (src == NULL) {
-		_tmp1_ = TRUE;
-	} else {
-		_tmp1_ = muxer == NULL;
+	_inner_error_ = NULL;
+	{
+		GstElement* _tmp0_;
+		_tmp0_ = gst_parse_bin_from_description ("videotestsrc is-live=1 ! ffenc_mpeg2video ! mpegtsmux", TRUE, &_inner_error_);
+		if (_inner_error_ != NULL) {
+			goto __catch1_g_error;
+			goto __finally1;
+		}
+		result = _tmp0_;
+		return result;
 	}
-	if (_tmp1_) {
-		_tmp0_ = TRUE;
-	} else {
-		_tmp0_ = encoder == NULL;
+	goto __finally1;
+	__catch1_g_error:
+	{
+		GError * err;
+		err = _inner_error_;
+		_inner_error_ = NULL;
+		{
+			g_warning ("rygel-test-video-item.vala:49: Required plugin missing (%s)", err->message);
+			result = NULL;
+			_g_error_free0 (err);
+			return result;
+		}
 	}
-	if (_tmp0_) {
-		GstElement* _tmp2_;
-		g_warning ("rygel-test-video-item.vala:54: Required plugin missing");
-		_tmp2_ = NULL;
-		return (_tmp2_ = NULL, (bin == NULL) ? NULL : (bin = (gst_object_unref (bin), NULL)), (src == NULL) ? NULL : (src = (gst_object_unref (src), NULL)), (encoder == NULL) ? NULL : (encoder = (gst_object_unref (encoder), NULL)), (muxer == NULL) ? NULL : (muxer = (gst_object_unref (muxer), NULL)), _tmp2_);
+	__finally1:
+	if (_inner_error_ != NULL) {
+		g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, _inner_error_->message);
+		g_clear_error (&_inner_error_);
+		return NULL;
 	}
-	/* Tell the source to behave like a live source*/
-	_dynamic_set_is_live1 (src, TRUE);
-	/* Add elements to our source bin*/
-	_tmp5_ = NULL;
-	_tmp4_ = NULL;
-	_tmp3_ = NULL;
-	gst_bin_add_many (bin, (_tmp3_ = src, (_tmp3_ == NULL) ? NULL : gst_object_ref (_tmp3_)), (_tmp4_ = encoder, (_tmp4_ == NULL) ? NULL : gst_object_ref (_tmp4_)), (_tmp5_ = muxer, (_tmp5_ == NULL) ? NULL : gst_object_ref (_tmp5_)), NULL);
-	/* Link them*/
-	gst_element_link_many (src, encoder, muxer, NULL);
-	/* Now add the encoder's src pad to the bin*/
-	pad = gst_element_get_static_pad (muxer, "src");
-	_tmp7_ = NULL;
-	_tmp6_ = NULL;
-	_tmp8_ = NULL;
-	ghost = (_tmp8_ = (GstGhostPad*) gst_ghost_pad_new (_tmp7_ = g_strconcat (_tmp6_ = g_strconcat (gst_object_get_name ((GstObject*) bin), ".", NULL), gst_object_get_name ((GstObject*) pad), NULL), pad), _tmp7_ = (g_free (_tmp7_), NULL), _tmp6_ = (g_free (_tmp6_), NULL), _tmp8_);
-	_tmp9_ = NULL;
-	gst_element_add_pad ((GstElement*) bin, (_tmp9_ = (GstPad*) ghost, (_tmp9_ == NULL) ? NULL : gst_object_ref (_tmp9_)));
-	_tmp10_ = NULL;
-	return (_tmp10_ = (GstElement*) bin, (src == NULL) ? NULL : (src = (gst_object_unref (src), NULL)), (encoder == NULL) ? NULL : (encoder = (gst_object_unref (encoder), NULL)), (muxer == NULL) ? NULL : (muxer = (gst_object_unref (muxer), NULL)), (pad == NULL) ? NULL : (pad = (gst_object_unref (pad), NULL)), (ghost == NULL) ? NULL : (ghost = (gst_object_unref (ghost), NULL)), _tmp10_);
 }
 
 

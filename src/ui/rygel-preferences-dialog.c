@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2009 Nokia Corporation, all rights reserved.
+ * Copyright (C) 2009 Nokia Corporation.
  *
  * Author: Zeeshan Ali (Khattak) <zeeshanak@gnome.org>
  *                               <zeeshan.ali@nokia.com>
@@ -23,15 +23,11 @@
 
 #include <glib.h>
 #include <glib-object.h>
-#include <gtk/gtk.h>
-#include <gee/arraylist.h>
 #include <rygel.h>
-#include <gee/collection.h>
+#include <gtk/gtk.h>
+#include <gee.h>
 #include <stdlib.h>
 #include <string.h>
-#include <gdk/gdk.h>
-#include <gee/iterable.h>
-#include <gee/iterator.h>
 
 
 #define RYGEL_TYPE_PREFERENCES_DIALOG (rygel_preferences_dialog_get_type ())
@@ -54,6 +50,7 @@ typedef struct _RygelPreferencesDialogPrivate RygelPreferencesDialogPrivate;
 
 typedef struct _RygelPreferencesSection RygelPreferencesSection;
 typedef struct _RygelPreferencesSectionClass RygelPreferencesSectionClass;
+#define _g_object_unref0(var) ((var == NULL) ? NULL : (var = (g_object_unref (var), NULL)))
 
 #define RYGEL_TYPE_GENERAL_PREF_SECTION (rygel_general_pref_section_get_type ())
 #define RYGEL_GENERAL_PREF_SECTION(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_GENERAL_PREF_SECTION, RygelGeneralPrefSection))
@@ -75,15 +72,26 @@ typedef struct _RygelGeneralPrefSectionClass RygelGeneralPrefSectionClass;
 typedef struct _RygelPluginPrefSection RygelPluginPrefSection;
 typedef struct _RygelPluginPrefSectionClass RygelPluginPrefSectionClass;
 
-#define RYGEL_TYPE_FOLDER_PREF_SECTION (rygel_folder_pref_section_get_type ())
-#define RYGEL_FOLDER_PREF_SECTION(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_FOLDER_PREF_SECTION, RygelFolderPrefSection))
-#define RYGEL_FOLDER_PREF_SECTION_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TYPE_FOLDER_PREF_SECTION, RygelFolderPrefSectionClass))
-#define RYGEL_IS_FOLDER_PREF_SECTION(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TYPE_FOLDER_PREF_SECTION))
-#define RYGEL_IS_FOLDER_PREF_SECTION_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_TYPE_FOLDER_PREF_SECTION))
-#define RYGEL_FOLDER_PREF_SECTION_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_TYPE_FOLDER_PREF_SECTION, RygelFolderPrefSectionClass))
+#define RYGEL_TYPE_TRACKER_PREF_SECTION (rygel_tracker_pref_section_get_type ())
+#define RYGEL_TRACKER_PREF_SECTION(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_TRACKER_PREF_SECTION, RygelTrackerPrefSection))
+#define RYGEL_TRACKER_PREF_SECTION_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TYPE_TRACKER_PREF_SECTION, RygelTrackerPrefSectionClass))
+#define RYGEL_IS_TRACKER_PREF_SECTION(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TYPE_TRACKER_PREF_SECTION))
+#define RYGEL_IS_TRACKER_PREF_SECTION_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_TYPE_TRACKER_PREF_SECTION))
+#define RYGEL_TRACKER_PREF_SECTION_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_TYPE_TRACKER_PREF_SECTION, RygelTrackerPrefSectionClass))
 
-typedef struct _RygelFolderPrefSection RygelFolderPrefSection;
-typedef struct _RygelFolderPrefSectionClass RygelFolderPrefSectionClass;
+typedef struct _RygelTrackerPrefSection RygelTrackerPrefSection;
+typedef struct _RygelTrackerPrefSectionClass RygelTrackerPrefSectionClass;
+
+#define RYGEL_TYPE_MEDIA_EXPORT_PREF_SECTION (rygel_media_export_pref_section_get_type ())
+#define RYGEL_MEDIA_EXPORT_PREF_SECTION(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_MEDIA_EXPORT_PREF_SECTION, RygelMediaExportPrefSection))
+#define RYGEL_MEDIA_EXPORT_PREF_SECTION_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TYPE_MEDIA_EXPORT_PREF_SECTION, RygelMediaExportPrefSectionClass))
+#define RYGEL_IS_MEDIA_EXPORT_PREF_SECTION(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TYPE_MEDIA_EXPORT_PREF_SECTION))
+#define RYGEL_IS_MEDIA_EXPORT_PREF_SECTION_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_TYPE_MEDIA_EXPORT_PREF_SECTION))
+#define RYGEL_MEDIA_EXPORT_PREF_SECTION_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_TYPE_MEDIA_EXPORT_PREF_SECTION, RygelMediaExportPrefSectionClass))
+
+typedef struct _RygelMediaExportPrefSection RygelMediaExportPrefSection;
+typedef struct _RygelMediaExportPrefSectionClass RygelMediaExportPrefSectionClass;
+#define _g_error_free0(var) ((var == NULL) ? NULL : (var = (g_error_free (var), NULL)))
 
 struct _RygelPreferencesDialog {
 	GObject parent_instance;
@@ -95,12 +103,14 @@ struct _RygelPreferencesDialogClass {
 };
 
 struct _RygelPreferencesDialogPrivate {
+	RygelUserConfig* config;
 	GtkBuilder* builder;
 	GtkDialog* dialog;
 	GeeArrayList* sections;
 };
 
 
+static gpointer rygel_preferences_dialog_parent_class = NULL;
 
 GType rygel_preferences_dialog_get_type (void);
 GType rygel_preferences_section_get_type (void);
@@ -110,94 +120,70 @@ enum  {
 };
 #define RYGEL_PREFERENCES_DIALOG_UI_FILE DATA_DIR "/rygel-preferences.ui"
 #define RYGEL_PREFERENCES_DIALOG_DIALOG "preferences-dialog"
-RygelGeneralPrefSection* rygel_general_pref_section_new (GtkBuilder* builder, RygelConfiguration* config, GError** error);
-RygelGeneralPrefSection* rygel_general_pref_section_construct (GType object_type, GtkBuilder* builder, RygelConfiguration* config, GError** error);
+RygelGeneralPrefSection* rygel_general_pref_section_new (GtkBuilder* builder, RygelUserConfig* config, GError** error);
+RygelGeneralPrefSection* rygel_general_pref_section_construct (GType object_type, GtkBuilder* builder, RygelUserConfig* config, GError** error);
 GType rygel_general_pref_section_get_type (void);
-RygelPluginPrefSection* rygel_plugin_pref_section_new (GtkBuilder* builder, RygelConfiguration* config, const char* name);
-RygelPluginPrefSection* rygel_plugin_pref_section_construct (GType object_type, GtkBuilder* builder, RygelConfiguration* config, const char* name);
+RygelTrackerPrefSection* rygel_tracker_pref_section_new (GtkBuilder* builder, RygelUserConfig* config);
+RygelTrackerPrefSection* rygel_tracker_pref_section_construct (GType object_type, GtkBuilder* builder, RygelUserConfig* config);
 GType rygel_plugin_pref_section_get_type (void);
-RygelFolderPrefSection* rygel_folder_pref_section_new (GtkBuilder* builder, RygelConfiguration* config);
-RygelFolderPrefSection* rygel_folder_pref_section_construct (GType object_type, GtkBuilder* builder, RygelConfiguration* config);
-GType rygel_folder_pref_section_get_type (void);
-static void rygel_preferences_dialog_on_response (RygelPreferencesDialog* self, GtkDialog* dialog, gint response_id);
-static void _rygel_preferences_dialog_on_response_gtk_dialog_response (GtkDialog* _sender, gint response_id, gpointer self);
-static gboolean _lambda0_ (GtkDialog* dialog, GdkEvent* event, RygelPreferencesDialog* self);
-static gboolean __lambda0__gtk_widget_delete_event (GtkDialog* _sender, GdkEvent* event, gpointer self);
+GType rygel_tracker_pref_section_get_type (void);
+RygelMediaExportPrefSection* rygel_media_export_pref_section_new (GtkBuilder* builder, RygelUserConfig* config);
+RygelMediaExportPrefSection* rygel_media_export_pref_section_construct (GType object_type, GtkBuilder* builder, RygelUserConfig* config);
+GType rygel_media_export_pref_section_get_type (void);
 RygelPreferencesDialog* rygel_preferences_dialog_new (GError** error);
 RygelPreferencesDialog* rygel_preferences_dialog_construct (GType object_type, GError** error);
-RygelPreferencesDialog* rygel_preferences_dialog_new (GError** error);
-static void rygel_preferences_dialog_apply_settings (RygelPreferencesDialog* self);
 void rygel_preferences_section_save (RygelPreferencesSection* self);
 void rygel_preferences_dialog_run (RygelPreferencesDialog* self);
 gint rygel_preferences_dialog_main (char** args, int args_length1);
-static gpointer rygel_preferences_dialog_parent_class = NULL;
 static void rygel_preferences_dialog_finalize (GObject* obj);
 
 
 
-static void _rygel_preferences_dialog_on_response_gtk_dialog_response (GtkDialog* _sender, gint response_id, gpointer self) {
-	rygel_preferences_dialog_on_response (self, _sender, response_id);
-}
-
-
-static gboolean _lambda0_ (GtkDialog* dialog, GdkEvent* event, RygelPreferencesDialog* self) {
-	g_return_val_if_fail (dialog != NULL, FALSE);
-	g_return_val_if_fail (event != NULL, FALSE);
-	gtk_main_quit ();
-	return FALSE;
-}
-
-
-static gboolean __lambda0__gtk_widget_delete_event (GtkDialog* _sender, GdkEvent* event, gpointer self) {
-	return _lambda0_ (_sender, event, self);
+static gpointer _g_object_ref0 (gpointer self) {
+	return self ? g_object_ref (self) : NULL;
 }
 
 
 RygelPreferencesDialog* rygel_preferences_dialog_construct (GType object_type, GError** error) {
 	GError * _inner_error_;
 	RygelPreferencesDialog * self;
-	RygelConfiguration* config;
-	GtkBuilder* _tmp0_;
-	GtkDialog* _tmp2_;
-	GtkDialog* _tmp1_;
-	GeeArrayList* _tmp3_;
-	RygelGeneralPrefSection* _tmp4_;
-	RygelPluginPrefSection* _tmp5_;
-	RygelPluginPrefSection* _tmp6_;
-	RygelFolderPrefSection* _tmp7_;
+	RygelUserConfig* _tmp0_;
+	RygelUserConfig* _tmp1_;
+	GtkBuilder* _tmp2_;
+	GtkDialog* _tmp3_;
+	GeeArrayList* _tmp4_;
+	RygelGeneralPrefSection* _tmp5_;
+	RygelGeneralPrefSection* _tmp6_;
+	RygelTrackerPrefSection* _tmp7_;
+	RygelMediaExportPrefSection* _tmp8_;
 	_inner_error_ = NULL;
-	self = g_object_newv (object_type, 0, NULL);
-	config = rygel_configuration_get_default ();
-	_tmp0_ = NULL;
-	self->priv->builder = (_tmp0_ = gtk_builder_new (), (self->priv->builder == NULL) ? NULL : (self->priv->builder = (g_object_unref (self->priv->builder), NULL)), _tmp0_);
+	self = (RygelPreferencesDialog*) g_object_new (object_type, NULL);
+	_tmp0_ = rygel_user_config_new (FALSE, &_inner_error_);
+	if (_inner_error_ != NULL) {
+		g_propagate_error (error, _inner_error_);
+		return;
+	}
+	self->priv->config = (_tmp1_ = _tmp0_, _g_object_unref0 (self->priv->config), _tmp1_);
+	self->priv->builder = (_tmp2_ = gtk_builder_new (), _g_object_unref0 (self->priv->builder), _tmp2_);
 	gtk_builder_add_from_file (self->priv->builder, RYGEL_PREFERENCES_DIALOG_UI_FILE, &_inner_error_);
 	if (_inner_error_ != NULL) {
 		g_propagate_error (error, _inner_error_);
-		(config == NULL) ? NULL : (config = (g_object_unref (config), NULL));
 		return;
 	}
-	_tmp2_ = NULL;
-	_tmp1_ = NULL;
-	self->priv->dialog = (_tmp2_ = (_tmp1_ = GTK_DIALOG (gtk_builder_get_object (self->priv->builder, RYGEL_PREFERENCES_DIALOG_DIALOG)), (_tmp1_ == NULL) ? NULL : g_object_ref (_tmp1_)), (self->priv->dialog == NULL) ? NULL : (self->priv->dialog = (g_object_unref (self->priv->dialog), NULL)), _tmp2_);
+	self->priv->dialog = (_tmp3_ = _g_object_ref0 (GTK_DIALOG (gtk_builder_get_object (self->priv->builder, RYGEL_PREFERENCES_DIALOG_DIALOG))), _g_object_unref0 (self->priv->dialog), _tmp3_);
 	g_assert (self->priv->dialog != NULL);
-	_tmp3_ = NULL;
-	self->priv->sections = (_tmp3_ = gee_array_list_new (RYGEL_TYPE_PREFERENCES_SECTION, (GBoxedCopyFunc) g_object_ref, g_object_unref, g_direct_equal), (self->priv->sections == NULL) ? NULL : (self->priv->sections = (g_object_unref (self->priv->sections), NULL)), _tmp3_);
-	_tmp4_ = NULL;
-	gee_collection_add ((GeeCollection*) self->priv->sections, (RygelPreferencesSection*) (_tmp4_ = rygel_general_pref_section_new (self->priv->builder, config, &_inner_error_)));
-	(_tmp4_ == NULL) ? NULL : (_tmp4_ = (g_object_unref (_tmp4_), NULL));
-	_tmp5_ = NULL;
-	gee_collection_add ((GeeCollection*) self->priv->sections, (RygelPreferencesSection*) (_tmp5_ = rygel_plugin_pref_section_new (self->priv->builder, config, "Tracker")));
-	(_tmp5_ == NULL) ? NULL : (_tmp5_ = (g_object_unref (_tmp5_), NULL));
-	_tmp6_ = NULL;
-	gee_collection_add ((GeeCollection*) self->priv->sections, (RygelPreferencesSection*) (_tmp6_ = rygel_plugin_pref_section_new (self->priv->builder, config, "DVB")));
-	(_tmp6_ == NULL) ? NULL : (_tmp6_ = (g_object_unref (_tmp6_), NULL));
-	_tmp7_ = NULL;
-	gee_collection_add ((GeeCollection*) self->priv->sections, (RygelPreferencesSection*) (_tmp7_ = rygel_folder_pref_section_new (self->priv->builder, config)));
-	(_tmp7_ == NULL) ? NULL : (_tmp7_ = (g_object_unref (_tmp7_), NULL));
-	g_signal_connect_object (self->priv->dialog, "response", (GCallback) _rygel_preferences_dialog_on_response_gtk_dialog_response, self, 0);
-	g_signal_connect ((GtkWidget*) self->priv->dialog, "delete-event", (GCallback) __lambda0__gtk_widget_delete_event, self);
-	gtk_widget_show_all ((GtkWidget*) self->priv->dialog);
-	(config == NULL) ? NULL : (config = (g_object_unref (config), NULL));
+	self->priv->sections = (_tmp4_ = gee_array_list_new (RYGEL_TYPE_PREFERENCES_SECTION, (GBoxedCopyFunc) g_object_ref, g_object_unref, g_direct_equal), _g_object_unref0 (self->priv->sections), _tmp4_);
+	_tmp5_ = rygel_general_pref_section_new (self->priv->builder, self->priv->config, &_inner_error_);
+	if (_inner_error_ != NULL) {
+		g_propagate_error (error, _inner_error_);
+		return;
+	}
+	gee_abstract_collection_add ((GeeAbstractCollection*) self->priv->sections, (RygelPreferencesSection*) (_tmp6_ = _tmp5_));
+	_g_object_unref0 (_tmp6_);
+	gee_abstract_collection_add ((GeeAbstractCollection*) self->priv->sections, (RygelPreferencesSection*) (_tmp7_ = rygel_tracker_pref_section_new (self->priv->builder, self->priv->config)));
+	_g_object_unref0 (_tmp7_);
+	gee_abstract_collection_add ((GeeAbstractCollection*) self->priv->sections, (RygelPreferencesSection*) (_tmp8_ = rygel_media_export_pref_section_new (self->priv->builder, self->priv->config)));
+	_g_object_unref0 (_tmp8_);
 	return self;
 }
 
@@ -207,53 +193,29 @@ RygelPreferencesDialog* rygel_preferences_dialog_new (GError** error) {
 }
 
 
-static void rygel_preferences_dialog_on_response (RygelPreferencesDialog* self, GtkDialog* dialog, gint response_id) {
-	g_return_if_fail (self != NULL);
-	g_return_if_fail (dialog != NULL);
-	switch (response_id) {
-		case GTK_RESPONSE_CANCEL:
-		{
-			gtk_main_quit ();
-			break;
-		}
-		case GTK_RESPONSE_OK:
-		{
-			rygel_preferences_dialog_apply_settings (self);
-			gtk_main_quit ();
-			break;
-		}
-		case GTK_RESPONSE_APPLY:
-		{
-			rygel_preferences_dialog_apply_settings (self);
-			break;
-		}
-	}
-}
-
-
-static void rygel_preferences_dialog_apply_settings (RygelPreferencesDialog* self) {
-	g_return_if_fail (self != NULL);
-	{
-		GeeIterator* _section_it;
-		_section_it = gee_iterable_iterator ((GeeIterable*) self->priv->sections);
-		while (gee_iterator_next (_section_it)) {
-			RygelPreferencesSection* section;
-			section = (RygelPreferencesSection*) gee_iterator_get (_section_it);
-			rygel_preferences_section_save (section);
-			(section == NULL) ? NULL : (section = (g_object_unref (section), NULL));
-		}
-		(_section_it == NULL) ? NULL : (_section_it = (g_object_unref (_section_it), NULL));
-	}
-}
-
-
 void rygel_preferences_dialog_run (RygelPreferencesDialog* self) {
 	g_return_if_fail (self != NULL);
-	gtk_main ();
+	gtk_dialog_run (self->priv->dialog);
+	{
+		GeeIterator* _section_it;
+		_section_it = gee_abstract_collection_iterator ((GeeAbstractCollection*) self->priv->sections);
+		while (TRUE) {
+			RygelPreferencesSection* section;
+			if (!gee_iterator_next (_section_it)) {
+				break;
+			}
+			section = (RygelPreferencesSection*) gee_iterator_get (_section_it);
+			rygel_preferences_section_save (section);
+			_g_object_unref0 (section);
+		}
+		_g_object_unref0 (_section_it);
+	}
+	rygel_user_config_save (self->priv->config);
 }
 
 
 gint rygel_preferences_dialog_main (char** args, int args_length1) {
+	gint result;
 	GError * _inner_error_;
 	_inner_error_ = NULL;
 	gtk_init (&args_length1, &args);
@@ -265,7 +227,7 @@ gint rygel_preferences_dialog_main (char** args, int args_length1) {
 			goto __finally0;
 		}
 		rygel_preferences_dialog_run (dialog);
-		(dialog == NULL) ? NULL : (dialog = (g_object_unref (dialog), NULL));
+		_g_object_unref0 (dialog);
 	}
 	goto __finally0;
 	__catch0_g_error:
@@ -274,8 +236,8 @@ gint rygel_preferences_dialog_main (char** args, int args_length1) {
 		err = _inner_error_;
 		_inner_error_ = NULL;
 		{
-			g_error ("rygel-preferences-dialog.vala:99: Failed to create preferences dialog: %s\n", err->message);
-			(err == NULL) ? NULL : (err = (g_error_free (err), NULL));
+			g_error ("rygel-preferences-dialog.vala:70: Failed to create preferences dialog: %s\n", err->message);
+			_g_error_free0 (err);
 		}
 	}
 	__finally0:
@@ -284,11 +246,13 @@ gint rygel_preferences_dialog_main (char** args, int args_length1) {
 		g_clear_error (&_inner_error_);
 		return 0;
 	}
-	return 0;
+	result = 0;
+	return result;
 }
 
 
 int main (int argc, char ** argv) {
+	g_thread_init (NULL);
 	g_type_init ();
 	return rygel_preferences_dialog_main (argv, argc);
 }
@@ -309,9 +273,10 @@ static void rygel_preferences_dialog_instance_init (RygelPreferencesDialog * sel
 static void rygel_preferences_dialog_finalize (GObject* obj) {
 	RygelPreferencesDialog * self;
 	self = RYGEL_PREFERENCES_DIALOG (obj);
-	(self->priv->builder == NULL) ? NULL : (self->priv->builder = (g_object_unref (self->priv->builder), NULL));
-	(self->priv->dialog == NULL) ? NULL : (self->priv->dialog = (g_object_unref (self->priv->dialog), NULL));
-	(self->priv->sections == NULL) ? NULL : (self->priv->sections = (g_object_unref (self->priv->sections), NULL));
+	_g_object_unref0 (self->priv->config);
+	_g_object_unref0 (self->priv->builder);
+	_g_object_unref0 (self->priv->dialog);
+	_g_object_unref0 (self->priv->sections);
 	G_OBJECT_CLASS (rygel_preferences_dialog_parent_class)->finalize (obj);
 }
 

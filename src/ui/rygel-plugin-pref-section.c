@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2009 Nokia Corporation, all rights reserved.
+ * Copyright (C) 2009 Nokia Corporation.
  *
  * Author: Zeeshan Ali (Khattak) <zeeshanak@gnome.org>
  *                               <zeeshan.ali@nokia.com>
@@ -50,11 +50,15 @@ typedef struct _RygelPreferencesSectionPrivate RygelPreferencesSectionPrivate;
 typedef struct _RygelPluginPrefSection RygelPluginPrefSection;
 typedef struct _RygelPluginPrefSectionClass RygelPluginPrefSectionClass;
 typedef struct _RygelPluginPrefSectionPrivate RygelPluginPrefSectionPrivate;
+#define _g_object_unref0(var) ((var == NULL) ? NULL : (var = (g_object_unref (var), NULL)))
+#define _g_free0(var) (var = (g_free (var), NULL))
+#define _g_error_free0(var) ((var == NULL) ? NULL : (var = (g_error_free (var), NULL)))
+#define _g_regex_unref0(var) ((var == NULL) ? NULL : (var = (g_regex_unref (var), NULL)))
 
 struct _RygelPreferencesSection {
 	GObject parent_instance;
 	RygelPreferencesSectionPrivate * priv;
-	RygelConfiguration* config;
+	RygelUserConfig* config;
 	char* name;
 };
 
@@ -79,6 +83,7 @@ struct _RygelPluginPrefSectionPrivate {
 };
 
 
+static gpointer rygel_plugin_pref_section_parent_class = NULL;
 
 GType rygel_preferences_section_get_type (void);
 GType rygel_plugin_pref_section_get_type (void);
@@ -88,21 +93,24 @@ enum  {
 };
 #define RYGEL_PLUGIN_PREF_SECTION_ENABLED_CHECK "-enabled-checkbutton"
 #define RYGEL_PLUGIN_PREF_SECTION_TITLE_ENTRY "-title-entry"
-RygelPreferencesSection* rygel_preferences_section_new (RygelConfiguration* config, const char* name);
-RygelPreferencesSection* rygel_preferences_section_construct (GType object_type, RygelConfiguration* config, const char* name);
+RygelPreferencesSection* rygel_preferences_section_construct (GType object_type, RygelUserConfig* config, const char* name);
 void rygel_plugin_pref_section_on_enabled_check_toggled (RygelPluginPrefSection* self, GtkCheckButton* enabled_check);
 static void _rygel_plugin_pref_section_on_enabled_check_toggled_gtk_toggle_button_toggled (GtkCheckButton* _sender, gpointer self);
-RygelPluginPrefSection* rygel_plugin_pref_section_new (GtkBuilder* builder, RygelConfiguration* config, const char* name);
-RygelPluginPrefSection* rygel_plugin_pref_section_construct (GType object_type, GtkBuilder* builder, RygelConfiguration* config, const char* name);
-RygelPluginPrefSection* rygel_plugin_pref_section_new (GtkBuilder* builder, RygelConfiguration* config, const char* name);
+RygelPluginPrefSection* rygel_plugin_pref_section_new (GtkBuilder* builder, RygelUserConfig* config, const char* name);
+RygelPluginPrefSection* rygel_plugin_pref_section_construct (GType object_type, GtkBuilder* builder, RygelUserConfig* config, const char* name);
 static void rygel_plugin_pref_section_real_save (RygelPreferencesSection* base);
 static void rygel_plugin_pref_section_real_on_enabled_check_toggled (RygelPluginPrefSection* self, GtkCheckButton* enabled_check);
-static gpointer rygel_plugin_pref_section_parent_class = NULL;
 static void rygel_plugin_pref_section_finalize (GObject* obj);
 
 
 
+static gpointer _g_object_ref0 (gpointer self) {
+	return self ? g_object_ref (self) : NULL;
+}
+
+
 static char* string_replace (const char* self, const char* old, const char* replacement) {
+	char* result;
 	GError * _inner_error_;
 	g_return_val_if_fail (self != NULL, NULL);
 	g_return_val_if_fail (old != NULL, NULL);
@@ -113,39 +121,37 @@ static char* string_replace (const char* self, const char* old, const char* repl
 		GRegex* _tmp1_;
 		GRegex* regex;
 		char* _tmp2_;
-		char* _tmp3_;
-		_tmp0_ = NULL;
-		_tmp1_ = NULL;
-		regex = (_tmp1_ = g_regex_new (_tmp0_ = g_regex_escape_string (old, -1), 0, 0, &_inner_error_), _tmp0_ = (g_free (_tmp0_), NULL), _tmp1_);
+		regex = (_tmp1_ = g_regex_new (_tmp0_ = g_regex_escape_string (old, -1), 0, 0, &_inner_error_), _g_free0 (_tmp0_), _tmp1_);
 		if (_inner_error_ != NULL) {
 			if (_inner_error_->domain == G_REGEX_ERROR) {
-				goto __catch1_g_regex_error;
+				goto __catch9_g_regex_error;
 			}
-			goto __finally1;
+			goto __finally9;
 		}
 		_tmp2_ = g_regex_replace_literal (regex, self, (glong) (-1), 0, replacement, 0, &_inner_error_);
 		if (_inner_error_ != NULL) {
-			(regex == NULL) ? NULL : (regex = (g_regex_unref (regex), NULL));
+			_g_regex_unref0 (regex);
 			if (_inner_error_->domain == G_REGEX_ERROR) {
-				goto __catch1_g_regex_error;
+				goto __catch9_g_regex_error;
 			}
-			goto __finally1;
+			goto __finally9;
 		}
-		_tmp3_ = NULL;
-		return (_tmp3_ = _tmp2_, (regex == NULL) ? NULL : (regex = (g_regex_unref (regex), NULL)), _tmp3_);
+		result = _tmp2_;
+		_g_regex_unref0 (regex);
+		return result;
 	}
-	goto __finally1;
-	__catch1_g_regex_error:
+	goto __finally9;
+	__catch9_g_regex_error:
 	{
 		GError * e;
 		e = _inner_error_;
 		_inner_error_ = NULL;
 		{
 			g_assert_not_reached ();
-			(e == NULL) ? NULL : (e = (g_error_free (e), NULL));
+			_g_error_free0 (e);
 		}
 	}
-	__finally1:
+	__finally9:
 	if (_inner_error_ != NULL) {
 		g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, _inner_error_->message);
 		g_clear_error (&_inner_error_);
@@ -159,57 +165,81 @@ static void _rygel_plugin_pref_section_on_enabled_check_toggled_gtk_toggle_butto
 }
 
 
-RygelPluginPrefSection* rygel_plugin_pref_section_construct (GType object_type, GtkBuilder* builder, RygelConfiguration* config, const char* name) {
+RygelPluginPrefSection* rygel_plugin_pref_section_construct (GType object_type, GtkBuilder* builder, RygelUserConfig* config, const char* name) {
+	GError * _inner_error_;
 	RygelPluginPrefSection * self;
-	GtkCheckButton* _tmp3_;
 	GtkCheckButton* _tmp2_;
 	char* _tmp1_;
 	char* _tmp0_;
-	GtkEntry* _tmp7_;
-	GtkEntry* _tmp6_;
-	char* _tmp5_;
+	GtkEntry* _tmp5_;
 	char* _tmp4_;
-	char* _tmp8_;
-	char* _tmp9_;
+	char* _tmp3_;
+	gboolean _tmp6_;
 	char* title;
 	char* _tmp10_;
 	char* _tmp11_;
+	char* _tmp12_;
 	g_return_val_if_fail (builder != NULL, NULL);
 	g_return_val_if_fail (config != NULL, NULL);
 	g_return_val_if_fail (name != NULL, NULL);
+	_inner_error_ = NULL;
 	self = (RygelPluginPrefSection*) rygel_preferences_section_construct (object_type, config, name);
-	_tmp3_ = NULL;
-	_tmp2_ = NULL;
-	_tmp1_ = NULL;
-	_tmp0_ = NULL;
-	self->priv->enabled_check = (_tmp3_ = (_tmp2_ = GTK_CHECK_BUTTON (gtk_builder_get_object (builder, _tmp1_ = g_strconcat (_tmp0_ = g_utf8_strdown (name, -1), RYGEL_PLUGIN_PREF_SECTION_ENABLED_CHECK, NULL))), (_tmp2_ == NULL) ? NULL : g_object_ref (_tmp2_)), (self->priv->enabled_check == NULL) ? NULL : (self->priv->enabled_check = (g_object_unref (self->priv->enabled_check), NULL)), _tmp3_);
-	_tmp1_ = (g_free (_tmp1_), NULL);
-	_tmp0_ = (g_free (_tmp0_), NULL);
+	self->priv->enabled_check = (_tmp2_ = _g_object_ref0 (GTK_CHECK_BUTTON (gtk_builder_get_object (builder, _tmp1_ = g_strconcat (_tmp0_ = g_utf8_strdown (name, -1), RYGEL_PLUGIN_PREF_SECTION_ENABLED_CHECK, NULL)))), _g_object_unref0 (self->priv->enabled_check), _tmp2_);
+	_g_free0 (_tmp1_);
+	_g_free0 (_tmp0_);
 	g_assert (self->priv->enabled_check != NULL);
-	_tmp7_ = NULL;
-	_tmp6_ = NULL;
-	_tmp5_ = NULL;
-	_tmp4_ = NULL;
-	self->priv->title_entry = (_tmp7_ = (_tmp6_ = GTK_ENTRY (gtk_builder_get_object (builder, _tmp5_ = g_strconcat (_tmp4_ = g_utf8_strdown (name, -1), RYGEL_PLUGIN_PREF_SECTION_TITLE_ENTRY, NULL))), (_tmp6_ == NULL) ? NULL : g_object_ref (_tmp6_)), (self->priv->title_entry == NULL) ? NULL : (self->priv->title_entry = (g_object_unref (self->priv->title_entry), NULL)), _tmp7_);
-	_tmp5_ = (g_free (_tmp5_), NULL);
-	_tmp4_ = (g_free (_tmp4_), NULL);
+	self->priv->title_entry = (_tmp5_ = _g_object_ref0 (GTK_ENTRY (gtk_builder_get_object (builder, _tmp4_ = g_strconcat (_tmp3_ = g_utf8_strdown (name, -1), RYGEL_PLUGIN_PREF_SECTION_TITLE_ENTRY, NULL)))), _g_object_unref0 (self->priv->title_entry), _tmp5_);
+	_g_free0 (_tmp4_);
+	_g_free0 (_tmp3_);
 	g_assert (self->priv->title_entry != NULL);
-	gtk_toggle_button_set_active ((GtkToggleButton*) self->priv->enabled_check, rygel_configuration_get_enabled (config, name));
-	_tmp8_ = NULL;
-	_tmp9_ = NULL;
-	title = (_tmp9_ = string_replace (_tmp8_ = rygel_configuration_get_title (config, name, name), "@REALNAME@", "%n"), _tmp8_ = (g_free (_tmp8_), NULL), _tmp9_);
-	_tmp10_ = NULL;
-	title = (_tmp10_ = string_replace (title, "@USERNAME@", "%u"), title = (g_free (title), NULL), _tmp10_);
-	_tmp11_ = NULL;
-	title = (_tmp11_ = string_replace (title, "@HOSTNAME@", "%h"), title = (g_free (title), NULL), _tmp11_);
+	_tmp6_ = rygel_configuration_get_enabled ((RygelConfiguration*) config, name, &_inner_error_);
+	if (_inner_error_ != NULL) {
+		g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, _inner_error_->message);
+		g_clear_error (&_inner_error_);
+		return NULL;
+	}
+	gtk_toggle_button_set_active ((GtkToggleButton*) self->priv->enabled_check, _tmp6_);
+	title = NULL;
+	{
+		char* _tmp7_;
+		char* _tmp8_;
+		_tmp7_ = rygel_configuration_get_title ((RygelConfiguration*) config, name, &_inner_error_);
+		if (_inner_error_ != NULL) {
+			goto __catch8_g_error;
+			goto __finally8;
+		}
+		title = (_tmp8_ = _tmp7_, _g_free0 (title), _tmp8_);
+	}
+	goto __finally8;
+	__catch8_g_error:
+	{
+		GError * err;
+		err = _inner_error_;
+		_inner_error_ = NULL;
+		{
+			char* _tmp9_;
+			title = (_tmp9_ = g_strdup (name), _g_free0 (title), _tmp9_);
+			_g_error_free0 (err);
+		}
+	}
+	__finally8:
+	if (_inner_error_ != NULL) {
+		_g_free0 (title);
+		g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, _inner_error_->message);
+		g_clear_error (&_inner_error_);
+		return NULL;
+	}
+	title = (_tmp10_ = string_replace (title, "@REALNAME@", "%n"), _g_free0 (title), _tmp10_);
+	title = (_tmp11_ = string_replace (title, "@USERNAME@", "%u"), _g_free0 (title), _tmp11_);
+	title = (_tmp12_ = string_replace (title, "@HOSTNAME@", "%h"), _g_free0 (title), _tmp12_);
 	gtk_entry_set_text (self->priv->title_entry, title);
 	g_signal_connect_object ((GtkToggleButton*) self->priv->enabled_check, "toggled", (GCallback) _rygel_plugin_pref_section_on_enabled_check_toggled_gtk_toggle_button_toggled, self, 0);
-	title = (g_free (title), NULL);
+	_g_free0 (title);
 	return self;
 }
 
 
-RygelPluginPrefSection* rygel_plugin_pref_section_new (GtkBuilder* builder, RygelConfiguration* config, const char* name) {
+RygelPluginPrefSection* rygel_plugin_pref_section_new (GtkBuilder* builder, RygelUserConfig* config, const char* name) {
 	return rygel_plugin_pref_section_construct (RYGEL_TYPE_PLUGIN_PREF_SECTION, builder, config, name);
 }
 
@@ -220,14 +250,12 @@ static void rygel_plugin_pref_section_real_save (RygelPreferencesSection* base) 
 	char* _tmp0_;
 	char* _tmp1_;
 	self = (RygelPluginPrefSection*) base;
-	rygel_configuration_set_bool (((RygelPreferencesSection*) self)->config, ((RygelPreferencesSection*) self)->name, RYGEL_CONFIGURATION_ENABLED_KEY, gtk_toggle_button_get_active ((GtkToggleButton*) self->priv->enabled_check));
+	rygel_user_config_set_bool (((RygelPreferencesSection*) self)->config, ((RygelPreferencesSection*) self)->name, RYGEL_USER_CONFIG_ENABLED_KEY, gtk_toggle_button_get_active ((GtkToggleButton*) self->priv->enabled_check));
 	title = string_replace (gtk_entry_get_text (self->priv->title_entry), "%n", "@REALNAME@");
-	_tmp0_ = NULL;
-	title = (_tmp0_ = string_replace (title, "%u", "@USERNAME@"), title = (g_free (title), NULL), _tmp0_);
-	_tmp1_ = NULL;
-	title = (_tmp1_ = string_replace (title, "%h", "@HOSTNAME@"), title = (g_free (title), NULL), _tmp1_);
-	rygel_configuration_set_string (((RygelPreferencesSection*) self)->config, ((RygelPreferencesSection*) self)->name, RYGEL_CONFIGURATION_TITLE_KEY, title);
-	title = (g_free (title), NULL);
+	title = (_tmp0_ = string_replace (title, "%u", "@USERNAME@"), _g_free0 (title), _tmp0_);
+	title = (_tmp1_ = string_replace (title, "%h", "@HOSTNAME@"), _g_free0 (title), _tmp1_);
+	rygel_user_config_set_string (((RygelPreferencesSection*) self)->config, ((RygelPreferencesSection*) self)->name, RYGEL_USER_CONFIG_TITLE_KEY, title);
+	_g_free0 (title);
 }
 
 
@@ -260,8 +288,8 @@ static void rygel_plugin_pref_section_instance_init (RygelPluginPrefSection * se
 static void rygel_plugin_pref_section_finalize (GObject* obj) {
 	RygelPluginPrefSection * self;
 	self = RYGEL_PLUGIN_PREF_SECTION (obj);
-	(self->priv->enabled_check == NULL) ? NULL : (self->priv->enabled_check = (g_object_unref (self->priv->enabled_check), NULL));
-	(self->priv->title_entry == NULL) ? NULL : (self->priv->title_entry = (g_object_unref (self->priv->title_entry), NULL));
+	_g_object_unref0 (self->priv->enabled_check);
+	_g_object_unref0 (self->priv->title_entry);
 	G_OBJECT_CLASS (rygel_plugin_pref_section_parent_class)->finalize (obj);
 }
 

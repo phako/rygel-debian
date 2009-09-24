@@ -3,13 +3,12 @@ Section: net
 Priority: extra
 Maintainer: Marc-Andre Lureau <marcandre.lureau@gmail.com>
 Build-Depends: quilt, debhelper (>= 7), autotools-dev,
-    libgupnp-1.0-dev (>= 0.12.5),
-    libgupnp-av-1.0-dev (>= 0.4),
-    libgconf2-dev (>= 2.16),
+    libgupnp-1.0-dev (>= 0.13),
+    libgupnp-av-1.0-dev (>= 0.5),
     libdbus-glib-1-dev (>= 0.74),
-    libgstreamer0.10-dev (>= 0.10.22),
+    libgstreamer0.10-dev (>= 0.10.23),
     libglib2.0-dev (>= 2.16.6),
-    libgee-dev (>= 0.1.5),
+    libgee-dev (>= 0.3.0),
     uuid-dev (>= 1.2-1.41.3-1),
     libsoup2.4-dev (>= 2.26.0),
     libgtk2.0-dev (>= 2.16)

@@ -1,5 +1,6 @@
 rygel (0.4-1) UNRELEASED; urgency=low
 
+  [ Andreas Henriksson ]
   * New upstream release.
   * debian/rygel.install:
     - don't install gconf schemas, they've been dropped.
@@ -16,10 +17,14 @@ rygel (0.4-1) UNRELEASED; urgency=low
     - build-depends-on-1-revision build-depends: uuid-dev (>= 1.2-1.41.3-1)
     - copyright-lists-upstream-authors-with-dh_make-boilerplate
 
- -- Andreas Henriksson <andreas@fatal.se>  Thu, 24 Sep 2009 10:33:34 +0200
+  [ Marc-Andre Lureau ]
+  * debian/control:
+    - changed rygel-1.0-dev architecture to "any".
+
+ -- Marc-André Lureau <marcandre.lureau@gmail.com>  Thu, 24 Sep 2009 19:28:03 +0200
 
 rygel (0.3-1) UNRELEASED; urgency=low
 
-  * Initial release (Closes: #nnnn)  <nnnn is the bug number of your ITP>
+  * Initial packaging.
 
  -- Marc-Andre Lureau <marcandre.lureau@gmail.com>  Thu, 04 Jun 2009 23:22:14 +0300

@@ -47,7 +47,7 @@ Description: GNOME UPnP/DLNA services
      provided by external applications.
 
 Package: rygel-1.0-dev
-Architecture: all
+Architecture: any
 Description: GNOME UPnP/DLNA services - development files
  Rygel is a collection of UPnP/DLNA sevices, implemented through a
  plug-in mechanism. Important facts and features:

@@ -10,6 +10,7 @@ rygel (0.4-1) UNRELEASED; urgency=low
     - Bump build-dependencies on gupnp to >= 0.13, gupnp-av to >= 0.5,
       gstreamer to >= 0.10.23, gee to >= 0.3.0.
   * debian/rules: update-patch-series: Use xargs -r to cope with null input.
+  * run update-patch-series to drop unused gee patch, not needed anymore.
   * fix lintian warnings:
     - out-of-date-standards-version 3.8.1 (current is 3.8.3)
     - build-depends-on-1-revision build-depends: uuid-dev (>= 1.2-1.41.3-1)

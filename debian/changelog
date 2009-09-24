@@ -20,6 +20,7 @@ rygel (0.4-1) UNRELEASED; urgency=low
   [ Marc-Andre Lureau ]
   * debian/control:
     - changed rygel-1.0-dev architecture to "any".
+    - added rygel-1.0-dev dependencies
 
  -- Marc-André Lureau <marcandre.lureau@gmail.com>  Thu, 24 Sep 2009 19:28:03 +0200
 

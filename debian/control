@@ -1,7 +1,7 @@
 Source: rygel
 Section: net
 Priority: extra
-Maintainer: Marc-Andre Lureau <marcandre.lureau@gmail.com>
+Maintainer: Marc-André Lureau <marcandre.lureau@gmail.com>
 Build-Depends: quilt, debhelper (>= 7), autotools-dev,
     libgupnp-1.0-dev (>= 0.13),
     libgupnp-av-1.0-dev (>= 0.5),
@@ -48,7 +48,8 @@ Description: GNOME UPnP/DLNA services
 
 Package: rygel-1.0-dev
 Architecture: any
-Description: GNOME UPnP/DLNA services - development files
+Depends: ${misc:Depends}, libgupnp-1.0-dev, libgstreamer0.10-dev
+Description: GNOME UPnP/DLNA services - plugin development files
  Rygel is a collection of UPnP/DLNA sevices, implemented through a
  plug-in mechanism. Important facts and features:
  .

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2009 Nokia Corporation, all rights reserved.
+ * Copyright (C) 2009 Nokia Corporation.
  *
  * Author: Zeeshan Ali (Khattak) <zeeshanak@gnome.org>
  *                               <zeeshan.ali@nokia.com>
@@ -20,7 +20,7 @@
  * along with this program; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
-using Rygel;
+
 using Gst;
 using GUPnP;
 using Gee;
@@ -48,38 +48,36 @@ internal abstract class Rygel.Transcoder : GLib.Object {
     /**
      * Creates a transcoding source.
      *
+     * @param src the media item to create the transcoding source for
      * @param src the original (non-transcoding) source
      *
      * @return      the new transcoding source
      */
-    public abstract Element create_source (Element src) throws Error;
+    public abstract Element create_source (MediaItem item,
+                                           Element   src) throws Error;
 
-    public void add_resources (ArrayList<DIDLLiteResource?> resources,
-                               MediaItem                    item,
-                               TranscodeManager             manager)
-                               throws Error {
+    public virtual DIDLLiteResource? add_resource (DIDLLiteItem     didl_item,
+                                                   MediaItem        item,
+                                                   TranscodeManager manager)
+                                                   throws Error {
         if (this.mime_type_is_a (item.mime_type, this.mime_type)) {
-            return;
+            return null;
         }
 
-        resources.add (this.create_resource (item, manager));
-    }
-
-    public virtual DIDLLiteResource create_resource (MediaItem        item,
-                                                     TranscodeManager manager)
-                                                     throws Error {
         string protocol;
         var uri = manager.create_uri_for_item (item,
+                                               -1,
                                                this.dlna_profile,
                                                out protocol);
-        DIDLLiteResource res = item.create_res (uri);
-        res.mime_type = this.mime_type;
-        res.protocol = protocol;
-        res.dlna_profile = this.dlna_profile;
-        res.dlna_conversion = DLNAConversion.TRANSCODED;
-        res.dlna_flags = DLNAFlags.STREAMING_TRANSFER_MODE;
-        res.dlna_operation = DLNAOperation.NONE;
+        var res = item.add_resource (didl_item, uri, protocol);
         res.size = -1;
+
+        var protocol_info = res.protocol_info;
+        protocol_info.mime_type = this.mime_type;
+        protocol_info.dlna_profile = this.dlna_profile;
+        protocol_info.dlna_conversion = DLNAConversion.TRANSCODED;
+        protocol_info.dlna_flags = DLNAFlags.STREAMING_TRANSFER_MODE;
+        protocol_info.dlna_operation = DLNAOperation.TIMESEEK;
 
         return res;
     }
@@ -88,8 +86,19 @@ internal abstract class Rygel.Transcoder : GLib.Object {
         return target == this.dlna_profile;
     }
 
-    protected bool mime_type_is_a (string mime_type1,
-                                          string mime_type2) {
+    /**
+     * Gets the numeric value that gives an gives an estimate of how hard
+     * would it be to trancode @item to target profile of this transcoder.
+     *
+     * @param item the media item to calculate the distance for
+     *
+     * @return      the distance from the @item, uint.MIN if providing such a
+     *              value is impossible or uint.MAX if it doesn't make any
+     *              sense to use this transcoder for @item
+     */
+    public abstract uint get_distance (MediaItem item);
+
+    protected bool mime_type_is_a (string mime_type1, string mime_type2) {
         string content_type1 = g_content_type_from_mime_type (mime_type1);
         string content_type2 = g_content_type_from_mime_type (mime_type2);
 

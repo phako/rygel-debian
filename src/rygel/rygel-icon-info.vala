@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008 Nokia Corporation, all rights reserved.
+ * Copyright (C) 2008 Nokia Corporation.
  *
  * Author: Zeeshan Ali (Khattak) <zeeshanak@gnome.org>
  *                               <zeeshan.ali@nokia.com>
@@ -21,27 +21,20 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-using Rygel;
-
 /**
  * Holds information about an icon.
  */
 public class Rygel.IconInfo {
-    public string mimetype;
-    public uint width;
-    public uint height;
-    public uint depth;
+    public string mime_type;
     public string path;
 
-    public IconInfo (string mimetype,
-                     uint   width,
-                     uint   height,
-                     uint   depth,
-                     string path) {
-        this.mimetype = mimetype;
-        this.width = width;
-        this.height = height;
-        this.depth = depth;
+    public long size = -1;       // Size in bytes
+    public int width = -1;       // Width in pixels
+    public int height = -1;      // Height in pixels
+    public int depth = -1; // depth of pixels in bytes
+
+    public IconInfo (string mime_type) {
+        this.mime_type = mime_type;
         this.path = path;
     }
 }

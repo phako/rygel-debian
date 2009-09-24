@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2008 Zeeshan Ali (Khattak) <zeeshanak@gnome.org>.
- * Copyright (C) 2008 Nokia Corporation, all rights reserved.
+ * Copyright (C) 2008 Nokia Corporation.
  *
  * Author: Zeeshan Ali (Khattak) <zeeshanak@gnome.org>
  *                               <zeeshan.ali@nokia.com>
@@ -22,13 +22,12 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-using Rygel;
 using GUPnP;
 
 internal class Rygel.SeekableResponse : Rygel.HTTPResponse {
     private const size_t BUFFER_LENGTH = 4096;
 
-    private Seek seek;
+    private HTTPSeek seek;
     private File file;
     private FileInputStream input_stream;
 
@@ -40,9 +39,10 @@ internal class Rygel.SeekableResponse : Rygel.HTTPResponse {
     public SeekableResponse (Soup.Server  server,
                              Soup.Message msg,
                              string       uri,
-                             Seek?        seek,
-                             size_t       file_length) {
-        base (server, msg, seek != null);
+                             HTTPSeek?    seek,
+                             size_t       file_length,
+                             Cancellable? cancellable) {
+        base (server, msg, seek != null, cancellable);
 
         this.seek = seek;
         this.total_length = file_length;
@@ -60,13 +60,13 @@ internal class Rygel.SeekableResponse : Rygel.HTTPResponse {
         this.file = File.new_for_uri (uri);
     }
 
-    public override void run (Cancellable? cancellable) {
+    public override void run () {
         this.cancellable = cancellable;
 
         this.file.read_async (this.priority, cancellable, this.on_file_read);
     }
 
-    private void on_file_read (GLib.Object      source_object,
+    private void on_file_read (GLib.Object?     source_object,
                                GLib.AsyncResult result) {
         try {
            this.input_stream = this.file.read_finish (result);
@@ -96,13 +96,13 @@ internal class Rygel.SeekableResponse : Rygel.HTTPResponse {
         }
 
         this.input_stream.read_async (this.buffer,
-                                 SeekableResponse.BUFFER_LENGTH,
-                                 this.priority,
-                                 this.cancellable,
-                                 on_contents_read);
+                                      SeekableResponse.BUFFER_LENGTH,
+                                      this.priority,
+                                      this.cancellable,
+                                      on_contents_read);
     }
 
-    private void on_contents_read (GLib.Object      source_object,
+    private void on_contents_read (GLib.Object?     source_object,
                                    GLib.AsyncResult result) {
         FileInputStream input_stream = (FileInputStream) source_object;
         ssize_t bytes_read;
@@ -126,7 +126,7 @@ internal class Rygel.SeekableResponse : Rygel.HTTPResponse {
         }
     }
 
-    private void on_input_stream_closed (GLib.Object      source_object,
+    private void on_input_stream_closed (GLib.Object?     source_object,
                                          GLib.AsyncResult result) {
         FileInputStream input_stream = (FileInputStream) source_object;
 

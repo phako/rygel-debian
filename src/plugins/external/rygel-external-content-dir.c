@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2009 Zeeshan Ali (Khattak) <zeeshanak@gnome.org>.
- * Copyright (C) 2009 Nokia Corporation, all rights reserved.
+ * Copyright (C) 2009 Nokia Corporation.
  *
  * Author: Zeeshan Ali (Khattak) <zeeshanak@gnome.org>
  *                               <zeeshan.ali@nokia.com>
@@ -28,6 +28,7 @@
 #include <libgupnp/gupnp.h>
 #include <stdlib.h>
 #include <string.h>
+#include <libgssdp/gssdp.h>
 
 
 #define RYGEL_TYPE_EXTERNAL_CONTENT_DIR (rygel_external_content_dir_get_type ())
@@ -40,17 +41,18 @@
 typedef struct _RygelExternalContentDir RygelExternalContentDir;
 typedef struct _RygelExternalContentDirClass RygelExternalContentDirClass;
 typedef struct _RygelExternalContentDirPrivate RygelExternalContentDirPrivate;
+#define _g_object_unref0(var) ((var == NULL) ? NULL : (var = (g_object_unref (var), NULL)))
 
-#define TYPE_EXTERNAL_PLUGIN (external_plugin_get_type ())
-#define EXTERNAL_PLUGIN(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), TYPE_EXTERNAL_PLUGIN, ExternalPlugin))
-#define EXTERNAL_PLUGIN_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), TYPE_EXTERNAL_PLUGIN, ExternalPluginClass))
-#define IS_EXTERNAL_PLUGIN(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), TYPE_EXTERNAL_PLUGIN))
-#define IS_EXTERNAL_PLUGIN_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), TYPE_EXTERNAL_PLUGIN))
-#define EXTERNAL_PLUGIN_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), TYPE_EXTERNAL_PLUGIN, ExternalPluginClass))
+#define RYGEL_TYPE_EXTERNAL_PLUGIN (rygel_external_plugin_get_type ())
+#define RYGEL_EXTERNAL_PLUGIN(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_EXTERNAL_PLUGIN, RygelExternalPlugin))
+#define RYGEL_EXTERNAL_PLUGIN_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TYPE_EXTERNAL_PLUGIN, RygelExternalPluginClass))
+#define RYGEL_IS_EXTERNAL_PLUGIN(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TYPE_EXTERNAL_PLUGIN))
+#define RYGEL_IS_EXTERNAL_PLUGIN_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_TYPE_EXTERNAL_PLUGIN))
+#define RYGEL_EXTERNAL_PLUGIN_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_TYPE_EXTERNAL_PLUGIN, RygelExternalPluginClass))
 
-typedef struct _ExternalPlugin ExternalPlugin;
-typedef struct _ExternalPluginClass ExternalPluginClass;
-typedef struct _ExternalPluginPrivate ExternalPluginPrivate;
+typedef struct _RygelExternalPlugin RygelExternalPlugin;
+typedef struct _RygelExternalPluginClass RygelExternalPluginClass;
+typedef struct _RygelExternalPluginPrivate RygelExternalPluginPrivate;
 
 #define RYGEL_TYPE_EXTERNAL_CONTAINER (rygel_external_container_get_type ())
 #define RYGEL_EXTERNAL_CONTAINER(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_EXTERNAL_CONTAINER, RygelExternalContainer))
@@ -62,9 +64,6 @@ typedef struct _ExternalPluginPrivate ExternalPluginPrivate;
 typedef struct _RygelExternalContainer RygelExternalContainer;
 typedef struct _RygelExternalContainerClass RygelExternalContainerClass;
 
-/**
- * Implementation of External ContentDirectory service.
- */
 struct _RygelExternalContentDir {
 	RygelContentDirectory parent_instance;
 	RygelExternalContentDirPrivate * priv;
@@ -74,58 +73,55 @@ struct _RygelExternalContentDirClass {
 	RygelContentDirectoryClass parent_class;
 };
 
-struct _ExternalPlugin {
+struct _RygelExternalPlugin {
 	RygelPlugin parent_instance;
-	ExternalPluginPrivate * priv;
+	RygelExternalPluginPrivate * priv;
 	char* service_name;
 	char* root_object;
 };
 
-struct _ExternalPluginClass {
+struct _RygelExternalPluginClass {
 	RygelPluginClass parent_class;
 };
 
 
+static gpointer rygel_external_content_dir_parent_class = NULL;
 
 GType rygel_external_content_dir_get_type (void);
 enum  {
 	RYGEL_EXTERNAL_CONTENT_DIR_DUMMY_PROPERTY
 };
-GType external_plugin_get_type (void);
+GType rygel_external_plugin_get_type (void);
 GType rygel_external_container_get_type (void);
 RygelExternalContainer* rygel_external_container_new (const char* id, const char* service_name, const char* object_path, const char* host_ip, RygelExternalContainer* parent);
 RygelExternalContainer* rygel_external_container_construct (GType object_type, const char* id, const char* service_name, const char* object_path, const char* host_ip, RygelExternalContainer* parent);
 static RygelMediaContainer* rygel_external_content_dir_real_create_root_container (RygelContentDirectory* base);
 RygelExternalContentDir* rygel_external_content_dir_new (void);
 RygelExternalContentDir* rygel_external_content_dir_construct (GType object_type);
-RygelExternalContentDir* rygel_external_content_dir_new (void);
-static gpointer rygel_external_content_dir_parent_class = NULL;
 
 
 
-/* Pubic methods*/
-static RygelMediaContainer* rygel_external_content_dir_real_create_root_container (RygelContentDirectory* base) {
-	RygelExternalContentDir * self;
-	ExternalPlugin* _tmp2_;
-	GUPnPRootDevice* _tmp1_;
-	GUPnPRootDevice* _tmp0_;
-	ExternalPlugin* _tmp3_;
-	ExternalPlugin* plugin;
-	RygelMediaContainer* _tmp4_;
-	self = (RygelExternalContentDir*) base;
-	_tmp2_ = NULL;
-	_tmp1_ = NULL;
-	_tmp0_ = NULL;
-	_tmp3_ = NULL;
-	plugin = (_tmp3_ = (_tmp2_ = EXTERNAL_PLUGIN (gupnp_device_info_get_resource_factory ((GUPnPDeviceInfo*) (_tmp1_ = (g_object_get ((GUPnPService*) self, "root-device", &_tmp0_, NULL), _tmp0_)))), (_tmp2_ == NULL) ? NULL : g_object_ref (_tmp2_)), (_tmp1_ == NULL) ? NULL : (_tmp1_ = (g_object_unref (_tmp1_), NULL)), _tmp3_);
-	_tmp4_ = NULL;
-	return (_tmp4_ = (RygelMediaContainer*) rygel_external_container_new ("0", plugin->service_name, plugin->root_object, gupnp_context_get_host_ip (gupnp_service_info_get_context ((GUPnPServiceInfo*) self)), NULL), (plugin == NULL) ? NULL : (plugin = (g_object_unref (plugin), NULL)), _tmp4_);
+static gpointer _g_object_ref0 (gpointer self) {
+	return self ? g_object_ref (self) : NULL;
 }
 
 
-/**
- * Implementation of External ContentDirectory service.
- */
+static RygelMediaContainer* rygel_external_content_dir_real_create_root_container (RygelContentDirectory* base) {
+	RygelExternalContentDir * self;
+	RygelMediaContainer* result;
+	GUPnPRootDevice* _tmp1_;
+	GUPnPRootDevice* _tmp0_;
+	RygelExternalPlugin* _tmp2_;
+	RygelExternalPlugin* plugin;
+	self = (RygelExternalContentDir*) base;
+	_tmp0_ = NULL;
+	plugin = (_tmp2_ = _g_object_ref0 (RYGEL_EXTERNAL_PLUGIN (gupnp_device_info_get_resource_factory ((GUPnPDeviceInfo*) (_tmp1_ = (g_object_get ((GUPnPService*) self, "root-device", &_tmp0_, NULL), _tmp0_))))), _g_object_unref0 (_tmp1_), _tmp2_);
+	result = (RygelMediaContainer*) rygel_external_container_new ("0", plugin->service_name, plugin->root_object, gssdp_client_get_host_ip ((GSSDPClient*) gupnp_service_info_get_context ((GUPnPServiceInfo*) self)), NULL);
+	_g_object_unref0 (plugin);
+	return result;
+}
+
+
 RygelExternalContentDir* rygel_external_content_dir_construct (GType object_type) {
 	RygelExternalContentDir * self;
 	self = (RygelExternalContentDir*) rygel_content_directory_construct (object_type);

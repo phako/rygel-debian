@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008 Nokia Corporation, all rights reserved.
+ * Copyright (C) 2008 Nokia Corporation.
  * Copyright (C) 2008 Zeeshan Ali (Khattak) <zeeshanak@gnome.org>.
  *
  * Author: Zeeshan Ali (Khattak) <zeeshanak@gnome.org>
@@ -21,26 +21,30 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-using GUPnP;
-using GConf;
 using CStuff;
 using Gee;
+using GUPnP;
 
 public class Rygel.Main : Object {
     private PluginLoader plugin_loader;
-    private MediaServerFactory ms_factory;
-    private ArrayList<MediaServer> media_servers;
+    private ContextManager context_manager;
+    private ArrayList <RootDeviceFactory> factories;
+    private ArrayList <RootDevice> root_devices;
+
+    private Configuration config;
 
     private MainLoop main_loop;
 
     private int exit_code;
 
-    public Main () throws GLib.Error {
+    private Main () throws GLib.Error {
         Environment.set_application_name (_(BuildConfig.PACKAGE_NAME));
 
-        this.media_servers = new ArrayList<MediaServer> ();
+        this.config = MetaConfig.get_default ();
         this.plugin_loader = new PluginLoader ();
-        this.ms_factory = new MediaServerFactory ();
+        this.root_devices = new ArrayList <RootDevice> ();
+        this.factories = new ArrayList <RootDeviceFactory> ();
+        this.context_manager = this.create_context_manager ();
         this.main_loop = new GLib.MainLoop (null, false);
 
         this.exit_code = 0;
@@ -50,17 +54,17 @@ public class Rygel.Main : Object {
         Utils.on_application_exit (this.application_exit_cb);
     }
 
-    public int run () {
+    public void exit (int exit_code) {
+        this.exit_code = exit_code;
+        this.main_loop.quit ();
+    }
+
+    private int run () {
         this.plugin_loader.load_plugins ();
 
         this.main_loop.run ();
 
         return this.exit_code;
-    }
-
-    public void exit (int exit_code) {
-        this.exit_code = exit_code;
-        this.main_loop.quit ();
     }
 
     private void application_exit_cb () {
@@ -69,38 +73,137 @@ public class Rygel.Main : Object {
 
     private void on_plugin_loaded (PluginLoader plugin_loader,
                                    Plugin       plugin) {
+        // We iterate over the copy of the list rather than list itself because
+        // there is high chances of the original list being modified during the
+        // iteration, which is not allowed by libgee.
+        var factories = new ArrayList <RootDeviceFactory> ();
+        foreach (var factory in this.factories) {
+            factories.add (factory);
+        }
+
+        foreach (var factory in factories) {
+            this.create_device (plugin, factory);
+        }
+    }
+
+    private ContextManager create_context_manager () {
+        int port = 0;
+
         try {
-            var server = this.ms_factory.create_media_server (plugin);
+            port = this.config.get_port ();
+        } catch (GLib.Error err) {}
 
-            server.available = plugin.available;
+        var manager = new ContextManager (null, port);
 
-            media_servers.add (server);
+        manager.context_available.connect (this.on_context_available);
+        manager.context_unavailable.connect (this.on_context_unavailable);
+
+        return manager;
+    }
+
+    private void on_context_available (GUPnP.ContextManager manager,
+                                       GUPnP.Context        context) {
+        string iface = null;
+
+        debug ("new network context %s (%s) available.",
+               context.interface,
+               context.host_ip);
+
+        try {
+            iface = this.config.get_interface ();
+        } catch (GLib.Error err) {}
+
+        if (iface == null || iface == context.interface) {
+            var factory = new RootDeviceFactory (context);
+            this.factories.add (factory);
+
+            // See the comment in on_plugin_loaded method
+            var plugins = new ArrayList <Plugin> ();
+            foreach (var plugin in this.plugin_loader.list_plugins ()) {
+                plugins.add (plugin);
+            }
+
+            foreach (var plugin in plugins) {
+                this.create_device (plugin, factory);
+            }
+        } else {
+            debug ("Ignoring network context %s (%s).",
+                   context.interface,
+                   context.host_ip);
+        }
+    }
+
+    private void on_context_unavailable (GUPnP.ContextManager manager,
+                                         GUPnP.Context        context) {
+        debug ("Network context %s (%s) now unavailable.",
+               context.interface,
+               context.host_ip);
+
+        var factory_list = new ArrayList <RootDeviceFactory> ();
+        foreach (var factory in this.factories) {
+            if (context == factory.context) {
+                factory_list.add (factory);
+            }
+        }
+
+        foreach (var factory in factory_list) {
+            this.factories.remove (factory);
+        }
+
+        var device_list = new ArrayList <RootDevice> ();
+        foreach (var device in this.root_devices) {
+            if (context == device.context) {
+                device_list.add (device);
+            }
+        }
+
+        foreach (var device in device_list) {
+            this.root_devices.remove (device);
+        }
+    }
+
+    private void create_device (Plugin            plugin,
+                                RootDeviceFactory factory) {
+        try {
+            var device = factory.create (plugin);
+
+            device.available = plugin.available;
+
+            this.root_devices.add (device);
 
             plugin.notify["available"] += this.on_plugin_notify;
         } catch (GLib.Error error) {
-            warning ("Failed to create MediaServer for %s. Reason: %s\n",
-                     plugin.name,
-                     error.message);
+            warning ("Failed to create RootDevice for %s. Reason: %s\n",
+                    plugin.name,
+                    error.message);
         }
     }
 
     private void on_plugin_notify (Plugin    plugin,
                                    ParamSpec spec) {
-        foreach (var server in this.media_servers) {
-            if (server.resource_factory == plugin) {
-                server.available = plugin.available;
+        foreach (var device in this.root_devices) {
+            if (device.resource_factory == plugin) {
+                device.available = plugin.available;
             }
         }
     }
 
-    public static int main (string[] args) {
+    private static int main (string[] args) {
         Main main;
-
-        // initialize gstreamer
-        Gst.init (ref args);
+        DBusService service;
 
         try {
+            // Parse commandline options
+            CmdlineConfig.parse_args (ref args);
+
+            // initialize gstreamer
+            var dummy_args = new string[0];
+            Gst.init (ref dummy_args);
+
             main = new Main ();
+            service = new DBusService (main);
+        } catch (CmdlineConfigError.VERSION_ONLY err) {
+            return 0;
         } catch (GLib.Error err) {
             error ("%s", err.message);
 

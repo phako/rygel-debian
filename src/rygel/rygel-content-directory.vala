@@ -70,7 +70,15 @@ public class Rygel.ContentDirectory: Service {
         this.cancellable = new Cancellable ();
 
         this.root_container = this.create_root_container ();
-        this.http_server = new HTTPServer (this, this.get_type ().name ());
+
+        try {
+            this.http_server = new HTTPServer (this, this.get_type ().name ());
+        } catch (GLib.Error err) {
+            critical ("Failed to create HTTP server for %s: %s",
+                      this.get_type ().name (),
+                      err.message);
+            return;
+        }
 
         this.browses = new ArrayList<Browse> ();
         this.updated_containers =  new ArrayList<MediaContainer> ();
@@ -112,7 +120,7 @@ public class Rygel.ContentDirectory: Service {
         this.action_invoked["GetFeatureList"] += this.get_feature_list_cb;
         this.query_variable["FeatureList"] += this.query_feature_list;
 
-        this.http_server.run (this.cancellable);
+        this.http_server.run ();
     }
 
     ~ContentDirectory () {
@@ -128,7 +136,7 @@ public class Rygel.ContentDirectory: Service {
         this.browses.add (browse);
         browse.completed += this.on_browse_completed;
 
-        browse.run (this.cancellable);
+        browse.run ();
     }
 
     /* GetSystemUpdateID action implementation */

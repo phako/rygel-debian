@@ -29,8 +29,7 @@
 #include <string.h>
 #include <libgupnp/gupnp.h>
 #include <libgupnp-av/gupnp-av.h>
-#include <gee/list.h>
-#include <gee/collection.h>
+#include <gee.h>
 
 
 #define RYGEL_TYPE_STATE_MACHINE (rygel_state_machine_get_type ())
@@ -81,6 +80,8 @@ typedef struct _RygelMediaContainerClass RygelMediaContainerClass;
 
 typedef struct _RygelDIDLLiteWriter RygelDIDLLiteWriter;
 typedef struct _RygelDIDLLiteWriterClass RygelDIDLLiteWriterClass;
+#define _g_free0(var) (var = (g_free (var), NULL))
+#define _g_object_unref0(var) ((var == NULL) ? NULL : (var = (g_object_unref (var), NULL)))
 
 #define RYGEL_TYPE_CONTENT_DIRECTORY (rygel_content_directory_get_type ())
 #define RYGEL_CONTENT_DIRECTORY(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_CONTENT_DIRECTORY, RygelContentDirectory))
@@ -112,22 +113,17 @@ typedef struct _RygelTranscodeManagerClass RygelTranscodeManagerClass;
 
 typedef struct _RygelHTTPServer RygelHTTPServer;
 typedef struct _RygelHTTPServerClass RygelHTTPServerClass;
+#define _g_error_free0(var) ((var == NULL) ? NULL : (var = (g_error_free (var), NULL)))
 typedef struct _RygelMediaObjectPrivate RygelMediaObjectPrivate;
 typedef struct _RygelMediaContainerPrivate RygelMediaContainerPrivate;
 
-/**
- * StateMachine interface.
- */
 struct _RygelStateMachineIface {
 	GTypeInterface parent_iface;
-	void (*run) (RygelStateMachine* self, GCancellable* cancellable);
+	void (*run) (RygelStateMachine* self);
+	GCancellable* (*get_cancellable) (RygelStateMachine* self);
+	void (*set_cancellable) (RygelStateMachine* self, GCancellable* value);
 };
 
-/**
- * Browse action implementation. This class is more or less the state-machine
- * associated with the Browse action handling that exists to make asynchronous
- * handling of Browse action possible.
- */
 struct _RygelBrowse {
 	GObject parent_instance;
 	RygelBrowsePrivate * priv;
@@ -153,14 +149,9 @@ struct _RygelBrowsePrivate {
 	guint32 system_update_id;
 	GUPnPServiceAction* action;
 	RygelDIDLLiteWriter* didl_writer;
-	GCancellable* cancellable;
+	GCancellable* _cancellable;
 };
 
-/**
- * Basic implementation of UPnP ContentDirectory service version 2. Most often
- * plugins will provide a child of this class. The inheriting classes should
- * override create_root_container method.
- */
 struct _RygelContentDirectory {
 	GUPnPService parent_instance;
 	RygelContentDirectoryPrivate * priv;
@@ -179,35 +170,26 @@ struct _RygelContentDirectoryClass {
 	void (*browse_cb) (RygelContentDirectory* self, RygelContentDirectory* content_dir, GUPnPServiceAction* action);
 };
 
-/**
- * Errors used by ContentDirectory and deriving classes.
- */
 typedef enum  {
 	RYGEL_CONTENT_DIRECTORY_ERROR_NO_SUCH_OBJECT = 701,
 	RYGEL_CONTENT_DIRECTORY_ERROR_INVALID_ARGS = 402
 } RygelContentDirectoryError;
 #define RYGEL_CONTENT_DIRECTORY_ERROR rygel_content_directory_error_quark ()
-/**
- * Represents a media object (container and item).
- */
 struct _RygelMediaObject {
 	GObject parent_instance;
 	RygelMediaObjectPrivate * priv;
 	char* id;
 	char* title;
+	guint64 modified;
+	GeeArrayList* uris;
 	RygelMediaContainer* parent;
+	RygelMediaContainer* parent_ref;
 };
 
 struct _RygelMediaObjectClass {
 	GObjectClass parent_class;
 };
 
-/**
- * Represents a container (folder) for media items and containers. Provides
- * basic serialization (to DIDLLiteWriter) implementation. Deriving classes
- * are supposed to provide working implementations of get_children and
- * find_object.
- */
 struct _RygelMediaContainer {
 	RygelMediaObject parent_instance;
 	RygelMediaContainerPrivate * priv;
@@ -224,6 +206,8 @@ struct _RygelMediaContainerClass {
 };
 
 
+static gpointer rygel_browse_parent_class = NULL;
+static RygelStateMachineIface* rygel_browse_rygel_state_machine_parent_iface = NULL;
 
 GType rygel_state_machine_get_type (void);
 GType rygel_browse_get_type (void);
@@ -232,24 +216,26 @@ GType rygel_media_container_get_type (void);
 GType rygel_didl_lite_writer_get_type (void);
 #define RYGEL_BROWSE_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), RYGEL_TYPE_BROWSE, RygelBrowsePrivate))
 enum  {
-	RYGEL_BROWSE_DUMMY_PROPERTY
+	RYGEL_BROWSE_DUMMY_PROPERTY,
+	RYGEL_BROWSE_CANCELLABLE
 };
 GType rygel_content_directory_get_type (void);
 GType rygel_transcode_manager_get_type (void);
 GType rygel_http_server_get_type (void);
+void rygel_state_machine_set_cancellable (RygelStateMachine* self, GCancellable* value);
 RygelDIDLLiteWriter* rygel_didl_lite_writer_new (RygelHTTPServer* http_server);
 RygelDIDLLiteWriter* rygel_didl_lite_writer_construct (GType object_type, RygelHTTPServer* http_server);
 RygelBrowse* rygel_browse_new (RygelContentDirectory* content_dir, GUPnPServiceAction* action);
 RygelBrowse* rygel_browse_construct (GType object_type, RygelContentDirectory* content_dir, GUPnPServiceAction* action);
-RygelBrowse* rygel_browse_new (RygelContentDirectory* content_dir, GUPnPServiceAction* action);
 static void rygel_browse_parse_args (RygelBrowse* self);
-static void rygel_browse_real_run (RygelStateMachine* base, GCancellable* cancellable);
+static void rygel_browse_real_run (RygelStateMachine* base);
 static void rygel_browse_handle_error (RygelBrowse* self, GError* _error_);
 GQuark rygel_content_directory_error_quark (void);
 static void rygel_browse_handle_metadata_request (RygelBrowse* self);
 static void rygel_browse_handle_children_request (RygelBrowse* self);
 static void rygel_browse_got_media_object (RygelBrowse* self);
 void rygel_media_container_find_object (RygelMediaContainer* self, const char* id, GCancellable* cancellable, GAsyncReadyCallback callback, void* callback_target);
+GCancellable* rygel_state_machine_get_cancellable (RygelStateMachine* self);
 static void rygel_browse_on_media_object_found (RygelBrowse* self, GObject* source_object, GAsyncResult* res);
 static void _rygel_browse_on_media_object_found_gasync_ready_callback (GObject* source_object, GAsyncResult* res, gpointer self);
 static void rygel_browse_fetch_media_object (RygelBrowse* self);
@@ -262,30 +248,31 @@ void rygel_media_container_get_children (RygelMediaContainer* self, guint offset
 static void rygel_browse_on_children_fetched (RygelBrowse* self, GObject* source_object, GAsyncResult* res);
 static void _rygel_browse_on_children_fetched_gasync_ready_callback (GObject* source_object, GAsyncResult* res, gpointer self);
 GeeList* rygel_media_container_get_children_finish (RygelMediaContainer* self, GAsyncResult* res, GError** error);
-static gpointer rygel_browse_parent_class = NULL;
-static RygelStateMachineIface* rygel_browse_rygel_state_machine_parent_iface = NULL;
 static void rygel_browse_finalize (GObject* obj);
+static void rygel_browse_get_property (GObject * object, guint property_id, GValue * value, GParamSpec * pspec);
+static void rygel_browse_set_property (GObject * object, guint property_id, const GValue * value, GParamSpec * pspec);
 static int _vala_strcmp0 (const char * str1, const char * str2);
 
 
 
+static gpointer _g_object_ref0 (gpointer self) {
+	return self ? g_object_ref (self) : NULL;
+}
+
+
 RygelBrowse* rygel_browse_construct (GType object_type, RygelContentDirectory* content_dir, GUPnPServiceAction* action) {
 	RygelBrowse * self;
-	RygelMediaContainer* _tmp1_;
 	RygelMediaContainer* _tmp0_;
-	GUPnPServiceAction* _tmp2_;
-	RygelDIDLLiteWriter* _tmp3_;
+	GUPnPServiceAction* _tmp1_;
+	RygelDIDLLiteWriter* _tmp2_;
 	g_return_val_if_fail (content_dir != NULL, NULL);
 	g_return_val_if_fail (action != NULL, NULL);
-	self = g_object_newv (object_type, 0, NULL);
-	_tmp1_ = NULL;
-	_tmp0_ = NULL;
-	self->priv->root_container = (_tmp1_ = (_tmp0_ = content_dir->root_container, (_tmp0_ == NULL) ? NULL : g_object_ref (_tmp0_)), (self->priv->root_container == NULL) ? NULL : (self->priv->root_container = (g_object_unref (self->priv->root_container), NULL)), _tmp1_);
+	self = (RygelBrowse*) g_object_new (object_type, NULL);
+	self->priv->root_container = (_tmp0_ = _g_object_ref0 (content_dir->root_container), _g_object_unref0 (self->priv->root_container), _tmp0_);
 	self->priv->system_update_id = content_dir->system_update_id;
-	_tmp2_ = NULL;
-	self->priv->action = (_tmp2_ = action, action = NULL, _tmp2_);
-	_tmp3_ = NULL;
-	self->priv->didl_writer = (_tmp3_ = rygel_didl_lite_writer_new (content_dir->http_server), (self->priv->didl_writer == NULL) ? NULL : (self->priv->didl_writer = (g_object_unref (self->priv->didl_writer), NULL)), _tmp3_);
+	rygel_state_machine_set_cancellable ((RygelStateMachine*) self, content_dir->cancellable);
+	self->priv->action = (_tmp1_ = action, action = NULL, _tmp1_);
+	self->priv->didl_writer = (_tmp2_ = rygel_didl_lite_writer_new (content_dir->http_server), _g_object_unref0 (self->priv->didl_writer), _tmp2_);
 	return self;
 }
 
@@ -295,17 +282,9 @@ RygelBrowse* rygel_browse_new (RygelContentDirectory* content_dir, GUPnPServiceA
 }
 
 
-static void rygel_browse_real_run (RygelStateMachine* base, GCancellable* cancellable) {
+static void rygel_browse_real_run (RygelStateMachine* base) {
 	RygelBrowse * self;
-	GCancellable* _tmp1_;
-	GCancellable* _tmp0_;
 	self = (RygelBrowse*) base;
-	_tmp1_ = NULL;
-	_tmp0_ = NULL;
-	self->priv->cancellable = (_tmp1_ = (_tmp0_ = cancellable, (_tmp0_ == NULL) ? NULL : g_object_ref (_tmp0_)), (self->priv->cancellable == NULL) ? NULL : (self->priv->cancellable = (g_object_unref (self->priv->cancellable), NULL)), _tmp1_);
-	/* Start DIDL-Lite fragment */
-	gupnp_didl_lite_writer_start_didl_lite ((GUPnPDIDLLiteWriter*) self->priv->didl_writer, NULL, NULL, TRUE);
-	/* Start by parsing the 'in' arguments */
 	rygel_browse_parse_args (self);
 }
 
@@ -314,16 +293,13 @@ static void rygel_browse_got_media_object (RygelBrowse* self) {
 	g_return_if_fail (self != NULL);
 	if (self->priv->media_object == NULL) {
 		GError* _tmp0_;
-		_tmp0_ = NULL;
 		rygel_browse_handle_error (self, _tmp0_ = g_error_new_literal (RYGEL_CONTENT_DIRECTORY_ERROR, RYGEL_CONTENT_DIRECTORY_ERROR_NO_SUCH_OBJECT, "No such object"));
-		(_tmp0_ == NULL) ? NULL : (_tmp0_ = (g_error_free (_tmp0_), NULL));
+		_g_error_free0 (_tmp0_);
 		return;
 	}
 	if (self->priv->fetch_metadata) {
-		/* BrowseMetadata*/
 		rygel_browse_handle_metadata_request (self);
 	} else {
-		/* BrowseDirectChildren*/
 		rygel_browse_handle_children_request (self);
 	}
 }
@@ -337,61 +313,54 @@ static void _rygel_browse_on_media_object_found_gasync_ready_callback (GObject* 
 static void rygel_browse_fetch_media_object (RygelBrowse* self) {
 	g_return_if_fail (self != NULL);
 	if (_vala_strcmp0 (self->object_id, ((RygelMediaObject*) self->priv->root_container)->id) == 0) {
-		RygelMediaObject* _tmp1_;
 		RygelMediaObject* _tmp0_;
-		_tmp1_ = NULL;
-		_tmp0_ = NULL;
-		self->priv->media_object = (_tmp1_ = (_tmp0_ = (RygelMediaObject*) self->priv->root_container, (_tmp0_ == NULL) ? NULL : g_object_ref (_tmp0_)), (self->priv->media_object == NULL) ? NULL : (self->priv->media_object = (g_object_unref (self->priv->media_object), NULL)), _tmp1_);
+		self->priv->media_object = (_tmp0_ = _g_object_ref0 ((RygelMediaObject*) self->priv->root_container), _g_object_unref0 (self->priv->media_object), _tmp0_);
 		rygel_browse_got_media_object (self);
 		return;
 	}
-	rygel_media_container_find_object (self->priv->root_container, self->object_id, self->priv->cancellable, _rygel_browse_on_media_object_found_gasync_ready_callback, self);
+	rygel_media_container_find_object (self->priv->root_container, self->object_id, rygel_state_machine_get_cancellable ((RygelStateMachine*) self), _rygel_browse_on_media_object_found_gasync_ready_callback, self);
 }
 
 
 static void rygel_browse_on_media_object_found (RygelBrowse* self, GObject* source_object, GAsyncResult* res) {
 	GError * _inner_error_;
-	RygelMediaContainer* _tmp0_;
 	RygelMediaContainer* container;
 	g_return_if_fail (self != NULL);
-	g_return_if_fail (source_object != NULL);
 	g_return_if_fail (res != NULL);
 	_inner_error_ = NULL;
-	_tmp0_ = NULL;
-	container = (_tmp0_ = RYGEL_MEDIA_CONTAINER (source_object), (_tmp0_ == NULL) ? NULL : g_object_ref (_tmp0_));
+	container = _g_object_ref0 (RYGEL_MEDIA_CONTAINER (source_object));
 	{
+		RygelMediaObject* _tmp0_;
 		RygelMediaObject* _tmp1_;
-		RygelMediaObject* _tmp2_;
-		_tmp1_ = rygel_media_container_find_object_finish (container, res, &_inner_error_);
+		_tmp0_ = rygel_media_container_find_object_finish (container, res, &_inner_error_);
 		if (_inner_error_ != NULL) {
-			goto __catch19_g_error;
-			goto __finally19;
+			goto __catch30_g_error;
+			goto __finally30;
 		}
-		_tmp2_ = NULL;
-		self->priv->media_object = (_tmp2_ = _tmp1_, (self->priv->media_object == NULL) ? NULL : (self->priv->media_object = (g_object_unref (self->priv->media_object), NULL)), _tmp2_);
+		self->priv->media_object = (_tmp1_ = _tmp0_, _g_object_unref0 (self->priv->media_object), _tmp1_);
 	}
-	goto __finally19;
-	__catch19_g_error:
+	goto __finally30;
+	__catch30_g_error:
 	{
 		GError * err;
 		err = _inner_error_;
 		_inner_error_ = NULL;
 		{
 			rygel_browse_handle_error (self, err);
-			(err == NULL) ? NULL : (err = (g_error_free (err), NULL));
-			(container == NULL) ? NULL : (container = (g_object_unref (container), NULL));
+			_g_error_free0 (err);
+			_g_object_unref0 (container);
 			return;
 		}
 	}
-	__finally19:
+	__finally30:
 	if (_inner_error_ != NULL) {
-		(container == NULL) ? NULL : (container = (g_object_unref (container), NULL));
+		_g_object_unref0 (container);
 		g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, _inner_error_->message);
 		g_clear_error (&_inner_error_);
 		return;
 	}
 	rygel_browse_got_media_object (self);
-	(container == NULL) ? NULL : (container = (g_object_unref (container), NULL));
+	_g_object_unref0 (container);
 }
 
 
@@ -407,23 +376,23 @@ static void rygel_browse_handle_metadata_request (RygelBrowse* self) {
 	{
 		rygel_didl_lite_writer_serialize (self->priv->didl_writer, self->priv->media_object, &_inner_error_);
 		if (_inner_error_ != NULL) {
-			goto __catch20_g_error;
-			goto __finally20;
+			goto __catch31_g_error;
+			goto __finally31;
 		}
 	}
-	goto __finally20;
-	__catch20_g_error:
+	goto __finally31;
+	__catch31_g_error:
 	{
 		GError * err;
 		err = _inner_error_;
 		_inner_error_ = NULL;
 		{
 			rygel_browse_handle_error (self, err);
-			(err == NULL) ? NULL : (err = (g_error_free (err), NULL));
+			_g_error_free0 (err);
 			return;
 		}
 	}
-	__finally20:
+	__finally31:
 	if (_inner_error_ != NULL) {
 		g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, _inner_error_->message);
 		g_clear_error (&_inner_error_);
@@ -431,32 +400,27 @@ static void rygel_browse_handle_metadata_request (RygelBrowse* self) {
 	}
 	self->number_returned = (guint) 1;
 	self->total_matches = (guint) 1;
-	/* Conclude the successful Browse action*/
 	rygel_browse_conclude (self);
 }
 
 
 static void rygel_browse_handle_children_request (RygelBrowse* self) {
-	RygelMediaContainer* _tmp1_;
 	RygelMediaContainer* container;
 	g_return_if_fail (self != NULL);
 	if (!RYGEL_IS_MEDIA_CONTAINER (self->priv->media_object)) {
 		GError* _tmp0_;
-		_tmp0_ = NULL;
 		rygel_browse_handle_error (self, _tmp0_ = g_error_new_literal (RYGEL_CONTENT_DIRECTORY_ERROR, RYGEL_CONTENT_DIRECTORY_ERROR_NO_SUCH_OBJECT, "No such object"));
-		(_tmp0_ == NULL) ? NULL : (_tmp0_ = (g_error_free (_tmp0_), NULL));
+		_g_error_free0 (_tmp0_);
 		return;
 	}
-	_tmp1_ = NULL;
-	container = (_tmp1_ = RYGEL_MEDIA_CONTAINER (self->priv->media_object), (_tmp1_ == NULL) ? NULL : g_object_ref (_tmp1_));
+	container = _g_object_ref0 (RYGEL_MEDIA_CONTAINER (self->priv->media_object));
 	self->total_matches = container->child_count;
 	self->update_id = (guint) container->update_id;
 	if (self->requested_count == 0) {
-		/* No max count requested, try to fetch all children*/
 		self->requested_count = self->total_matches;
 	}
 	rygel_browse_fetch_children (self);
-	(container == NULL) ? NULL : (container = (g_object_unref (container), NULL));
+	_g_object_unref0 (container);
 }
 
 
@@ -470,7 +434,6 @@ static void rygel_browse_parse_args (RygelBrowse* self) {
 	} else {
 		_tmp0_ = FALSE;
 	}
-	/* BrowseFlag */
 	if (_tmp0_) {
 		self->priv->fetch_metadata = FALSE;
 	} else {
@@ -486,23 +449,18 @@ static void rygel_browse_parse_args (RygelBrowse* self) {
 		} else {
 			GError* _tmp2_;
 			self->priv->fetch_metadata = FALSE;
-			_tmp2_ = NULL;
 			rygel_browse_handle_error (self, _tmp2_ = g_error_new_literal (RYGEL_CONTENT_DIRECTORY_ERROR, RYGEL_CONTENT_DIRECTORY_ERROR_INVALID_ARGS, "Invalid Args"));
-			(_tmp2_ == NULL) ? NULL : (_tmp2_ = (g_error_free (_tmp2_), NULL));
+			_g_error_free0 (_tmp2_);
 			return;
 		}
 	}
-	/* ObjectID */
 	if (self->object_id == NULL) {
-		/* Stupid Xbox */
 		gupnp_service_action_get (self->priv->action, "ContainerID", G_TYPE_STRING, &self->object_id, NULL);
 	}
 	if (self->object_id == NULL) {
 		GError* _tmp3_;
-		/* Sorry we can't do anything without ObjectID*/
-		_tmp3_ = NULL;
 		rygel_browse_handle_error (self, _tmp3_ = g_error_new_literal (RYGEL_CONTENT_DIRECTORY_ERROR, RYGEL_CONTENT_DIRECTORY_ERROR_NO_SUCH_OBJECT, "No such object"));
-		(_tmp3_ == NULL) ? NULL : (_tmp3_ = (g_error_free (_tmp3_), NULL));
+		_g_error_free0 (_tmp3_);
 		return;
 	}
 	rygel_browse_fetch_media_object (self);
@@ -510,32 +468,27 @@ static void rygel_browse_parse_args (RygelBrowse* self) {
 
 
 static void rygel_browse_conclude (RygelBrowse* self) {
-	const char* _tmp0_;
 	char* didl;
 	g_return_if_fail (self != NULL);
-	/* End DIDL-Lite fragment */
-	gupnp_didl_lite_writer_end_didl_lite ((GUPnPDIDLLiteWriter*) self->priv->didl_writer);
-	/* Retrieve generated string */
-	_tmp0_ = NULL;
-	didl = (_tmp0_ = gupnp_didl_lite_writer_get_string ((GUPnPDIDLLiteWriter*) self->priv->didl_writer), (_tmp0_ == NULL) ? NULL : g_strdup (_tmp0_));
+	gupnp_didl_lite_writer_filter ((GUPnPDIDLLiteWriter*) self->priv->didl_writer, self->filter);
+	didl = gupnp_didl_lite_writer_get_string ((GUPnPDIDLLiteWriter*) self->priv->didl_writer);
 	if (self->update_id == G_MAXUINT32) {
 		self->update_id = (guint) self->priv->system_update_id;
 	}
-	/* Set action return arguments */
 	gupnp_service_action_set (self->priv->action, "Result", G_TYPE_STRING, didl, "NumberReturned", G_TYPE_UINT, self->number_returned, "TotalMatches", G_TYPE_UINT, self->total_matches, "UpdateID", G_TYPE_UINT, self->update_id, NULL);
 	gupnp_service_action_return (self->priv->action);
 	g_signal_emit_by_name ((RygelStateMachine*) self, "completed");
-	didl = (g_free (didl), NULL);
+	_g_free0 (didl);
 }
 
 
 static void rygel_browse_handle_error (RygelBrowse* self, GError* _error_) {
 	g_return_if_fail (self != NULL);
 	if (_error_->domain == RYGEL_CONTENT_DIRECTORY_ERROR) {
-		g_warning ("rygel-browse.vala:226: Failed to browse '%s': %s\n", self->object_id, _error_->message);
+		g_warning ("rygel-browse.vala:221: Failed to browse '%s': %s\n", self->object_id, _error_->message);
 		gupnp_service_action_return_error (self->priv->action, (guint) _error_->code, _error_->message);
 	} else {
-		g_warning ("rygel-browse.vala:231: Failed to browse '%s': %s\n", self->object_id, _error_->message);
+		g_warning ("rygel-browse.vala:226: Failed to browse '%s': %s\n", self->object_id, _error_->message);
 		gupnp_service_action_return_error (self->priv->action, (guint) 701, _error_->message);
 	}
 	g_signal_emit_by_name ((RygelStateMachine*) self, "completed");
@@ -548,47 +501,54 @@ static void rygel_browse_serialize_children (RygelBrowse* self, GeeList* childre
 	_inner_error_ = NULL;
 	if (children == NULL) {
 		GError* _tmp0_;
-		_tmp0_ = NULL;
 		rygel_browse_handle_error (self, _tmp0_ = g_error_new_literal (RYGEL_CONTENT_DIRECTORY_ERROR, RYGEL_CONTENT_DIRECTORY_ERROR_NO_SUCH_OBJECT, "No such object"));
-		(_tmp0_ == NULL) ? NULL : (_tmp0_ = (g_error_free (_tmp0_), NULL));
+		_g_error_free0 (_tmp0_);
 		return;
 	}
 	{
 		gint i;
-		/* serialize all children */
 		i = 0;
-		for (; i < gee_collection_get_size ((GeeCollection*) children); i++) {
-			{
-				RygelMediaObject* _tmp1_;
-				_tmp1_ = NULL;
-				rygel_didl_lite_writer_serialize (self->priv->didl_writer, _tmp1_ = (RygelMediaObject*) gee_list_get (children, i), &_inner_error_);
-				if (_inner_error_ != NULL) {
-					goto __catch21_g_error;
-					goto __finally21;
+		{
+			gboolean _tmp1_;
+			_tmp1_ = TRUE;
+			while (TRUE) {
+				if (!_tmp1_) {
+					i++;
 				}
-				(_tmp1_ == NULL) ? NULL : (_tmp1_ = (g_object_unref (_tmp1_), NULL));
-			}
-			goto __finally21;
-			__catch21_g_error:
-			{
-				GError * err;
-				err = _inner_error_;
-				_inner_error_ = NULL;
+				_tmp1_ = FALSE;
+				if (!(i < gee_collection_get_size ((GeeCollection*) children))) {
+					break;
+				}
 				{
-					rygel_browse_handle_error (self, err);
-					(err == NULL) ? NULL : (err = (g_error_free (err), NULL));
+					RygelMediaObject* _tmp2_;
+					rygel_didl_lite_writer_serialize (self->priv->didl_writer, _tmp2_ = (RygelMediaObject*) gee_list_get (children, i), &_inner_error_);
+					if (_inner_error_ != NULL) {
+						goto __catch32_g_error;
+						goto __finally32;
+					}
+					_g_object_unref0 (_tmp2_);
+				}
+				goto __finally32;
+				__catch32_g_error:
+				{
+					GError * err;
+					err = _inner_error_;
+					_inner_error_ = NULL;
+					{
+						rygel_browse_handle_error (self, err);
+						_g_error_free0 (err);
+						return;
+					}
+				}
+				__finally32:
+				if (_inner_error_ != NULL) {
+					g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, _inner_error_->message);
+					g_clear_error (&_inner_error_);
 					return;
 				}
 			}
-			__finally21:
-			if (_inner_error_ != NULL) {
-				g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, _inner_error_->message);
-				g_clear_error (&_inner_error_);
-				return;
-			}
 		}
 	}
-	/* Conclude the successful Browse action*/
 	rygel_browse_conclude (self);
 }
 
@@ -599,69 +559,87 @@ static void _rygel_browse_on_children_fetched_gasync_ready_callback (GObject* so
 
 
 static void rygel_browse_fetch_children (RygelBrowse* self) {
-	RygelMediaContainer* _tmp0_;
 	RygelMediaContainer* container;
 	g_return_if_fail (self != NULL);
-	_tmp0_ = NULL;
-	container = (_tmp0_ = RYGEL_MEDIA_CONTAINER (self->priv->media_object), (_tmp0_ == NULL) ? NULL : g_object_ref (_tmp0_));
-	rygel_media_container_get_children (container, self->index, self->requested_count, self->priv->cancellable, _rygel_browse_on_children_fetched_gasync_ready_callback, self);
-	(container == NULL) ? NULL : (container = (g_object_unref (container), NULL));
+	container = _g_object_ref0 (RYGEL_MEDIA_CONTAINER (self->priv->media_object));
+	rygel_media_container_get_children (container, self->index, self->requested_count, rygel_state_machine_get_cancellable ((RygelStateMachine*) self), _rygel_browse_on_children_fetched_gasync_ready_callback, self);
+	_g_object_unref0 (container);
 }
 
 
 static void rygel_browse_on_children_fetched (RygelBrowse* self, GObject* source_object, GAsyncResult* res) {
 	GError * _inner_error_;
-	RygelMediaContainer* _tmp0_;
 	RygelMediaContainer* container;
 	g_return_if_fail (self != NULL);
-	g_return_if_fail (source_object != NULL);
 	g_return_if_fail (res != NULL);
 	_inner_error_ = NULL;
-	_tmp0_ = NULL;
-	container = (_tmp0_ = RYGEL_MEDIA_CONTAINER (source_object), (_tmp0_ == NULL) ? NULL : g_object_ref (_tmp0_));
+	container = _g_object_ref0 (RYGEL_MEDIA_CONTAINER (source_object));
 	{
 		GeeList* children;
 		children = rygel_media_container_get_children_finish (container, res, &_inner_error_);
 		if (_inner_error_ != NULL) {
-			goto __catch22_g_error;
-			goto __finally22;
+			goto __catch33_g_error;
+			goto __finally33;
 		}
 		self->number_returned = (guint) gee_collection_get_size ((GeeCollection*) children);
 		rygel_browse_serialize_children (self, children);
-		(children == NULL) ? NULL : (children = (g_object_unref (children), NULL));
+		_g_object_unref0 (children);
 	}
-	goto __finally22;
-	__catch22_g_error:
+	goto __finally33;
+	__catch33_g_error:
 	{
 		GError * err;
 		err = _inner_error_;
 		_inner_error_ = NULL;
 		{
 			rygel_browse_handle_error (self, err);
-			(err == NULL) ? NULL : (err = (g_error_free (err), NULL));
+			_g_error_free0 (err);
 		}
 	}
-	__finally22:
+	__finally33:
 	if (_inner_error_ != NULL) {
-		(container == NULL) ? NULL : (container = (g_object_unref (container), NULL));
+		_g_object_unref0 (container);
 		g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, _inner_error_->message);
 		g_clear_error (&_inner_error_);
 		return;
 	}
-	(container == NULL) ? NULL : (container = (g_object_unref (container), NULL));
+	_g_object_unref0 (container);
+}
+
+
+static GCancellable* rygel_browse_real_get_cancellable (RygelStateMachine* base) {
+	GCancellable* result;
+	RygelBrowse* self;
+	self = (RygelBrowse*) base;
+	result = self->priv->_cancellable;
+	return result;
+}
+
+
+static void rygel_browse_real_set_cancellable (RygelStateMachine* base, GCancellable* value) {
+	RygelBrowse* self;
+	GCancellable* _tmp0_;
+	self = (RygelBrowse*) base;
+	self->priv->_cancellable = (_tmp0_ = _g_object_ref0 (value), _g_object_unref0 (self->priv->_cancellable), _tmp0_);
+	g_object_notify ((GObject *) self, "cancellable");
 }
 
 
 static void rygel_browse_class_init (RygelBrowseClass * klass) {
 	rygel_browse_parent_class = g_type_class_peek_parent (klass);
 	g_type_class_add_private (klass, sizeof (RygelBrowsePrivate));
+	G_OBJECT_CLASS (klass)->get_property = rygel_browse_get_property;
+	G_OBJECT_CLASS (klass)->set_property = rygel_browse_set_property;
 	G_OBJECT_CLASS (klass)->finalize = rygel_browse_finalize;
+	g_object_class_override_property (G_OBJECT_CLASS (klass), RYGEL_BROWSE_CANCELLABLE, "cancellable");
 }
 
 
 static void rygel_browse_rygel_state_machine_interface_init (RygelStateMachineIface * iface) {
 	rygel_browse_rygel_state_machine_parent_iface = g_type_interface_peek_parent (iface);
 	iface->run = rygel_browse_real_run;
+	iface->get_cancellable = rygel_browse_real_get_cancellable;
+	iface->set_cancellable = rygel_browse_real_set_cancellable;
 }
 
 
@@ -673,14 +651,14 @@ static void rygel_browse_instance_init (RygelBrowse * self) {
 static void rygel_browse_finalize (GObject* obj) {
 	RygelBrowse * self;
 	self = RYGEL_BROWSE (obj);
-	self->object_id = (g_free (self->object_id), NULL);
-	self->browse_flag = (g_free (self->browse_flag), NULL);
-	self->filter = (g_free (self->filter), NULL);
-	self->sort_criteria = (g_free (self->sort_criteria), NULL);
-	(self->priv->media_object == NULL) ? NULL : (self->priv->media_object = (g_object_unref (self->priv->media_object), NULL));
-	(self->priv->root_container == NULL) ? NULL : (self->priv->root_container = (g_object_unref (self->priv->root_container), NULL));
-	(self->priv->didl_writer == NULL) ? NULL : (self->priv->didl_writer = (g_object_unref (self->priv->didl_writer), NULL));
-	(self->priv->cancellable == NULL) ? NULL : (self->priv->cancellable = (g_object_unref (self->priv->cancellable), NULL));
+	_g_free0 (self->object_id);
+	_g_free0 (self->browse_flag);
+	_g_free0 (self->filter);
+	_g_free0 (self->sort_criteria);
+	_g_object_unref0 (self->priv->media_object);
+	_g_object_unref0 (self->priv->root_container);
+	_g_object_unref0 (self->priv->didl_writer);
+	_g_object_unref0 (self->priv->_cancellable);
 	G_OBJECT_CLASS (rygel_browse_parent_class)->finalize (obj);
 }
 
@@ -694,6 +672,34 @@ GType rygel_browse_get_type (void) {
 		g_type_add_interface_static (rygel_browse_type_id, RYGEL_TYPE_STATE_MACHINE, &rygel_state_machine_info);
 	}
 	return rygel_browse_type_id;
+}
+
+
+static void rygel_browse_get_property (GObject * object, guint property_id, GValue * value, GParamSpec * pspec) {
+	RygelBrowse * self;
+	self = RYGEL_BROWSE (object);
+	switch (property_id) {
+		case RYGEL_BROWSE_CANCELLABLE:
+		g_value_set_object (value, rygel_state_machine_get_cancellable ((RygelStateMachine*) self));
+		break;
+		default:
+		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
+		break;
+	}
+}
+
+
+static void rygel_browse_set_property (GObject * object, guint property_id, const GValue * value, GParamSpec * pspec) {
+	RygelBrowse * self;
+	self = RYGEL_BROWSE (object);
+	switch (property_id) {
+		case RYGEL_BROWSE_CANCELLABLE:
+		rygel_state_machine_set_cancellable ((RygelStateMachine*) self, g_value_get_object (value));
+		break;
+		default:
+		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
+		break;
+	}
 }
 
 

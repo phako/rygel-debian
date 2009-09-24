@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2008 Zeeshan Ali (Khattak) <zeeshanak@gnome.org>.
- * Copyright (C) 2008 Nokia Corporation, all rights reserved.
+ * Copyright (C) 2008 Nokia Corporation.
  *
  * Author: Zeeshan Ali (Khattak) <zeeshanak@gnome.org>
  *                               <zeeshan.ali@nokia.com>
@@ -22,7 +22,6 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-using Rygel;
 using GUPnP;
 using Gee;
 using Gst;
@@ -39,24 +38,33 @@ internal class Rygel.LiveResponse : Rygel.HTTPResponse {
 
     private AsyncQueue<Buffer> buffers;
 
+    private HTTPSeek time_range;
+
     public LiveResponse (Soup.Server  server,
                          Soup.Message msg,
                          string       name,
-                         Element      src) throws Error {
-        base (server, msg, false);
+                         Element      src,
+                         HTTPSeek?    time_range,
+                         Cancellable? cancellable) throws Error {
+        base (server, msg, false, cancellable);
 
         this.msg.response_headers.set_encoding (Soup.Encoding.EOF);
 
         this.buffers = new AsyncQueue<Buffer> ();
 
         this.prepare_pipeline (name, src);
+        this.time_range = time_range;
     }
 
-    public override void run (Cancellable? cancellable) {
-        base.run (cancellable);
+    public override void run () {
+        base.run ();
 
-        // Go to PAUSED first
-        this.pipeline.set_state (State.PLAYING);
+        // Only bother attempting to seek if the offset is greater than zero.
+        if (this.time_range != null && this.time_range.start > 0) {
+            this.pipeline.set_state (State.PAUSED);
+        } else {
+            this.pipeline.set_state (State.PLAYING);
+        }
     }
 
     public override void end (bool aborted, uint status) {
@@ -226,6 +234,21 @@ internal class Rygel.LiveResponse : Rygel.HTTPResponse {
 
         if (message.type == MessageType.EOS) {
             ret = false;
+        } else if (message.type == MessageType.STATE_CHANGED) {
+            if (this.time_range != null && this.time_range.start > 0) {
+                State old_state;
+                State new_state;
+
+                message.parse_state_changed (out old_state,
+                                             out new_state,
+                                             null);
+
+                if (old_state == State.READY && new_state == State.PAUSED) {
+                    if (this.seek ()) {
+                        this.pipeline.set_state (State.PLAYING);
+                    }
+                }
+            }
         } else {
             GLib.Error err;
             string err_msg;
@@ -250,6 +273,33 @@ internal class Rygel.LiveResponse : Rygel.HTTPResponse {
         }
 
         return ret;
+    }
+
+    private bool seek () {
+        Gst.SeekType stop_type;
+
+        if (this.time_range.stop > 0) {
+            stop_type = Gst.SeekType.SET;
+        } else {
+            stop_type = Gst.SeekType.NONE;
+        }
+
+        if (!this.pipeline.seek (1.0,
+                                 Format.TIME,
+                                 SeekFlags.FLUSH,
+                                 Gst.SeekType.SET,
+                                 this.time_range.start,
+                                 stop_type,
+                                 this.time_range.stop)) {
+            warning ("Failed to seek to offset %lld", this.time_range.start);
+
+            this.end (false,
+                      Soup.KnownStatusCode.REQUESTED_RANGE_NOT_SATISFIABLE);
+
+            return false;
+        }
+
+        return true;
     }
 }
 

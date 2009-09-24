@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2009 Nokia Corporation, all rights reserved.
+ * Copyright (C) 2009 Nokia Corporation.
  *
  * Author: Zeeshan Ali (Khattak) <zeeshanak@gnome.org>
  *                               <zeeshan.ali@nokia.com>
@@ -50,115 +50,63 @@ internal class Rygel.DIDLLiteWriter : GUPnP.DIDLLiteWriter {
     }
 
     private void serialize_item (MediaItem item) throws Error {
-        this.start_item (item.id,
-                         item.parent.id,
-                         null,
-                         false);
+        var didl_item = this.add_item ();
 
-        /* Add fields */
-        this.add_string ("title",
-                         GUPnP.DIDLLiteWriter.NAMESPACE_DC,
-                         null,
-                         item.title);
+        didl_item.id = item.id;
+        if (item.parent != null) {
+            didl_item.parent_id = item.parent.id;
+        } else {
+            didl_item.parent_id = "0";
+        }
 
-        this.add_string ("class",
-                         GUPnP.DIDLLiteWriter.NAMESPACE_UPNP,
-                         null,
-                         item.upnp_class);
+        didl_item.restricted = false;
 
+        didl_item.title = item.title;
+        didl_item.upnp_class = item.upnp_class;
         if (item.author != null && item.author != "") {
-            this.add_string ("creator",
-                             GUPnP.DIDLLiteWriter.NAMESPACE_DC,
-                             null,
-                             item.author);
+            didl_item.creator = item.author;
 
             if (item.upnp_class.has_prefix (MediaItem.VIDEO_CLASS)) {
-                this.add_string ("author",
-                                 GUPnP.DIDLLiteWriter.NAMESPACE_UPNP,
-                                 null,
-                                 item.author);
+                didl_item.author = item.author;
             } else if (item.upnp_class.has_prefix (MediaItem.MUSIC_CLASS)) {
-                this.add_string ("artist",
-                                 GUPnP.DIDLLiteWriter.NAMESPACE_UPNP,
-                                 null,
-                                 item.author);
+                didl_item.artist = item.author;
             }
         }
 
         if (item.track_number >= 0) {
-            this.add_int ("originalTrackNumber",
-                          GUPnP.DIDLLiteWriter.NAMESPACE_UPNP,
-                          null,
-                          item.track_number);
+            didl_item.track_number = item.track_number;
         }
 
         if (item.album != null && item.album != "") {
-            this.add_string ("album",
-                             GUPnP.DIDLLiteWriter.NAMESPACE_UPNP,
-                             null,
-                             item.album);
+            didl_item.album = item.album;
         }
 
         if (item.date != null && item.date != "") {
-            this.add_string ("date",
-                             GUPnP.DIDLLiteWriter.NAMESPACE_DC,
-                             null,
-                             item.date);
+            didl_item.date = item.date;
         }
 
-        /* Add resource data */
-        var resources = this.get_original_resources (item);
+        // Add the transcoded/proxy URIs first
+        this.http_server.add_resources (didl_item, item);
 
-        /* Now get the transcoded/proxy URIs */
-        this.http_server.add_resources (resources, item);
-
-        foreach (DIDLLiteResource res in resources) {
-            this.add_res (res);
-        }
-
-        /* End of item */
-        this.end_item ();
+        var internal_allowed = this.http_server.context.interface == "lo" ||
+                               this.http_server.context.host_ip == "127.0.0.1";
+        // then original URIs
+        item.add_resources (didl_item, internal_allowed);
     }
 
     private void serialize_container (MediaContainer container) throws Error {
-        string parent_id;
-
+        var didl_container = this.add_container ();
         if (container.parent != null) {
-            parent_id = container.parent.id;
+            didl_container.parent_id = container.parent.id;
         } else {
-            parent_id = "-1";
+            didl_container.parent_id = "-1";
         }
 
-        this.start_container (container.id,
-                              parent_id,
-                              (int) container.child_count,
-                              false,
-                              false);
-
-        this.add_string ("class",
-                         GUPnP.DIDLLiteWriter.NAMESPACE_UPNP,
-                         null,
-                         "object.container.storageFolder");
-
-        this.add_string ("title",
-                         GUPnP.DIDLLiteWriter.NAMESPACE_DC,
-                         null,
-                         container.title);
-
-        /* End of Container */
-        this.end_container ();
-    }
-
-    private ArrayList<DIDLLiteResource?> get_original_resources (MediaItem item)
-                                                                 throws Error {
-        var resources = new ArrayList<DIDLLiteResource?> ();
-
-        foreach (var uri in item.uris) {
-            DIDLLiteResource res = item.create_res (uri);
-
-            resources.add (res);
-        }
-
-        return resources;
+        didl_container.id = container.id;
+        didl_container.title = container.title;
+        didl_container.child_count = container.child_count;
+        didl_container.restricted = false;
+        didl_container.searchable = false;
+        didl_container.upnp_class = "object.container.storageFolder";
     }
 }

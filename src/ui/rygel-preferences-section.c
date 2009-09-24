@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2009 Nokia Corporation, all rights reserved.
+ * Copyright (C) 2009 Nokia Corporation.
  *
  * Author: Zeeshan Ali (Khattak) <zeeshanak@gnome.org>
  *                               <zeeshan.ali@nokia.com>
@@ -38,11 +38,13 @@
 typedef struct _RygelPreferencesSection RygelPreferencesSection;
 typedef struct _RygelPreferencesSectionClass RygelPreferencesSectionClass;
 typedef struct _RygelPreferencesSectionPrivate RygelPreferencesSectionPrivate;
+#define _g_object_unref0(var) ((var == NULL) ? NULL : (var = (g_object_unref (var), NULL)))
+#define _g_free0(var) (var = (g_free (var), NULL))
 
 struct _RygelPreferencesSection {
 	GObject parent_instance;
 	RygelPreferencesSectionPrivate * priv;
-	RygelConfiguration* config;
+	RygelUserConfig* config;
 	char* name;
 };
 
@@ -52,42 +54,34 @@ struct _RygelPreferencesSectionClass {
 };
 
 
+static gpointer rygel_preferences_section_parent_class = NULL;
 
 GType rygel_preferences_section_get_type (void);
 enum  {
 	RYGEL_PREFERENCES_SECTION_DUMMY_PROPERTY
 };
-RygelPreferencesSection* rygel_preferences_section_new (RygelConfiguration* config, const char* name);
-RygelPreferencesSection* rygel_preferences_section_construct (GType object_type, RygelConfiguration* config, const char* name);
-RygelPreferencesSection* rygel_preferences_section_new (RygelConfiguration* config, const char* name);
+RygelPreferencesSection* rygel_preferences_section_construct (GType object_type, RygelUserConfig* config, const char* name);
 void rygel_preferences_section_save (RygelPreferencesSection* self);
 static void rygel_preferences_section_real_save (RygelPreferencesSection* self);
-static gpointer rygel_preferences_section_parent_class = NULL;
 static void rygel_preferences_section_finalize (GObject* obj);
 
 
 
-RygelPreferencesSection* rygel_preferences_section_construct (GType object_type, RygelConfiguration* config, const char* name) {
-	RygelPreferencesSection * self;
-	char* _tmp1_;
-	const char* _tmp0_;
-	RygelConfiguration* _tmp3_;
-	RygelConfiguration* _tmp2_;
-	g_return_val_if_fail (config != NULL, NULL);
-	g_return_val_if_fail (name != NULL, NULL);
-	self = g_object_newv (object_type, 0, NULL);
-	_tmp1_ = NULL;
-	_tmp0_ = NULL;
-	self->name = (_tmp1_ = (_tmp0_ = name, (_tmp0_ == NULL) ? NULL : g_strdup (_tmp0_)), self->name = (g_free (self->name), NULL), _tmp1_);
-	_tmp3_ = NULL;
-	_tmp2_ = NULL;
-	self->config = (_tmp3_ = (_tmp2_ = config, (_tmp2_ == NULL) ? NULL : g_object_ref (_tmp2_)), (self->config == NULL) ? NULL : (self->config = (g_object_unref (self->config), NULL)), _tmp3_);
-	return self;
+static gpointer _g_object_ref0 (gpointer self) {
+	return self ? g_object_ref (self) : NULL;
 }
 
 
-RygelPreferencesSection* rygel_preferences_section_new (RygelConfiguration* config, const char* name) {
-	return rygel_preferences_section_construct (RYGEL_TYPE_PREFERENCES_SECTION, config, name);
+RygelPreferencesSection* rygel_preferences_section_construct (GType object_type, RygelUserConfig* config, const char* name) {
+	RygelPreferencesSection * self;
+	char* _tmp0_;
+	RygelUserConfig* _tmp1_;
+	g_return_val_if_fail (config != NULL, NULL);
+	g_return_val_if_fail (name != NULL, NULL);
+	self = (RygelPreferencesSection*) g_object_new (object_type, NULL);
+	self->name = (_tmp0_ = g_strdup (name), _g_free0 (self->name), _tmp0_);
+	self->config = (_tmp1_ = _g_object_ref0 (config), _g_object_unref0 (self->config), _tmp1_);
+	return self;
 }
 
 
@@ -117,8 +111,8 @@ static void rygel_preferences_section_instance_init (RygelPreferencesSection * s
 static void rygel_preferences_section_finalize (GObject* obj) {
 	RygelPreferencesSection * self;
 	self = RYGEL_PREFERENCES_SECTION (obj);
-	(self->config == NULL) ? NULL : (self->config = (g_object_unref (self->config), NULL));
-	self->name = (g_free (self->name), NULL);
+	_g_object_unref0 (self->config);
+	_g_free0 (self->name);
 	G_OBJECT_CLASS (rygel_preferences_section_parent_class)->finalize (obj);
 }
 

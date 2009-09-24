@@ -1,7 +1,9 @@
 if UNINSTALLED
 shareddir = $(abs_top_builddir)/data
+desktopdir = $(shareddir)
 else
 shareddir = $(datadir)/rygel
+desktopdir = $(shareddir)/applications
 endif
 
 if UNINSTALLED
@@ -12,14 +14,17 @@ endif
 
 AM_CFLAGS = $(LIBGUPNP_CFLAGS) \
 	    $(LIBGUPNP_AV_CFLAGS) \
-	    $(LIBGCONF_CFLAGS) \
 	    $(LIBGSTREAMER_CFLAGS) \
 	    $(GIO_CFLAGS) \
 	    $(GEE_CFLAGS) \
 	    $(UUID_CFLAGS) \
 	    $(LIBSOUP_CFLAGS) \
-	    -I$(top_srcdir) -DDATA_DIR='"$(shareddir)"' \
-	    -DPLUGIN_DIR='"$(plugindir)"' -include config.h
+	    $(LIBDBUS_GLIB_CFLAGS) \
+	    $(LIBSQLITE3_CFLAGS) \
+	    -I$(top_srcdir) \
+	    -DDATA_DIR='"$(shareddir)"' -DSYS_CONFIG_DIR='"$(sysconfdir)"'\
+	    -DPLUGIN_DIR='"$(plugindir)"' -DDESKTOP_DIR='"$(desktopdir)"'\
+	    -include config.h
 
 librygelincdir = $(includedir)/rygel-1.0
 
@@ -28,95 +33,28 @@ librygelinc_HEADERS = rygel.h
 bin_PROGRAMS = rygel
 
 BUILT_SOURCES = rygel-1.0.vapi \
-		rygel.h \
-		rygel-media-server.c \
-		rygel-media-server-factory.c \
-		rygel-configuration.c \
-		rygel-main.c \
-		rygel-content-directory.c \
-		rygel-browse.c \
-		rygel-didl-lite-writer.c \
-		rygel-plugin.c \
-		rygel-plugin-loader.c \
-		rygel-transcode-manager.c \
-		rygel-http-server.c \
-		rygel-state-machine.c \
-		rygel-http-request.c \
-		rygel-http-response.c \
-		rygel-live-response.c \
-		rygel-seekable-response.c \
-		rygel-resource-info.c \
-		rygel-icon-info.c \
-		rygel-connection-manager.c \
-		rygel-media-object.c \
-		rygel-media-container.c \
-		rygel-simple-async-result.c \
-		rygel-media-item.c
-
-$(BUILT_SOURCES) : rygel.stamp
+		rygel.h
 
 rygel_SOURCES = $(VAPI_SOURCE_FILES) \
-		rygel-media-server.c \
-		rygel-media-server.vala \
-		rygel-media-server-factory.c \
-		rygel-media-server-factory.vala \
-		rygel-main.c \
-		rygel-main.vala \
-		rygel-content-directory.c \
-		rygel-browse.c \
-		rygel-didl-lite-writer.c \
-		rygel-plugin.c \
-		rygel-plugin-loader.c \
-		rygel-transcode-manager.c \
-		rygel-http-server.c \
-		rygel-state-machine.c \
-		rygel-http-request.c \
-		rygel-http-response.c \
-		rygel-live-response.c \
-		rygel-seekable-response.c \
-		rygel-resource-info.c \
-		rygel-icon-info.c \
-		rygel-connection-manager.c \
-		rygel-media-object.c \
-		rygel-media-container.c \
-		rygel-simple-async-result.c \
-		rygel-media-item.c \
-		rygel-transcoder.c \
-		rygel-mp2ts-transcoder.c \
-		rygel-mp3-transcoder.c \
-		rygel-l16-transcoder.c \
-		rygel-mp2ts-transcoder-bin.c \
-		rygel-mp3-transcoder-bin.c \
-		rygel-l16-transcoder-bin.c \
-		rygel-gst-utils.c
-
-rygel.stamp: $(filter %.vala,$(rygel_SOURCES))
-	$(VALAC) -C --vapidir=$(srcdir) \
-	--pkg cstuff --pkg gupnp-1.0 --pkg gupnp-av-1.0 --pkg dbus-glib-1 \
-	--pkg gconf-2.0 --pkg gstreamer-0.10 --pkg gio-2.0 --pkg gee-1.0 $^
-	touch $@
-
-rygel_LDADD = $(LIBGUPNP_LIBS) \
-	      $(LIBGUPNP_AV_LIBS) \
-	      $(LIBGCONF_LIBS) \
-	      $(LIBGSTREAMER_LIBS) \
-	      $(GIO_LIBS) \
-	      $(GEE_LIBS) \
-	      $(UUID_LIBS) \
-	      $(LIBSOUP_LIBS) \
-	      librygel-configuration.a
-rygel_LDFLAGS = -export-dynamic
-
-VAPI_FILES = rygel-1.0.vapi
-DEPS_FILES = rygel-1.0.deps
+		rygel-dbus-service.vala \
+		rygel-root-device.vala \
+		rygel-root-device-factory.vala \
+		rygel-main.vala
 
 VAPI_SOURCE_FILES = rygel-configuration.vala \
+		    rygel-user-config.vala \
+		    rygel-meta-config.vala \
+		    rygel-cmdline-config.vala \
 		    rygel-content-directory.vala \
 		    rygel-connection-manager.vala \
 		    rygel-transcode-manager.vala \
 		    rygel-http-server.vala \
 		    rygel-state-machine.vala \
 		    rygel-http-request.vala \
+		    rygel-http-request-handler.vala \
+		    rygel-http-identity-handler.vala \
+		    rygel-http-transcode-handler.vala \
+		    rygel-http-seek.vala \
 		    rygel-http-response.vala \
 		    rygel-live-response.vala \
 		    rygel-seekable-response.vala \
@@ -126,8 +64,12 @@ VAPI_SOURCE_FILES = rygel-configuration.vala \
 		    rygel-plugin-loader.vala \
 		    rygel-media-object.vala \
 		    rygel-media-container.vala \
+		    rygel-simple-container.vala \
+		    rygel-media-object-search.vala \
 		    rygel-simple-async-result.vala \
 		    rygel-media-item.vala \
+		    rygel-thumbnail.vala \
+		    rygel-thumbnailer.vala \
 		    rygel-browse.vala \
 		    rygel-didl-lite-writer.vala \
 		    rygel-transcoder.vala \
@@ -137,28 +79,46 @@ VAPI_SOURCE_FILES = rygel-configuration.vala \
 		    rygel-mp2ts-transcoder-bin.vala \
 		    rygel-mp3-transcoder-bin.vala \
 		    rygel-l16-transcoder-bin.vala \
-		    rygel-gst-utils.vala
+		    rygel-gst-utils.vala \
+		    rygel-media-db.vala \
+		    rygel-metadata-extractor.vala \
+		    rygel-media-db-container.vala \
+		    rygel-media-db-object-factory.vala
 
-rygel-1.0.vapi: $(VAPI_SOURCE_FILES)
-	$(VALAC) -H rygel.h -C --library=rygel-1.0 --vapidir=$(srcdir) \
-	--pkg cstuff --pkg gupnp-1.0 --pkg gupnp-av-1.0 --pkg gconf-2.0 \
-	--pkg gee-1.0 --pkg gstreamer-0.10 \
-	$(VAPI_SOURCE_FILES)
+rygel_VALAFLAGS = \
+	-H rygel.h -C --library=rygel-1.0 --vapidir=$(srcdir) --thread \
+	--pkg cstuff --pkg gupnp-1.0 --pkg gupnp-av-1.0 --pkg dbus-glib-1 \
+	--pkg gstreamer-0.10 --pkg gio-2.0 --pkg gee-1.0 --pkg sqlite3
+
+rygel_LDADD = $(LIBGUPNP_LIBS) \
+	      $(LIBGUPNP_AV_LIBS) \
+	      $(LIBGSTREAMER_LIBS) \
+	      $(GIO_LIBS) \
+	      $(GEE_LIBS) \
+	      $(UUID_LIBS) \
+	      $(LIBSOUP_LIBS) \
+	      $(LIBDBUS_GLIB_LIBS) \
+	      $(LIBSQLITE3_LIBS) \
+	      librygel-configuration.a
+rygel_LDFLAGS = -export-dynamic
+
+VAPI_FILES = rygel-1.0.vapi
+DEPS_FILES = rygel-1.0.deps
+
+vapidir = $(VAPIDIR)
+vapi_DATA = $(VAPI_FILES) $(DEPS_FILES)
+rygel-1.0.vapi rygel.h: $(VAPI_SOURCE_FILES)
 
 noinst_LIBRARIES = librygel-configuration.a
 
 librygel_configuration_a_SOURCES = rygel-configuration.c \
-				   cstuff.c \
-                                   cstuff.h
+				   rygel-user-config.c \
+				   rygel-meta-config.c \
+				   rygel-cmdline-config.c \
+				   cstuff.c
 
-vapidir = $(VAPIDIR)
-vapi_DATA = $(VAPI_FILES) $(DEPS_FILES)
-
-CLEANFILES = $(BUILT_SOURCES) rygel.stamp
-MAINTAINERCLEANFILES = Makefile.in
+MAINTAINERCLEANFILES = Makefile.in $(BUILT_SOURCES)
 EXTRA_DIST = cstuff.vapi \
              $(VAPI_FILES) \
              $(DEPS_FILES) \
-             $(VAPI_SOURCE_FILES) \
-             $(BUILT_SOURCES) \
-	     rygel.stamp
+             $(BUILT_SOURCES) cstuff.h

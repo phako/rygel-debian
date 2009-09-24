@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2009 Nokia Corporation, all rights reserved.
+ * Copyright (C) 2009 Nokia Corporation.
  *
  * Author: Zeeshan Ali (Khattak) <zeeshanak@gnome.org>
  *                               <zeeshan.ali@nokia.com>
@@ -21,7 +21,6 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-using Rygel;
 using GUPnP;
 using Gee;
 using Gst;
@@ -34,19 +33,19 @@ using Gst;
 internal abstract class Rygel.TranscodeManager : GLib.Object {
     private ArrayList<Transcoder> transcoders;
 
-    public TranscodeManager () {
+    public TranscodeManager () throws GLib.Error {
         transcoders = new ArrayList<Transcoder> ();
 
-        var config = Configuration.get_default ();
+        var config = MetaConfig.get_default ();
 
-        if (config.transcoding) {
-            if (config.lpcm_transcoder) {
+        if (config.get_transcoding ()) {
+            if (config.get_lpcm_transcoder ()) {
                 transcoders.add (new L16Transcoder (Endianness.BIG));
             }
-            if (config.mp3_transcoder) {
+            if (config.get_mp3_transcoder ()) {
                 transcoders.add (new MP3Transcoder (MP3Layer.THREE));
             }
-            if (config.mp2ts_transcoder) {
+            if (config.get_mp2ts_transcoder ()) {
                 transcoders.add (new MP2TSTranscoder(MP2TSProfile.SD));
                 transcoders.add (new MP2TSTranscoder(MP2TSProfile.HD));
             }
@@ -54,30 +53,24 @@ internal abstract class Rygel.TranscodeManager : GLib.Object {
     }
 
     public abstract string create_uri_for_item (MediaItem  item,
+                                                int        thumbnail_index,
                                                 string?    transcode_target,
                                                 out string protocol);
 
-    public virtual void add_resources (ArrayList<DIDLLiteResource?> resources,
-                                       MediaItem                    item)
+    public virtual void add_resources (DIDLLiteItem didl_item,
+                                       MediaItem    item)
                                        throws Error {
-        if (item.upnp_class.has_prefix (MediaItem.IMAGE_CLASS)) {
-            // No  transcoding for images yet :(
-            return;
-        }
+        var list = new GLib.List<Transcoder> ();
 
-        // First add resource of the transcoders that are primarily meant for
-        // the UPnP class of the item concerned
         foreach (var transcoder in this.transcoders) {
-            if (item.upnp_class.has_prefix (transcoder.upnp_class)) {
-                transcoder.add_resources (resources, item, this);
+            if (transcoder.get_distance (item) != uint.MAX) {
+                list.append (transcoder);
             }
         }
 
-        // Then add resources from other transcoders
-        foreach (var transcoder in this.transcoders) {
-            if (!item.upnp_class.has_prefix (transcoder.upnp_class)) {
-                transcoder.add_resources (resources, item, this);
-            }
+        list.sort_with_data (item.compare_transcoders);
+        foreach (var transcoder in list) {
+            transcoder.add_resource (didl_item, item, this);
         }
     }
 
@@ -97,6 +90,23 @@ internal abstract class Rygel.TranscodeManager : GLib.Object {
         }
 
         return transcoder;
+    }
+
+    internal abstract string get_protocol ();
+
+    internal virtual string get_protocol_info () {
+        string protocol_info = "";
+
+        foreach (var transcoder in this.transcoders) {
+            if (protocol_info != "")   // No comma before the first one
+                protocol_info += ",";
+
+            protocol_info += this.get_protocol () +
+                             ":*:" + transcoder.mime_type +
+                             ":DLNA.ORG_PN=" + transcoder.dlna_profile;
+        }
+
+        return protocol_info;
     }
 }
 

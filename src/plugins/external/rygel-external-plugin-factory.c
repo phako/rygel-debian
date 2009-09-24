@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2009 Zeeshan Ali (Khattak) <zeeshanak@gnome.org>.
- * Copyright (C) 2009 Nokia Corporation, all rights reserved.
+ * Copyright (C) 2009 Nokia Corporation.
  *
  * Author: Zeeshan Ali (Khattak) <zeeshanak@gnome.org>
  *                               <zeeshan.ali@nokia.com>
@@ -41,17 +41,22 @@
 
 typedef struct _ExternalPluginFactory ExternalPluginFactory;
 typedef struct _ExternalPluginFactoryClass ExternalPluginFactoryClass;
+#define _external_plugin_factory_unref0(var) ((var == NULL) ? NULL : (var = (external_plugin_factory_unref (var), NULL)))
+#define _g_error_free0(var) ((var == NULL) ? NULL : (var = (g_error_free (var), NULL)))
 typedef struct _ExternalPluginFactoryPrivate ExternalPluginFactoryPrivate;
+#define _g_object_unref0(var) ((var == NULL) ? NULL : (var = (g_object_unref (var), NULL)))
+#define _dbus_g_connection_unref0(var) ((var == NULL) ? NULL : (var = (dbus_g_connection_unref (var), NULL)))
 
-#define TYPE_EXTERNAL_PLUGIN (external_plugin_get_type ())
-#define EXTERNAL_PLUGIN(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), TYPE_EXTERNAL_PLUGIN, ExternalPlugin))
-#define EXTERNAL_PLUGIN_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), TYPE_EXTERNAL_PLUGIN, ExternalPluginClass))
-#define IS_EXTERNAL_PLUGIN(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), TYPE_EXTERNAL_PLUGIN))
-#define IS_EXTERNAL_PLUGIN_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), TYPE_EXTERNAL_PLUGIN))
-#define EXTERNAL_PLUGIN_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), TYPE_EXTERNAL_PLUGIN, ExternalPluginClass))
+#define RYGEL_TYPE_EXTERNAL_PLUGIN (rygel_external_plugin_get_type ())
+#define RYGEL_EXTERNAL_PLUGIN(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_EXTERNAL_PLUGIN, RygelExternalPlugin))
+#define RYGEL_EXTERNAL_PLUGIN_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TYPE_EXTERNAL_PLUGIN, RygelExternalPluginClass))
+#define RYGEL_IS_EXTERNAL_PLUGIN(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TYPE_EXTERNAL_PLUGIN))
+#define RYGEL_IS_EXTERNAL_PLUGIN_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_TYPE_EXTERNAL_PLUGIN))
+#define RYGEL_EXTERNAL_PLUGIN_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_TYPE_EXTERNAL_PLUGIN, RygelExternalPluginClass))
 
-typedef struct _ExternalPlugin ExternalPlugin;
-typedef struct _ExternalPluginClass ExternalPluginClass;
+typedef struct _RygelExternalPlugin RygelExternalPlugin;
+typedef struct _RygelExternalPluginClass RygelExternalPluginClass;
+#define _g_free0(var) (var = (g_free (var), NULL))
 typedef struct _ParamSpecExternalPluginFactory ParamSpecExternalPluginFactory;
 
 struct _ExternalPluginFactory {
@@ -77,17 +82,18 @@ struct _ParamSpecExternalPluginFactory {
 };
 
 
-
 extern ExternalPluginFactory* plugin_factory;
 ExternalPluginFactory* plugin_factory = NULL;
-ExternalPluginFactory* external_plugin_factory_new (RygelPluginLoader* loader, GError** error);
-ExternalPluginFactory* external_plugin_factory_construct (GType object_type, RygelPluginLoader* loader, GError** error);
+static gpointer external_plugin_factory_parent_class = NULL;
+
 gpointer external_plugin_factory_ref (gpointer instance);
 void external_plugin_factory_unref (gpointer instance);
 GParamSpec* param_spec_external_plugin_factory (const gchar* name, const gchar* nick, const gchar* blurb, GType object_type, GParamFlags flags);
 void value_set_external_plugin_factory (GValue* value, gpointer v_object);
 gpointer value_get_external_plugin_factory (const GValue* value);
 GType external_plugin_factory_get_type (void);
+ExternalPluginFactory* external_plugin_factory_new (RygelPluginLoader* loader, GError** error);
+ExternalPluginFactory* external_plugin_factory_construct (GType object_type, RygelPluginLoader* loader, GError** error);
 void module_init (RygelPluginLoader* loader);
 #define EXTERNAL_PLUGIN_FACTORY_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), TYPE_EXTERNAL_PLUGIN_FACTORY, ExternalPluginFactoryPrivate))
 enum  {
@@ -98,16 +104,14 @@ enum  {
 #define EXTERNAL_PLUGIN_FACTORY_DBUS_IFACE "org.freedesktop.DBus"
 #define EXTERNAL_PLUGIN_FACTORY_SERVICE_PREFIX "org.gnome.UPnP.MediaServer1."
 static void external_plugin_factory_list_names_cb (ExternalPluginFactory* self, char** services, int services_length1, GError* err);
-void _dynamic_ListNames5 (DBusGProxy* self, gpointer param1, void* param1_target, GError** error);
-ExternalPluginFactory* external_plugin_factory_new (RygelPluginLoader* loader, GError** error);
-ExternalPlugin* external_plugin_new (DBusGConnection* connection, const char* service_name);
-ExternalPlugin* external_plugin_construct (GType object_type, DBusGConnection* connection, const char* service_name);
-GType external_plugin_get_type (void);
+void _dynamic_ListNames7 (DBusGProxy* self, gpointer param1, void* param1_target, GError** error);
+RygelExternalPlugin* rygel_external_plugin_new (DBusGConnection* connection, const char* service_name);
+RygelExternalPlugin* rygel_external_plugin_construct (GType object_type, DBusGConnection* connection, const char* service_name);
+GType rygel_external_plugin_get_type (void);
 static void external_plugin_factory_name_owner_changed (ExternalPluginFactory* self, DBusGProxy* dbus_obj, const char* name, const char* old_owner, const char* new_owner);
 static void _external_plugin_factory_name_owner_changed_dynamic_NameOwnerChanged2_ (DBusGProxy* _sender, const char* name, const char* old_owner, const char* new_owner, gpointer self);
 void _dynamic_NameOwnerChanged3_connect (gpointer obj, const char * signal_name, GCallback handler, gpointer data);
-void _dynamic_ListActivatableNames6 (DBusGProxy* self, gpointer param1, void* param1_target, GError** error);
-static gpointer external_plugin_factory_parent_class = NULL;
+void _dynamic_ListActivatableNames8 (DBusGProxy* self, gpointer param1, void* param1_target, GError** error);
 static void external_plugin_factory_finalize (ExternalPluginFactory* obj);
 static int _vala_strcmp0 (const char * str1, const char * str2);
 
@@ -120,32 +124,38 @@ void module_init (RygelPluginLoader* loader) {
 	_inner_error_ = NULL;
 	{
 		ExternalPluginFactory* _tmp0_;
-		_tmp0_ = NULL;
-		plugin_factory = (_tmp0_ = external_plugin_factory_new (loader, &_inner_error_), (plugin_factory == NULL) ? NULL : (plugin_factory = (external_plugin_factory_unref (plugin_factory), NULL)), _tmp0_);
+		ExternalPluginFactory* _tmp1_;
+		_tmp0_ = external_plugin_factory_new (loader, &_inner_error_);
 		if (_inner_error_ != NULL) {
 			if (_inner_error_->domain == DBUS_GERROR) {
-				goto __catch5_dbus_gerror;
+				goto __catch7_dbus_gerror;
 			}
-			goto __finally5;
+			goto __finally7;
 		}
+		plugin_factory = (_tmp1_ = _tmp0_, _external_plugin_factory_unref0 (plugin_factory), _tmp1_);
 	}
-	goto __finally5;
-	__catch5_dbus_gerror:
+	goto __finally7;
+	__catch7_dbus_gerror:
 	{
 		GError * _error_;
 		_error_ = _inner_error_;
 		_inner_error_ = NULL;
 		{
 			g_critical ("rygel-external-plugin-factory.vala:36: Failed to fetch list of external services: %s\n", _error_->message);
-			(_error_ == NULL) ? NULL : (_error_ = (g_error_free (_error_), NULL));
+			_g_error_free0 (_error_);
 		}
 	}
-	__finally5:
+	__finally7:
 	if (_inner_error_ != NULL) {
 		g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, _inner_error_->message);
 		g_clear_error (&_inner_error_);
 		return;
 	}
+}
+
+
+static gpointer _g_object_ref0 (gpointer self) {
+	return self ? g_object_ref (self) : NULL;
 }
 
 
@@ -158,7 +168,7 @@ static void _external_plugin_factory_list_names_cb_cb (DBusGProxy* proxy, DBusGP
 }
 
 
-void _dynamic_ListNames5 (DBusGProxy* self, gpointer param1, void* param1_target, GError** error) {
+void _dynamic_ListNames7 (DBusGProxy* self, gpointer param1, void* param1_target, GError** error) {
 	dbus_g_proxy_begin_call (self, "ListNames", _external_plugin_factory_list_names_cb_cb, param1_target, NULL, G_TYPE_INVALID, G_TYPE_INVALID);
 	if (*error) {
 		return;
@@ -166,14 +176,12 @@ void _dynamic_ListNames5 (DBusGProxy* self, gpointer param1, void* param1_target
 }
 
 
-/* Indicated if we have listed activatable services yet*/
 ExternalPluginFactory* external_plugin_factory_construct (GType object_type, RygelPluginLoader* loader, GError** error) {
 	GError * _inner_error_;
 	ExternalPluginFactory* self;
 	DBusGConnection* _tmp0_;
 	DBusGConnection* _tmp1_;
 	DBusGProxy* _tmp2_;
-	RygelPluginLoader* _tmp4_;
 	RygelPluginLoader* _tmp3_;
 	g_return_val_if_fail (loader != NULL, NULL);
 	_inner_error_ = NULL;
@@ -189,15 +197,11 @@ ExternalPluginFactory* external_plugin_factory_construct (GType object_type, Ryg
 			return NULL;
 		}
 	}
-	_tmp1_ = NULL;
-	self->priv->connection = (_tmp1_ = _tmp0_, (self->priv->connection == NULL) ? NULL : (self->priv->connection = (dbus_g_connection_unref (self->priv->connection), NULL)), _tmp1_);
-	_tmp2_ = NULL;
-	self->priv->dbus_obj = (_tmp2_ = dbus_g_proxy_new_for_name (self->priv->connection, EXTERNAL_PLUGIN_FACTORY_DBUS_SERVICE, EXTERNAL_PLUGIN_FACTORY_DBUS_OBJECT, EXTERNAL_PLUGIN_FACTORY_DBUS_IFACE), (self->priv->dbus_obj == NULL) ? NULL : (self->priv->dbus_obj = (g_object_unref (self->priv->dbus_obj), NULL)), _tmp2_);
-	_tmp4_ = NULL;
-	_tmp3_ = NULL;
-	self->priv->loader = (_tmp4_ = (_tmp3_ = loader, (_tmp3_ == NULL) ? NULL : g_object_ref (_tmp3_)), (self->priv->loader == NULL) ? NULL : (self->priv->loader = (g_object_unref (self->priv->loader), NULL)), _tmp4_);
+	self->priv->connection = (_tmp1_ = _tmp0_, _dbus_g_connection_unref0 (self->priv->connection), _tmp1_);
+	self->priv->dbus_obj = (_tmp2_ = dbus_g_proxy_new_for_name (self->priv->connection, EXTERNAL_PLUGIN_FACTORY_DBUS_SERVICE, EXTERNAL_PLUGIN_FACTORY_DBUS_OBJECT, EXTERNAL_PLUGIN_FACTORY_DBUS_IFACE), _g_object_unref0 (self->priv->dbus_obj), _tmp2_);
+	self->priv->loader = (_tmp3_ = _g_object_ref0 (loader), _g_object_unref0 (self->priv->loader), _tmp3_);
 	self->priv->activatable = FALSE;
-	_dynamic_ListNames5 (self->priv->dbus_obj, external_plugin_factory_list_names_cb, self, &_inner_error_);
+	_dynamic_ListNames7 (self->priv->dbus_obj, external_plugin_factory_list_names_cb, self, &_inner_error_);
 	if (_inner_error_ != NULL) {
 		if (_inner_error_->domain == DBUS_GERROR) {
 			g_propagate_error (error, _inner_error_);
@@ -229,7 +233,7 @@ void _dynamic_NameOwnerChanged3_connect (gpointer obj, const char * signal_name,
 }
 
 
-void _dynamic_ListActivatableNames6 (DBusGProxy* self, gpointer param1, void* param1_target, GError** error) {
+void _dynamic_ListActivatableNames8 (DBusGProxy* self, gpointer param1, void* param1_target, GError** error) {
 	dbus_g_proxy_begin_call (self, "ListActivatableNames", _external_plugin_factory_list_names_cb_cb, param1_target, NULL, G_TYPE_INVALID, G_TYPE_INVALID);
 	if (*error) {
 		return;
@@ -252,28 +256,31 @@ static void external_plugin_factory_list_names_cb (ExternalPluginFactory* self, 
 		service_collection = services;
 		service_collection_length1 = services_length1;
 		for (service_it = 0; service_it < services_length1; service_it = service_it + 1) {
-			const char* _tmp1_;
 			char* service;
-			_tmp1_ = NULL;
-			service = (_tmp1_ = service_collection[service_it], (_tmp1_ == NULL) ? NULL : g_strdup (_tmp1_));
+			service = g_strdup (service_collection[service_it]);
 			{
+				gboolean _tmp0_;
+				_tmp0_ = FALSE;
 				if (g_str_has_prefix (service, EXTERNAL_PLUGIN_FACTORY_SERVICE_PREFIX)) {
-					ExternalPlugin* _tmp0_;
-					_tmp0_ = NULL;
-					rygel_plugin_loader_add_plugin (self->priv->loader, (RygelPlugin*) (_tmp0_ = external_plugin_new (self->priv->connection, service)));
-					(_tmp0_ == NULL) ? NULL : (_tmp0_ = (g_object_unref (_tmp0_), NULL));
+					RygelPlugin* _tmp1_;
+					_tmp0_ = (_tmp1_ = rygel_plugin_loader_get_plugin_by_name (self->priv->loader, service)) == NULL;
+					_g_object_unref0 (_tmp1_);
+				} else {
+					_tmp0_ = FALSE;
 				}
-				service = (g_free (service), NULL);
+				if (_tmp0_) {
+					RygelExternalPlugin* _tmp2_;
+					rygel_plugin_loader_add_plugin (self->priv->loader, (RygelPlugin*) (_tmp2_ = rygel_external_plugin_new (self->priv->connection, service)));
+					_g_object_unref0 (_tmp2_);
+				}
+				_g_free0 (service);
 			}
 		}
 	}
 	if (self->priv->activatable) {
-		/* Activatable services are already taken-care of, now we can
-		 just relax but keep a watch on bus for plugins coming and
-		 going away on the fly.*/
 		_dynamic_NameOwnerChanged3_connect (self->priv->dbus_obj, "NameOwnerChanged", (GCallback) _external_plugin_factory_name_owner_changed_dynamic_NameOwnerChanged2_, self);
 	} else {
-		_dynamic_ListActivatableNames6 (self->priv->dbus_obj, external_plugin_factory_list_names_cb, self, &_inner_error_);
+		_dynamic_ListActivatableNames8 (self->priv->dbus_obj, external_plugin_factory_list_names_cb, self, &_inner_error_);
 		if (_inner_error_ != NULL) {
 			g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, _inner_error_->message);
 			g_clear_error (&_inner_error_);
@@ -301,7 +308,7 @@ static void external_plugin_factory_name_owner_changed (ExternalPluginFactory* s
 			_tmp0_ = FALSE;
 		}
 		if (_tmp0_) {
-			g_debug ("rygel-external-plugin-factory.vala:101: Service '%s' going down, marking it as unavailable", name);
+			g_debug ("rygel-external-plugin-factory.vala:102: Service '%s' going down, marking it as unavailable", name);
 			rygel_plugin_set_available (plugin, FALSE);
 		} else {
 			gboolean _tmp1_;
@@ -312,20 +319,18 @@ static void external_plugin_factory_name_owner_changed (ExternalPluginFactory* s
 				_tmp1_ = FALSE;
 			}
 			if (_tmp1_) {
-				g_debug ("rygel-external-plugin-factory.vala:105: Service '%s' up again, marking it as available", name);
+				g_debug ("rygel-external-plugin-factory.vala:106: Service '%s' up again, marking it as available", name);
 				rygel_plugin_set_available (plugin, TRUE);
 			}
 		}
 	} else {
 		if (g_str_has_prefix (name, EXTERNAL_PLUGIN_FACTORY_SERVICE_PREFIX)) {
-			ExternalPlugin* _tmp2_;
-			/* Ah, new plugin available, lets use it*/
-			_tmp2_ = NULL;
-			rygel_plugin_loader_add_plugin (self->priv->loader, (RygelPlugin*) (_tmp2_ = external_plugin_new (self->priv->connection, name)));
-			(_tmp2_ == NULL) ? NULL : (_tmp2_ = (g_object_unref (_tmp2_), NULL));
+			RygelExternalPlugin* _tmp2_;
+			rygel_plugin_loader_add_plugin (self->priv->loader, (RygelPlugin*) (_tmp2_ = rygel_external_plugin_new (self->priv->connection, name)));
+			_g_object_unref0 (_tmp2_);
 		}
 	}
-	(plugin == NULL) ? NULL : (plugin = (g_object_unref (plugin), NULL));
+	_g_object_unref0 (plugin);
 }
 
 
@@ -438,9 +443,9 @@ static void external_plugin_factory_instance_init (ExternalPluginFactory * self)
 static void external_plugin_factory_finalize (ExternalPluginFactory* obj) {
 	ExternalPluginFactory * self;
 	self = EXTERNAL_PLUGIN_FACTORY (obj);
-	(self->priv->dbus_obj == NULL) ? NULL : (self->priv->dbus_obj = (g_object_unref (self->priv->dbus_obj), NULL));
-	(self->priv->connection == NULL) ? NULL : (self->priv->connection = (dbus_g_connection_unref (self->priv->connection), NULL));
-	(self->priv->loader == NULL) ? NULL : (self->priv->loader = (g_object_unref (self->priv->loader), NULL));
+	_g_object_unref0 (self->priv->dbus_obj);
+	_dbus_g_connection_unref0 (self->priv->connection);
+	_g_object_unref0 (self->priv->loader);
 }
 
 

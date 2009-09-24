@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2009 Zeeshan Ali (Khattak) <zeeshanak@gnome.org>.
- * Copyright (C) 2009 Nokia Corporation, all rights reserved.
+ * Copyright (C) 2009 Nokia Corporation.
  *
  * Author: Zeeshan Ali (Khattak) <zeeshanak@gnome.org>
  *                               <zeeshan.ali@nokia.com>
@@ -22,7 +22,6 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-using Rygel;
 using GUPnP;
 using DBus;
 using Gee;
@@ -30,7 +29,7 @@ using Gee;
 /**
  * Represents an external container.
  */
-public class Rygel.ExternalContainer : MediaContainer {
+public class Rygel.ExternalContainer : Rygel.MediaContainer {
     // class-wide constants
     private static string PROPS_IFACE = "org.freedesktop.DBus.Properties";
     private const string OBJECT_IFACE = "org.gnome.UPnP.MediaObject1";
@@ -45,7 +44,7 @@ public class Rygel.ExternalContainer : MediaContainer {
     public string service_name;
     private string object_path;
 
-    private ArrayList<MediaObject> media_objects;
+    private ArrayList<ExternalContainer> containers;
 
     public ExternalContainer (string             id,
                               string             service_name,
@@ -58,7 +57,7 @@ public class Rygel.ExternalContainer : MediaContainer {
         this.object_path = object_path;
         this.host_ip = host_ip;
 
-        this.media_objects = new ArrayList<MediaObject> ();
+        this.containers = new ArrayList<ExternalContainer> ();
 
         try {
             DBus.Connection connection = DBus.Bus.get (DBus.BusType.SESSION);
@@ -76,12 +75,13 @@ public class Rygel.ExternalContainer : MediaContainer {
                                                            object_path,
                                                            CONTAINER_IFACE);
 
-            this.fetch_media_objects ();
+            this.update_container ();
 
             this.actual_container.Updated += this.on_container_updated;
-        } catch (DBus.Error error) {
-            critical ("Failed to fetch root media objects: %s\n",
-                      error.message);
+        } catch (GLib.Error err) {
+            critical ("Failed to fetch information about container '%s': %s\n",
+                      this.id,
+                      err.message);
         }
     }
 
@@ -89,14 +89,40 @@ public class Rygel.ExternalContainer : MediaContainer {
                                        uint               max_count,
                                        Cancellable?       cancellable,
                                        AsyncReadyCallback callback) {
-        uint stop = offset + max_count;
+        var media_objects = new ArrayList <MediaObject> ();
 
+        // First add the child containers
+        media_objects.add_all (this.containers);
+
+        // Then get and add the child items
+        Value value;
+        this.props.Get (CONTAINER_IFACE, "Items", out value);
+
+        unowned PtrArray obj_paths = (PtrArray) value.get_boxed ();
+        if (obj_paths.len > 0) {
+            for (var i = 0; i < obj_paths.len; i++) {
+                var obj_path = (ObjectPath) obj_paths.pdata[i];
+
+                try {
+                    var item = new ExternalItem.for_path (obj_path, this);
+
+                    media_objects.add (item);
+                } catch (GLib.Error err) {
+                    warning ("Error initializable item at '%s': %s. Ignoring..",
+                             obj_path,
+                             err.message);
+                }
+            }
+        }
+
+        uint stop = offset + max_count;
         stop = stop.clamp (0, this.child_count);
-        var containers = this.media_objects.slice ((int) offset, (int) stop);
+
+        var children = media_objects.slice ((int) offset, (int) stop);
 
         var res = new Rygel.SimpleAsyncResult<Gee.List<MediaObject>>
                                                 (this, callback);
-        res.data = containers;
+        res.data = children;
         res.complete_in_idle ();
     }
 
@@ -110,9 +136,16 @@ public class Rygel.ExternalContainer : MediaContainer {
     public override void find_object (string             id,
                                       Cancellable?       cancellable,
                                       AsyncReadyCallback callback) {
-        MediaObject media_object = find_object_sync (id);
-
         var res = new Rygel.SimpleAsyncResult<MediaObject> (this, callback);
+
+        MediaObject media_object = find_container (id);
+        if (media_object == null && ExternalItem.id_valid (id)) {
+            try {
+                media_object = new ExternalItem.for_id (id, this);
+            } catch (GLib.Error err) {
+                res.error = err;
+            }
+        }
 
         res.data = media_object;
         res.complete_in_idle ();
@@ -121,7 +154,12 @@ public class Rygel.ExternalContainer : MediaContainer {
     public override MediaObject? find_object_finish (AsyncResult res)
                                                      throws GLib.Error {
         var simple_res = (Rygel.SimpleAsyncResult<MediaObject>) res;
-        return simple_res.data;
+
+        if (simple_res.error != null) {
+            throw simple_res.error;
+        } else {
+            return simple_res.data;
+        }
     }
 
     public string substitute_keywords (string title) {
@@ -136,65 +174,58 @@ public class Rygel.ExternalContainer : MediaContainer {
     }
 
     // Private methods
-    private MediaObject? find_object_sync (string id) {
-        MediaObject obj = null;
+    private MediaContainer? find_container (string id) {
+        MediaContainer container = null;
 
-        foreach (var tmp in this.media_objects) {
+        foreach (var tmp in this.containers) {
             if (id == tmp.id) {
-                obj = tmp;
-            } else if (tmp is ExternalContainer) {
+                container = tmp;
+            } else {
                 // Check it's children
-                var container = (ExternalContainer) tmp;
-
-                obj = container.find_object_sync (id);
+                container = tmp.find_container (id);
             }
 
-            if (obj != null) {
+            if (container != null) {
                 break;
             }
         }
 
-        return obj;
+        return container;
     }
 
-    private void fetch_media_objects () throws GLib.Error {
-        HashTable<string,Value?> all_props =
-                                    this.props.GetAll (CONTAINER_IFACE);
+    private void update_container () throws GLib.Error {
+        this.containers.clear ();
 
-        var value = all_props.lookup ("Containers");
+        Value value;
+        this.props.Get (CONTAINER_IFACE, "Containers", out value);
+
         unowned PtrArray obj_paths = (PtrArray) value.get_boxed ();
         if (obj_paths.len > 0) {
             for (var i = 0; i < obj_paths.len; i++) {
                 var obj_path = (ObjectPath) obj_paths.pdata[i];
-                var container = new ExternalContainer (obj_path,
-                                                       this.service_name,
-                                                       obj_path,
-                                                       this.host_ip,
-                                                       this);
-                this.media_objects.add (container);
+                var container = new ExternalContainer (
+                                        "container:" + (string) obj_path,
+                                        this.service_name,
+                                        obj_path,
+                                        this.host_ip,
+                                        this);
+                this.containers.add (container);
             }
         }
 
-        value = all_props.lookup ("Items");
-        obj_paths = (PtrArray) value.get_boxed ();
-        if (obj_paths.len > 0) {
-            for (var i = 0; i < obj_paths.len; i++) {
-                var obj_path = (ObjectPath) obj_paths.pdata[i];
-                this.media_objects.add (new ExternalItem (obj_path,
-                                                          this));
-            }
-        }
-
-        this.child_count = this.media_objects.size;
+        this.child_count = this.containers.size;
+        this.props.Get (CONTAINER_IFACE, "ItemCount", out value);
+        this.child_count += value.get_uint ();
     }
 
     private void on_container_updated (dynamic DBus.Object actual_container) {
-        // Re-fetch the objects
-        this.media_objects.clear ();
         try {
-            this.fetch_media_objects ();
+            // Update our information about the container
+            this.update_container ();
         } catch (GLib.Error err) {
-            warning ("Failed to re-fetch media objects: %s\n", err.message);
+            warning ("Failed to update information about container '%s': %s\n",
+                     this.id,
+                     err.message);
         }
 
         // and signal the clients

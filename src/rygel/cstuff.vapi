@@ -31,11 +31,23 @@ namespace CStuff {
         [CCode (cname = "DATA_DIR")]
         public static const string DATA_DIR;
 
+        [CCode (cname = "SYS_CONFIG_DIR")]
+        public static const string SYS_CONFIG_DIR;
+
+        [CCode (cname = "DESKTOP_DIR")]
+        public static const string DESKTOP_DIR;
+
         [CCode (cname = "PLUGIN_DIR")]
         public static const string PLUGIN_DIR;
 
         [CCode (cname = "PACKAGE_NAME")]
         public static const string PACKAGE_NAME;
+
+        [CCode (cname = "PACKAGE_VERSION")]
+        public static const string PACKAGE_VERSION;
+
+        [CCode (cname = "PACKAGE_STRING")]
+        public static const string PACKAGE_STRING;
     }
 
     /**

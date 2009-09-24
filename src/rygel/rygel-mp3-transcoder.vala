@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2009 Nokia Corporation, all rights reserved.
+ * Copyright (C) 2009 Nokia Corporation.
  *
  * Author: Zeeshan Ali (Khattak) <zeeshanak@gnome.org>
  *                               <zeeshan.ali@nokia.com>
@@ -20,9 +20,9 @@
  * along with this program; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
-using Rygel;
 using Gst;
 using GUPnP;
+using Gee;
 
 /**
  * Transcoder for mpeg 1 layer 2 and 3 audio. This element uses MP3TrancoderBin
@@ -44,25 +44,53 @@ internal class Rygel.MP3Transcoder : Rygel.Transcoder {
         this.layer = layer;
     }
 
-    public override Element create_source (Element src) throws Error {
-        return new MP3TranscoderBin (src, this);
+    public override Element create_source (MediaItem item,
+                                           Element   src)
+                                           throws Error {
+        return new MP3TranscoderBin (item, src, this);
     }
 
-    public override DIDLLiteResource create_resource (MediaItem        item,
-                                                      TranscodeManager manager)
-                                                      throws Error {
-        var res = base.create_resource (item, manager);
+    public override DIDLLiteResource? add_resource (DIDLLiteItem     didl_item,
+                                                    MediaItem        item,
+                                                    TranscodeManager manager)
+                                                    throws Error {
+        var resource = base.add_resource (didl_item, item, manager);
+        if (resource == null)
+            return null;
 
-        res.bitrate = BITRATE;
+        // Convert bitrate to bytes/second
+        resource.bitrate = BITRATE * 1000 / 8;
 
-        return res;
+        return resource;
     }
 
-    public Element create_encoder (string?  src_pad_name,
-                                   string?  sink_pad_name)
+    public override uint get_distance (MediaItem item) {
+        if (item.upnp_class.has_prefix (MediaItem.IMAGE_CLASS)) {
+            return uint.MAX;
+        }
+
+        uint distance;
+
+        if (item.upnp_class.has_prefix (MediaItem.AUDIO_CLASS)) {
+            distance = uint.MIN;
+
+            if (item.bitrate > 0) {
+                distance += (item.bitrate - BITRATE).abs ();
+            }
+        } else {
+            distance = uint.MAX / 2;
+        }
+
+        return distance;
+    }
+
+    public Element create_encoder (MediaItem item,
+                                   string?   src_pad_name,
+                                   string?   sink_pad_name)
                                    throws Error {
         var l16_transcoder = new L16Transcoder (Endianness.LITTLE);
         dynamic Element convert = l16_transcoder.create_encoder (
+                                                    item,
                                                     null,
                                                     CONVERT_SINK_PAD);
         dynamic Element encoder = GstUtils.create_element (

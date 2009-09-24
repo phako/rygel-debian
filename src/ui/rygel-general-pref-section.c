@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2009 Nokia Corporation, all rights reserved.
+ * Copyright (C) 2009 Nokia Corporation.
  *
  * Author: Zeeshan Ali (Khattak) <zeeshanak@gnome.org>
  *                               <zeeshan.ali@nokia.com>
@@ -27,6 +27,10 @@
 #include <stdlib.h>
 #include <string.h>
 #include <gtk/gtk.h>
+#include <libgupnp/gupnp.h>
+#include <float.h>
+#include <math.h>
+#include <libgssdp/gssdp.h>
 
 
 #define RYGEL_TYPE_PREFERENCES_SECTION (rygel_preferences_section_get_type ())
@@ -50,11 +54,14 @@ typedef struct _RygelPreferencesSectionPrivate RygelPreferencesSectionPrivate;
 typedef struct _RygelGeneralPrefSection RygelGeneralPrefSection;
 typedef struct _RygelGeneralPrefSectionClass RygelGeneralPrefSectionClass;
 typedef struct _RygelGeneralPrefSectionPrivate RygelGeneralPrefSectionPrivate;
+#define _g_object_unref0(var) ((var == NULL) ? NULL : (var = (g_object_unref (var), NULL)))
+#define _g_free0(var) (var = (g_free (var), NULL))
+#define _g_error_free0(var) ((var == NULL) ? NULL : (var = (g_error_free (var), NULL)))
 
 struct _RygelPreferencesSection {
 	GObject parent_instance;
 	RygelPreferencesSectionPrivate * priv;
-	RygelConfiguration* config;
+	RygelUserConfig* config;
 	char* name;
 };
 
@@ -73,15 +80,18 @@ struct _RygelGeneralPrefSectionClass {
 };
 
 struct _RygelGeneralPrefSectionPrivate {
-	GtkEntry* ip_entry;
+	GtkComboBoxEntry* iface_entry;
 	GtkSpinButton* port_spin;
+	GtkCheckButton* upnp_check;
 	GtkCheckButton* trans_check;
 	GtkCheckButton* mp3_check;
 	GtkCheckButton* mp2ts_check;
 	GtkCheckButton* lpcm_check;
+	GUPnPContextManager* context_manager;
 };
 
 
+static gpointer rygel_general_pref_section_parent_class = NULL;
 
 GType rygel_preferences_section_get_type (void);
 GType rygel_general_pref_section_get_type (void);
@@ -89,23 +99,32 @@ GType rygel_general_pref_section_get_type (void);
 enum  {
 	RYGEL_GENERAL_PREF_SECTION_DUMMY_PROPERTY
 };
-#define RYGEL_GENERAL_PREF_SECTION_IP_ENTRY "ip-entry"
+#define RYGEL_GENERAL_PREF_SECTION_UPNP_CHECKBUTTON "upnp-checkbutton"
+#define RYGEL_GENERAL_PREF_SECTION_IFACE_ENTRY "iface-entry"
 #define RYGEL_GENERAL_PREF_SECTION_PORT_SPINBUTTON "port-spinbutton"
 #define RYGEL_GENERAL_PREF_SECTION_TRANS_CHECKBUTTON "transcoding-checkbutton"
 #define RYGEL_GENERAL_PREF_SECTION_MP3_CHECKBUTTON "mp3-checkbutton"
 #define RYGEL_GENERAL_PREF_SECTION_MP2TS_CHECKBUTTON "mp2ts-checkbutton"
 #define RYGEL_GENERAL_PREF_SECTION_LPCM_CHECKBUTTON "lpcm-checkbutton"
-RygelPreferencesSection* rygel_preferences_section_new (RygelConfiguration* config, const char* name);
-RygelPreferencesSection* rygel_preferences_section_construct (GType object_type, RygelConfiguration* config, const char* name);
+RygelPreferencesSection* rygel_preferences_section_construct (GType object_type, RygelUserConfig* config, const char* name);
 static void rygel_general_pref_section_on_trans_check_toggled (RygelGeneralPrefSection* self, GtkCheckButton* trans_check);
 static void _rygel_general_pref_section_on_trans_check_toggled_gtk_toggle_button_toggled (GtkCheckButton* _sender, gpointer self);
-RygelGeneralPrefSection* rygel_general_pref_section_new (GtkBuilder* builder, RygelConfiguration* config, GError** error);
-RygelGeneralPrefSection* rygel_general_pref_section_construct (GType object_type, GtkBuilder* builder, RygelConfiguration* config, GError** error);
-RygelGeneralPrefSection* rygel_general_pref_section_new (GtkBuilder* builder, RygelConfiguration* config, GError** error);
+static void rygel_general_pref_section_on_context_available (RygelGeneralPrefSection* self, GUPnPContextManager* manager, GUPnPContext* context);
+static void _rygel_general_pref_section_on_context_available_gupnp_context_manager_context_available (GUPnPContextManager* _sender, GUPnPContext* p0, gpointer self);
+static void rygel_general_pref_section_on_context_unavailable (RygelGeneralPrefSection* self, GUPnPContextManager* manager, GUPnPContext* context);
+static void _rygel_general_pref_section_on_context_unavailable_gupnp_context_manager_context_unavailable (GUPnPContextManager* _sender, GUPnPContext* p0, gpointer self);
+RygelGeneralPrefSection* rygel_general_pref_section_new (GtkBuilder* builder, RygelUserConfig* config, GError** error);
+RygelGeneralPrefSection* rygel_general_pref_section_construct (GType object_type, GtkBuilder* builder, RygelUserConfig* config, GError** error);
 static void rygel_general_pref_section_real_save (RygelPreferencesSection* base);
-static gpointer rygel_general_pref_section_parent_class = NULL;
+static gboolean rygel_general_pref_section_find_interface (RygelGeneralPrefSection* self, const char* iface, GtkTreeIter* iter);
 static void rygel_general_pref_section_finalize (GObject* obj);
+static int _vala_strcmp0 (const char * str1, const char * str2);
 
+
+
+static gpointer _g_object_ref0 (gpointer self) {
+	return self ? g_object_ref (self) : NULL;
+}
 
 
 static void _rygel_general_pref_section_on_trans_check_toggled_gtk_toggle_button_toggled (GtkCheckButton* _sender, gpointer self) {
@@ -113,61 +132,226 @@ static void _rygel_general_pref_section_on_trans_check_toggled_gtk_toggle_button
 }
 
 
-RygelGeneralPrefSection* rygel_general_pref_section_construct (GType object_type, GtkBuilder* builder, RygelConfiguration* config, GError** error) {
+static void _rygel_general_pref_section_on_context_available_gupnp_context_manager_context_available (GUPnPContextManager* _sender, GUPnPContext* p0, gpointer self) {
+	rygel_general_pref_section_on_context_available (self, _sender, p0);
+}
+
+
+static void _rygel_general_pref_section_on_context_unavailable_gupnp_context_manager_context_unavailable (GUPnPContextManager* _sender, GUPnPContext* p0, gpointer self) {
+	rygel_general_pref_section_on_context_unavailable (self, _sender, p0);
+}
+
+
+RygelGeneralPrefSection* rygel_general_pref_section_construct (GType object_type, GtkBuilder* builder, RygelUserConfig* config, GError** error) {
+	GError * _inner_error_;
 	RygelGeneralPrefSection * self;
-	GtkEntry* _tmp1_;
-	GtkEntry* _tmp0_;
-	GtkSpinButton* _tmp3_;
+	GtkCheckButton* _tmp0_;
+	GtkComboBoxEntry* _tmp1_;
 	GtkSpinButton* _tmp2_;
-	GtkCheckButton* _tmp5_;
+	GtkCheckButton* _tmp3_;
 	GtkCheckButton* _tmp4_;
-	GtkCheckButton* _tmp7_;
+	GtkCheckButton* _tmp5_;
 	GtkCheckButton* _tmp6_;
-	GtkCheckButton* _tmp9_;
-	GtkCheckButton* _tmp8_;
-	GtkCheckButton* _tmp11_;
-	GtkCheckButton* _tmp10_;
+	GUPnPContextManager* _tmp7_;
 	g_return_val_if_fail (builder != NULL, NULL);
 	g_return_val_if_fail (config != NULL, NULL);
+	_inner_error_ = NULL;
 	self = (RygelGeneralPrefSection*) rygel_preferences_section_construct (object_type, config, "general");
-	_tmp1_ = NULL;
-	_tmp0_ = NULL;
-	self->priv->ip_entry = (_tmp1_ = (_tmp0_ = GTK_ENTRY (gtk_builder_get_object (builder, RYGEL_GENERAL_PREF_SECTION_IP_ENTRY)), (_tmp0_ == NULL) ? NULL : g_object_ref (_tmp0_)), (self->priv->ip_entry == NULL) ? NULL : (self->priv->ip_entry = (g_object_unref (self->priv->ip_entry), NULL)), _tmp1_);
-	g_assert (self->priv->ip_entry != NULL);
-	_tmp3_ = NULL;
-	_tmp2_ = NULL;
-	self->priv->port_spin = (_tmp3_ = (_tmp2_ = GTK_SPIN_BUTTON (gtk_builder_get_object (builder, RYGEL_GENERAL_PREF_SECTION_PORT_SPINBUTTON)), (_tmp2_ == NULL) ? NULL : g_object_ref (_tmp2_)), (self->priv->port_spin == NULL) ? NULL : (self->priv->port_spin = (g_object_unref (self->priv->port_spin), NULL)), _tmp3_);
+	self->priv->upnp_check = (_tmp0_ = _g_object_ref0 (GTK_CHECK_BUTTON (gtk_builder_get_object (builder, RYGEL_GENERAL_PREF_SECTION_UPNP_CHECKBUTTON))), _g_object_unref0 (self->priv->upnp_check), _tmp0_);
+	g_assert (self->priv->upnp_check != NULL);
+	self->priv->iface_entry = (_tmp1_ = _g_object_ref0 (GTK_COMBO_BOX_ENTRY (gtk_builder_get_object (builder, RYGEL_GENERAL_PREF_SECTION_IFACE_ENTRY))), _g_object_unref0 (self->priv->iface_entry), _tmp1_);
+	g_assert (self->priv->iface_entry != NULL);
+	self->priv->port_spin = (_tmp2_ = _g_object_ref0 (GTK_SPIN_BUTTON (gtk_builder_get_object (builder, RYGEL_GENERAL_PREF_SECTION_PORT_SPINBUTTON))), _g_object_unref0 (self->priv->port_spin), _tmp2_);
 	g_assert (self->priv->port_spin != NULL);
-	_tmp5_ = NULL;
-	_tmp4_ = NULL;
-	self->priv->trans_check = (_tmp5_ = (_tmp4_ = GTK_CHECK_BUTTON (gtk_builder_get_object (builder, RYGEL_GENERAL_PREF_SECTION_TRANS_CHECKBUTTON)), (_tmp4_ == NULL) ? NULL : g_object_ref (_tmp4_)), (self->priv->trans_check == NULL) ? NULL : (self->priv->trans_check = (g_object_unref (self->priv->trans_check), NULL)), _tmp5_);
+	self->priv->trans_check = (_tmp3_ = _g_object_ref0 (GTK_CHECK_BUTTON (gtk_builder_get_object (builder, RYGEL_GENERAL_PREF_SECTION_TRANS_CHECKBUTTON))), _g_object_unref0 (self->priv->trans_check), _tmp3_);
 	g_assert (self->priv->trans_check != NULL);
-	_tmp7_ = NULL;
-	_tmp6_ = NULL;
-	self->priv->mp3_check = (_tmp7_ = (_tmp6_ = GTK_CHECK_BUTTON (gtk_builder_get_object (builder, RYGEL_GENERAL_PREF_SECTION_MP3_CHECKBUTTON)), (_tmp6_ == NULL) ? NULL : g_object_ref (_tmp6_)), (self->priv->mp3_check == NULL) ? NULL : (self->priv->mp3_check = (g_object_unref (self->priv->mp3_check), NULL)), _tmp7_);
+	self->priv->mp3_check = (_tmp4_ = _g_object_ref0 (GTK_CHECK_BUTTON (gtk_builder_get_object (builder, RYGEL_GENERAL_PREF_SECTION_MP3_CHECKBUTTON))), _g_object_unref0 (self->priv->mp3_check), _tmp4_);
 	g_assert (self->priv->mp3_check != NULL);
-	_tmp9_ = NULL;
-	_tmp8_ = NULL;
-	self->priv->mp2ts_check = (_tmp9_ = (_tmp8_ = GTK_CHECK_BUTTON (gtk_builder_get_object (builder, RYGEL_GENERAL_PREF_SECTION_MP2TS_CHECKBUTTON)), (_tmp8_ == NULL) ? NULL : g_object_ref (_tmp8_)), (self->priv->mp2ts_check == NULL) ? NULL : (self->priv->mp2ts_check = (g_object_unref (self->priv->mp2ts_check), NULL)), _tmp9_);
+	self->priv->mp2ts_check = (_tmp5_ = _g_object_ref0 (GTK_CHECK_BUTTON (gtk_builder_get_object (builder, RYGEL_GENERAL_PREF_SECTION_MP2TS_CHECKBUTTON))), _g_object_unref0 (self->priv->mp2ts_check), _tmp5_);
 	g_assert (self->priv->mp2ts_check != NULL);
-	_tmp11_ = NULL;
-	_tmp10_ = NULL;
-	self->priv->lpcm_check = (_tmp11_ = (_tmp10_ = GTK_CHECK_BUTTON (gtk_builder_get_object (builder, RYGEL_GENERAL_PREF_SECTION_LPCM_CHECKBUTTON)), (_tmp10_ == NULL) ? NULL : g_object_ref (_tmp10_)), (self->priv->lpcm_check == NULL) ? NULL : (self->priv->lpcm_check = (g_object_unref (self->priv->lpcm_check), NULL)), _tmp11_);
+	self->priv->lpcm_check = (_tmp6_ = _g_object_ref0 (GTK_CHECK_BUTTON (gtk_builder_get_object (builder, RYGEL_GENERAL_PREF_SECTION_LPCM_CHECKBUTTON))), _g_object_unref0 (self->priv->lpcm_check), _tmp6_);
 	g_assert (self->priv->lpcm_check != NULL);
-	if (rygel_configuration_get_host_ip (config) != NULL) {
-		gtk_entry_set_text (self->priv->ip_entry, rygel_configuration_get_host_ip (config));
+	self->priv->context_manager = (_tmp7_ = gupnp_context_manager_new (NULL, (guint) 0), _g_object_unref0 (self->priv->context_manager), _tmp7_);
+	gtk_combo_box_entry_set_text_column (self->priv->iface_entry, 0);
+	{
+		char* _tmp8_;
+		char* _tmp9_;
+		_tmp8_ = rygel_configuration_get_interface ((RygelConfiguration*) config, &_inner_error_);
+		if (_inner_error_ != NULL) {
+			goto __catch1_g_error;
+			goto __finally1;
+		}
+		gtk_combo_box_append_text ((GtkComboBox*) self->priv->iface_entry, _tmp9_ = _tmp8_);
+		_g_free0 (_tmp9_);
+		gtk_combo_box_set_active ((GtkComboBox*) self->priv->iface_entry, 0);
 	}
-	gtk_spin_button_set_value (self->priv->port_spin, (double) rygel_configuration_get_port (config));
-	gtk_toggle_button_set_active ((GtkToggleButton*) self->priv->trans_check, rygel_configuration_get_transcoding (((RygelPreferencesSection*) self)->config));
-	gtk_toggle_button_set_active ((GtkToggleButton*) self->priv->mp3_check, rygel_configuration_get_mp3_transcoder (((RygelPreferencesSection*) self)->config));
-	gtk_toggle_button_set_active ((GtkToggleButton*) self->priv->mp2ts_check, rygel_configuration_get_mp2ts_transcoder (((RygelPreferencesSection*) self)->config));
-	gtk_toggle_button_set_active ((GtkToggleButton*) self->priv->lpcm_check, rygel_configuration_get_lpcm_transcoder (((RygelPreferencesSection*) self)->config));
+	goto __finally1;
+	__catch1_g_error:
+	{
+		GError * err;
+		err = _inner_error_;
+		_inner_error_ = NULL;
+		{
+			_g_error_free0 (err);
+		}
+	}
+	__finally1:
+	if (_inner_error_ != NULL) {
+		g_propagate_error (error, _inner_error_);
+		return;
+	}
+	{
+		gint _tmp10_;
+		_tmp10_ = rygel_configuration_get_port ((RygelConfiguration*) config, &_inner_error_);
+		if (_inner_error_ != NULL) {
+			goto __catch2_g_error;
+			goto __finally2;
+		}
+		gtk_spin_button_set_value (self->priv->port_spin, (double) _tmp10_);
+	}
+	goto __finally2;
+	__catch2_g_error:
+	{
+		GError * err;
+		err = _inner_error_;
+		_inner_error_ = NULL;
+		{
+			_g_error_free0 (err);
+		}
+	}
+	__finally2:
+	if (_inner_error_ != NULL) {
+		g_propagate_error (error, _inner_error_);
+		return;
+	}
+	{
+		gboolean _tmp11_;
+		_tmp11_ = rygel_configuration_get_upnp_enabled ((RygelConfiguration*) ((RygelPreferencesSection*) self)->config, &_inner_error_);
+		if (_inner_error_ != NULL) {
+			goto __catch3_g_error;
+			goto __finally3;
+		}
+		gtk_toggle_button_set_active ((GtkToggleButton*) self->priv->upnp_check, _tmp11_);
+	}
+	goto __finally3;
+	__catch3_g_error:
+	{
+		GError * err;
+		err = _inner_error_;
+		_inner_error_ = NULL;
+		{
+			_g_error_free0 (err);
+		}
+	}
+	__finally3:
+	if (_inner_error_ != NULL) {
+		g_propagate_error (error, _inner_error_);
+		return;
+	}
+	{
+		gboolean _tmp12_;
+		_tmp12_ = rygel_configuration_get_transcoding ((RygelConfiguration*) ((RygelPreferencesSection*) self)->config, &_inner_error_);
+		if (_inner_error_ != NULL) {
+			goto __catch4_g_error;
+			goto __finally4;
+		}
+		gtk_toggle_button_set_active ((GtkToggleButton*) self->priv->trans_check, _tmp12_);
+	}
+	goto __finally4;
+	__catch4_g_error:
+	{
+		GError * err;
+		err = _inner_error_;
+		_inner_error_ = NULL;
+		{
+			_g_error_free0 (err);
+		}
+	}
+	__finally4:
+	if (_inner_error_ != NULL) {
+		g_propagate_error (error, _inner_error_);
+		return;
+	}
+	{
+		gboolean _tmp13_;
+		_tmp13_ = rygel_configuration_get_mp3_transcoder ((RygelConfiguration*) ((RygelPreferencesSection*) self)->config, &_inner_error_);
+		if (_inner_error_ != NULL) {
+			goto __catch5_g_error;
+			goto __finally5;
+		}
+		gtk_toggle_button_set_active ((GtkToggleButton*) self->priv->mp3_check, _tmp13_);
+	}
+	goto __finally5;
+	__catch5_g_error:
+	{
+		GError * err;
+		err = _inner_error_;
+		_inner_error_ = NULL;
+		{
+			_g_error_free0 (err);
+		}
+	}
+	__finally5:
+	if (_inner_error_ != NULL) {
+		g_propagate_error (error, _inner_error_);
+		return;
+	}
+	{
+		gboolean _tmp14_;
+		_tmp14_ = rygel_configuration_get_mp2ts_transcoder ((RygelConfiguration*) ((RygelPreferencesSection*) self)->config, &_inner_error_);
+		if (_inner_error_ != NULL) {
+			goto __catch6_g_error;
+			goto __finally6;
+		}
+		gtk_toggle_button_set_active ((GtkToggleButton*) self->priv->mp2ts_check, _tmp14_);
+	}
+	goto __finally6;
+	__catch6_g_error:
+	{
+		GError * err;
+		err = _inner_error_;
+		_inner_error_ = NULL;
+		{
+			_g_error_free0 (err);
+		}
+	}
+	__finally6:
+	if (_inner_error_ != NULL) {
+		g_propagate_error (error, _inner_error_);
+		return;
+	}
+	{
+		gboolean _tmp15_;
+		_tmp15_ = rygel_configuration_get_lpcm_transcoder ((RygelConfiguration*) ((RygelPreferencesSection*) self)->config, &_inner_error_);
+		if (_inner_error_ != NULL) {
+			goto __catch7_g_error;
+			goto __finally7;
+		}
+		gtk_toggle_button_set_active ((GtkToggleButton*) self->priv->lpcm_check, _tmp15_);
+	}
+	goto __finally7;
+	__catch7_g_error:
+	{
+		GError * err;
+		err = _inner_error_;
+		_inner_error_ = NULL;
+		{
+			_g_error_free0 (err);
+		}
+	}
+	__finally7:
+	if (_inner_error_ != NULL) {
+		g_propagate_error (error, _inner_error_);
+		return;
+	}
 	g_signal_connect_object ((GtkToggleButton*) self->priv->trans_check, "toggled", (GCallback) _rygel_general_pref_section_on_trans_check_toggled_gtk_toggle_button_toggled, self, 0);
+	g_signal_connect_object (self->priv->context_manager, "context-available", (GCallback) _rygel_general_pref_section_on_context_available_gupnp_context_manager_context_available, self, 0);
+	g_signal_connect_object (self->priv->context_manager, "context-unavailable", (GCallback) _rygel_general_pref_section_on_context_unavailable_gupnp_context_manager_context_unavailable, self, 0);
 	return self;
 }
 
 
-RygelGeneralPrefSection* rygel_general_pref_section_new (GtkBuilder* builder, RygelConfiguration* config, GError** error) {
+RygelGeneralPrefSection* rygel_general_pref_section_new (GtkBuilder* builder, RygelUserConfig* config, GError** error) {
 	return rygel_general_pref_section_construct (RYGEL_TYPE_GENERAL_PREF_SECTION, builder, config, error);
 }
 
@@ -175,12 +359,13 @@ RygelGeneralPrefSection* rygel_general_pref_section_new (GtkBuilder* builder, Ry
 static void rygel_general_pref_section_real_save (RygelPreferencesSection* base) {
 	RygelGeneralPrefSection * self;
 	self = (RygelGeneralPrefSection*) base;
-	rygel_configuration_set_host_ip (((RygelPreferencesSection*) self)->config, gtk_entry_get_text (self->priv->ip_entry));
-	rygel_configuration_set_port (((RygelPreferencesSection*) self)->config, (gint) gtk_spin_button_get_value (self->priv->port_spin));
-	rygel_configuration_set_transcoding (((RygelPreferencesSection*) self)->config, gtk_toggle_button_get_active ((GtkToggleButton*) self->priv->trans_check));
-	rygel_configuration_set_mp3_transcoder (((RygelPreferencesSection*) self)->config, gtk_toggle_button_get_active ((GtkToggleButton*) self->priv->mp3_check));
-	rygel_configuration_set_mp2ts_transcoder (((RygelPreferencesSection*) self)->config, gtk_toggle_button_get_active ((GtkToggleButton*) self->priv->mp2ts_check));
-	rygel_configuration_set_lpcm_transcoder (((RygelPreferencesSection*) self)->config, gtk_toggle_button_get_active ((GtkToggleButton*) self->priv->lpcm_check));
+	rygel_user_config_set_interface (((RygelPreferencesSection*) self)->config, gtk_combo_box_get_active_text ((GtkComboBox*) self->priv->iface_entry));
+	rygel_user_config_set_port (((RygelPreferencesSection*) self)->config, (gint) gtk_spin_button_get_value (self->priv->port_spin));
+	rygel_user_config_set_upnp_enabled (((RygelPreferencesSection*) self)->config, gtk_toggle_button_get_active ((GtkToggleButton*) self->priv->upnp_check));
+	rygel_user_config_set_transcoding (((RygelPreferencesSection*) self)->config, gtk_toggle_button_get_active ((GtkToggleButton*) self->priv->trans_check));
+	rygel_user_config_set_mp3_transcoder (((RygelPreferencesSection*) self)->config, gtk_toggle_button_get_active ((GtkToggleButton*) self->priv->mp3_check));
+	rygel_user_config_set_mp2ts_transcoder (((RygelPreferencesSection*) self)->config, gtk_toggle_button_get_active ((GtkToggleButton*) self->priv->mp2ts_check));
+	rygel_user_config_set_lpcm_transcoder (((RygelPreferencesSection*) self)->config, gtk_toggle_button_get_active ((GtkToggleButton*) self->priv->lpcm_check));
 }
 
 
@@ -190,6 +375,56 @@ static void rygel_general_pref_section_on_trans_check_toggled (RygelGeneralPrefS
 	g_return_if_fail (self != NULL);
 	g_return_if_fail (trans_check != NULL);
 	g_object_set ((GtkWidget*) self->priv->mp3_check, "sensitive", (g_object_set ((GtkWidget*) self->priv->mp2ts_check, "sensitive", (g_object_set ((GtkWidget*) self->priv->lpcm_check, "sensitive", gtk_toggle_button_get_active ((GtkToggleButton*) trans_check), NULL), (g_object_get ((GtkWidget*) self->priv->lpcm_check, "sensitive", &_tmp0_, NULL), _tmp0_)), NULL), (g_object_get ((GtkWidget*) self->priv->mp2ts_check, "sensitive", &_tmp1_, NULL), _tmp1_)), NULL);
+}
+
+
+static void rygel_general_pref_section_on_context_available (RygelGeneralPrefSection* self, GUPnPContextManager* manager, GUPnPContext* context) {
+	GtkTreeIter iter = {0};
+	g_return_if_fail (self != NULL);
+	g_return_if_fail (manager != NULL);
+	g_return_if_fail (context != NULL);
+	if (!rygel_general_pref_section_find_interface (self, gssdp_client_get_interface ((GSSDPClient*) context), &iter)) {
+		gtk_combo_box_append_text ((GtkComboBox*) self->priv->iface_entry, gssdp_client_get_interface ((GSSDPClient*) context));
+	}
+}
+
+
+static void rygel_general_pref_section_on_context_unavailable (RygelGeneralPrefSection* self, GUPnPContextManager* manager, GUPnPContext* context) {
+	GtkTreeIter iter = {0};
+	g_return_if_fail (self != NULL);
+	g_return_if_fail (manager != NULL);
+	g_return_if_fail (context != NULL);
+	if (rygel_general_pref_section_find_interface (self, gssdp_client_get_interface ((GSSDPClient*) context), &iter)) {
+		GtkTreeModel* _tmp0_;
+		GtkListStore* list_store;
+		list_store = _g_object_ref0 ((_tmp0_ = gtk_combo_box_get_model ((GtkComboBox*) self->priv->iface_entry), GTK_IS_LIST_STORE (_tmp0_) ? ((GtkListStore*) _tmp0_) : NULL));
+		gtk_list_store_remove (list_store, &iter);
+		_g_object_unref0 (list_store);
+	}
+}
+
+
+static gboolean rygel_general_pref_section_find_interface (RygelGeneralPrefSection* self, const char* iface, GtkTreeIter* iter) {
+	gboolean result;
+	GtkTreeModel* model;
+	gboolean more;
+	g_return_val_if_fail (self != NULL, FALSE);
+	g_return_val_if_fail (iface != NULL, FALSE);
+	model = _g_object_ref0 (gtk_combo_box_get_model ((GtkComboBox*) self->priv->iface_entry));
+	more = gtk_tree_model_get_iter_first (model, &(*iter));
+	while (TRUE) {
+		if (!more) {
+			break;
+		}
+		gtk_tree_model_get (model, &(*iter), 0, &((RygelPreferencesSection*) self)->name, -1, -1);
+		if (_vala_strcmp0 (((RygelPreferencesSection*) self)->name, iface) == 0) {
+			break;
+		}
+		more = gtk_tree_model_iter_next (model, &(*iter));
+	}
+	result = more;
+	_g_object_unref0 (model);
+	return result;
 }
 
 
@@ -209,12 +444,14 @@ static void rygel_general_pref_section_instance_init (RygelGeneralPrefSection * 
 static void rygel_general_pref_section_finalize (GObject* obj) {
 	RygelGeneralPrefSection * self;
 	self = RYGEL_GENERAL_PREF_SECTION (obj);
-	(self->priv->ip_entry == NULL) ? NULL : (self->priv->ip_entry = (g_object_unref (self->priv->ip_entry), NULL));
-	(self->priv->port_spin == NULL) ? NULL : (self->priv->port_spin = (g_object_unref (self->priv->port_spin), NULL));
-	(self->priv->trans_check == NULL) ? NULL : (self->priv->trans_check = (g_object_unref (self->priv->trans_check), NULL));
-	(self->priv->mp3_check == NULL) ? NULL : (self->priv->mp3_check = (g_object_unref (self->priv->mp3_check), NULL));
-	(self->priv->mp2ts_check == NULL) ? NULL : (self->priv->mp2ts_check = (g_object_unref (self->priv->mp2ts_check), NULL));
-	(self->priv->lpcm_check == NULL) ? NULL : (self->priv->lpcm_check = (g_object_unref (self->priv->lpcm_check), NULL));
+	_g_object_unref0 (self->priv->iface_entry);
+	_g_object_unref0 (self->priv->port_spin);
+	_g_object_unref0 (self->priv->upnp_check);
+	_g_object_unref0 (self->priv->trans_check);
+	_g_object_unref0 (self->priv->mp3_check);
+	_g_object_unref0 (self->priv->mp2ts_check);
+	_g_object_unref0 (self->priv->lpcm_check);
+	_g_object_unref0 (self->priv->context_manager);
 	G_OBJECT_CLASS (rygel_general_pref_section_parent_class)->finalize (obj);
 }
 
@@ -226,6 +463,17 @@ GType rygel_general_pref_section_get_type (void) {
 		rygel_general_pref_section_type_id = g_type_register_static (RYGEL_TYPE_PREFERENCES_SECTION, "RygelGeneralPrefSection", &g_define_type_info, 0);
 	}
 	return rygel_general_pref_section_type_id;
+}
+
+
+static int _vala_strcmp0 (const char * str1, const char * str2) {
+	if (str1 == NULL) {
+		return -(str1 != str2);
+	}
+	if (str2 == NULL) {
+		return str1 != str2;
+	}
+	return strcmp (str1, str2);
 }
 
 

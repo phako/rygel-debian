@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008, 2009 Nokia Corporation, all rights reserved.
+ * Copyright (C) 2008, 2009 Nokia Corporation.
  *
  * Author: Zeeshan Ali (Khattak) <zeeshanak@gnome.org>
  *                               <zeeshan.ali@nokia.com>
@@ -21,7 +21,6 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-using Rygel;
 using Gst;
 using GUPnP;
 using Gee;
@@ -32,27 +31,27 @@ internal class Rygel.HTTPServer : Rygel.TranscodeManager, Rygel.StateMachine {
 
     // Reference to root container of associated ContentDirectory
     public MediaContainer root_container;
-    private GUPnP.Context context;
+    public GUPnP.Context context;
     private ArrayList<HTTPRequest> requests;
 
-    private Cancellable cancellable;
+    public Cancellable cancellable { get; set; }
 
     public HTTPServer (ContentDirectory content_dir,
-                       string           name) {
+                       string           name) throws GLib.Error {
         base ();
 
         this.root_container = content_dir.root_container;
         this.context = content_dir.context;
+        this.cancellable = content_dir.cancellable;
         this.requests = new ArrayList<HTTPRequest> ();
 
         this.path_root = SERVER_PATH_PREFIX + "/" + name;
     }
 
-    public void run (Cancellable? cancellable) {
+    public void run () {
         context.server.add_handler (this.path_root, server_handler);
 
-        if (cancellable != null) {
-            this.cancellable = cancellable;
+        if (this.cancellable != null) {
             this.cancellable.cancelled += this.on_cancelled;
         }
     }
@@ -62,28 +61,42 @@ internal class Rygel.HTTPServer : Rygel.TranscodeManager, Rygel.StateMachine {
      * implemenation out there just choose the first one in the list instead of
      * the one they can handle.
      */
-    internal override void add_resources (
-                                ArrayList<DIDLLiteResource?> resources,
-                                MediaItem                    item)
+    internal override void add_resources (DIDLLiteItem didl_item,
+                                          MediaItem    item)
                                 throws Error {
-        // Create the HTTP proxy URI
-        string protocol;
-        var uri = this.create_uri_for_item (item, null, out protocol);
-        DIDLLiteResource res = item.create_res (uri);
-        res.protocol = protocol;
-
-        if (!http_res_present (resources)) {
-            resources.insert (0, res);
+        if (!this.http_uri_present (item)) {
+            // Create the HTTP proxy URI
+            string protocol;
+            var uri = this.create_uri_for_item (item, -1, null, out protocol);
+            item.add_resource (didl_item, uri, protocol);
         }
 
-        base.add_resources (resources, item);
+        base.add_resources (didl_item, item);
+
+        // Thumbnails comes in the end
+        foreach (var thumbnail in item.thumbnails) {
+            if (!is_http_uri (thumbnail.uri)) {
+                var uri = thumbnail.uri; // Save the original URI
+                var index = item.thumbnails.index_of (thumbnail);
+                string protocol;
+
+                thumbnail.uri = this.create_uri_for_item (item,
+                                                          index,
+                                                          null,
+                                                          out protocol);
+                thumbnail.add_resource (didl_item, protocol);
+
+                // Now restore the original URI
+                thumbnail.uri = uri;
+            }
+        }
     }
 
-    private bool http_res_present (ArrayList<DIDLLiteResource?> res_list) {
+    private bool http_uri_present (MediaItem item) {
         bool present = false;
 
-        foreach (var res in res_list) {
-            if (res.protocol == "http-get") {
+        foreach (var uri in item.uris) {
+            if (this.is_http_uri (uri)) {
                 present = true;
 
                 break;
@@ -91,6 +104,10 @@ internal class Rygel.HTTPServer : Rygel.TranscodeManager, Rygel.StateMachine {
         }
 
         return present;
+    }
+
+    private bool is_http_uri (string uri) {
+            return uri.has_prefix ("http:");
     }
 
     private void on_cancelled (Cancellable cancellable) {
@@ -109,11 +126,16 @@ internal class Rygel.HTTPServer : Rygel.TranscodeManager, Rygel.StateMachine {
                                           path);
     }
 
-    internal override string create_uri_for_item (MediaItem  item,
-                                                  string?    transcode_target,
+    internal override string create_uri_for_item (MediaItem item,
+                                                  int       thumbnail_index,
+                                                  string?   transcode_target,
                                                   out string protocol) {
         string escaped = Uri.escape_string (item.id, "", true);
         string query = "?itemid=" + escaped;
+        if (thumbnail_index >= 0) {
+            query += "&thumbnail=" + thumbnail_index.to_string ();
+        }
+
         if (transcode_target != null) {
             escaped = Uri.escape_string (transcode_target, "", true);
             query += "&transcode=" + escaped;
@@ -122,6 +144,20 @@ internal class Rygel.HTTPServer : Rygel.TranscodeManager, Rygel.StateMachine {
         protocol = "http-get";
 
         return create_uri_for_path (query);
+    }
+
+    internal override string get_protocol () {
+        return "http-get";
+    }
+
+    internal override string get_protocol_info () {
+        var protocol_info = this.get_protocol () + ":*:*:*";
+        var base_info = base.get_protocol_info ();
+
+        if (base_info != "")
+            protocol_info += "," + base_info;
+
+        return protocol_info;
     }
 
     private void on_request_completed (HTTPRequest request) {
@@ -143,7 +179,7 @@ internal class Rygel.HTTPServer : Rygel.TranscodeManager, Rygel.StateMachine {
         request.completed += this.on_request_completed;
         this.requests.add (request);
 
-        request.run (this.cancellable);
+        request.run ();
     }
 }
 

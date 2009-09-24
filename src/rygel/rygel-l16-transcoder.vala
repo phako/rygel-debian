@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2009 Nokia Corporation, all rights reserved.
+ * Copyright (C) 2009 Nokia Corporation.
  *
  * Author: Zeeshan Ali (Khattak) <zeeshanak@gnome.org>
  *                               <zeeshan.ali@nokia.com>
@@ -20,9 +20,9 @@
  * along with this program; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
-using Rygel;
 using Gst;
 using GUPnP;
+using Gee;
 
 internal enum Endianness {
     LITTLE = ByteOrder.LITTLE_ENDIAN,
@@ -57,25 +57,62 @@ internal class Rygel.L16Transcoder : Rygel.Transcoder {
         this.endianness = endianness;
     }
 
-    public override Element create_source (Element src) throws Error {
-        return new L16TranscoderBin (src, this);
+    public override Element create_source (MediaItem item,
+                                           Element   src)
+                                           throws Error {
+        return new L16TranscoderBin (item, src, this);
     }
 
-    public override DIDLLiteResource create_resource (
-                                        MediaItem        item,
-                                        TranscodeManager manager)
-                                        throws Error {
-        var res = base.create_resource (item, manager);
+    public override DIDLLiteResource? add_resource (DIDLLiteItem     didl_item,
+                                                    MediaItem        item,
+                                                    TranscodeManager manager)
+                                                    throws Error {
+        var resource = base.add_resource (didl_item, item, manager);
+        if (resource == null)
+            return null;
 
-        res.sample_freq = L16Transcoder.FREQUENCY;
-        res.n_audio_channels = L16Transcoder.CHANNELS;
-        res.bits_per_sample = L16Transcoder.WIDTH;
+        resource.sample_freq = L16Transcoder.FREQUENCY;
+        resource.audio_channels = L16Transcoder.CHANNELS;
+        resource.bits_per_sample = L16Transcoder.WIDTH;
+        // Set bitrate in bytes/second
+        resource.bitrate = L16Transcoder.FREQUENCY *
+                           L16Transcoder.CHANNELS *
+                           L16Transcoder.WIDTH / 8;
 
-        return res;
+        return resource;
     }
 
-    public Element create_encoder (string? src_pad_name,
-                                   string? sink_pad_name)
+    public override uint get_distance (MediaItem item) {
+        if (item.upnp_class.has_prefix (MediaItem.IMAGE_CLASS)) {
+            return uint.MAX;
+        }
+
+        uint distance;
+
+        if (item.upnp_class.has_prefix (MediaItem.AUDIO_CLASS)) {
+            distance = uint.MIN;
+
+            if (item.sample_freq > 0) {
+                distance += (item.sample_freq - FREQUENCY).abs ();
+            }
+
+            if (item.n_audio_channels > 0) {
+                distance += (item.n_audio_channels - CHANNELS).abs ();
+            }
+
+            if (item.bits_per_sample > 0) {
+                distance += (item.bits_per_sample - WIDTH).abs ();
+            }
+        } else {
+            distance = uint.MAX / 2;
+        }
+
+        return distance;
+    }
+
+    public Element create_encoder (MediaItem item,
+                                   string?   src_pad_name,
+                                   string?   sink_pad_name)
                                    throws Error {
         dynamic Element convert1 = GstUtils.create_element (AUDIO_CONVERT,
                                                             null);

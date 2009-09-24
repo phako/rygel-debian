@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2008 Nokia Corporation, all rights reserved.
+ * Copyright (C) 2008 Nokia Corporation.
  *
  * Author: Zeeshan Ali (Khattak) <zeeshanak@gnome.org>
  *                               <zeeshan.ali@nokia.com>
@@ -38,20 +38,19 @@
 typedef struct _RygelIconInfo RygelIconInfo;
 typedef struct _RygelIconInfoClass RygelIconInfoClass;
 typedef struct _RygelIconInfoPrivate RygelIconInfoPrivate;
+#define _g_free0(var) (var = (g_free (var), NULL))
 typedef struct _RygelParamSpecIconInfo RygelParamSpecIconInfo;
 
-/**
- * Holds information about an icon.
- */
 struct _RygelIconInfo {
 	GTypeInstance parent_instance;
 	volatile int ref_count;
 	RygelIconInfoPrivate * priv;
-	char* mimetype;
-	guint width;
-	guint height;
-	guint depth;
+	char* mime_type;
 	char* path;
+	glong size;
+	gint width;
+	gint height;
+	gint depth;
 };
 
 struct _RygelIconInfoClass {
@@ -64,6 +63,7 @@ struct _RygelParamSpecIconInfo {
 };
 
 
+static gpointer rygel_icon_info_parent_class = NULL;
 
 gpointer rygel_icon_info_ref (gpointer instance);
 void rygel_icon_info_unref (gpointer instance);
@@ -74,38 +74,26 @@ GType rygel_icon_info_get_type (void);
 enum  {
 	RYGEL_ICON_INFO_DUMMY_PROPERTY
 };
-RygelIconInfo* rygel_icon_info_new (const char* mimetype, guint width, guint height, guint depth, const char* path);
-RygelIconInfo* rygel_icon_info_construct (GType object_type, const char* mimetype, guint width, guint height, guint depth, const char* path);
-RygelIconInfo* rygel_icon_info_new (const char* mimetype, guint width, guint height, guint depth, const char* path);
-static gpointer rygel_icon_info_parent_class = NULL;
+RygelIconInfo* rygel_icon_info_new (const char* mime_type);
+RygelIconInfo* rygel_icon_info_construct (GType object_type, const char* mime_type);
 static void rygel_icon_info_finalize (RygelIconInfo* obj);
 
 
 
-RygelIconInfo* rygel_icon_info_construct (GType object_type, const char* mimetype, guint width, guint height, guint depth, const char* path) {
+RygelIconInfo* rygel_icon_info_construct (GType object_type, const char* mime_type) {
 	RygelIconInfo* self;
+	char* _tmp0_;
 	char* _tmp1_;
-	const char* _tmp0_;
-	char* _tmp3_;
-	const char* _tmp2_;
-	g_return_val_if_fail (mimetype != NULL, NULL);
-	g_return_val_if_fail (path != NULL, NULL);
+	g_return_val_if_fail (mime_type != NULL, NULL);
 	self = (RygelIconInfo*) g_type_create_instance (object_type);
-	_tmp1_ = NULL;
-	_tmp0_ = NULL;
-	self->mimetype = (_tmp1_ = (_tmp0_ = mimetype, (_tmp0_ == NULL) ? NULL : g_strdup (_tmp0_)), self->mimetype = (g_free (self->mimetype), NULL), _tmp1_);
-	self->width = width;
-	self->height = height;
-	self->depth = depth;
-	_tmp3_ = NULL;
-	_tmp2_ = NULL;
-	self->path = (_tmp3_ = (_tmp2_ = path, (_tmp2_ == NULL) ? NULL : g_strdup (_tmp2_)), self->path = (g_free (self->path), NULL), _tmp3_);
+	self->mime_type = (_tmp0_ = g_strdup (mime_type), _g_free0 (self->mime_type), _tmp0_);
+	self->path = (_tmp1_ = g_strdup (self->path), _g_free0 (self->path), _tmp1_);
 	return self;
 }
 
 
-RygelIconInfo* rygel_icon_info_new (const char* mimetype, guint width, guint height, guint depth, const char* path) {
-	return rygel_icon_info_construct (RYGEL_TYPE_ICON_INFO, mimetype, width, height, depth, path);
+RygelIconInfo* rygel_icon_info_new (const char* mime_type) {
+	return rygel_icon_info_construct (RYGEL_TYPE_ICON_INFO, mime_type);
 }
 
 
@@ -209,6 +197,10 @@ static void rygel_icon_info_class_init (RygelIconInfoClass * klass) {
 
 
 static void rygel_icon_info_instance_init (RygelIconInfo * self) {
+	self->size = (glong) (-1);
+	self->width = -1;
+	self->height = -1;
+	self->depth = -1;
 	self->ref_count = 1;
 }
 
@@ -216,8 +208,8 @@ static void rygel_icon_info_instance_init (RygelIconInfo * self) {
 static void rygel_icon_info_finalize (RygelIconInfo* obj) {
 	RygelIconInfo * self;
 	self = RYGEL_ICON_INFO (obj);
-	self->mimetype = (g_free (self->mimetype), NULL);
-	self->path = (g_free (self->path), NULL);
+	_g_free0 (self->mime_type);
+	_g_free0 (self->path);
 }
 
 

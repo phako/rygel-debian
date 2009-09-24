@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2009 Nokia Corporation, all rights reserved.
+ * Copyright (C) 2009 Nokia Corporation.
  *
  * Author: Zeeshan Ali (Khattak) <zeeshanak@gnome.org>
  *                               <zeeshan.ali@nokia.com>
@@ -38,6 +38,7 @@
 typedef struct _RygelL16TranscoderBin RygelL16TranscoderBin;
 typedef struct _RygelL16TranscoderBinClass RygelL16TranscoderBinClass;
 typedef struct _RygelL16TranscoderBinPrivate RygelL16TranscoderBinPrivate;
+#define _gst_object_unref0(var) ((var == NULL) ? NULL : (var = (gst_object_unref (var), NULL)))
 
 #define RYGEL_TYPE_TRANSCODER (rygel_transcoder_get_type ())
 #define RYGEL_TRANSCODER(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_TRANSCODER, RygelTranscoder))
@@ -59,10 +60,27 @@ typedef struct _RygelTranscoderClass RygelTranscoderClass;
 typedef struct _RygelL16Transcoder RygelL16Transcoder;
 typedef struct _RygelL16TranscoderClass RygelL16TranscoderClass;
 
-/**
- * A Gst.Bin derivative that implements transcoding of any type of media (using
- * decodebin2) to linear PCM audio.
- */
+#define RYGEL_TYPE_MEDIA_OBJECT (rygel_media_object_get_type ())
+#define RYGEL_MEDIA_OBJECT(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_MEDIA_OBJECT, RygelMediaObject))
+#define RYGEL_MEDIA_OBJECT_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TYPE_MEDIA_OBJECT, RygelMediaObjectClass))
+#define RYGEL_IS_MEDIA_OBJECT(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TYPE_MEDIA_OBJECT))
+#define RYGEL_IS_MEDIA_OBJECT_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_TYPE_MEDIA_OBJECT))
+#define RYGEL_MEDIA_OBJECT_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_TYPE_MEDIA_OBJECT, RygelMediaObjectClass))
+
+typedef struct _RygelMediaObject RygelMediaObject;
+typedef struct _RygelMediaObjectClass RygelMediaObjectClass;
+
+#define RYGEL_TYPE_MEDIA_ITEM (rygel_media_item_get_type ())
+#define RYGEL_MEDIA_ITEM(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_MEDIA_ITEM, RygelMediaItem))
+#define RYGEL_MEDIA_ITEM_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TYPE_MEDIA_ITEM, RygelMediaItemClass))
+#define RYGEL_IS_MEDIA_ITEM(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TYPE_MEDIA_ITEM))
+#define RYGEL_IS_MEDIA_ITEM_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_TYPE_MEDIA_ITEM))
+#define RYGEL_MEDIA_ITEM_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_TYPE_MEDIA_ITEM, RygelMediaItemClass))
+
+typedef struct _RygelMediaItem RygelMediaItem;
+typedef struct _RygelMediaItemClass RygelMediaItemClass;
+#define _g_error_free0(var) ((var == NULL) ? NULL : (var = (g_error_free (var), NULL)))
+
 struct _RygelL16TranscoderBin {
 	GstBin parent_instance;
 	RygelL16TranscoderBinPrivate * priv;
@@ -82,6 +100,7 @@ typedef enum  {
 } RygelLiveResponseError;
 #define RYGEL_LIVE_RESPONSE_ERROR rygel_live_response_error_quark ()
 
+static gpointer rygel_l16_transcoder_bin_parent_class = NULL;
 
 GType rygel_l16_transcoder_bin_get_type (void);
 #define RYGEL_L16_TRANSCODER_BIN_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), RYGEL_TYPE_L16_TRANSCODER_BIN, RygelL16TranscoderBinPrivate))
@@ -94,17 +113,22 @@ enum  {
 GstElement* rygel_gst_utils_create_element (const char* factoryname, const char* name, GError** error);
 GType rygel_transcoder_get_type (void);
 GType rygel_l16_transcoder_get_type (void);
-GstElement* rygel_l16_transcoder_create_encoder (RygelL16Transcoder* self, const char* src_pad_name, const char* sink_pad_name, GError** error);
+GType rygel_media_object_get_type (void);
+GType rygel_media_item_get_type (void);
+GstElement* rygel_l16_transcoder_create_encoder (RygelL16Transcoder* self, RygelMediaItem* item, const char* src_pad_name, const char* sink_pad_name, GError** error);
 static void rygel_l16_transcoder_bin_decodebin_pad_added (RygelL16TranscoderBin* self, GstElement* decodebin, GstPad* new_pad);
 static void _rygel_l16_transcoder_bin_decodebin_pad_added_gst_element_pad_added (GstElement* _sender, GstPad* pad, gpointer self);
-RygelL16TranscoderBin* rygel_l16_transcoder_bin_new (GstElement* src, RygelL16Transcoder* transcoder, GError** error);
-RygelL16TranscoderBin* rygel_l16_transcoder_bin_construct (GType object_type, GstElement* src, RygelL16Transcoder* transcoder, GError** error);
-RygelL16TranscoderBin* rygel_l16_transcoder_bin_new (GstElement* src, RygelL16Transcoder* transcoder, GError** error);
+RygelL16TranscoderBin* rygel_l16_transcoder_bin_new (RygelMediaItem* item, GstElement* src, RygelL16Transcoder* transcoder, GError** error);
+RygelL16TranscoderBin* rygel_l16_transcoder_bin_construct (GType object_type, RygelMediaItem* item, GstElement* src, RygelL16Transcoder* transcoder, GError** error);
 void rygel_gst_utils_post_error (GstElement* dest, GError* _error_);
 GQuark rygel_live_response_error_quark (void);
-static gpointer rygel_l16_transcoder_bin_parent_class = NULL;
 static void rygel_l16_transcoder_bin_finalize (GObject* obj);
 
+
+
+static gpointer _gst_object_ref0 (gpointer self) {
+	return self ? gst_object_ref (self) : NULL;
+}
 
 
 static void _rygel_l16_transcoder_bin_decodebin_pad_added_gst_element_pad_added (GstElement* _sender, GstPad* pad, gpointer self) {
@@ -112,18 +136,15 @@ static void _rygel_l16_transcoder_bin_decodebin_pad_added_gst_element_pad_added 
 }
 
 
-RygelL16TranscoderBin* rygel_l16_transcoder_bin_construct (GType object_type, GstElement* src, RygelL16Transcoder* transcoder, GError** error) {
+RygelL16TranscoderBin* rygel_l16_transcoder_bin_construct (GType object_type, RygelMediaItem* item, GstElement* src, RygelL16Transcoder* transcoder, GError** error) {
 	GError * _inner_error_;
 	RygelL16TranscoderBin * self;
 	GstElement* decodebin;
 	GstElement* _tmp0_;
 	GstElement* _tmp1_;
-	GstElement* _tmp4_;
-	GstElement* _tmp3_;
-	GstElement* _tmp2_;
 	GstPad* src_pad;
 	GstGhostPad* ghost;
-	GstPad* _tmp5_;
+	g_return_val_if_fail (item != NULL, NULL);
 	g_return_val_if_fail (src != NULL, NULL);
 	g_return_val_if_fail (transcoder != NULL, NULL);
 	_inner_error_ = NULL;
@@ -133,57 +154,49 @@ RygelL16TranscoderBin* rygel_l16_transcoder_bin_construct (GType object_type, Gs
 		g_propagate_error (error, _inner_error_);
 		return;
 	}
-	_tmp0_ = rygel_l16_transcoder_create_encoder (transcoder, RYGEL_L16_TRANSCODER_BIN_AUDIO_SRC_PAD, RYGEL_L16_TRANSCODER_BIN_AUDIO_SINK_PAD, &_inner_error_);
+	_tmp0_ = rygel_l16_transcoder_create_encoder (transcoder, item, RYGEL_L16_TRANSCODER_BIN_AUDIO_SRC_PAD, RYGEL_L16_TRANSCODER_BIN_AUDIO_SINK_PAD, &_inner_error_);
 	if (_inner_error_ != NULL) {
 		g_propagate_error (error, _inner_error_);
-		(decodebin == NULL) ? NULL : (decodebin = (gst_object_unref (decodebin), NULL));
+		_gst_object_unref0 (decodebin);
 		return;
 	}
-	_tmp1_ = NULL;
-	self->priv->audio_enc = (_tmp1_ = _tmp0_, (self->priv->audio_enc == NULL) ? NULL : (self->priv->audio_enc = (gst_object_unref (self->priv->audio_enc), NULL)), _tmp1_);
-	_tmp4_ = NULL;
-	_tmp3_ = NULL;
-	_tmp2_ = NULL;
-	gst_bin_add_many ((GstBin*) self, (_tmp2_ = src, (_tmp2_ == NULL) ? NULL : gst_object_ref (_tmp2_)), (_tmp3_ = decodebin, (_tmp3_ == NULL) ? NULL : gst_object_ref (_tmp3_)), (_tmp4_ = self->priv->audio_enc, (_tmp4_ == NULL) ? NULL : gst_object_ref (_tmp4_)), NULL);
+	self->priv->audio_enc = (_tmp1_ = _tmp0_, _gst_object_unref0 (self->priv->audio_enc), _tmp1_);
+	gst_bin_add_many ((GstBin*) self, _gst_object_ref0 (src), _gst_object_ref0 (decodebin), _gst_object_ref0 (self->priv->audio_enc), NULL);
 	gst_element_link (src, decodebin);
 	src_pad = gst_element_get_static_pad (self->priv->audio_enc, RYGEL_L16_TRANSCODER_BIN_AUDIO_SRC_PAD);
 	ghost = (GstGhostPad*) gst_ghost_pad_new (NULL, src_pad);
-	_tmp5_ = NULL;
-	gst_element_add_pad ((GstElement*) self, (_tmp5_ = (GstPad*) ghost, (_tmp5_ == NULL) ? NULL : gst_object_ref (_tmp5_)));
+	gst_element_add_pad ((GstElement*) self, _gst_object_ref0 ((GstPad*) ghost));
 	g_signal_connect_object (decodebin, "pad-added", (GCallback) _rygel_l16_transcoder_bin_decodebin_pad_added_gst_element_pad_added, self, 0);
-	(decodebin == NULL) ? NULL : (decodebin = (gst_object_unref (decodebin), NULL));
-	(src_pad == NULL) ? NULL : (src_pad = (gst_object_unref (src_pad), NULL));
-	(ghost == NULL) ? NULL : (ghost = (gst_object_unref (ghost), NULL));
+	_gst_object_unref0 (decodebin);
+	_gst_object_unref0 (src_pad);
+	_gst_object_unref0 (ghost);
 	return self;
 }
 
 
-RygelL16TranscoderBin* rygel_l16_transcoder_bin_new (GstElement* src, RygelL16Transcoder* transcoder, GError** error) {
-	return rygel_l16_transcoder_bin_construct (RYGEL_TYPE_L16_TRANSCODER_BIN, src, transcoder, error);
+RygelL16TranscoderBin* rygel_l16_transcoder_bin_new (RygelMediaItem* item, GstElement* src, RygelL16Transcoder* transcoder, GError** error) {
+	return rygel_l16_transcoder_bin_construct (RYGEL_TYPE_L16_TRANSCODER_BIN, item, src, transcoder, error);
 }
 
 
 static void rygel_l16_transcoder_bin_decodebin_pad_added (RygelL16TranscoderBin* self, GstElement* decodebin, GstPad* new_pad) {
-	GstPad* _tmp0_;
 	GstPad* enc_pad;
 	g_return_if_fail (self != NULL);
 	g_return_if_fail (decodebin != NULL);
 	g_return_if_fail (new_pad != NULL);
-	_tmp0_ = NULL;
-	enc_pad = (_tmp0_ = gst_element_get_pad (self->priv->audio_enc, RYGEL_L16_TRANSCODER_BIN_AUDIO_SINK_PAD), (_tmp0_ == NULL) ? NULL : gst_object_ref (_tmp0_));
+	enc_pad = _gst_object_ref0 (gst_element_get_pad (self->priv->audio_enc, RYGEL_L16_TRANSCODER_BIN_AUDIO_SINK_PAD));
 	if (!gst_pad_can_link (new_pad, enc_pad)) {
-		(enc_pad == NULL) ? NULL : (enc_pad = (gst_object_unref (enc_pad), NULL));
+		_gst_object_unref0 (enc_pad);
 		return;
 	}
 	if (gst_pad_link (new_pad, enc_pad) != GST_PAD_LINK_OK) {
-		GError* _tmp1_;
-		_tmp1_ = NULL;
-		rygel_gst_utils_post_error ((GstElement*) self, _tmp1_ = g_error_new (RYGEL_LIVE_RESPONSE_ERROR, RYGEL_LIVE_RESPONSE_ERROR_LINK, "Failed to link pad %s to %s", gst_object_get_name ((GstObject*) new_pad), gst_object_get_name ((GstObject*) enc_pad)));
-		(_tmp1_ == NULL) ? NULL : (_tmp1_ = (g_error_free (_tmp1_), NULL));
-		(enc_pad == NULL) ? NULL : (enc_pad = (gst_object_unref (enc_pad), NULL));
+		GError* _tmp0_;
+		rygel_gst_utils_post_error ((GstElement*) self, _tmp0_ = g_error_new (RYGEL_LIVE_RESPONSE_ERROR, RYGEL_LIVE_RESPONSE_ERROR_LINK, "Failed to link pad %s to %s", gst_object_get_name ((GstObject*) new_pad), gst_object_get_name ((GstObject*) enc_pad)));
+		_g_error_free0 (_tmp0_);
+		_gst_object_unref0 (enc_pad);
 		return;
 	}
-	(enc_pad == NULL) ? NULL : (enc_pad = (gst_object_unref (enc_pad), NULL));
+	_gst_object_unref0 (enc_pad);
 }
 
 
@@ -202,7 +215,7 @@ static void rygel_l16_transcoder_bin_instance_init (RygelL16TranscoderBin * self
 static void rygel_l16_transcoder_bin_finalize (GObject* obj) {
 	RygelL16TranscoderBin * self;
 	self = RYGEL_L16_TRANSCODER_BIN (obj);
-	(self->priv->audio_enc == NULL) ? NULL : (self->priv->audio_enc = (gst_object_unref (self->priv->audio_enc), NULL));
+	_gst_object_unref0 (self->priv->audio_enc);
 	G_OBJECT_CLASS (rygel_l16_transcoder_bin_parent_class)->finalize (obj);
 }
 

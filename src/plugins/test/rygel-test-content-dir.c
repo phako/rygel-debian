@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2008 Zeeshan Ali (Khattak) <zeeshanak@gnome.org>.
- * Copyright (C) 2008 Nokia Corporation, all rights reserved.
+ * Copyright (C) 2008 Nokia Corporation.
  *
  * Author: Zeeshan Ali (Khattak) <zeeshanak@gnome.org>
  *                               <zeeshan.ali@nokia.com>
@@ -40,6 +40,7 @@
 typedef struct _RygelTestContentDir RygelTestContentDir;
 typedef struct _RygelTestContentDirClass RygelTestContentDirClass;
 typedef struct _RygelTestContentDirPrivate RygelTestContentDirPrivate;
+#define _g_object_unref0(var) ((var == NULL) ? NULL : (var = (g_object_unref (var), NULL)))
 
 #define RYGEL_TYPE_TEST_ROOT_CONTAINER (rygel_test_root_container_get_type ())
 #define RYGEL_TEST_ROOT_CONTAINER(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_TEST_ROOT_CONTAINER, RygelTestRootContainer))
@@ -50,10 +51,8 @@ typedef struct _RygelTestContentDirPrivate RygelTestContentDirPrivate;
 
 typedef struct _RygelTestRootContainer RygelTestRootContainer;
 typedef struct _RygelTestRootContainerClass RygelTestRootContainerClass;
+#define _g_free0(var) (var = (g_free (var), NULL))
 
-/**
- * Implementation of ContentDirectory service, meant for testing purposes only.
- */
 struct _RygelTestContentDir {
 	RygelContentDirectory parent_instance;
 	RygelTestContentDirPrivate * priv;
@@ -64,6 +63,7 @@ struct _RygelTestContentDirClass {
 };
 
 
+static gpointer rygel_test_content_dir_parent_class = NULL;
 
 GType rygel_test_content_dir_get_type (void);
 enum  {
@@ -75,32 +75,25 @@ GType rygel_test_root_container_get_type (void);
 static RygelMediaContainer* rygel_test_content_dir_real_create_root_container (RygelContentDirectory* base);
 RygelTestContentDir* rygel_test_content_dir_new (void);
 RygelTestContentDir* rygel_test_content_dir_construct (GType object_type);
-RygelTestContentDir* rygel_test_content_dir_new (void);
-static gpointer rygel_test_content_dir_parent_class = NULL;
 
 
 
-/* Pubic methods */
 static RygelMediaContainer* rygel_test_content_dir_real_create_root_container (RygelContentDirectory* base) {
 	RygelTestContentDir * self;
+	RygelMediaContainer* result;
 	GUPnPRootDevice* _tmp1_;
 	GUPnPRootDevice* _tmp0_;
 	char* _tmp2_;
 	char* friendly_name;
-	RygelMediaContainer* _tmp3_;
 	self = (RygelTestContentDir*) base;
-	_tmp1_ = NULL;
 	_tmp0_ = NULL;
-	_tmp2_ = NULL;
-	friendly_name = (_tmp2_ = gupnp_device_info_get_friendly_name ((GUPnPDeviceInfo*) (_tmp1_ = (g_object_get ((GUPnPService*) self, "root-device", &_tmp0_, NULL), _tmp0_))), (_tmp1_ == NULL) ? NULL : (_tmp1_ = (g_object_unref (_tmp1_), NULL)), _tmp2_);
-	_tmp3_ = NULL;
-	return (_tmp3_ = (RygelMediaContainer*) rygel_test_root_container_new (friendly_name), friendly_name = (g_free (friendly_name), NULL), _tmp3_);
+	friendly_name = (_tmp2_ = gupnp_device_info_get_friendly_name ((GUPnPDeviceInfo*) (_tmp1_ = (g_object_get ((GUPnPService*) self, "root-device", &_tmp0_, NULL), _tmp0_))), _g_object_unref0 (_tmp1_), _tmp2_);
+	result = (RygelMediaContainer*) rygel_test_root_container_new (friendly_name);
+	_g_free0 (friendly_name);
+	return result;
 }
 
 
-/**
- * Implementation of ContentDirectory service, meant for testing purposes only.
- */
 RygelTestContentDir* rygel_test_content_dir_construct (GType object_type) {
 	RygelTestContentDir * self;
 	self = (RygelTestContentDir*) rygel_content_directory_construct (object_type);

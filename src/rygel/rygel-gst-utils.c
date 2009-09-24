@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2009 Nokia Corporation, all rights reserved.
+ * Copyright (C) 2009 Nokia Corporation.
  *
  * Author: Zeeshan Ali (Khattak) <zeeshanak@gnome.org>
  *                               <zeeshan.ali@nokia.com>
@@ -39,6 +39,8 @@
 typedef struct _RygelGstUtils RygelGstUtils;
 typedef struct _RygelGstUtilsClass RygelGstUtilsClass;
 typedef struct _RygelGstUtilsPrivate RygelGstUtilsPrivate;
+#define _gst_object_unref0(var) ((var == NULL) ? NULL : (var = (gst_object_unref (var), NULL)))
+#define _gst_message_unref0(var) ((var == NULL) ? NULL : (var = (gst_message_unref (var), NULL)))
 typedef struct _RygelParamSpecGstUtils RygelParamSpecGstUtils;
 
 struct _RygelGstUtils {
@@ -62,6 +64,7 @@ struct _RygelParamSpecGstUtils {
 };
 
 
+static gpointer rygel_gst_utils_parent_class = NULL;
 
 gpointer rygel_gst_utils_ref (gpointer instance);
 void rygel_gst_utils_unref (gpointer instance);
@@ -75,12 +78,13 @@ enum  {
 GQuark rygel_live_response_error_quark (void);
 GstElement* rygel_gst_utils_create_element (const char* factoryname, const char* name, GError** error);
 void rygel_gst_utils_post_error (GstElement* dest, GError* _error_);
-static gpointer rygel_gst_utils_parent_class = NULL;
+RygelGstUtils* rygel_gst_utils_construct (GType object_type);
 static void rygel_gst_utils_finalize (RygelGstUtils* obj);
 
 
 
 GstElement* rygel_gst_utils_create_element (const char* factoryname, const char* name, GError** error) {
+	GstElement* result;
 	GError * _inner_error_;
 	GstElement* element;
 	g_return_val_if_fail (factoryname != NULL, NULL);
@@ -90,22 +94,33 @@ GstElement* rygel_gst_utils_create_element (const char* factoryname, const char*
 		_inner_error_ = g_error_new (RYGEL_LIVE_RESPONSE_ERROR, RYGEL_LIVE_RESPONSE_ERROR_MISSING_PLUGIN, "Required element factory '%s' missing", factoryname);
 		if (_inner_error_ != NULL) {
 			g_propagate_error (error, _inner_error_);
-			(element == NULL) ? NULL : (element = (gst_object_unref (element), NULL));
+			_gst_object_unref0 (element);
 			return NULL;
 		}
 	}
-	return element;
+	result = element;
+	return result;
+}
+
+
+static gpointer _gst_message_ref0 (gpointer self) {
+	return self ? gst_message_ref (self) : NULL;
 }
 
 
 void rygel_gst_utils_post_error (GstElement* dest, GError* _error_) {
 	GstMessage* msg;
-	GstMessage* _tmp0_;
 	g_return_if_fail (dest != NULL);
 	msg = gst_message_new_error ((GstObject*) dest, _error_, _error_->message);
-	_tmp0_ = NULL;
-	gst_element_post_message (dest, (_tmp0_ = msg, (_tmp0_ == NULL) ? NULL : gst_message_ref (_tmp0_)));
-	(msg == NULL) ? NULL : (msg = (gst_message_unref (msg), NULL));
+	gst_element_post_message (dest, _gst_message_ref0 (msg));
+	_gst_message_unref0 (msg);
+}
+
+
+RygelGstUtils* rygel_gst_utils_construct (GType object_type) {
+	RygelGstUtils* self;
+	self = (RygelGstUtils*) g_type_create_instance (object_type);
+	return self;
 }
 
 

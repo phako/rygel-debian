@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2009 Nokia Corporation, all rights reserved.
+ * Copyright (C) 2009 Nokia Corporation.
  *
  * Author: Zeeshan Ali (Khattak) <zeeshanak@gnome.org>
  *                               <zeeshan.ali@nokia.com>
@@ -21,30 +21,37 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 using Gtk;
+using GUPnP;
 
 public class Rygel.GeneralPrefSection : PreferencesSection {
-    const string IP_ENTRY = "ip-entry";
+    const string UPNP_CHECKBUTTON = "upnp-checkbutton";
+    const string IFACE_ENTRY = "iface-entry";
     const string PORT_SPINBUTTON = "port-spinbutton";
     const string TRANS_CHECKBUTTON = "transcoding-checkbutton";
     const string MP3_CHECKBUTTON = "mp3-checkbutton";
     const string MP2TS_CHECKBUTTON = "mp2ts-checkbutton";
     const string LPCM_CHECKBUTTON = "lpcm-checkbutton";
 
-    private Entry ip_entry;
+    private ComboBoxEntry iface_entry;
     private SpinButton port_spin;
 
     // Transcoding options
+    private CheckButton upnp_check;
     private CheckButton trans_check;
     private CheckButton mp3_check;
     private CheckButton mp2ts_check;
     private CheckButton lpcm_check;
 
-    public GeneralPrefSection (Builder       builder,
-                               Configuration config) throws Error {
+    private ContextManager context_manager;
+
+    public GeneralPrefSection (Builder    builder,
+                               UserConfig config) throws Error {
         base (config, "general");
 
-        this.ip_entry = (Entry) builder.get_object (IP_ENTRY);
-        assert (this.ip_entry != null);
+        this.upnp_check = (CheckButton) builder.get_object (UPNP_CHECKBUTTON);
+        assert (this.upnp_check != null);
+        this.iface_entry = (ComboBoxEntry) builder.get_object (IFACE_ENTRY);
+        assert (this.iface_entry != null);
         this.port_spin = (SpinButton) builder.get_object (PORT_SPINBUTTON);
         assert (this.port_spin != null);
         this.trans_check = (CheckButton) builder.get_object (TRANS_CHECKBUTTON);
@@ -56,32 +63,93 @@ public class Rygel.GeneralPrefSection : PreferencesSection {
         this.lpcm_check = (CheckButton) builder.get_object (LPCM_CHECKBUTTON);
         assert (this.lpcm_check != null);
 
-        if (config.host_ip != null) {
-            this.ip_entry.set_text (config.host_ip);
-        }
-        this.port_spin.set_value (config.port);
+        this.context_manager = new ContextManager (null, 0);
 
-        this.trans_check.active = this.config.transcoding;
-        this.mp3_check.active = this.config.mp3_transcoder;
-        this.mp2ts_check.active = this.config.mp2ts_transcoder;
-        this.lpcm_check.active = this.config.lpcm_transcoder;
+        // Apparently glade/GtkBuilder is unable to do this for us
+        this.iface_entry.set_text_column (0);
+        try {
+            this.iface_entry.append_text (config.get_interface ());
+            this.iface_entry.set_active (0);
+        } catch (GLib.Error err) {
+            // No problem if we fail to read the config, the default values
+            // will do just fine. Same goes for rest of the keys.
+        }
+        try {
+            this.port_spin.set_value (config.get_port ());
+        } catch (GLib.Error err) {}
+        try {
+            this.upnp_check.active = this.config.get_upnp_enabled ();
+        } catch (GLib.Error err) {}
+        try {
+            this.trans_check.active = this.config.get_transcoding ();
+        } catch (GLib.Error err) {}
+        try {
+            this.mp3_check.active = this.config.get_mp3_transcoder ();
+        } catch (GLib.Error err) {}
+        try {
+            this.mp2ts_check.active = this.config.get_mp2ts_transcoder ();
+        } catch (GLib.Error err) {}
+        try {
+            this.lpcm_check.active = this.config.get_lpcm_transcoder ();
+        } catch (GLib.Error err) {}
 
         this.trans_check.toggled += this.on_trans_check_toggled;
+
+        this.context_manager.context_available.connect (
+                                        this.on_context_available);
+        this.context_manager.context_unavailable.connect (
+                                        this.on_context_unavailable);
     }
 
     public override void save () {
-        this.config.host_ip = this.ip_entry.get_text ();
-        this.config.port = (int) this.port_spin.get_value ();
+        this.config.set_interface (this.iface_entry.get_active_text ());
+        this.config.set_port ((int) this.port_spin.get_value ());
 
-        this.config.transcoding = this.trans_check.active;
-        this.config.mp3_transcoder = this.mp3_check.active;
-        this.config.mp2ts_transcoder = this.mp2ts_check.active;
-        this.config.lpcm_transcoder = this.lpcm_check.active;
+        this.config.set_upnp_enabled (this.upnp_check.active);
+        this.config.set_transcoding (this.trans_check.active);
+        this.config.set_mp3_transcoder (this.mp3_check.active);
+        this.config.set_mp2ts_transcoder (this.mp2ts_check.active);
+        this.config.set_lpcm_transcoder (this.lpcm_check.active);
     }
 
     private void on_trans_check_toggled (CheckButton trans_check) {
         this.mp3_check.sensitive =
         this.mp2ts_check.sensitive =
         this.lpcm_check.sensitive = trans_check.active;
+    }
+
+    private void on_context_available (GUPnP.ContextManager manager,
+                                       GUPnP.Context        context) {
+        TreeIter iter;
+
+        if (!this.find_interface (context.interface, out iter)) {
+            this.iface_entry.append_text (context.interface);
+        }
+    }
+
+    private void on_context_unavailable (GUPnP.ContextManager manager,
+                                         GUPnP.Context        context) {
+        TreeIter iter;
+
+        if (this.find_interface (context.interface, out iter)) {
+            var list_store = this.iface_entry.model as ListStore;
+            list_store.remove (iter);
+        }
+    }
+
+    private bool find_interface (string iface, out TreeIter iter) {
+        var model = this.iface_entry.model;
+        var more = model.get_iter_first (out iter);
+        while (more) {
+            model.get (iter, 0, &name, -1);
+
+            if (name == iface) {
+                break;
+            }
+
+            more = model.iter_next (ref iter);
+        }
+
+        return more;
     }
 }

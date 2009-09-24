@@ -9,6 +9,10 @@ rygel (0.4-1) UNRELEASED; urgency=low
     - Drop build-dependency on libgconf2-dev.
     - Bump build-dependencies on gupnp to >= 0.13, gupnp-av to >= 0.5,
       gstreamer to >= 0.10.23, gee to >= 0.3.0.
+  * fix lintian warnings:
+    - out-of-date-standards-version 3.8.1 (current is 3.8.3)
+    - build-depends-on-1-revision build-depends: uuid-dev (>= 1.2-1.41.3-1)
+    - copyright-lists-upstream-authors-with-dh_make-boilerplate
 
  -- Andreas Henriksson <andreas@fatal.se>  Thu, 24 Sep 2009 10:33:34 +0200
 

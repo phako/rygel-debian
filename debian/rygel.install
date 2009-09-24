@@ -1,7 +1,6 @@
-etc/gconf/schemas/*.schemas
 usr/bin/rygel
 usr/bin/rygel-preferences
 usr/lib/rygel-*/librygel-external.so
-usr/lib/rygel-*/librygel-media-folder.so
+usr/lib/rygel-*/librygel-media-export.so
 usr/share/rygel/*.ui
 usr/share/rygel/xml/*.xml

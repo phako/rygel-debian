@@ -1,4 +1,14 @@
-rygel (0.3-1) unstable; urgency=low
+rygel (0.4-1) UNRELEASED; urgency=low
+
+  * New upstream release.
+  * debian/rygel.install:
+    - don't install gconf schemas, they've been dropped.
+    - Install rygel-media-export instead of rygel-media-folder.
+  * debian/control: Drop rygel-dvb package, dvb-daemon will provide this.
+
+ -- Andreas Henriksson <andreas@fatal.se>  Thu, 24 Sep 2009 10:33:34 +0200
+
+rygel (0.3-1) UNRELEASED; urgency=low
 
   * Initial release (Closes: #nnnn)  <nnnn is the bug number of your ITP>
 

@@ -1,7 +1,7 @@
 From a57b3e2be4e6ac6b11e12f440fe6781ae9ce5c39 Mon Sep 17 00:00:00 2001
 From: Andreas Henriksson <andreas@fatal.se>
 Date: Fri, 25 Sep 2009 09:39:44 +0200
-Subject: [PATCH] rygel.conf: enabled by default.
+Subject: [PATCH 1/2] rygel.conf: enabled by default.
 
 ---
  data/rygel-default.conf |    2 +-

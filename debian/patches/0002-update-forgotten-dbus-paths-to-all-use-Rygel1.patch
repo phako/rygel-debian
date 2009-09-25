@@ -1,0 +1,42 @@
+From c18607c3660e5aeceae385e7335b74eb2e4dfefd Mon Sep 17 00:00:00 2001
+From: Andreas Henriksson <andreas@fatal.se>
+Date: Fri, 25 Sep 2009 14:00:15 +0200
+Subject: [PATCH 2/2] update forgotten dbus paths to all use Rygel1.
+
+This patch is equivalent to the upstream change in http://git.gnome.org/cgit/rygel/commit/?id=7295875d030c7ad70e40b6b81e84eb5d346e1e41 which modifies the vala
+file.
+We touch the generated c files directly to avoid having to regenerate the source with vala.
+---
+ data/org.gnome.Rygel1.service.in |    2 +-
+ src/rygel/rygel-user-config.c    |    6 +++---
+ 2 files changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/data/org.gnome.Rygel1.service.in b/data/org.gnome.Rygel1.service.in
+index 4cbe9d7..dbc3029 100644
+--- a/data/org.gnome.Rygel1.service.in
++++ b/data/org.gnome.Rygel1.service.in
+@@ -1,3 +1,3 @@
+ [D-BUS Service]
+-Name=org.gnome.Rygel
++Name=org.gnome.Rygel1
+ Exec=@bindir@/rygel
+diff --git a/src/rygel/rygel-user-config.c b/src/rygel/rygel-user-config.c
+index fe6d510..722e6d5 100644
+--- a/src/rygel/rygel-user-config.c
++++ b/src/rygel/rygel-user-config.c
+@@ -120,9 +120,9 @@ enum  {
+ #define RYGEL_USER_CONFIG_DBUS_SERVICE "org.freedesktop.DBus"
+ #define RYGEL_USER_CONFIG_DBUS_PATH "/org/freedesktop/DBus"
+ #define RYGEL_USER_CONFIG_DBUS_INTERFACE "org.freedesktop.DBus"
+-#define RYGEL_USER_CONFIG_RYGEL_SERVICE "org.gnome.Rygel"
+-#define RYGEL_USER_CONFIG_RYGEL_PATH "/org/gnome/Rygel"
+-#define RYGEL_USER_CONFIG_RYGEL_INTERFACE "org.gnome.Rygel"
++#define RYGEL_USER_CONFIG_RYGEL_SERVICE "org.gnome.Rygel1"
++#define RYGEL_USER_CONFIG_RYGEL_PATH "/org/gnome/Rygel1"
++#define RYGEL_USER_CONFIG_RYGEL_INTERFACE "org.gnome.Rygel1"
+ gboolean rygel_configuration_get_bool (RygelConfiguration* self, const char* section, const char* key, GError** error);
+ static gboolean rygel_user_config_real_get_upnp_enabled (RygelConfiguration* base, GError** error);
+ gboolean rygel_configuration_get_upnp_enabled (RygelConfiguration* self, GError** error);
+-- 
+1.6.4.3
+

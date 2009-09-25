@@ -17,6 +17,8 @@ rygel (0.4-1) UNRELEASED; urgency=low
     - build-depends-on-1-revision build-depends: uuid-dev (>= 1.2-1.41.3-1)
     - copyright-lists-upstream-authors-with-dh_make-boilerplate
   * debian/rules: drop gconf schema related configure flags.
+  * debian/patches/0001-rygel.conf-enabled-by-default.patch:
+    - enable the rygel session service by default.
 
   [ Marc-André Lureau ]
   * Initial packaging.

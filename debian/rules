@@ -9,9 +9,9 @@ else
 CROSS= --build $(DEB_BUILD_GNU_TYPE)
 endif
 
-# include /usr/share/quilt/quilt.make
+include /usr/share/quilt/quilt.make
 
-config.status: configure
+config.status: patch configure
 	dh_testdir
 ifneq "$(wildcard /usr/share/misc/config.sub)" ""
 	cp -f /usr/share/misc/config.sub config.sub
@@ -34,7 +34,7 @@ build-indep: build-indep-stamp
 build-indep-stamp:  config.status $(QUILT_STAMPFN)
 	touch $@
 
-clean: #unpatch
+clean: unpatch
 	dh_testdir
 	dh_testroot
 	rm -f build-arch-stamp build-indep-stamp

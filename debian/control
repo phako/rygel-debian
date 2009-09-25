@@ -97,6 +97,7 @@ Description: GNOME UPnP/DLNA services - Mediathek plugin
 Package: rygel-tracker
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
+Recommends: tracker
 Description: GNOME UPnP/DLNA services - Tracker plugin
  Rygel is a collection of UPnP/DLNA sevices, implemented through a
  plug-in mechanism. Important facts and features:

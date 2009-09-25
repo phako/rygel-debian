@@ -22,6 +22,7 @@ rygel (0.4-1) UNRELEASED; urgency=low
   * debian/patches/0001-rygel.conf-enabled-by-default.patch:
     - enable the rygel session service by default.
   * debian/rygel.install: install /etc/rygel.conf
+  * debian/control: make rygel-tracker recommend tracker
 
   [ Marc-André Lureau ]
   * Initial packaging.

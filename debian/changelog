@@ -21,7 +21,9 @@ rygel (0.4-1) UNRELEASED; urgency=low
     - uncomment quilt patch script.
   * debian/patches/0001-rygel.conf-enabled-by-default.patch:
     - enable the rygel session service by default.
-  * debian/rygel.install: install /etc/rygel.conf
+  * debian/rygel.install:
+    - install /etc/rygel.conf
+    - install rygel dbus service file.
   * debian/control: make rygel-tracker recommend tracker
 
   [ Marc-André Lureau ]

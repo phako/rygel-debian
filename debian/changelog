@@ -30,8 +30,9 @@ rygel (0.4.1-1) UNRELEASED; urgency=low
   * New upstream bugfix release
   * debian/patches/0002-update-forgotten-dbus-paths-to-all-use-Rygel1.patch:
     - Dropped, fixed upstream.
-  * debian/control: Add myself to uploaders and set a team email alias
-    as maintainer address.
+  * debian/control:
+    - Add myself to uploaders and set a team email alias as maintainer address.
+    - Make rygel suggest the packages with tracker and mediathek plugins.
 
   [ Marc-André Lureau ]
   * Initial packaging.

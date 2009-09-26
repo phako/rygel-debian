@@ -243,13 +243,13 @@ static void rygel_plugin_loader_on_children_enumerated (RygelPluginLoader* self,
 		GFileEnumerator* _tmp1_;
 		_tmp0_ = g_file_enumerate_children_finish (dir, res, &_inner_error_);
 		if (_inner_error_ != NULL) {
-			goto __catch24_g_error;
-			goto __finally24;
+			goto __catch26_g_error;
+			goto __finally26;
 		}
 		enumerator = (_tmp1_ = _tmp0_, _g_object_unref0 (enumerator), _tmp1_);
 	}
-	goto __finally24;
-	__catch24_g_error:
+	goto __finally26;
+	__catch26_g_error:
 	{
 		GError * _error_;
 		_error_ = _inner_error_;
@@ -264,7 +264,7 @@ static void rygel_plugin_loader_on_children_enumerated (RygelPluginLoader* self,
 			return;
 		}
 	}
-	__finally24:
+	__finally26:
 	if (_inner_error_ != NULL) {
 		_g_object_unref0 (dir);
 		_g_object_unref0 (enumerator);
@@ -300,13 +300,13 @@ static void rygel_plugin_loader_on_next_files_enumerated (RygelPluginLoader* sel
 		GList* _tmp1_;
 		_tmp0_ = g_file_enumerator_next_files_finish (enumerator, res, &_inner_error_);
 		if (_inner_error_ != NULL) {
-			goto __catch25_g_error;
-			goto __finally25;
+			goto __catch27_g_error;
+			goto __finally27;
 		}
 		infos = (_tmp1_ = _tmp0_, __g_list_free_g_object_unref0 (infos), _tmp1_);
 	}
-	goto __finally25;
-	__catch25_g_error:
+	goto __finally27;
+	__catch27_g_error:
 	{
 		GError * _error_;
 		_error_ = _inner_error_;
@@ -322,7 +322,7 @@ static void rygel_plugin_loader_on_next_files_enumerated (RygelPluginLoader* sel
 			return;
 		}
 	}
-	__finally25:
+	__finally27:
 	if (_inner_error_ != NULL) {
 		_g_object_unref0 (enumerator);
 		_g_object_unref0 (dir);
@@ -421,13 +421,13 @@ static gboolean rygel_plugin_loader_is_dir (GFile* file) {
 		GFileInfo* _tmp1_;
 		_tmp0_ = g_file_query_info (file, G_FILE_ATTRIBUTE_STANDARD_TYPE, G_FILE_QUERY_INFO_NONE, NULL, &_inner_error_);
 		if (_inner_error_ != NULL) {
-			goto __catch26_g_error;
-			goto __finally26;
+			goto __catch28_g_error;
+			goto __finally28;
 		}
 		file_info = (_tmp1_ = _tmp0_, _g_object_unref0 (file_info), _tmp1_);
 	}
-	goto __finally26;
-	__catch26_g_error:
+	goto __finally28;
+	__catch28_g_error:
 	{
 		GError * _error_;
 		_error_ = _inner_error_;
@@ -442,7 +442,7 @@ static gboolean rygel_plugin_loader_is_dir (GFile* file) {
 			return result;
 		}
 	}
-	__finally26:
+	__finally28:
 	if (_inner_error_ != NULL) {
 		_g_object_unref0 (file_info);
 		g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, _inner_error_->message);

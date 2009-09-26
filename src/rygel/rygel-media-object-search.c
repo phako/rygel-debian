@@ -201,8 +201,8 @@ static void rygel_media_object_search_on_object_found (RygelMediaObjectSearch* s
 		_tmp1_ = rygel_media_container_find_object_finish (container, res, &_inner_error_);
 		if (_inner_error_ != NULL) {
 			_g_object_unref0 (container);
-			goto __catch27_g_error;
-			goto __finally27;
+			goto __catch29_g_error;
+			goto __finally29;
 		}
 		self->media_object = (_tmp2_ = _tmp1_, _g_object_unref0 (self->media_object), _tmp2_);
 		if (self->media_object == NULL) {
@@ -213,8 +213,8 @@ static void rygel_media_object_search_on_object_found (RygelMediaObjectSearch* s
 		}
 		_g_object_unref0 (container);
 	}
-	goto __finally27;
-	__catch27_g_error:
+	goto __finally29;
+	__catch29_g_error:
 	{
 		GError * err;
 		err = _inner_error_;
@@ -226,7 +226,7 @@ static void rygel_media_object_search_on_object_found (RygelMediaObjectSearch* s
 			_g_error_free0 (err);
 		}
 	}
-	__finally27:
+	__finally29:
 	if (_inner_error_ != NULL) {
 		g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, _inner_error_->message);
 		g_clear_error (&_inner_error_);

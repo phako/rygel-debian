@@ -398,13 +398,13 @@ static GUPnPContextManager* rygel_main_create_context_manager (RygelMain* self) 
 		gint _tmp0_;
 		_tmp0_ = rygel_configuration_get_port (self->priv->config, &_inner_error_);
 		if (_inner_error_ != NULL) {
-			goto __catch45_g_error;
-			goto __finally45;
+			goto __catch47_g_error;
+			goto __finally47;
 		}
 		port = _tmp0_;
 	}
-	goto __finally45;
-	__catch45_g_error:
+	goto __finally47;
+	__catch47_g_error:
 	{
 		GError * err;
 		err = _inner_error_;
@@ -413,7 +413,7 @@ static GUPnPContextManager* rygel_main_create_context_manager (RygelMain* self) 
 			_g_error_free0 (err);
 		}
 	}
-	__finally45:
+	__finally47:
 	if (_inner_error_ != NULL) {
 		g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, _inner_error_->message);
 		g_clear_error (&_inner_error_);
@@ -442,13 +442,13 @@ static void rygel_main_on_context_available (RygelMain* self, GUPnPContextManage
 		char* _tmp1_;
 		_tmp0_ = rygel_configuration_get_interface (self->priv->config, &_inner_error_);
 		if (_inner_error_ != NULL) {
-			goto __catch46_g_error;
-			goto __finally46;
+			goto __catch48_g_error;
+			goto __finally48;
 		}
 		iface = (_tmp1_ = _tmp0_, _g_free0 (iface), _tmp1_);
 	}
-	goto __finally46;
-	__catch46_g_error:
+	goto __finally48;
+	__catch48_g_error:
 	{
 		GError * err;
 		err = _inner_error_;
@@ -457,7 +457,7 @@ static void rygel_main_on_context_available (RygelMain* self, GUPnPContextManage
 			_g_error_free0 (err);
 		}
 	}
-	__finally46:
+	__finally48:
 	if (_inner_error_ != NULL) {
 		_g_free0 (iface);
 		g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, _inner_error_->message);
@@ -610,16 +610,16 @@ static void rygel_main_create_device (RygelMain* self, RygelPlugin* plugin, Ryge
 		RygelRootDevice* device;
 		device = rygel_root_device_factory_create (factory, plugin, &_inner_error_);
 		if (_inner_error_ != NULL) {
-			goto __catch47_g_error;
-			goto __finally47;
+			goto __catch49_g_error;
+			goto __finally49;
 		}
 		gupnp_root_device_set_available ((GUPnPRootDevice*) device, rygel_plugin_get_available (plugin));
 		gee_abstract_collection_add ((GeeAbstractCollection*) self->priv->root_devices, device);
 		g_signal_connect_object ((GObject*) plugin, "notify::available", (GCallback) _rygel_main_on_plugin_notify_g_object_notify, self, 0);
 		_g_object_unref0 (device);
 	}
-	goto __finally47;
-	__catch47_g_error:
+	goto __finally49;
+	__catch49_g_error:
 	{
 		GError * _error_;
 		_error_ = _inner_error_;
@@ -629,7 +629,7 @@ static void rygel_main_create_device (RygelMain* self, RygelPlugin* plugin, Ryge
 			_g_error_free0 (_error_);
 		}
 	}
-	__finally47:
+	__finally49:
 	if (_inner_error_ != NULL) {
 		g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, _inner_error_->message);
 		g_clear_error (&_inner_error_);
@@ -682,10 +682,10 @@ static gint rygel_main_main (char** args, int args_length1) {
 		rygel_cmdline_config_parse_args (&args, &args_length1, &_inner_error_);
 		if (_inner_error_ != NULL) {
 			if (g_error_matches (_inner_error_, RYGEL_CMDLINE_CONFIG_ERROR, RYGEL_CMDLINE_CONFIG_ERROR_VERSION_ONLY)) {
-				goto __catch48_rygel_cmdline_config_error_version_only;
+				goto __catch50_rygel_cmdline_config_error_version_only;
 			}
-			goto __catch48_g_error;
-			goto __finally48;
+			goto __catch50_g_error;
+			goto __finally50;
 		}
 		dummy_args = (_tmp0_ = g_new0 (char*, 0 + 1), dummy_args_length1 = 0, dummy_args_size = dummy_args_length1, _tmp0_);
 		gst_init (&dummy_args_length1, &dummy_args);
@@ -693,26 +693,26 @@ static gint rygel_main_main (char** args, int args_length1) {
 		if (_inner_error_ != NULL) {
 			dummy_args = (_vala_array_free (dummy_args, dummy_args_length1, (GDestroyNotify) g_free), NULL);
 			if (g_error_matches (_inner_error_, RYGEL_CMDLINE_CONFIG_ERROR, RYGEL_CMDLINE_CONFIG_ERROR_VERSION_ONLY)) {
-				goto __catch48_rygel_cmdline_config_error_version_only;
+				goto __catch50_rygel_cmdline_config_error_version_only;
 			}
-			goto __catch48_g_error;
-			goto __finally48;
+			goto __catch50_g_error;
+			goto __finally50;
 		}
 		main = (_tmp2_ = _tmp1_, _g_object_unref0 (main), _tmp2_);
 		_tmp3_ = rygel_dbus_service_new (main, &_inner_error_);
 		if (_inner_error_ != NULL) {
 			dummy_args = (_vala_array_free (dummy_args, dummy_args_length1, (GDestroyNotify) g_free), NULL);
 			if (g_error_matches (_inner_error_, RYGEL_CMDLINE_CONFIG_ERROR, RYGEL_CMDLINE_CONFIG_ERROR_VERSION_ONLY)) {
-				goto __catch48_rygel_cmdline_config_error_version_only;
+				goto __catch50_rygel_cmdline_config_error_version_only;
 			}
-			goto __catch48_g_error;
-			goto __finally48;
+			goto __catch50_g_error;
+			goto __finally50;
 		}
 		service = (_tmp4_ = _tmp3_, _g_object_unref0 (service), _tmp4_);
 		dummy_args = (_vala_array_free (dummy_args, dummy_args_length1, (GDestroyNotify) g_free), NULL);
 	}
-	goto __finally48;
-	__catch48_rygel_cmdline_config_error_version_only:
+	goto __finally50;
+	__catch50_rygel_cmdline_config_error_version_only:
 	{
 		GError * err;
 		err = _inner_error_;
@@ -725,8 +725,8 @@ static gint rygel_main_main (char** args, int args_length1) {
 			return result;
 		}
 	}
-	goto __finally48;
-	__catch48_g_error:
+	goto __finally50;
+	__catch50_g_error:
 	{
 		GError * err;
 		err = _inner_error_;
@@ -740,7 +740,7 @@ static gint rygel_main_main (char** args, int args_length1) {
 			return result;
 		}
 	}
-	__finally48:
+	__finally50:
 	if (_inner_error_ != NULL) {
 		_g_object_unref0 (main);
 		_g_object_unref0 (service);

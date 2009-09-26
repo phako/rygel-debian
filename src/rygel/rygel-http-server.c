@@ -533,7 +533,7 @@ static char* rygel_http_server_real_create_uri_for_item (RygelTranscodeManager* 
 		query = (_tmp5_ = g_strconcat (query, _tmp4_ = g_strconcat ("&transcode=", escaped, NULL), NULL), _g_free0 (query), _tmp5_);
 		_g_free0 (_tmp4_);
 	}
-	(*protocol) = (_tmp6_ = g_strdup ("http-get"), _g_free0 ((*protocol)), _tmp6_);
+	*protocol = (_tmp6_ = g_strdup ("http-get"), _g_free0 (*protocol), _tmp6_);
 	result = rygel_http_server_create_uri_for_path (self, query);
 	_g_free0 (escaped);
 	_g_free0 (query);

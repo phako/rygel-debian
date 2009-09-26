@@ -120,9 +120,9 @@ enum  {
 #define RYGEL_USER_CONFIG_DBUS_SERVICE "org.freedesktop.DBus"
 #define RYGEL_USER_CONFIG_DBUS_PATH "/org/freedesktop/DBus"
 #define RYGEL_USER_CONFIG_DBUS_INTERFACE "org.freedesktop.DBus"
-#define RYGEL_USER_CONFIG_RYGEL_SERVICE "org.gnome.Rygel"
-#define RYGEL_USER_CONFIG_RYGEL_PATH "/org/gnome/Rygel"
-#define RYGEL_USER_CONFIG_RYGEL_INTERFACE "org.gnome.Rygel"
+#define RYGEL_USER_CONFIG_RYGEL_SERVICE "org.gnome.Rygel1"
+#define RYGEL_USER_CONFIG_RYGEL_PATH "/org/gnome/Rygel1"
+#define RYGEL_USER_CONFIG_RYGEL_INTERFACE "org.gnome.Rygel1"
 gboolean rygel_configuration_get_bool (RygelConfiguration* self, const char* section, const char* key, GError** error);
 static gboolean rygel_user_config_real_get_upnp_enabled (RygelConfiguration* base, GError** error);
 gboolean rygel_configuration_get_upnp_enabled (RygelConfiguration* self, GError** error);
@@ -774,7 +774,26 @@ static void rygel_user_config_enable_upnp (RygelUserConfig* self, gboolean enabl
 				goto __finally1;
 			}
 			source_path = g_build_filename (DESKTOP_DIR, "rygel.desktop", NULL);
-			g_file_make_symbolic_link (dest, source_path, NULL, &_inner_error_);
+			{
+				g_file_make_symbolic_link (dest, source_path, NULL, &_inner_error_);
+				if (_inner_error_ != NULL) {
+					if (g_error_matches (_inner_error_, G_IO_ERROR, G_IO_ERROR_EXISTS)) {
+						goto __catch2_g_io_error_exists;
+					}
+					goto __finally2;
+				}
+			}
+			goto __finally2;
+			__catch2_g_io_error_exists:
+			{
+				GError * err;
+				err = _inner_error_;
+				_inner_error_ = NULL;
+				{
+					_g_error_free0 (err);
+				}
+			}
+			__finally2:
 			if (_inner_error_ != NULL) {
 				_g_free0 (source_path);
 				goto __catch1_g_error;
@@ -788,7 +807,26 @@ static void rygel_user_config_enable_upnp (RygelUserConfig* self, gboolean enabl
 				goto __catch1_g_error;
 				goto __finally1;
 			}
-			g_file_delete (dest, NULL, &_inner_error_);
+			{
+				g_file_delete (dest, NULL, &_inner_error_);
+				if (_inner_error_ != NULL) {
+					if (g_error_matches (_inner_error_, G_IO_ERROR, G_IO_ERROR_NOT_FOUND)) {
+						goto __catch3_g_io_error_not_found;
+					}
+					goto __finally3;
+				}
+			}
+			goto __finally3;
+			__catch3_g_io_error_not_found:
+			{
+				GError * err;
+				err = _inner_error_;
+				_inner_error_ = NULL;
+				{
+					_g_error_free0 (err);
+				}
+			}
+			__finally3:
 			if (_inner_error_ != NULL) {
 				goto __catch1_g_error;
 				goto __finally1;
@@ -810,7 +848,7 @@ static void rygel_user_config_enable_upnp (RygelUserConfig* self, gboolean enabl
 			} else {
 				_tmp0_ = "stop";
 			}
-			g_warning ("rygel-user-config.vala:305: Failed to %s Rygel service: %s\n", _tmp0_, err->message);
+			g_warning ("rygel-user-config.vala:309: Failed to %s Rygel service: %s\n", _tmp0_, err->message);
 			_g_error_free0 (err);
 		}
 	}

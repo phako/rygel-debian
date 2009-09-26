@@ -3,23 +3,21 @@
  *
  * Author: Jens Georg <mail@jensge.org>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
+ * This file is part of Rygel.
+ *
+ * Rygel is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
  *
- * This program is distributed in the hope that it will be useful,
+ * Rygel is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License along
- * with this program; if not, write to the Free Software Foundation,
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Library General Public
- * License as published by the Free Software Foundation; either
- * version 2 of the License, or (at your option) any later version.
  */
 
 #include <glib.h>
@@ -203,25 +201,25 @@ RygelMediaDBContainer* rygel_media_db_container_construct (GType object_type, Ry
 		_tmp0_ = rygel_media_db_get_child_count (media_db, id, &_inner_error_);
 		if (_inner_error_ != NULL) {
 			if (_inner_error_->domain == RYGEL_MEDIA_DB_ERROR) {
-				goto __catch41_rygel_media_db_error;
+				goto __catch43_rygel_media_db_error;
 			}
-			goto __finally41;
+			goto __finally43;
 		}
 		count = _tmp0_;
 	}
-	goto __finally41;
-	__catch41_rygel_media_db_error:
+	goto __finally43;
+	__catch43_rygel_media_db_error:
 	{
 		GError * e;
 		e = _inner_error_;
 		_inner_error_ = NULL;
 		{
-			g_debug ("rygel-media-db-container.vala:33: Could not get child count from database: %s", e->message);
+			g_debug ("rygel-media-db-container.vala:31: Could not get child count from database: %s", e->message);
 			count = 0;
 			_g_error_free0 (e);
 		}
 	}
-	__finally41:
+	__finally43:
 	if (_inner_error_ != NULL) {
 		g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, _inner_error_->message);
 		g_clear_error (&_inner_error_);

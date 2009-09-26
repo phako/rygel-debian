@@ -12,6 +12,7 @@ Build-Depends: quilt, debhelper (>= 7), autotools-dev,
     libgee-dev (>= 0.3.0),
     uuid-dev (>= 1.2-1.41.3),
     libsoup2.4-dev (>= 2.26.0),
+    libsqlite3-dev (>= 3.5),
     libgtk2.0-dev (>= 2.16)
 Standards-Version: 3.8.3
 Homepage: http://live.gnome.org/Rygel

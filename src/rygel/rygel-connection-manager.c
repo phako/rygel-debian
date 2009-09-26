@@ -236,8 +236,8 @@ static void rygel_connection_manager_query_source_protocol_info_cb (RygelConnect
 	g_return_if_fail (self != NULL);
 	g_return_if_fail (cm != NULL);
 	g_return_if_fail (var != NULL);
-	g_value_init (&(*val), G_TYPE_STRING);
-	g_value_set_string (&(*val), _tmp0_ = rygel_connection_manager_get_source_protocol_info (self));
+	g_value_init (val, G_TYPE_STRING);
+	g_value_set_string (val, _tmp0_ = rygel_connection_manager_get_source_protocol_info (self));
 	_g_free0 (_tmp0_);
 }
 
@@ -246,8 +246,8 @@ static void rygel_connection_manager_query_sink_protocol_info_cb (RygelConnectio
 	g_return_if_fail (self != NULL);
 	g_return_if_fail (cm != NULL);
 	g_return_if_fail (var != NULL);
-	g_value_init (&(*val), G_TYPE_STRING);
-	g_value_set_string (&(*val), self->sink_protocol_info);
+	g_value_init (val, G_TYPE_STRING);
+	g_value_set_string (val, self->sink_protocol_info);
 }
 
 
@@ -255,8 +255,8 @@ static void rygel_connection_manager_query_current_connection_ids_cb (RygelConne
 	g_return_if_fail (self != NULL);
 	g_return_if_fail (cm != NULL);
 	g_return_if_fail (var != NULL);
-	g_value_init (&(*val), G_TYPE_STRING);
-	g_value_set_string (&(*val), self->connection_ids);
+	g_value_init (val, G_TYPE_STRING);
+	g_value_set_string (val, self->connection_ids);
 }
 
 

@@ -347,6 +347,7 @@ RygelGeneralPrefSection* rygel_general_pref_section_construct (GType object_type
 	g_signal_connect_object ((GtkToggleButton*) self->priv->trans_check, "toggled", (GCallback) _rygel_general_pref_section_on_trans_check_toggled_gtk_toggle_button_toggled, self, 0);
 	g_signal_connect_object (self->priv->context_manager, "context-available", (GCallback) _rygel_general_pref_section_on_context_available_gupnp_context_manager_context_available, self, 0);
 	g_signal_connect_object (self->priv->context_manager, "context-unavailable", (GCallback) _rygel_general_pref_section_on_context_unavailable_gupnp_context_manager_context_unavailable, self, 0);
+	rygel_general_pref_section_on_trans_check_toggled (self, self->priv->trans_check);
 	return self;
 }
 
@@ -411,16 +412,16 @@ static gboolean rygel_general_pref_section_find_interface (RygelGeneralPrefSecti
 	g_return_val_if_fail (self != NULL, FALSE);
 	g_return_val_if_fail (iface != NULL, FALSE);
 	model = _g_object_ref0 (gtk_combo_box_get_model ((GtkComboBox*) self->priv->iface_entry));
-	more = gtk_tree_model_get_iter_first (model, &(*iter));
+	more = gtk_tree_model_get_iter_first (model, iter);
 	while (TRUE) {
 		if (!more) {
 			break;
 		}
-		gtk_tree_model_get (model, &(*iter), 0, &((RygelPreferencesSection*) self)->name, -1, -1);
+		gtk_tree_model_get (model, iter, 0, &((RygelPreferencesSection*) self)->name, -1, -1);
 		if (_vala_strcmp0 (((RygelPreferencesSection*) self)->name, iface) == 0) {
 			break;
 		}
-		more = gtk_tree_model_iter_next (model, &(*iter));
+		more = gtk_tree_model_iter_next (model, iter);
 	}
 	result = more;
 	_g_object_unref0 (model);

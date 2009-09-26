@@ -186,7 +186,7 @@ static RygelMediathekRootContainer* rygel_mediathek_root_container_construct (GT
 		}
 		_g_object_unref0 (_id_it);
 	}
-	g_timeout_add_seconds ((guint) 1800, _rygel_mediathek_root_container_on_schedule_update_gsource_func, self);
+	g_timeout_add_seconds_full (G_PRIORITY_DEFAULT, (guint) 1800, _rygel_mediathek_root_container_on_schedule_update_gsource_func, g_object_ref (self), g_object_unref);
 	_g_object_unref0 (feeds);
 	_g_object_unref0 (config);
 	return self;

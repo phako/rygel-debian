@@ -325,13 +325,13 @@ static void rygel_content_directory_real_constructed (GObject* base) {
 		RygelHTTPServer* _tmp3_;
 		_tmp2_ = rygel_http_server_new (self, g_type_name (G_TYPE_FROM_INSTANCE ((GObject*) self)), &_inner_error_);
 		if (_inner_error_ != NULL) {
-			goto __catch17_g_error;
-			goto __finally17;
+			goto __catch19_g_error;
+			goto __finally19;
 		}
 		self->http_server = (_tmp3_ = _tmp2_, _g_object_unref0 (self->http_server), _tmp3_);
 	}
-	goto __finally17;
-	__catch17_g_error:
+	goto __finally19;
+	__catch19_g_error:
 	{
 		GError * err;
 		err = _inner_error_;
@@ -342,7 +342,7 @@ static void rygel_content_directory_real_constructed (GObject* base) {
 			return;
 		}
 	}
-	__finally17:
+	__finally19:
 	if (_inner_error_ != NULL) {
 		g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, _inner_error_->message);
 		g_clear_error (&_inner_error_);
@@ -404,8 +404,8 @@ static void rygel_content_directory_query_system_update_id (RygelContentDirector
 	g_return_if_fail (self != NULL);
 	g_return_if_fail (content_dir != NULL);
 	g_return_if_fail (variable != NULL);
-	g_value_init (&(*value), G_TYPE_UINT);
-	g_value_set_uint (&(*value), (guint) self->system_update_id);
+	g_value_init (value, G_TYPE_UINT);
+	g_value_set_uint (value, (guint) self->system_update_id);
 }
 
 
@@ -415,8 +415,8 @@ static void rygel_content_directory_query_container_update_ids (RygelContentDire
 	g_return_if_fail (content_dir != NULL);
 	g_return_if_fail (variable != NULL);
 	update_ids = rygel_content_directory_create_container_update_ids (self);
-	g_value_init (&(*value), G_TYPE_STRING);
-	g_value_set_string (&(*value), update_ids);
+	g_value_init (value, G_TYPE_STRING);
+	g_value_set_string (value, update_ids);
 	_g_free0 (update_ids);
 }
 
@@ -434,8 +434,8 @@ static void rygel_content_directory_query_search_capabilities (RygelContentDirec
 	g_return_if_fail (self != NULL);
 	g_return_if_fail (content_dir != NULL);
 	g_return_if_fail (variable != NULL);
-	g_value_init (&(*value), G_TYPE_STRING);
-	g_value_set_string (&(*value), self->search_caps);
+	g_value_init (value, G_TYPE_STRING);
+	g_value_set_string (value, self->search_caps);
 }
 
 
@@ -452,8 +452,8 @@ static void rygel_content_directory_query_sort_capabilities (RygelContentDirecto
 	g_return_if_fail (self != NULL);
 	g_return_if_fail (content_dir != NULL);
 	g_return_if_fail (variable != NULL);
-	g_value_init (&(*value), G_TYPE_STRING);
-	g_value_set_string (&(*value), self->sort_caps);
+	g_value_init (value, G_TYPE_STRING);
+	g_value_set_string (value, self->sort_caps);
 }
 
 
@@ -470,8 +470,8 @@ static void rygel_content_directory_query_feature_list (RygelContentDirectory* s
 	g_return_if_fail (self != NULL);
 	g_return_if_fail (content_dir != NULL);
 	g_return_if_fail (variable != NULL);
-	g_value_init (&(*value), G_TYPE_STRING);
-	g_value_set_string (&(*value), self->feature_list);
+	g_value_init (value, G_TYPE_STRING);
+	g_value_set_string (value, self->feature_list);
 }
 
 

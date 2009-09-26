@@ -340,14 +340,14 @@ void rygel_media_item_add_uri (RygelMediaItem* self, const char* uri, RygelThumb
 				RygelThumbnail* thumb;
 				thumb = rygel_thumbnailer_get_thumbnail (thumbnailer, uri, &_inner_error_);
 				if (_inner_error_ != NULL) {
-					goto __catch28_g_error;
-					goto __finally28;
+					goto __catch30_g_error;
+					goto __finally30;
 				}
 				gee_abstract_collection_add ((GeeAbstractCollection*) self->thumbnails, thumb);
 				_rygel_icon_info_unref0 (thumb);
 			}
-			goto __finally28;
-			__catch28_g_error:
+			goto __finally30;
+			__catch30_g_error:
 			{
 				GError * err;
 				err = _inner_error_;
@@ -356,7 +356,7 @@ void rygel_media_item_add_uri (RygelMediaItem* self, const char* uri, RygelThumb
 					_g_error_free0 (err);
 				}
 			}
-			__finally28:
+			__finally30:
 			if (_inner_error_ != NULL) {
 				_g_object_unref0 (thumbnailer);
 				g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, _inner_error_->message);

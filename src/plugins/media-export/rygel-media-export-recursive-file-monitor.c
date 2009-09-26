@@ -1,25 +1,21 @@
 /*
  * Copyright (C) 2009 Jens Georg <mail@jensge.org>.
  *
- * Author: Jens Georg <mail@jensge.org>
+ * This file is part of Rygel.
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
+ * Rygel is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
  *
- * This program is distributed in the hope that it will be useful,
+ * Rygel is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License along
- * with this program; if not, write to the Free Software Foundation,
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Library General Public
- * License as published by the Free Software Foundation; either
- * version 2 of the License, or (at your option) any later version.
  */
 
 #include <glib.h>
@@ -120,7 +116,7 @@ void rygel_media_export_recursive_file_monitor_on_monitor_changed (RygelMediaExp
 			if (file_monitor != NULL) {
 				char* _tmp0_;
 				guint _tmp1_;
-				g_debug ("rygel-media-export-recursive-file-monitor.vala:50: Directory %s gone, removing watch", _tmp0_ = g_file_get_uri (file));
+				g_debug ("rygel-media-export-recursive-file-monitor.vala:47: Directory %s gone, removing watch", _tmp0_ = g_file_get_uri (file));
 				_g_free0 (_tmp0_);
 				gee_abstract_map_remove ((GeeAbstractMap*) self->priv->monitors, file, NULL);
 				g_file_monitor_cancel (file_monitor);
@@ -173,7 +169,7 @@ static void rygel_media_export_recursive_file_monitor_on_info_ready (RygelMediaE
 		_inner_error_ = NULL;
 		{
 			char* _tmp0_;
-			g_warning ("rygel-media-export-recursive-file-monitor.vala:76: Failed to get file info for %s", _tmp0_ = g_file_get_uri (file));
+			g_warning ("rygel-media-export-recursive-file-monitor.vala:73: Failed to get file info for %s", _tmp0_ = g_file_get_uri (file));
 			_g_free0 (_tmp0_);
 			_g_error_free0 (_error_);
 		}

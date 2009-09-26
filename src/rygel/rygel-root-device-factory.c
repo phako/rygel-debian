@@ -310,13 +310,13 @@ RygelRootDevice* rygel_root_device_factory_create (RygelRootDeviceFactory* self,
 		gboolean _tmp0_;
 		_tmp0_ = rygel_configuration_get_enabled (self->priv->config, plugin->name, &_inner_error_);
 		if (_inner_error_ != NULL) {
-			goto __catch42_g_error;
-			goto __finally42;
+			goto __catch44_g_error;
+			goto __finally44;
 		}
 		enabled = _tmp0_;
 	}
-	goto __finally42;
-	__catch42_g_error:
+	goto __finally44;
+	__catch44_g_error:
 	{
 		GError * err;
 		err = _inner_error_;
@@ -325,7 +325,7 @@ RygelRootDevice* rygel_root_device_factory_create (RygelRootDeviceFactory* self,
 			_g_error_free0 (err);
 		}
 	}
-	__finally42:
+	__finally44:
 	if (_inner_error_ != NULL) {
 		g_propagate_error (error, _inner_error_);
 		return NULL;
@@ -423,24 +423,24 @@ static char* string_replace (const char* self, const char* old, const char* repl
 		regex = (_tmp1_ = g_regex_new (_tmp0_ = g_regex_escape_string (old, -1), 0, 0, &_inner_error_), _g_free0 (_tmp0_), _tmp1_);
 		if (_inner_error_ != NULL) {
 			if (_inner_error_->domain == G_REGEX_ERROR) {
-				goto __catch44_g_regex_error;
+				goto __catch46_g_regex_error;
 			}
-			goto __finally44;
+			goto __finally46;
 		}
 		_tmp2_ = g_regex_replace_literal (regex, self, (glong) (-1), 0, replacement, 0, &_inner_error_);
 		if (_inner_error_ != NULL) {
 			_g_regex_unref0 (regex);
 			if (_inner_error_->domain == G_REGEX_ERROR) {
-				goto __catch44_g_regex_error;
+				goto __catch46_g_regex_error;
 			}
-			goto __finally44;
+			goto __finally46;
 		}
 		result = _tmp2_;
 		_g_regex_unref0 (regex);
 		return result;
 	}
-	goto __finally44;
-	__catch44_g_regex_error:
+	goto __finally46;
+	__catch46_g_regex_error:
 	{
 		GError * e;
 		e = _inner_error_;
@@ -450,7 +450,7 @@ static char* string_replace (const char* self, const char* old, const char* repl
 			_g_error_free0 (e);
 		}
 	}
-	__finally44:
+	__finally46:
 	if (_inner_error_ != NULL) {
 		g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, _inner_error_->message);
 		g_clear_error (&_inner_error_);
@@ -483,13 +483,13 @@ static void rygel_root_device_factory_set_friendly_name_and_udn (RygelRootDevice
 		char* _tmp1_;
 		_tmp0_ = rygel_configuration_get_title (self->priv->config, plugin_name, &_inner_error_);
 		if (_inner_error_ != NULL) {
-			goto __catch43_g_error;
-			goto __finally43;
+			goto __catch45_g_error;
+			goto __finally45;
 		}
 		title = (_tmp1_ = _tmp0_, _g_free0 (title), _tmp1_);
 	}
-	goto __finally43;
-	__catch43_g_error:
+	goto __finally45;
+	__catch45_g_error:
 	{
 		GError * err;
 		err = _inner_error_;
@@ -500,7 +500,7 @@ static void rygel_root_device_factory_set_friendly_name_and_udn (RygelRootDevice
 			_g_error_free0 (err);
 		}
 	}
-	__finally43:
+	__finally45:
 	if (_inner_error_ != NULL) {
 		_g_free0 (title);
 		g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, _inner_error_->message);

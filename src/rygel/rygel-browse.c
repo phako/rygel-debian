@@ -334,13 +334,13 @@ static void rygel_browse_on_media_object_found (RygelBrowse* self, GObject* sour
 		RygelMediaObject* _tmp1_;
 		_tmp0_ = rygel_media_container_find_object_finish (container, res, &_inner_error_);
 		if (_inner_error_ != NULL) {
-			goto __catch30_g_error;
-			goto __finally30;
+			goto __catch32_g_error;
+			goto __finally32;
 		}
 		self->priv->media_object = (_tmp1_ = _tmp0_, _g_object_unref0 (self->priv->media_object), _tmp1_);
 	}
-	goto __finally30;
-	__catch30_g_error:
+	goto __finally32;
+	__catch32_g_error:
 	{
 		GError * err;
 		err = _inner_error_;
@@ -352,7 +352,7 @@ static void rygel_browse_on_media_object_found (RygelBrowse* self, GObject* sour
 			return;
 		}
 	}
-	__finally30:
+	__finally32:
 	if (_inner_error_ != NULL) {
 		_g_object_unref0 (container);
 		g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, _inner_error_->message);
@@ -376,12 +376,12 @@ static void rygel_browse_handle_metadata_request (RygelBrowse* self) {
 	{
 		rygel_didl_lite_writer_serialize (self->priv->didl_writer, self->priv->media_object, &_inner_error_);
 		if (_inner_error_ != NULL) {
-			goto __catch31_g_error;
-			goto __finally31;
+			goto __catch33_g_error;
+			goto __finally33;
 		}
 	}
-	goto __finally31;
-	__catch31_g_error:
+	goto __finally33;
+	__catch33_g_error:
 	{
 		GError * err;
 		err = _inner_error_;
@@ -392,7 +392,7 @@ static void rygel_browse_handle_metadata_request (RygelBrowse* self) {
 			return;
 		}
 	}
-	__finally31:
+	__finally33:
 	if (_inner_error_ != NULL) {
 		g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, _inner_error_->message);
 		g_clear_error (&_inner_error_);
@@ -523,13 +523,13 @@ static void rygel_browse_serialize_children (RygelBrowse* self, GeeList* childre
 					RygelMediaObject* _tmp2_;
 					rygel_didl_lite_writer_serialize (self->priv->didl_writer, _tmp2_ = (RygelMediaObject*) gee_list_get (children, i), &_inner_error_);
 					if (_inner_error_ != NULL) {
-						goto __catch32_g_error;
-						goto __finally32;
+						goto __catch34_g_error;
+						goto __finally34;
 					}
 					_g_object_unref0 (_tmp2_);
 				}
-				goto __finally32;
-				__catch32_g_error:
+				goto __finally34;
+				__catch34_g_error:
 				{
 					GError * err;
 					err = _inner_error_;
@@ -540,7 +540,7 @@ static void rygel_browse_serialize_children (RygelBrowse* self, GeeList* childre
 						return;
 					}
 				}
-				__finally32:
+				__finally34:
 				if (_inner_error_ != NULL) {
 					g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, _inner_error_->message);
 					g_clear_error (&_inner_error_);
@@ -578,15 +578,15 @@ static void rygel_browse_on_children_fetched (RygelBrowse* self, GObject* source
 		GeeList* children;
 		children = rygel_media_container_get_children_finish (container, res, &_inner_error_);
 		if (_inner_error_ != NULL) {
-			goto __catch33_g_error;
-			goto __finally33;
+			goto __catch35_g_error;
+			goto __finally35;
 		}
 		self->number_returned = (guint) gee_collection_get_size ((GeeCollection*) children);
 		rygel_browse_serialize_children (self, children);
 		_g_object_unref0 (children);
 	}
-	goto __finally33;
-	__catch33_g_error:
+	goto __finally35;
+	__catch35_g_error:
 	{
 		GError * err;
 		err = _inner_error_;
@@ -596,7 +596,7 @@ static void rygel_browse_on_children_fetched (RygelBrowse* self, GObject* source
 			_g_error_free0 (err);
 		}
 	}
-	__finally33:
+	__finally35:
 	if (_inner_error_ != NULL) {
 		_g_object_unref0 (container);
 		g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, _inner_error_->message);

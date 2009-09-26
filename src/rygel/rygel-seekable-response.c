@@ -216,13 +216,13 @@ static void rygel_seekable_response_on_file_read (RygelSeekableResponse* self, G
 		GFileInputStream* _tmp1_;
 		_tmp0_ = g_file_read_finish (self->priv->file, _result_, &_inner_error_);
 		if (_inner_error_ != NULL) {
-			goto __catch20_g_error;
-			goto __finally20;
+			goto __catch22_g_error;
+			goto __finally22;
 		}
 		self->priv->input_stream = (_tmp1_ = _tmp0_, _g_object_unref0 (self->priv->input_stream), _tmp1_);
 	}
-	goto __finally20;
-	__catch20_g_error:
+	goto __finally22;
+	__catch22_g_error:
 	{
 		GError * err;
 		err = _inner_error_;
@@ -236,7 +236,7 @@ static void rygel_seekable_response_on_file_read (RygelSeekableResponse* self, G
 			return;
 		}
 	}
-	__finally20:
+	__finally22:
 	if (_inner_error_ != NULL) {
 		g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, _inner_error_->message);
 		g_clear_error (&_inner_error_);
@@ -246,12 +246,12 @@ static void rygel_seekable_response_on_file_read (RygelSeekableResponse* self, G
 		{
 			G_FILE_INPUT_STREAM_GET_CLASS (self->priv->input_stream)->seek (self->priv->input_stream, rygel_http_seek_get_start (self->priv->seek), G_SEEK_SET, rygel_state_machine_get_cancellable ((RygelStateMachine*) self), &_inner_error_);
 			if (_inner_error_ != NULL) {
-				goto __catch21_g_error;
-				goto __finally21;
+				goto __catch23_g_error;
+				goto __finally23;
 			}
 		}
-		goto __finally21;
-		__catch21_g_error:
+		goto __finally23;
+		__catch23_g_error:
 		{
 			GError * err;
 			err = _inner_error_;
@@ -269,7 +269,7 @@ static void rygel_seekable_response_on_file_read (RygelSeekableResponse* self, G
 				return;
 			}
 		}
-		__finally21:
+		__finally23:
 		if (_inner_error_ != NULL) {
 			g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, _inner_error_->message);
 			g_clear_error (&_inner_error_);
@@ -298,13 +298,13 @@ static void rygel_seekable_response_on_contents_read (RygelSeekableResponse* sel
 		gssize _tmp0_;
 		_tmp0_ = g_input_stream_read_finish ((GInputStream*) input_stream, _result_, &_inner_error_);
 		if (_inner_error_ != NULL) {
-			goto __catch22_g_error;
-			goto __finally22;
+			goto __catch24_g_error;
+			goto __finally24;
 		}
 		bytes_read = _tmp0_;
 	}
-	goto __finally22;
-	__catch22_g_error:
+	goto __finally24;
+	__catch24_g_error:
 	{
 		GError * err;
 		err = _inner_error_;
@@ -319,7 +319,7 @@ static void rygel_seekable_response_on_contents_read (RygelSeekableResponse* sel
 			return;
 		}
 	}
-	__finally22:
+	__finally24:
 	if (_inner_error_ != NULL) {
 		_g_object_unref0 (input_stream);
 		g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, _inner_error_->message);
@@ -345,12 +345,12 @@ static void rygel_seekable_response_on_input_stream_closed (RygelSeekableRespons
 	{
 		g_input_stream_close_finish ((GInputStream*) input_stream, _result_, &_inner_error_);
 		if (_inner_error_ != NULL) {
-			goto __catch23_g_error;
-			goto __finally23;
+			goto __catch25_g_error;
+			goto __finally25;
 		}
 	}
-	goto __finally23;
-	__catch23_g_error:
+	goto __finally25;
+	__catch25_g_error:
 	{
 		GError * err;
 		err = _inner_error_;
@@ -362,7 +362,7 @@ static void rygel_seekable_response_on_input_stream_closed (RygelSeekableRespons
 			_g_error_free0 (err);
 		}
 	}
-	__finally23:
+	__finally25:
 	if (_inner_error_ != NULL) {
 		_g_object_unref0 (input_stream);
 		g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, _inner_error_->message);

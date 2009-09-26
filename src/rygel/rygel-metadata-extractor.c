@@ -1,25 +1,25 @@
 /*
- * Copyright (C) 2008 Zeeshan Ali <zeenix@gmail.com>.
+ * Copyright (C) 2008 Zeeshan Ali (Khattak) <zeeshanak@gnome.org>.
+ * Copyright (C) 2009 Jens Georg <mail@jensge.org>.
  *
- * Author: Zeeshan Ali <zeenix@gmail.com>
+ * Author: Zeeshan Ali (Khattak) <zeeshanak@gnome.org>
+ * Author: Jens Georg <mail@jensge.org>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
+ * This file is part of Rygel.
+ *
+ * Rygel is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
  *
- * This program is distributed in the hope that it will be useful,
+ * Rygel is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License along
- * with this program; if not, write to the Free Software Foundation,
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Library General Public
- * License as published by the Free Software Foundation; either
- * version 2 of the License, or (at your option) any later version.
  */
 
 #include <glib.h>
@@ -247,7 +247,7 @@ static gboolean rygel_metadata_extractor_on_harvesting_timeout (RygelMetadataExt
 	GError* _tmp1_;
 	GFile* _tmp2_;
 	g_return_val_if_fail (self != NULL, FALSE);
-	g_warning ("rygel-metadata-extractor.vala:127: Metadata extractor timed out on %s, restarting", _tmp0_ = g_file_get_uri ((GFile*) g_queue_peek_head (self->priv->file_queue)));
+	g_warning ("rygel-metadata-extractor.vala:128: Metadata extractor timed out on %s, restarting", _tmp0_ = g_file_get_uri ((GFile*) g_queue_peek_head (self->priv->file_queue)));
 	_g_free0 (_tmp0_);
 	gst_element_set_state (self->priv->playbin, GST_STATE_NULL);
 	g_signal_emit_by_name (self, "error", (GFile*) g_queue_peek_head (self->priv->file_queue), _tmp1_ = g_error_new_literal (G_IO_CHANNEL_ERROR, G_IO_CHANNEL_ERROR_FAILED, "Pipeline stuck while reading file info"));
@@ -283,13 +283,13 @@ static void rygel_metadata_extractor_extract_next (RygelMetadataExtractor* self)
 			char* _tmp0_;
 			char* _tmp1_;
 			item = _g_object_ref0 ((GFile*) g_queue_peek_head (self->priv->file_queue));
-			g_debug ("rygel-metadata-extractor.vala:145: Scheduling file %s for metadata extraction", _tmp0_ = g_file_get_uri (item));
+			g_debug ("rygel-metadata-extractor.vala:146: Scheduling file %s for metadata extraction", _tmp0_ = g_file_get_uri (item));
 			_g_free0 (_tmp0_);
 			rygel_metadata_extractor_extract_mime_and_size (self, &_inner_error_);
 			if (_inner_error_ != NULL) {
 				_g_object_unref0 (item);
-				goto __catch39_g_error;
-				goto __finally39;
+				goto __catch41_g_error;
+				goto __finally41;
 			}
 			rygel_metadata_extractor_renew_playbin (self);
 			_dynamic_set_uri8 (self->priv->playbin, _tmp1_ = g_file_get_uri (item));
@@ -298,8 +298,8 @@ static void rygel_metadata_extractor_extract_next (RygelMetadataExtractor* self)
 			gst_element_set_state (self->priv->playbin, GST_STATE_PAUSED);
 			_g_object_unref0 (item);
 		}
-		goto __finally39;
-		__catch39_g_error:
+		goto __finally41;
+		__catch41_g_error:
 		{
 			GError * _error_;
 			_error_ = _inner_error_;
@@ -309,7 +309,7 @@ static void rygel_metadata_extractor_extract_next (RygelMetadataExtractor* self)
 				_g_error_free0 (_error_);
 			}
 		}
-		__finally39:
+		__finally41:
 		if (_inner_error_ != NULL) {
 			g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, _inner_error_->message);
 			g_clear_error (&_inner_error_);
@@ -426,20 +426,20 @@ static void rygel_metadata_extractor_extract_mime_and_size (RygelMetadataExtract
 		GFileInfo* _tmp1_;
 		_tmp0_ = g_file_query_info (file, G_FILE_ATTRIBUTE_STANDARD_CONTENT_TYPE "," G_FILE_ATTRIBUTE_STANDARD_SIZE "," G_FILE_ATTRIBUTE_TIME_MODIFIED, G_FILE_QUERY_INFO_NONE, NULL, &_inner_error_);
 		if (_inner_error_ != NULL) {
-			goto __catch40_g_error;
-			goto __finally40;
+			goto __catch42_g_error;
+			goto __finally42;
 		}
 		file_info = (_tmp1_ = _tmp0_, _g_object_unref0 (file_info), _tmp1_);
 	}
-	goto __finally40;
-	__catch40_g_error:
+	goto __finally42;
+	__catch42_g_error:
 	{
 		GError * _error_;
 		_error_ = _inner_error_;
 		_inner_error_ = NULL;
 		{
 			char* _tmp2_;
-			g_warning ("rygel-metadata-extractor.vala:231: Failed to query content type for '%s'\n", _tmp2_ = g_file_get_uri (file));
+			g_warning ("rygel-metadata-extractor.vala:232: Failed to query content type for '%s'\n", _tmp2_ = g_file_get_uri (file));
 			_g_free0 (_tmp2_);
 			g_signal_emit_by_name (self, "error", file, _error_);
 			_inner_error_ = _g_error_copy0 (_error_);
@@ -447,12 +447,12 @@ static void rygel_metadata_extractor_extract_mime_and_size (RygelMetadataExtract
 				_g_error_free0 (_error_);
 				_g_object_unref0 (file);
 				_g_object_unref0 (file_info);
-				goto __finally40;
+				goto __finally42;
 			}
 			_g_error_free0 (_error_);
 		}
 	}
-	__finally40:
+	__finally42:
 	if (_inner_error_ != NULL) {
 		g_propagate_error (error, _inner_error_);
 		_g_object_unref0 (file);

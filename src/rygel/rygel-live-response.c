@@ -547,6 +547,10 @@ static gboolean rygel_live_response_bus_handler (RygelLiveResponse* self, GstBus
 	} else {
 		if (message->type == GST_MESSAGE_STATE_CHANGED) {
 			gboolean _tmp0_;
+			if (message->src != GST_OBJECT (self->priv->pipeline)) {
+				result = TRUE;
+				return result;
+			}
 			_tmp0_ = FALSE;
 			if (self->priv->time_range != NULL) {
 				_tmp0_ = rygel_http_seek_get_start (self->priv->time_range) > 0;
@@ -586,7 +590,7 @@ static gboolean rygel_live_response_bus_handler (RygelLiveResponse* self, GstBus
 				_tmp2_ = NULL;
 				(gst_message_parse_error (message, &_tmp2_, &_tmp4_), err = (_tmp3_ = _tmp2_, _g_error_free0 (err), _tmp3_));
 				err_msg = (_tmp5_ = _tmp4_, _g_free0 (err_msg), _tmp5_);
-				g_critical ("rygel-live-response.vala:258: Error from pipeline %s:%s", gst_object_get_name ((GstObject*) self->priv->pipeline), err_msg);
+				g_critical ("rygel-live-response.vala:262: Error from pipeline %s:%s", gst_object_get_name ((GstObject*) self->priv->pipeline), err_msg);
 				ret = FALSE;
 			} else {
 				if (message->type == GST_MESSAGE_WARNING) {
@@ -598,7 +602,7 @@ static gboolean rygel_live_response_bus_handler (RygelLiveResponse* self, GstBus
 					_tmp6_ = NULL;
 					(gst_message_parse_warning (message, &_tmp6_, &_tmp8_), err = (_tmp7_ = _tmp6_, _g_error_free0 (err), _tmp7_));
 					err_msg = (_tmp9_ = _tmp8_, _g_free0 (err_msg), _tmp9_);
-					g_warning ("rygel-live-response.vala:265: Warning from pipeline %s:%s", gst_object_get_name ((GstObject*) self->priv->pipeline), err_msg);
+					g_warning ("rygel-live-response.vala:269: Warning from pipeline %s:%s", gst_object_get_name ((GstObject*) self->priv->pipeline), err_msg);
 				}
 			}
 			_g_error_free0 (err);
@@ -624,7 +628,7 @@ static gboolean rygel_live_response_seek (RygelLiveResponse* self) {
 		stop_type = GST_SEEK_TYPE_NONE;
 	}
 	if (!gst_element_seek ((GstElement*) self->priv->pipeline, 1.0, GST_FORMAT_TIME, GST_SEEK_FLAG_FLUSH, GST_SEEK_TYPE_SET, rygel_http_seek_get_start (self->priv->time_range), stop_type, rygel_http_seek_get_stop (self->priv->time_range))) {
-		g_warning ("rygel-live-response.vala:294: Failed to seek to offset %lld", rygel_http_seek_get_start (self->priv->time_range));
+		g_warning ("rygel-live-response.vala:298: Failed to seek to offset %lld", rygel_http_seek_get_start (self->priv->time_range));
 		rygel_http_response_end ((RygelHTTPResponse*) self, FALSE, (guint) SOUP_STATUS_REQUESTED_RANGE_NOT_SATISFIABLE);
 		result = FALSE;
 		return result;

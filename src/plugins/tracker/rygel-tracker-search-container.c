@@ -653,8 +653,8 @@ char* rygel_tracker_search_container_get_item_info (RygelTrackerSearchContainer*
 	if (_tmp2_) {
 		char* _tmp4_;
 		char* _tmp5_;
-		(*service) = (_tmp4_ = g_strdup (tokens[0]), _g_free0 ((*service)), _tmp4_);
-		(*parent_id) = (_tmp5_ = g_strdup (tokens[1]), _g_free0 ((*parent_id)), _tmp5_);
+		*service = (_tmp4_ = g_strdup (tokens[0]), _g_free0 (*service), _tmp4_);
+		*parent_id = (_tmp5_ = g_strdup (tokens[1]), _g_free0 (*parent_id), _tmp5_);
 		result = g_strdup (tokens[2]);
 		tokens = (_vala_array_free (tokens, tokens_length1, (GDestroyNotify) g_free), NULL);
 		return result;

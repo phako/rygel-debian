@@ -180,7 +180,7 @@ void rygel_cmdline_config_parse_args (char*** args, int* args_length1, GError** 
 	g_option_context_set_help_enabled (opt_context, TRUE);
 	g_option_context_add_main_entries (opt_context, RYGEL_CMDLINE_CONFIG_options, NULL);
 	g_option_context_add_group (opt_context, gst_init_get_option_group ());
-	g_option_context_parse (opt_context, &(*args_length1), &(*args), &_inner_error_);
+	g_option_context_parse (opt_context, args_length1, args, &_inner_error_);
 	if (_inner_error_ != NULL) {
 		if ((_inner_error_->domain == RYGEL_CMDLINE_CONFIG_ERROR) || (_inner_error_->domain == G_OPTION_ERROR)) {
 			g_propagate_error (error, _inner_error_);

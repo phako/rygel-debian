@@ -606,10 +606,10 @@ static gboolean rygel_media_export_harvester_push_if_changed_or_unknown (RygelMe
 		*id = NULL;
 	}
 	_inner_error_ = NULL;
-	(*id) = (_tmp1_ = g_compute_checksum_for_string (G_CHECKSUM_MD5, _tmp0_ = g_file_get_uri (file), -1), _g_free0 ((*id)), _tmp1_);
+	*id = (_tmp1_ = g_compute_checksum_for_string (G_CHECKSUM_MD5, _tmp0_ = g_file_get_uri (file), -1), _g_free0 (*id), _tmp1_);
 	_g_free0 (_tmp0_);
 	timestamp = 0LL;
-	_tmp2_ = rygel_media_db_exists (self->priv->media_db, (*id), &timestamp, &_inner_error_);
+	_tmp2_ = rygel_media_db_exists (self->priv->media_db, *id, &timestamp, &_inner_error_);
 	if (_inner_error_ != NULL) {
 		g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, _inner_error_->message);
 		g_clear_error (&_inner_error_);

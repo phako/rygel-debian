@@ -27,6 +27,9 @@ rygel (0.4-1) UNRELEASED; urgency=low
   * debian/control: make rygel-tracker recommend tracker
   * debian/patches/0002-update-forgotten-dbus-paths-to-all-use-Rygel1.patch:
     - Added, dbus path is org.gnome.Rygel1, some still used of org.gnome.Rygel.
+  * New upstream bugfix release
+  * debian/patches/0002-update-forgotten-dbus-paths-to-all-use-Rygel1.patch:
+    - Dropped, fixed upstream.
 
   [ Marc-André Lureau ]
   * Initial packaging.

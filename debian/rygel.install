@@ -6,3 +6,4 @@ usr/lib/rygel-*/librygel-media-export.so
 usr/share/rygel/*.ui
 usr/share/rygel/xml/*.xml
 usr/share/dbus-1/services/*
+usr/share/applications/*.desktop

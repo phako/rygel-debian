@@ -24,8 +24,8 @@ Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Suggests: rygel-tracker, rygel-mediathek
 Description: GNOME UPnP/DLNA services
- Rygel is a collection of UPnP/DLNA sevices, implemented through a
- plug-in mechanism. Important facts and features:
+ Rygel is a collection of DLNA (UPnP AV) services (devices in UPnP speak),
+ implemented through a plug-in mechanism. Important facts and features:
  .
    * APIs to ease the implementation of AV devices (currently only
      MediaServer V 2.0 specification).
@@ -43,8 +43,9 @@ Description: GNOME UPnP/DLNA services
  .
  This package contains the core of Rygel and following plugins:
  .
-   * export: A MediaServer plugin that recursively exports folders
-     specified in the user preferences.
+   * media-export: Recursively exports folders and files specified in the
+     user configuration. This plugin supports all types of URIs that
+     gio/gvfs and gstreamer can handle.
  .
    * external: A MediaServer plugin that exports media hierarchies
      provided by external applications.
@@ -53,8 +54,8 @@ Package: rygel-1.0-dev
 Architecture: any
 Depends: ${misc:Depends}, libgupnp-1.0-dev, libgstreamer0.10-dev
 Description: GNOME UPnP/DLNA services - plugin development files
- Rygel is a collection of UPnP/DLNA sevices, implemented through a
- plug-in mechanism. Important facts and features:
+ Rygel is a collection of DLNA (UPnP AV) services (devices in UPnP speak),
+ implemented through a plug-in mechanism. Important facts and features:
  .
    * APIs to ease the implementation of AV devices (currently only
      MediaServer V 2.0 specification).
@@ -76,8 +77,8 @@ Package: rygel-mediathek
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Description: GNOME UPnP/DLNA services - Mediathek plugin
- Rygel is a collection of UPnP/DLNA sevices, implemented through a
- plug-in mechanism. Important facts and features:
+ Rygel is a collection of DLNA (UPnP AV) services (devices in UPnP speak),
+ implemented through a plug-in mechanism. Important facts and features:
  .
    * APIs to ease the implementation of AV devices (currently only
      MediaServer V 2.0 specification).
@@ -102,8 +103,8 @@ Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Recommends: tracker
 Description: GNOME UPnP/DLNA services - Tracker plugin
- Rygel is a collection of UPnP/DLNA sevices, implemented through a
- plug-in mechanism. Important facts and features:
+ Rygel is a collection of DLNA (UPnP AV) services (devices in UPnP speak),
+ implemented through a plug-in mechanism. Important facts and features:
  .
    * APIs to ease the implementation of AV devices (currently only
      MediaServer V 2.0 specification).

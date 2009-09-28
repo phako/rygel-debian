@@ -1,4 +1,4 @@
-usr/etc/rygel.conf /etc/
+etc/rygel.conf
 usr/bin/rygel
 usr/bin/rygel-preferences
 usr/lib/rygel-*/librygel-external.so

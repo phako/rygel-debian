@@ -20,8 +20,9 @@ ifneq "$(wildcard /usr/share/misc/config.guess)" ""
 	cp -f /usr/share/misc/config.guess config.guess
 endif
 	./configure $(CROSS) --prefix=/usr --mandir=\$${prefix}/share/man \
-	--enable-mediathek-plugin \
-	CFLAGS="$(CFLAGS)"
+		--sysconfdir=/etc \
+		--enable-mediathek-plugin \
+		CFLAGS="$(CFLAGS)"
 
 build: build-arch build-indep
 

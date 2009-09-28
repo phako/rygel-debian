@@ -43,7 +43,7 @@ Description: GNOME UPnP/DLNA services
  .
  This package contains the core of Rygel and following plugins:
  .
-   * folder: A MediaServer plugin that recursively exports folders
+   * export: A MediaServer plugin that recursively exports folders
      specified in the user preferences.
  .
    * external: A MediaServer plugin that exports media hierarchies

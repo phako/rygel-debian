@@ -1,3 +1,17 @@
+rygel (0.4.1-2) unstable; urgency=low
+
+  * Fix package description, plugin is called "export"
+  * Update package description to closer match upstream
+  * configure with sysconfdir set to /etc
+    - prevents rygel-preferences from crashing when not finding config file.
+  * Install rygel and rygel-preferences desktop files
+  * Add a global autostart symlink for rygel
+  * update-patch-series: add 0002-Fix-desktopdir-definition-to-usr-
+    share-applications.patch
+  * Add Thijs Vermeir to debian/copyright
+
+ -- Andreas Henriksson <andreas@fatal.se>  Tue, 29 Sep 2009 12:09:29 +0200
+
 rygel (0.4.1-1) unstable; urgency=low
 
   [ Andreas Henriksson ]

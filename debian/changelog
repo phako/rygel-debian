@@ -1,3 +1,12 @@
+rygel (0.4.2-1) UNRELEASED; urgency=low
+
+  * New upstream release
+  * update-patch-series:
+    - drop 0002-Fix-desktopdir-definition-to-usr-share-applications.patch,
+      fixed upstream.
+
+ -- Andreas Henriksson <andreas@fatal.se>  Fri, 02 Oct 2009 17:13:24 +0200
+
 rygel (0.4.1-2) unstable; urgency=low
 
   * Fix package description, plugin is called "export"

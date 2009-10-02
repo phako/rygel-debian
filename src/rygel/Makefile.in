@@ -49,18 +49,18 @@ DIST_COMMON = $(librygelinc_HEADERS) $(srcdir)/Makefile.am \
 	rygel-http-response.c rygel-http-seek.c rygel-http-server.c \
 	rygel-http-transcode-handler.c rygel-icon-info.c \
 	rygel-l16-transcoder-bin.c rygel-l16-transcoder.c \
-	rygel-live-response.c rygel-main.c rygel-media-container.c \
-	rygel-media-db-container.c rygel-media-db-object-factory.c \
-	rygel-media-db.c rygel-media-item.c \
-	rygel-media-object-search.c rygel-media-object.c \
-	rygel-meta-config.c rygel-metadata-extractor.c \
-	rygel-mp2ts-transcoder-bin.c rygel-mp2ts-transcoder.c \
-	rygel-mp3-transcoder-bin.c rygel-mp3-transcoder.c \
-	rygel-plugin-loader.c rygel-plugin.c rygel-resource-info.c \
-	rygel-root-device-factory.c rygel-root-device.c \
-	rygel-seekable-response.c rygel-simple-async-result.c \
-	rygel-simple-container.c rygel-state-machine.c \
-	rygel-thumbnail.c rygel-thumbnailer.c \
+	rygel-live-response.c rygel-log-handler.c rygel-main.c \
+	rygel-media-container.c rygel-media-db-container.c \
+	rygel-media-db-object-factory.c rygel-media-db.c \
+	rygel-media-item.c rygel-media-object-search.c \
+	rygel-media-object.c rygel-meta-config.c \
+	rygel-metadata-extractor.c rygel-mp2ts-transcoder-bin.c \
+	rygel-mp2ts-transcoder.c rygel-mp3-transcoder-bin.c \
+	rygel-mp3-transcoder.c rygel-plugin-loader.c rygel-plugin.c \
+	rygel-resource-info.c rygel-root-device-factory.c \
+	rygel-root-device.c rygel-seekable-response.c \
+	rygel-simple-async-result.c rygel-simple-container.c \
+	rygel-state-machine.c rygel-thumbnail.c rygel-thumbnailer.c \
 	rygel-transcode-manager.c rygel-transcoder.c \
 	rygel-user-config.c rygel.h rygel_vala.stamp
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
@@ -120,7 +120,8 @@ am__objects_1 = rygel-configuration.$(OBJEXT) \
 	rygel-l16-transcoder-bin.$(OBJEXT) rygel-gst-utils.$(OBJEXT) \
 	rygel-media-db.$(OBJEXT) rygel-metadata-extractor.$(OBJEXT) \
 	rygel-media-db-container.$(OBJEXT) \
-	rygel-media-db-object-factory.$(OBJEXT)
+	rygel-media-db-object-factory.$(OBJEXT) \
+	rygel-log-handler.$(OBJEXT)
 am_rygel_OBJECTS = $(am__objects_1) rygel-dbus-service.$(OBJEXT) \
 	rygel-root-device.$(OBJEXT) \
 	rygel-root-device-factory.$(OBJEXT) rygel-main.$(OBJEXT)
@@ -353,7 +354,7 @@ top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 @UNINSTALLED_FALSE@shareddir = $(datadir)/rygel
 @UNINSTALLED_TRUE@shareddir = $(abs_top_builddir)/data
-@UNINSTALLED_FALSE@desktopdir = $(shareddir)/applications
+@UNINSTALLED_FALSE@desktopdir = $(datadir)/applications
 @UNINSTALLED_TRUE@desktopdir = $(shareddir)
 @UNINSTALLED_FALSE@plugindir = $(libdir)/rygel-1.0
 @UNINSTALLED_TRUE@plugindir = $(abs_top_builddir)/src/plugins
@@ -424,7 +425,8 @@ VAPI_SOURCE_FILES = rygel-configuration.vala \
 		    rygel-media-db.vala \
 		    rygel-metadata-extractor.vala \
 		    rygel-media-db-container.vala \
-		    rygel-media-db-object-factory.vala
+		    rygel-media-db-object-factory.vala \
+		    rygel-log-handler.vala
 
 rygel_VALAFLAGS = \
 	-H rygel.h -C --library=rygel-1.0 --vapidir=$(srcdir) --thread \
@@ -575,6 +577,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-l16-transcoder-bin.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-l16-transcoder.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-live-response.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-log-handler.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-main.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-media-container.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-media-db-container.Po@am__quote@
@@ -842,6 +845,11 @@ $(srcdir)/rygel-media-db-object-factory.c: $(srcdir)/rygel_vala.stamp
 	  rm -f $(srcdir)/rygel_vala.stamp; \
 	  $(am__cd) $(srcdir) && $(MAKE) $(AM_MAKEFLAGS) rygel_vala.stamp; \
 	fi
+$(srcdir)/rygel-log-handler.c: $(srcdir)/rygel_vala.stamp
+	@if test -f $@; then :; else \
+	  rm -f $(srcdir)/rygel_vala.stamp; \
+	  $(am__cd) $(srcdir) && $(MAKE) $(AM_MAKEFLAGS) rygel_vala.stamp; \
+	fi
 $(srcdir)/rygel-dbus-service.c: $(srcdir)/rygel_vala.stamp
 	@if test -f $@; then :; else \
 	  rm -f $(srcdir)/rygel_vala.stamp; \
@@ -1056,6 +1064,7 @@ maintainer-clean-generic:
 	-rm -f rygel-l16-transcoder-bin.c
 	-rm -f rygel-l16-transcoder.c
 	-rm -f rygel-live-response.c
+	-rm -f rygel-log-handler.c
 	-rm -f rygel-main.c
 	-rm -f rygel-media-container.c
 	-rm -f rygel-media-db-container.c

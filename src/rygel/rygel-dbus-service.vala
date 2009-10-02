@@ -28,7 +28,7 @@ public class Rygel.DBusService : Object {
 
     private Main main;
 
-    public DBusService (Main main) throws GLib.Error {
+    public DBusService (Main main) throws DBus.Error {
         this.main = main;
 
         var conn = DBus.Bus.get (DBus.BusType. SESSION);
@@ -44,9 +44,9 @@ public class Rygel.DBusService : Object {
         if (request_name_result != DBus.RequestNameReply.PRIMARY_OWNER) {
             warning ("Failed to start D-Bus service, name '%s' already taken",
                      RYGEL_SERVICE);
+        } else {
+            conn.register_object (RYGEL_PATH, this);
         }
-
-        conn.register_object (RYGEL_PATH, this);
     }
 
     public void Shutdown () {

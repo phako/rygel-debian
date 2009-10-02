@@ -39,7 +39,7 @@ namespace Rygel {
 	[CCode (cheader_filename = "rygel.h")]
 	[DBus (name = "org.gnome.Rygel1")]
 	public class DBusService : GLib.Object {
-		public DBusService (Rygel.Main main) throws GLib.Error;
+		public DBusService (Rygel.Main main) throws DBus.Error;
 		public void Shutdown ();
 	}
 	[CCode (ref_function = "rygel_icon_info_ref", unref_function = "rygel_icon_info_unref", cheader_filename = "rygel.h")]
@@ -51,6 +51,11 @@ namespace Rygel {
 		public long size;
 		public int width;
 		public IconInfo (string mime_type);
+	}
+	[CCode (cheader_filename = "rygel.h")]
+	public class LogHandler : GLib.Object {
+		public GLib.LogLevelFlags levels;
+		public static Rygel.LogHandler get_default ();
 	}
 	[CCode (cheader_filename = "rygel.h")]
 	public class Main : GLib.Object {
@@ -246,6 +251,7 @@ namespace Rygel {
 		protected const string CONFIG_FILE;
 		protected const string ENABLED_KEY;
 		protected const string IFACE_KEY;
+		protected const string LOG_LEVEL_KEY;
 		protected const string LPCM_TRANSCODER_KEY;
 		protected const string MP2TS_TRANSCODER_KEY;
 		protected const string MP3_TRANSCODER_KEY;
@@ -274,6 +280,7 @@ namespace Rygel {
 		public abstract int get_int (string section, string key, int min, int max) throws GLib.Error;
 		public abstract Gee.ArrayList<int> get_int_list (string section, string key) throws GLib.Error;
 		public abstract string get_interface () throws GLib.Error;
+		public abstract Rygel.LogLevel get_log_level () throws GLib.Error;
 		public abstract bool get_lpcm_transcoder () throws GLib.Error;
 		public abstract bool get_mp2ts_transcoder () throws GLib.Error;
 		public abstract bool get_mp3_transcoder () throws GLib.Error;
@@ -289,6 +296,16 @@ namespace Rygel {
 		public abstract void run ();
 		public abstract GLib.Cancellable cancellable { get; set; }
 		public signal void completed ();
+	}
+	[CCode (cprefix = "RYGEL_LOG_LEVEL_", cheader_filename = "rygel.h")]
+	public enum LogLevel {
+		INVALID,
+		CRITICAL,
+		ERROR,
+		WARNING,
+		INFO,
+		DEFAULT,
+		DEBUG
 	}
 	[CCode (cprefix = "RYGEL_MEDIA_DB_OBJECT_TYPE_", cheader_filename = "rygel.h")]
 	public enum MediaDBObjectType {

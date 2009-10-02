@@ -1,6 +1,6 @@
 AC_PREREQ(2.53)
 AC_INIT([rygel],
-	[0.4.1],
+	m4_esyscmd([GNOME_TAG_PATTERN=RYGEL build-aux/git-version-gen .tarball-version]),
 	[http://live.gnome.org/Rygel])
 AC_CONFIG_AUX_DIR([build-aux])
 
@@ -130,7 +130,7 @@ fi
 
 # Check wether user wants to build UIs
 AC_ARG_WITH( ui,
-  AC_HELP_STRING([--disable-ui],[Don't build UI applications]),
+  AC_HELP_STRING([--without-ui],[Do not build UI applications]),
   try_ui=$withval, try_ui=yes )
 
 HAVE_GTK=no
@@ -251,8 +251,18 @@ echo "
                     ============
 
 
-	Prefix:                 ${prefix}
+        Prefix:                 ${prefix}
         Source code location:   ${srcdir}
         Compiler:               ${CC}
         CFLAGS:                 ${CFLAGS}
+        uninstalled:            ${enable_uninstalled}
+        maemo support:          ${enable_maemo}
+        preferences ui          ${BUILD_UI}
+    Plugins:
+        test:                   ${enable_test_plugin}
+        tracker:                ${enable_tracker_plugin}
+        mediathek:              ${enable_mediathek_plugin}
+        media-export            ${enable_media_export_plugin}
+        external:               ${enable_external_plugin}
+        gstlaunch:              ${enable_gstlaunch_plugin}
 "

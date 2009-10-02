@@ -3,7 +3,7 @@ shareddir = $(abs_top_builddir)/data
 desktopdir = $(shareddir)
 else
 shareddir = $(datadir)/rygel
-desktopdir = $(shareddir)/applications
+desktopdir = $(datadir)/applications
 endif
 
 if UNINSTALLED
@@ -83,7 +83,8 @@ VAPI_SOURCE_FILES = rygel-configuration.vala \
 		    rygel-media-db.vala \
 		    rygel-metadata-extractor.vala \
 		    rygel-media-db-container.vala \
-		    rygel-media-db-object-factory.vala
+		    rygel-media-db-object-factory.vala \
+		    rygel-log-handler.vala
 
 rygel_VALAFLAGS = \
 	-H rygel.h -C --library=rygel-1.0 --vapidir=$(srcdir) --thread \

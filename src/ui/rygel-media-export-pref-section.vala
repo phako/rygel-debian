@@ -26,6 +26,7 @@ using Gee;
 public class Rygel.MediaExportPrefSection : Rygel.PluginPrefSection {
     const string NAME = "MediaExport";
     const string URIS_KEY = "uris";
+    const string URIS_LABEL = URIS_KEY + "-label";
     const string URIS_TEXTVIEW = URIS_KEY + "-treeview";
     const string URIS_LISTSTORE = URIS_KEY + "-liststore";
     const string URIS_DIALOG = URIS_KEY + "-dialog";
@@ -54,6 +55,7 @@ public class Rygel.MediaExportPrefSection : Rygel.PluginPrefSection {
                                                 "text",
                                                 0,
                                                 null);
+        this.widgets.add (this.treeview);
 
         try {
             var uris = config.get_string_list (this.name, URIS_KEY);
@@ -70,12 +72,22 @@ public class Rygel.MediaExportPrefSection : Rygel.PluginPrefSection {
 
         var button = (Button) builder.get_object (ADD_BUTTON);
         button.clicked += this.on_add_button_clicked;
+        this.widgets.add (button);
 
         button = (Button) builder.get_object (REMOVE_BUTTON);
         button.clicked += this.on_remove_button_clicked;
+        this.widgets.add (button);
 
         button = (Button) builder.get_object (CLEAR_BUTTON);
         button.clicked += this.on_clear_button_clicked;
+        this.widgets.add (button);
+
+        var label = (Label) builder.get_object (URIS_LABEL);
+        assert (label != null);
+        this.widgets.add (label);
+
+        // Initialize the sensitivity of all widgets
+        this.reset_widgets_sensitivity ();
     }
 
     public override void save () {
@@ -94,13 +106,6 @@ public class Rygel.MediaExportPrefSection : Rygel.PluginPrefSection {
         }
 
         this.config.set_string_list (this.name, URIS_KEY, uri_list);
-    }
-
-    protected override void on_enabled_check_toggled (
-                                        CheckButton enabled_check) {
-        base.on_enabled_check_toggled (enabled_check);
-
-        this.treeview.sensitive = enabled_check.active;
     }
 
     private void on_add_button_clicked (Button button) {

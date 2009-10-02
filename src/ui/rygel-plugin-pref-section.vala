@@ -21,18 +21,24 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 using Gtk;
+using Gee;
 
 public class Rygel.PluginPrefSection : PreferencesSection {
     const string ENABLED_CHECK = "-enabled-checkbutton";
+    const string TITLE_LABEL = "-title-label";
     const string TITLE_ENTRY = "-title-entry";
 
     private CheckButton enabled_check;
     private Entry title_entry;
 
+    protected ArrayList<Widget> widgets; // All widgets in this section
+
     public PluginPrefSection (Builder    builder,
                               UserConfig config,
                               string     name) {
         base (config, name);
+
+        this.widgets = new ArrayList<Widget> ();
 
         this.enabled_check = (CheckButton) builder.get_object (name.down () +
                                                                ENABLED_CHECK);
@@ -40,6 +46,10 @@ public class Rygel.PluginPrefSection : PreferencesSection {
         this.title_entry = (Entry) builder.get_object (name.down () +
                                                        TITLE_ENTRY);
         assert (this.title_entry != null);
+        var title_label = (Label) builder.get_object (name.down () +
+                                                      TITLE_LABEL);
+        assert (title_label != null);
+        this.widgets.add (title_label);
 
         this.enabled_check.active = config.get_enabled (name);
 
@@ -69,8 +79,15 @@ public class Rygel.PluginPrefSection : PreferencesSection {
         this.config.set_string (this.name, UserConfig.TITLE_KEY, title);
     }
 
-    protected virtual void on_enabled_check_toggled (
-                                CheckButton enabled_check) {
-        this.title_entry.sensitive = enabled_check.active;
+    protected void reset_widgets_sensitivity () {
+        this.title_entry.sensitive = this.enabled_check.active;
+
+        foreach (var widget in this.widgets) {
+            widget.sensitive = enabled_check.active;
+        }
+    }
+
+    private void on_enabled_check_toggled (CheckButton enabled_check) {
+        this.reset_widgets_sensitivity ();
     }
 }

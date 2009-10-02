@@ -45,7 +45,7 @@ Description: GNOME UPnP/DLNA services
  .
    * media-export: Recursively exports folders and files specified in the
      user configuration. This plugin supports all types of URIs that
-     gio/gvfs and gstreamer can handle.
+     gio/gvfs and GStreamer can handle.
  .
    * external: A MediaServer plugin that exports media hierarchies
      provided by external applications.

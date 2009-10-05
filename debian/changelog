@@ -1,4 +1,4 @@
-rygel (0.4.2-1) UNRELEASED; urgency=low
+rygel (0.4.2-1) unstable; urgency=low
 
   * New upstream release
   * update-patch-series:
@@ -9,7 +9,7 @@ rygel (0.4.2-1) UNRELEASED; urgency=low
   * debian/control: bump required version of libgee to >= 0.5.0.
   * update-patch-series: add port to libgee-0.5 patch.
 
- -- Andreas Henriksson <andreas@fatal.se>  Mon, 05 Oct 2009 08:55:23 +0200
+ -- Andreas Henriksson <andreas@fatal.se>  Mon, 05 Oct 2009 10:59:53 +0200
 
 rygel (0.4.1-2) unstable; urgency=low
 

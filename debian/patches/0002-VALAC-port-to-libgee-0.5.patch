@@ -1,0 +1,514 @@
+From be7bf0aa0d914c8f24f1555f14a9cedd4bb44685 Mon Sep 17 00:00:00 2001
+From: Andreas Henriksson <andreas@fatal.se>
+Date: Mon, 5 Oct 2009 08:41:43 +0200
+Subject: [PATCH 2/2] VALAC port to libgee-0.5
+
+Regenerate *.c from *.vala after cherry-picking commit from upstream
+porting to libgee-0.5.
+---
+ src/plugins/external/rygel-external-container.c    |    4 ++--
+ .../rygel-media-export-null-container.c            |    2 +-
+ .../rygel-media-export-recursive-file-monitor.c    |    6 +++---
+ .../rygel-media-export-root-container.c            |   10 +++++-----
+ .../tracker/rygel-tracker-search-container.c       |    2 +-
+ src/plugins/tracker/rygel-tracker-search-result.c  |    2 +-
+ src/rygel/rygel-cmdline-config.c                   |    4 ++--
+ src/rygel/rygel-content-directory.c                |    4 ++--
+ src/rygel/rygel-http-server.c                      |    2 +-
+ src/rygel/rygel-main.c                             |   12 ++++++------
+ src/rygel/rygel-media-db.c                         |    2 +-
+ src/rygel/rygel-media-item.c                       |    2 +-
+ src/rygel/rygel-media-object-search.c              |    8 +++++---
+ src/rygel/rygel-media-object.c                     |    2 +-
+ src/rygel/rygel-meta-config.c                      |    2 +-
+ src/rygel/rygel-plugin-loader.c                    |    4 ++--
+ src/rygel/rygel-plugin.c                           |    4 ++--
+ src/rygel/rygel-root-device.c                      |    2 +-
+ src/rygel/rygel-simple-container.c                 |    6 +++---
+ src/rygel/rygel-transcode-manager.c                |    2 +-
+ src/rygel/rygel-user-config.c                      |    4 ++--
+ src/ui/rygel-media-export-pref-section.c           |    4 ++--
+ src/ui/rygel-plugin-pref-section.c                 |    2 +-
+ src/ui/rygel-preferences-dialog.c                  |    2 +-
+ 24 files changed, 48 insertions(+), 46 deletions(-)
+
+diff --git a/src/plugins/external/rygel-external-container.c b/src/plugins/external/rygel-external-container.c
+index c3c547a..c27edc1 100644
+--- a/src/plugins/external/rygel-external-container.c
++++ b/src/plugins/external/rygel-external-container.c
+@@ -156,7 +156,7 @@ RygelExternalContainer* rygel_external_container_construct (GType object_type, c
+ 	self->service_name = (_tmp0_ = g_strdup (service_name), _g_free0 (self->service_name), _tmp0_);
+ 	self->priv->object_path = (_tmp1_ = g_strdup (object_path), _g_free0 (self->priv->object_path), _tmp1_);
+ 	self->host_ip = (_tmp2_ = g_strdup (host_ip), _g_free0 (self->host_ip), _tmp2_);
+-	self->priv->containers = (_tmp3_ = gee_array_list_new (RYGEL_TYPE_EXTERNAL_CONTAINER, (GBoxedCopyFunc) g_object_ref, g_object_unref, g_direct_equal), _g_object_unref0 (self->priv->containers), _tmp3_);
++	self->priv->containers = (_tmp3_ = gee_array_list_new (RYGEL_TYPE_EXTERNAL_CONTAINER, (GBoxedCopyFunc) g_object_ref, g_object_unref, NULL), _g_object_unref0 (self->priv->containers), _tmp3_);
+ 	{
+ 		DBusGConnection* connection;
+ 		DBusGProxy* _tmp4_;
+@@ -245,7 +245,7 @@ static void rygel_external_container_real_get_children (RygelMediaContainer* bas
+ 	GeeList* _tmp3_;
+ 	self = (RygelExternalContainer*) base;
+ 	_inner_error_ = NULL;
+-	media_objects = gee_array_list_new (RYGEL_TYPE_MEDIA_OBJECT, (GBoxedCopyFunc) g_object_ref, g_object_unref, g_direct_equal);
++	media_objects = gee_array_list_new (RYGEL_TYPE_MEDIA_OBJECT, (GBoxedCopyFunc) g_object_ref, g_object_unref, NULL);
+ 	gee_abstract_collection_add_all ((GeeAbstractCollection*) media_objects, (GeeCollection*) self->priv->containers);
+ 	_dynamic_Get1 (self->props, RYGEL_EXTERNAL_CONTAINER_CONTAINER_IFACE, "Items", &_tmp0_, &_inner_error_);
+ 	value = (_tmp1_ = _tmp0_, G_IS_VALUE (&value) ? (g_value_unset (&value), NULL) : NULL, _tmp1_);
+diff --git a/src/plugins/media-export/rygel-media-export-null-container.c b/src/plugins/media-export/rygel-media-export-null-container.c
+index 308ebe2..67c364b 100644
+--- a/src/plugins/media-export/rygel-media-export-null-container.c
++++ b/src/plugins/media-export/rygel-media-export-null-container.c
+@@ -94,7 +94,7 @@ static GeeList* rygel_null_container_real_get_children_finish (RygelMediaContain
+ 	GeeList* result;
+ 	self = (RygelNullContainer*) base;
+ 	g_return_val_if_fail (res != NULL, NULL);
+-	result = (GeeList*) gee_array_list_new (RYGEL_TYPE_MEDIA_OBJECT, (GBoxedCopyFunc) g_object_ref, g_object_unref, g_direct_equal);
++	result = (GeeList*) gee_array_list_new (RYGEL_TYPE_MEDIA_OBJECT, (GBoxedCopyFunc) g_object_ref, g_object_unref, NULL);
+ 	return result;
+ }
+ 
+diff --git a/src/plugins/media-export/rygel-media-export-recursive-file-monitor.c b/src/plugins/media-export/rygel-media-export-recursive-file-monitor.c
+index e9f33eb..1ce2737 100644
+--- a/src/plugins/media-export/rygel-media-export-recursive-file-monitor.c
++++ b/src/plugins/media-export/rygel-media-export-recursive-file-monitor.c
+@@ -87,7 +87,7 @@ RygelMediaExportRecursiveFileMonitor* rygel_media_export_recursive_file_monitor_
+ 	GeeHashMap* _tmp1_;
+ 	self = (RygelMediaExportRecursiveFileMonitor*) g_object_new (object_type, NULL);
+ 	self->priv->cancellable = (_tmp0_ = _g_object_ref0 (cancellable), _g_object_unref0 (self->priv->cancellable), _tmp0_);
+-	self->priv->monitors = (_tmp1_ = gee_hash_map_new (G_TYPE_FILE, (GBoxedCopyFunc) g_object_ref, g_object_unref, G_TYPE_FILE_MONITOR, (GBoxedCopyFunc) g_object_ref, g_object_unref, g_file_hash, g_file_equal, g_direct_equal), _g_object_unref0 (self->priv->monitors), _tmp1_);
++	self->priv->monitors = (_tmp1_ = gee_hash_map_new (G_TYPE_FILE, (GBoxedCopyFunc) g_object_ref, g_object_unref, G_TYPE_FILE_MONITOR, (GBoxedCopyFunc) g_object_ref, g_object_unref, g_file_hash, g_file_equal, NULL), _g_object_unref0 (self->priv->monitors), _tmp1_);
+ 	return self;
+ }
+ 
+@@ -121,7 +121,7 @@ void rygel_media_export_recursive_file_monitor_on_monitor_changed (RygelMediaExp
+ 				guint _tmp1_;
+ 				g_debug ("rygel-media-export-recursive-file-monitor.vala:47: Directory %s gone, removing watch", _tmp0_ = g_file_get_uri (file));
+ 				_g_free0 (_tmp0_);
+-				gee_abstract_map_remove ((GeeAbstractMap*) self->priv->monitors, file, NULL);
++				gee_map_remove ((GeeMap*) self->priv->monitors, file, NULL);
+ 				g_file_monitor_cancel (file_monitor);
+ 				g_signal_handlers_disconnect_matched (file_monitor, G_SIGNAL_MATCH_ID | G_SIGNAL_MATCH_FUNC | G_SIGNAL_MATCH_DATA, (g_signal_parse_name ("changed", G_TYPE_FILE_MONITOR, &_tmp1_, NULL, FALSE), _tmp1_), 0, NULL, (GCallback) _rygel_media_export_recursive_file_monitor_on_monitor_changed_g_file_monitor_changed, self);
+ 			}
+@@ -209,7 +209,7 @@ void rygel_media_export_recursive_file_monitor_cancel (RygelMediaExportRecursive
+ 			GeeCollection* _tmp0_;
+ 			GeeIterator* _tmp1_;
+ 			GeeIterator* _monitor_it;
+-			_monitor_it = (_tmp1_ = gee_iterable_iterator ((GeeIterable*) (_tmp0_ = gee_abstract_map_get_values ((GeeAbstractMap*) self->priv->monitors))), _g_object_unref0 (_tmp0_), _tmp1_);
++			_monitor_it = (_tmp1_ = gee_iterable_iterator ((GeeIterable*) (_tmp0_ = gee_map_get_values ((GeeMap*) self->priv->monitors))), _g_object_unref0 (_tmp0_), _tmp1_);
+ 			while (TRUE) {
+ 				GFileMonitor* monitor;
+ 				if (!gee_iterator_next (_monitor_it)) {
+diff --git a/src/plugins/media-export/rygel-media-export-root-container.c b/src/plugins/media-export/rygel-media-export-root-container.c
+index 1ad7023..7638bcf 100644
+--- a/src/plugins/media-export/rygel-media-export-root-container.c
++++ b/src/plugins/media-export/rygel-media-export-root-container.c
+@@ -193,7 +193,7 @@ GeeList* rygel_media_export_dynamic_container_get_uris (RygelMediaExportDynamicC
+ 	GeeArrayList* _result_;
+ 	GeeArrayList* children;
+ 	g_return_val_if_fail (self != NULL, NULL);
+-	_result_ = gee_array_list_new (G_TYPE_STRING, (GBoxedCopyFunc) g_strdup, g_free, g_direct_equal);
++	_result_ = gee_array_list_new (G_TYPE_STRING, (GBoxedCopyFunc) g_strdup, g_free, NULL);
+ 	children = rygel_media_db_get_children (((RygelMediaDBContainer*) self)->media_db, ((RygelMediaObject*) self)->id, (glong) (-1), (glong) (-1));
+ 	if (children != NULL) {
+ 		{
+@@ -264,7 +264,7 @@ static GeeArrayList* rygel_media_export_root_container_get_uris (RygelMediaExpor
+ 		_inner_error_ = NULL;
+ 		{
+ 			GeeArrayList* _tmp2_;
+-			uris = (_tmp2_ = gee_array_list_new (G_TYPE_STRING, (GBoxedCopyFunc) g_strdup, g_free, g_direct_equal), _g_object_unref0 (uris), _tmp2_);
++			uris = (_tmp2_ = gee_array_list_new (G_TYPE_STRING, (GBoxedCopyFunc) g_strdup, g_free, NULL), _g_object_unref0 (uris), _tmp2_);
+ 			_g_error_free0 (_error_);
+ 		}
+ 	}
+@@ -472,7 +472,7 @@ static RygelMediaExportRootContainer* rygel_media_export_root_container_construc
+ 	_inner_error_ = NULL;
+ 	self = (RygelMediaExportRootContainer*) rygel_media_db_container_construct (object_type, db, "0", "MediaExportRoot");
+ 	self->priv->extractor = (_tmp0_ = rygel_metadata_extractor_new (), _g_object_unref0 (self->priv->extractor), _tmp0_);
+-	self->priv->harvester = (_tmp1_ = gee_hash_map_new (G_TYPE_FILE, (GBoxedCopyFunc) g_object_ref, g_object_unref, RYGEL_TYPE_MEDIA_EXPORT_HARVESTER, (GBoxedCopyFunc) g_object_ref, g_object_unref, g_file_hash, g_file_equal, g_direct_equal), _g_object_unref0 (self->priv->harvester), _tmp1_);
++	self->priv->harvester = (_tmp1_ = gee_hash_map_new (G_TYPE_FILE, (GBoxedCopyFunc) g_object_ref, g_object_unref, RYGEL_TYPE_MEDIA_EXPORT_HARVESTER, (GBoxedCopyFunc) g_object_ref, g_object_unref, g_file_hash, g_file_equal, NULL), _g_object_unref0 (self->priv->harvester), _tmp1_);
+ 	self->priv->monitor = (_tmp2_ = rygel_media_export_recursive_file_monitor_new (NULL), _g_object_unref0 (self->priv->monitor), _tmp2_);
+ 	g_signal_connect_object (self->priv->monitor, "changed", (GCallback) _rygel_media_export_root_container_on_file_changed_rygel_media_export_recursive_file_monitor_changed, self, 0);
+ 	_tmp3_ = rygel_media_export_dbus_service_new (self, &_inner_error_);
+@@ -566,7 +566,7 @@ static RygelMediaExportRootContainer* rygel_media_export_root_container_construc
+ 		_inner_error_ = NULL;
+ 		{
+ 			GeeArrayList* _tmp10_;
+-			ids = (_tmp10_ = gee_array_list_new (G_TYPE_STRING, (GBoxedCopyFunc) g_strdup, g_free, g_direct_equal), _g_object_unref0 (ids), _tmp10_);
++			ids = (_tmp10_ = gee_array_list_new (G_TYPE_STRING, (GBoxedCopyFunc) g_strdup, g_free, NULL), _g_object_unref0 (ids), _tmp10_);
+ 			_g_error_free0 (e);
+ 		}
+ 	}
+@@ -666,7 +666,7 @@ static RygelMediaExportRootContainer* rygel_media_export_root_container_new (Ryg
+ static void rygel_media_export_root_container_on_file_harvested (RygelMediaExportRootContainer* self, GFile* file) {
+ 	g_return_if_fail (self != NULL);
+ 	g_return_if_fail (file != NULL);
+-	gee_abstract_map_remove ((GeeAbstractMap*) self->priv->harvester, file, NULL);
++	gee_map_remove ((GeeMap*) self->priv->harvester, file, NULL);
+ }
+ 
+ 
+diff --git a/src/plugins/tracker/rygel-tracker-search-container.c b/src/plugins/tracker/rygel-tracker-search-container.c
+index 7768720..7572b97 100644
+--- a/src/plugins/tracker/rygel-tracker-search-container.c
++++ b/src/plugins/tracker/rygel-tracker-search-container.c
+@@ -245,7 +245,7 @@ RygelTrackerSearchContainer* rygel_tracker_search_container_construct (GType obj
+ 			goto __finally2;
+ 		}
+ 		rygel_tracker_search_container_get_children_count (self);
+-		self->priv->results = (_tmp5_ = (GeeList*) gee_array_list_new (G_TYPE_ASYNC_RESULT, (GBoxedCopyFunc) g_object_ref, g_object_unref, g_direct_equal), _g_object_unref0 (self->priv->results), _tmp5_);
++		self->priv->results = (_tmp5_ = (GeeList*) gee_array_list_new (G_TYPE_ASYNC_RESULT, (GBoxedCopyFunc) g_object_ref, g_object_unref, NULL), _g_object_unref0 (self->priv->results), _tmp5_);
+ 	}
+ 	goto __finally2;
+ 	__catch2_dbus_gerror:
+diff --git a/src/plugins/tracker/rygel-tracker-search-result.c b/src/plugins/tracker/rygel-tracker-search-result.c
+index 128d8a4..ac02a8e 100644
+--- a/src/plugins/tracker/rygel-tracker-search-result.c
++++ b/src/plugins/tracker/rygel-tracker-search-result.c
+@@ -89,7 +89,7 @@ RygelTrackerSearchResult* rygel_tracker_search_result_construct (GType object_ty
+ 	GeeList* _tmp0_;
+ 	g_return_val_if_fail (search_container != NULL, NULL);
+ 	self = (RygelTrackerSearchResult*) rygel_simple_async_result_construct (object_type, GEE_TYPE_LIST, (GBoxedCopyFunc) g_object_ref, g_object_unref, (GObject*) search_container, callback, callback_target);
+-	((RygelSimpleAsyncResult*) self)->data = (_tmp0_ = (GeeList*) gee_array_list_new (RYGEL_TYPE_MEDIA_OBJECT, (GBoxedCopyFunc) g_object_ref, g_object_unref, g_direct_equal), _g_object_unref0 (((RygelSimpleAsyncResult*) self)->data), _tmp0_);
++	((RygelSimpleAsyncResult*) self)->data = (_tmp0_ = (GeeList*) gee_array_list_new (RYGEL_TYPE_MEDIA_OBJECT, (GBoxedCopyFunc) g_object_ref, g_object_unref, NULL), _g_object_unref0 (((RygelSimpleAsyncResult*) self)->data), _tmp0_);
+ 	return self;
+ }
+ 
+diff --git a/src/rygel/rygel-cmdline-config.c b/src/rygel/rygel-cmdline-config.c
+index 029c40c..5e48bcd 100644
+--- a/src/rygel/rygel-cmdline-config.c
++++ b/src/rygel/rygel-cmdline-config.c
+@@ -576,7 +576,7 @@ static GeeArrayList* rygel_cmdline_config_real_get_string_list (RygelConfigurati
+ 				}
+ 				if (_tmp2_) {
+ 					GeeArrayList* _tmp6_;
+-					value = (_tmp6_ = gee_array_list_new (G_TYPE_STRING, (GBoxedCopyFunc) g_strdup, g_free, g_direct_equal), _g_object_unref0 (value), _tmp6_);
++					value = (_tmp6_ = gee_array_list_new (G_TYPE_STRING, (GBoxedCopyFunc) g_strdup, g_free, NULL), _g_object_unref0 (value), _tmp6_);
+ 					{
+ 						char** _tmp7_;
+ 						char** val_token_collection;
+@@ -755,7 +755,7 @@ static GeeArrayList* rygel_cmdline_config_real_get_int_list (RygelConfiguration*
+ 				}
+ 				if (_tmp2_) {
+ 					GeeArrayList* _tmp6_;
+-					value = (_tmp6_ = gee_array_list_new (G_TYPE_INT, NULL, NULL, g_direct_equal), _g_object_unref0 (value), _tmp6_);
++					value = (_tmp6_ = gee_array_list_new (G_TYPE_INT, NULL, NULL, NULL), _g_object_unref0 (value), _tmp6_);
+ 					{
+ 						char** _tmp7_;
+ 						char** val_token_collection;
+diff --git a/src/rygel/rygel-content-directory.c b/src/rygel/rygel-content-directory.c
+index f22ccbc..2b00b1e 100644
+--- a/src/rygel/rygel-content-directory.c
++++ b/src/rygel/rygel-content-directory.c
+@@ -351,8 +351,8 @@ static void rygel_content_directory_real_constructed (GObject* base) {
+ 		g_clear_error (&_inner_error_);
+ 		return;
+ 	}
+-	self->priv->browses = (_tmp4_ = gee_array_list_new (RYGEL_TYPE_BROWSE, (GBoxedCopyFunc) g_object_ref, g_object_unref, g_direct_equal), _g_object_unref0 (self->priv->browses), _tmp4_);
+-	self->priv->updated_containers = (_tmp5_ = gee_array_list_new (RYGEL_TYPE_MEDIA_CONTAINER, (GBoxedCopyFunc) g_object_ref, g_object_unref, g_direct_equal), _g_object_unref0 (self->priv->updated_containers), _tmp5_);
++	self->priv->browses = (_tmp4_ = gee_array_list_new (RYGEL_TYPE_BROWSE, (GBoxedCopyFunc) g_object_ref, g_object_unref, NULL), _g_object_unref0 (self->priv->browses), _tmp4_);
++	self->priv->updated_containers = (_tmp5_ = gee_array_list_new (RYGEL_TYPE_MEDIA_CONTAINER, (GBoxedCopyFunc) g_object_ref, g_object_unref, NULL), _g_object_unref0 (self->priv->updated_containers), _tmp5_);
+ 	g_signal_connect_object (self->root_container, "container-updated", (GCallback) _rygel_content_directory_on_container_updated_rygel_media_container_container_updated, self, 0);
+ 	self->feature_list = (_tmp6_ = g_strdup ("<?xml version=\"1.0\" encoding=\"UTF-8\"?>" "<Features xmlns=\"urn:schemas-upnp-org:av:avs\" " "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" " "xsi:schemaLocation=\"urn:schemas-upnp-org:av:avs" "http://www.upnp.org/schemas/av/avs-v1-20060531.xsd\">" "</Features>"), _g_free0 (self->feature_list), _tmp6_);
+ 	self->search_caps = (_tmp7_ = g_strdup (""), _g_free0 (self->search_caps), _tmp7_);
+diff --git a/src/rygel/rygel-http-server.c b/src/rygel/rygel-http-server.c
+index 128e811..9673191 100644
+--- a/src/rygel/rygel-http-server.c
++++ b/src/rygel/rygel-http-server.c
+@@ -380,7 +380,7 @@ RygelHTTPServer* rygel_http_server_construct (GType object_type, RygelContentDir
+ 	self->root_container = (_tmp0_ = _g_object_ref0 (content_dir->root_container), _g_object_unref0 (self->root_container), _tmp0_);
+ 	self->context = (_tmp1_ = _g_object_ref0 (gupnp_service_info_get_context ((GUPnPServiceInfo*) content_dir)), _g_object_unref0 (self->context), _tmp1_);
+ 	rygel_state_machine_set_cancellable ((RygelStateMachine*) self, content_dir->cancellable);
+-	self->priv->requests = (_tmp2_ = gee_array_list_new (RYGEL_TYPE_HTTP_REQUEST, (GBoxedCopyFunc) g_object_ref, g_object_unref, g_direct_equal), _g_object_unref0 (self->priv->requests), _tmp2_);
++	self->priv->requests = (_tmp2_ = gee_array_list_new (RYGEL_TYPE_HTTP_REQUEST, (GBoxedCopyFunc) g_object_ref, g_object_unref, NULL), _g_object_unref0 (self->priv->requests), _tmp2_);
+ 	self->priv->path_root = (_tmp3_ = g_strconcat (RYGEL_HTTP_SERVER_SERVER_PATH_PREFIX "/", name, NULL), _g_free0 (self->priv->path_root), _tmp3_);
+ 	return self;
+ }
+diff --git a/src/rygel/rygel-main.c b/src/rygel/rygel-main.c
+index 8ef1dab..bc05092 100644
+--- a/src/rygel/rygel-main.c
++++ b/src/rygel/rygel-main.c
+@@ -333,8 +333,8 @@ static RygelMain* rygel_main_construct (GType object_type, GError** error) {
+ 	self->priv->log_handler = (_tmp0_ = rygel_log_handler_get_default (), _g_object_unref0 (self->priv->log_handler), _tmp0_);
+ 	self->priv->config = (_tmp1_ = (RygelConfiguration*) rygel_meta_config_get_default (), _g_object_unref0 (self->priv->config), _tmp1_);
+ 	self->priv->plugin_loader = (_tmp2_ = rygel_plugin_loader_new (), _g_object_unref0 (self->priv->plugin_loader), _tmp2_);
+-	self->priv->root_devices = (_tmp3_ = gee_array_list_new (RYGEL_TYPE_ROOT_DEVICE, (GBoxedCopyFunc) g_object_ref, g_object_unref, g_direct_equal), _g_object_unref0 (self->priv->root_devices), _tmp3_);
+-	self->priv->factories = (_tmp4_ = gee_array_list_new (RYGEL_TYPE_ROOT_DEVICE_FACTORY, (GBoxedCopyFunc) rygel_root_device_factory_ref, rygel_root_device_factory_unref, g_direct_equal), _g_object_unref0 (self->priv->factories), _tmp4_);
++	self->priv->root_devices = (_tmp3_ = gee_array_list_new (RYGEL_TYPE_ROOT_DEVICE, (GBoxedCopyFunc) g_object_ref, g_object_unref, NULL), _g_object_unref0 (self->priv->root_devices), _tmp3_);
++	self->priv->factories = (_tmp4_ = gee_array_list_new (RYGEL_TYPE_ROOT_DEVICE_FACTORY, (GBoxedCopyFunc) rygel_root_device_factory_ref, rygel_root_device_factory_unref, NULL), _g_object_unref0 (self->priv->factories), _tmp4_);
+ 	self->priv->context_manager = (_tmp5_ = rygel_main_create_context_manager (self), _g_object_unref0 (self->priv->context_manager), _tmp5_);
+ 	self->priv->main_loop = (_tmp6_ = g_main_loop_new (NULL, FALSE), _g_main_loop_unref0 (self->priv->main_loop), _tmp6_);
+ 	self->priv->exit_code = 0;
+@@ -377,7 +377,7 @@ static void rygel_main_on_plugin_loaded (RygelMain* self, RygelPluginLoader* plu
+ 	g_return_if_fail (self != NULL);
+ 	g_return_if_fail (plugin_loader != NULL);
+ 	g_return_if_fail (plugin != NULL);
+-	factories = gee_array_list_new (RYGEL_TYPE_ROOT_DEVICE_FACTORY, (GBoxedCopyFunc) rygel_root_device_factory_ref, rygel_root_device_factory_unref, g_direct_equal);
++	factories = gee_array_list_new (RYGEL_TYPE_ROOT_DEVICE_FACTORY, (GBoxedCopyFunc) rygel_root_device_factory_ref, rygel_root_device_factory_unref, NULL);
+ 	{
+ 		GeeIterator* _factory_it;
+ 		_factory_it = gee_abstract_collection_iterator ((GeeAbstractCollection*) self->priv->factories);
+@@ -514,7 +514,7 @@ static void rygel_main_on_context_available (RygelMain* self, GUPnPContextManage
+ 			return;
+ 		}
+ 		gee_abstract_collection_add ((GeeAbstractCollection*) self->priv->factories, factory);
+-		plugins = gee_array_list_new (RYGEL_TYPE_PLUGIN, (GBoxedCopyFunc) g_object_ref, g_object_unref, g_direct_equal);
++		plugins = gee_array_list_new (RYGEL_TYPE_PLUGIN, (GBoxedCopyFunc) g_object_ref, g_object_unref, NULL);
+ 		{
+ 			GeeCollection* _tmp3_;
+ 			GeeIterator* _tmp4_;
+@@ -561,7 +561,7 @@ static void rygel_main_on_context_unavailable (RygelMain* self, GUPnPContextMana
+ 	g_return_if_fail (manager != NULL);
+ 	g_return_if_fail (context != NULL);
+ 	g_debug ("rygel-main.vala:140: Network context %s (%s) now unavailable.", gssdp_client_get_interface ((GSSDPClient*) context), gssdp_client_get_host_ip ((GSSDPClient*) context));
+-	factory_list = gee_array_list_new (RYGEL_TYPE_ROOT_DEVICE_FACTORY, (GBoxedCopyFunc) rygel_root_device_factory_ref, rygel_root_device_factory_unref, g_direct_equal);
++	factory_list = gee_array_list_new (RYGEL_TYPE_ROOT_DEVICE_FACTORY, (GBoxedCopyFunc) rygel_root_device_factory_ref, rygel_root_device_factory_unref, NULL);
+ 	{
+ 		GeeIterator* _factory_it;
+ 		_factory_it = gee_abstract_collection_iterator ((GeeAbstractCollection*) self->priv->factories);
+@@ -592,7 +592,7 @@ static void rygel_main_on_context_unavailable (RygelMain* self, GUPnPContextMana
+ 		}
+ 		_g_object_unref0 (_factory_it);
+ 	}
+-	device_list = gee_array_list_new (RYGEL_TYPE_ROOT_DEVICE, (GBoxedCopyFunc) g_object_ref, g_object_unref, g_direct_equal);
++	device_list = gee_array_list_new (RYGEL_TYPE_ROOT_DEVICE, (GBoxedCopyFunc) g_object_ref, g_object_unref, NULL);
+ 	{
+ 		GeeIterator* _device_it;
+ 		_device_it = gee_abstract_collection_iterator ((GeeAbstractCollection*) self->priv->root_devices);
+diff --git a/src/rygel/rygel-media-db.c b/src/rygel/rygel-media-db.c
+index 7858946..1a06219 100644
+--- a/src/rygel/rygel-media-db.c
++++ b/src/rygel/rygel-media-db.c
+@@ -1829,7 +1829,7 @@ GeeArrayList* rygel_media_db_get_children (RygelMediaDB* self, const char* conta
+ 	g_return_val_if_fail (container_id != NULL, NULL);
+ 	_inner_error_ = NULL;
+ 	statement = NULL;
+-	children = gee_array_list_new (RYGEL_TYPE_MEDIA_OBJECT, (GBoxedCopyFunc) g_object_ref, g_object_unref, g_direct_equal);
++	children = gee_array_list_new (RYGEL_TYPE_MEDIA_OBJECT, (GBoxedCopyFunc) g_object_ref, g_object_unref, NULL);
+ 	parent = NULL;
+ 	{
+ 		RygelMediaObject* _tmp0_;
+diff --git a/src/rygel/rygel-media-item.c b/src/rygel/rygel-media-item.c
+index 2b88fa2..6953e39 100644
+--- a/src/rygel/rygel-media-item.c
++++ b/src/rygel/rygel-media-item.c
+@@ -254,7 +254,7 @@ RygelMediaItem* rygel_media_item_construct (GType object_type, const char* id, R
+ 	((RygelMediaObject*) self)->parent = parent;
+ 	((RygelMediaObject*) self)->title = (_tmp1_ = g_strdup (title), _g_free0 (((RygelMediaObject*) self)->title), _tmp1_);
+ 	self->upnp_class = (_tmp2_ = g_strdup (upnp_class), _g_free0 (self->upnp_class), _tmp2_);
+-	self->thumbnails = (_tmp3_ = gee_array_list_new (RYGEL_TYPE_THUMBNAIL, (GBoxedCopyFunc) rygel_icon_info_ref, rygel_icon_info_unref, g_direct_equal), _g_object_unref0 (self->thumbnails), _tmp3_);
++	self->thumbnails = (_tmp3_ = gee_array_list_new (RYGEL_TYPE_THUMBNAIL, (GBoxedCopyFunc) rygel_icon_info_ref, rygel_icon_info_unref, NULL), _g_object_unref0 (self->thumbnails), _tmp3_);
+ 	return self;
+ }
+ 
+diff --git a/src/rygel/rygel-media-object-search.c b/src/rygel/rygel-media-object-search.c
+index a0fc11f..7533649 100644
+--- a/src/rygel/rygel-media-object-search.c
++++ b/src/rygel/rygel-media-object-search.c
+@@ -209,7 +209,9 @@ static void rygel_media_object_search_on_object_found (RygelMediaObjectSearch* s
+ 		}
+ 		self->media_object = (_tmp2_ = _tmp1_, _g_object_unref0 (self->media_object), _tmp2_);
+ 		if (self->media_object == NULL) {
+-			gee_abstract_list_remove_at ((GeeAbstractList*) self->priv->containers, 0);
++			RygelMediaContainer* _tmp3_;
++			_tmp3_ = (RygelMediaContainer*) gee_abstract_list_remove_at ((GeeAbstractList*) self->priv->containers, 0);
++			_g_object_unref0 (_tmp3_);
+ 			rygel_state_machine_run ((RygelStateMachine*) self);
+ 		} else {
+ 			g_signal_emit_by_name ((RygelStateMachine*) self, "completed");
+@@ -223,8 +225,8 @@ static void rygel_media_object_search_on_object_found (RygelMediaObjectSearch* s
+ 		err = _inner_error_;
+ 		_inner_error_ = NULL;
+ 		{
+-			GError* _tmp3_;
+-			self->error = (_tmp3_ = _g_error_copy0 (err), _g_error_free0 (self->error), _tmp3_);
++			GError* _tmp4_;
++			self->error = (_tmp4_ = _g_error_copy0 (err), _g_error_free0 (self->error), _tmp4_);
+ 			g_signal_emit_by_name ((RygelStateMachine*) self, "completed");
+ 			_g_error_free0 (err);
+ 		}
+diff --git a/src/rygel/rygel-media-object.c b/src/rygel/rygel-media-object.c
+index db943a9..3c27789 100644
+--- a/src/rygel/rygel-media-object.c
++++ b/src/rygel/rygel-media-object.c
+@@ -98,7 +98,7 @@ static GObject * rygel_media_object_constructor (GType type, guint n_construct_p
+ 	self = RYGEL_MEDIA_OBJECT (obj);
+ 	{
+ 		GeeArrayList* _tmp0_;
+-		self->uris = (_tmp0_ = gee_array_list_new (G_TYPE_STRING, (GBoxedCopyFunc) g_strdup, g_free, g_direct_equal), _g_object_unref0 (self->uris), _tmp0_);
++		self->uris = (_tmp0_ = gee_array_list_new (G_TYPE_STRING, (GBoxedCopyFunc) g_strdup, g_free, NULL), _g_object_unref0 (self->uris), _tmp0_);
+ 	}
+ 	return obj;
+ }
+diff --git a/src/rygel/rygel-meta-config.c b/src/rygel/rygel-meta-config.c
+index e09dddb..6e193c5 100644
+--- a/src/rygel/rygel-meta-config.c
++++ b/src/rygel/rygel-meta-config.c
+@@ -201,7 +201,7 @@ RygelMetaConfig* rygel_meta_config_construct (GType object_type) {
+ 	RygelCmdlineConfig* _tmp1_;
+ 	_inner_error_ = NULL;
+ 	self = (RygelMetaConfig*) g_object_new (object_type, NULL);
+-	self->priv->configs = (_tmp0_ = gee_array_list_new (RYGEL_TYPE_CONFIGURATION, (GBoxedCopyFunc) g_object_ref, g_object_unref, g_direct_equal), _g_object_unref0 (self->priv->configs), _tmp0_);
++	self->priv->configs = (_tmp0_ = gee_array_list_new (RYGEL_TYPE_CONFIGURATION, (GBoxedCopyFunc) g_object_ref, g_object_unref, NULL), _g_object_unref0 (self->priv->configs), _tmp0_);
+ 	gee_abstract_collection_add ((GeeAbstractCollection*) self->priv->configs, (RygelConfiguration*) (_tmp1_ = rygel_cmdline_config_get_default ()));
+ 	_g_object_unref0 (_tmp1_);
+ 	{
+diff --git a/src/rygel/rygel-plugin-loader.c b/src/rygel/rygel-plugin-loader.c
+index fc660c4..85cda53 100644
+--- a/src/rygel/rygel-plugin-loader.c
++++ b/src/rygel/rygel-plugin-loader.c
+@@ -153,7 +153,7 @@ RygelPluginLoader* rygel_plugin_loader_construct (GType object_type) {
+ 	RygelPluginLoader * self;
+ 	GeeHashMap* _tmp0_;
+ 	self = (RygelPluginLoader*) g_object_new (object_type, NULL);
+-	self->priv->plugin_hash = (_tmp0_ = gee_hash_map_new (G_TYPE_STRING, (GBoxedCopyFunc) g_strdup, g_free, RYGEL_TYPE_PLUGIN, (GBoxedCopyFunc) g_object_ref, g_object_unref, g_str_hash, g_str_equal, g_direct_equal), _g_object_unref0 (self->priv->plugin_hash), _tmp0_);
++	self->priv->plugin_hash = (_tmp0_ = gee_hash_map_new (G_TYPE_STRING, (GBoxedCopyFunc) g_strdup, g_free, RYGEL_TYPE_PLUGIN, (GBoxedCopyFunc) g_object_ref, g_object_unref, g_str_hash, g_str_equal, NULL), _g_object_unref0 (self->priv->plugin_hash), _tmp0_);
+ 	return self;
+ }
+ 
+@@ -201,7 +201,7 @@ RygelPlugin* rygel_plugin_loader_get_plugin_by_name (RygelPluginLoader* self, co
+ GeeCollection* rygel_plugin_loader_list_plugins (RygelPluginLoader* self) {
+ 	GeeCollection* result;
+ 	g_return_val_if_fail (self != NULL, NULL);
+-	result = gee_abstract_map_get_values ((GeeAbstractMap*) self->priv->plugin_hash);
++	result = gee_map_get_values ((GeeMap*) self->priv->plugin_hash);
+ 	return result;
+ }
+ 
+diff --git a/src/rygel/rygel-plugin.c b/src/rygel/rygel-plugin.c
+index 42ba027..773d3cb 100644
+--- a/src/rygel/rygel-plugin.c
++++ b/src/rygel/rygel-plugin.c
+@@ -170,8 +170,8 @@ RygelPlugin* rygel_plugin_construct (GType object_type, const char* desc_path, c
+ 		char* _tmp3_;
+ 		self->title = (_tmp3_ = g_strdup (name), _g_free0 (self->title), _tmp3_);
+ 	}
+-	self->resource_infos = (_tmp4_ = gee_array_list_new (RYGEL_TYPE_RESOURCE_INFO, (GBoxedCopyFunc) rygel_resource_info_ref, rygel_resource_info_unref, g_direct_equal), _g_object_unref0 (self->resource_infos), _tmp4_);
+-	self->icon_infos = (_tmp5_ = gee_array_list_new (RYGEL_TYPE_ICON_INFO, (GBoxedCopyFunc) rygel_icon_info_ref, rygel_icon_info_unref, g_direct_equal), _g_object_unref0 (self->icon_infos), _tmp5_);
++	self->resource_infos = (_tmp4_ = gee_array_list_new (RYGEL_TYPE_RESOURCE_INFO, (GBoxedCopyFunc) rygel_resource_info_ref, rygel_resource_info_unref, NULL), _g_object_unref0 (self->resource_infos), _tmp4_);
++	self->icon_infos = (_tmp5_ = gee_array_list_new (RYGEL_TYPE_ICON_INFO, (GBoxedCopyFunc) rygel_icon_info_ref, rygel_icon_info_unref, NULL), _g_object_unref0 (self->icon_infos), _tmp5_);
+ 	return self;
+ }
+ 
+diff --git a/src/rygel/rygel-root-device.c b/src/rygel/rygel-root-device.c
+index 45f67da..d95586e 100644
+--- a/src/rygel/rygel-root-device.c
++++ b/src/rygel/rygel-root-device.c
+@@ -179,7 +179,7 @@ RygelRootDevice* rygel_root_device_construct (GType object_type, GUPnPContext* c
+ 	g_value_set_string (&__params_it->value, description_dir);
+ 	__params_it++;
+ 	self = g_object_newv (object_type, __params_it - __params, __params);
+-	self->services = (_tmp0_ = gee_array_list_new (GUPNP_TYPE_SERVICE_INFO, (GBoxedCopyFunc) g_object_ref, g_object_unref, g_direct_equal), _g_object_unref0 (self->services), _tmp0_);
++	self->services = (_tmp0_ = gee_array_list_new (GUPNP_TYPE_SERVICE_INFO, (GBoxedCopyFunc) g_object_ref, g_object_unref, NULL), _g_object_unref0 (self->services), _tmp0_);
+ 	{
+ 		GeeIterator* _info_it;
+ 		_info_it = gee_abstract_collection_iterator ((GeeAbstractCollection*) plugin->resource_infos);
+diff --git a/src/rygel/rygel-simple-container.c b/src/rygel/rygel-simple-container.c
+index 8b4c026..1cffb39 100644
+--- a/src/rygel/rygel-simple-container.c
++++ b/src/rygel/rygel-simple-container.c
+@@ -222,8 +222,8 @@ RygelSimpleContainer* rygel_simple_container_construct (GType object_type, const
+ 	g_return_val_if_fail (id != NULL, NULL);
+ 	g_return_val_if_fail (title != NULL, NULL);
+ 	self = (RygelSimpleContainer*) rygel_media_container_construct (object_type, id, parent, title, (guint) 0);
+-	self->children = (_tmp0_ = gee_array_list_new (RYGEL_TYPE_MEDIA_OBJECT, (GBoxedCopyFunc) g_object_ref, g_object_unref, g_direct_equal), _g_object_unref0 (self->children), _tmp0_);
+-	self->priv->searches = (_tmp1_ = gee_array_list_new (RYGEL_TYPE_MEDIA_OBJECT_SEARCH, (GBoxedCopyFunc) g_object_ref, g_object_unref, g_direct_equal), _g_object_unref0 (self->priv->searches), _tmp1_);
++	self->children = (_tmp0_ = gee_array_list_new (RYGEL_TYPE_MEDIA_OBJECT, (GBoxedCopyFunc) g_object_ref, g_object_unref, NULL), _g_object_unref0 (self->children), _tmp0_);
++	self->priv->searches = (_tmp1_ = gee_array_list_new (RYGEL_TYPE_MEDIA_OBJECT_SEARCH, (GBoxedCopyFunc) g_object_ref, g_object_unref, NULL), _g_object_unref0 (self->priv->searches), _tmp1_);
+ 	return self;
+ }
+ 
+@@ -337,7 +337,7 @@ static void rygel_simple_container_real_find_object (RygelMediaContainer* base,
+ 	} else {
+ 		GeeArrayList* containers;
+ 		RygelMediaObjectSearch* search;
+-		containers = gee_array_list_new (RYGEL_TYPE_MEDIA_CONTAINER, (GBoxedCopyFunc) g_object_ref, g_object_unref, g_direct_equal);
++		containers = gee_array_list_new (RYGEL_TYPE_MEDIA_CONTAINER, (GBoxedCopyFunc) g_object_ref, g_object_unref, NULL);
+ 		{
+ 			GeeIterator* _tmp_it;
+ 			_tmp_it = gee_abstract_collection_iterator ((GeeAbstractCollection*) self->children);
+diff --git a/src/rygel/rygel-transcode-manager.c b/src/rygel/rygel-transcode-manager.c
+index 74c588f..4ca941c 100644
+--- a/src/rygel/rygel-transcode-manager.c
++++ b/src/rygel/rygel-transcode-manager.c
+@@ -263,7 +263,7 @@ RygelTranscodeManager* rygel_transcode_manager_construct (GType object_type, GEr
+ 	gboolean _tmp1_;
+ 	_inner_error_ = NULL;
+ 	self = (RygelTranscodeManager*) g_object_new (object_type, NULL);
+-	self->priv->transcoders = (_tmp0_ = gee_array_list_new (RYGEL_TYPE_TRANSCODER, (GBoxedCopyFunc) g_object_ref, g_object_unref, g_direct_equal), _g_object_unref0 (self->priv->transcoders), _tmp0_);
++	self->priv->transcoders = (_tmp0_ = gee_array_list_new (RYGEL_TYPE_TRANSCODER, (GBoxedCopyFunc) g_object_ref, g_object_unref, NULL), _g_object_unref0 (self->priv->transcoders), _tmp0_);
+ 	config = rygel_meta_config_get_default ();
+ 	_tmp1_ = rygel_configuration_get_transcoding ((RygelConfiguration*) config, &_inner_error_);
+ 	if (_inner_error_ != NULL) {
+diff --git a/src/rygel/rygel-user-config.c b/src/rygel/rygel-user-config.c
+index 64baa51..05eebca 100644
+--- a/src/rygel/rygel-user-config.c
++++ b/src/rygel/rygel-user-config.c
+@@ -602,7 +602,7 @@ static GeeArrayList* rygel_user_config_real_get_string_list (RygelConfiguration*
+ 	g_return_val_if_fail (section != NULL, NULL);
+ 	g_return_val_if_fail (key != NULL, NULL);
+ 	_inner_error_ = NULL;
+-	str_list = gee_array_list_new (G_TYPE_STRING, (GBoxedCopyFunc) g_strdup, g_free, g_direct_equal);
++	str_list = gee_array_list_new (G_TYPE_STRING, (GBoxedCopyFunc) g_strdup, g_free, NULL);
+ 	strings = (_tmp1_ = g_key_file_get_string_list (self->key_file, section, key, &_tmp0_, &_inner_error_), strings_length1 = _tmp0_, strings_size = strings_length1, _tmp1_);
+ 	if (_inner_error_ != NULL) {
+ 		g_propagate_error (error, _inner_error_);
+@@ -682,7 +682,7 @@ static GeeArrayList* rygel_user_config_real_get_int_list (RygelConfiguration* ba
+ 	g_return_val_if_fail (section != NULL, NULL);
+ 	g_return_val_if_fail (key != NULL, NULL);
+ 	_inner_error_ = NULL;
+-	int_list = gee_array_list_new (G_TYPE_INT, NULL, NULL, g_direct_equal);
++	int_list = gee_array_list_new (G_TYPE_INT, NULL, NULL, NULL);
+ 	ints = (_tmp1_ = g_key_file_get_integer_list (self->key_file, section, key, &_tmp0_, &_inner_error_), ints_length1 = _tmp0_, ints_size = ints_length1, _tmp1_);
+ 	if (_inner_error_ != NULL) {
+ 		g_propagate_error (error, _inner_error_);
+diff --git a/src/ui/rygel-media-export-pref-section.c b/src/ui/rygel-media-export-pref-section.c
+index 3a93913..80f3227 100644
+--- a/src/ui/rygel-media-export-pref-section.c
++++ b/src/ui/rygel-media-export-pref-section.c
+@@ -266,7 +266,7 @@ static void rygel_media_export_pref_section_real_save (RygelPreferencesSection*
+ 	GeeArrayList* uri_list;
+ 	self = (RygelMediaExportPrefSection*) base;
+ 	RYGEL_PREFERENCES_SECTION_CLASS (rygel_media_export_pref_section_parent_class)->save ((RygelPreferencesSection*) RYGEL_PLUGIN_PREF_SECTION (self));
+-	uri_list = gee_array_list_new (G_TYPE_STRING, (GBoxedCopyFunc) g_strdup, g_free, g_direct_equal);
++	uri_list = gee_array_list_new (G_TYPE_STRING, (GBoxedCopyFunc) g_strdup, g_free, NULL);
+ 	if (gtk_tree_model_get_iter_first ((GtkTreeModel*) self->priv->liststore, &iter)) {
+ 		{
+ 			gboolean _tmp0_;
+@@ -350,7 +350,7 @@ static void rygel_media_export_pref_section_on_remove_button_clicked (RygelMedia
+ 	g_return_if_fail (button != NULL);
+ 	selection = _g_object_ref0 (gtk_tree_view_get_selection (self->priv->treeview));
+ 	rows = gtk_tree_selection_get_selected_rows (selection, NULL);
+-	row_refs = gee_array_list_new (GTK_TYPE_TREE_ROW_REFERENCE, (GBoxedCopyFunc) gtk_tree_row_reference_copy, gtk_tree_row_reference_free, g_direct_equal);
++	row_refs = gee_array_list_new (GTK_TYPE_TREE_ROW_REFERENCE, (GBoxedCopyFunc) gtk_tree_row_reference_copy, gtk_tree_row_reference_free, NULL);
+ 	{
+ 		GList* row_collection;
+ 		GList* row_it;
+diff --git a/src/ui/rygel-plugin-pref-section.c b/src/ui/rygel-plugin-pref-section.c
+index b9cde9a..d27e896 100644
+--- a/src/ui/rygel-plugin-pref-section.c
++++ b/src/ui/rygel-plugin-pref-section.c
+@@ -194,7 +194,7 @@ RygelPluginPrefSection* rygel_plugin_pref_section_construct (GType object_type,
+ 	g_return_val_if_fail (name != NULL, NULL);
+ 	_inner_error_ = NULL;
+ 	self = (RygelPluginPrefSection*) rygel_preferences_section_construct (object_type, config, name);
+-	self->widgets = (_tmp0_ = gee_array_list_new (GTK_TYPE_WIDGET, (GBoxedCopyFunc) g_object_ref, g_object_unref, g_direct_equal), _g_object_unref0 (self->widgets), _tmp0_);
++	self->widgets = (_tmp0_ = gee_array_list_new (GTK_TYPE_WIDGET, (GBoxedCopyFunc) g_object_ref, g_object_unref, NULL), _g_object_unref0 (self->widgets), _tmp0_);
+ 	self->priv->enabled_check = (_tmp3_ = _g_object_ref0 (GTK_CHECK_BUTTON (gtk_builder_get_object (builder, _tmp2_ = g_strconcat (_tmp1_ = g_utf8_strdown (name, -1), RYGEL_PLUGIN_PREF_SECTION_ENABLED_CHECK, NULL)))), _g_object_unref0 (self->priv->enabled_check), _tmp3_);
+ 	_g_free0 (_tmp2_);
+ 	_g_free0 (_tmp1_);
+diff --git a/src/ui/rygel-preferences-dialog.c b/src/ui/rygel-preferences-dialog.c
+index b93d2ad..f1bf0c9 100644
+--- a/src/ui/rygel-preferences-dialog.c
++++ b/src/ui/rygel-preferences-dialog.c
+@@ -175,7 +175,7 @@ RygelPreferencesDialog* rygel_preferences_dialog_construct (GType object_type, G
+ 	}
+ 	self->priv->dialog = (_tmp3_ = _g_object_ref0 (GTK_DIALOG (gtk_builder_get_object (self->priv->builder, RYGEL_PREFERENCES_DIALOG_DIALOG))), _g_object_unref0 (self->priv->dialog), _tmp3_);
+ 	g_assert (self->priv->dialog != NULL);
+-	self->priv->sections = (_tmp4_ = gee_array_list_new (RYGEL_TYPE_PREFERENCES_SECTION, (GBoxedCopyFunc) g_object_ref, g_object_unref, g_direct_equal), _g_object_unref0 (self->priv->sections), _tmp4_);
++	self->priv->sections = (_tmp4_ = gee_array_list_new (RYGEL_TYPE_PREFERENCES_SECTION, (GBoxedCopyFunc) g_object_ref, g_object_unref, NULL), _g_object_unref0 (self->priv->sections), _tmp4_);
+ 	_tmp5_ = rygel_general_pref_section_new (self->priv->builder, self->priv->config, &_inner_error_);
+ 	if (_inner_error_ != NULL) {
+ 		g_propagate_error (error, _inner_error_);
+-- 
+1.6.4.3
+

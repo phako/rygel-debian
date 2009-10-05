@@ -6,8 +6,10 @@ rygel (0.4.2-1) UNRELEASED; urgency=low
       fixed upstream.
   * Add debian/README.source
   * Spell gstreamer as GStreamer in package description
+  * debian/control: bump required version of libgee to >= 0.5.0.
+  * update-patch-series: add port to libgee-0.5 patch.
 
- -- Andreas Henriksson <andreas@fatal.se>  Fri, 02 Oct 2009 17:45:12 +0200
+ -- Andreas Henriksson <andreas@fatal.se>  Mon, 05 Oct 2009 08:55:23 +0200
 
 rygel (0.4.1-2) unstable; urgency=low
 

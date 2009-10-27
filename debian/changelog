@@ -1,3 +1,9 @@
+rygel (0.4.4-1) UNRELEASED; urgency=low
+
+  * New Upstream Version
+
+ -- Marc-André Lureau <marcandre.lureau@gmail.com>  Tue, 27 Oct 2009 17:40:52 +0100
+
 rygel (0.4.2-1) unstable; urgency=low
 
   * New upstream release

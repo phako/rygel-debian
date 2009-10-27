@@ -7,8 +7,10 @@ rygel (0.4.4-1) UNRELEASED; urgency=low
 
   [ Andreas Henriksson ]
   * Update debian/copyright w.r.t. gst-renderer and convert to DEP5
+  * Add rygel-gst-renderer package.
+  * Add tight rygel dependency to plugin packages.
 
- -- Andreas Henriksson <andreas@fatal.se>  Tue, 27 Oct 2009 21:33:55 +0100
+ -- Andreas Henriksson <andreas@fatal.se>  Tue, 27 Oct 2009 22:08:14 +0100
 
 rygel (0.4.2-1) unstable; urgency=low
 

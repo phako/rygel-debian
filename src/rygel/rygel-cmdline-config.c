@@ -576,7 +576,7 @@ static GeeArrayList* rygel_cmdline_config_real_get_string_list (RygelConfigurati
 				}
 				if (_tmp2_) {
 					GeeArrayList* _tmp6_;
-					value = (_tmp6_ = gee_array_list_new (G_TYPE_STRING, (GBoxedCopyFunc) g_strdup, g_free, g_direct_equal), _g_object_unref0 (value), _tmp6_);
+					value = (_tmp6_ = gee_array_list_new (G_TYPE_STRING, (GBoxedCopyFunc) g_strdup, g_free, NULL), _g_object_unref0 (value), _tmp6_);
 					{
 						char** _tmp7_;
 						char** val_token_collection;
@@ -755,7 +755,7 @@ static GeeArrayList* rygel_cmdline_config_real_get_int_list (RygelConfiguration*
 				}
 				if (_tmp2_) {
 					GeeArrayList* _tmp6_;
-					value = (_tmp6_ = gee_array_list_new (G_TYPE_INT, NULL, NULL, g_direct_equal), _g_object_unref0 (value), _tmp6_);
+					value = (_tmp6_ = gee_array_list_new (G_TYPE_INT, NULL, NULL, NULL), _g_object_unref0 (value), _tmp6_);
 					{
 						char** _tmp7_;
 						char** val_token_collection;

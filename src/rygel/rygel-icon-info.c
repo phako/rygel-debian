@@ -49,7 +49,7 @@ struct _RygelIconInfo {
 	volatile int ref_count;
 	RygelIconInfoPrivate * priv;
 	char* mime_type;
-	char* path;
+	char* uri;
 	glong size;
 	gint width;
 	gint height;
@@ -86,11 +86,9 @@ static void rygel_icon_info_finalize (RygelIconInfo* obj);
 RygelIconInfo* rygel_icon_info_construct (GType object_type, const char* mime_type) {
 	RygelIconInfo* self;
 	char* _tmp0_;
-	char* _tmp1_;
 	g_return_val_if_fail (mime_type != NULL, NULL);
 	self = (RygelIconInfo*) g_type_create_instance (object_type);
 	self->mime_type = (_tmp0_ = g_strdup (mime_type), _g_free0 (self->mime_type), _tmp0_);
-	self->path = (_tmp1_ = g_strdup (self->path), _g_free0 (self->path), _tmp1_);
 	return self;
 }
 
@@ -212,7 +210,7 @@ static void rygel_icon_info_finalize (RygelIconInfo* obj) {
 	RygelIconInfo * self;
 	self = RYGEL_ICON_INFO (obj);
 	_g_free0 (self->mime_type);
-	_g_free0 (self->path);
+	_g_free0 (self->uri);
 }
 
 

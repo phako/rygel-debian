@@ -263,13 +263,13 @@ RygelTranscodeManager* rygel_transcode_manager_construct (GType object_type, GEr
 	gboolean _tmp1_;
 	_inner_error_ = NULL;
 	self = (RygelTranscodeManager*) g_object_new (object_type, NULL);
-	self->priv->transcoders = (_tmp0_ = gee_array_list_new (RYGEL_TYPE_TRANSCODER, (GBoxedCopyFunc) g_object_ref, g_object_unref, g_direct_equal), _g_object_unref0 (self->priv->transcoders), _tmp0_);
+	self->priv->transcoders = (_tmp0_ = gee_array_list_new (RYGEL_TYPE_TRANSCODER, (GBoxedCopyFunc) g_object_ref, g_object_unref, NULL), _g_object_unref0 (self->priv->transcoders), _tmp0_);
 	config = rygel_meta_config_get_default ();
 	_tmp1_ = rygel_configuration_get_transcoding ((RygelConfiguration*) config, &_inner_error_);
 	if (_inner_error_ != NULL) {
 		g_propagate_error (error, _inner_error_);
 		_g_object_unref0 (config);
-		return;
+		return NULL;
 	}
 	if (_tmp1_) {
 		gboolean _tmp2_;
@@ -279,7 +279,7 @@ RygelTranscodeManager* rygel_transcode_manager_construct (GType object_type, GEr
 		if (_inner_error_ != NULL) {
 			g_propagate_error (error, _inner_error_);
 			_g_object_unref0 (config);
-			return;
+			return NULL;
 		}
 		if (_tmp2_) {
 			RygelL16Transcoder* _tmp3_;
@@ -290,7 +290,7 @@ RygelTranscodeManager* rygel_transcode_manager_construct (GType object_type, GEr
 		if (_inner_error_ != NULL) {
 			g_propagate_error (error, _inner_error_);
 			_g_object_unref0 (config);
-			return;
+			return NULL;
 		}
 		if (_tmp4_) {
 			RygelMP3Transcoder* _tmp5_;
@@ -301,7 +301,7 @@ RygelTranscodeManager* rygel_transcode_manager_construct (GType object_type, GEr
 		if (_inner_error_ != NULL) {
 			g_propagate_error (error, _inner_error_);
 			_g_object_unref0 (config);
-			return;
+			return NULL;
 		}
 		if (_tmp6_) {
 			RygelMP2TSTranscoder* _tmp7_;

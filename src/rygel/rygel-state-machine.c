@@ -39,7 +39,8 @@ typedef struct _RygelStateMachineIface RygelStateMachineIface;
 
 struct _RygelStateMachineIface {
 	GTypeInterface parent_iface;
-	void (*run) (RygelStateMachine* self);
+	void (*run) (RygelStateMachine* self, GAsyncReadyCallback _callback_, gpointer _user_data_);
+	void (*run_finish) (RygelStateMachine* self, GAsyncResult* _res_);
 	GCancellable* (*get_cancellable) (RygelStateMachine* self);
 	void (*set_cancellable) (RygelStateMachine* self, GCancellable* value);
 };
@@ -47,14 +48,18 @@ struct _RygelStateMachineIface {
 
 
 GType rygel_state_machine_get_type (void);
-void rygel_state_machine_run (RygelStateMachine* self);
 GCancellable* rygel_state_machine_get_cancellable (RygelStateMachine* self);
 void rygel_state_machine_set_cancellable (RygelStateMachine* self, GCancellable* value);
 
 
 
-void rygel_state_machine_run (RygelStateMachine* self) {
-	RYGEL_STATE_MACHINE_GET_INTERFACE (self)->run (self);
+void rygel_state_machine_run (RygelStateMachine* self, GAsyncReadyCallback _callback_, gpointer _user_data_) {
+	RYGEL_STATE_MACHINE_GET_INTERFACE (self)->run (self, _callback_, _user_data_);
+}
+
+
+void rygel_state_machine_run_finish (RygelStateMachine* self, GAsyncResult* _res_) {
+	RYGEL_STATE_MACHINE_GET_INTERFACE (self)->run_finish (self, _res_);
 }
 
 

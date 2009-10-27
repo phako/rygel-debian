@@ -52,7 +52,8 @@ typedef struct _RygelHTTPResponsePrivate RygelHTTPResponsePrivate;
 
 struct _RygelStateMachineIface {
 	GTypeInterface parent_iface;
-	void (*run) (RygelStateMachine* self);
+	void (*run) (RygelStateMachine* self, GAsyncReadyCallback _callback_, gpointer _user_data_);
+	void (*run_finish) (RygelStateMachine* self, GAsyncResult* _res_);
 	GCancellable* (*get_cancellable) (RygelStateMachine* self);
 	void (*set_cancellable) (RygelStateMachine* self, GCancellable* value);
 };
@@ -65,7 +66,8 @@ struct _RygelHTTPResponse {
 
 struct _RygelHTTPResponseClass {
 	GObjectClass parent_class;
-	void (*run) (RygelHTTPResponse* self);
+	void (*run) (RygelHTTPResponse* self, GAsyncReadyCallback _callback_, gpointer _user_data_);
+	void (*run_finish) (RygelHTTPResponse* self, GAsyncResult* _res_);
 	void (*end) (RygelHTTPResponse* self, gboolean aborted, guint status);
 };
 
@@ -91,12 +93,10 @@ void rygel_state_machine_set_cancellable (RygelStateMachine* self, GCancellable*
 static void rygel_http_response_on_request_aborted (RygelHTTPResponse* self, SoupServer* server, SoupMessage* msg, SoupClientContext* client);
 static void _rygel_http_response_on_request_aborted_soup_server_request_aborted (SoupServer* _sender, SoupMessage* msg, SoupClientContext* client, gpointer self);
 SoupServer* rygel_http_response_get_server (RygelHTTPResponse* self);
-RygelHTTPResponse* rygel_http_response_construct (GType object_type, SoupServer* server, SoupMessage* msg, gboolean partial, GCancellable* cancellable);
 GCancellable* rygel_state_machine_get_cancellable (RygelStateMachine* self);
 static void rygel_http_response_on_cancelled (RygelHTTPResponse* self, GCancellable* cancellable);
 static void _rygel_http_response_on_cancelled_g_cancellable_cancelled (GCancellable* _sender, gpointer self);
-void rygel_http_response_run (RygelHTTPResponse* self);
-static void rygel_http_response_real_run (RygelHTTPResponse* self);
+RygelHTTPResponse* rygel_http_response_construct (GType object_type, SoupServer* server, SoupMessage* msg, gboolean partial, GCancellable* cancellable);
 void rygel_http_response_end (RygelHTTPResponse* self, gboolean aborted, guint status);
 void rygel_http_response_push_data (RygelHTTPResponse* self, void* data, gsize length);
 static void rygel_http_response_real_end (RygelHTTPResponse* self, gboolean aborted, guint status);
@@ -116,6 +116,11 @@ static void _rygel_http_response_on_request_aborted_soup_server_request_aborted 
 }
 
 
+static void _rygel_http_response_on_cancelled_g_cancellable_cancelled (GCancellable* _sender, gpointer self) {
+	rygel_http_response_on_cancelled (self, _sender);
+}
+
+
 RygelHTTPResponse* rygel_http_response_construct (GType object_type, SoupServer* server, SoupMessage* msg, gboolean partial, GCancellable* cancellable) {
 	RygelHTTPResponse * self;
 	SoupMessage* _tmp0_;
@@ -132,25 +137,20 @@ RygelHTTPResponse* rygel_http_response_construct (GType object_type, SoupServer*
 	}
 	soup_message_body_set_accumulate (self->msg->response_body, FALSE);
 	g_signal_connect_object (self->priv->_server, "request-aborted", (GCallback) _rygel_http_response_on_request_aborted_soup_server_request_aborted, self, 0);
+	if (rygel_state_machine_get_cancellable ((RygelStateMachine*) self) != NULL) {
+		g_signal_connect_object (rygel_state_machine_get_cancellable ((RygelStateMachine*) self), "cancelled", (GCallback) _rygel_http_response_on_cancelled_g_cancellable_cancelled, self, 0);
+	}
 	return self;
 }
 
 
-static void _rygel_http_response_on_cancelled_g_cancellable_cancelled (GCancellable* _sender, gpointer self) {
-	rygel_http_response_on_cancelled (self, _sender);
+void rygel_http_response_run (RygelHTTPResponse* self, GAsyncReadyCallback _callback_, gpointer _user_data_) {
+	RYGEL_HTTP_RESPONSE_GET_CLASS (self)->run (self, _callback_, _user_data_);
 }
 
 
-static void rygel_http_response_real_run (RygelHTTPResponse* self) {
-	g_return_if_fail (self != NULL);
-	if (rygel_state_machine_get_cancellable ((RygelStateMachine*) self) != NULL) {
-		g_signal_connect_object (rygel_state_machine_get_cancellable ((RygelStateMachine*) self), "cancelled", (GCallback) _rygel_http_response_on_cancelled_g_cancellable_cancelled, self, 0);
-	}
-}
-
-
-void rygel_http_response_run (RygelHTTPResponse* self) {
-	RYGEL_HTTP_RESPONSE_GET_CLASS (self)->run (self);
+void rygel_http_response_run_finish (RygelHTTPResponse* self, GAsyncResult* _res_) {
+	RYGEL_HTTP_RESPONSE_GET_CLASS (self)->run_finish (self, _res_);
 }
 
 
@@ -230,7 +230,6 @@ static void rygel_http_response_real_set_cancellable (RygelStateMachine* base, G
 static void rygel_http_response_class_init (RygelHTTPResponseClass * klass) {
 	rygel_http_response_parent_class = g_type_class_peek_parent (klass);
 	g_type_class_add_private (klass, sizeof (RygelHTTPResponsePrivate));
-	RYGEL_HTTP_RESPONSE_CLASS (klass)->run = rygel_http_response_real_run;
 	RYGEL_HTTP_RESPONSE_CLASS (klass)->end = rygel_http_response_real_end;
 	G_OBJECT_CLASS (klass)->get_property = rygel_http_response_get_property;
 	G_OBJECT_CLASS (klass)->set_property = rygel_http_response_set_property;
@@ -243,6 +242,7 @@ static void rygel_http_response_class_init (RygelHTTPResponseClass * klass) {
 static void rygel_http_response_rygel_state_machine_interface_init (RygelStateMachineIface * iface) {
 	rygel_http_response_rygel_state_machine_parent_iface = g_type_interface_peek_parent (iface);
 	iface->run = (void (*)(RygelStateMachine*)) rygel_http_response_run;
+	iface->run_finish = rygel_http_response_run_finish;
 	iface->get_cancellable = rygel_http_response_real_get_cancellable;
 	iface->set_cancellable = rygel_http_response_real_set_cancellable;
 }

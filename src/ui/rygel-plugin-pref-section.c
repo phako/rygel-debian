@@ -129,24 +129,24 @@ static char* string_replace (const char* self, const char* old, const char* repl
 		regex = (_tmp1_ = g_regex_new (_tmp0_ = g_regex_escape_string (old, -1), 0, 0, &_inner_error_), _g_free0 (_tmp0_), _tmp1_);
 		if (_inner_error_ != NULL) {
 			if (_inner_error_->domain == G_REGEX_ERROR) {
-				goto __catch9_g_regex_error;
+				goto __catch10_g_regex_error;
 			}
-			goto __finally9;
+			goto __finally10;
 		}
 		_tmp2_ = g_regex_replace_literal (regex, self, (glong) (-1), 0, replacement, 0, &_inner_error_);
 		if (_inner_error_ != NULL) {
 			_g_regex_unref0 (regex);
 			if (_inner_error_->domain == G_REGEX_ERROR) {
-				goto __catch9_g_regex_error;
+				goto __catch10_g_regex_error;
 			}
-			goto __finally9;
+			goto __finally10;
 		}
 		result = _tmp2_;
 		_g_regex_unref0 (regex);
 		return result;
 	}
-	goto __finally9;
-	__catch9_g_regex_error:
+	goto __finally10;
+	__catch10_g_regex_error:
 	{
 		GError * e;
 		e = _inner_error_;
@@ -156,7 +156,7 @@ static char* string_replace (const char* self, const char* old, const char* repl
 			_g_error_free0 (e);
 		}
 	}
-	__finally9:
+	__finally10:
 	if (_inner_error_ != NULL) {
 		g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, _inner_error_->message);
 		g_clear_error (&_inner_error_);
@@ -184,7 +184,6 @@ RygelPluginPrefSection* rygel_plugin_pref_section_construct (GType object_type, 
 	char* _tmp7_;
 	GtkLabel* _tmp9_;
 	GtkLabel* title_label;
-	gboolean _tmp10_;
 	char* title;
 	char* _tmp14_;
 	char* _tmp15_;
@@ -194,7 +193,7 @@ RygelPluginPrefSection* rygel_plugin_pref_section_construct (GType object_type, 
 	g_return_val_if_fail (name != NULL, NULL);
 	_inner_error_ = NULL;
 	self = (RygelPluginPrefSection*) rygel_preferences_section_construct (object_type, config, name);
-	self->widgets = (_tmp0_ = gee_array_list_new (GTK_TYPE_WIDGET, (GBoxedCopyFunc) g_object_ref, g_object_unref, g_direct_equal), _g_object_unref0 (self->widgets), _tmp0_);
+	self->widgets = (_tmp0_ = gee_array_list_new (GTK_TYPE_WIDGET, (GBoxedCopyFunc) g_object_ref, g_object_unref, NULL), _g_object_unref0 (self->widgets), _tmp0_);
 	self->priv->enabled_check = (_tmp3_ = _g_object_ref0 (GTK_CHECK_BUTTON (gtk_builder_get_object (builder, _tmp2_ = g_strconcat (_tmp1_ = g_utf8_strdown (name, -1), RYGEL_PLUGIN_PREF_SECTION_ENABLED_CHECK, NULL)))), _g_object_unref0 (self->priv->enabled_check), _tmp3_);
 	_g_free0 (_tmp2_);
 	_g_free0 (_tmp1_);
@@ -206,27 +205,46 @@ RygelPluginPrefSection* rygel_plugin_pref_section_construct (GType object_type, 
 	title_label = (_tmp9_ = _g_object_ref0 (GTK_LABEL (gtk_builder_get_object (builder, _tmp8_ = g_strconcat (_tmp7_ = g_utf8_strdown (name, -1), RYGEL_PLUGIN_PREF_SECTION_TITLE_LABEL, NULL)))), _g_free0 (_tmp8_), _g_free0 (_tmp7_), _tmp9_);
 	g_assert (title_label != NULL);
 	gee_abstract_collection_add ((GeeAbstractCollection*) self->widgets, (GtkWidget*) title_label);
-	_tmp10_ = rygel_configuration_get_enabled ((RygelConfiguration*) config, name, &_inner_error_);
+	{
+		gboolean _tmp10_;
+		_tmp10_ = rygel_configuration_get_enabled ((RygelConfiguration*) config, name, &_inner_error_);
+		if (_inner_error_ != NULL) {
+			goto __catch8_g_error;
+			goto __finally8;
+		}
+		gtk_toggle_button_set_active ((GtkToggleButton*) self->priv->enabled_check, _tmp10_);
+	}
+	goto __finally8;
+	__catch8_g_error:
+	{
+		GError * err;
+		err = _inner_error_;
+		_inner_error_ = NULL;
+		{
+			gtk_toggle_button_set_active ((GtkToggleButton*) self->priv->enabled_check, FALSE);
+			_g_error_free0 (err);
+		}
+	}
+	__finally8:
 	if (_inner_error_ != NULL) {
 		_g_object_unref0 (title_label);
 		g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, _inner_error_->message);
 		g_clear_error (&_inner_error_);
 		return NULL;
 	}
-	gtk_toggle_button_set_active ((GtkToggleButton*) self->priv->enabled_check, _tmp10_);
 	title = NULL;
 	{
 		char* _tmp11_;
 		char* _tmp12_;
 		_tmp11_ = rygel_configuration_get_title ((RygelConfiguration*) config, name, &_inner_error_);
 		if (_inner_error_ != NULL) {
-			goto __catch8_g_error;
-			goto __finally8;
+			goto __catch9_g_error;
+			goto __finally9;
 		}
 		title = (_tmp12_ = _tmp11_, _g_free0 (title), _tmp12_);
 	}
-	goto __finally8;
-	__catch8_g_error:
+	goto __finally9;
+	__catch9_g_error:
 	{
 		GError * err;
 		err = _inner_error_;
@@ -237,7 +255,7 @@ RygelPluginPrefSection* rygel_plugin_pref_section_construct (GType object_type, 
 			_g_error_free0 (err);
 		}
 	}
-	__finally8:
+	__finally9:
 	if (_inner_error_ != NULL) {
 		_g_object_unref0 (title_label);
 		_g_free0 (title);

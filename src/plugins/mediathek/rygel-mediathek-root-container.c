@@ -158,7 +158,7 @@ static RygelMediathekRootContainer* rygel_mediathek_root_container_construct (GT
 		_inner_error_ = NULL;
 		{
 			GeeArrayList* _tmp3_;
-			feeds = (_tmp3_ = gee_array_list_new (G_TYPE_INT, NULL, NULL, g_direct_equal), _g_object_unref0 (feeds), _tmp3_);
+			feeds = (_tmp3_ = gee_array_list_new (G_TYPE_INT, NULL, NULL, NULL), _g_object_unref0 (feeds), _tmp3_);
 			_g_error_free0 (_error_);
 		}
 	}

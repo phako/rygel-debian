@@ -75,16 +75,9 @@ public class Rygel.Main : Object {
 
     private void on_plugin_loaded (PluginLoader plugin_loader,
                                    Plugin       plugin) {
-        // We iterate over the copy of the list rather than list itself because
-        // there is high chances of the original list being modified during the
-        // iteration, which is not allowed by libgee.
-        var factories = new ArrayList <RootDeviceFactory> ();
-        foreach (var factory in this.factories) {
-            factories.add (factory);
-        }
-
-        foreach (var factory in factories) {
-            this.create_device (plugin, factory);
+        var iterator = this.factories.iterator ();
+        while (iterator.next ()) {
+            this.create_device.begin (plugin, iterator.get ());
         }
     }
 
@@ -116,17 +109,17 @@ public class Rygel.Main : Object {
         } catch (GLib.Error err) {}
 
         if (iface == null || iface == context.interface) {
-            var factory = new RootDeviceFactory (context);
-            this.factories.add (factory);
+            try {
+                var factory = new RootDeviceFactory (context);
+                this.factories.add (factory);
 
-            // See the comment in on_plugin_loaded method
-            var plugins = new ArrayList <Plugin> ();
-            foreach (var plugin in this.plugin_loader.list_plugins ()) {
-                plugins.add (plugin);
-            }
-
-            foreach (var plugin in plugins) {
-                this.create_device (plugin, factory);
+                var iterator = this.plugin_loader.list_plugins ().iterator ();
+                while (iterator.next ()) {
+                    this.create_device.begin (iterator.get (), factory);
+                }
+            } catch (GLib.Error err) {
+                warning ("Failed to create root device factory: %s\n",
+                         err.message);
             }
         } else {
             debug ("Ignoring network context %s (%s).",
@@ -141,31 +134,32 @@ public class Rygel.Main : Object {
                context.interface,
                context.host_ip);
 
-        var factory_list = new ArrayList <RootDeviceFactory> ();
-        foreach (var factory in this.factories) {
-            if (context == factory.context) {
-                factory_list.add (factory);
+        var factory_iter = this.factories.iterator ();
+        while (factory_iter.next ()) {
+            if (context == factory_iter.get ().context) {
+                factory_iter.remove ();
             }
         }
 
-        foreach (var factory in factory_list) {
-            this.factories.remove (factory);
-        }
-
-        var device_list = new ArrayList <RootDevice> ();
-        foreach (var device in this.root_devices) {
-            if (context == device.context) {
-                device_list.add (device);
+        var device_iter = this.root_devices.iterator ();
+        while (device_iter.next ()) {
+            if (context == device_iter.get ().context) {
+                device_iter.remove ();
             }
-        }
-
-        foreach (var device in device_list) {
-            this.root_devices.remove (device);
         }
     }
 
-    private void create_device (Plugin            plugin,
-                                RootDeviceFactory factory) {
+    private async void create_device (Plugin            plugin,
+                                      RootDeviceFactory factory) {
+        // The call to factory.create(), although synchronous spins the
+        // the mainloop and therefore might in turn triger some of the signal
+        // handlers here that modify one of the lists that we might be iterating
+        // while this function is called. Modification of an ArrayList while
+        // iterating it is currently unsuppored and leads to a crash and that is
+        // why defer to mainloop here.
+        Idle.add (create_device.callback);
+        yield;
+
         try {
             var device = factory.create (plugin);
 

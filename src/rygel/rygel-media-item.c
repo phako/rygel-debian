@@ -109,7 +109,6 @@ typedef struct _RygelThumbnailerClass RygelThumbnailerClass;
 typedef struct _RygelTranscoder RygelTranscoder;
 typedef struct _RygelTranscoderClass RygelTranscoderClass;
 typedef struct _RygelIconInfoPrivate RygelIconInfoPrivate;
-typedef struct _RygelThumbnailPrivate RygelThumbnailPrivate;
 
 typedef enum  {
 	RYGEL_MEDIA_ITEM_ERROR_BAD_URI
@@ -119,7 +118,6 @@ struct _RygelMediaObject {
 	GObject parent_instance;
 	RygelMediaObjectPrivate * priv;
 	char* id;
-	char* title;
 	guint64 modified;
 	GeeArrayList* uris;
 	RygelMediaContainer* parent;
@@ -165,7 +163,7 @@ struct _RygelIconInfo {
 	volatile int ref_count;
 	RygelIconInfoPrivate * priv;
 	char* mime_type;
-	char* path;
+	char* uri;
 	glong size;
 	gint width;
 	gint height;
@@ -175,17 +173,6 @@ struct _RygelIconInfo {
 struct _RygelIconInfoClass {
 	GTypeClass parent_class;
 	void (*finalize) (RygelIconInfo *self);
-};
-
-struct _RygelThumbnail {
-	RygelIconInfo parent_instance;
-	RygelThumbnailPrivate * priv;
-	char* uri;
-	char* dlna_profile;
-};
-
-struct _RygelThumbnailClass {
-	RygelIconInfoClass parent_class;
 };
 
 
@@ -210,6 +197,7 @@ enum  {
 #define RYGEL_MEDIA_ITEM_AUDIO_CLASS "object.item.audioItem"
 #define RYGEL_MEDIA_ITEM_MUSIC_CLASS "object.item.audioItem.musicTrack"
 RygelMediaObject* rygel_media_object_construct (GType object_type);
+void rygel_media_object_set_title (RygelMediaObject* self, const char* value);
 RygelMediaItem* rygel_media_item_new (const char* id, RygelMediaContainer* parent, const char* title, const char* upnp_class);
 RygelMediaItem* rygel_media_item_construct (GType object_type, const char* id, RygelMediaContainer* parent, const char* title, const char* upnp_class);
 static inline void _dynamic_set_tcp_timeout1 (GstElement* obj, gint64 value);
@@ -243,8 +231,7 @@ RygelMediaItem* rygel_media_item_construct (GType object_type, const char* id, R
 	RygelMediaItem * self;
 	char* _tmp0_;
 	char* _tmp1_;
-	char* _tmp2_;
-	GeeArrayList* _tmp3_;
+	GeeArrayList* _tmp2_;
 	g_return_val_if_fail (id != NULL, NULL);
 	g_return_val_if_fail (parent != NULL, NULL);
 	g_return_val_if_fail (title != NULL, NULL);
@@ -252,9 +239,9 @@ RygelMediaItem* rygel_media_item_construct (GType object_type, const char* id, R
 	self = (RygelMediaItem*) rygel_media_object_construct (object_type);
 	((RygelMediaObject*) self)->id = (_tmp0_ = g_strdup (id), _g_free0 (((RygelMediaObject*) self)->id), _tmp0_);
 	((RygelMediaObject*) self)->parent = parent;
-	((RygelMediaObject*) self)->title = (_tmp1_ = g_strdup (title), _g_free0 (((RygelMediaObject*) self)->title), _tmp1_);
-	self->upnp_class = (_tmp2_ = g_strdup (upnp_class), _g_free0 (self->upnp_class), _tmp2_);
-	self->thumbnails = (_tmp3_ = gee_array_list_new (RYGEL_TYPE_THUMBNAIL, (GBoxedCopyFunc) rygel_icon_info_ref, rygel_icon_info_unref, g_direct_equal), _g_object_unref0 (self->thumbnails), _tmp3_);
+	rygel_media_object_set_title ((RygelMediaObject*) self, title);
+	self->upnp_class = (_tmp1_ = g_strdup (upnp_class), _g_free0 (self->upnp_class), _tmp1_);
+	self->thumbnails = (_tmp2_ = gee_array_list_new (RYGEL_TYPE_THUMBNAIL, (GBoxedCopyFunc) rygel_icon_info_ref, rygel_icon_info_unref, NULL), _g_object_unref0 (self->thumbnails), _tmp2_);
 	return self;
 }
 
@@ -338,14 +325,14 @@ void rygel_media_item_add_uri (RygelMediaItem* self, const char* uri, RygelThumb
 				RygelThumbnail* thumb;
 				thumb = rygel_thumbnailer_get_thumbnail (thumbnailer, uri, &_inner_error_);
 				if (_inner_error_ != NULL) {
-					goto __catch33_g_error;
-					goto __finally33;
+					goto __catch37_g_error;
+					goto __finally37;
 				}
 				gee_abstract_collection_add ((GeeAbstractCollection*) self->thumbnails, thumb);
 				_rygel_icon_info_unref0 (thumb);
 			}
-			goto __finally33;
-			__catch33_g_error:
+			goto __finally37;
+			__catch37_g_error:
 			{
 				GError * err;
 				err = _inner_error_;
@@ -354,7 +341,7 @@ void rygel_media_item_add_uri (RygelMediaItem* self, const char* uri, RygelThumb
 					_g_error_free0 (err);
 				}
 			}
-			__finally33:
+			__finally37:
 			if (_inner_error_ != NULL) {
 				_g_object_unref0 (thumbnailer);
 				g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, _inner_error_->message);
@@ -442,7 +429,7 @@ void rygel_media_item_add_resources (RygelMediaItem* self, GUPnPDIDLLiteItem* di
 				break;
 			}
 			thumbnail = (RygelThumbnail*) gee_iterator_get (_thumbnail_it);
-			protocol = rygel_media_item_get_protocol_for_uri (self, thumbnail->uri, &_inner_error_);
+			protocol = rygel_media_item_get_protocol_for_uri (self, ((RygelIconInfo*) thumbnail)->uri, &_inner_error_);
 			if (_inner_error_ != NULL) {
 				g_propagate_error (error, _inner_error_);
 				_rygel_icon_info_unref0 (thumbnail);

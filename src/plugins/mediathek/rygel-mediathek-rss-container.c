@@ -177,7 +177,8 @@ static gboolean rygel_mediathek_rss_container_parse_response (RygelMediathekRssC
 		}
 		if (_tmp0_) {
 			char* _tmp1_;
-			((RygelMediaObject*) self)->title = (_tmp1_ = xmlNodeGetContent (xmlXPathNodeSetItem (xpo->nodesetval, 0)), _g_free0 (((RygelMediaObject*) self)->title), _tmp1_);
+			rygel_media_object_set_title ((RygelMediaObject*) self, _tmp1_ = xmlNodeGetContent (xmlXPathNodeSetItem (xpo->nodesetval, 0)));
+			_g_free0 (_tmp1_);
 		}
 		xpo = xmlXPathEval ("/rss/channel/item", ctx);
 		if (xpo->type == XPATH_NODESET) {

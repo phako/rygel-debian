@@ -39,6 +39,7 @@ rygel_SOURCES = $(VAPI_SOURCE_FILES) \
 		rygel-dbus-service.vala \
 		rygel-root-device.vala \
 		rygel-root-device-factory.vala \
+		rygel-database.vala \
 		rygel-main.vala
 
 VAPI_SOURCE_FILES = rygel-configuration.vala \
@@ -47,6 +48,7 @@ VAPI_SOURCE_FILES = rygel-configuration.vala \
 		    rygel-cmdline-config.vala \
 		    rygel-content-directory.vala \
 		    rygel-connection-manager.vala \
+		    rygel-source-connection-manager.vala \
 		    rygel-transcode-manager.vala \
 		    rygel-http-server.vala \
 		    rygel-state-machine.vala \
@@ -65,8 +67,6 @@ VAPI_SOURCE_FILES = rygel-configuration.vala \
 		    rygel-media-object.vala \
 		    rygel-media-container.vala \
 		    rygel-simple-container.vala \
-		    rygel-media-object-search.vala \
-		    rygel-simple-async-result.vala \
 		    rygel-media-item.vala \
 		    rygel-thumbnail.vala \
 		    rygel-thumbnailer.vala \

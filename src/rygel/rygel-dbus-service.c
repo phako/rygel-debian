@@ -87,7 +87,7 @@ GType rygel_main_get_type (void);
 enum  {
 	RYGEL_DBUS_SERVICE_DUMMY_PROPERTY
 };
-guint _dynamic_request_name2 (DBusGProxy* self, const char* param1, guint param2, GError** error);
+static guint _dynamic_request_name2 (DBusGProxy* self, const char* param1, guint param2, GError** error);
 RygelDBusService* rygel_dbus_service_new (RygelMain* main, GError** error);
 RygelDBusService* rygel_dbus_service_construct (GType object_type, RygelMain* main, GError** error);
 void rygel_main_exit (RygelMain* self, gint exit_code);
@@ -111,7 +111,7 @@ static gpointer _g_object_ref0 (gpointer self) {
 }
 
 
-guint _dynamic_request_name2 (DBusGProxy* self, const char* param1, guint param2, GError** error) {
+static guint _dynamic_request_name2 (DBusGProxy* self, const char* param1, guint param2, GError** error) {
 	guint result;
 	dbus_g_proxy_call (self, "RequestName", error, G_TYPE_STRING, param1, G_TYPE_UINT, param2, G_TYPE_INVALID, G_TYPE_UINT, &result, G_TYPE_INVALID);
 	if (*error) {
@@ -136,7 +136,7 @@ RygelDBusService* rygel_dbus_service_construct (GType object_type, RygelMain* ma
 	if (_inner_error_ != NULL) {
 		if (_inner_error_->domain == DBUS_GERROR) {
 			g_propagate_error (error, _inner_error_);
-			return;
+			return NULL;
 		} else {
 			g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, _inner_error_->message);
 			g_clear_error (&_inner_error_);
@@ -150,7 +150,7 @@ RygelDBusService* rygel_dbus_service_construct (GType object_type, RygelMain* ma
 			g_propagate_error (error, _inner_error_);
 			_dbus_g_connection_unref0 (conn);
 			_g_object_unref0 (bus);
-			return;
+			return NULL;
 		} else {
 			_dbus_g_connection_unref0 (conn);
 			_g_object_unref0 (bus);

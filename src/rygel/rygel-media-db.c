@@ -25,9 +25,9 @@
 
 #include <glib.h>
 #include <glib-object.h>
-#include <sqlite3.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sqlite3.h>
 #include <gee.h>
 #include <gst/gst.h>
 
@@ -45,6 +45,16 @@ typedef struct _RygelMediaDB RygelMediaDB;
 typedef struct _RygelMediaDBClass RygelMediaDBClass;
 typedef struct _RygelMediaDBPrivate RygelMediaDBPrivate;
 
+#define RYGEL_TYPE_DATABASE (rygel_database_get_type ())
+#define RYGEL_DATABASE(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_DATABASE, RygelDatabase))
+#define RYGEL_DATABASE_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TYPE_DATABASE, RygelDatabaseClass))
+#define RYGEL_IS_DATABASE(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TYPE_DATABASE))
+#define RYGEL_IS_DATABASE_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_TYPE_DATABASE))
+#define RYGEL_DATABASE_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_TYPE_DATABASE, RygelDatabaseClass))
+
+typedef struct _RygelDatabase RygelDatabase;
+typedef struct _RygelDatabaseClass RygelDatabaseClass;
+
 #define RYGEL_TYPE_MEDIA_DB_OBJECT_FACTORY (rygel_media_db_object_factory_get_type ())
 #define RYGEL_MEDIA_DB_OBJECT_FACTORY(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_MEDIA_DB_OBJECT_FACTORY, RygelMediaDBObjectFactory))
 #define RYGEL_MEDIA_DB_OBJECT_FACTORY_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TYPE_MEDIA_DB_OBJECT_FACTORY, RygelMediaDBObjectFactoryClass))
@@ -54,10 +64,10 @@ typedef struct _RygelMediaDBPrivate RygelMediaDBPrivate;
 
 typedef struct _RygelMediaDBObjectFactory RygelMediaDBObjectFactory;
 typedef struct _RygelMediaDBObjectFactoryClass RygelMediaDBObjectFactoryClass;
-#define _sqlite3_close0(var) ((var == NULL) ? NULL : (var = (sqlite3_close (var), NULL)))
 #define _g_object_unref0(var) ((var == NULL) ? NULL : (var = (g_object_unref (var), NULL)))
-#define _g_free0(var) (var = (g_free (var), NULL))
-#define _sqlite3_finalize0(var) ((var == NULL) ? NULL : (var = (sqlite3_finalize (var), NULL)))
+#define _g_error_free0(var) ((var == NULL) ? NULL : (var = (g_error_free (var), NULL)))
+typedef struct _Block4Data Block4Data;
+typedef struct _Block3Data Block3Data;
 
 #define RYGEL_TYPE_MEDIA_OBJECT (rygel_media_object_get_type ())
 #define RYGEL_MEDIA_OBJECT(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_MEDIA_OBJECT, RygelMediaObject))
@@ -89,7 +99,6 @@ typedef struct _RygelMediaContainerClass RygelMediaContainerClass;
 
 typedef struct _RygelMediaItem RygelMediaItem;
 typedef struct _RygelMediaItemClass RygelMediaItemClass;
-#define _g_error_free0(var) ((var == NULL) ? NULL : (var = (g_error_free (var), NULL)))
 typedef struct _RygelMediaItemPrivate RygelMediaItemPrivate;
 
 #define RYGEL_TYPE_ICON_INFO (rygel_icon_info_get_type ())
@@ -111,6 +120,13 @@ typedef struct _RygelIconInfoClass RygelIconInfoClass;
 
 typedef struct _RygelThumbnail RygelThumbnail;
 typedef struct _RygelThumbnailClass RygelThumbnailClass;
+#define _g_free0(var) (var = (g_free (var), NULL))
+typedef struct _Block5Data Block5Data;
+typedef struct _Block6Data Block6Data;
+typedef struct _Block7Data Block7Data;
+typedef struct _Block8Data Block8Data;
+typedef struct _Block9Data Block9Data;
+typedef struct _Block10Data Block10Data;
 
 typedef enum  {
 	RYGEL_MEDIA_DB_ERROR_SQLITE_ERROR,
@@ -133,15 +149,31 @@ struct _RygelMediaDBClass {
 };
 
 struct _RygelMediaDBPrivate {
-	sqlite3* db;
+	RygelDatabase* db;
 	RygelMediaDBObjectFactory* factory;
+};
+
+typedef enum  {
+	RYGEL_DATABASE_ERROR_SQLITE_ERROR
+} RygelDatabaseError;
+#define RYGEL_DATABASE_ERROR rygel_database_error_quark ()
+typedef gboolean (*RygelDatabaseRowCallback) (sqlite3_stmt* stmt, void* user_data);
+struct _Block4Data {
+	int _ref_count_;
+	Block3Data * _data3_;
+	gint rows;
+};
+
+struct _Block3Data {
+	int _ref_count_;
+	RygelMediaDB * self;
+	gint old_version;
 };
 
 struct _RygelMediaObject {
 	GObject parent_instance;
 	RygelMediaObjectPrivate * priv;
 	char* id;
-	char* title;
 	guint64 modified;
 	GeeArrayList* uris;
 	RygelMediaContainer* parent;
@@ -182,40 +214,99 @@ struct _RygelMediaItemClass {
 	gboolean (*should_stream) (RygelMediaItem* self);
 };
 
+struct _Block5Data {
+	int _ref_count_;
+	RygelMediaDB * self;
+	RygelMediaObject* obj;
+};
+
+struct _Block6Data {
+	int _ref_count_;
+	RygelMediaDB * self;
+	RygelMediaObject* parent;
+};
+
+struct _Block7Data {
+	int _ref_count_;
+	RygelMediaDB * self;
+	GeeArrayList* children;
+};
+
+struct _Block8Data {
+	int _ref_count_;
+	RygelMediaDB * self;
+	gint count;
+};
+
+struct _Block9Data {
+	int _ref_count_;
+	RygelMediaDB * self;
+	gboolean exists;
+	gint64 tmp_timestamp;
+};
+
+struct _Block10Data {
+	int _ref_count_;
+	RygelMediaDB * self;
+	RygelMediaContainer* parent;
+	GeeArrayList* children;
+};
+
 
 static gpointer rygel_media_db_parent_class = NULL;
 
 GQuark rygel_media_db_error_quark (void);
 GType rygel_media_db_object_type_get_type (void);
 GType rygel_media_db_get_type (void);
+GType rygel_database_get_type (void);
 GType rygel_media_db_object_factory_get_type (void);
 #define RYGEL_MEDIA_DB_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), RYGEL_TYPE_MEDIA_DB, RygelMediaDBPrivate))
 enum  {
 	RYGEL_MEDIA_DB_DUMMY_PROPERTY
 };
-#define RYGEL_MEDIA_DB_schema_version "4"
-#define RYGEL_MEDIA_DB_SCHEMA_STRING "CREATE TABLE Schema_Info (version TEXT NOT NULL); " "CREATE TABLE Object_Type (id INTEGER PRIMARY KEY, " "desc TEXT NOT NULL);" "CREATE TABLE Meta_Data (id INTEGER PRIMARY KEY AUTOINCREMENT, " "size INTEGER NOT NULL, " "mime_type TEXT NOT NULL, " "duration INTEGER, " "width INTEGER, " "height INTEGER, " "class TEXT NOT NULL, " "author TEXT, " "album TEXT, " "date TEXT, " "bitrate INTEGER, " "sample_freq INTEGER, " "bits_per_sample INTEGER, " "channels INTEGER, " "track INTEGER, " "color_depth INTEGER, " "object_fk TEXT UNIQUE CONSTRAINT " "object_fk_id REFERENCES Object(upnp_id) " "ON DELETE CASCADE);" "CREATE TABLE Object (parent TEXT CONSTRAINT parent_fk_id " "REFERENCES Object(upnp_id), " "upnp_id TEXT PRIMARY KEY, " "type_fk INTEGER CONSTRAINT type_fk_id " "REFERENCES Object_Type(id), " "title TEXT NOT NULL, " "timestamp INTEGER NOT NULL);" "CREATE TABLE Uri (object_fk TEXT " "CONSTRAINT object_fk_id REFERENCES Object(upnp_id) " "ON DELETE CASCADE, " "uri TEXT NOT NULL);" "INSERT INTO Object_Type (id, desc) VALUES (0, 'Container'); " "INSERT INTO Object_Type (id, desc) VALUES (1, 'Item'); " "INSERT INTO Schema_Info (version) VALUES ('" RYGEL_MEDIA_DB_schema_version "'); "
-#define RYGEL_MEDIA_DB_CREATE_TRIGGER_STRING "CREATE TRIGGER trgr_delete_children " "BEFORE DELETE ON Object " "FOR EACH ROW BEGIN " "UPDATE Object SET parent = NULL " "WHERE Object.parent = OLD.upnp_id;" "END;" "CREATE TRIGGER trgr_delete_metadata " "BEFORE DELETE ON Object " "FOR EACH ROW BEGIN " "DELETE FROM Meta_Data WHERE Meta_Data.object_fk = OLD.upnp_id; " "END;" "CREATE TRIGGER trgr_delete_uris " "BEFORE DELETE ON Object " "FOR EACH ROW BEGIN " "DELETE FROM Uri WHERE Uri.object_fk = OLD.upnp_id;" "END;"
-#define RYGEL_MEDIA_DB_INSERT_META_DATA_STRING "INSERT INTO Meta_Data " "(size, mime_type, width, height, class, " "author, album, date, bitrate, " "sample_freq, bits_per_sample, channels, " "track, color_depth, duration, object_fk) VALUES " "(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)"
-#define RYGEL_MEDIA_DB_UPDATE_META_DATA_STRING "UPDATE Meta_Data SET " "size = ?, mime_type = ?, width = ?, height = ?, class = ?, " "author = ?, album = ?, date = ?, bitrate = ?, " "sample_freq = ?, bits_per_sample = ?, channels = ?, " "track = ?, color_depth = ?, duration = ? " "WHERE object_fk = ?"
+#define RYGEL_MEDIA_DB_schema_version "5"
+#define RYGEL_MEDIA_DB_SCHEMA_STRING "CREATE TABLE schema_info (version TEXT NOT NULL); " "CREATE TABLE object_type (id INTEGER PRIMARY KEY, " "desc TEXT NOT NULL);" "CREATE TABLE meta_data (size INTEGER NOT NULL, " "mime_type TEXT NOT NULL, " "duration INTEGER, " "width INTEGER, " "height INTEGER, " "class TEXT NOT NULL, " "author TEXT, " "album TEXT, " "date TEXT, " "bitrate INTEGER, " "sample_freq INTEGER, " "bits_per_sample INTEGER, " "channels INTEGER, " "track INTEGER, " "color_depth INTEGER, " "object_fk TEXT UNIQUE CONSTRAINT " "object_fk_id REFERENCES Object(upnp_id) " "ON DELETE CASCADE);" "CREATE TABLE object (parent TEXT CONSTRAINT parent_fk_id " "REFERENCES Object(upnp_id), " "upnp_id TEXT PRIMARY KEY, " "type_fk INTEGER CONSTRAINT type_fk_id " "REFERENCES Object_Type(id), " "title TEXT NOT NULL, " "timestamp INTEGER NOT NULL);" "CREATE TABLE uri (object_fk TEXT " "CONSTRAINT object_fk_id REFERENCES Object(upnp_id) " "ON DELETE CASCADE, " "uri TEXT NOT NULL);" "INSERT INTO object_type (id, desc) VALUES (0, 'Container'); " "INSERT INTO object_type (id, desc) VALUES (1, 'Item'); " "INSERT INTO schema_info (version) VALUES ('" RYGEL_MEDIA_DB_schema_version "'); "
+#define RYGEL_MEDIA_DB_CREATE_CLOSURE_TABLE "CREATE TABLE closure (ancestor TEXT, descendant TEXT, depth INTEGER)"
+#define RYGEL_MEDIA_DB_CREATE_CLOSURE_TRIGGER_STRING "CREATE TRIGGER trgr_update_closure " "AFTER INSERT ON Object " "FOR EACH ROW BEGIN " "INSERT INTO Closure (ancestor, descendant, depth) " "VALUES (NEW.upnp_id, NEW.upnp_id, 0); " "INSERT INTO Closure (ancestor, descendant, depth) " "SELECT ancestor, NEW.upnp_id, depth + 1 FROM Closure " "WHERE descendant = NEW.parent;" "END;" "CREATE TRIGGER trgr_delete_closure " "AFTER DELETE ON Object " "FOR EACH ROW BEGIN " "DELETE FROM Closure WHERE descendant = OLD.upnp_id;" "END;"
+#define RYGEL_MEDIA_DB_CREATE_TRIGGER_STRING "CREATE TRIGGER trgr_delete_metadata " "BEFORE DELETE ON Object " "FOR EACH ROW BEGIN " "DELETE FROM meta_data WHERE meta_data.object_fk = OLD.upnp_id; " "END;" "CREATE TRIGGER trgr_delete_uris " "BEFORE DELETE ON Object " "FOR EACH ROW BEGIN " "DELETE FROM Uri WHERE Uri.object_fk = OLD.upnp_id;" "END;"
+#define RYGEL_MEDIA_DB_CREATE_INDICES_STRING "CREATE INDEX idx_parent on Object(parent);" "CREATE INDEX idx_uri_fk on Uri(object_fk);" "CREATE INDEX idx_meta_data_fk on meta_data(object_fk);" "CREATE INDEX idx_closure on Closure(descendant,depth);"
+#define RYGEL_MEDIA_DB_INSERT_META_DATA_STRING "INSERT INTO meta_data " "(size, mime_type, width, height, class, " "author, album, date, bitrate, " "sample_freq, bits_per_sample, channels, " "track, color_depth, duration, object_fk) VALUES " "(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)"
+#define RYGEL_MEDIA_DB_UPDATE_META_DATA_STRING "UPDATE meta_data SET " "size = ?, mime_type = ?, width = ?, height = ?, class = ?, " "author = ?, album = ?, date = ?, bitrate = ?, " "sample_freq = ?, bits_per_sample = ?, channels = ?, " "track = ?, color_depth = ?, duration = ? " "WHERE object_fk = ?"
 #define RYGEL_MEDIA_DB_INSERT_OBJECT_STRING "INSERT INTO Object (upnp_id, title, type_fk, parent, timestamp) " "VALUES (?,?,?,?,?)"
 #define RYGEL_MEDIA_DB_UPDATE_OBJECT_STRING "UPDATE Object SET title = ?, timestamp = ? WHERE upnp_id = ?"
 #define RYGEL_MEDIA_DB_INSERT_URI_STRING "INSERT INTO Uri (object_fk, uri) VALUES (?,?)"
 #define RYGEL_MEDIA_DB_DELETE_URI_STRING "DELETE FROM Uri WHERE object_fk = ?"
-#define RYGEL_MEDIA_DB_GET_OBJECT_STRING "SELECT type_fk, title, Meta_Data.size, Meta_Data.mime_type, " "Meta_Data.width, Meta_Data.height, " "Meta_Data.class, Meta_Data.author, Meta_Data.album, " "Meta_Data.date, Meta_Data.bitrate, Meta_Data.sample_freq, " "Meta_Data.bits_per_sample, Meta_Data.channels, " "Meta_Data.track, Meta_Data.color_depth, Meta_Data.duration, " "Object.parent " "FROM Object LEFT OUTER JOIN Meta_Data " "ON Object.upnp_id = Meta_Data.object_fk WHERE Object.upnp_id = ?"
-#define RYGEL_MEDIA_DB_GET_CHILDREN_STRING "SELECT type_fk, title, Meta_Data.size, Meta_Data.mime_type, " "Meta_Data.width, Meta_Data.height, " "Meta_Data.class, Meta_Data.author, Meta_Data.album, " "Meta_Data.date, Meta_Data.bitrate, Meta_Data.sample_freq, " "Meta_Data.bits_per_sample, Meta_Data.channels, " "Meta_Data.track, Meta_Data.color_depth, Meta_Data.duration, " "upnp_id, Object.parent, Object.timestamp " "FROM Object LEFT OUTER JOIN Meta_Data " "ON Object.upnp_id = Meta_Data.object_fk " "WHERE Object.parent = ? " "ORDER BY type_fk ASC, " "Meta_Data.class ASC, " "Meta_Data.track ASC, " "title ASC " "LIMIT ?,?"
+#define RYGEL_MEDIA_DB_DELETE_BY_ID_STRING "DELETE FROM Object WHERE upnp_id = " "(SELECT descendant FROM closure WHERE ancestor = ?)"
+#define RYGEL_MEDIA_DB_GET_OBJECT_WITH_CLOSURE "SELECT o.type_fk, o.title, m.size, m.mime_type, m.width, m.height, " "m.class, m.author, m.album, m.date, m.bitrate, m.sample_freq, " "m.bits_per_sample, m.channels, m.track, m.color_depth, " "m.duration, o.parent, o.upnp_id " "FROM Object o " "JOIN Closure c ON (o.upnp_id = c.ancestor) " "LEFT OUTER JOIN meta_data m ON (o.upnp_id = m.object_fk) " "WHERE c.descendant = ? ORDER BY c.depth DESC"
+#define RYGEL_MEDIA_DB_GET_CHILDREN_STRING "SELECT o.type_fk, o.title, m.size, m.mime_type, " "m.width, m.height, m.class, m.author, m.album, " "m.date, m.bitrate, m.sample_freq, m.bits_per_sample, " "m.channels, m.track, m.color_depth, m.duration, " "o.upnp_id, o.parent, o.timestamp " "FROM Object o LEFT OUTER JOIN meta_data m " "ON o.upnp_id = m.object_fk " "WHERE o.parent = ? " "ORDER BY o.type_fk ASC, " "m.class ASC, " "m.track ASC, " "o.title ASC " "LIMIT ?,?"
 #define RYGEL_MEDIA_DB_URI_GET_STRING "SELECT uri FROM Uri WHERE Uri.object_fk = ?"
 #define RYGEL_MEDIA_DB_CHILDREN_COUNT_STRING "SELECT COUNT(upnp_id) FROM Object WHERE Object.parent = ?"
 #define RYGEL_MEDIA_DB_OBJECT_EXISTS_STRING "SELECT COUNT(upnp_id), timestamp FROM Object WHERE Object.upnp_id = ?"
 #define RYGEL_MEDIA_DB_OBJECT_DELETE_STRING "DELETE FROM Object WHERE Object.upnp_id = ?"
-#define RYGEL_MEDIA_DB_SWEEPER_STRING "DELETE FROM Object WHERE parent IS NULL AND Object.upnp_id != '0'"
 #define RYGEL_MEDIA_DB_GET_CHILD_ID_STRING "SELECT upnp_id FROM OBJECT WHERE parent = ?"
-#define RYGEL_MEDIA_DB_UPDATE_V3_V4_STRING_1 "ALTER TABLE Meta_Data ADD object_fk TEXT"
-#define RYGEL_MEDIA_DB_UPDATE_V3_V4_STRING_2 "UPDATE Meta_Data SET object_fk = " "(SELECT upnp_id FROM Object WHERE metadata_fk = Meta_Data.id)"
+#define RYGEL_MEDIA_DB_UPDATE_V3_V4_STRING_1 "ALTER TABLE meta_data ADD object_fk TEXT"
+#define RYGEL_MEDIA_DB_UPDATE_V3_V4_STRING_2 "UPDATE meta_data SET object_fk = " "(SELECT upnp_id FROM Object WHERE metadata_fk = meta_data.id)"
 #define RYGEL_MEDIA_DB_UPDATE_V3_V4_STRING_3 "ALTER TABLE Object ADD timestamp INTEGER"
 #define RYGEL_MEDIA_DB_UPDATE_V3_V4_STRING_4 "UPDATE Object SET timestamp = 0"
+GQuark rygel_database_error_quark (void);
+void rygel_database_begin (RygelDatabase* self, GError** error);
+gint rygel_database_exec (RygelDatabase* self, const char* sql, GValue* values, int values_length1, RygelDatabaseRowCallback callback, void* callback_target, GError** error);
+void rygel_database_commit (RygelDatabase* self, GError** error);
+void rygel_database_rollback (RygelDatabase* self);
 static void rygel_media_db_update_v3_v4 (RygelMediaDB* self);
+void rygel_database_analyze (RygelDatabase* self);
+static void rygel_media_db_update_v4_v5 (RygelMediaDB* self);
+RygelDatabase* rygel_database_new (const char* name);
+RygelDatabase* rygel_database_construct (GType object_type, const char* name);
+static gboolean _lambda8_ (sqlite3_stmt* stmt, Block3Data* _data3_);
+static gboolean __lambda8__rygel_database_row_callback (sqlite3_stmt* stmt, gpointer self);
+static gboolean _lambda9_ (sqlite3_stmt* stmt, Block4Data* _data4_);
+static gboolean __lambda9__rygel_database_row_callback (sqlite3_stmt* stmt, gpointer self);
 static gboolean rygel_media_db_create_schema (RygelMediaDB* self);
+static Block4Data* block4_data_ref (Block4Data* _data4_);
+static void block4_data_unref (Block4Data* _data4_);
+static Block3Data* block3_data_ref (Block3Data* _data3_);
+static void block3_data_unref (Block3Data* _data3_);
 static void rygel_media_db_open_db (RygelMediaDB* self, const char* name);
 static RygelMediaDB* rygel_media_db_new (const char* name, RygelMediaDBObjectFactory* factory);
 static RygelMediaDB* rygel_media_db_construct (GType object_type, const char* name, RygelMediaDBObjectFactory* factory);
@@ -223,8 +314,7 @@ RygelMediaDBObjectFactory* rygel_media_db_object_factory_new (void);
 RygelMediaDBObjectFactory* rygel_media_db_object_factory_construct (GType object_type);
 RygelMediaDB* rygel_media_db_create (const char* name, GError** error);
 RygelMediaDB* rygel_media_db_create_with_factory (const char* name, RygelMediaDBObjectFactory* factory, GError** error);
-static gboolean rygel_media_db_sweeper (RygelMediaDB* self);
-static gboolean _rygel_media_db_sweeper_gsource_func (gpointer self);
+static void _vala_GValue_array_free (GValue* array, gint array_length);
 void rygel_media_db_remove_by_id (RygelMediaDB* self, const char* id, GError** error);
 GType rygel_media_object_get_type (void);
 GType rygel_media_container_get_type (void);
@@ -239,6 +329,7 @@ static void rygel_media_db_save_metadata (RygelMediaDB* self, RygelMediaItem* it
 static void rygel_media_db_remove_uris (RygelMediaDB* self, RygelMediaObject* obj, GError** error);
 static void rygel_media_db_update_object_internal (RygelMediaDB* self, RygelMediaObject* obj, GError** error);
 void rygel_media_db_update_object (RygelMediaDB* self, RygelMediaObject* obj, GError** error);
+const char* rygel_media_object_get_title (RygelMediaObject* self);
 gpointer rygel_icon_info_ref (gpointer instance);
 void rygel_icon_info_unref (gpointer instance);
 GParamSpec* rygel_param_spec_icon_info (const gchar* name, const gchar* nick, const gchar* blurb, GType object_type, GParamFlags flags);
@@ -246,21 +337,45 @@ void rygel_value_set_icon_info (GValue* value, gpointer v_object);
 gpointer rygel_value_get_icon_info (const GValue* value);
 GType rygel_icon_info_get_type (void);
 GType rygel_thumbnail_get_type (void);
+void rygel_database_null (GValue* result);
 void rygel_media_item_add_uri (RygelMediaItem* self, const char* uri, RygelThumbnail* thumbnail);
+static gboolean _lambda6_ (sqlite3_stmt* stmt, Block5Data* _data5_);
+static gboolean __lambda6__rygel_database_row_callback (sqlite3_stmt* stmt, gpointer self);
+static Block5Data* block5_data_ref (Block5Data* _data5_);
+static void block5_data_unref (Block5Data* _data5_);
 static void rygel_media_db_add_uris (RygelMediaDB* self, RygelMediaObject* obj, GError** error);
 RygelMediaContainer* rygel_media_db_object_factory_get_container (RygelMediaDBObjectFactory* self, RygelMediaDB* media_db, const char* id, const char* title, guint child_count);
 RygelMediaItem* rygel_media_db_object_factory_get_item (RygelMediaDBObjectFactory* self, RygelMediaDB* media_db, RygelMediaContainer* parent, const char* id, const char* title, const char* upnp_class);
 static void rygel_media_db_fill_item (RygelMediaDB* self, sqlite3_stmt* statement, RygelMediaItem* item);
 static RygelMediaObject* rygel_media_db_get_object_from_statement (RygelMediaDB* self, RygelMediaContainer* parent, const char* object_id, sqlite3_stmt* statement);
+static gboolean _lambda5_ (sqlite3_stmt* stmt, Block6Data* _data6_);
+static gboolean __lambda5__rygel_database_row_callback (sqlite3_stmt* stmt, gpointer self);
+static Block6Data* block6_data_ref (Block6Data* _data6_);
+static void block6_data_unref (Block6Data* _data6_);
 RygelMediaObject* rygel_media_db_get_object (RygelMediaDB* self, const char* object_id, GError** error);
 RygelMediaItem* rygel_media_db_get_item (RygelMediaDB* self, const char* item_id, GError** error);
 RygelMediaContainer* rygel_media_db_get_container (RygelMediaDB* self, const char* container_id, GError** error);
+static gboolean _lambda10_ (sqlite3_stmt* stmt, Block7Data* _data7_);
+static gboolean __lambda10__rygel_database_row_callback (sqlite3_stmt* stmt, gpointer self);
+static Block7Data* block7_data_ref (Block7Data* _data7_);
+static void block7_data_unref (Block7Data* _data7_);
 GeeArrayList* rygel_media_db_get_child_ids (RygelMediaDB* self, const char* container_id, GError** error);
+static gboolean _lambda4_ (sqlite3_stmt* stmt, Block8Data* _data8_);
+static gboolean __lambda4__rygel_database_row_callback (sqlite3_stmt* stmt, gpointer self);
+static Block8Data* block8_data_ref (Block8Data* _data8_);
+static void block8_data_unref (Block8Data* _data8_);
 gint rygel_media_db_get_child_count (RygelMediaDB* self, const char* container_id, GError** error);
+static gboolean _lambda11_ (sqlite3_stmt* stmt, Block9Data* _data9_);
+static gboolean __lambda11__rygel_database_row_callback (sqlite3_stmt* stmt, gpointer self);
+static Block9Data* block9_data_ref (Block9Data* _data9_);
+static void block9_data_unref (Block9Data* _data9_);
 gboolean rygel_media_db_exists (RygelMediaDB* self, const char* object_id, gint64* timestamp, GError** error);
-GeeArrayList* rygel_media_db_get_children (RygelMediaDB* self, const char* container_id, glong offset, glong max_count);
+static gboolean _lambda7_ (sqlite3_stmt* stmt, Block10Data* _data10_);
+static gboolean __lambda7__rygel_database_row_callback (sqlite3_stmt* stmt, gpointer self);
+static Block10Data* block10_data_ref (Block10Data* _data10_);
+static void block10_data_unref (Block10Data* _data10_);
+GeeArrayList* rygel_media_db_get_children (RygelMediaDB* self, const char* container_id, glong offset, glong max_count, GError** error);
 static void rygel_media_db_finalize (GObject* obj);
-static int _vala_strcmp0 (const char * str1, const char * str2);
 
 
 
@@ -281,159 +396,409 @@ GType rygel_media_db_object_type_get_type (void) {
 
 
 static void rygel_media_db_update_v3_v4 (RygelMediaDB* self) {
-	gboolean _tmp0_ = FALSE;
-	gboolean _tmp1_ = FALSE;
-	gboolean _tmp2_ = FALSE;
-	gboolean _tmp3_ = FALSE;
-	gboolean _tmp4_ = FALSE;
-	gboolean _tmp5_ = FALSE;
+	GError * _inner_error_;
 	g_return_if_fail (self != NULL);
-	if (sqlite3_exec (self->priv->db, "BEGIN", NULL, NULL, NULL) == SQLITE_OK) {
-		_tmp5_ = sqlite3_exec (self->priv->db, RYGEL_MEDIA_DB_UPDATE_V3_V4_STRING_1, NULL, NULL, NULL) == SQLITE_OK;
-	} else {
-		_tmp5_ = FALSE;
+	_inner_error_ = NULL;
+	{
+		rygel_database_begin (self->priv->db, &_inner_error_);
+		if (_inner_error_ != NULL) {
+			if (_inner_error_->domain == RYGEL_DATABASE_ERROR) {
+				goto __catch43_rygel_database_error;
+			}
+			goto __finally43;
+		}
+		rygel_database_exec (self->priv->db, RYGEL_MEDIA_DB_UPDATE_V3_V4_STRING_1, NULL, 0, NULL, NULL, &_inner_error_);
+		if (_inner_error_ != NULL) {
+			if (_inner_error_->domain == RYGEL_DATABASE_ERROR) {
+				goto __catch43_rygel_database_error;
+			}
+			goto __finally43;
+		}
+		rygel_database_exec (self->priv->db, RYGEL_MEDIA_DB_UPDATE_V3_V4_STRING_2, NULL, 0, NULL, NULL, &_inner_error_);
+		if (_inner_error_ != NULL) {
+			if (_inner_error_->domain == RYGEL_DATABASE_ERROR) {
+				goto __catch43_rygel_database_error;
+			}
+			goto __finally43;
+		}
+		rygel_database_exec (self->priv->db, RYGEL_MEDIA_DB_UPDATE_V3_V4_STRING_3, NULL, 0, NULL, NULL, &_inner_error_);
+		if (_inner_error_ != NULL) {
+			if (_inner_error_->domain == RYGEL_DATABASE_ERROR) {
+				goto __catch43_rygel_database_error;
+			}
+			goto __finally43;
+		}
+		rygel_database_exec (self->priv->db, RYGEL_MEDIA_DB_UPDATE_V3_V4_STRING_4, NULL, 0, NULL, NULL, &_inner_error_);
+		if (_inner_error_ != NULL) {
+			if (_inner_error_->domain == RYGEL_DATABASE_ERROR) {
+				goto __catch43_rygel_database_error;
+			}
+			goto __finally43;
+		}
+		rygel_database_exec (self->priv->db, RYGEL_MEDIA_DB_CREATE_TRIGGER_STRING, NULL, 0, NULL, NULL, &_inner_error_);
+		if (_inner_error_ != NULL) {
+			if (_inner_error_->domain == RYGEL_DATABASE_ERROR) {
+				goto __catch43_rygel_database_error;
+			}
+			goto __finally43;
+		}
+		rygel_database_exec (self->priv->db, "UPDATE schema_info SET version = '4'", NULL, 0, NULL, NULL, &_inner_error_);
+		if (_inner_error_ != NULL) {
+			if (_inner_error_->domain == RYGEL_DATABASE_ERROR) {
+				goto __catch43_rygel_database_error;
+			}
+			goto __finally43;
+		}
+		rygel_database_commit (self->priv->db, &_inner_error_);
+		if (_inner_error_ != NULL) {
+			if (_inner_error_->domain == RYGEL_DATABASE_ERROR) {
+				goto __catch43_rygel_database_error;
+			}
+			goto __finally43;
+		}
 	}
-	if (_tmp5_) {
-		_tmp4_ = sqlite3_exec (self->priv->db, RYGEL_MEDIA_DB_UPDATE_V3_V4_STRING_2, NULL, NULL, NULL) == SQLITE_OK;
-	} else {
-		_tmp4_ = FALSE;
+	goto __finally43;
+	__catch43_rygel_database_error:
+	{
+		GError * err;
+		err = _inner_error_;
+		_inner_error_ = NULL;
+		{
+			RygelDatabase* _tmp0_;
+			rygel_database_rollback (self->priv->db);
+			g_warning ("rygel-media-db.vala:233: Database upgrade failed: %s", err->message);
+			self->priv->db = (_tmp0_ = NULL, _g_object_unref0 (self->priv->db), _tmp0_);
+			_g_error_free0 (err);
+		}
 	}
-	if (_tmp4_) {
-		_tmp3_ = sqlite3_exec (self->priv->db, RYGEL_MEDIA_DB_UPDATE_V3_V4_STRING_3, NULL, NULL, NULL) == SQLITE_OK;
-	} else {
-		_tmp3_ = FALSE;
+	__finally43:
+	if (_inner_error_ != NULL) {
+		g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, _inner_error_->message);
+		g_clear_error (&_inner_error_);
+		return;
 	}
-	if (_tmp3_) {
-		_tmp2_ = sqlite3_exec (self->priv->db, RYGEL_MEDIA_DB_UPDATE_V3_V4_STRING_4, NULL, NULL, NULL) == SQLITE_OK;
-	} else {
-		_tmp2_ = FALSE;
+}
+
+
+static void rygel_media_db_update_v4_v5 (RygelMediaDB* self) {
+	GError * _inner_error_;
+	g_return_if_fail (self != NULL);
+	_inner_error_ = NULL;
+	{
+		rygel_database_begin (self->priv->db, &_inner_error_);
+		if (_inner_error_ != NULL) {
+			if (_inner_error_->domain == RYGEL_DATABASE_ERROR) {
+				goto __catch44_rygel_database_error;
+			}
+			goto __finally44;
+		}
+		rygel_database_exec (self->priv->db, "DROP TRIGGER IF EXISTS trgr_delete_children", NULL, 0, NULL, NULL, &_inner_error_);
+		if (_inner_error_ != NULL) {
+			if (_inner_error_->domain == RYGEL_DATABASE_ERROR) {
+				goto __catch44_rygel_database_error;
+			}
+			goto __finally44;
+		}
+		rygel_database_exec (self->priv->db, RYGEL_MEDIA_DB_CREATE_CLOSURE_TABLE, NULL, 0, NULL, NULL, &_inner_error_);
+		if (_inner_error_ != NULL) {
+			if (_inner_error_->domain == RYGEL_DATABASE_ERROR) {
+				goto __catch44_rygel_database_error;
+			}
+			goto __finally44;
+		}
+		rygel_database_exec (self->priv->db, "ALTER TABLE Object RENAME TO _Object", NULL, 0, NULL, NULL, &_inner_error_);
+		if (_inner_error_ != NULL) {
+			if (_inner_error_->domain == RYGEL_DATABASE_ERROR) {
+				goto __catch44_rygel_database_error;
+			}
+			goto __finally44;
+		}
+		rygel_database_exec (self->priv->db, "CREATE TABLE Object AS SELECT * FROM _Object", NULL, 0, NULL, NULL, &_inner_error_);
+		if (_inner_error_ != NULL) {
+			if (_inner_error_->domain == RYGEL_DATABASE_ERROR) {
+				goto __catch44_rygel_database_error;
+			}
+			goto __finally44;
+		}
+		rygel_database_exec (self->priv->db, "DELETE FROM Object", NULL, 0, NULL, NULL, &_inner_error_);
+		if (_inner_error_ != NULL) {
+			if (_inner_error_->domain == RYGEL_DATABASE_ERROR) {
+				goto __catch44_rygel_database_error;
+			}
+			goto __finally44;
+		}
+		rygel_database_exec (self->priv->db, RYGEL_MEDIA_DB_CREATE_CLOSURE_TRIGGER_STRING, NULL, 0, NULL, NULL, &_inner_error_);
+		if (_inner_error_ != NULL) {
+			if (_inner_error_->domain == RYGEL_DATABASE_ERROR) {
+				goto __catch44_rygel_database_error;
+			}
+			goto __finally44;
+		}
+		rygel_database_exec (self->priv->db, "INSERT INTO Object SELECT * FROM _Object", NULL, 0, NULL, NULL, &_inner_error_);
+		if (_inner_error_ != NULL) {
+			if (_inner_error_->domain == RYGEL_DATABASE_ERROR) {
+				goto __catch44_rygel_database_error;
+			}
+			goto __finally44;
+		}
+		rygel_database_exec (self->priv->db, "DROP TABLE Object", NULL, 0, NULL, NULL, &_inner_error_);
+		if (_inner_error_ != NULL) {
+			if (_inner_error_->domain == RYGEL_DATABASE_ERROR) {
+				goto __catch44_rygel_database_error;
+			}
+			goto __finally44;
+		}
+		rygel_database_exec (self->priv->db, "ALTER TABLE _Object RENAME TO Object", NULL, 0, NULL, NULL, &_inner_error_);
+		if (_inner_error_ != NULL) {
+			if (_inner_error_->domain == RYGEL_DATABASE_ERROR) {
+				goto __catch44_rygel_database_error;
+			}
+			goto __finally44;
+		}
+		rygel_database_exec (self->priv->db, RYGEL_MEDIA_DB_CREATE_CLOSURE_TRIGGER_STRING, NULL, 0, NULL, NULL, &_inner_error_);
+		if (_inner_error_ != NULL) {
+			if (_inner_error_->domain == RYGEL_DATABASE_ERROR) {
+				goto __catch44_rygel_database_error;
+			}
+			goto __finally44;
+		}
+		rygel_database_exec (self->priv->db, RYGEL_MEDIA_DB_CREATE_INDICES_STRING, NULL, 0, NULL, NULL, &_inner_error_);
+		if (_inner_error_ != NULL) {
+			if (_inner_error_->domain == RYGEL_DATABASE_ERROR) {
+				goto __catch44_rygel_database_error;
+			}
+			goto __finally44;
+		}
+		rygel_database_exec (self->priv->db, "UPDATE schema_info SET version = '5'", NULL, 0, NULL, NULL, &_inner_error_);
+		if (_inner_error_ != NULL) {
+			if (_inner_error_->domain == RYGEL_DATABASE_ERROR) {
+				goto __catch44_rygel_database_error;
+			}
+			goto __finally44;
+		}
+		rygel_database_commit (self->priv->db, &_inner_error_);
+		if (_inner_error_ != NULL) {
+			if (_inner_error_->domain == RYGEL_DATABASE_ERROR) {
+				goto __catch44_rygel_database_error;
+			}
+			goto __finally44;
+		}
+		rygel_database_exec (self->priv->db, "VACUUM", NULL, 0, NULL, NULL, &_inner_error_);
+		if (_inner_error_ != NULL) {
+			if (_inner_error_->domain == RYGEL_DATABASE_ERROR) {
+				goto __catch44_rygel_database_error;
+			}
+			goto __finally44;
+		}
+		rygel_database_analyze (self->priv->db);
 	}
-	if (_tmp2_) {
-		_tmp1_ = sqlite3_exec (self->priv->db, RYGEL_MEDIA_DB_CREATE_TRIGGER_STRING, NULL, NULL, NULL) == SQLITE_OK;
-	} else {
-		_tmp1_ = FALSE;
+	goto __finally44;
+	__catch44_rygel_database_error:
+	{
+		GError * err;
+		err = _inner_error_;
+		_inner_error_ = NULL;
+		{
+			RygelDatabase* _tmp0_;
+			rygel_database_rollback (self->priv->db);
+			g_warning ("rygel-media-db.vala:261: Database upgrade failed: %s", err->message);
+			self->priv->db = (_tmp0_ = NULL, _g_object_unref0 (self->priv->db), _tmp0_);
+			_g_error_free0 (err);
+		}
 	}
-	if (_tmp1_) {
-		_tmp0_ = sqlite3_exec (self->priv->db, "UPDATE Schema_Info SET version = " RYGEL_MEDIA_DB_schema_version, NULL, NULL, NULL) == SQLITE_OK;
-	} else {
-		_tmp0_ = FALSE;
+	__finally44:
+	if (_inner_error_ != NULL) {
+		g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, _inner_error_->message);
+		g_clear_error (&_inner_error_);
+		return;
 	}
-	if (_tmp0_) {
-		sqlite3_exec (self->priv->db, "COMMIT", NULL, NULL, NULL);
-	} else {
-		sqlite3* _tmp6_;
-		sqlite3_exec (self->priv->db, "ROLLBACK", NULL, NULL, NULL);
-		g_warning ("rygel-media-db.vala:217: Database upgrade failed: %s", sqlite3_errmsg (self->priv->db));
-		self->priv->db = (_tmp6_ = NULL, _sqlite3_close0 (self->priv->db), _tmp6_);
+}
+
+
+static gboolean _lambda8_ (sqlite3_stmt* stmt, Block3Data* _data3_) {
+	RygelMediaDB * self;
+	gboolean result;
+	self = _data3_->self;
+	g_return_val_if_fail (stmt != NULL, FALSE);
+	_data3_->old_version = sqlite3_column_int (stmt, 0);
+	result = FALSE;
+	return result;
+}
+
+
+static gboolean __lambda8__rygel_database_row_callback (sqlite3_stmt* stmt, gpointer self) {
+	return _lambda8_ (stmt, self);
+}
+
+
+static gboolean _lambda9_ (sqlite3_stmt* stmt, Block4Data* _data4_) {
+	Block3Data* _data3_;
+	RygelMediaDB * self;
+	gboolean result;
+	_data3_ = _data4_->_data3_;
+	self = _data3_->self;
+	g_return_val_if_fail (stmt != NULL, FALSE);
+	_data4_->rows = sqlite3_column_int (stmt, 0);
+}
+
+
+static gboolean __lambda9__rygel_database_row_callback (sqlite3_stmt* stmt, gpointer self) {
+	return _lambda9_ (stmt, self);
+}
+
+
+static Block4Data* block4_data_ref (Block4Data* _data4_) {
+	++_data4_->_ref_count_;
+	return _data4_;
+}
+
+
+static void block4_data_unref (Block4Data* _data4_) {
+	if ((--_data4_->_ref_count_) == 0) {
+		block3_data_unref (_data4_->_data3_);
+		g_slice_free (Block4Data, _data4_);
+	}
+}
+
+
+static Block3Data* block3_data_ref (Block3Data* _data3_) {
+	++_data3_->_ref_count_;
+	return _data3_;
+}
+
+
+static void block3_data_unref (Block3Data* _data3_) {
+	if ((--_data3_->_ref_count_) == 0) {
+		_g_object_unref0 (_data3_->self);
+		g_slice_free (Block3Data, _data3_);
 	}
 }
 
 
 static void rygel_media_db_open_db (RygelMediaDB* self, const char* name) {
-	char* dirname;
-	char* _tmp0_;
-	char* _tmp1_;
-	char* db_file;
-	sqlite3* _tmp4_;
-	gint _tmp3_;
-	sqlite3* _tmp2_ = NULL;
-	gint rc;
-	gint schema_info_size;
-	gint schema_info_length1;
-	char** schema_info;
-	gint nrows = 0;
-	gint ncolumns = 0;
+	GError * _inner_error_;
+	Block3Data* _data3_;
+	RygelDatabase* _tmp0_;
 	g_return_if_fail (self != NULL);
 	g_return_if_fail (name != NULL);
-	dirname = g_build_filename (g_get_user_cache_dir (), "rygel", NULL);
-	g_mkdir_with_parents (dirname, 0750);
-	db_file = (_tmp1_ = g_build_filename (dirname, _tmp0_ = g_strdup_printf ("%s.db", name), NULL), _g_free0 (_tmp0_), _tmp1_);
-	g_debug ("rygel-media-db.vala:227: Using database file %s", db_file);
-	rc = (_tmp3_ = sqlite3_open (db_file, &_tmp2_), self->priv->db = (_tmp4_ = _tmp2_, _sqlite3_close0 (self->priv->db), _tmp4_), _tmp3_);
-	if (rc != SQLITE_OK) {
-		g_warning ("rygel-media-db.vala:230: Failed to open database: %d, %s", rc, sqlite3_errmsg (self->priv->db));
-		_g_free0 (dirname);
-		_g_free0 (db_file);
-		return;
-	}
-	schema_info = (schema_info_length1 = 0, NULL);
-	rc = sqlite3_get_table (self->priv->db, "SELECT version FROM Schema_Info;", &schema_info, &nrows, &ncolumns, NULL);
-	if (rc == SQLITE_OK) {
-		gboolean _tmp5_ = FALSE;
-		if (nrows == 1) {
-			_tmp5_ = ncolumns == 1;
-		} else {
-			_tmp5_ = FALSE;
+	_inner_error_ = NULL;
+	_data3_ = g_slice_new0 (Block3Data);
+	_data3_->_ref_count_ = 1;
+	_data3_->self = g_object_ref (self);
+	self->priv->db = (_tmp0_ = rygel_database_new (name), _g_object_unref0 (self->priv->db), _tmp0_);
+	_data3_->old_version = -1;
+	{
+		gint current_version;
+		rygel_database_exec (self->priv->db, "SELECT version FROM schema_info", NULL, 0, __lambda8__rygel_database_row_callback, _data3_, &_inner_error_);
+		if (_inner_error_ != NULL) {
+			if (_inner_error_->domain == RYGEL_DATABASE_ERROR) {
+				goto __catch45_rygel_database_error;
+			}
+			goto __finally45;
 		}
-		if (_tmp5_) {
-			if (_vala_strcmp0 (schema_info[1], RYGEL_MEDIA_DB_schema_version) == 0) {
-				g_debug ("rygel-media-db.vala:249: Media DB schema has current version");
+		current_version = atoi (RYGEL_MEDIA_DB_schema_version);
+		if (_data3_->old_version == current_version) {
+			g_debug ("rygel-media-db.vala:279: Media DB schema has current version");
+		} else {
+			if (_data3_->old_version < current_version) {
+				g_debug ("rygel-media-db.vala:282: Older schema detected. Upgrading...");
+				switch (_data3_->old_version) {
+					case 3:
+					{
+						rygel_media_db_update_v3_v4 (self);
+						break;
+					}
+					case 4:
+					{
+						rygel_media_db_update_v4_v5 (self);
+						break;
+					}
+					default:
+					{
+						RygelDatabase* _tmp1_;
+						g_warning ("rygel-media-db.vala:291: Cannot upgrade");
+						self->priv->db = (_tmp1_ = NULL, _g_object_unref0 (self->priv->db), _tmp1_);
+						break;
+					}
+				}
 			} else {
-				gint old_version;
-				gint current_version;
-				old_version = atoi (schema_info[1]);
-				current_version = atoi (RYGEL_MEDIA_DB_schema_version);
-				if (old_version < current_version) {
-					g_debug ("rygel-media-db.vala:254: Older schema detected. Upgrading...");
-					switch (old_version) {
-						case 3:
-						{
-							rygel_media_db_update_v3_v4 (self);
-							break;
-						}
-						default:
-						{
-							sqlite3* _tmp6_;
-							g_warning ("rygel-media-db.vala:260: Cannot upgrade");
-							self->priv->db = (_tmp6_ = NULL, _sqlite3_close0 (self->priv->db), _tmp6_);
-							break;
-						}
+				RygelDatabase* _tmp2_;
+				g_warning ("The version \"%d\" of the detected database" " is newer than our supported version \"%d\"", _data3_->old_version, current_version);
+				self->priv->db = (_tmp2_ = NULL, _g_object_unref0 (self->priv->db), _tmp2_);
+			}
+		}
+	}
+	goto __finally45;
+	__catch45_rygel_database_error:
+	{
+		GError * err;
+		err = _inner_error_;
+		_inner_error_ = NULL;
+		{
+			g_debug ("rygel-media-db.vala:303: Could not find schema version; checking for empty database...");
+			{
+				Block4Data* _data4_;
+				_data4_ = g_slice_new0 (Block4Data);
+				_data4_->_ref_count_ = 1;
+				_data4_->_data3_ = block3_data_ref (_data3_);
+				_data4_->rows = -1;
+				rygel_database_exec (self->priv->db, "SELECT count(type) FROM sqlite_master " "WHERE rowid=1", NULL, 0, __lambda9__rygel_database_row_callback, _data4_, &_inner_error_);
+				if (_inner_error_ != NULL) {
+					if (_inner_error_->domain == RYGEL_DATABASE_ERROR) {
+						goto __catch46_rygel_database_error;
+					}
+					goto __finally46;
+				}
+				if (_data4_->rows == 0) {
+					g_debug ("rygel-media-db.vala:313: Empty database, creating new schema version %s", RYGEL_MEDIA_DB_schema_version);
+					if (!rygel_media_db_create_schema (self)) {
+						RygelDatabase* _tmp3_;
+						self->priv->db = (_tmp3_ = NULL, _g_object_unref0 (self->priv->db), _tmp3_);
+						block4_data_unref (_data4_);
+						_g_error_free0 (err);
+						block3_data_unref (_data3_);
+						return;
 					}
 				} else {
-					sqlite3* _tmp7_;
-					g_warning ("The version \"%d\" of the detected database" " is newer than our supported version \"%d\"", old_version, current_version);
-					self->priv->db = (_tmp7_ = NULL, _sqlite3_close0 (self->priv->db), _tmp7_);
+					RygelDatabase* _tmp4_;
+					g_warning ("rygel-media-db.vala:320: Incompatible schema... cannot proceed");
+					self->priv->db = (_tmp4_ = NULL, _g_object_unref0 (self->priv->db), _tmp4_);
+					block4_data_unref (_data4_);
+					_g_error_free0 (err);
+					block3_data_unref (_data3_);
+					return;
+				}
+				block4_data_unref (_data4_);
+			}
+			goto __finally46;
+			__catch46_rygel_database_error:
+			{
+				GError * err2;
+				err2 = _inner_error_;
+				_inner_error_ = NULL;
+				{
+					RygelDatabase* _tmp5_;
+					g_warning ("rygel-media-db.vala:325: Something weird going on: %s", err2->message);
+					self->priv->db = (_tmp5_ = NULL, _g_object_unref0 (self->priv->db), _tmp5_);
+					_g_error_free0 (err2);
 				}
 			}
-		} else {
-			sqlite3* _tmp8_;
-			g_warning ("rygel-media-db.vala:272: Incompatible schema... cannot proceed");
-			self->priv->db = (_tmp8_ = NULL, _sqlite3_close0 (self->priv->db), _tmp8_);
-			_g_free0 (dirname);
-			_g_free0 (db_file);
-			return;
-		}
-	} else {
-		g_debug ("rygel-media-db.vala:277: Could not find schema version; checking for empty database...");
-		rc = sqlite3_get_table (self->priv->db, "SELECT * FROM sqlite_master", &schema_info, &nrows, &ncolumns, NULL);
-		if (rc != SQLITE_OK) {
-			sqlite3* _tmp9_;
-			g_warning ("rygel-media-db.vala:284: Something weird going on: %s", sqlite3_errmsg (self->priv->db));
-			self->priv->db = (_tmp9_ = NULL, _sqlite3_close0 (self->priv->db), _tmp9_);
-			_g_free0 (dirname);
-			_g_free0 (db_file);
-			return;
-		}
-		if (nrows == 0) {
-			g_debug ("rygel-media-db.vala:291: Empty database, creating new schema version %s", RYGEL_MEDIA_DB_schema_version);
-			if (!rygel_media_db_create_schema (self)) {
-				sqlite3* _tmp10_;
-				self->priv->db = (_tmp10_ = NULL, _sqlite3_close0 (self->priv->db), _tmp10_);
-				_g_free0 (dirname);
-				_g_free0 (db_file);
-				return;
+			__finally46:
+			if (_inner_error_ != NULL) {
+				_g_error_free0 (err);
+				goto __finally45;
 			}
-		} else {
-			sqlite3* _tmp11_;
-			g_warning ("rygel-media-db.vala:298: Incompatible schema... cannot proceed");
-			self->priv->db = (_tmp11_ = NULL, _sqlite3_close0 (self->priv->db), _tmp11_);
-			_g_free0 (dirname);
-			_g_free0 (db_file);
-			return;
+			_g_error_free0 (err);
 		}
 	}
-	_g_free0 (dirname);
-	_g_free0 (db_file);
+	__finally45:
+	if (_inner_error_ != NULL) {
+		block3_data_unref (_data3_);
+		g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, _inner_error_->message);
+		g_clear_error (&_inner_error_);
+		return;
+	}
+	block3_data_unref (_data3_);
 }
 
 
@@ -518,87 +883,44 @@ RygelMediaDB* rygel_media_db_create_with_factory (const char* name, RygelMediaDB
 }
 
 
-static gboolean rygel_media_db_sweeper (RygelMediaDB* self) {
-	gboolean result;
-	gint rc;
-	g_return_val_if_fail (self != NULL, FALSE);
-	g_debug ("rygel-media-db.vala:331: Running sweeper");
-	rc = sqlite3_exec (self->priv->db, RYGEL_MEDIA_DB_SWEEPER_STRING, NULL, NULL, NULL);
-	if (rc != SQLITE_OK) {
-		g_warning ("rygel-media-db.vala:334: Failed to sweep database");
-		result = FALSE;
-		return result;
-	} else {
-		gint changes;
-		changes = sqlite3_changes (self->priv->db);
-		g_debug ("rygel-media-db.vala:341: Changes in sweeper: %d", changes);
-		result = changes != 0;
-		return result;
+static void _vala_GValue_array_free (GValue* array, gint array_length) {
+	if (array != NULL) {
+		int i;
+		for (i = 0; i < array_length; i = i + 1) {
+			g_value_unset (&array[i]);
+		}
 	}
-}
-
-
-static gboolean _rygel_media_db_sweeper_gsource_func (gpointer self) {
-	return rygel_media_db_sweeper (self);
+	g_free (array);
 }
 
 
 void rygel_media_db_remove_by_id (RygelMediaDB* self, const char* id, GError** error) {
 	GError * _inner_error_;
-	sqlite3_stmt* statement;
-	sqlite3_stmt* _tmp2_;
-	gint _tmp1_;
-	sqlite3_stmt* _tmp0_ = NULL;
-	gint rc;
+	GValue* _tmp2_;
+	gint values_size;
+	gint values_length1;
+	GValue* _tmp1_ = NULL;
+	GValue _tmp0_ = {0};
+	GValue* values;
 	g_return_if_fail (self != NULL);
 	g_return_if_fail (id != NULL);
 	_inner_error_ = NULL;
-	statement = NULL;
-	rc = (_tmp1_ = sqlite3_prepare_v2 (self->priv->db, "DELETE FROM Object WHERE upnp_id = ?", -1, &_tmp0_, NULL), statement = (_tmp2_ = _tmp0_, _sqlite3_finalize0 (statement), _tmp2_), _tmp1_);
-	if (rc == SQLITE_OK) {
-		gboolean _tmp3_ = FALSE;
-		if (sqlite3_bind_text (statement, 1, g_strdup (id), -1, g_free) != SQLITE_OK) {
-			_inner_error_ = g_error_new_literal (RYGEL_MEDIA_DB_ERROR, RYGEL_MEDIA_DB_ERROR_SQLITE_ERROR, sqlite3_errmsg (self->priv->db));
-			if (_inner_error_ != NULL) {
-				if (_inner_error_->domain == RYGEL_MEDIA_DB_ERROR) {
-					g_propagate_error (error, _inner_error_);
-					_sqlite3_finalize0 (statement);
-					return;
-				} else {
-					_sqlite3_finalize0 (statement);
-					g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, _inner_error_->message);
-					g_clear_error (&_inner_error_);
-					return;
-				}
-			}
-		}
-		rc = sqlite3_step (statement);
-		if (rc == SQLITE_DONE) {
-			_tmp3_ = TRUE;
+	values = (_tmp2_ = (_tmp1_ = g_new0 (GValue, 1), _tmp1_[0] = (g_value_init (&_tmp0_, G_TYPE_STRING), g_value_set_string (&_tmp0_, id), _tmp0_), _tmp1_), values_length1 = 1, values_size = values_length1, _tmp2_);
+	rygel_database_exec (self->priv->db, RYGEL_MEDIA_DB_DELETE_BY_ID_STRING, values, values_length1, NULL, NULL, &_inner_error_);
+	if (_inner_error_ != NULL) {
+		if (_inner_error_->domain == RYGEL_DATABASE_ERROR) {
+			g_propagate_error (error, _inner_error_);
+			values = (_vala_GValue_array_free (values, values_length1), NULL);
+			return;
 		} else {
-			_tmp3_ = rc == SQLITE_OK;
-		}
-		if (_tmp3_) {
-			g_signal_emit_by_name (self, "object-removed", id);
-			g_idle_add_full (G_PRIORITY_DEFAULT_IDLE, _rygel_media_db_sweeper_gsource_func, g_object_ref (self), g_object_unref);
-		}
-	} else {
-		g_warning ("rygel-media-db.vala:375: Failed to prepare delete of object %s: %s", id, sqlite3_errmsg (self->priv->db));
-		_inner_error_ = g_error_new_literal (RYGEL_MEDIA_DB_ERROR, RYGEL_MEDIA_DB_ERROR_SQLITE_ERROR, sqlite3_errmsg (self->priv->db));
-		if (_inner_error_ != NULL) {
-			if (_inner_error_->domain == RYGEL_MEDIA_DB_ERROR) {
-				g_propagate_error (error, _inner_error_);
-				_sqlite3_finalize0 (statement);
-				return;
-			} else {
-				_sqlite3_finalize0 (statement);
-				g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, _inner_error_->message);
-				g_clear_error (&_inner_error_);
-				return;
-			}
+			values = (_vala_GValue_array_free (values, values_length1), NULL);
+			g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, _inner_error_->message);
+			g_clear_error (&_inner_error_);
+			return;
 		}
 	}
-	_sqlite3_finalize0 (statement);
+	g_signal_emit_by_name (self, "object-removed", id);
+	values = (_vala_GValue_array_free (values, values_length1), NULL);
 }
 
 
@@ -609,7 +931,7 @@ void rygel_media_db_remove_object (RygelMediaDB* self, RygelMediaObject* obj, GE
 	_inner_error_ = NULL;
 	rygel_media_db_remove_by_id (self, obj->id, &_inner_error_);
 	if (_inner_error_ != NULL) {
-		if (_inner_error_->domain == RYGEL_MEDIA_DB_ERROR) {
+		if ((_inner_error_->domain == RYGEL_DATABASE_ERROR) || (_inner_error_->domain == RYGEL_MEDIA_DB_ERROR)) {
 			g_propagate_error (error, _inner_error_);
 			return;
 		} else {
@@ -626,7 +948,7 @@ void rygel_media_db_remove_object (RygelMediaDB* self, RygelMediaObject* obj, GE
 		} else {
 			_inner_error_ = g_error_new_literal (RYGEL_MEDIA_DB_ERROR, RYGEL_MEDIA_DB_ERROR_INVALID_TYPE, "Invalid object type");
 			if (_inner_error_ != NULL) {
-				if (_inner_error_->domain == RYGEL_MEDIA_DB_ERROR) {
+				if ((_inner_error_->domain == RYGEL_DATABASE_ERROR) || (_inner_error_->domain == RYGEL_MEDIA_DB_ERROR)) {
 					g_propagate_error (error, _inner_error_);
 					return;
 				} else {
@@ -676,45 +998,58 @@ static gpointer _g_error_copy0 (gpointer self) {
 
 void rygel_media_db_save_container (RygelMediaDB* self, RygelMediaContainer* container, GError** error) {
 	GError * _inner_error_;
-	gint rc;
 	g_return_if_fail (self != NULL);
 	g_return_if_fail (container != NULL);
 	_inner_error_ = NULL;
-	rc = sqlite3_exec (self->priv->db, "BEGIN", NULL, NULL, NULL);
 	{
+		rygel_database_begin (self->priv->db, &_inner_error_);
+		if (_inner_error_ != NULL) {
+			if (_inner_error_->domain == RYGEL_DATABASE_ERROR) {
+				goto __catch47_rygel_database_error;
+			}
+			goto __finally47;
+		}
 		rygel_media_db_create_object (self, (RygelMediaObject*) container, &_inner_error_);
 		if (_inner_error_ != NULL) {
-			goto __catch39_g_error;
-			goto __finally39;
+			if (_inner_error_->domain == RYGEL_DATABASE_ERROR) {
+				goto __catch47_rygel_database_error;
+			}
+			goto __finally47;
 		}
 		rygel_media_db_save_uris (self, (RygelMediaObject*) container, &_inner_error_);
 		if (_inner_error_ != NULL) {
-			goto __catch39_g_error;
-			goto __finally39;
+			if (_inner_error_->domain == RYGEL_DATABASE_ERROR) {
+				goto __catch47_rygel_database_error;
+			}
+			goto __finally47;
 		}
-		rc = sqlite3_exec (self->priv->db, "COMMIT", NULL, NULL, NULL);
-		if (rc == SQLITE_OK) {
-			g_signal_emit_by_name (self, "object-added", ((RygelMediaObject*) container)->id);
-			g_signal_emit_by_name (self, "container-added", ((RygelMediaObject*) container)->id);
+		rygel_database_commit (self->priv->db, &_inner_error_);
+		if (_inner_error_ != NULL) {
+			if (_inner_error_->domain == RYGEL_DATABASE_ERROR) {
+				goto __catch47_rygel_database_error;
+			}
+			goto __finally47;
 		}
+		g_signal_emit_by_name (self, "object-added", ((RygelMediaObject*) container)->id);
+		g_signal_emit_by_name (self, "container-added", ((RygelMediaObject*) container)->id);
 	}
-	goto __finally39;
-	__catch39_g_error:
+	goto __finally47;
+	__catch47_rygel_database_error:
 	{
-		GError * _error_;
-		_error_ = _inner_error_;
+		GError * err;
+		err = _inner_error_;
 		_inner_error_ = NULL;
 		{
-			rc = sqlite3_exec (self->priv->db, "ROLLBACK", NULL, NULL, NULL);
-			_inner_error_ = _g_error_copy0 (_error_);
+			rygel_database_rollback (self->priv->db);
+			_inner_error_ = _g_error_copy0 (err);
 			if (_inner_error_ != NULL) {
-				_g_error_free0 (_error_);
-				goto __finally39;
+				_g_error_free0 (err);
+				goto __finally47;
 			}
-			_g_error_free0 (_error_);
+			_g_error_free0 (err);
 		}
 	}
-	__finally39:
+	__finally47:
 	if (_inner_error_ != NULL) {
 		g_propagate_error (error, _inner_error_);
 		return;
@@ -724,51 +1059,66 @@ void rygel_media_db_save_container (RygelMediaDB* self, RygelMediaContainer* con
 
 void rygel_media_db_save_item (RygelMediaDB* self, RygelMediaItem* item, GError** error) {
 	GError * _inner_error_;
-	gint rc;
 	g_return_if_fail (self != NULL);
 	g_return_if_fail (item != NULL);
 	_inner_error_ = NULL;
-	rc = sqlite3_exec (self->priv->db, "BEGIN;", NULL, NULL, NULL);
 	{
+		rygel_database_begin (self->priv->db, &_inner_error_);
+		if (_inner_error_ != NULL) {
+			if (_inner_error_->domain == RYGEL_DATABASE_ERROR) {
+				goto __catch48_rygel_database_error;
+			}
+			goto __finally48;
+		}
 		rygel_media_db_save_metadata (self, item, RYGEL_MEDIA_DB_INSERT_META_DATA_STRING, &_inner_error_);
 		if (_inner_error_ != NULL) {
-			goto __catch40_g_error;
-			goto __finally40;
+			if (_inner_error_->domain == RYGEL_DATABASE_ERROR) {
+				goto __catch48_rygel_database_error;
+			}
+			goto __finally48;
 		}
 		rygel_media_db_create_object (self, (RygelMediaObject*) item, &_inner_error_);
 		if (_inner_error_ != NULL) {
-			goto __catch40_g_error;
-			goto __finally40;
+			if (_inner_error_->domain == RYGEL_DATABASE_ERROR) {
+				goto __catch48_rygel_database_error;
+			}
+			goto __finally48;
 		}
 		rygel_media_db_save_uris (self, (RygelMediaObject*) item, &_inner_error_);
 		if (_inner_error_ != NULL) {
-			goto __catch40_g_error;
-			goto __finally40;
+			if (_inner_error_->domain == RYGEL_DATABASE_ERROR) {
+				goto __catch48_rygel_database_error;
+			}
+			goto __finally48;
 		}
-		rc = sqlite3_exec (self->priv->db, "COMMIT;", NULL, NULL, NULL);
-		if (rc == SQLITE_OK) {
-			g_signal_emit_by_name (self, "object-added", ((RygelMediaObject*) item)->id);
-			g_signal_emit_by_name (self, "item-added", ((RygelMediaObject*) item)->id);
+		rygel_database_commit (self->priv->db, &_inner_error_);
+		if (_inner_error_ != NULL) {
+			if (_inner_error_->domain == RYGEL_DATABASE_ERROR) {
+				goto __catch48_rygel_database_error;
+			}
+			goto __finally48;
 		}
+		g_signal_emit_by_name (self, "object-added", ((RygelMediaObject*) item)->id);
+		g_signal_emit_by_name (self, "item-added", ((RygelMediaObject*) item)->id);
 	}
-	goto __finally40;
-	__catch40_g_error:
+	goto __finally48;
+	__catch48_rygel_database_error:
 	{
 		GError * _error_;
 		_error_ = _inner_error_;
 		_inner_error_ = NULL;
 		{
-			g_warning ("rygel-media-db.vala:431: Failed to add item with id %s: %s", ((RygelMediaObject*) item)->id, _error_->message);
-			rc = sqlite3_exec (self->priv->db, "ROLLBACK;", NULL, NULL, NULL);
+			g_warning ("rygel-media-db.vala:419: Failed to add item with id %s: %s", ((RygelMediaObject*) item)->id, _error_->message);
+			rygel_database_rollback (self->priv->db);
 			_inner_error_ = _g_error_copy0 (_error_);
 			if (_inner_error_ != NULL) {
 				_g_error_free0 (_error_);
-				goto __finally40;
+				goto __finally48;
 			}
 			_g_error_free0 (_error_);
 		}
 	}
-	__finally40:
+	__finally48:
 	if (_inner_error_ != NULL) {
 		g_propagate_error (error, _inner_error_);
 		return;
@@ -778,64 +1128,69 @@ void rygel_media_db_save_item (RygelMediaDB* self, RygelMediaItem* item, GError*
 
 void rygel_media_db_update_object (RygelMediaDB* self, RygelMediaObject* obj, GError** error) {
 	GError * _inner_error_;
-	gint rc;
 	g_return_if_fail (self != NULL);
 	g_return_if_fail (obj != NULL);
 	_inner_error_ = NULL;
-	rc = sqlite3_exec (self->priv->db, "BEGIN", NULL, NULL, NULL);
 	{
+		rygel_database_begin (self->priv->db, &_inner_error_);
+		if (_inner_error_ != NULL) {
+			goto __catch49_g_error;
+			goto __finally49;
+		}
 		rygel_media_db_remove_uris (self, obj, &_inner_error_);
 		if (_inner_error_ != NULL) {
-			goto __catch41_g_error;
-			goto __finally41;
+			goto __catch49_g_error;
+			goto __finally49;
 		}
 		if (RYGEL_IS_MEDIA_ITEM (obj)) {
 			rygel_media_db_save_metadata (self, RYGEL_MEDIA_ITEM (obj), RYGEL_MEDIA_DB_UPDATE_META_DATA_STRING, &_inner_error_);
 			if (_inner_error_ != NULL) {
-				goto __catch41_g_error;
-				goto __finally41;
+				goto __catch49_g_error;
+				goto __finally49;
 			}
 		}
 		rygel_media_db_update_object_internal (self, obj, &_inner_error_);
 		if (_inner_error_ != NULL) {
-			goto __catch41_g_error;
-			goto __finally41;
+			goto __catch49_g_error;
+			goto __finally49;
 		}
 		rygel_media_db_save_uris (self, obj, &_inner_error_);
 		if (_inner_error_ != NULL) {
-			goto __catch41_g_error;
-			goto __finally41;
+			goto __catch49_g_error;
+			goto __finally49;
 		}
-		rc = sqlite3_exec (self->priv->db, "COMMIT", NULL, NULL, NULL);
-		if (rc == SQLITE_OK) {
-			g_signal_emit_by_name (self, "object-updated", obj->id);
-			if (RYGEL_IS_MEDIA_ITEM (obj)) {
-				g_signal_emit_by_name (self, "item-updated", obj->id);
-			} else {
-				if (RYGEL_IS_MEDIA_CONTAINER (obj)) {
-					g_signal_emit_by_name (self, "container-updated", obj->id);
-				}
+		rygel_database_commit (self->priv->db, &_inner_error_);
+		if (_inner_error_ != NULL) {
+			goto __catch49_g_error;
+			goto __finally49;
+		}
+		g_signal_emit_by_name (self, "object-updated", obj->id);
+		if (RYGEL_IS_MEDIA_ITEM (obj)) {
+			g_signal_emit_by_name (self, "item-updated", obj->id);
+		} else {
+			if (RYGEL_IS_MEDIA_CONTAINER (obj)) {
+				g_signal_emit_by_name (self, "container-updated", obj->id);
 			}
 		}
 	}
-	goto __finally41;
-	__catch41_g_error:
+	goto __finally49;
+	__catch49_g_error:
 	{
 		GError * _error_;
 		_error_ = _inner_error_;
 		_inner_error_ = NULL;
 		{
-			g_warning ("rygel-media-db.vala:458: Failed to add item with id %s: %s", obj->id, _error_->message);
-			rc = sqlite3_exec (self->priv->db, "ROLLBACK", NULL, NULL, NULL);
+			g_warning ("rygel-media-db.vala:444: Failed to add item with id %s: %s", obj->id, _error_->message);
+			rygel_database_rollback (self->priv->db);
 			_inner_error_ = _g_error_copy0 (_error_);
 			if (_inner_error_ != NULL) {
 				_g_error_free0 (_error_);
-				goto __finally41;
+				goto __finally49;
 			}
 			_g_error_free0 (_error_);
 		}
 	}
-	__finally41:
+	__finally49:
 	if (_inner_error_ != NULL) {
 		g_propagate_error (error, _inner_error_);
 		return;
@@ -845,508 +1200,305 @@ void rygel_media_db_update_object (RygelMediaDB* self, RygelMediaObject* obj, GE
 
 static void rygel_media_db_update_object_internal (RygelMediaDB* self, RygelMediaObject* obj, GError** error) {
 	GError * _inner_error_;
-	sqlite3_stmt* statement;
-	sqlite3_stmt* _tmp2_;
-	gint _tmp1_;
-	sqlite3_stmt* _tmp0_ = NULL;
-	gint rc;
+	GValue* _tmp4_;
+	gint values_size;
+	gint values_length1;
+	GValue* _tmp3_ = NULL;
+	GValue _tmp2_ = {0};
+	GValue _tmp1_ = {0};
+	GValue _tmp0_ = {0};
+	GValue* values;
 	g_return_if_fail (self != NULL);
 	g_return_if_fail (obj != NULL);
 	_inner_error_ = NULL;
-	statement = NULL;
-	rc = (_tmp1_ = sqlite3_prepare_v2 (self->priv->db, RYGEL_MEDIA_DB_UPDATE_OBJECT_STRING, -1, &_tmp0_, NULL), statement = (_tmp2_ = _tmp0_, _sqlite3_finalize0 (statement), _tmp2_), _tmp1_);
-	if (rc == SQLITE_OK) {
-		gboolean _tmp3_ = FALSE;
-		gboolean _tmp4_ = FALSE;
-		gboolean _tmp5_ = FALSE;
-		if (sqlite3_bind_text (statement, 1, g_strdup (obj->title), -1, g_free) != SQLITE_OK) {
-			_tmp4_ = TRUE;
-		} else {
-			_tmp4_ = sqlite3_bind_int64 (statement, 2, (gint64) obj->modified) != SQLITE_OK;
-		}
-		if (_tmp4_) {
-			_tmp3_ = TRUE;
-		} else {
-			_tmp3_ = sqlite3_bind_text (statement, 3, g_strdup (obj->id), -1, g_free) != SQLITE_OK;
-		}
-		if (_tmp3_) {
-			_inner_error_ = g_error_new_literal (RYGEL_MEDIA_DB_ERROR, RYGEL_MEDIA_DB_ERROR_SQLITE_ERROR, sqlite3_errmsg (self->priv->db));
-			if (_inner_error_ != NULL) {
-				g_propagate_error (error, _inner_error_);
-				_sqlite3_finalize0 (statement);
-				return;
-			}
-		}
-		rc = sqlite3_step (statement);
-		if (rc != SQLITE_DONE) {
-			_tmp5_ = rc != SQLITE_OK;
-		} else {
-			_tmp5_ = FALSE;
-		}
-		if (_tmp5_) {
-			_inner_error_ = g_error_new_literal (RYGEL_MEDIA_DB_ERROR, RYGEL_MEDIA_DB_ERROR_SQLITE_ERROR, sqlite3_errmsg (self->priv->db));
-			if (_inner_error_ != NULL) {
-				g_propagate_error (error, _inner_error_);
-				_sqlite3_finalize0 (statement);
-				return;
-			}
-		}
-	} else {
-		_inner_error_ = g_error_new_literal (RYGEL_MEDIA_DB_ERROR, RYGEL_MEDIA_DB_ERROR_SQLITE_ERROR, sqlite3_errmsg (self->priv->db));
-		if (_inner_error_ != NULL) {
-			g_propagate_error (error, _inner_error_);
-			_sqlite3_finalize0 (statement);
-			return;
-		}
+	values = (_tmp4_ = (_tmp3_ = g_new0 (GValue, 3), _tmp3_[0] = (g_value_init (&_tmp0_, G_TYPE_STRING), g_value_set_string (&_tmp0_, rygel_media_object_get_title (obj)), _tmp0_), _tmp3_[1] = (g_value_init (&_tmp1_, G_TYPE_INT64), g_value_set_int64 (&_tmp1_, (gint64) obj->modified), _tmp1_), _tmp3_[2] = (g_value_init (&_tmp2_, G_TYPE_STRING), g_value_set_string (&_tmp2_, obj->id), _tmp2_), _tmp3_), values_length1 = 3, values_size = values_length1, _tmp4_);
+	rygel_database_exec (self->priv->db, RYGEL_MEDIA_DB_UPDATE_OBJECT_STRING, values, values_length1, NULL, NULL, &_inner_error_);
+	if (_inner_error_ != NULL) {
+		g_propagate_error (error, _inner_error_);
+		values = (_vala_GValue_array_free (values, values_length1), NULL);
+		return;
 	}
-	_sqlite3_finalize0 (statement);
+	values = (_vala_GValue_array_free (values, values_length1), NULL);
 }
 
 
 static void rygel_media_db_remove_uris (RygelMediaDB* self, RygelMediaObject* obj, GError** error) {
 	GError * _inner_error_;
-	sqlite3_stmt* statement;
-	sqlite3_stmt* _tmp2_;
-	gint _tmp1_;
-	sqlite3_stmt* _tmp0_ = NULL;
-	gint rc;
+	GValue* _tmp2_;
+	gint values_size;
+	gint values_length1;
+	GValue* _tmp1_ = NULL;
+	GValue _tmp0_ = {0};
+	GValue* values;
 	g_return_if_fail (self != NULL);
 	g_return_if_fail (obj != NULL);
 	_inner_error_ = NULL;
-	statement = NULL;
-	rc = (_tmp1_ = sqlite3_prepare_v2 (self->priv->db, RYGEL_MEDIA_DB_DELETE_URI_STRING, -1, &_tmp0_, NULL), statement = (_tmp2_ = _tmp0_, _sqlite3_finalize0 (statement), _tmp2_), _tmp1_);
-	if (rc == SQLITE_OK) {
-		gboolean _tmp3_ = FALSE;
-		if (sqlite3_bind_text (statement, 1, g_strdup (obj->id), -1, g_free) != SQLITE_OK) {
-			_inner_error_ = g_error_new_literal (RYGEL_MEDIA_DB_ERROR, RYGEL_MEDIA_DB_ERROR_SQLITE_ERROR, sqlite3_errmsg (self->priv->db));
-			if (_inner_error_ != NULL) {
-				g_propagate_error (error, _inner_error_);
-				_sqlite3_finalize0 (statement);
-				return;
-			}
-		}
-		rc = sqlite3_step (statement);
-		if (rc != SQLITE_DONE) {
-			_tmp3_ = rc != SQLITE_OK;
-		} else {
-			_tmp3_ = FALSE;
-		}
-		if (_tmp3_) {
-			_inner_error_ = g_error_new_literal (RYGEL_MEDIA_DB_ERROR, RYGEL_MEDIA_DB_ERROR_SQLITE_ERROR, sqlite3_errmsg (self->priv->db));
-			if (_inner_error_ != NULL) {
-				g_propagate_error (error, _inner_error_);
-				_sqlite3_finalize0 (statement);
-				return;
-			}
-		}
-	} else {
-		_inner_error_ = g_error_new_literal (RYGEL_MEDIA_DB_ERROR, RYGEL_MEDIA_DB_ERROR_SQLITE_ERROR, sqlite3_errmsg (self->priv->db));
-		if (_inner_error_ != NULL) {
-			g_propagate_error (error, _inner_error_);
-			_sqlite3_finalize0 (statement);
-			return;
-		}
+	values = (_tmp2_ = (_tmp1_ = g_new0 (GValue, 1), _tmp1_[0] = (g_value_init (&_tmp0_, G_TYPE_STRING), g_value_set_string (&_tmp0_, obj->id), _tmp0_), _tmp1_), values_length1 = 1, values_size = values_length1, _tmp2_);
+	rygel_database_exec (self->priv->db, RYGEL_MEDIA_DB_DELETE_URI_STRING, values, values_length1, NULL, NULL, &_inner_error_);
+	if (_inner_error_ != NULL) {
+		g_propagate_error (error, _inner_error_);
+		values = (_vala_GValue_array_free (values, values_length1), NULL);
+		return;
 	}
-	_sqlite3_finalize0 (statement);
+	values = (_vala_GValue_array_free (values, values_length1), NULL);
 }
 
 
 static void rygel_media_db_save_metadata (RygelMediaDB* self, RygelMediaItem* item, const char* sql, GError** error) {
 	GError * _inner_error_;
-	sqlite3_stmt* statement;
-	sqlite3_stmt* _tmp2_;
-	gint _tmp1_;
-	sqlite3_stmt* _tmp0_ = NULL;
-	gint rc;
+	GValue* _tmp17_;
+	gint values_size;
+	gint values_length1;
+	GValue* _tmp16_ = NULL;
+	GValue _tmp15_ = {0};
+	GValue _tmp14_ = {0};
+	GValue _tmp13_ = {0};
+	GValue _tmp12_ = {0};
+	GValue _tmp11_ = {0};
+	GValue _tmp10_ = {0};
+	GValue _tmp9_ = {0};
+	GValue _tmp8_ = {0};
+	GValue _tmp7_ = {0};
+	GValue _tmp6_ = {0};
+	GValue _tmp5_ = {0};
+	GValue _tmp4_ = {0};
+	GValue _tmp3_ = {0};
+	GValue _tmp2_ = {0};
+	GValue _tmp1_ = {0};
+	GValue _tmp0_ = {0};
+	GValue* values;
 	g_return_if_fail (self != NULL);
 	g_return_if_fail (item != NULL);
 	g_return_if_fail (sql != NULL);
 	_inner_error_ = NULL;
-	statement = NULL;
-	rc = (_tmp1_ = sqlite3_prepare_v2 (self->priv->db, sql, -1, &_tmp0_, NULL), statement = (_tmp2_ = _tmp0_, _sqlite3_finalize0 (statement), _tmp2_), _tmp1_);
-	if (rc == SQLITE_OK) {
-		gboolean _tmp3_ = FALSE;
-		gboolean _tmp4_ = FALSE;
-		gboolean _tmp5_ = FALSE;
-		gboolean _tmp6_ = FALSE;
-		gboolean _tmp7_ = FALSE;
-		gboolean _tmp8_ = FALSE;
-		gboolean _tmp9_ = FALSE;
-		gboolean _tmp10_ = FALSE;
-		gboolean _tmp11_ = FALSE;
-		gboolean _tmp12_ = FALSE;
-		gboolean _tmp13_ = FALSE;
-		gboolean _tmp14_ = FALSE;
-		gboolean _tmp15_ = FALSE;
-		gboolean _tmp16_ = FALSE;
-		gboolean _tmp17_ = FALSE;
-		gboolean _tmp18_ = FALSE;
-		if (sqlite3_bind_int64 (statement, 1, (gint64) item->size) != SQLITE_OK) {
-			_tmp17_ = TRUE;
-		} else {
-			_tmp17_ = sqlite3_bind_text (statement, 2, g_strdup (item->mime_type), -1, g_free) != SQLITE_OK;
-		}
-		if (_tmp17_) {
-			_tmp16_ = TRUE;
-		} else {
-			_tmp16_ = sqlite3_bind_int (statement, 3, item->width) != SQLITE_OK;
-		}
-		if (_tmp16_) {
-			_tmp15_ = TRUE;
-		} else {
-			_tmp15_ = sqlite3_bind_int (statement, 4, item->height) != SQLITE_OK;
-		}
-		if (_tmp15_) {
-			_tmp14_ = TRUE;
-		} else {
-			_tmp14_ = sqlite3_bind_text (statement, 5, g_strdup (item->upnp_class), -1, g_free) != SQLITE_OK;
-		}
-		if (_tmp14_) {
-			_tmp13_ = TRUE;
-		} else {
-			_tmp13_ = sqlite3_bind_text (statement, 6, g_strdup (item->author), -1, g_free) != SQLITE_OK;
-		}
-		if (_tmp13_) {
-			_tmp12_ = TRUE;
-		} else {
-			_tmp12_ = sqlite3_bind_text (statement, 7, g_strdup (item->album), -1, g_free) != SQLITE_OK;
-		}
-		if (_tmp12_) {
-			_tmp11_ = TRUE;
-		} else {
-			_tmp11_ = sqlite3_bind_text (statement, 8, g_strdup (item->date), -1, g_free) != SQLITE_OK;
-		}
-		if (_tmp11_) {
-			_tmp10_ = TRUE;
-		} else {
-			_tmp10_ = sqlite3_bind_int (statement, 9, item->bitrate) != SQLITE_OK;
-		}
-		if (_tmp10_) {
-			_tmp9_ = TRUE;
-		} else {
-			_tmp9_ = sqlite3_bind_int (statement, 10, item->sample_freq) != SQLITE_OK;
-		}
-		if (_tmp9_) {
-			_tmp8_ = TRUE;
-		} else {
-			_tmp8_ = sqlite3_bind_int (statement, 11, item->bits_per_sample) != SQLITE_OK;
-		}
-		if (_tmp8_) {
-			_tmp7_ = TRUE;
-		} else {
-			_tmp7_ = sqlite3_bind_int (statement, 12, item->n_audio_channels) != SQLITE_OK;
-		}
-		if (_tmp7_) {
-			_tmp6_ = TRUE;
-		} else {
-			_tmp6_ = sqlite3_bind_int (statement, 13, item->track_number) != SQLITE_OK;
-		}
-		if (_tmp6_) {
-			_tmp5_ = TRUE;
-		} else {
-			_tmp5_ = sqlite3_bind_int (statement, 14, item->color_depth) != SQLITE_OK;
-		}
-		if (_tmp5_) {
-			_tmp4_ = TRUE;
-		} else {
-			_tmp4_ = sqlite3_bind_int64 (statement, 15, (gint64) item->duration) != SQLITE_OK;
-		}
-		if (_tmp4_) {
-			_tmp3_ = TRUE;
-		} else {
-			_tmp3_ = sqlite3_bind_text (statement, 16, g_strdup (((RygelMediaObject*) item)->id), -1, g_free) != SQLITE_OK;
-		}
-		if (_tmp3_) {
-			_inner_error_ = g_error_new_literal (RYGEL_MEDIA_DB_ERROR, RYGEL_MEDIA_DB_ERROR_SQLITE_ERROR, sqlite3_errmsg (self->priv->db));
-			if (_inner_error_ != NULL) {
-				g_propagate_error (error, _inner_error_);
-				_sqlite3_finalize0 (statement);
-				return;
-			}
-		}
-		rc = sqlite3_step (statement);
-		if (rc != SQLITE_DONE) {
-			_tmp18_ = rc != SQLITE_OK;
-		} else {
-			_tmp18_ = FALSE;
-		}
-		if (_tmp18_) {
-			_inner_error_ = g_error_new_literal (RYGEL_MEDIA_DB_ERROR, RYGEL_MEDIA_DB_ERROR_SQLITE_ERROR, sqlite3_errmsg (self->priv->db));
-			if (_inner_error_ != NULL) {
-				g_propagate_error (error, _inner_error_);
-				_sqlite3_finalize0 (statement);
-				return;
-			}
-		}
-	} else {
-		_inner_error_ = g_error_new_literal (RYGEL_MEDIA_DB_ERROR, RYGEL_MEDIA_DB_ERROR_SQLITE_ERROR, sqlite3_errmsg (self->priv->db));
-		if (_inner_error_ != NULL) {
-			g_propagate_error (error, _inner_error_);
-			_sqlite3_finalize0 (statement);
-			return;
-		}
+	values = (_tmp17_ = (_tmp16_ = g_new0 (GValue, 16), _tmp16_[0] = (g_value_init (&_tmp0_, G_TYPE_LONG), g_value_set_long (&_tmp0_, item->size), _tmp0_), _tmp16_[1] = (g_value_init (&_tmp1_, G_TYPE_STRING), g_value_set_string (&_tmp1_, item->mime_type), _tmp1_), _tmp16_[2] = (g_value_init (&_tmp2_, G_TYPE_INT), g_value_set_int (&_tmp2_, item->width), _tmp2_), _tmp16_[3] = (g_value_init (&_tmp3_, G_TYPE_INT), g_value_set_int (&_tmp3_, item->height), _tmp3_), _tmp16_[4] = (g_value_init (&_tmp4_, G_TYPE_STRING), g_value_set_string (&_tmp4_, item->upnp_class), _tmp4_), _tmp16_[5] = (g_value_init (&_tmp5_, G_TYPE_STRING), g_value_set_string (&_tmp5_, item->author), _tmp5_), _tmp16_[6] = (g_value_init (&_tmp6_, G_TYPE_STRING), g_value_set_string (&_tmp6_, item->album), _tmp6_), _tmp16_[7] = (g_value_init (&_tmp7_, G_TYPE_STRING), g_value_set_string (&_tmp7_, item->date), _tmp7_), _tmp16_[8] = (g_value_init (&_tmp8_, G_TYPE_INT), g_value_set_int (&_tmp8_, item->bitrate), _tmp8_), _tmp16_[9] = (g_value_init (&_tmp9_, G_TYPE_INT), g_value_set_int (&_tmp9_, item->sample_freq), _tmp9_), _tmp16_[10] = (g_value_init (&_tmp10_, G_TYPE_INT), g_value_set_int (&_tmp10_, item->bits_per_sample), _tmp10_), _tmp16_[11] = (g_value_init (&_tmp11_, G_TYPE_INT), g_value_set_int (&_tmp11_, item->n_audio_channels), _tmp11_), _tmp16_[12] = (g_value_init (&_tmp12_, G_TYPE_INT), g_value_set_int (&_tmp12_, item->track_number), _tmp12_), _tmp16_[13] = (g_value_init (&_tmp13_, G_TYPE_INT), g_value_set_int (&_tmp13_, item->color_depth), _tmp13_), _tmp16_[14] = (g_value_init (&_tmp14_, G_TYPE_LONG), g_value_set_long (&_tmp14_, item->duration), _tmp14_), _tmp16_[15] = (g_value_init (&_tmp15_, G_TYPE_STRING), g_value_set_string (&_tmp15_, ((RygelMediaObject*) item)->id), _tmp15_), _tmp16_), values_length1 = 16, values_size = values_length1, _tmp17_);
+	rygel_database_exec (self->priv->db, sql, values, values_length1, NULL, NULL, &_inner_error_);
+	if (_inner_error_ != NULL) {
+		g_propagate_error (error, _inner_error_);
+		values = (_vala_GValue_array_free (values, values_length1), NULL);
+		return;
 	}
-	_sqlite3_finalize0 (statement);
+	values = (_vala_GValue_array_free (values, values_length1), NULL);
 }
 
 
 static void rygel_media_db_create_object (RygelMediaDB* self, RygelMediaObject* item, GError** error) {
 	GError * _inner_error_;
-	sqlite3_stmt* statement;
-	sqlite3_stmt* _tmp2_;
-	gint _tmp1_;
-	sqlite3_stmt* _tmp0_ = NULL;
-	gint rc;
+	gint _tmp0_ = 0;
+	GValue _tmp1_ = {0};
+	GValue* _tmp12_;
+	gint values_size;
+	gint values_length1;
+	GValue* _tmp11_ = NULL;
+	GValue _tmp10_ = {0};
+	GValue _tmp9_ = {0};
+	GValue _tmp8_ = {0};
+	GValue _tmp7_ = {0};
+	GValue _tmp6_ = {0};
+	GValue* values;
 	g_return_if_fail (self != NULL);
 	g_return_if_fail (item != NULL);
 	_inner_error_ = NULL;
-	statement = NULL;
-	rc = (_tmp1_ = sqlite3_prepare_v2 (self->priv->db, RYGEL_MEDIA_DB_INSERT_OBJECT_STRING, -1, &_tmp0_, NULL), statement = (_tmp2_ = _tmp0_, _sqlite3_finalize0 (statement), _tmp2_), _tmp1_);
-	if (rc == SQLITE_OK) {
-		gboolean _tmp3_ = FALSE;
-		gboolean _tmp4_ = FALSE;
-		gboolean _tmp5_ = FALSE;
-		if (sqlite3_bind_text (statement, 1, g_strdup (item->id), -1, g_free) != SQLITE_OK) {
-			_tmp4_ = TRUE;
-		} else {
-			_tmp4_ = sqlite3_bind_int64 (statement, 5, (gint64) item->modified) != SQLITE_OK;
-		}
-		if (_tmp4_) {
-			_tmp3_ = TRUE;
-		} else {
-			_tmp3_ = sqlite3_bind_text (statement, 2, g_strdup (item->title), -1, g_free) != SQLITE_OK;
-		}
-		if (_tmp3_) {
-			_inner_error_ = g_error_new_literal (RYGEL_MEDIA_DB_ERROR, RYGEL_MEDIA_DB_ERROR_SQLITE_ERROR, sqlite3_errmsg (self->priv->db));
-			if (_inner_error_ != NULL) {
-				g_propagate_error (error, _inner_error_);
-				_sqlite3_finalize0 (statement);
-				return;
-			}
-		}
-		if (RYGEL_IS_MEDIA_ITEM (item)) {
-			rc = sqlite3_bind_int (statement, 3, (gint) RYGEL_MEDIA_DB_OBJECT_TYPE_ITEM);
-		} else {
-			if (RYGEL_IS_MEDIA_OBJECT (item)) {
-				rc = sqlite3_bind_int (statement, 3, (gint) RYGEL_MEDIA_DB_OBJECT_TYPE_CONTAINER);
-			} else {
-				_inner_error_ = g_error_new_literal (RYGEL_MEDIA_DB_ERROR, RYGEL_MEDIA_DB_ERROR_INVALID_TYPE, "Invalid object type");
-				if (_inner_error_ != NULL) {
-					g_propagate_error (error, _inner_error_);
-					_sqlite3_finalize0 (statement);
-					return;
-				}
-			}
-		}
-		if (rc != SQLITE_OK) {
-			_inner_error_ = g_error_new_literal (RYGEL_MEDIA_DB_ERROR, RYGEL_MEDIA_DB_ERROR_SQLITE_ERROR, sqlite3_errmsg (self->priv->db));
-			if (_inner_error_ != NULL) {
-				g_propagate_error (error, _inner_error_);
-				_sqlite3_finalize0 (statement);
-				return;
-			}
-		}
-		if (item->parent == NULL) {
-			rc = sqlite3_bind_null (statement, 4);
-		} else {
-			rc = sqlite3_bind_text (statement, 4, g_strdup (((RygelMediaObject*) item->parent)->id), -1, g_free);
-		}
-		if (rc != SQLITE_OK) {
-			_inner_error_ = g_error_new_literal (RYGEL_MEDIA_DB_ERROR, RYGEL_MEDIA_DB_ERROR_SQLITE_ERROR, sqlite3_errmsg (self->priv->db));
-			if (_inner_error_ != NULL) {
-				g_propagate_error (error, _inner_error_);
-				_sqlite3_finalize0 (statement);
-				return;
-			}
-		}
-		rc = sqlite3_step (statement);
-		if (rc != SQLITE_OK) {
-			_tmp5_ = rc != SQLITE_DONE;
-		} else {
-			_tmp5_ = FALSE;
-		}
-		if (_tmp5_) {
-			_inner_error_ = g_error_new_literal (RYGEL_MEDIA_DB_ERROR, RYGEL_MEDIA_DB_ERROR_SQLITE_ERROR, sqlite3_errmsg (self->priv->db));
-			if (_inner_error_ != NULL) {
-				g_propagate_error (error, _inner_error_);
-				_sqlite3_finalize0 (statement);
-				return;
-			}
-		}
+	if (RYGEL_IS_MEDIA_ITEM (item)) {
+		_tmp0_ = (gint) RYGEL_MEDIA_DB_OBJECT_TYPE_ITEM;
 	} else {
-		_inner_error_ = g_error_new_literal (RYGEL_MEDIA_DB_ERROR, RYGEL_MEDIA_DB_ERROR_SQLITE_ERROR, sqlite3_errmsg (self->priv->db));
-		if (_inner_error_ != NULL) {
-			g_propagate_error (error, _inner_error_);
-			_sqlite3_finalize0 (statement);
-			return;
-		}
+		_tmp0_ = (gint) RYGEL_MEDIA_DB_OBJECT_TYPE_CONTAINER;
 	}
-	_sqlite3_finalize0 (statement);
+	if (item->parent == NULL) {
+		GValue _tmp3_;
+		GValue _tmp2_ = {0};
+		_tmp1_ = (_tmp3_ = (rygel_database_null (&_tmp2_), _tmp2_), G_IS_VALUE (&_tmp1_) ? (g_value_unset (&_tmp1_), NULL) : NULL, _tmp3_);
+	} else {
+		GValue _tmp5_;
+		GValue _tmp4_ = {0};
+		_tmp1_ = (_tmp5_ = (g_value_init (&_tmp4_, G_TYPE_STRING), g_value_set_string (&_tmp4_, ((RygelMediaObject*) item->parent)->id), _tmp4_), G_IS_VALUE (&_tmp1_) ? (g_value_unset (&_tmp1_), NULL) : NULL, _tmp5_);
+	}
+	values = (_tmp12_ = (_tmp11_ = g_new0 (GValue, 5), _tmp11_[0] = (g_value_init (&_tmp6_, G_TYPE_STRING), g_value_set_string (&_tmp6_, item->id), _tmp6_), _tmp11_[1] = (g_value_init (&_tmp7_, G_TYPE_STRING), g_value_set_string (&_tmp7_, rygel_media_object_get_title (item)), _tmp7_), _tmp11_[2] = (g_value_init (&_tmp8_, G_TYPE_INT), g_value_set_int (&_tmp8_, _tmp0_), _tmp8_), _tmp11_[3] = G_IS_VALUE (&_tmp1_) ? (g_value_init (&_tmp9_, G_VALUE_TYPE (&_tmp1_)), g_value_copy (&_tmp1_, &_tmp9_), _tmp9_) : _tmp1_, _tmp11_[4] = (g_value_init (&_tmp10_, G_TYPE_INT64), g_value_set_int64 (&_tmp10_, (gint64) item->modified), _tmp10_), _tmp11_), values_length1 = 5, values_size = values_length1, _tmp12_);
+	rygel_database_exec (self->priv->db, RYGEL_MEDIA_DB_INSERT_OBJECT_STRING, values, values_length1, NULL, NULL, &_inner_error_);
+	if (_inner_error_ != NULL) {
+		g_propagate_error (error, _inner_error_);
+		G_IS_VALUE (&_tmp1_) ? (g_value_unset (&_tmp1_), NULL) : NULL;
+		values = (_vala_GValue_array_free (values, values_length1), NULL);
+		return;
+	}
+	G_IS_VALUE (&_tmp1_) ? (g_value_unset (&_tmp1_), NULL) : NULL;
+	values = (_vala_GValue_array_free (values, values_length1), NULL);
 }
 
 
 static void rygel_media_db_save_uris (RygelMediaDB* self, RygelMediaObject* obj, GError** error) {
 	GError * _inner_error_;
-	sqlite3_stmt* statement;
-	sqlite3_stmt* _tmp2_;
-	gint _tmp1_;
-	sqlite3_stmt* _tmp0_ = NULL;
-	gint rc;
 	g_return_if_fail (self != NULL);
 	g_return_if_fail (obj != NULL);
 	_inner_error_ = NULL;
-	statement = NULL;
-	rc = (_tmp1_ = sqlite3_prepare_v2 (self->priv->db, RYGEL_MEDIA_DB_INSERT_URI_STRING, -1, &_tmp0_, NULL), statement = (_tmp2_ = _tmp0_, _sqlite3_finalize0 (statement), _tmp2_), _tmp1_);
-	if (rc == SQLITE_OK) {
-		{
-			GeeIterator* _uri_it;
-			_uri_it = gee_abstract_collection_iterator ((GeeAbstractCollection*) obj->uris);
-			while (TRUE) {
-				char* uri;
-				gboolean _tmp3_ = FALSE;
-				gboolean _tmp4_ = FALSE;
-				if (!gee_iterator_next (_uri_it)) {
-					break;
-				}
-				uri = (char*) gee_iterator_get (_uri_it);
-				if (sqlite3_bind_text (statement, 1, g_strdup (obj->id), -1, g_free) != SQLITE_OK) {
-					_tmp3_ = TRUE;
-				} else {
-					_tmp3_ = sqlite3_bind_text (statement, 2, g_strdup (uri), -1, g_free) != SQLITE_OK;
-				}
-				if (_tmp3_) {
-					_inner_error_ = g_error_new_literal (RYGEL_MEDIA_DB_ERROR, RYGEL_MEDIA_DB_ERROR_SQLITE_ERROR, sqlite3_errmsg (self->priv->db));
-					if (_inner_error_ != NULL) {
-						g_propagate_error (error, _inner_error_);
-						_g_free0 (uri);
-						_g_object_unref0 (_uri_it);
-						_sqlite3_finalize0 (statement);
-						return;
-					}
-				}
-				rc = sqlite3_step (statement);
-				if (rc != SQLITE_OK) {
-					_tmp4_ = rc != SQLITE_DONE;
-				} else {
-					_tmp4_ = FALSE;
-				}
-				if (_tmp4_) {
-					_inner_error_ = g_error_new_literal (RYGEL_MEDIA_DB_ERROR, RYGEL_MEDIA_DB_ERROR_SQLITE_ERROR, sqlite3_errmsg (self->priv->db));
-					if (_inner_error_ != NULL) {
-						g_propagate_error (error, _inner_error_);
-						_g_free0 (uri);
-						_g_object_unref0 (_uri_it);
-						_sqlite3_finalize0 (statement);
-						return;
-					}
-				}
-				sqlite3_reset (statement);
-				sqlite3_clear_bindings (statement);
-				_g_free0 (uri);
+	{
+		GeeIterator* _uri_it;
+		_uri_it = gee_abstract_collection_iterator ((GeeAbstractCollection*) obj->uris);
+		while (TRUE) {
+			char* uri;
+			GValue* _tmp3_;
+			gint values_size;
+			gint values_length1;
+			GValue* _tmp2_ = NULL;
+			GValue _tmp1_ = {0};
+			GValue _tmp0_ = {0};
+			GValue* values;
+			if (!gee_iterator_next (_uri_it)) {
+				break;
 			}
-			_g_object_unref0 (_uri_it);
+			uri = (char*) gee_iterator_get (_uri_it);
+			values = (_tmp3_ = (_tmp2_ = g_new0 (GValue, 2), _tmp2_[0] = (g_value_init (&_tmp0_, G_TYPE_STRING), g_value_set_string (&_tmp0_, obj->id), _tmp0_), _tmp2_[1] = (g_value_init (&_tmp1_, G_TYPE_STRING), g_value_set_string (&_tmp1_, uri), _tmp1_), _tmp2_), values_length1 = 2, values_size = values_length1, _tmp3_);
+			rygel_database_exec (self->priv->db, RYGEL_MEDIA_DB_INSERT_URI_STRING, values, values_length1, NULL, NULL, &_inner_error_);
+			if (_inner_error_ != NULL) {
+				g_propagate_error (error, _inner_error_);
+				_g_free0 (uri);
+				values = (_vala_GValue_array_free (values, values_length1), NULL);
+				_g_object_unref0 (_uri_it);
+				return;
+			}
+			_g_free0 (uri);
+			values = (_vala_GValue_array_free (values, values_length1), NULL);
 		}
-	} else {
-		_inner_error_ = g_error_new_literal (RYGEL_MEDIA_DB_ERROR, RYGEL_MEDIA_DB_ERROR_SQLITE_ERROR, sqlite3_errmsg (self->priv->db));
-		if (_inner_error_ != NULL) {
-			g_propagate_error (error, _inner_error_);
-			_sqlite3_finalize0 (statement);
-			return;
-		}
+		_g_object_unref0 (_uri_it);
 	}
-	_sqlite3_finalize0 (statement);
 }
 
 
 static gboolean rygel_media_db_create_schema (RygelMediaDB* self) {
 	gboolean result;
-	gint rc;
+	GError * _inner_error_;
 	g_return_val_if_fail (self != NULL, FALSE);
-	rc = sqlite3_exec (self->priv->db, "BEGIN", NULL, NULL, NULL);
-	if (rc == SQLITE_OK) {
-		rc = sqlite3_exec (self->priv->db, RYGEL_MEDIA_DB_SCHEMA_STRING, NULL, NULL, NULL);
-		if (rc == SQLITE_OK) {
-			g_debug ("rygel-media-db.vala:625: succeeded in schema creation");
-			rc = sqlite3_exec (self->priv->db, RYGEL_MEDIA_DB_CREATE_TRIGGER_STRING, NULL, NULL, NULL);
-			if (rc == SQLITE_OK) {
-				g_debug ("rygel-media-db.vala:628: succeeded in trigger creation");
-				rc = sqlite3_exec (self->priv->db, "COMMIT", NULL, NULL, NULL);
-				if (rc == SQLITE_OK) {
-					result = TRUE;
-					return result;
-				} else {
-					g_warning ("rygel-media-db.vala:633: Failed to commit schema: %d %s", rc, sqlite3_errmsg (self->priv->db));
-				}
-			} else {
-				g_warning ("rygel-media-db.vala:638: Failed to create triggers: %d %s", rc, sqlite3_errmsg (self->priv->db));
-			}
-		} else {
-			g_warning ("rygel-media-db.vala:643: Failed to create tables: %d %s", rc, sqlite3_errmsg (self->priv->db));
+	_inner_error_ = NULL;
+	{
+		rygel_database_begin (self->priv->db, &_inner_error_);
+		if (_inner_error_ != NULL) {
+			goto __catch50_g_error;
+			goto __finally50;
 		}
-	} else {
-		g_warning ("rygel-media-db.vala:648: Failed to start transaction: %d %s", rc, sqlite3_errmsg (self->priv->db));
+		rygel_database_exec (self->priv->db, RYGEL_MEDIA_DB_SCHEMA_STRING, NULL, 0, NULL, NULL, &_inner_error_);
+		if (_inner_error_ != NULL) {
+			goto __catch50_g_error;
+			goto __finally50;
+		}
+		rygel_database_exec (self->priv->db, RYGEL_MEDIA_DB_CREATE_TRIGGER_STRING, NULL, 0, NULL, NULL, &_inner_error_);
+		if (_inner_error_ != NULL) {
+			goto __catch50_g_error;
+			goto __finally50;
+		}
+		rygel_database_exec (self->priv->db, RYGEL_MEDIA_DB_CREATE_CLOSURE_TABLE, NULL, 0, NULL, NULL, &_inner_error_);
+		if (_inner_error_ != NULL) {
+			goto __catch50_g_error;
+			goto __finally50;
+		}
+		rygel_database_exec (self->priv->db, RYGEL_MEDIA_DB_CREATE_INDICES_STRING, NULL, 0, NULL, NULL, &_inner_error_);
+		if (_inner_error_ != NULL) {
+			goto __catch50_g_error;
+			goto __finally50;
+		}
+		rygel_database_exec (self->priv->db, RYGEL_MEDIA_DB_CREATE_CLOSURE_TRIGGER_STRING, NULL, 0, NULL, NULL, &_inner_error_);
+		if (_inner_error_ != NULL) {
+			goto __catch50_g_error;
+			goto __finally50;
+		}
+		rygel_database_commit (self->priv->db, &_inner_error_);
+		if (_inner_error_ != NULL) {
+			goto __catch50_g_error;
+			goto __finally50;
+		}
+		rygel_database_analyze (self->priv->db);
+		result = TRUE;
+		return result;
 	}
-	sqlite3_exec (self->priv->db, "ROLLBACK", NULL, NULL, NULL);
+	goto __finally50;
+	__catch50_g_error:
+	{
+		GError * err;
+		err = _inner_error_;
+		_inner_error_ = NULL;
+		{
+			g_warning ("rygel-media-db.vala:523: Failed to create schema: %s", err->message);
+			rygel_database_rollback (self->priv->db);
+			_g_error_free0 (err);
+		}
+	}
+	__finally50:
+	if (_inner_error_ != NULL) {
+		g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, _inner_error_->message);
+		g_clear_error (&_inner_error_);
+		return FALSE;
+	}
 	result = FALSE;
 	return result;
 }
 
 
+static gboolean _lambda6_ (sqlite3_stmt* stmt, Block5Data* _data5_) {
+	RygelMediaDB * self;
+	gboolean result;
+	self = _data5_->self;
+	g_return_val_if_fail (stmt != NULL, FALSE);
+	if (RYGEL_IS_MEDIA_ITEM (_data5_->obj)) {
+		rygel_media_item_add_uri (RYGEL_MEDIA_ITEM (_data5_->obj), sqlite3_column_text (stmt, 0), NULL);
+	} else {
+		gee_abstract_collection_add ((GeeAbstractCollection*) _data5_->obj->uris, sqlite3_column_text (stmt, 0));
+	}
+}
+
+
+static gboolean __lambda6__rygel_database_row_callback (sqlite3_stmt* stmt, gpointer self) {
+	return _lambda6_ (stmt, self);
+}
+
+
+static Block5Data* block5_data_ref (Block5Data* _data5_) {
+	++_data5_->_ref_count_;
+	return _data5_;
+}
+
+
+static void block5_data_unref (Block5Data* _data5_) {
+	if ((--_data5_->_ref_count_) == 0) {
+		_g_object_unref0 (_data5_->self);
+		_g_object_unref0 (_data5_->obj);
+		g_slice_free (Block5Data, _data5_);
+	}
+}
+
+
 static void rygel_media_db_add_uris (RygelMediaDB* self, RygelMediaObject* obj, GError** error) {
 	GError * _inner_error_;
-	sqlite3_stmt* statement;
-	sqlite3_stmt* _tmp2_;
-	gint _tmp1_;
-	sqlite3_stmt* _tmp0_ = NULL;
-	gint rc;
+	Block5Data* _data5_;
+	GValue* _tmp2_;
+	gint values_size;
+	gint values_length1;
+	GValue* _tmp1_ = NULL;
+	GValue _tmp0_ = {0};
+	GValue* values;
 	g_return_if_fail (self != NULL);
 	g_return_if_fail (obj != NULL);
 	_inner_error_ = NULL;
-	statement = NULL;
-	rc = (_tmp1_ = sqlite3_prepare_v2 (self->priv->db, RYGEL_MEDIA_DB_URI_GET_STRING, -1, &_tmp0_, NULL), statement = (_tmp2_ = _tmp0_, _sqlite3_finalize0 (statement), _tmp2_), _tmp1_);
-	if (rc == SQLITE_OK) {
-		if (sqlite3_bind_text (statement, 1, g_strdup (obj->id), -1, g_free) != SQLITE_OK) {
-			_inner_error_ = g_error_new_literal (RYGEL_MEDIA_DB_ERROR, RYGEL_MEDIA_DB_ERROR_SQLITE_ERROR, sqlite3_errmsg (self->priv->db));
-			if (_inner_error_ != NULL) {
-				if (_inner_error_->domain == RYGEL_MEDIA_DB_ERROR) {
-					g_propagate_error (error, _inner_error_);
-					_sqlite3_finalize0 (statement);
-					return;
-				} else {
-					_sqlite3_finalize0 (statement);
-					g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, _inner_error_->message);
-					g_clear_error (&_inner_error_);
-					return;
-				}
-			}
-		}
-		while (TRUE) {
-			if (!((rc = sqlite3_step (statement)) == SQLITE_ROW)) {
-				break;
-			}
-			if (RYGEL_IS_MEDIA_ITEM (obj)) {
-				rygel_media_item_add_uri (RYGEL_MEDIA_ITEM (obj), sqlite3_column_text (statement, 0), NULL);
-			} else {
-				gee_abstract_collection_add ((GeeAbstractCollection*) obj->uris, sqlite3_column_text (statement, 0));
-			}
-		}
-	} else {
-		g_warning ("rygel-media-db.vala:677: Failed to get uris for obj %s: %s", obj->id, sqlite3_errmsg (self->priv->db));
-		_inner_error_ = g_error_new_literal (RYGEL_MEDIA_DB_ERROR, RYGEL_MEDIA_DB_ERROR_SQLITE_ERROR, sqlite3_errmsg (self->priv->db));
-		if (_inner_error_ != NULL) {
-			if (_inner_error_->domain == RYGEL_MEDIA_DB_ERROR) {
-				g_propagate_error (error, _inner_error_);
-				_sqlite3_finalize0 (statement);
-				return;
-			} else {
-				_sqlite3_finalize0 (statement);
-				g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, _inner_error_->message);
-				g_clear_error (&_inner_error_);
-				return;
-			}
+	_data5_ = g_slice_new0 (Block5Data);
+	_data5_->_ref_count_ = 1;
+	_data5_->self = g_object_ref (self);
+	_data5_->obj = _g_object_ref0 (obj);
+	values = (_tmp2_ = (_tmp1_ = g_new0 (GValue, 1), _tmp1_[0] = (g_value_init (&_tmp0_, G_TYPE_STRING), g_value_set_string (&_tmp0_, _data5_->obj->id), _tmp0_), _tmp1_), values_length1 = 1, values_size = values_length1, _tmp2_);
+	rygel_database_exec (self->priv->db, RYGEL_MEDIA_DB_URI_GET_STRING, values, values_length1, __lambda6__rygel_database_row_callback, _data5_, &_inner_error_);
+	if (_inner_error_ != NULL) {
+		if (_inner_error_->domain == RYGEL_DATABASE_ERROR) {
+			g_propagate_error (error, _inner_error_);
+			values = (_vala_GValue_array_free (values, values_length1), NULL);
+			block5_data_unref (_data5_);
+			return;
+		} else {
+			values = (_vala_GValue_array_free (values, values_length1), NULL);
+			block5_data_unref (_data5_);
+			g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, _inner_error_->message);
+			g_clear_error (&_inner_error_);
+			return;
 		}
 	}
-	_sqlite3_finalize0 (statement);
+	values = (_vala_GValue_array_free (values, values_length1), NULL);
+	block5_data_unref (_data5_);
 }
 
 
@@ -1383,27 +1535,27 @@ static RygelMediaObject* rygel_media_db_get_object_from_statement (RygelMediaDB*
 			obj->modified = (guint64) sqlite3_column_int64 (statement, 18);
 			rygel_media_db_add_uris (self, obj, &_inner_error_);
 			if (_inner_error_ != NULL) {
-				if (_inner_error_->domain == RYGEL_MEDIA_DB_ERROR) {
-					goto __catch42_rygel_media_db_error;
+				if (_inner_error_->domain == RYGEL_DATABASE_ERROR) {
+					goto __catch51_rygel_database_error;
 				}
-				goto __finally42;
+				goto __finally51;
 			}
 		}
 	}
-	goto __finally42;
-	__catch42_rygel_media_db_error:
+	goto __finally51;
+	__catch51_rygel_database_error:
 	{
 		GError * err;
 		err = _inner_error_;
 		_inner_error_ = NULL;
 		{
 			RygelMediaObject* _tmp2_;
-			g_warning ("rygel-media-db.vala:715: Failed to load uris from database: %s", err->message);
+			g_warning ("rygel-media-db.vala:573: Failed to load uris from database: %s", err->message);
 			obj = (_tmp2_ = NULL, _g_object_unref0 (obj), _tmp2_);
 			_g_error_free0 (err);
 		}
 	}
-	__finally42:
+	__finally51:
 	if (_inner_error_ != NULL) {
 		_g_object_unref0 (obj);
 		g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, _inner_error_->message);
@@ -1415,103 +1567,97 @@ static RygelMediaObject* rygel_media_db_get_object_from_statement (RygelMediaDB*
 }
 
 
+static gboolean _lambda5_ (sqlite3_stmt* stmt, Block6Data* _data6_) {
+	RygelMediaDB * self;
+	gboolean result;
+	RygelMediaObject* obj;
+	RygelMediaContainer* _tmp0_;
+	RygelMediaObject* _tmp1_;
+	self = _data6_->self;
+	g_return_val_if_fail (stmt != NULL, FALSE);
+	obj = rygel_media_db_get_object_from_statement (self, RYGEL_MEDIA_CONTAINER (_data6_->parent), sqlite3_column_text (stmt, 18), stmt);
+	obj->parent = RYGEL_MEDIA_CONTAINER (_data6_->parent);
+	obj->parent_ref = (_tmp0_ = _g_object_ref0 (RYGEL_MEDIA_CONTAINER (_data6_->parent)), _g_object_unref0 (obj->parent_ref), _tmp0_);
+	_data6_->parent = (_tmp1_ = _g_object_ref0 (obj), _g_object_unref0 (_data6_->parent), _tmp1_);
+	result = TRUE;
+	_g_object_unref0 (obj);
+	return result;
+}
+
+
+static gboolean __lambda5__rygel_database_row_callback (sqlite3_stmt* stmt, gpointer self) {
+	return _lambda5_ (stmt, self);
+}
+
+
+static Block6Data* block6_data_ref (Block6Data* _data6_) {
+	++_data6_->_ref_count_;
+	return _data6_;
+}
+
+
+static void block6_data_unref (Block6Data* _data6_) {
+	if ((--_data6_->_ref_count_) == 0) {
+		_g_object_unref0 (_data6_->self);
+		_g_object_unref0 (_data6_->parent);
+		g_slice_free (Block6Data, _data6_);
+	}
+}
+
+
 RygelMediaObject* rygel_media_db_get_object (RygelMediaDB* self, const char* object_id, GError** error) {
 	RygelMediaObject* result;
 	GError * _inner_error_;
-	RygelMediaObject* obj;
-	sqlite3_stmt* statement;
-	sqlite3_stmt* _tmp2_;
-	gint _tmp1_;
-	sqlite3_stmt* _tmp0_ = NULL;
-	gint rc;
+	Block6Data* _data6_;
+	GValue* _tmp2_;
+	gint values_size;
+	gint values_length1;
+	GValue* _tmp1_ = NULL;
+	GValue _tmp0_ = {0};
+	GValue* values;
+	RygelDatabaseRowCallback _tmp3_;
+	GDestroyNotify cb_target_destroy_notify;
+	void* cb_target = NULL;
+	RygelDatabaseRowCallback cb;
 	g_return_val_if_fail (self != NULL, NULL);
 	g_return_val_if_fail (object_id != NULL, NULL);
 	_inner_error_ = NULL;
-	obj = NULL;
-	statement = NULL;
-	rc = (_tmp1_ = sqlite3_prepare_v2 (self->priv->db, RYGEL_MEDIA_DB_GET_OBJECT_STRING, -1, &_tmp0_, NULL), statement = (_tmp2_ = _tmp0_, _sqlite3_finalize0 (statement), _tmp2_), _tmp1_);
-	if (rc == SQLITE_OK) {
-		if (sqlite3_bind_text (statement, 1, g_strdup (object_id), -1, g_free) != SQLITE_OK) {
-			_inner_error_ = g_error_new_literal (RYGEL_MEDIA_DB_ERROR, RYGEL_MEDIA_DB_ERROR_SQLITE_ERROR, sqlite3_errmsg (self->priv->db));
-			if (_inner_error_ != NULL) {
-				if (_inner_error_->domain == RYGEL_MEDIA_DB_ERROR) {
-					g_propagate_error (error, _inner_error_);
-					_g_object_unref0 (obj);
-					_sqlite3_finalize0 (statement);
-					return NULL;
-				} else {
-					_g_object_unref0 (obj);
-					_sqlite3_finalize0 (statement);
-					g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, _inner_error_->message);
-					g_clear_error (&_inner_error_);
-					return NULL;
-				}
-			}
-		}
-		while (TRUE) {
-			RygelMediaContainer* parent;
-			char* parent_id;
-			RygelMediaObject* _tmp5_;
-			RygelMediaContainer* _tmp6_;
-			if (!((rc = sqlite3_step (statement)) == SQLITE_ROW)) {
-				break;
-			}
-			parent = NULL;
-			parent_id = g_strdup (sqlite3_column_text (statement, 17));
-			if (parent_id != NULL) {
-				RygelMediaObject* _tmp3_;
-				RygelMediaContainer* _tmp4_;
-				_tmp3_ = rygel_media_db_get_object (self, sqlite3_column_text (statement, 17), &_inner_error_);
-				if (_inner_error_ != NULL) {
-					if (_inner_error_->domain == RYGEL_MEDIA_DB_ERROR) {
-						g_propagate_error (error, _inner_error_);
-						_g_object_unref0 (parent);
-						_g_free0 (parent_id);
-						_g_object_unref0 (obj);
-						_sqlite3_finalize0 (statement);
-						return NULL;
-					} else {
-						_g_object_unref0 (parent);
-						_g_free0 (parent_id);
-						_g_object_unref0 (obj);
-						_sqlite3_finalize0 (statement);
-						g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, _inner_error_->message);
-						g_clear_error (&_inner_error_);
-						return NULL;
-					}
-				}
-				parent = (_tmp4_ = RYGEL_MEDIA_CONTAINER (_tmp3_), _g_object_unref0 (parent), _tmp4_);
-			} else {
-				if (_vala_strcmp0 (sqlite3_column_text (statement, 0), "0") != 0) {
-					g_warning ("Inconsitent database; non-root element " "without parent found. Id is %s", sqlite3_column_text (statement, 0));
-				}
-			}
-			obj = (_tmp5_ = rygel_media_db_get_object_from_statement (self, RYGEL_MEDIA_CONTAINER (parent), object_id, statement), _g_object_unref0 (obj), _tmp5_);
-			obj->parent_ref = (_tmp6_ = _g_object_ref0 (RYGEL_MEDIA_CONTAINER (parent)), _g_object_unref0 (obj->parent_ref), _tmp6_);
-			obj->parent = obj->parent_ref;
-			_g_object_unref0 (parent);
-			_g_free0 (parent_id);
-			break;
-		}
-	} else {
-		_inner_error_ = g_error_new_literal (RYGEL_MEDIA_DB_ERROR, RYGEL_MEDIA_DB_ERROR_SQLITE_ERROR, sqlite3_errmsg (self->priv->db));
-		if (_inner_error_ != NULL) {
-			if (_inner_error_->domain == RYGEL_MEDIA_DB_ERROR) {
-				g_propagate_error (error, _inner_error_);
-				_g_object_unref0 (obj);
-				_sqlite3_finalize0 (statement);
-				return NULL;
-			} else {
-				_g_object_unref0 (obj);
-				_sqlite3_finalize0 (statement);
-				g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, _inner_error_->message);
-				g_clear_error (&_inner_error_);
-				return NULL;
-			}
+	_data6_ = g_slice_new0 (Block6Data);
+	_data6_->_ref_count_ = 1;
+	_data6_->self = g_object_ref (self);
+	values = (_tmp2_ = (_tmp1_ = g_new0 (GValue, 1), _tmp1_[0] = (g_value_init (&_tmp0_, G_TYPE_STRING), g_value_set_string (&_tmp0_, object_id), _tmp0_), _tmp1_), values_length1 = 1, values_size = values_length1, _tmp2_);
+	_data6_->parent = NULL;
+	cb = (_tmp3_ = __lambda5__rygel_database_row_callback, cb_target = block6_data_ref (_data6_), cb_target_destroy_notify = block6_data_unref, _tmp3_);
+	rygel_database_exec (self->priv->db, RYGEL_MEDIA_DB_GET_OBJECT_WITH_CLOSURE, values, values_length1, cb, cb_target, &_inner_error_);
+	if (_inner_error_ != NULL) {
+		if (_inner_error_->domain == RYGEL_DATABASE_ERROR) {
+			g_propagate_error (error, _inner_error_);
+			values = (_vala_GValue_array_free (values, values_length1), NULL);
+			(cb_target_destroy_notify == NULL) ? NULL : cb_target_destroy_notify (cb_target);
+			cb = NULL;
+			cb_target = NULL;
+			cb_target_destroy_notify = NULL;
+			block6_data_unref (_data6_);
+			return NULL;
+		} else {
+			values = (_vala_GValue_array_free (values, values_length1), NULL);
+			(cb_target_destroy_notify == NULL) ? NULL : cb_target_destroy_notify (cb_target);
+			cb = NULL;
+			cb_target = NULL;
+			cb_target_destroy_notify = NULL;
+			block6_data_unref (_data6_);
+			g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, _inner_error_->message);
+			g_clear_error (&_inner_error_);
+			return NULL;
 		}
 	}
-	result = obj;
-	_sqlite3_finalize0 (statement);
+	result = _g_object_ref0 (_data6_->parent);
+	values = (_vala_GValue_array_free (values, values_length1), NULL);
+	(cb_target_destroy_notify == NULL) ? NULL : cb_target_destroy_notify (cb_target);
+	cb = NULL;
+	cb_target = NULL;
+	cb_target_destroy_notify = NULL;
+	block6_data_unref (_data6_);
 	return result;
 }
 
@@ -1526,7 +1672,7 @@ RygelMediaItem* rygel_media_db_get_item (RygelMediaDB* self, const char* item_id
 	_inner_error_ = NULL;
 	obj = rygel_media_db_get_object (self, item_id, &_inner_error_);
 	if (_inner_error_ != NULL) {
-		if (_inner_error_->domain == RYGEL_MEDIA_DB_ERROR) {
+		if ((_inner_error_->domain == RYGEL_DATABASE_ERROR) || (_inner_error_->domain == RYGEL_MEDIA_DB_ERROR)) {
 			g_propagate_error (error, _inner_error_);
 			return NULL;
 		} else {
@@ -1543,7 +1689,7 @@ RygelMediaItem* rygel_media_db_get_item (RygelMediaDB* self, const char* item_id
 	if (_tmp0_) {
 		_inner_error_ = g_error_new (RYGEL_MEDIA_DB_ERROR, RYGEL_MEDIA_DB_ERROR_INVALID_TYPE, "Object with id %s is not a" "MediaItem", item_id);
 		if (_inner_error_ != NULL) {
-			if (_inner_error_->domain == RYGEL_MEDIA_DB_ERROR) {
+			if ((_inner_error_->domain == RYGEL_DATABASE_ERROR) || (_inner_error_->domain == RYGEL_MEDIA_DB_ERROR)) {
 				g_propagate_error (error, _inner_error_);
 				_g_object_unref0 (obj);
 				return NULL;
@@ -1571,7 +1717,7 @@ RygelMediaContainer* rygel_media_db_get_container (RygelMediaDB* self, const cha
 	_inner_error_ = NULL;
 	obj = rygel_media_db_get_object (self, container_id, &_inner_error_);
 	if (_inner_error_ != NULL) {
-		if (_inner_error_->domain == RYGEL_MEDIA_DB_ERROR) {
+		if ((_inner_error_->domain == RYGEL_DATABASE_ERROR) || (_inner_error_->domain == RYGEL_MEDIA_DB_ERROR)) {
 			g_propagate_error (error, _inner_error_);
 			return NULL;
 		} else {
@@ -1588,7 +1734,7 @@ RygelMediaContainer* rygel_media_db_get_container (RygelMediaDB* self, const cha
 	if (_tmp0_) {
 		_inner_error_ = g_error_new (RYGEL_MEDIA_DB_ERROR, RYGEL_MEDIA_DB_ERROR_INVALID_TYPE, "Object with id %s is not a" "MediaContainer", container_id);
 		if (_inner_error_ != NULL) {
-			if (_inner_error_->domain == RYGEL_MEDIA_DB_ERROR) {
+			if ((_inner_error_->domain == RYGEL_DATABASE_ERROR) || (_inner_error_->domain == RYGEL_MEDIA_DB_ERROR)) {
 				g_propagate_error (error, _inner_error_);
 				_g_object_unref0 (obj);
 				return NULL;
@@ -1631,291 +1777,319 @@ static void rygel_media_db_fill_item (RygelMediaDB* self, sqlite3_stmt* statemen
 }
 
 
+static gboolean _lambda10_ (sqlite3_stmt* stmt, Block7Data* _data7_) {
+	RygelMediaDB * self;
+	gboolean result;
+	self = _data7_->self;
+	g_return_val_if_fail (stmt != NULL, FALSE);
+	gee_abstract_collection_add ((GeeAbstractCollection*) _data7_->children, sqlite3_column_text (stmt, 0));
+	result = TRUE;
+	return result;
+}
+
+
+static gboolean __lambda10__rygel_database_row_callback (sqlite3_stmt* stmt, gpointer self) {
+	return _lambda10_ (stmt, self);
+}
+
+
+static Block7Data* block7_data_ref (Block7Data* _data7_) {
+	++_data7_->_ref_count_;
+	return _data7_;
+}
+
+
+static void block7_data_unref (Block7Data* _data7_) {
+	if ((--_data7_->_ref_count_) == 0) {
+		_g_object_unref0 (_data7_->self);
+		_g_object_unref0 (_data7_->children);
+		g_slice_free (Block7Data, _data7_);
+	}
+}
+
+
 GeeArrayList* rygel_media_db_get_child_ids (RygelMediaDB* self, const char* container_id, GError** error) {
 	GeeArrayList* result;
 	GError * _inner_error_;
-	GeeArrayList* children;
-	sqlite3_stmt* statement;
-	sqlite3_stmt* _tmp2_;
-	gint _tmp1_;
-	sqlite3_stmt* _tmp0_ = NULL;
-	gint rc;
+	Block7Data* _data7_;
+	GValue* _tmp2_;
+	gint values_size;
+	gint values_length1;
+	GValue* _tmp1_ = NULL;
+	GValue _tmp0_ = {0};
+	GValue* values;
 	g_return_val_if_fail (self != NULL, NULL);
 	g_return_val_if_fail (container_id != NULL, NULL);
 	_inner_error_ = NULL;
-	children = gee_array_list_new (G_TYPE_STRING, (GBoxedCopyFunc) g_strdup, g_free, g_str_equal);
-	statement = NULL;
-	rc = (_tmp1_ = sqlite3_prepare_v2 (self->priv->db, RYGEL_MEDIA_DB_GET_CHILD_ID_STRING, -1, &_tmp0_, NULL), statement = (_tmp2_ = _tmp0_, _sqlite3_finalize0 (statement), _tmp2_), _tmp1_);
-	if (rc == SQLITE_OK) {
-		if (sqlite3_bind_text (statement, 1, g_strdup (container_id), -1, g_free) != SQLITE_OK) {
-			_inner_error_ = g_error_new_literal (RYGEL_MEDIA_DB_ERROR, RYGEL_MEDIA_DB_ERROR_SQLITE_ERROR, sqlite3_errmsg (self->priv->db));
-			if (_inner_error_ != NULL) {
-				if (_inner_error_->domain == RYGEL_MEDIA_DB_ERROR) {
-					g_propagate_error (error, _inner_error_);
-					_g_object_unref0 (children);
-					_sqlite3_finalize0 (statement);
-					return NULL;
-				} else {
-					_g_object_unref0 (children);
-					_sqlite3_finalize0 (statement);
-					g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, _inner_error_->message);
-					g_clear_error (&_inner_error_);
-					return NULL;
-				}
-			}
-		}
-		while (TRUE) {
-			if (!((rc = sqlite3_step (statement)) == SQLITE_ROW)) {
-				break;
-			}
-			gee_abstract_collection_add ((GeeAbstractCollection*) children, sqlite3_column_text (statement, 0));
-		}
-	} else {
-		g_warning ("rygel-media-db.vala:818: Failed to get children for obj %s: %s", container_id, sqlite3_errmsg (self->priv->db));
-		_inner_error_ = g_error_new_literal (RYGEL_MEDIA_DB_ERROR, RYGEL_MEDIA_DB_ERROR_SQLITE_ERROR, sqlite3_errmsg (self->priv->db));
-		if (_inner_error_ != NULL) {
-			if (_inner_error_->domain == RYGEL_MEDIA_DB_ERROR) {
-				g_propagate_error (error, _inner_error_);
-				_g_object_unref0 (children);
-				_sqlite3_finalize0 (statement);
-				return NULL;
-			} else {
-				_g_object_unref0 (children);
-				_sqlite3_finalize0 (statement);
-				g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, _inner_error_->message);
-				g_clear_error (&_inner_error_);
-				return NULL;
-			}
+	_data7_ = g_slice_new0 (Block7Data);
+	_data7_->_ref_count_ = 1;
+	_data7_->self = g_object_ref (self);
+	_data7_->children = gee_array_list_new (G_TYPE_STRING, (GBoxedCopyFunc) g_strdup, g_free, g_str_equal);
+	values = (_tmp2_ = (_tmp1_ = g_new0 (GValue, 1), _tmp1_[0] = (g_value_init (&_tmp0_, G_TYPE_STRING), g_value_set_string (&_tmp0_, container_id), _tmp0_), _tmp1_), values_length1 = 1, values_size = values_length1, _tmp2_);
+	rygel_database_exec (self->priv->db, RYGEL_MEDIA_DB_GET_CHILD_ID_STRING, values, values_length1, __lambda10__rygel_database_row_callback, _data7_, &_inner_error_);
+	if (_inner_error_ != NULL) {
+		if (_inner_error_->domain == RYGEL_DATABASE_ERROR) {
+			g_propagate_error (error, _inner_error_);
+			values = (_vala_GValue_array_free (values, values_length1), NULL);
+			block7_data_unref (_data7_);
+			return NULL;
+		} else {
+			values = (_vala_GValue_array_free (values, values_length1), NULL);
+			block7_data_unref (_data7_);
+			g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, _inner_error_->message);
+			g_clear_error (&_inner_error_);
+			return NULL;
 		}
 	}
-	result = children;
-	_sqlite3_finalize0 (statement);
+	result = _g_object_ref0 (_data7_->children);
+	values = (_vala_GValue_array_free (values, values_length1), NULL);
+	block7_data_unref (_data7_);
 	return result;
+}
+
+
+static gboolean _lambda4_ (sqlite3_stmt* stmt, Block8Data* _data8_) {
+	RygelMediaDB * self;
+	gboolean result;
+	self = _data8_->self;
+	g_return_val_if_fail (stmt != NULL, FALSE);
+	_data8_->count = sqlite3_column_int (stmt, 0);
+	result = FALSE;
+	return result;
+}
+
+
+static gboolean __lambda4__rygel_database_row_callback (sqlite3_stmt* stmt, gpointer self) {
+	return _lambda4_ (stmt, self);
+}
+
+
+static Block8Data* block8_data_ref (Block8Data* _data8_) {
+	++_data8_->_ref_count_;
+	return _data8_;
+}
+
+
+static void block8_data_unref (Block8Data* _data8_) {
+	if ((--_data8_->_ref_count_) == 0) {
+		_g_object_unref0 (_data8_->self);
+		g_slice_free (Block8Data, _data8_);
+	}
 }
 
 
 gint rygel_media_db_get_child_count (RygelMediaDB* self, const char* container_id, GError** error) {
 	gint result;
 	GError * _inner_error_;
-	sqlite3_stmt* statement;
-	gint count;
-	sqlite3_stmt* _tmp2_;
-	gint _tmp1_;
-	sqlite3_stmt* _tmp0_ = NULL;
-	gint rc;
+	Block8Data* _data8_;
+	GValue* _tmp2_;
+	gint values_size;
+	gint values_length1;
+	GValue* _tmp1_ = NULL;
+	GValue _tmp0_ = {0};
+	GValue* values;
 	g_return_val_if_fail (self != NULL, 0);
 	g_return_val_if_fail (container_id != NULL, 0);
 	_inner_error_ = NULL;
-	statement = NULL;
-	count = 0;
-	rc = (_tmp1_ = sqlite3_prepare_v2 (self->priv->db, RYGEL_MEDIA_DB_CHILDREN_COUNT_STRING, -1, &_tmp0_, NULL), statement = (_tmp2_ = _tmp0_, _sqlite3_finalize0 (statement), _tmp2_), _tmp1_);
-	if (rc == SQLITE_OK) {
-		if (sqlite3_bind_text (statement, 1, g_strdup (container_id), -1, g_free) != SQLITE_OK) {
-			_inner_error_ = g_error_new_literal (RYGEL_MEDIA_DB_ERROR, RYGEL_MEDIA_DB_ERROR_SQLITE_ERROR, sqlite3_errmsg (self->priv->db));
-			if (_inner_error_ != NULL) {
-				if (_inner_error_->domain == RYGEL_MEDIA_DB_ERROR) {
-					g_propagate_error (error, _inner_error_);
-					_sqlite3_finalize0 (statement);
-					return 0;
-				} else {
-					_sqlite3_finalize0 (statement);
-					g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, _inner_error_->message);
-					g_clear_error (&_inner_error_);
-					return 0;
-				}
-			}
-		}
-		while (TRUE) {
-			if (!((rc = sqlite3_step (statement)) == SQLITE_ROW)) {
-				break;
-			}
-			count = sqlite3_column_int (statement, 0);
-			break;
-		}
-	} else {
-		g_warning ("rygel-media-db.vala:843: Could not get child count for object %s: %s", container_id, sqlite3_errmsg (self->priv->db));
-		_inner_error_ = g_error_new_literal (RYGEL_MEDIA_DB_ERROR, RYGEL_MEDIA_DB_ERROR_SQLITE_ERROR, sqlite3_errmsg (self->priv->db));
-		if (_inner_error_ != NULL) {
-			if (_inner_error_->domain == RYGEL_MEDIA_DB_ERROR) {
-				g_propagate_error (error, _inner_error_);
-				_sqlite3_finalize0 (statement);
-				return 0;
-			} else {
-				_sqlite3_finalize0 (statement);
-				g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, _inner_error_->message);
-				g_clear_error (&_inner_error_);
-				return 0;
-			}
+	_data8_ = g_slice_new0 (Block8Data);
+	_data8_->_ref_count_ = 1;
+	_data8_->self = g_object_ref (self);
+	_data8_->count = 0;
+	values = (_tmp2_ = (_tmp1_ = g_new0 (GValue, 1), _tmp1_[0] = (g_value_init (&_tmp0_, G_TYPE_STRING), g_value_set_string (&_tmp0_, container_id), _tmp0_), _tmp1_), values_length1 = 1, values_size = values_length1, _tmp2_);
+	rygel_database_exec (self->priv->db, RYGEL_MEDIA_DB_CHILDREN_COUNT_STRING, values, values_length1, __lambda4__rygel_database_row_callback, _data8_, &_inner_error_);
+	if (_inner_error_ != NULL) {
+		if (_inner_error_->domain == RYGEL_DATABASE_ERROR) {
+			g_propagate_error (error, _inner_error_);
+			values = (_vala_GValue_array_free (values, values_length1), NULL);
+			block8_data_unref (_data8_);
+			return 0;
+		} else {
+			values = (_vala_GValue_array_free (values, values_length1), NULL);
+			block8_data_unref (_data8_);
+			g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, _inner_error_->message);
+			g_clear_error (&_inner_error_);
+			return 0;
 		}
 	}
-	result = count;
-	_sqlite3_finalize0 (statement);
+	result = _data8_->count;
+	values = (_vala_GValue_array_free (values, values_length1), NULL);
+	block8_data_unref (_data8_);
 	return result;
+}
+
+
+static gboolean _lambda11_ (sqlite3_stmt* stmt, Block9Data* _data9_) {
+	RygelMediaDB * self;
+	gboolean result;
+	self = _data9_->self;
+	g_return_val_if_fail (stmt != NULL, FALSE);
+	_data9_->exists = sqlite3_column_int (stmt, 0) == 1;
+	_data9_->tmp_timestamp = sqlite3_column_int64 (stmt, 1);
+	result = FALSE;
+	return result;
+}
+
+
+static gboolean __lambda11__rygel_database_row_callback (sqlite3_stmt* stmt, gpointer self) {
+	return _lambda11_ (stmt, self);
+}
+
+
+static Block9Data* block9_data_ref (Block9Data* _data9_) {
+	++_data9_->_ref_count_;
+	return _data9_;
+}
+
+
+static void block9_data_unref (Block9Data* _data9_) {
+	if ((--_data9_->_ref_count_) == 0) {
+		_g_object_unref0 (_data9_->self);
+		g_slice_free (Block9Data, _data9_);
+	}
 }
 
 
 gboolean rygel_media_db_exists (RygelMediaDB* self, const char* object_id, gint64* timestamp, GError** error) {
 	gboolean result;
 	GError * _inner_error_;
-	sqlite3_stmt* statement;
-	gboolean exists;
-	sqlite3_stmt* _tmp2_;
-	gint _tmp1_;
-	sqlite3_stmt* _tmp0_ = NULL;
-	gint rc;
+	Block9Data* _data9_;
+	GValue* _tmp2_;
+	gint values_size;
+	gint values_length1;
+	GValue* _tmp1_ = NULL;
+	GValue _tmp0_ = {0};
+	GValue* values;
 	g_return_val_if_fail (self != NULL, FALSE);
 	g_return_val_if_fail (object_id != NULL, FALSE);
 	_inner_error_ = NULL;
-	statement = NULL;
-	exists = FALSE;
-	rc = (_tmp1_ = sqlite3_prepare_v2 (self->priv->db, RYGEL_MEDIA_DB_OBJECT_EXISTS_STRING, -1, &_tmp0_, NULL), statement = (_tmp2_ = _tmp0_, _sqlite3_finalize0 (statement), _tmp2_), _tmp1_);
-	if (rc == SQLITE_OK) {
-		if (sqlite3_bind_text (statement, 1, g_strdup (object_id), -1, g_free) != SQLITE_OK) {
-			_inner_error_ = g_error_new_literal (RYGEL_MEDIA_DB_ERROR, RYGEL_MEDIA_DB_ERROR_SQLITE_ERROR, sqlite3_errmsg (self->priv->db));
-			if (_inner_error_ != NULL) {
-				if (_inner_error_->domain == RYGEL_MEDIA_DB_ERROR) {
-					g_propagate_error (error, _inner_error_);
-					_sqlite3_finalize0 (statement);
-					return FALSE;
-				} else {
-					_sqlite3_finalize0 (statement);
-					g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, _inner_error_->message);
-					g_clear_error (&_inner_error_);
-					return FALSE;
-				}
-			}
-		}
-		while (TRUE) {
-			if (!((rc = sqlite3_step (statement)) == SQLITE_ROW)) {
-				break;
-			}
-			exists = sqlite3_column_int (statement, 0) == 1;
-			*timestamp = sqlite3_column_int64 (statement, 1);
-			break;
-		}
-	} else {
-		g_warning ("rygel-media-db.vala:871: Could not get child count for object %s: %s", object_id, sqlite3_errmsg (self->priv->db));
-		_inner_error_ = g_error_new_literal (RYGEL_MEDIA_DB_ERROR, RYGEL_MEDIA_DB_ERROR_SQLITE_ERROR, sqlite3_errmsg (self->priv->db));
-		if (_inner_error_ != NULL) {
-			if (_inner_error_->domain == RYGEL_MEDIA_DB_ERROR) {
-				g_propagate_error (error, _inner_error_);
-				_sqlite3_finalize0 (statement);
-				return FALSE;
-			} else {
-				_sqlite3_finalize0 (statement);
-				g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, _inner_error_->message);
-				g_clear_error (&_inner_error_);
-				return FALSE;
-			}
+	_data9_ = g_slice_new0 (Block9Data);
+	_data9_->_ref_count_ = 1;
+	_data9_->self = g_object_ref (self);
+	_data9_->exists = FALSE;
+	values = (_tmp2_ = (_tmp1_ = g_new0 (GValue, 1), _tmp1_[0] = (g_value_init (&_tmp0_, G_TYPE_STRING), g_value_set_string (&_tmp0_, object_id), _tmp0_), _tmp1_), values_length1 = 1, values_size = values_length1, _tmp2_);
+	_data9_->tmp_timestamp = (gint64) 0;
+	rygel_database_exec (self->priv->db, RYGEL_MEDIA_DB_OBJECT_EXISTS_STRING, values, values_length1, __lambda11__rygel_database_row_callback, _data9_, &_inner_error_);
+	if (_inner_error_ != NULL) {
+		if (_inner_error_->domain == RYGEL_DATABASE_ERROR) {
+			g_propagate_error (error, _inner_error_);
+			values = (_vala_GValue_array_free (values, values_length1), NULL);
+			block9_data_unref (_data9_);
+			return FALSE;
+		} else {
+			values = (_vala_GValue_array_free (values, values_length1), NULL);
+			block9_data_unref (_data9_);
+			g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, _inner_error_->message);
+			g_clear_error (&_inner_error_);
+			return FALSE;
 		}
 	}
-	result = exists;
-	_sqlite3_finalize0 (statement);
+	*timestamp = _data9_->tmp_timestamp;
+	result = _data9_->exists;
+	values = (_vala_GValue_array_free (values, values_length1), NULL);
+	block9_data_unref (_data9_);
 	return result;
 }
 
 
-GeeArrayList* rygel_media_db_get_children (RygelMediaDB* self, const char* container_id, glong offset, glong max_count) {
+static gboolean _lambda7_ (sqlite3_stmt* stmt, Block10Data* _data10_) {
+	RygelMediaDB * self;
+	gboolean result;
+	char* child_id;
+	RygelMediaObject* _tmp0_;
+	RygelMediaObject* _tmp1_;
+	RygelMediaContainer* _tmp4_;
+	RygelMediaContainer* *_tmp3_;
+	RygelMediaObject* _tmp2_;
+	self = _data10_->self;
+	g_return_val_if_fail (stmt != NULL, FALSE);
+	child_id = g_strdup (sqlite3_column_text (stmt, 17));
+	gee_abstract_collection_add ((GeeAbstractCollection*) _data10_->children, _tmp0_ = rygel_media_db_get_object_from_statement (self, _data10_->parent, child_id, stmt));
+	_g_object_unref0 (_tmp0_);
+	(_tmp1_ = (RygelMediaObject*) gee_abstract_list_get ((GeeAbstractList*) _data10_->children, gee_collection_get_size ((GeeCollection*) _data10_->children) - 1))->parent = _data10_->parent;
+	_g_object_unref0 (_tmp1_);
+	_tmp3_ = &(_tmp2_ = (RygelMediaObject*) gee_abstract_list_get ((GeeAbstractList*) _data10_->children, gee_collection_get_size ((GeeCollection*) _data10_->children) - 1))->parent_ref;
+	(*_tmp3_) = (_tmp4_ = _g_object_ref0 (_data10_->parent), _g_object_unref0 ((*_tmp3_)), _tmp4_);
+	_g_object_unref0 (_tmp2_);
+	result = TRUE;
+	_g_free0 (child_id);
+	return result;
+}
+
+
+static gboolean __lambda7__rygel_database_row_callback (sqlite3_stmt* stmt, gpointer self) {
+	return _lambda7_ (stmt, self);
+}
+
+
+static Block10Data* block10_data_ref (Block10Data* _data10_) {
+	++_data10_->_ref_count_;
+	return _data10_;
+}
+
+
+static void block10_data_unref (Block10Data* _data10_) {
+	if ((--_data10_->_ref_count_) == 0) {
+		_g_object_unref0 (_data10_->self);
+		_g_object_unref0 (_data10_->parent);
+		_g_object_unref0 (_data10_->children);
+		g_slice_free (Block10Data, _data10_);
+	}
+}
+
+
+GeeArrayList* rygel_media_db_get_children (RygelMediaDB* self, const char* container_id, glong offset, glong max_count, GError** error) {
 	GeeArrayList* result;
 	GError * _inner_error_;
-	sqlite3_stmt* statement;
-	GeeArrayList* children;
-	RygelMediaContainer* parent;
-	sqlite3_stmt* _tmp4_;
-	gint _tmp3_;
-	sqlite3_stmt* _tmp2_ = NULL;
-	gint rc;
+	Block10Data* _data10_;
+	RygelMediaObject* _tmp0_;
+	RygelMediaContainer* _tmp1_;
+	GValue* _tmp6_;
+	gint values_size;
+	gint values_length1;
+	GValue* _tmp5_ = NULL;
+	GValue _tmp4_ = {0};
+	GValue _tmp3_ = {0};
+	GValue _tmp2_ = {0};
+	GValue* values;
+	RygelDatabaseRowCallback _tmp7_;
+	GDestroyNotify cb_target_destroy_notify;
+	void* cb_target = NULL;
+	RygelDatabaseRowCallback cb;
 	g_return_val_if_fail (self != NULL, NULL);
 	g_return_val_if_fail (container_id != NULL, NULL);
 	_inner_error_ = NULL;
-	statement = NULL;
-	children = gee_array_list_new (RYGEL_TYPE_MEDIA_OBJECT, (GBoxedCopyFunc) g_object_ref, g_object_unref, g_direct_equal);
-	parent = NULL;
-	{
-		RygelMediaObject* _tmp0_;
-		RygelMediaContainer* _tmp1_;
-		_tmp0_ = rygel_media_db_get_object (self, container_id, &_inner_error_);
-		if (_inner_error_ != NULL) {
-			if (_inner_error_->domain == RYGEL_MEDIA_DB_ERROR) {
-				goto __catch43_rygel_media_db_error;
-			}
-			goto __finally43;
-		}
-		parent = (_tmp1_ = RYGEL_MEDIA_CONTAINER (_tmp0_), _g_object_unref0 (parent), _tmp1_);
-	}
-	goto __finally43;
-	__catch43_rygel_media_db_error:
-	{
-		GError * err;
-		err = _inner_error_;
-		_inner_error_ = NULL;
-		{
-			g_warning ("rygel-media-db.vala:890: Could not get parent object: %s", err->message);
-			result = children;
-			_g_error_free0 (err);
-			_sqlite3_finalize0 (statement);
-			_g_object_unref0 (parent);
-			return result;
-		}
-	}
-	__finally43:
+	_data10_ = g_slice_new0 (Block10Data);
+	_data10_->_ref_count_ = 1;
+	_data10_->self = g_object_ref (self);
+	_data10_->parent = NULL;
+	_data10_->children = gee_array_list_new (RYGEL_TYPE_MEDIA_OBJECT, (GBoxedCopyFunc) g_object_ref, g_object_unref, NULL);
+	_tmp0_ = rygel_media_db_get_object (self, container_id, &_inner_error_);
 	if (_inner_error_ != NULL) {
-		_sqlite3_finalize0 (statement);
-		_g_object_unref0 (children);
-		_g_object_unref0 (parent);
-		g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, _inner_error_->message);
-		g_clear_error (&_inner_error_);
+		g_propagate_error (error, _inner_error_);
+		block10_data_unref (_data10_);
 		return NULL;
 	}
-	rc = (_tmp3_ = sqlite3_prepare_v2 (self->priv->db, RYGEL_MEDIA_DB_GET_CHILDREN_STRING, -1, &_tmp2_, NULL), statement = (_tmp4_ = _tmp2_, _sqlite3_finalize0 (statement), _tmp4_), _tmp3_);
-	if (rc == SQLITE_OK) {
-		gboolean _tmp5_ = FALSE;
-		gboolean _tmp6_ = FALSE;
-		if (sqlite3_bind_text (statement, 1, g_strdup (container_id), -1, g_free) != SQLITE_OK) {
-			_tmp6_ = TRUE;
-		} else {
-			_tmp6_ = sqlite3_bind_int64 (statement, 2, (gint64) offset) != SQLITE_OK;
-		}
-		if (_tmp6_) {
-			_tmp5_ = TRUE;
-		} else {
-			_tmp5_ = sqlite3_bind_int64 (statement, 3, (gint64) max_count) != SQLITE_OK;
-		}
-		if (_tmp5_) {
-			_inner_error_ = g_error_new_literal (RYGEL_MEDIA_DB_ERROR, RYGEL_MEDIA_DB_ERROR_SQLITE_ERROR, sqlite3_errmsg (self->priv->db));
-			if (_inner_error_ != NULL) {
-				_sqlite3_finalize0 (statement);
-				_g_object_unref0 (children);
-				_g_object_unref0 (parent);
-				g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, _inner_error_->message);
-				g_clear_error (&_inner_error_);
-				return NULL;
-			}
-		}
-		while (TRUE) {
-			char* child_id;
-			RygelMediaObject* _tmp7_;
-			RygelMediaObject* _tmp8_;
-			RygelMediaContainer* _tmp11_;
-			RygelMediaContainer* *_tmp10_;
-			RygelMediaObject* _tmp9_;
-			if (!((rc = sqlite3_step (statement)) == SQLITE_ROW)) {
-				break;
-			}
-			child_id = g_strdup (sqlite3_column_text (statement, 17));
-			gee_abstract_collection_add ((GeeAbstractCollection*) children, _tmp7_ = rygel_media_db_get_object_from_statement (self, parent, child_id, statement));
-			_g_object_unref0 (_tmp7_);
-			(_tmp8_ = (RygelMediaObject*) gee_abstract_list_get ((GeeAbstractList*) children, gee_collection_get_size ((GeeCollection*) children) - 1))->parent = parent;
-			_g_object_unref0 (_tmp8_);
-			_tmp10_ = &(_tmp9_ = (RygelMediaObject*) gee_abstract_list_get ((GeeAbstractList*) children, gee_collection_get_size ((GeeCollection*) children) - 1))->parent_ref;
-			(*_tmp10_) = (_tmp11_ = _g_object_ref0 (parent), _g_object_unref0 ((*_tmp10_)), _tmp11_);
-			_g_object_unref0 (_tmp9_);
-			_g_free0 (child_id);
-		}
+	_data10_->parent = (_tmp1_ = RYGEL_MEDIA_CONTAINER (_tmp0_), _g_object_unref0 (_data10_->parent), _tmp1_);
+	values = (_tmp6_ = (_tmp5_ = g_new0 (GValue, 3), _tmp5_[0] = (g_value_init (&_tmp2_, G_TYPE_STRING), g_value_set_string (&_tmp2_, container_id), _tmp2_), _tmp5_[1] = (g_value_init (&_tmp3_, G_TYPE_INT64), g_value_set_int64 (&_tmp3_, (gint64) offset), _tmp3_), _tmp5_[2] = (g_value_init (&_tmp4_, G_TYPE_INT64), g_value_set_int64 (&_tmp4_, (gint64) max_count), _tmp4_), _tmp5_), values_length1 = 3, values_size = values_length1, _tmp6_);
+	cb = (_tmp7_ = __lambda7__rygel_database_row_callback, cb_target = block10_data_ref (_data10_), cb_target_destroy_notify = block10_data_unref, _tmp7_);
+	rygel_database_exec (self->priv->db, RYGEL_MEDIA_DB_GET_CHILDREN_STRING, values, values_length1, cb, cb_target, &_inner_error_);
+	if (_inner_error_ != NULL) {
+		g_propagate_error (error, _inner_error_);
+		values = (_vala_GValue_array_free (values, values_length1), NULL);
+		(cb_target_destroy_notify == NULL) ? NULL : cb_target_destroy_notify (cb_target);
+		cb = NULL;
+		cb_target = NULL;
+		cb_target_destroy_notify = NULL;
+		block10_data_unref (_data10_);
+		return NULL;
 	}
-	result = children;
-	_sqlite3_finalize0 (statement);
-	_g_object_unref0 (parent);
+	result = _g_object_ref0 (_data10_->children);
+	values = (_vala_GValue_array_free (values, values_length1), NULL);
+	(cb_target_destroy_notify == NULL) ? NULL : cb_target_destroy_notify (cb_target);
+	cb = NULL;
+	cb_target = NULL;
+	cb_target_destroy_notify = NULL;
+	block10_data_unref (_data10_);
 	return result;
 }
 
@@ -1944,7 +2118,7 @@ static void rygel_media_db_instance_init (RygelMediaDB * self) {
 static void rygel_media_db_finalize (GObject* obj) {
 	RygelMediaDB * self;
 	self = RYGEL_MEDIA_DB (obj);
-	_sqlite3_close0 (self->priv->db);
+	_g_object_unref0 (self->priv->db);
 	_g_object_unref0 (self->priv->factory);
 	G_OBJECT_CLASS (rygel_media_db_parent_class)->finalize (obj);
 }
@@ -1957,17 +2131,6 @@ GType rygel_media_db_get_type (void) {
 		rygel_media_db_type_id = g_type_register_static (G_TYPE_OBJECT, "RygelMediaDB", &g_define_type_info, 0);
 	}
 	return rygel_media_db_type_id;
-}
-
-
-static int _vala_strcmp0 (const char * str1, const char * str2) {
-	if (str1 == NULL) {
-		return -(str1 != str2);
-	}
-	if (str2 == NULL) {
-		return str1 != str2;
-	}
-	return strcmp (str1, str2);
 }
 
 

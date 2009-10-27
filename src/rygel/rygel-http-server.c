@@ -31,8 +31,8 @@
 #include <libgupnp-av/gupnp-av.h>
 #include <gio/gio.h>
 #include <libgupnp/gupnp.h>
-#include <gee.h>
 #include <libsoup/soup.h>
+#include <gee.h>
 #include <gst/gst.h>
 #include <libgssdp/gssdp.h>
 
@@ -96,16 +96,6 @@ typedef struct _RygelHTTPServerPrivate RygelHTTPServerPrivate;
 
 typedef struct _RygelMediaContainer RygelMediaContainer;
 typedef struct _RygelMediaContainerClass RygelMediaContainerClass;
-
-#define RYGEL_TYPE_HTTP_REQUEST (rygel_http_request_get_type ())
-#define RYGEL_HTTP_REQUEST(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_HTTP_REQUEST, RygelHTTPRequest))
-#define RYGEL_HTTP_REQUEST_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TYPE_HTTP_REQUEST, RygelHTTPRequestClass))
-#define RYGEL_IS_HTTP_REQUEST(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TYPE_HTTP_REQUEST))
-#define RYGEL_IS_HTTP_REQUEST_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_TYPE_HTTP_REQUEST))
-#define RYGEL_HTTP_REQUEST_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_TYPE_HTTP_REQUEST, RygelHTTPRequestClass))
-
-typedef struct _RygelHTTPRequest RygelHTTPRequest;
-typedef struct _RygelHTTPRequestClass RygelHTTPRequestClass;
 #define _g_free0(var) (var = (g_free (var), NULL))
 #define _g_object_unref0(var) ((var == NULL) ? NULL : (var = (g_object_unref (var), NULL)))
 
@@ -119,6 +109,7 @@ typedef struct _RygelHTTPRequestClass RygelHTTPRequestClass;
 typedef struct _RygelContentDirectory RygelContentDirectory;
 typedef struct _RygelContentDirectoryClass RygelContentDirectoryClass;
 typedef struct _RygelContentDirectoryPrivate RygelContentDirectoryPrivate;
+typedef struct _RygelHttpServerRunData RygelHttpServerRunData;
 typedef struct _RygelMediaObjectPrivate RygelMediaObjectPrivate;
 typedef struct _RygelMediaItemPrivate RygelMediaItemPrivate;
 
@@ -142,8 +133,17 @@ typedef struct _RygelIconInfoClass RygelIconInfoClass;
 typedef struct _RygelThumbnail RygelThumbnail;
 typedef struct _RygelThumbnailClass RygelThumbnailClass;
 typedef struct _RygelIconInfoPrivate RygelIconInfoPrivate;
-typedef struct _RygelThumbnailPrivate RygelThumbnailPrivate;
 #define _rygel_icon_info_unref0(var) ((var == NULL) ? NULL : (var = (rygel_icon_info_unref (var), NULL)))
+
+#define RYGEL_TYPE_HTTP_REQUEST (rygel_http_request_get_type ())
+#define RYGEL_HTTP_REQUEST(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_HTTP_REQUEST, RygelHTTPRequest))
+#define RYGEL_HTTP_REQUEST_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TYPE_HTTP_REQUEST, RygelHTTPRequestClass))
+#define RYGEL_IS_HTTP_REQUEST(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TYPE_HTTP_REQUEST))
+#define RYGEL_IS_HTTP_REQUEST_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_TYPE_HTTP_REQUEST))
+#define RYGEL_HTTP_REQUEST_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_TYPE_HTTP_REQUEST, RygelHTTPRequestClass))
+
+typedef struct _RygelHTTPRequest RygelHTTPRequest;
+typedef struct _RygelHTTPRequestClass RygelHTTPRequestClass;
 typedef struct _RygelHTTPRequestPrivate RygelHTTPRequestPrivate;
 
 #define RYGEL_TYPE_HTTP_SEEK (rygel_http_seek_get_type ())
@@ -171,7 +171,8 @@ struct _RygelTranscodeManagerClass {
 
 struct _RygelStateMachineIface {
 	GTypeInterface parent_iface;
-	void (*run) (RygelStateMachine* self);
+	void (*run) (RygelStateMachine* self, GAsyncReadyCallback _callback_, gpointer _user_data_);
+	void (*run_finish) (RygelStateMachine* self, GAsyncResult* _res_);
 	GCancellable* (*get_cancellable) (RygelStateMachine* self);
 	void (*set_cancellable) (RygelStateMachine* self, GCancellable* value);
 };
@@ -189,7 +190,6 @@ struct _RygelHTTPServerClass {
 
 struct _RygelHTTPServerPrivate {
 	char* path_root;
-	GeeArrayList* requests;
 	GCancellable* _cancellable;
 };
 
@@ -211,11 +211,17 @@ struct _RygelContentDirectoryClass {
 	void (*browse_cb) (RygelContentDirectory* self, RygelContentDirectory* content_dir, GUPnPServiceAction* action);
 };
 
+struct _RygelHttpServerRunData {
+	int _state_;
+	GAsyncResult* _res_;
+	GSimpleAsyncResult* _async_result;
+	RygelHTTPServer* self;
+};
+
 struct _RygelMediaObject {
 	GObject parent_instance;
 	RygelMediaObjectPrivate * priv;
 	char* id;
-	char* title;
 	guint64 modified;
 	GeeArrayList* uris;
 	RygelMediaContainer* parent;
@@ -261,7 +267,7 @@ struct _RygelIconInfo {
 	volatile int ref_count;
 	RygelIconInfoPrivate * priv;
 	char* mime_type;
-	char* path;
+	char* uri;
 	glong size;
 	gint width;
 	gint height;
@@ -271,17 +277,6 @@ struct _RygelIconInfo {
 struct _RygelIconInfoClass {
 	GTypeClass parent_class;
 	void (*finalize) (RygelIconInfo *self);
-};
-
-struct _RygelThumbnail {
-	RygelIconInfo parent_instance;
-	RygelThumbnailPrivate * priv;
-	char* uri;
-	char* dlna_profile;
-};
-
-struct _RygelThumbnailClass {
-	RygelIconInfoClass parent_class;
 };
 
 struct _RygelHTTPRequest {
@@ -310,7 +305,6 @@ GType rygel_media_item_get_type (void);
 GType rygel_state_machine_get_type (void);
 GType rygel_http_server_get_type (void);
 GType rygel_media_container_get_type (void);
-GType rygel_http_request_get_type (void);
 #define RYGEL_HTTP_SERVER_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), RYGEL_TYPE_HTTP_SERVER, RygelHTTPServerPrivate))
 enum  {
 	RYGEL_HTTP_SERVER_DUMMY_PROPERTY,
@@ -322,12 +316,15 @@ GType rygel_content_directory_get_type (void);
 void rygel_state_machine_set_cancellable (RygelStateMachine* self, GCancellable* value);
 RygelHTTPServer* rygel_http_server_new (RygelContentDirectory* content_dir, const char* name, GError** error);
 RygelHTTPServer* rygel_http_server_construct (GType object_type, RygelContentDirectory* content_dir, const char* name, GError** error);
+static void rygel_http_server_real_run_data_free (gpointer _data);
+static void rygel_http_server_real_run (RygelStateMachine* base, GAsyncReadyCallback _callback_, gpointer _user_data_);
+static void rygel_http_server_run_ready (GObject* source_object, GAsyncResult* _res_, gpointer _user_data_);
 static void rygel_http_server_server_handler (RygelHTTPServer* self, SoupServer* server, SoupMessage* msg, const char* server_path, GHashTable* query, SoupClientContext* soup_client);
 static void _rygel_http_server_server_handler_soup_server_callback (SoupServer* server, SoupMessage* msg, const char* path, GHashTable* query, SoupClientContext* client, gpointer self);
 GCancellable* rygel_state_machine_get_cancellable (RygelStateMachine* self);
 static void rygel_http_server_on_cancelled (RygelHTTPServer* self, GCancellable* cancellable);
 static void _rygel_http_server_on_cancelled_g_cancellable_cancelled (GCancellable* _sender, gpointer self);
-static void rygel_http_server_real_run (RygelStateMachine* base);
+static gboolean rygel_http_server_real_run_co (RygelHttpServerRunData* data);
 static gboolean rygel_http_server_http_uri_present (RygelHTTPServer* self, RygelMediaItem* item);
 char* rygel_transcode_manager_create_uri_for_item (RygelTranscodeManager* self, RygelMediaItem* item, gint thumbnail_index, const char* transcode_target, char** protocol);
 GUPnPDIDLLiteResource* rygel_media_item_add_resource (RygelMediaItem* self, GUPnPDIDLLiteItem* didl_item, const char* uri, const char* protocol, GError** error);
@@ -348,14 +345,16 @@ static char* rygel_http_server_real_get_protocol (RygelTranscodeManager* base);
 char* rygel_transcode_manager_get_protocol (RygelTranscodeManager* self);
 char* rygel_transcode_manager_get_protocol_info (RygelTranscodeManager* self);
 static char* rygel_http_server_real_get_protocol_info (RygelTranscodeManager* base);
+GType rygel_http_request_get_type (void);
 GType rygel_http_seek_get_type (void);
 static void rygel_http_server_on_request_completed (RygelHTTPServer* self, RygelHTTPRequest* request);
-static void _lambda1_ (const char* name, const char* value, RygelHTTPServer* self);
-static void __lambda1__soup_message_headers_foreach_func (const char* name, const char* value, gpointer self);
+static void _lambda0_ (const char* name, const char* value, RygelHTTPServer* self);
+static void __lambda0__soup_message_headers_foreach_func (const char* name, const char* value, gpointer self);
 RygelHTTPRequest* rygel_http_request_new (RygelHTTPServer* http_server, SoupServer* server, SoupMessage* msg, GHashTable* query);
 RygelHTTPRequest* rygel_http_request_construct (GType object_type, RygelHTTPServer* http_server, SoupServer* server, SoupMessage* msg, GHashTable* query);
 static void _rygel_http_server_on_request_completed_rygel_state_machine_completed (RygelHTTPRequest* _sender, gpointer self);
-void rygel_state_machine_run (RygelStateMachine* self);
+void rygel_state_machine_run (RygelStateMachine* self, GAsyncReadyCallback _callback_, gpointer _user_data_);
+void rygel_state_machine_run_finish (RygelStateMachine* self, GAsyncResult* _res_);
 static void rygel_http_server_finalize (GObject* obj);
 static void rygel_http_server_get_property (GObject * object, guint property_id, GValue * value, GParamSpec * pspec);
 static void rygel_http_server_set_property (GObject * object, guint property_id, const GValue * value, GParamSpec * pspec);
@@ -372,22 +371,53 @@ RygelHTTPServer* rygel_http_server_construct (GType object_type, RygelContentDir
 	RygelHTTPServer * self;
 	RygelMediaContainer* _tmp0_;
 	GUPnPContext* _tmp1_;
-	GeeArrayList* _tmp2_;
-	char* _tmp3_;
+	char* _tmp2_;
 	g_return_val_if_fail (content_dir != NULL, NULL);
 	g_return_val_if_fail (name != NULL, NULL);
 	self = (RygelHTTPServer*) rygel_transcode_manager_construct (object_type, error);
 	self->root_container = (_tmp0_ = _g_object_ref0 (content_dir->root_container), _g_object_unref0 (self->root_container), _tmp0_);
 	self->context = (_tmp1_ = _g_object_ref0 (gupnp_service_info_get_context ((GUPnPServiceInfo*) content_dir)), _g_object_unref0 (self->context), _tmp1_);
 	rygel_state_machine_set_cancellable ((RygelStateMachine*) self, content_dir->cancellable);
-	self->priv->requests = (_tmp2_ = gee_array_list_new (RYGEL_TYPE_HTTP_REQUEST, (GBoxedCopyFunc) g_object_ref, g_object_unref, g_direct_equal), _g_object_unref0 (self->priv->requests), _tmp2_);
-	self->priv->path_root = (_tmp3_ = g_strconcat (RYGEL_HTTP_SERVER_SERVER_PATH_PREFIX "/", name, NULL), _g_free0 (self->priv->path_root), _tmp3_);
+	self->priv->path_root = (_tmp2_ = g_strconcat (RYGEL_HTTP_SERVER_SERVER_PATH_PREFIX "/", name, NULL), _g_free0 (self->priv->path_root), _tmp2_);
 	return self;
 }
 
 
 RygelHTTPServer* rygel_http_server_new (RygelContentDirectory* content_dir, const char* name, GError** error) {
 	return rygel_http_server_construct (RYGEL_TYPE_HTTP_SERVER, content_dir, name, error);
+}
+
+
+static void rygel_http_server_real_run_data_free (gpointer _data) {
+	RygelHttpServerRunData* data;
+	data = _data;
+	g_slice_free (RygelHttpServerRunData, data);
+}
+
+
+static void rygel_http_server_real_run (RygelStateMachine* base, GAsyncReadyCallback _callback_, gpointer _user_data_) {
+	RygelHTTPServer * self;
+	RygelHttpServerRunData* _data_;
+	self = (RygelHTTPServer*) base;
+	_data_ = g_slice_new0 (RygelHttpServerRunData);
+	_data_->_async_result = g_simple_async_result_new (G_OBJECT (self), _callback_, _user_data_, rygel_http_server_real_run);
+	g_simple_async_result_set_op_res_gpointer (_data_->_async_result, _data_, rygel_http_server_real_run_data_free);
+	_data_->self = self;
+	rygel_http_server_real_run_co (_data_);
+}
+
+
+static void rygel_http_server_real_run_finish (RygelStateMachine* base, GAsyncResult* _res_) {
+	RygelHttpServerRunData* _data_;
+	_data_ = g_simple_async_result_get_op_res_gpointer (G_SIMPLE_ASYNC_RESULT (_res_));
+}
+
+
+static void rygel_http_server_run_ready (GObject* source_object, GAsyncResult* _res_, gpointer _user_data_) {
+	RygelHttpServerRunData* data;
+	data = _user_data_;
+	data->_res_ = _res_;
+	rygel_http_server_real_run_co (data);
 }
 
 
@@ -401,12 +431,26 @@ static void _rygel_http_server_on_cancelled_g_cancellable_cancelled (GCancellabl
 }
 
 
-static void rygel_http_server_real_run (RygelStateMachine* base) {
-	RygelHTTPServer * self;
-	self = (RygelHTTPServer*) base;
-	soup_server_add_handler (gupnp_context_get_server (self->context), self->priv->path_root, _rygel_http_server_server_handler_soup_server_callback, g_object_ref (self), g_object_unref);
-	if (rygel_state_machine_get_cancellable ((RygelStateMachine*) self) != NULL) {
-		g_signal_connect_object (rygel_state_machine_get_cancellable ((RygelStateMachine*) self), "cancelled", (GCallback) _rygel_http_server_on_cancelled_g_cancellable_cancelled, self, 0);
+static gboolean rygel_http_server_real_run_co (RygelHttpServerRunData* data) {
+	switch (data->_state_) {
+		default:
+		g_assert_not_reached ();
+		case 0:
+		{
+			soup_server_add_handler (gupnp_context_get_server (data->self->context), data->self->priv->path_root, _rygel_http_server_server_handler_soup_server_callback, g_object_ref (data->self), g_object_unref);
+			if (rygel_state_machine_get_cancellable ((RygelStateMachine*) data->self) != NULL) {
+				g_signal_connect_object (rygel_state_machine_get_cancellable ((RygelStateMachine*) data->self), "cancelled", (GCallback) _rygel_http_server_on_cancelled_g_cancellable_cancelled, data->self, 0);
+			}
+		}
+		{
+			if (data->_state_ == 0) {
+				g_simple_async_result_complete_in_idle (data->_async_result);
+			} else {
+				g_simple_async_result_complete (data->_async_result);
+			}
+			g_object_unref (data->_async_result);
+			return FALSE;
+		}
 	}
 }
 
@@ -452,7 +496,7 @@ static void rygel_http_server_real_add_resources (RygelTranscodeManager* base, G
 				break;
 			}
 			thumbnail = (RygelThumbnail*) gee_iterator_get (_thumbnail_it);
-			if (!rygel_http_server_is_http_uri (self, thumbnail->uri)) {
+			if (!rygel_http_server_is_http_uri (self, ((RygelIconInfo*) thumbnail)->uri)) {
 				char* uri;
 				gint index;
 				char* protocol;
@@ -462,13 +506,13 @@ static void rygel_http_server_real_add_resources (RygelTranscodeManager* base, G
 				char* _tmp4_ = NULL;
 				GUPnPDIDLLiteResource* _tmp8_;
 				char* _tmp9_;
-				uri = g_strdup (thumbnail->uri);
+				uri = g_strdup (((RygelIconInfo*) thumbnail)->uri);
 				index = gee_abstract_list_index_of ((GeeAbstractList*) item->thumbnails, thumbnail);
 				protocol = NULL;
-				thumbnail->uri = (_tmp7_ = (_tmp5_ = rygel_transcode_manager_create_uri_for_item ((RygelTranscodeManager*) self, item, index, NULL, &_tmp4_), protocol = (_tmp6_ = _tmp4_, _g_free0 (protocol), _tmp6_), _tmp5_), _g_free0 (thumbnail->uri), _tmp7_);
+				((RygelIconInfo*) thumbnail)->uri = (_tmp7_ = (_tmp5_ = rygel_transcode_manager_create_uri_for_item ((RygelTranscodeManager*) self, item, index, NULL, &_tmp4_), protocol = (_tmp6_ = _tmp4_, _g_free0 (protocol), _tmp6_), _tmp5_), _g_free0 (((RygelIconInfo*) thumbnail)->uri), _tmp7_);
 				_tmp8_ = rygel_thumbnail_add_resource (thumbnail, didl_item, protocol);
 				_g_object_unref0 (_tmp8_);
-				thumbnail->uri = (_tmp9_ = g_strdup (uri), _g_free0 (thumbnail->uri), _tmp9_);
+				((RygelIconInfo*) thumbnail)->uri = (_tmp9_ = g_strdup (uri), _g_free0 (((RygelIconInfo*) thumbnail)->uri), _tmp9_);
 				_g_free0 (uri);
 				_g_free0 (protocol);
 			}
@@ -611,22 +655,21 @@ static void rygel_http_server_on_request_completed (RygelHTTPServer* self, Rygel
 	char* _tmp0_ = NULL;
 	g_return_if_fail (self != NULL);
 	g_return_if_fail (request != NULL);
-	g_debug ("rygel-http-server.vala:164: HTTP %s request for URI '%s' handled.", _tmp1_ = (g_object_get (request->msg, "method", &_tmp0_, NULL), _tmp0_), _tmp2_ = soup_uri_to_string (soup_message_get_uri (request->msg), FALSE));
+	g_debug ("rygel-http-server.vala:162: HTTP %s request for URI '%s' handled.", _tmp1_ = (g_object_get (request->msg, "method", &_tmp0_, NULL), _tmp0_), _tmp2_ = soup_uri_to_string (soup_message_get_uri (request->msg), FALSE));
 	_g_free0 (_tmp2_);
 	_g_free0 (_tmp1_);
-	gee_abstract_collection_remove ((GeeAbstractCollection*) self->priv->requests, request);
 }
 
 
-static void _lambda1_ (const char* name, const char* value, RygelHTTPServer* self) {
+static void _lambda0_ (const char* name, const char* value, RygelHTTPServer* self) {
 	g_return_if_fail (name != NULL);
 	g_return_if_fail (value != NULL);
-	g_debug ("rygel-http-server.vala:181: %s : %s", name, value);
+	g_debug ("rygel-http-server.vala:176: %s : %s", name, value);
 }
 
 
-static void __lambda1__soup_message_headers_foreach_func (const char* name, const char* value, gpointer self) {
-	_lambda1_ (name, value, self);
+static void __lambda0__soup_message_headers_foreach_func (const char* name, const char* value, gpointer self) {
+	_lambda0_ (name, value, self);
 }
 
 
@@ -645,14 +688,13 @@ static void rygel_http_server_server_handler (RygelHTTPServer* self, SoupServer*
 	g_return_if_fail (msg != NULL);
 	g_return_if_fail (server_path != NULL);
 	g_return_if_fail (soup_client != NULL);
-	g_debug ("rygel-http-server.vala:177: HTTP %s request for URI '%s'. Headers:", _tmp1_ = (g_object_get (msg, "method", &_tmp0_, NULL), _tmp0_), _tmp2_ = soup_uri_to_string (soup_message_get_uri (msg), FALSE));
+	g_debug ("rygel-http-server.vala:172: HTTP %s request for URI '%s'. Headers:", _tmp1_ = (g_object_get (msg, "method", &_tmp0_, NULL), _tmp0_), _tmp2_ = soup_uri_to_string (soup_message_get_uri (msg), FALSE));
 	_g_free0 (_tmp2_);
 	_g_free0 (_tmp1_);
-	soup_message_headers_foreach (msg->request_headers, __lambda1__soup_message_headers_foreach_func, self);
+	soup_message_headers_foreach (msg->request_headers, __lambda0__soup_message_headers_foreach_func, self);
 	request = rygel_http_request_new (self, server, msg, query);
 	g_signal_connect_object ((RygelStateMachine*) request, "completed", (GCallback) _rygel_http_server_on_request_completed_rygel_state_machine_completed, self, 0);
-	gee_abstract_collection_add ((GeeAbstractCollection*) self->priv->requests, request);
-	rygel_state_machine_run ((RygelStateMachine*) request);
+	rygel_state_machine_run ((RygelStateMachine*) request, NULL, NULL);
 	_g_object_unref0 (request);
 }
 
@@ -692,6 +734,7 @@ static void rygel_http_server_class_init (RygelHTTPServerClass * klass) {
 static void rygel_http_server_rygel_state_machine_interface_init (RygelStateMachineIface * iface) {
 	rygel_http_server_rygel_state_machine_parent_iface = g_type_interface_peek_parent (iface);
 	iface->run = rygel_http_server_real_run;
+	iface->run_finish = rygel_http_server_real_run_finish;
 	iface->get_cancellable = rygel_http_server_real_get_cancellable;
 	iface->set_cancellable = rygel_http_server_real_set_cancellable;
 }
@@ -708,7 +751,6 @@ static void rygel_http_server_finalize (GObject* obj) {
 	_g_free0 (self->priv->path_root);
 	_g_object_unref0 (self->root_container);
 	_g_object_unref0 (self->context);
-	_g_object_unref0 (self->priv->requests);
 	_g_object_unref0 (self->priv->_cancellable);
 	G_OBJECT_CLASS (rygel_http_server_parent_class)->finalize (obj);
 }

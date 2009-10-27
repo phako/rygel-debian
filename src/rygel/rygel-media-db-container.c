@@ -75,23 +75,14 @@ typedef struct _RygelMediaDB RygelMediaDB;
 typedef struct _RygelMediaDBClass RygelMediaDBClass;
 #define _g_object_unref0(var) ((var == NULL) ? NULL : (var = (g_object_unref (var), NULL)))
 #define _g_error_free0(var) ((var == NULL) ? NULL : (var = (g_error_free (var), NULL)))
-
-#define RYGEL_TYPE_SIMPLE_ASYNC_RESULT (rygel_simple_async_result_get_type ())
-#define RYGEL_SIMPLE_ASYNC_RESULT(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_SIMPLE_ASYNC_RESULT, RygelSimpleAsyncResult))
-#define RYGEL_SIMPLE_ASYNC_RESULT_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TYPE_SIMPLE_ASYNC_RESULT, RygelSimpleAsyncResultClass))
-#define RYGEL_IS_SIMPLE_ASYNC_RESULT(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TYPE_SIMPLE_ASYNC_RESULT))
-#define RYGEL_IS_SIMPLE_ASYNC_RESULT_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_TYPE_SIMPLE_ASYNC_RESULT))
-#define RYGEL_SIMPLE_ASYNC_RESULT_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_TYPE_SIMPLE_ASYNC_RESULT, RygelSimpleAsyncResultClass))
-
-typedef struct _RygelSimpleAsyncResult RygelSimpleAsyncResult;
-typedef struct _RygelSimpleAsyncResultClass RygelSimpleAsyncResultClass;
-typedef struct _RygelSimpleAsyncResultPrivate RygelSimpleAsyncResultPrivate;
+typedef struct _RygelMediaDbContainerGetChildrenData RygelMediaDbContainerGetChildrenData;
+typedef struct _RygelMediaDbContainerFindObjectData RygelMediaDbContainerFindObjectData;
+#define _g_free0(var) (var = (g_free (var), NULL))
 
 struct _RygelMediaObject {
 	GObject parent_instance;
 	RygelMediaObjectPrivate * priv;
 	char* id;
-	char* title;
 	guint64 modified;
 	GeeArrayList* uris;
 	RygelMediaContainer* parent;
@@ -111,10 +102,10 @@ struct _RygelMediaContainer {
 
 struct _RygelMediaContainerClass {
 	RygelMediaObjectClass parent_class;
-	void (*get_children) (RygelMediaContainer* self, guint offset, guint max_count, GCancellable* cancellable, GAsyncReadyCallback callback, void* callback_target);
-	GeeList* (*get_children_finish) (RygelMediaContainer* self, GAsyncResult* res, GError** error);
-	void (*find_object) (RygelMediaContainer* self, const char* id, GCancellable* cancellable, GAsyncReadyCallback callback, void* callback_target);
-	RygelMediaObject* (*find_object_finish) (RygelMediaContainer* self, GAsyncResult* res, GError** error);
+	void (*get_children) (RygelMediaContainer* self, guint offset, guint max_count, GCancellable* cancellable, GAsyncReadyCallback _callback_, gpointer _user_data_);
+	GeeList* (*get_children_finish) (RygelMediaContainer* self, GAsyncResult* _res_, GError** error);
+	void (*find_object) (RygelMediaContainer* self, const char* id, GCancellable* cancellable, GAsyncReadyCallback _callback_, gpointer _user_data_);
+	RygelMediaObject* (*find_object_finish) (RygelMediaContainer* self, GAsyncResult* _res_, GError** error);
 };
 
 struct _RygelMediaDBContainer {
@@ -128,24 +119,34 @@ struct _RygelMediaDBContainerClass {
 };
 
 typedef enum  {
-	RYGEL_MEDIA_DB_ERROR_SQLITE_ERROR,
-	RYGEL_MEDIA_DB_ERROR_GENERAL_ERROR,
-	RYGEL_MEDIA_DB_ERROR_INVALID_TYPE
-} RygelMediaDBError;
-#define RYGEL_MEDIA_DB_ERROR rygel_media_db_error_quark ()
-struct _RygelSimpleAsyncResult {
-	GObject parent_instance;
-	RygelSimpleAsyncResultPrivate * priv;
-	GObject* source_object;
-	GAsyncReadyCallback callback;
-	gpointer callback_target;
-	GDestroyNotify callback_target_destroy_notify;
-	gpointer data;
-	GError* error;
+	RYGEL_DATABASE_ERROR_SQLITE_ERROR
+} RygelDatabaseError;
+#define RYGEL_DATABASE_ERROR rygel_database_error_quark ()
+struct _RygelMediaDbContainerGetChildrenData {
+	int _state_;
+	GAsyncResult* _res_;
+	GSimpleAsyncResult* _async_result;
+	RygelMediaDBContainer* self;
+	guint offset;
+	guint max_count;
+	GCancellable* cancellable;
+	GeeList* result;
+	GeeArrayList* children;
+	GeeIterator* _child_it;
+	RygelMediaObject* child;
+	GError * _inner_error_;
 };
 
-struct _RygelSimpleAsyncResultClass {
-	GObjectClass parent_class;
+struct _RygelMediaDbContainerFindObjectData {
+	int _state_;
+	GAsyncResult* _res_;
+	GSimpleAsyncResult* _async_result;
+	RygelMediaDBContainer* self;
+	char* id;
+	GCancellable* cancellable;
+	RygelMediaObject* result;
+	RygelMediaObject* _tmp0_;
+	GError * _inner_error_;
 };
 
 
@@ -158,23 +159,23 @@ GType rygel_media_db_get_type (void);
 enum  {
 	RYGEL_MEDIA_DB_CONTAINER_DUMMY_PROPERTY
 };
-GQuark rygel_media_db_error_quark (void);
+GQuark rygel_database_error_quark (void);
 gint rygel_media_db_get_child_count (RygelMediaDB* self, const char* container_id, GError** error);
 RygelMediaContainer* rygel_media_container_construct (GType object_type, const char* id, RygelMediaContainer* parent, const char* title, guint child_count);
 static void rygel_media_db_container_on_db_container_updated (RygelMediaDBContainer* self, RygelMediaContainer* container, RygelMediaContainer* container_updated);
 static void _rygel_media_db_container_on_db_container_updated_rygel_media_container_container_updated (RygelMediaContainer* _sender, RygelMediaContainer* container, gpointer self);
 RygelMediaDBContainer* rygel_media_db_container_new (RygelMediaDB* media_db, const char* id, const char* title);
 RygelMediaDBContainer* rygel_media_db_container_construct (GType object_type, RygelMediaDB* media_db, const char* id, const char* title);
-RygelSimpleAsyncResult* rygel_simple_async_result_new (GType g_type, GBoxedCopyFunc g_dup_func, GDestroyNotify g_destroy_func, GObject* source_object, GAsyncReadyCallback callback, void* callback_target);
-RygelSimpleAsyncResult* rygel_simple_async_result_construct (GType object_type, GType g_type, GBoxedCopyFunc g_dup_func, GDestroyNotify g_destroy_func, GObject* source_object, GAsyncReadyCallback callback, void* callback_target);
-GType rygel_simple_async_result_get_type (void);
-GeeArrayList* rygel_media_db_get_children (RygelMediaDB* self, const char* container_id, glong offset, glong max_count);
-void rygel_simple_async_result_complete_in_idle (RygelSimpleAsyncResult* self);
-static void rygel_media_db_container_real_get_children (RygelMediaContainer* base, guint offset, guint max_count, GCancellable* cancellable, GAsyncReadyCallback callback, void* callback_target);
-static GeeList* rygel_media_db_container_real_get_children_finish (RygelMediaContainer* base, GAsyncResult* res, GError** error);
+static void rygel_media_db_container_real_get_children_data_free (gpointer _data);
+static void rygel_media_db_container_real_get_children (RygelMediaContainer* base, guint offset, guint max_count, GCancellable* cancellable, GAsyncReadyCallback _callback_, gpointer _user_data_);
+static void rygel_media_db_container_get_children_ready (GObject* source_object, GAsyncResult* _res_, gpointer _user_data_);
+GeeArrayList* rygel_media_db_get_children (RygelMediaDB* self, const char* container_id, glong offset, glong max_count, GError** error);
+static gboolean rygel_media_db_container_real_get_children_co (RygelMediaDbContainerGetChildrenData* data);
+static void rygel_media_db_container_real_find_object_data_free (gpointer _data);
+static void rygel_media_db_container_real_find_object (RygelMediaContainer* base, const char* id, GCancellable* cancellable, GAsyncReadyCallback _callback_, gpointer _user_data_);
+static void rygel_media_db_container_find_object_ready (GObject* source_object, GAsyncResult* _res_, gpointer _user_data_);
 RygelMediaObject* rygel_media_db_get_object (RygelMediaDB* self, const char* object_id, GError** error);
-static void rygel_media_db_container_real_find_object (RygelMediaContainer* base, const char* id, GCancellable* cancellable, GAsyncReadyCallback callback, void* callback_target);
-static RygelMediaObject* rygel_media_db_container_real_find_object_finish (RygelMediaContainer* base, GAsyncResult* res, GError** error);
+static gboolean rygel_media_db_container_real_find_object_co (RygelMediaDbContainerFindObjectData* data);
 static void rygel_media_db_container_finalize (GObject* obj);
 
 
@@ -202,15 +203,15 @@ RygelMediaDBContainer* rygel_media_db_container_construct (GType object_type, Ry
 		gint _tmp0_;
 		_tmp0_ = rygel_media_db_get_child_count (media_db, id, &_inner_error_);
 		if (_inner_error_ != NULL) {
-			if (_inner_error_->domain == RYGEL_MEDIA_DB_ERROR) {
-				goto __catch46_rygel_media_db_error;
+			if (_inner_error_->domain == RYGEL_DATABASE_ERROR) {
+				goto __catch54_rygel_database_error;
 			}
-			goto __finally46;
+			goto __finally54;
 		}
 		count = _tmp0_;
 	}
-	goto __finally46;
-	__catch46_rygel_media_db_error:
+	goto __finally54;
+	__catch54_rygel_database_error:
 	{
 		GError * e;
 		e = _inner_error_;
@@ -221,7 +222,7 @@ RygelMediaDBContainer* rygel_media_db_container_construct (GType object_type, Ry
 			_g_error_free0 (e);
 		}
 	}
-	__finally46:
+	__finally54:
 	if (_inner_error_ != NULL) {
 		g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, _inner_error_->message);
 		g_clear_error (&_inner_error_);
@@ -241,90 +242,230 @@ RygelMediaDBContainer* rygel_media_db_container_new (RygelMediaDB* media_db, con
 
 static void rygel_media_db_container_on_db_container_updated (RygelMediaDBContainer* self, RygelMediaContainer* container, RygelMediaContainer* container_updated) {
 	GError * _inner_error_;
-	gint _tmp0_;
 	g_return_if_fail (self != NULL);
 	g_return_if_fail (container != NULL);
 	g_return_if_fail (container_updated != NULL);
 	_inner_error_ = NULL;
-	_tmp0_ = rygel_media_db_get_child_count (self->media_db, ((RygelMediaObject*) self)->id, &_inner_error_);
-	if (_inner_error_ != NULL) {
-		g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, _inner_error_->message);
-		g_clear_error (&_inner_error_);
-		return;
-	}
-	((RygelMediaContainer*) self)->child_count = (guint) _tmp0_;
-}
-
-
-static void rygel_media_db_container_real_get_children (RygelMediaContainer* base, guint offset, guint max_count, GCancellable* cancellable, GAsyncReadyCallback callback, void* callback_target) {
-	RygelMediaDBContainer * self;
-	RygelSimpleAsyncResult* res;
-	GeeArrayList* _tmp0_;
-	self = (RygelMediaDBContainer*) base;
-	res = rygel_simple_async_result_new (GEE_TYPE_ARRAY_LIST, (GBoxedCopyFunc) g_object_ref, g_object_unref, (GObject*) self, callback, callback_target);
-	res->data = (_tmp0_ = rygel_media_db_get_children (self->media_db, ((RygelMediaObject*) self)->id, (glong) offset, (glong) max_count), _g_object_unref0 (res->data), _tmp0_);
-	rygel_simple_async_result_complete_in_idle (res);
-	_g_object_unref0 (res);
-}
-
-
-static GeeList* rygel_media_db_container_real_get_children_finish (RygelMediaContainer* base, GAsyncResult* res, GError** error) {
-	RygelMediaDBContainer * self;
-	GeeList* result;
-	RygelSimpleAsyncResult* _result_;
-	self = (RygelMediaDBContainer*) base;
-	g_return_val_if_fail (res != NULL, NULL);
-	_result_ = _g_object_ref0 (RYGEL_SIMPLE_ASYNC_RESULT (res));
 	{
-		GeeIterator* _obj_it;
-		_obj_it = gee_abstract_collection_iterator ((GeeAbstractCollection*) ((GeeArrayList*) _result_->data));
-		while (TRUE) {
-			RygelMediaObject* obj;
-			if (!gee_iterator_next (_obj_it)) {
-				break;
+		gint _tmp0_;
+		_tmp0_ = rygel_media_db_get_child_count (self->media_db, ((RygelMediaObject*) self)->id, &_inner_error_);
+		if (_inner_error_ != NULL) {
+			if (_inner_error_->domain == RYGEL_DATABASE_ERROR) {
+				goto __catch55_rygel_database_error;
 			}
-			obj = (RygelMediaObject*) gee_iterator_get (_obj_it);
-			obj->parent = (RygelMediaContainer*) self;
-			_g_object_unref0 (obj);
+			goto __finally55;
 		}
-		_g_object_unref0 (_obj_it);
+		((RygelMediaContainer*) self)->child_count = (guint) _tmp0_;
 	}
-	result = _g_object_ref0 ((GeeList*) ((GeeArrayList*) _result_->data));
-	_g_object_unref0 (_result_);
-	return result;
-}
-
-
-static void rygel_media_db_container_real_find_object (RygelMediaContainer* base, const char* id, GCancellable* cancellable, GAsyncReadyCallback callback, void* callback_target) {
-	RygelMediaDBContainer * self;
-	GError * _inner_error_;
-	RygelSimpleAsyncResult* res;
-	RygelMediaObject* _tmp0_;
-	RygelMediaObject* _tmp1_;
-	self = (RygelMediaDBContainer*) base;
-	g_return_if_fail (id != NULL);
-	_inner_error_ = NULL;
-	res = rygel_simple_async_result_new (RYGEL_TYPE_MEDIA_OBJECT, (GBoxedCopyFunc) g_object_ref, g_object_unref, (GObject*) self, callback, callback_target);
-	_tmp0_ = rygel_media_db_get_object (self->media_db, id, &_inner_error_);
+	goto __finally55;
+	__catch55_rygel_database_error:
+	{
+		GError * e;
+		e = _inner_error_;
+		_inner_error_ = NULL;
+		{
+			g_debug ("rygel-media-db-container.vala:46: Could not get child count from database: %s", e->message);
+			((RygelMediaContainer*) self)->child_count = (guint) 0;
+			_g_error_free0 (e);
+		}
+	}
+	__finally55:
 	if (_inner_error_ != NULL) {
-		_g_object_unref0 (res);
 		g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, _inner_error_->message);
 		g_clear_error (&_inner_error_);
 		return;
 	}
-	res->data = (_tmp1_ = _tmp0_, _g_object_unref0 (res->data), _tmp1_);
-	rygel_simple_async_result_complete_in_idle (res);
-	_g_object_unref0 (res);
 }
 
 
-static RygelMediaObject* rygel_media_db_container_real_find_object_finish (RygelMediaContainer* base, GAsyncResult* res, GError** error) {
+static void rygel_media_db_container_real_get_children_data_free (gpointer _data) {
+	RygelMediaDbContainerGetChildrenData* data;
+	data = _data;
+	_g_object_unref0 (data->cancellable);
+	_g_object_unref0 (data->result);
+	g_slice_free (RygelMediaDbContainerGetChildrenData, data);
+}
+
+
+static void rygel_media_db_container_real_get_children (RygelMediaContainer* base, guint offset, guint max_count, GCancellable* cancellable, GAsyncReadyCallback _callback_, gpointer _user_data_) {
 	RygelMediaDBContainer * self;
-	RygelMediaObject* result;
+	RygelMediaDbContainerGetChildrenData* _data_;
 	self = (RygelMediaDBContainer*) base;
-	g_return_val_if_fail (res != NULL, NULL);
-	result = _g_object_ref0 ((RygelMediaObject*) RYGEL_SIMPLE_ASYNC_RESULT (res)->data);
+	_data_ = g_slice_new0 (RygelMediaDbContainerGetChildrenData);
+	_data_->_async_result = g_simple_async_result_new (G_OBJECT (self), _callback_, _user_data_, rygel_media_db_container_real_get_children);
+	g_simple_async_result_set_op_res_gpointer (_data_->_async_result, _data_, rygel_media_db_container_real_get_children_data_free);
+	_data_->self = self;
+	_data_->offset = offset;
+	_data_->max_count = max_count;
+	_data_->cancellable = _g_object_ref0 (cancellable);
+	rygel_media_db_container_real_get_children_co (_data_);
+}
+
+
+static GeeList* rygel_media_db_container_real_get_children_finish (RygelMediaContainer* base, GAsyncResult* _res_, GError** error) {
+	GeeList* result;
+	RygelMediaDbContainerGetChildrenData* _data_;
+	if (g_simple_async_result_propagate_error (G_SIMPLE_ASYNC_RESULT (_res_), error)) {
+		return NULL;
+	}
+	_data_ = g_simple_async_result_get_op_res_gpointer (G_SIMPLE_ASYNC_RESULT (_res_));
+	result = _data_->result;
+	_data_->result = NULL;
 	return result;
+}
+
+
+static void rygel_media_db_container_get_children_ready (GObject* source_object, GAsyncResult* _res_, gpointer _user_data_) {
+	RygelMediaDbContainerGetChildrenData* data;
+	data = _user_data_;
+	data->_res_ = _res_;
+	rygel_media_db_container_real_get_children_co (data);
+}
+
+
+static gboolean rygel_media_db_container_real_get_children_co (RygelMediaDbContainerGetChildrenData* data) {
+	switch (data->_state_) {
+		default:
+		g_assert_not_reached ();
+		case 0:
+		{
+			data->children = rygel_media_db_get_children (data->self->media_db, ((RygelMediaObject*) data->self)->id, (glong) data->offset, (glong) data->max_count, &data->_inner_error_);
+			if (data->_inner_error_ != NULL) {
+				g_simple_async_result_set_from_error (data->_async_result, data->_inner_error_);
+				g_error_free (data->_inner_error_);
+				{
+					if (data->_state_ == 0) {
+						g_simple_async_result_complete_in_idle (data->_async_result);
+					} else {
+						g_simple_async_result_complete (data->_async_result);
+					}
+					g_object_unref (data->_async_result);
+					return FALSE;
+				}
+			}
+			{
+				data->_child_it = gee_abstract_collection_iterator ((GeeAbstractCollection*) data->children);
+				while (TRUE) {
+					if (!gee_iterator_next (data->_child_it)) {
+						break;
+					}
+					data->child = (RygelMediaObject*) gee_iterator_get (data->_child_it);
+					data->child->parent = (RygelMediaContainer*) data->self;
+					_g_object_unref0 (data->child);
+				}
+				_g_object_unref0 (data->_child_it);
+			}
+			data->result = (GeeList*) data->children;
+			{
+				if (data->_state_ == 0) {
+					g_simple_async_result_complete_in_idle (data->_async_result);
+				} else {
+					g_simple_async_result_complete (data->_async_result);
+				}
+				g_object_unref (data->_async_result);
+				return FALSE;
+			}
+			_g_object_unref0 (data->children);
+		}
+		{
+			if (data->_state_ == 0) {
+				g_simple_async_result_complete_in_idle (data->_async_result);
+			} else {
+				g_simple_async_result_complete (data->_async_result);
+			}
+			g_object_unref (data->_async_result);
+			return FALSE;
+		}
+	}
+}
+
+
+static void rygel_media_db_container_real_find_object_data_free (gpointer _data) {
+	RygelMediaDbContainerFindObjectData* data;
+	data = _data;
+	_g_free0 (data->id);
+	_g_object_unref0 (data->cancellable);
+	_g_object_unref0 (data->result);
+	g_slice_free (RygelMediaDbContainerFindObjectData, data);
+}
+
+
+static void rygel_media_db_container_real_find_object (RygelMediaContainer* base, const char* id, GCancellable* cancellable, GAsyncReadyCallback _callback_, gpointer _user_data_) {
+	RygelMediaDBContainer * self;
+	RygelMediaDbContainerFindObjectData* _data_;
+	self = (RygelMediaDBContainer*) base;
+	_data_ = g_slice_new0 (RygelMediaDbContainerFindObjectData);
+	_data_->_async_result = g_simple_async_result_new (G_OBJECT (self), _callback_, _user_data_, rygel_media_db_container_real_find_object);
+	g_simple_async_result_set_op_res_gpointer (_data_->_async_result, _data_, rygel_media_db_container_real_find_object_data_free);
+	_data_->self = self;
+	_data_->id = g_strdup (id);
+	_data_->cancellable = _g_object_ref0 (cancellable);
+	rygel_media_db_container_real_find_object_co (_data_);
+}
+
+
+static RygelMediaObject* rygel_media_db_container_real_find_object_finish (RygelMediaContainer* base, GAsyncResult* _res_, GError** error) {
+	RygelMediaObject* result;
+	RygelMediaDbContainerFindObjectData* _data_;
+	if (g_simple_async_result_propagate_error (G_SIMPLE_ASYNC_RESULT (_res_), error)) {
+		return NULL;
+	}
+	_data_ = g_simple_async_result_get_op_res_gpointer (G_SIMPLE_ASYNC_RESULT (_res_));
+	result = _data_->result;
+	_data_->result = NULL;
+	return result;
+}
+
+
+static void rygel_media_db_container_find_object_ready (GObject* source_object, GAsyncResult* _res_, gpointer _user_data_) {
+	RygelMediaDbContainerFindObjectData* data;
+	data = _user_data_;
+	data->_res_ = _res_;
+	rygel_media_db_container_real_find_object_co (data);
+}
+
+
+static gboolean rygel_media_db_container_real_find_object_co (RygelMediaDbContainerFindObjectData* data) {
+	switch (data->_state_) {
+		default:
+		g_assert_not_reached ();
+		case 0:
+		{
+			data->_tmp0_ = rygel_media_db_get_object (data->self->media_db, data->id, &data->_inner_error_);
+			if (data->_inner_error_ != NULL) {
+				g_simple_async_result_set_from_error (data->_async_result, data->_inner_error_);
+				g_error_free (data->_inner_error_);
+				{
+					if (data->_state_ == 0) {
+						g_simple_async_result_complete_in_idle (data->_async_result);
+					} else {
+						g_simple_async_result_complete (data->_async_result);
+					}
+					g_object_unref (data->_async_result);
+					return FALSE;
+				}
+			}
+			data->result = data->_tmp0_;
+			{
+				if (data->_state_ == 0) {
+					g_simple_async_result_complete_in_idle (data->_async_result);
+				} else {
+					g_simple_async_result_complete (data->_async_result);
+				}
+				g_object_unref (data->_async_result);
+				return FALSE;
+			}
+		}
+		{
+			if (data->_state_ == 0) {
+				g_simple_async_result_complete_in_idle (data->_async_result);
+			} else {
+				g_simple_async_result_complete (data->_async_result);
+			}
+			g_object_unref (data->_async_result);
+			return FALSE;
+		}
+	}
 }
 
 

@@ -56,6 +56,8 @@ internal class Rygel.HTTPIdentityHandler : Rygel.HTTPRequestHandler {
         } else {
             request.msg.response_headers.append ("Accept-Ranges", "bytes");
             if (request.byte_range != null) {
+                request.msg.response_headers.set_content_length (
+                                                   request.byte_range.length);
                 request.byte_range.add_response_header (request.msg, size);
             }
         }
@@ -66,6 +68,26 @@ internal class Rygel.HTTPIdentityHandler : Rygel.HTTPRequestHandler {
 
     public override HTTPResponse render_body (HTTPRequest request)
                                               throws HTTPRequestError {
+        try {
+            return this.render_body_real (request);
+        } catch (Error err) {
+            throw new HTTPRequestError.NOT_FOUND (err.message);
+        }
+    }
+
+    protected override DIDLLiteResource add_resource (DIDLLiteItem didl_item,
+                                                      HTTPRequest  request)
+                                                      throws Error {
+        var protocol = request.http_server.get_protocol ();
+
+        if (request.thumbnail != null) {
+            return request.thumbnail.add_resource (didl_item, protocol);
+        } else {
+            return request.item.add_resource (didl_item, null, protocol);
+        }
+    }
+
+    private HTTPResponse render_body_real (HTTPRequest request) throws Error {
         if (request.thumbnail != null) {
             return new SeekableResponse (request.server,
                                          request.msg,
@@ -102,18 +124,6 @@ internal class Rygel.HTTPIdentityHandler : Rygel.HTTPRequestHandler {
                                          request.byte_range,
                                          item.size,
                                          this.cancellable);
-        }
-    }
-
-    protected override DIDLLiteResource add_resource (DIDLLiteItem didl_item,
-                                                      HTTPRequest  request)
-                                                      throws HTTPRequestError {
-        var protocol = request.http_server.get_protocol ();
-
-        if (request.thumbnail != null) {
-            return request.thumbnail.add_resource (didl_item, protocol);
-        } else {
-            return request.item.add_resource (didl_item, null, protocol);
         }
     }
 }

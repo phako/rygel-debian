@@ -121,27 +121,25 @@ enum  {
 };
 #define RYGEL_TRACKER_VIDEO_ITEM_SERVICE "Videos"
 GType rygel_tracker_search_container_get_type (void);
-RygelTrackerItem* rygel_tracker_item_construct (GType object_type, const char* id, const char* path, RygelTrackerSearchContainer* parent, const char* upnp_class, char** metadata, int metadata_length1);
+RygelTrackerItem* rygel_tracker_item_construct (GType object_type, const char* id, const char* path, RygelTrackerSearchContainer* parent, const char* upnp_class, char** metadata, int metadata_length1, GError** error);
 GType rygel_tracker_item_metadata_get_type (void);
-RygelTrackerVideoItem* rygel_tracker_video_item_new (const char* id, const char* path, RygelTrackerSearchContainer* parent, char** metadata, int metadata_length1);
-RygelTrackerVideoItem* rygel_tracker_video_item_construct (GType object_type, const char* id, const char* path, RygelTrackerSearchContainer* parent, char** metadata, int metadata_length1);
+RygelTrackerVideoItem* rygel_tracker_video_item_new (const char* id, const char* path, RygelTrackerSearchContainer* parent, char** metadata, int metadata_length1, GError** error);
+RygelTrackerVideoItem* rygel_tracker_video_item_construct (GType object_type, const char* id, const char* path, RygelTrackerSearchContainer* parent, char** metadata, int metadata_length1, GError** error);
 static int _vala_strcmp0 (const char * str1, const char * str2);
 
 
 
-RygelTrackerVideoItem* rygel_tracker_video_item_construct (GType object_type, const char* id, const char* path, RygelTrackerSearchContainer* parent, char** metadata, int metadata_length1) {
+RygelTrackerVideoItem* rygel_tracker_video_item_construct (GType object_type, const char* id, const char* path, RygelTrackerSearchContainer* parent, char** metadata, int metadata_length1, GError** error) {
 	RygelTrackerVideoItem * self;
-	char* _tmp2_;
+	char* _tmp0_;
 	g_return_val_if_fail (id != NULL, NULL);
 	g_return_val_if_fail (path != NULL, NULL);
 	g_return_val_if_fail (parent != NULL, NULL);
-	self = (RygelTrackerVideoItem*) rygel_tracker_item_construct (object_type, id, path, parent, RYGEL_MEDIA_ITEM_VIDEO_CLASS, metadata, metadata_length1);
+	self = (RygelTrackerVideoItem*) rygel_tracker_item_construct (object_type, id, path, parent, RYGEL_MEDIA_ITEM_VIDEO_CLASS, metadata, metadata_length1, error);
 	if (_vala_strcmp0 (metadata[RYGEL_TRACKER_ITEM_METADATA_VIDEO_TITLE], "") != 0) {
-		char* _tmp0_;
-		((RygelMediaObject*) self)->title = (_tmp0_ = g_strdup (metadata[RYGEL_TRACKER_ITEM_METADATA_VIDEO_TITLE]), _g_free0 (((RygelMediaObject*) self)->title), _tmp0_);
+		rygel_media_object_set_title ((RygelMediaObject*) self, metadata[RYGEL_TRACKER_ITEM_METADATA_VIDEO_TITLE]);
 	} else {
-		char* _tmp1_;
-		((RygelMediaObject*) self)->title = (_tmp1_ = g_strdup (metadata[RYGEL_TRACKER_ITEM_METADATA_FILE_NAME]), _g_free0 (((RygelMediaObject*) self)->title), _tmp1_);
+		rygel_media_object_set_title ((RygelMediaObject*) self, metadata[RYGEL_TRACKER_ITEM_METADATA_FILE_NAME]);
 	}
 	if (_vala_strcmp0 (metadata[RYGEL_TRACKER_ITEM_METADATA_VIDEO_WIDTH], "") != 0) {
 		((RygelMediaItem*) self)->width = atoi (metadata[RYGEL_TRACKER_ITEM_METADATA_VIDEO_WIDTH]);
@@ -155,13 +153,13 @@ RygelTrackerVideoItem* rygel_tracker_video_item_construct (GType object_type, co
 	if (_vala_strcmp0 (metadata[RYGEL_TRACKER_ITEM_METADATA_VIDEO_DURATION], "") != 0) {
 		((RygelMediaItem*) self)->duration = (glong) atoi (metadata[RYGEL_TRACKER_ITEM_METADATA_VIDEO_DURATION]);
 	}
-	((RygelMediaItem*) self)->author = (_tmp2_ = g_strdup (metadata[RYGEL_TRACKER_ITEM_METADATA_AUTHOR]), _g_free0 (((RygelMediaItem*) self)->author), _tmp2_);
+	((RygelMediaItem*) self)->author = (_tmp0_ = g_strdup (metadata[RYGEL_TRACKER_ITEM_METADATA_AUTHOR]), _g_free0 (((RygelMediaItem*) self)->author), _tmp0_);
 	return self;
 }
 
 
-RygelTrackerVideoItem* rygel_tracker_video_item_new (const char* id, const char* path, RygelTrackerSearchContainer* parent, char** metadata, int metadata_length1) {
-	return rygel_tracker_video_item_construct (RYGEL_TYPE_TRACKER_VIDEO_ITEM, id, path, parent, metadata, metadata_length1);
+RygelTrackerVideoItem* rygel_tracker_video_item_new (const char* id, const char* path, RygelTrackerSearchContainer* parent, char** metadata, int metadata_length1, GError** error) {
+	return rygel_tracker_video_item_construct (RYGEL_TYPE_TRACKER_VIDEO_ITEM, id, path, parent, metadata, metadata_length1, error);
 }
 
 

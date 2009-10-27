@@ -121,29 +121,27 @@ enum  {
 };
 #define RYGEL_TRACKER_IMAGE_ITEM_SERVICE "Images"
 GType rygel_tracker_search_container_get_type (void);
-RygelTrackerItem* rygel_tracker_item_construct (GType object_type, const char* id, const char* path, RygelTrackerSearchContainer* parent, const char* upnp_class, char** metadata, int metadata_length1);
+RygelTrackerItem* rygel_tracker_item_construct (GType object_type, const char* id, const char* path, RygelTrackerSearchContainer* parent, const char* upnp_class, char** metadata, int metadata_length1, GError** error);
 GType rygel_tracker_item_metadata_get_type (void);
 char* rygel_tracker_item_seconds_to_iso8601 (RygelTrackerItem* self, const char* seconds);
-RygelTrackerImageItem* rygel_tracker_image_item_new (const char* id, const char* path, RygelTrackerSearchContainer* parent, char** metadata, int metadata_length1);
-RygelTrackerImageItem* rygel_tracker_image_item_construct (GType object_type, const char* id, const char* path, RygelTrackerSearchContainer* parent, char** metadata, int metadata_length1);
+RygelTrackerImageItem* rygel_tracker_image_item_new (const char* id, const char* path, RygelTrackerSearchContainer* parent, char** metadata, int metadata_length1, GError** error);
+RygelTrackerImageItem* rygel_tracker_image_item_construct (GType object_type, const char* id, const char* path, RygelTrackerSearchContainer* parent, char** metadata, int metadata_length1, GError** error);
 static int _vala_strcmp0 (const char * str1, const char * str2);
 
 
 
-RygelTrackerImageItem* rygel_tracker_image_item_construct (GType object_type, const char* id, const char* path, RygelTrackerSearchContainer* parent, char** metadata, int metadata_length1) {
+RygelTrackerImageItem* rygel_tracker_image_item_construct (GType object_type, const char* id, const char* path, RygelTrackerSearchContainer* parent, char** metadata, int metadata_length1, GError** error) {
 	RygelTrackerImageItem * self;
-	char* _tmp3_;
-	char* _tmp4_;
+	char* _tmp1_;
+	char* _tmp2_;
 	g_return_val_if_fail (id != NULL, NULL);
 	g_return_val_if_fail (path != NULL, NULL);
 	g_return_val_if_fail (parent != NULL, NULL);
-	self = (RygelTrackerImageItem*) rygel_tracker_item_construct (object_type, id, path, parent, RYGEL_MEDIA_ITEM_IMAGE_CLASS, metadata, metadata_length1);
+	self = (RygelTrackerImageItem*) rygel_tracker_item_construct (object_type, id, path, parent, RYGEL_MEDIA_ITEM_IMAGE_CLASS, metadata, metadata_length1, error);
 	if (_vala_strcmp0 (metadata[RYGEL_TRACKER_ITEM_METADATA_IMAGE_TITLE], "") != 0) {
-		char* _tmp0_;
-		((RygelMediaObject*) self)->title = (_tmp0_ = g_strdup (metadata[RYGEL_TRACKER_ITEM_METADATA_IMAGE_TITLE]), _g_free0 (((RygelMediaObject*) self)->title), _tmp0_);
+		rygel_media_object_set_title ((RygelMediaObject*) self, metadata[RYGEL_TRACKER_ITEM_METADATA_IMAGE_TITLE]);
 	} else {
-		char* _tmp1_;
-		((RygelMediaObject*) self)->title = (_tmp1_ = g_strdup (metadata[RYGEL_TRACKER_ITEM_METADATA_FILE_NAME]), _g_free0 (((RygelMediaObject*) self)->title), _tmp1_);
+		rygel_media_object_set_title ((RygelMediaObject*) self, metadata[RYGEL_TRACKER_ITEM_METADATA_FILE_NAME]);
 	}
 	if (_vala_strcmp0 (metadata[RYGEL_TRACKER_ITEM_METADATA_IMAGE_WIDTH], "") != 0) {
 		((RygelMediaItem*) self)->width = atoi (metadata[RYGEL_TRACKER_ITEM_METADATA_IMAGE_WIDTH]);
@@ -152,17 +150,17 @@ RygelTrackerImageItem* rygel_tracker_image_item_construct (GType object_type, co
 		((RygelMediaItem*) self)->height = atoi (metadata[RYGEL_TRACKER_ITEM_METADATA_IMAGE_HEIGHT]);
 	}
 	if (_vala_strcmp0 (metadata[RYGEL_TRACKER_ITEM_METADATA_IMAGE_DATE], "") != 0) {
-		char* _tmp2_;
-		((RygelMediaItem*) self)->date = (_tmp2_ = rygel_tracker_item_seconds_to_iso8601 ((RygelTrackerItem*) self, metadata[RYGEL_TRACKER_ITEM_METADATA_IMAGE_DATE]), _g_free0 (((RygelMediaItem*) self)->date), _tmp2_);
+		char* _tmp0_;
+		((RygelMediaItem*) self)->date = (_tmp0_ = rygel_tracker_item_seconds_to_iso8601 ((RygelTrackerItem*) self, metadata[RYGEL_TRACKER_ITEM_METADATA_IMAGE_DATE]), _g_free0 (((RygelMediaItem*) self)->date), _tmp0_);
 	}
-	((RygelMediaItem*) self)->author = (_tmp3_ = g_strdup (metadata[RYGEL_TRACKER_ITEM_METADATA_CREATOR]), _g_free0 (((RygelMediaItem*) self)->author), _tmp3_);
-	((RygelMediaItem*) self)->album = (_tmp4_ = g_strdup (metadata[RYGEL_TRACKER_ITEM_METADATA_IMAGE_ALBUM]), _g_free0 (((RygelMediaItem*) self)->album), _tmp4_);
+	((RygelMediaItem*) self)->author = (_tmp1_ = g_strdup (metadata[RYGEL_TRACKER_ITEM_METADATA_CREATOR]), _g_free0 (((RygelMediaItem*) self)->author), _tmp1_);
+	((RygelMediaItem*) self)->album = (_tmp2_ = g_strdup (metadata[RYGEL_TRACKER_ITEM_METADATA_IMAGE_ALBUM]), _g_free0 (((RygelMediaItem*) self)->album), _tmp2_);
 	return self;
 }
 
 
-RygelTrackerImageItem* rygel_tracker_image_item_new (const char* id, const char* path, RygelTrackerSearchContainer* parent, char** metadata, int metadata_length1) {
-	return rygel_tracker_image_item_construct (RYGEL_TYPE_TRACKER_IMAGE_ITEM, id, path, parent, metadata, metadata_length1);
+RygelTrackerImageItem* rygel_tracker_image_item_new (const char* id, const char* path, RygelTrackerSearchContainer* parent, char** metadata, int metadata_length1, GError** error) {
+	return rygel_tracker_image_item_construct (RYGEL_TYPE_TRACKER_IMAGE_ITEM, id, path, parent, metadata, metadata_length1, error);
 }
 
 

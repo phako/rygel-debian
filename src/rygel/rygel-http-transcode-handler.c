@@ -189,6 +189,7 @@ typedef struct _RygelMediaItemPrivate RygelMediaItemPrivate;
 
 typedef struct _RygelLiveResponse RygelLiveResponse;
 typedef struct _RygelLiveResponseClass RygelLiveResponseClass;
+#define _g_error_free0(var) ((var == NULL) ? NULL : (var = (g_error_free (var), NULL)))
 
 typedef enum  {
 	RYGEL_HTTP_REQUEST_ERROR_UNACCEPTABLE = SOUP_STATUS_NOT_ACCEPTABLE,
@@ -223,7 +224,8 @@ struct _RygelHTTPTranscodeHandlerPrivate {
 
 struct _RygelStateMachineIface {
 	GTypeInterface parent_iface;
-	void (*run) (RygelStateMachine* self);
+	void (*run) (RygelStateMachine* self, GAsyncReadyCallback _callback_, gpointer _user_data_);
+	void (*run_finish) (RygelStateMachine* self, GAsyncResult* _res_);
 	GCancellable* (*get_cancellable) (RygelStateMachine* self);
 	void (*set_cancellable) (RygelStateMachine* self, GCancellable* value);
 };
@@ -248,7 +250,6 @@ struct _RygelMediaObject {
 	GObject parent_instance;
 	RygelMediaObjectPrivate * priv;
 	char* id;
-	char* title;
 	guint64 modified;
 	GeeArrayList* uris;
 	RygelMediaContainer* parent;
@@ -388,9 +389,6 @@ static RygelHTTPResponse* rygel_http_transcode_handler_real_render_body (RygelHT
 	GError * _inner_error_;
 	RygelMediaItem* item;
 	GstElement* src;
-	GstElement* _tmp0_;
-	GstElement* _tmp1_;
-	RygelLiveResponse* _tmp2_;
 	self = (RygelHTTPTranscodeHandler*) base;
 	g_return_val_if_fail (request != NULL, NULL);
 	_inner_error_ = NULL;
@@ -413,7 +411,44 @@ static RygelHTTPResponse* rygel_http_transcode_handler_real_render_body (RygelHT
 			}
 		}
 	}
-	_tmp0_ = rygel_transcoder_create_source (self->priv->transcoder, item, src, &_inner_error_);
+	{
+		GstElement* _tmp0_;
+		GstElement* _tmp1_;
+		RygelLiveResponse* _tmp2_;
+		_tmp0_ = rygel_transcoder_create_source (self->priv->transcoder, item, src, &_inner_error_);
+		if (_inner_error_ != NULL) {
+			goto __catch28_g_error;
+			goto __finally28;
+		}
+		src = (_tmp1_ = _tmp0_, _gst_object_unref0 (src), _tmp1_);
+		_tmp2_ = rygel_live_response_new (request->server, request->msg, "RygelLiveResponse", src, request->time_range, rygel_http_request_handler_get_cancellable ((RygelHTTPRequestHandler*) self), &_inner_error_);
+		if (_inner_error_ != NULL) {
+			goto __catch28_g_error;
+			goto __finally28;
+		}
+		result = (RygelHTTPResponse*) _tmp2_;
+		_g_object_unref0 (item);
+		_gst_object_unref0 (src);
+		return result;
+	}
+	goto __finally28;
+	__catch28_g_error:
+	{
+		GError * err;
+		err = _inner_error_;
+		_inner_error_ = NULL;
+		{
+			_inner_error_ = g_error_new_literal (RYGEL_HTTP_REQUEST_ERROR, RYGEL_HTTP_REQUEST_ERROR_NOT_FOUND, err->message);
+			if (_inner_error_ != NULL) {
+				_g_error_free0 (err);
+				_g_object_unref0 (item);
+				_gst_object_unref0 (src);
+				goto __finally28;
+			}
+			_g_error_free0 (err);
+		}
+	}
+	__finally28:
 	if (_inner_error_ != NULL) {
 		if (_inner_error_->domain == RYGEL_HTTP_REQUEST_ERROR) {
 			g_propagate_error (error, _inner_error_);
@@ -428,26 +463,8 @@ static RygelHTTPResponse* rygel_http_transcode_handler_real_render_body (RygelHT
 			return NULL;
 		}
 	}
-	src = (_tmp1_ = _tmp0_, _gst_object_unref0 (src), _tmp1_);
-	_tmp2_ = rygel_live_response_new (request->server, request->msg, "RygelLiveResponse", src, request->time_range, rygel_http_request_handler_get_cancellable ((RygelHTTPRequestHandler*) self), &_inner_error_);
-	if (_inner_error_ != NULL) {
-		if (_inner_error_->domain == RYGEL_HTTP_REQUEST_ERROR) {
-			g_propagate_error (error, _inner_error_);
-			_g_object_unref0 (item);
-			_gst_object_unref0 (src);
-			return NULL;
-		} else {
-			_g_object_unref0 (item);
-			_gst_object_unref0 (src);
-			g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, _inner_error_->message);
-			g_clear_error (&_inner_error_);
-			return NULL;
-		}
-	}
-	result = (RygelHTTPResponse*) _tmp2_;
 	_g_object_unref0 (item);
 	_gst_object_unref0 (src);
-	return result;
 }
 
 
@@ -462,14 +479,8 @@ static GUPnPDIDLLiteResource* rygel_http_transcode_handler_real_add_resource (Ry
 	_inner_error_ = NULL;
 	_tmp0_ = rygel_transcoder_add_resource (self->priv->transcoder, didl_item, request->item, (RygelTranscodeManager*) request->http_server, &_inner_error_);
 	if (_inner_error_ != NULL) {
-		if (_inner_error_->domain == RYGEL_HTTP_REQUEST_ERROR) {
-			g_propagate_error (error, _inner_error_);
-			return NULL;
-		} else {
-			g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, _inner_error_->message);
-			g_clear_error (&_inner_error_);
-			return NULL;
-		}
+		g_propagate_error (error, _inner_error_);
+		return NULL;
 	}
 	result = _tmp0_;
 	return result;

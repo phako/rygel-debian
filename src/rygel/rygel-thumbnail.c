@@ -59,7 +59,7 @@ struct _RygelIconInfo {
 	volatile int ref_count;
 	RygelIconInfoPrivate * priv;
 	char* mime_type;
-	char* path;
+	char* uri;
 	glong size;
 	gint width;
 	gint height;
@@ -74,7 +74,6 @@ struct _RygelIconInfoClass {
 struct _RygelThumbnail {
 	RygelIconInfo parent_instance;
 	RygelThumbnailPrivate * priv;
-	char* uri;
 	char* dlna_profile;
 };
 
@@ -129,7 +128,7 @@ GUPnPDIDLLiteResource* rygel_thumbnail_add_resource (RygelThumbnail* self, GUPnP
 	g_return_val_if_fail (didl_item != NULL, NULL);
 	g_return_val_if_fail (protocol != NULL, NULL);
 	res = gupnp_didl_lite_object_add_resource ((GUPnPDIDLLiteObject*) didl_item);
-	gupnp_didl_lite_resource_set_uri (res, self->uri);
+	gupnp_didl_lite_resource_set_uri (res, ((RygelIconInfo*) self)->uri);
 	gupnp_didl_lite_resource_set_size (res, ((RygelIconInfo*) self)->size);
 	gupnp_didl_lite_resource_set_width (res, ((RygelIconInfo*) self)->width);
 	gupnp_didl_lite_resource_set_height (res, ((RygelIconInfo*) self)->height);
@@ -169,7 +168,6 @@ static void rygel_thumbnail_instance_init (RygelThumbnail * self) {
 static void rygel_thumbnail_finalize (RygelIconInfo* obj) {
 	RygelThumbnail * self;
 	self = RYGEL_THUMBNAIL (obj);
-	_g_free0 (self->uri);
 	_g_free0 (self->dlna_profile);
 	RYGEL_ICON_INFO_CLASS (rygel_thumbnail_parent_class)->finalize (obj);
 }

@@ -164,22 +164,22 @@ RygelPreferencesDialog* rygel_preferences_dialog_construct (GType object_type, G
 	_tmp0_ = rygel_user_config_new (FALSE, &_inner_error_);
 	if (_inner_error_ != NULL) {
 		g_propagate_error (error, _inner_error_);
-		return;
+		return NULL;
 	}
 	self->priv->config = (_tmp1_ = _tmp0_, _g_object_unref0 (self->priv->config), _tmp1_);
 	self->priv->builder = (_tmp2_ = gtk_builder_new (), _g_object_unref0 (self->priv->builder), _tmp2_);
 	gtk_builder_add_from_file (self->priv->builder, RYGEL_PREFERENCES_DIALOG_UI_FILE, &_inner_error_);
 	if (_inner_error_ != NULL) {
 		g_propagate_error (error, _inner_error_);
-		return;
+		return NULL;
 	}
 	self->priv->dialog = (_tmp3_ = _g_object_ref0 (GTK_DIALOG (gtk_builder_get_object (self->priv->builder, RYGEL_PREFERENCES_DIALOG_DIALOG))), _g_object_unref0 (self->priv->dialog), _tmp3_);
 	g_assert (self->priv->dialog != NULL);
-	self->priv->sections = (_tmp4_ = gee_array_list_new (RYGEL_TYPE_PREFERENCES_SECTION, (GBoxedCopyFunc) g_object_ref, g_object_unref, g_direct_equal), _g_object_unref0 (self->priv->sections), _tmp4_);
+	self->priv->sections = (_tmp4_ = gee_array_list_new (RYGEL_TYPE_PREFERENCES_SECTION, (GBoxedCopyFunc) g_object_ref, g_object_unref, NULL), _g_object_unref0 (self->priv->sections), _tmp4_);
 	_tmp5_ = rygel_general_pref_section_new (self->priv->builder, self->priv->config, &_inner_error_);
 	if (_inner_error_ != NULL) {
 		g_propagate_error (error, _inner_error_);
-		return;
+		return NULL;
 	}
 	gee_abstract_collection_add ((GeeAbstractCollection*) self->priv->sections, (RygelPreferencesSection*) (_tmp6_ = _tmp5_));
 	_g_object_unref0 (_tmp6_);

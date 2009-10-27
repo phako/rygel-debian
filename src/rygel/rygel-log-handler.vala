@@ -51,12 +51,19 @@ public class Rygel.LogHandler : GLib.Object {
     }
 
     private LogHandler () {
-        Log.set_default_handler (this.log_func);
-
         // Get the allowed log levels from the config
         var config = MetaConfig.get_default ();
 
-        this.levels = this.log_level_to_flags (config.get_log_level ());
+        try {
+            this.levels = this.log_level_to_flags (config.get_log_level ());
+        } catch (Error err) {
+            this.levels = DEFAULT_LEVELS;
+
+            warning ("Failed to get log level from configuration sources: %s",
+                     err.message);
+        }
+
+        Log.set_default_handler (this.log_func);
     }
 
     private void log_func (string?       log_domain,

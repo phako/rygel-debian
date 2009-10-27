@@ -68,7 +68,8 @@ AM_RECURSIVE_TARGETS = $(RECURSIVE_TARGETS:-recursive=) \
 	distdir
 ETAGS = etags
 CTAGS = ctags
-DIST_SUBDIRS = test tracker mediathek media-export external gstlaunch
+DIST_SUBDIRS = test tracker mediathek media-export external gst-launch \
+	gst-renderer
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 am__relativize = \
   dir0=`pwd`; \
@@ -196,6 +197,7 @@ USE_NLS = @USE_NLS@
 UUID_CFLAGS = @UUID_CFLAGS@
 UUID_LIBS = @UUID_LIBS@
 VALAC = @VALAC@
+VALAFLAGS = @VALAFLAGS@
 VAPIDIR = @VAPIDIR@
 VERSION = @VERSION@
 XGETTEXT = @XGETTEXT@
@@ -256,13 +258,15 @@ top_srcdir = @top_srcdir@
 @BUILD_MEDIATHEK_PLUGIN_TRUE@MEDIATHEK_PLUGIN = mediathek
 @BUILD_MEDIA_EXPORT_PLUGIN_TRUE@MEDIA_EXPORT_PLUGIN = media-export
 @BUILD_EXTERNAL_PLUGIN_TRUE@EXTERNAL_PLUGIN = external
-@BUILD_GSTLAUNCH_PLUGIN_TRUE@GSTLAUNCH_PLUGIN = gstlaunch
+@BUILD_GST_LAUNCH_PLUGIN_TRUE@GST_LAUNCH_PLUGIN = gst-launch
+@BUILD_GST_RENDERER_PLUGIN_TRUE@GST_RENDERER = gst-renderer
 SUBDIRS = $(TEST_PLUGIN) \
 	  $(TRACKER_PLUGIN) \
 	  $(MEDIATHEK_PLUGIN) \
 	  $(MEDIA_EXPORT_PLUGIN) \
 	  $(EXTERNAL_PLUGIN) \
-	  $(GSTLAUNCH_PLUGIN)
+	  $(GST_LAUNCH_PLUGIN) \
+          $(GST_RENDERER)
 
 MAINTAINERCLEANFILES = Makefile.in
 all: all-recursive

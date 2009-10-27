@@ -44,7 +44,6 @@
 typedef struct _RygelExternalContentDir RygelExternalContentDir;
 typedef struct _RygelExternalContentDirClass RygelExternalContentDirClass;
 typedef struct _RygelExternalContentDirPrivate RygelExternalContentDirPrivate;
-#define _g_object_unref0(var) ((var == NULL) ? NULL : (var = (g_object_unref (var), NULL)))
 
 #define RYGEL_TYPE_EXTERNAL_PLUGIN (rygel_external_plugin_get_type ())
 #define RYGEL_EXTERNAL_PLUGIN(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_EXTERNAL_PLUGIN, RygelExternalPlugin))
@@ -55,6 +54,7 @@ typedef struct _RygelExternalContentDirPrivate RygelExternalContentDirPrivate;
 
 typedef struct _RygelExternalPlugin RygelExternalPlugin;
 typedef struct _RygelExternalPluginClass RygelExternalPluginClass;
+#define _g_object_unref0(var) ((var == NULL) ? NULL : (var = (g_object_unref (var), NULL)))
 typedef struct _RygelExternalPluginPrivate RygelExternalPluginPrivate;
 
 #define RYGEL_TYPE_EXTERNAL_CONTAINER (rygel_external_container_get_type ())

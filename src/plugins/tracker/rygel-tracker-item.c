@@ -101,7 +101,7 @@ enum  {
 GType rygel_tracker_item_metadata_get_type (void);
 char* rygel_tracker_item_seconds_to_iso8601 (RygelTrackerItem* self, const char* seconds);
 GType rygel_tracker_search_container_get_type (void);
-RygelTrackerItem* rygel_tracker_item_construct (GType object_type, const char* id, const char* path, RygelTrackerSearchContainer* parent, const char* upnp_class, char** metadata, int metadata_length1);
+RygelTrackerItem* rygel_tracker_item_construct (GType object_type, const char* id, const char* path, RygelTrackerSearchContainer* parent, const char* upnp_class, char** metadata, int metadata_length1, GError** error);
 char** rygel_tracker_item_get_metadata_keys (int* result_length1);
 static void rygel_tracker_item_finalize (GObject* obj);
 static void _vala_array_destroy (gpointer array, gint array_length, GDestroyNotify destroy_func);
@@ -121,7 +121,7 @@ GType rygel_tracker_item_metadata_get_type (void) {
 }
 
 
-RygelTrackerItem* rygel_tracker_item_construct (GType object_type, const char* id, const char* path, RygelTrackerSearchContainer* parent, const char* upnp_class, char** metadata, int metadata_length1) {
+RygelTrackerItem* rygel_tracker_item_construct (GType object_type, const char* id, const char* path, RygelTrackerSearchContainer* parent, const char* upnp_class, char** metadata, int metadata_length1, GError** error) {
 	GError * _inner_error_;
 	RygelTrackerItem * self;
 	char* _tmp0_;
@@ -145,8 +145,7 @@ RygelTrackerItem* rygel_tracker_item_construct (GType object_type, const char* i
 	((RygelMediaItem*) self)->mime_type = (_tmp2_ = g_strdup (metadata[RYGEL_TRACKER_ITEM_METADATA_MIME]), _g_free0 (((RygelMediaItem*) self)->mime_type), _tmp2_);
 	_tmp3_ = g_filename_to_uri (path, NULL, &_inner_error_);
 	if (_inner_error_ != NULL) {
-		g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, _inner_error_->message);
-		g_clear_error (&_inner_error_);
+		g_propagate_error (error, _inner_error_);
 		return NULL;
 	}
 	rygel_media_item_add_uri ((RygelMediaItem*) self, _tmp4_ = _tmp3_, NULL);

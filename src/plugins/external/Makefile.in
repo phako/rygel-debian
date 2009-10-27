@@ -37,8 +37,10 @@ host_triplet = @host@
 subdir = src/plugins/external
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in \
 	librygel_external_la_vala.stamp rygel-external-container.c \
-	rygel-external-content-dir.c rygel-external-item.c \
-	rygel-external-plugin-factory.c rygel-external-plugin.c
+	rygel-external-content-dir.c rygel-external-icon-factory.c \
+	rygel-external-interfaces.c rygel-external-item-factory.c \
+	rygel-external-plugin-factory.c rygel-external-plugin.c \
+	rygel-external-thumbnail-factory.c
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/libtool.m4 \
 	$(top_srcdir)/m4/ltoptions.m4 $(top_srcdir)/m4/ltsugar.m4 \
@@ -78,8 +80,10 @@ librygel_external_la_DEPENDENCIES = $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_librygel_external_la_OBJECTS = rygel-external-content-dir.lo \
-	rygel-external-container.lo rygel-external-item.lo \
-	rygel-external-plugin.lo rygel-external-plugin-factory.lo
+	rygel-external-container.lo rygel-external-item-factory.lo \
+	rygel-external-thumbnail-factory.lo rygel-external-plugin.lo \
+	rygel-external-interfaces.lo rygel-external-plugin-factory.lo \
+	rygel-external-icon-factory.lo
 librygel_external_la_OBJECTS = $(am_librygel_external_la_OBJECTS)
 AM_V_lt = $(am__v_lt_$(V))
 am__v_lt_ = $(am__v_lt_$(AM_DEFAULT_VERBOSITY))
@@ -227,6 +231,7 @@ USE_NLS = @USE_NLS@
 UUID_CFLAGS = @UUID_CFLAGS@
 UUID_LIBS = @UUID_LIBS@
 VALAC = @VALAC@
+VALAFLAGS = @VALAFLAGS@
 VAPIDIR = @VAPIDIR@
 VERSION = @VERSION@
 XGETTEXT = @XGETTEXT@
@@ -282,6 +287,8 @@ target_alias = @target_alias@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
+@UNINSTALLED_FALSE@shareddir = $(datadir)/rygel
+@UNINSTALLED_TRUE@shareddir = $(abs_top_builddir)/data
 plugindir = $(libdir)/rygel-1.0
 plugin_LTLIBRARIES = librygel-external.la
 AM_CFLAGS = $(LIBGUPNP_CFLAGS) \
@@ -289,13 +296,16 @@ AM_CFLAGS = $(LIBGUPNP_CFLAGS) \
 	    $(LIBDBUS_GLIB_CFLAGS) \
 	    $(GEE_CFLAGS) \
 	    $(LIBGSTREAMER_CFLAGS) \
-	    -I$(top_srcdir)/src/rygel -DDATA_DIR='"$(datadir)"'
+	    -I$(top_srcdir)/src/rygel -DDATA_DIR='"$(shareddir)"'
 
 librygel_external_la_SOURCES = rygel-external-content-dir.vala \
 			       rygel-external-container.vala \
-			       rygel-external-item.vala \
+			       rygel-external-item-factory.vala \
+			       rygel-external-thumbnail-factory.vala \
 			       rygel-external-plugin.vala \
-			       rygel-external-plugin-factory.vala
+			       rygel-external-interfaces.vala \
+			       rygel-external-plugin-factory.vala \
+			       rygel-external-icon-factory.vala
 
 librygel_external_la_VALAFLAGS = --vapidir=$(top_srcdir)/src/rygel \
 				 --pkg rygel-1.0 --pkg cstuff --pkg gupnp-1.0 \
@@ -387,9 +397,12 @@ distclean-compile:
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-external-container.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-external-content-dir.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-external-item.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-external-icon-factory.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-external-interfaces.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-external-item-factory.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-external-plugin-factory.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-external-plugin.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-external-thumbnail-factory.Plo@am__quote@
 
 .c.o:
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
@@ -424,7 +437,12 @@ $(srcdir)/rygel-external-container.c: $(srcdir)/librygel_external_la_vala.stamp
 	  rm -f $(srcdir)/librygel_external_la_vala.stamp; \
 	  $(am__cd) $(srcdir) && $(MAKE) $(AM_MAKEFLAGS) librygel_external_la_vala.stamp; \
 	fi
-$(srcdir)/rygel-external-item.c: $(srcdir)/librygel_external_la_vala.stamp
+$(srcdir)/rygel-external-item-factory.c: $(srcdir)/librygel_external_la_vala.stamp
+	@if test -f $@; then :; else \
+	  rm -f $(srcdir)/librygel_external_la_vala.stamp; \
+	  $(am__cd) $(srcdir) && $(MAKE) $(AM_MAKEFLAGS) librygel_external_la_vala.stamp; \
+	fi
+$(srcdir)/rygel-external-thumbnail-factory.c: $(srcdir)/librygel_external_la_vala.stamp
 	@if test -f $@; then :; else \
 	  rm -f $(srcdir)/librygel_external_la_vala.stamp; \
 	  $(am__cd) $(srcdir) && $(MAKE) $(AM_MAKEFLAGS) librygel_external_la_vala.stamp; \
@@ -434,7 +452,17 @@ $(srcdir)/rygel-external-plugin.c: $(srcdir)/librygel_external_la_vala.stamp
 	  rm -f $(srcdir)/librygel_external_la_vala.stamp; \
 	  $(am__cd) $(srcdir) && $(MAKE) $(AM_MAKEFLAGS) librygel_external_la_vala.stamp; \
 	fi
+$(srcdir)/rygel-external-interfaces.c: $(srcdir)/librygel_external_la_vala.stamp
+	@if test -f $@; then :; else \
+	  rm -f $(srcdir)/librygel_external_la_vala.stamp; \
+	  $(am__cd) $(srcdir) && $(MAKE) $(AM_MAKEFLAGS) librygel_external_la_vala.stamp; \
+	fi
 $(srcdir)/rygel-external-plugin-factory.c: $(srcdir)/librygel_external_la_vala.stamp
+	@if test -f $@; then :; else \
+	  rm -f $(srcdir)/librygel_external_la_vala.stamp; \
+	  $(am__cd) $(srcdir) && $(MAKE) $(AM_MAKEFLAGS) librygel_external_la_vala.stamp; \
+	fi
+$(srcdir)/rygel-external-icon-factory.c: $(srcdir)/librygel_external_la_vala.stamp
 	@if test -f $@; then :; else \
 	  rm -f $(srcdir)/librygel_external_la_vala.stamp; \
 	  $(am__cd) $(srcdir) && $(MAKE) $(AM_MAKEFLAGS) librygel_external_la_vala.stamp; \
@@ -566,9 +594,12 @@ maintainer-clean-generic:
 	-rm -f librygel_external_la_vala.stamp
 	-rm -f rygel-external-container.c
 	-rm -f rygel-external-content-dir.c
-	-rm -f rygel-external-item.c
+	-rm -f rygel-external-icon-factory.c
+	-rm -f rygel-external-interfaces.c
+	-rm -f rygel-external-item-factory.c
 	-rm -f rygel-external-plugin-factory.c
 	-rm -f rygel-external-plugin.c
+	-rm -f rygel-external-thumbnail-factory.c
 	-test -z "$(MAINTAINERCLEANFILES)" || rm -f $(MAINTAINERCLEANFILES)
 clean: clean-am
 

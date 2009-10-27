@@ -186,7 +186,7 @@ RygelMP2TSTranscoderBin* rygel_mp2_ts_transcoder_bin_construct (GType object_typ
 	decodebin = rygel_gst_utils_create_element (RYGEL_MP2_TS_TRANSCODER_BIN_DECODEBIN, RYGEL_MP2_TS_TRANSCODER_BIN_DECODEBIN, &_inner_error_);
 	if (_inner_error_ != NULL) {
 		g_propagate_error (error, _inner_error_);
-		return;
+		return NULL;
 	}
 	mp3_transcoder = rygel_mp3_transcoder_new (RYGEL_MP3_LAYER_TWO);
 	_tmp0_ = rygel_mp3_transcoder_create_encoder (mp3_transcoder, item, NULL, RYGEL_MP2_TS_TRANSCODER_BIN_AUDIO_ENC_SINK, &_inner_error_);
@@ -194,7 +194,7 @@ RygelMP2TSTranscoderBin* rygel_mp2_ts_transcoder_bin_construct (GType object_typ
 		g_propagate_error (error, _inner_error_);
 		_gst_object_unref0 (decodebin);
 		_g_object_unref0 (mp3_transcoder);
-		return;
+		return NULL;
 	}
 	self->priv->audio_enc = (_tmp1_ = _tmp0_, _gst_object_unref0 (self->priv->audio_enc), _tmp1_);
 	_tmp2_ = rygel_mp2_ts_transcoder_create_encoder (transcoder, item, NULL, RYGEL_MP2_TS_TRANSCODER_BIN_VIDEO_ENC_SINK, &_inner_error_);
@@ -202,7 +202,7 @@ RygelMP2TSTranscoderBin* rygel_mp2_ts_transcoder_bin_construct (GType object_typ
 		g_propagate_error (error, _inner_error_);
 		_gst_object_unref0 (decodebin);
 		_g_object_unref0 (mp3_transcoder);
-		return;
+		return NULL;
 	}
 	self->priv->video_enc = (_tmp3_ = _tmp2_, _gst_object_unref0 (self->priv->video_enc), _tmp3_);
 	_tmp4_ = rygel_gst_utils_create_element (RYGEL_MP2_TS_TRANSCODER_BIN_MUXER, RYGEL_MP2_TS_TRANSCODER_BIN_MUXER, &_inner_error_);
@@ -210,7 +210,7 @@ RygelMP2TSTranscoderBin* rygel_mp2_ts_transcoder_bin_construct (GType object_typ
 		g_propagate_error (error, _inner_error_);
 		_gst_object_unref0 (decodebin);
 		_g_object_unref0 (mp3_transcoder);
-		return;
+		return NULL;
 	}
 	self->priv->muxer = (_tmp5_ = _tmp4_, _gst_object_unref0 (self->priv->muxer), _tmp5_);
 	gst_bin_add_many ((GstBin*) self, _gst_object_ref0 (src), _gst_object_ref0 (decodebin), _gst_object_ref0 (self->priv->audio_enc), _gst_object_ref0 (self->priv->video_enc), _gst_object_ref0 (self->priv->muxer), NULL);

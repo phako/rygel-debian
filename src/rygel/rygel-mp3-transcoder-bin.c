@@ -174,13 +174,13 @@ RygelMP3TranscoderBin* rygel_mp3_transcoder_bin_construct (GType object_type, Ry
 	decodebin = rygel_gst_utils_create_element (RYGEL_MP3_TRANSCODER_BIN_DECODEBIN, RYGEL_MP3_TRANSCODER_BIN_DECODEBIN, &_inner_error_);
 	if (_inner_error_ != NULL) {
 		g_propagate_error (error, _inner_error_);
-		return;
+		return NULL;
 	}
 	_tmp0_ = rygel_mp3_transcoder_create_encoder (transcoder, item, RYGEL_MP3_TRANSCODER_BIN_AUDIO_SRC_PAD, RYGEL_MP3_TRANSCODER_BIN_AUDIO_SINK_PAD, &_inner_error_);
 	if (_inner_error_ != NULL) {
 		g_propagate_error (error, _inner_error_);
 		_gst_object_unref0 (decodebin);
-		return;
+		return NULL;
 	}
 	self->priv->audio_enc = (_tmp1_ = _tmp0_, _gst_object_unref0 (self->priv->audio_enc), _tmp1_);
 	gst_bin_add_many ((GstBin*) self, _gst_object_ref0 (src), _gst_object_ref0 (decodebin), _gst_object_ref0 (self->priv->audio_enc), NULL);

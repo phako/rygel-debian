@@ -201,21 +201,21 @@ RygelMetaConfig* rygel_meta_config_construct (GType object_type) {
 	RygelCmdlineConfig* _tmp1_;
 	_inner_error_ = NULL;
 	self = (RygelMetaConfig*) g_object_new (object_type, NULL);
-	self->priv->configs = (_tmp0_ = gee_array_list_new (RYGEL_TYPE_CONFIGURATION, (GBoxedCopyFunc) g_object_ref, g_object_unref, g_direct_equal), _g_object_unref0 (self->priv->configs), _tmp0_);
+	self->priv->configs = (_tmp0_ = gee_array_list_new (RYGEL_TYPE_CONFIGURATION, (GBoxedCopyFunc) g_object_ref, g_object_unref, NULL), _g_object_unref0 (self->priv->configs), _tmp0_);
 	gee_abstract_collection_add ((GeeAbstractCollection*) self->priv->configs, (RygelConfiguration*) (_tmp1_ = rygel_cmdline_config_get_default ()));
 	_g_object_unref0 (_tmp1_);
 	{
 		RygelUserConfig* user_config;
 		user_config = rygel_user_config_get_default (&_inner_error_);
 		if (_inner_error_ != NULL) {
-			goto __catch5_g_error;
-			goto __finally5;
+			goto __catch6_g_error;
+			goto __finally6;
 		}
 		gee_abstract_collection_add ((GeeAbstractCollection*) self->priv->configs, (RygelConfiguration*) user_config);
 		_g_object_unref0 (user_config);
 	}
-	goto __finally5;
-	__catch5_g_error:
+	goto __finally6;
+	__catch6_g_error:
 	{
 		GError * err;
 		err = _inner_error_;
@@ -225,7 +225,7 @@ RygelMetaConfig* rygel_meta_config_construct (GType object_type) {
 			_g_error_free0 (err);
 		}
 	}
-	__finally5:
+	__finally6:
 	if (_inner_error_ != NULL) {
 		g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, _inner_error_->message);
 		g_clear_error (&_inner_error_);
@@ -263,16 +263,16 @@ static gboolean rygel_meta_config_real_get_upnp_enabled (RygelConfiguration* bas
 				gboolean _tmp0_;
 				_tmp0_ = rygel_configuration_get_upnp_enabled (config, &_inner_error_);
 				if (_inner_error_ != NULL) {
-					goto __catch6_g_error;
-					goto __finally6;
+					goto __catch7_g_error;
+					goto __finally7;
 				}
 				val = _tmp0_;
 				unavailable = FALSE;
 				_g_object_unref0 (config);
 				break;
 			}
-			goto __finally6;
-			__catch6_g_error:
+			goto __finally7;
+			__catch7_g_error:
 			{
 				GError * err;
 				err = _inner_error_;
@@ -281,7 +281,7 @@ static gboolean rygel_meta_config_real_get_upnp_enabled (RygelConfiguration* bas
 					_g_error_free0 (err);
 				}
 			}
-			__finally6:
+			__finally7:
 			if (_inner_error_ != NULL) {
 				g_propagate_error (error, _inner_error_);
 				_g_object_unref0 (config);
@@ -328,16 +328,16 @@ static char* rygel_meta_config_real_get_interface (RygelConfiguration* base, GEr
 				char* _tmp1_;
 				_tmp0_ = rygel_configuration_get_interface (config, &_inner_error_);
 				if (_inner_error_ != NULL) {
-					goto __catch7_g_error;
-					goto __finally7;
+					goto __catch8_g_error;
+					goto __finally8;
 				}
 				val = (_tmp1_ = _tmp0_, _g_free0 (val), _tmp1_);
 				unavailable = FALSE;
 				_g_object_unref0 (config);
 				break;
 			}
-			goto __finally7;
-			__catch7_g_error:
+			goto __finally8;
+			__catch8_g_error:
 			{
 				GError * err;
 				err = _inner_error_;
@@ -346,7 +346,7 @@ static char* rygel_meta_config_real_get_interface (RygelConfiguration* base, GEr
 					_g_error_free0 (err);
 				}
 			}
-			__finally7:
+			__finally8:
 			if (_inner_error_ != NULL) {
 				g_propagate_error (error, _inner_error_);
 				_g_object_unref0 (config);
@@ -394,16 +394,16 @@ static gint rygel_meta_config_real_get_port (RygelConfiguration* base, GError** 
 				gint _tmp0_;
 				_tmp0_ = rygel_configuration_get_port (config, &_inner_error_);
 				if (_inner_error_ != NULL) {
-					goto __catch8_g_error;
-					goto __finally8;
+					goto __catch9_g_error;
+					goto __finally9;
 				}
 				val = _tmp0_;
 				unavailable = FALSE;
 				_g_object_unref0 (config);
 				break;
 			}
-			goto __finally8;
-			__catch8_g_error:
+			goto __finally9;
+			__catch9_g_error:
 			{
 				GError * err;
 				err = _inner_error_;
@@ -412,7 +412,7 @@ static gint rygel_meta_config_real_get_port (RygelConfiguration* base, GError** 
 					_g_error_free0 (err);
 				}
 			}
-			__finally8:
+			__finally9:
 			if (_inner_error_ != NULL) {
 				g_propagate_error (error, _inner_error_);
 				_g_object_unref0 (config);
@@ -458,16 +458,16 @@ static gboolean rygel_meta_config_real_get_transcoding (RygelConfiguration* base
 				gboolean _tmp0_;
 				_tmp0_ = rygel_configuration_get_transcoding (config, &_inner_error_);
 				if (_inner_error_ != NULL) {
-					goto __catch9_g_error;
-					goto __finally9;
+					goto __catch10_g_error;
+					goto __finally10;
 				}
 				val = _tmp0_;
 				unavailable = FALSE;
 				_g_object_unref0 (config);
 				break;
 			}
-			goto __finally9;
-			__catch9_g_error:
+			goto __finally10;
+			__catch10_g_error:
 			{
 				GError * err;
 				err = _inner_error_;
@@ -476,7 +476,7 @@ static gboolean rygel_meta_config_real_get_transcoding (RygelConfiguration* base
 					_g_error_free0 (err);
 				}
 			}
-			__finally9:
+			__finally10:
 			if (_inner_error_ != NULL) {
 				g_propagate_error (error, _inner_error_);
 				_g_object_unref0 (config);
@@ -522,16 +522,16 @@ static gboolean rygel_meta_config_real_get_mp3_transcoder (RygelConfiguration* b
 				gboolean _tmp0_;
 				_tmp0_ = rygel_configuration_get_mp3_transcoder (config, &_inner_error_);
 				if (_inner_error_ != NULL) {
-					goto __catch10_g_error;
-					goto __finally10;
+					goto __catch11_g_error;
+					goto __finally11;
 				}
 				val = _tmp0_;
 				unavailable = FALSE;
 				_g_object_unref0 (config);
 				break;
 			}
-			goto __finally10;
-			__catch10_g_error:
+			goto __finally11;
+			__catch11_g_error:
 			{
 				GError * err;
 				err = _inner_error_;
@@ -540,7 +540,7 @@ static gboolean rygel_meta_config_real_get_mp3_transcoder (RygelConfiguration* b
 					_g_error_free0 (err);
 				}
 			}
-			__finally10:
+			__finally11:
 			if (_inner_error_ != NULL) {
 				g_propagate_error (error, _inner_error_);
 				_g_object_unref0 (config);
@@ -586,16 +586,16 @@ static gboolean rygel_meta_config_real_get_mp2ts_transcoder (RygelConfiguration*
 				gboolean _tmp0_;
 				_tmp0_ = rygel_configuration_get_mp2ts_transcoder (config, &_inner_error_);
 				if (_inner_error_ != NULL) {
-					goto __catch11_g_error;
-					goto __finally11;
+					goto __catch12_g_error;
+					goto __finally12;
 				}
 				val = _tmp0_;
 				unavailable = FALSE;
 				_g_object_unref0 (config);
 				break;
 			}
-			goto __finally11;
-			__catch11_g_error:
+			goto __finally12;
+			__catch12_g_error:
 			{
 				GError * err;
 				err = _inner_error_;
@@ -604,7 +604,7 @@ static gboolean rygel_meta_config_real_get_mp2ts_transcoder (RygelConfiguration*
 					_g_error_free0 (err);
 				}
 			}
-			__finally11:
+			__finally12:
 			if (_inner_error_ != NULL) {
 				g_propagate_error (error, _inner_error_);
 				_g_object_unref0 (config);
@@ -650,16 +650,16 @@ static gboolean rygel_meta_config_real_get_lpcm_transcoder (RygelConfiguration* 
 				gboolean _tmp0_;
 				_tmp0_ = rygel_configuration_get_lpcm_transcoder (config, &_inner_error_);
 				if (_inner_error_ != NULL) {
-					goto __catch12_g_error;
-					goto __finally12;
+					goto __catch13_g_error;
+					goto __finally13;
 				}
 				val = _tmp0_;
 				unavailable = FALSE;
 				_g_object_unref0 (config);
 				break;
 			}
-			goto __finally12;
-			__catch12_g_error:
+			goto __finally13;
+			__catch13_g_error:
 			{
 				GError * err;
 				err = _inner_error_;
@@ -668,7 +668,7 @@ static gboolean rygel_meta_config_real_get_lpcm_transcoder (RygelConfiguration* 
 					_g_error_free0 (err);
 				}
 			}
-			__finally12:
+			__finally13:
 			if (_inner_error_ != NULL) {
 				g_propagate_error (error, _inner_error_);
 				_g_object_unref0 (config);
@@ -714,16 +714,16 @@ static RygelLogLevel rygel_meta_config_real_get_log_level (RygelConfiguration* b
 				RygelLogLevel _tmp0_;
 				_tmp0_ = rygel_configuration_get_log_level (config, &_inner_error_);
 				if (_inner_error_ != NULL) {
-					goto __catch13_g_error;
-					goto __finally13;
+					goto __catch14_g_error;
+					goto __finally14;
 				}
 				val = _tmp0_;
 				unavailable = FALSE;
 				_g_object_unref0 (config);
 				break;
 			}
-			goto __finally13;
-			__catch13_g_error:
+			goto __finally14;
+			__catch14_g_error:
 			{
 				GError * err;
 				err = _inner_error_;
@@ -732,7 +732,7 @@ static RygelLogLevel rygel_meta_config_real_get_log_level (RygelConfiguration* b
 					_g_error_free0 (err);
 				}
 			}
-			__finally13:
+			__finally14:
 			if (_inner_error_ != NULL) {
 				g_propagate_error (error, _inner_error_);
 				_g_object_unref0 (config);
@@ -779,16 +779,16 @@ static gboolean rygel_meta_config_real_get_enabled (RygelConfiguration* base, co
 				gboolean _tmp0_;
 				_tmp0_ = rygel_configuration_get_enabled (config, section, &_inner_error_);
 				if (_inner_error_ != NULL) {
-					goto __catch14_g_error;
-					goto __finally14;
+					goto __catch15_g_error;
+					goto __finally15;
 				}
 				val = _tmp0_;
 				unavailable = FALSE;
 				_g_object_unref0 (config);
 				break;
 			}
-			goto __finally14;
-			__catch14_g_error:
+			goto __finally15;
+			__catch15_g_error:
 			{
 				GError * err;
 				err = _inner_error_;
@@ -797,7 +797,7 @@ static gboolean rygel_meta_config_real_get_enabled (RygelConfiguration* base, co
 					_g_error_free0 (err);
 				}
 			}
-			__finally14:
+			__finally15:
 			if (_inner_error_ != NULL) {
 				g_propagate_error (error, _inner_error_);
 				_g_object_unref0 (config);
@@ -843,15 +843,15 @@ static char* rygel_meta_config_real_get_title (RygelConfiguration* base, const c
 				char* _tmp1_;
 				_tmp0_ = rygel_configuration_get_title (config, section, &_inner_error_);
 				if (_inner_error_ != NULL) {
-					goto __catch15_g_error;
-					goto __finally15;
+					goto __catch16_g_error;
+					goto __finally16;
 				}
 				val = (_tmp1_ = _tmp0_, _g_free0 (val), _tmp1_);
 				_g_object_unref0 (config);
 				break;
 			}
-			goto __finally15;
-			__catch15_g_error:
+			goto __finally16;
+			__catch16_g_error:
 			{
 				GError * err;
 				err = _inner_error_;
@@ -860,7 +860,7 @@ static char* rygel_meta_config_real_get_title (RygelConfiguration* base, const c
 					_g_error_free0 (err);
 				}
 			}
-			__finally15:
+			__finally16:
 			if (_inner_error_ != NULL) {
 				g_propagate_error (error, _inner_error_);
 				_g_object_unref0 (config);
@@ -909,15 +909,15 @@ static char* rygel_meta_config_real_get_string (RygelConfiguration* base, const 
 				char* _tmp1_;
 				_tmp0_ = rygel_configuration_get_string (config, section, key, &_inner_error_);
 				if (_inner_error_ != NULL) {
-					goto __catch16_g_error;
-					goto __finally16;
+					goto __catch17_g_error;
+					goto __finally17;
 				}
 				val = (_tmp1_ = _tmp0_, _g_free0 (val), _tmp1_);
 				_g_object_unref0 (config);
 				break;
 			}
-			goto __finally16;
-			__catch16_g_error:
+			goto __finally17;
+			__catch17_g_error:
 			{
 				GError * err;
 				err = _inner_error_;
@@ -926,7 +926,7 @@ static char* rygel_meta_config_real_get_string (RygelConfiguration* base, const 
 					_g_error_free0 (err);
 				}
 			}
-			__finally16:
+			__finally17:
 			if (_inner_error_ != NULL) {
 				g_propagate_error (error, _inner_error_);
 				_g_object_unref0 (config);
@@ -975,15 +975,15 @@ static GeeArrayList* rygel_meta_config_real_get_string_list (RygelConfiguration*
 				GeeArrayList* _tmp1_;
 				_tmp0_ = rygel_configuration_get_string_list (config, section, key, &_inner_error_);
 				if (_inner_error_ != NULL) {
-					goto __catch17_g_error;
-					goto __finally17;
+					goto __catch18_g_error;
+					goto __finally18;
 				}
 				val = (_tmp1_ = _tmp0_, _g_object_unref0 (val), _tmp1_);
 				_g_object_unref0 (config);
 				break;
 			}
-			goto __finally17;
-			__catch17_g_error:
+			goto __finally18;
+			__catch18_g_error:
 			{
 				GError * err;
 				err = _inner_error_;
@@ -992,7 +992,7 @@ static GeeArrayList* rygel_meta_config_real_get_string_list (RygelConfiguration*
 					_g_error_free0 (err);
 				}
 			}
-			__finally17:
+			__finally18:
 			if (_inner_error_ != NULL) {
 				g_propagate_error (error, _inner_error_);
 				_g_object_unref0 (config);
@@ -1042,16 +1042,16 @@ static gint rygel_meta_config_real_get_int (RygelConfiguration* base, const char
 				gint _tmp0_;
 				_tmp0_ = rygel_configuration_get_int (config, section, key, min, max, &_inner_error_);
 				if (_inner_error_ != NULL) {
-					goto __catch18_g_error;
-					goto __finally18;
+					goto __catch19_g_error;
+					goto __finally19;
 				}
 				val = _tmp0_;
 				unavailable = FALSE;
 				_g_object_unref0 (config);
 				break;
 			}
-			goto __finally18;
-			__catch18_g_error:
+			goto __finally19;
+			__catch19_g_error:
 			{
 				GError * err;
 				err = _inner_error_;
@@ -1060,7 +1060,7 @@ static gint rygel_meta_config_real_get_int (RygelConfiguration* base, const char
 					_g_error_free0 (err);
 				}
 			}
-			__finally18:
+			__finally19:
 			if (_inner_error_ != NULL) {
 				g_propagate_error (error, _inner_error_);
 				_g_object_unref0 (config);
@@ -1107,15 +1107,15 @@ static GeeArrayList* rygel_meta_config_real_get_int_list (RygelConfiguration* ba
 				GeeArrayList* _tmp1_;
 				_tmp0_ = rygel_configuration_get_int_list (config, section, key, &_inner_error_);
 				if (_inner_error_ != NULL) {
-					goto __catch19_g_error;
-					goto __finally19;
+					goto __catch20_g_error;
+					goto __finally20;
 				}
 				val = (_tmp1_ = _tmp0_, _g_object_unref0 (val), _tmp1_);
 				_g_object_unref0 (config);
 				break;
 			}
-			goto __finally19;
-			__catch19_g_error:
+			goto __finally20;
+			__catch20_g_error:
 			{
 				GError * err;
 				err = _inner_error_;
@@ -1124,7 +1124,7 @@ static GeeArrayList* rygel_meta_config_real_get_int_list (RygelConfiguration* ba
 					_g_error_free0 (err);
 				}
 			}
-			__finally19:
+			__finally20:
 			if (_inner_error_ != NULL) {
 				g_propagate_error (error, _inner_error_);
 				_g_object_unref0 (config);
@@ -1174,16 +1174,16 @@ static gboolean rygel_meta_config_real_get_bool (RygelConfiguration* base, const
 				gboolean _tmp0_;
 				_tmp0_ = rygel_configuration_get_bool (config, section, key, &_inner_error_);
 				if (_inner_error_ != NULL) {
-					goto __catch20_g_error;
-					goto __finally20;
+					goto __catch21_g_error;
+					goto __finally21;
 				}
 				val = _tmp0_;
 				unavailable = FALSE;
 				_g_object_unref0 (config);
 				break;
 			}
-			goto __finally20;
-			__catch20_g_error:
+			goto __finally21;
+			__catch21_g_error:
 			{
 				GError * err;
 				err = _inner_error_;
@@ -1192,7 +1192,7 @@ static gboolean rygel_meta_config_real_get_bool (RygelConfiguration* base, const
 					_g_error_free0 (err);
 				}
 			}
-			__finally20:
+			__finally21:
 			if (_inner_error_ != NULL) {
 				g_propagate_error (error, _inner_error_);
 				_g_object_unref0 (config);

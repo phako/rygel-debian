@@ -40,7 +40,6 @@
 typedef struct _RygelTestContentDir RygelTestContentDir;
 typedef struct _RygelTestContentDirClass RygelTestContentDirClass;
 #define _g_object_unref0(var) ((var == NULL) ? NULL : (var = (g_object_unref (var), NULL)))
-#define _rygel_resource_info_unref0(var) ((var == NULL) ? NULL : (var = (rygel_resource_info_unref (var), NULL)))
 
 
 
@@ -51,14 +50,10 @@ void module_init (RygelPluginLoader* loader);
 
 void module_init (RygelPluginLoader* loader) {
 	RygelPlugin* plugin;
-	RygelResourceInfo* resource_info;
 	g_return_if_fail (loader != NULL);
-	plugin = rygel_plugin_new_MediaServer ("Test", "Test Streams");
-	resource_info = rygel_resource_info_new (RYGEL_CONTENT_DIRECTORY_UPNP_ID, RYGEL_CONTENT_DIRECTORY_UPNP_TYPE, RYGEL_CONTENT_DIRECTORY_DESCRIPTION_PATH, RYGEL_TYPE_TEST_CONTENT_DIR);
-	rygel_plugin_add_resource (plugin, resource_info);
+	plugin = rygel_plugin_new_MediaServer ("Test", "Test Streams", RYGEL_TYPE_TEST_CONTENT_DIR);
 	rygel_plugin_loader_add_plugin (loader, plugin);
 	_g_object_unref0 (plugin);
-	_rygel_resource_info_unref0 (resource_info);
 }
 
 

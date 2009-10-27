@@ -229,6 +229,7 @@ USE_NLS = @USE_NLS@
 UUID_CFLAGS = @UUID_CFLAGS@
 UUID_LIBS = @UUID_LIBS@
 VALAC = @VALAC@
+VALAFLAGS = @VALAFLAGS@
 VAPIDIR = @VAPIDIR@
 VERSION = @VERSION@
 XGETTEXT = @XGETTEXT@
@@ -284,6 +285,8 @@ target_alias = @target_alias@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
+@UNINSTALLED_FALSE@shareddir = $(datadir)/rygel
+@UNINSTALLED_TRUE@shareddir = $(abs_top_builddir)/data
 plugindir = $(libdir)/rygel-1.0
 plugin_LTLIBRARIES = librygel-mediathek.la
 AM_CFLAGS = $(LIBGUPNP_CFLAGS) \
@@ -292,7 +295,7 @@ AM_CFLAGS = $(LIBGUPNP_CFLAGS) \
 	    $(LIBGSTREAMER_CFLAGS) \
 	    $(GEE_CFLAGS) \
 	    -I$(top_srcdir)/src/rygel \
-	    -DDATA_DIR='"$(datadir)"'
+	    -DDATA_DIR='"$(shareddir)"'
 
 librygel_mediathek_la_SOURCES = rygel-mediathek-asx-playlist.vala \
 				rygel-mediathek-plugin.vala \

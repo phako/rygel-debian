@@ -34,11 +34,11 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
-subdir = src/plugins/gstlaunch
+subdir = src/plugins/gst-launch
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in \
-	librygel_gstlaunch_la_vala.stamp rygel-gstlaunch-content-dir.c \
-	rygel-gstlaunch-item.c rygel-gstlaunch-plugin.c \
-	rygel-gstlaunch-root-container.c
+	librygel_gst_launch_la_vala.stamp \
+	rygel-gst-launch-content-dir.c rygel-gst-launch-item.c \
+	rygel-gst-launch-plugin.c rygel-gst-launch-root-container.c
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/libtool.m4 \
 	$(top_srcdir)/m4/ltoptions.m4 $(top_srcdir)/m4/ltsugar.m4 \
@@ -74,19 +74,19 @@ am__base_list = \
 am__installdirs = "$(DESTDIR)$(plugindir)"
 LTLIBRARIES = $(plugin_LTLIBRARIES)
 am__DEPENDENCIES_1 =
-librygel_gstlaunch_la_DEPENDENCIES = $(am__DEPENDENCIES_1) \
+librygel_gst_launch_la_DEPENDENCIES = $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
-am_librygel_gstlaunch_la_OBJECTS = rygel-gstlaunch-plugin.lo \
-	rygel-gstlaunch-root-container.lo \
-	rygel-gstlaunch-content-dir.lo rygel-gstlaunch-item.lo
-librygel_gstlaunch_la_OBJECTS = $(am_librygel_gstlaunch_la_OBJECTS)
+am_librygel_gst_launch_la_OBJECTS = rygel-gst-launch-plugin.lo \
+	rygel-gst-launch-root-container.lo \
+	rygel-gst-launch-content-dir.lo rygel-gst-launch-item.lo
+librygel_gst_launch_la_OBJECTS = $(am_librygel_gst_launch_la_OBJECTS)
 AM_V_lt = $(am__v_lt_$(V))
 am__v_lt_ = $(am__v_lt_$(AM_DEFAULT_VERBOSITY))
 am__v_lt_0 = --silent
-librygel_gstlaunch_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
+librygel_gst_launch_la_LINK = $(LIBTOOL) $(AM_V_lt) --tag=CC \
 	$(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=link $(CCLD) \
-	$(AM_CFLAGS) $(CFLAGS) $(librygel_gstlaunch_la_LDFLAGS) \
+	$(AM_CFLAGS) $(CFLAGS) $(librygel_gst_launch_la_LDFLAGS) \
 	$(LDFLAGS) -o $@
 DEFAULT_INCLUDES = -I.@am__isrc@ -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/build-aux/depcomp
@@ -121,8 +121,8 @@ am__v_VALAC_0 = @echo "  VALAC " $@;
 AM_V_GEN = $(am__v_GEN_$(V))
 am__v_GEN_ = $(am__v_GEN_$(AM_DEFAULT_VERBOSITY))
 am__v_GEN_0 = @echo "  GEN   " $@;
-SOURCES = $(librygel_gstlaunch_la_SOURCES)
-DIST_SOURCES = $(librygel_gstlaunch_la_SOURCES)
+SOURCES = $(librygel_gst_launch_la_SOURCES)
+DIST_SOURCES = $(librygel_gst_launch_la_SOURCES)
 ETAGS = etags
 CTAGS = ctags
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
@@ -227,6 +227,7 @@ USE_NLS = @USE_NLS@
 UUID_CFLAGS = @UUID_CFLAGS@
 UUID_LIBS = @UUID_LIBS@
 VALAC = @VALAC@
+VALAFLAGS = @VALAFLAGS@
 VAPIDIR = @VAPIDIR@
 VERSION = @VERSION@
 XGETTEXT = @XGETTEXT@
@@ -283,7 +284,7 @@ top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 plugindir = $(libdir)/rygel-1.0
-plugin_LTLIBRARIES = librygel-gstlaunch.la
+plugin_LTLIBRARIES = librygel-gst-launch.la
 AM_CFLAGS = $(LIBGUPNP_CFLAGS) \
 		$(LIBGUPNP_AV_CFLAGS) \
 		$(LIBDBUS_GLIB_CFLAGS) \
@@ -292,23 +293,23 @@ AM_CFLAGS = $(LIBGUPNP_CFLAGS) \
 		-I$(top_srcdir)/src/rygel -DDATA_DIR='"$(datadir)"' \
 		-DSYS_CONFIG_DIR='"$(sysconfdir)"'
 
-librygel_gstlaunch_la_SOURCES = rygel-gstlaunch-plugin.vala \
-				rygel-gstlaunch-root-container.vala \
-				rygel-gstlaunch-content-dir.vala \
-				rygel-gstlaunch-item.vala
+librygel_gst_launch_la_SOURCES = rygel-gst-launch-plugin.vala \
+				rygel-gst-launch-root-container.vala \
+				rygel-gst-launch-content-dir.vala \
+				rygel-gst-launch-item.vala
 
-librygel_gstlaunch_la_VALAFLAGS = --vapidir=$(top_srcdir)/src/rygel \
+librygel_gst_launch_la_VALAFLAGS = --vapidir=$(top_srcdir)/src/rygel \
 			     --pkg rygel-1.0 --pkg cstuff --pkg gconf-2.0 \
 			     --pkg gupnp-1.0 --pkg gupnp-av-1.0 \
 			     --pkg dbus-glib-1 --pkg gee-1.0 --pkg gstreamer-0.10
 
-librygel_gstlaunch_la_LIBADD = $(LIBGUPNP_LIBS) \
+librygel_gst_launch_la_LIBADD = $(LIBGUPNP_LIBS) \
      			       $(LIBGUPNP_AV_LIBS) \
      			       $(LIBDBUS_GLIB_LIBS) \
      			       $(LIBGSTREAMER_LIBS) \
      			       $(GEE_LIBS)
 
-librygel_gstlaunch_la_LDFLAGS = -shared -fPIC -module -avoid-version
+librygel_gst_launch_la_LDFLAGS = -shared -fPIC -module -avoid-version
 MAINTAINERCLEANFILES = Makefile.in
 all: all-am
 
@@ -323,9 +324,9 @@ $(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am  $(am__confi
 	      exit 1;; \
 	  esac; \
 	done; \
-	echo ' cd $(top_srcdir) && $(AUTOMAKE) --gnu src/plugins/gstlaunch/Makefile'; \
+	echo ' cd $(top_srcdir) && $(AUTOMAKE) --gnu src/plugins/gst-launch/Makefile'; \
 	$(am__cd) $(top_srcdir) && \
-	  $(AUTOMAKE) --gnu src/plugins/gstlaunch/Makefile
+	  $(AUTOMAKE) --gnu src/plugins/gst-launch/Makefile
 .PRECIOUS: Makefile
 Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
 	@case '$?' in \
@@ -375,8 +376,8 @@ clean-pluginLTLIBRARIES:
 	  echo "rm -f \"$${dir}/so_locations\""; \
 	  rm -f "$${dir}/so_locations"; \
 	done
-librygel-gstlaunch.la: $(librygel_gstlaunch_la_OBJECTS) $(librygel_gstlaunch_la_DEPENDENCIES) 
-	$(AM_V_CCLD)$(librygel_gstlaunch_la_LINK) -rpath $(plugindir) $(librygel_gstlaunch_la_OBJECTS) $(librygel_gstlaunch_la_LIBADD) $(LIBS)
+librygel-gst-launch.la: $(librygel_gst_launch_la_OBJECTS) $(librygel_gst_launch_la_DEPENDENCIES) 
+	$(AM_V_CCLD)$(librygel_gst_launch_la_LINK) -rpath $(plugindir) $(librygel_gst_launch_la_OBJECTS) $(librygel_gst_launch_la_LIBADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT)
@@ -384,10 +385,10 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-gstlaunch-content-dir.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-gstlaunch-item.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-gstlaunch-plugin.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-gstlaunch-root-container.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-gst-launch-content-dir.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-gst-launch-item.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-gst-launch-plugin.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-gst-launch-root-container.Plo@am__quote@
 
 .c.o:
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
@@ -412,28 +413,28 @@ distclean-compile:
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$<' object='$@' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LTCOMPILE) -c -o $@ $<
-$(srcdir)/rygel-gstlaunch-plugin.c: $(srcdir)/librygel_gstlaunch_la_vala.stamp
+$(srcdir)/rygel-gst-launch-plugin.c: $(srcdir)/librygel_gst_launch_la_vala.stamp
 	@if test -f $@; then :; else \
-	  rm -f $(srcdir)/librygel_gstlaunch_la_vala.stamp; \
-	  $(am__cd) $(srcdir) && $(MAKE) $(AM_MAKEFLAGS) librygel_gstlaunch_la_vala.stamp; \
+	  rm -f $(srcdir)/librygel_gst_launch_la_vala.stamp; \
+	  $(am__cd) $(srcdir) && $(MAKE) $(AM_MAKEFLAGS) librygel_gst_launch_la_vala.stamp; \
 	fi
-$(srcdir)/rygel-gstlaunch-root-container.c: $(srcdir)/librygel_gstlaunch_la_vala.stamp
+$(srcdir)/rygel-gst-launch-root-container.c: $(srcdir)/librygel_gst_launch_la_vala.stamp
 	@if test -f $@; then :; else \
-	  rm -f $(srcdir)/librygel_gstlaunch_la_vala.stamp; \
-	  $(am__cd) $(srcdir) && $(MAKE) $(AM_MAKEFLAGS) librygel_gstlaunch_la_vala.stamp; \
+	  rm -f $(srcdir)/librygel_gst_launch_la_vala.stamp; \
+	  $(am__cd) $(srcdir) && $(MAKE) $(AM_MAKEFLAGS) librygel_gst_launch_la_vala.stamp; \
 	fi
-$(srcdir)/rygel-gstlaunch-content-dir.c: $(srcdir)/librygel_gstlaunch_la_vala.stamp
+$(srcdir)/rygel-gst-launch-content-dir.c: $(srcdir)/librygel_gst_launch_la_vala.stamp
 	@if test -f $@; then :; else \
-	  rm -f $(srcdir)/librygel_gstlaunch_la_vala.stamp; \
-	  $(am__cd) $(srcdir) && $(MAKE) $(AM_MAKEFLAGS) librygel_gstlaunch_la_vala.stamp; \
+	  rm -f $(srcdir)/librygel_gst_launch_la_vala.stamp; \
+	  $(am__cd) $(srcdir) && $(MAKE) $(AM_MAKEFLAGS) librygel_gst_launch_la_vala.stamp; \
 	fi
-$(srcdir)/rygel-gstlaunch-item.c: $(srcdir)/librygel_gstlaunch_la_vala.stamp
+$(srcdir)/rygel-gst-launch-item.c: $(srcdir)/librygel_gst_launch_la_vala.stamp
 	@if test -f $@; then :; else \
-	  rm -f $(srcdir)/librygel_gstlaunch_la_vala.stamp; \
-	  $(am__cd) $(srcdir) && $(MAKE) $(AM_MAKEFLAGS) librygel_gstlaunch_la_vala.stamp; \
+	  rm -f $(srcdir)/librygel_gst_launch_la_vala.stamp; \
+	  $(am__cd) $(srcdir) && $(MAKE) $(AM_MAKEFLAGS) librygel_gst_launch_la_vala.stamp; \
 	fi
-librygel_gstlaunch_la_vala.stamp: $(librygel_gstlaunch_la_SOURCES)
-	$(AM_V_VALAC)$(VALAC) $(librygel_gstlaunch_la_VALAFLAGS) $(VALAFLAGS) -C $(librygel_gstlaunch_la_SOURCES)
+librygel_gst_launch_la_vala.stamp: $(librygel_gst_launch_la_SOURCES)
+	$(AM_V_VALAC)$(VALAC) $(librygel_gst_launch_la_VALAFLAGS) $(VALAFLAGS) -C $(librygel_gst_launch_la_SOURCES)
 	$(AM_V_at)touch $@
 
 mostlyclean-libtool:
@@ -556,11 +557,11 @@ distclean-generic:
 maintainer-clean-generic:
 	@echo "This command is intended for maintainers to use"
 	@echo "it deletes files that may require special tools to rebuild."
-	-rm -f librygel_gstlaunch_la_vala.stamp
-	-rm -f rygel-gstlaunch-content-dir.c
-	-rm -f rygel-gstlaunch-item.c
-	-rm -f rygel-gstlaunch-plugin.c
-	-rm -f rygel-gstlaunch-root-container.c
+	-rm -f librygel_gst_launch_la_vala.stamp
+	-rm -f rygel-gst-launch-content-dir.c
+	-rm -f rygel-gst-launch-item.c
+	-rm -f rygel-gst-launch-plugin.c
+	-rm -f rygel-gst-launch-root-container.c
 	-test -z "$(MAINTAINERCLEANFILES)" || rm -f $(MAINTAINERCLEANFILES)
 clean: clean-am
 

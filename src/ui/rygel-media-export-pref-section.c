@@ -197,8 +197,8 @@ RygelMediaExportPrefSection* rygel_media_export_pref_section_construct (GType ob
 		GeeArrayList* uris;
 		uris = rygel_configuration_get_string_list ((RygelConfiguration*) config, ((RygelPreferencesSection*) self)->name, RYGEL_MEDIA_EXPORT_PREF_SECTION_URIS_KEY, &_inner_error_);
 		if (_inner_error_ != NULL) {
-			goto __catch10_g_error;
-			goto __finally10;
+			goto __catch11_g_error;
+			goto __finally11;
 		}
 		{
 			GeeIterator* _uri_it;
@@ -218,8 +218,8 @@ RygelMediaExportPrefSection* rygel_media_export_pref_section_construct (GType ob
 		}
 		_g_object_unref0 (uris);
 	}
-	goto __finally10;
-	__catch10_g_error:
+	goto __finally11;
+	__catch11_g_error:
 	{
 		GError * err;
 		err = _inner_error_;
@@ -228,7 +228,7 @@ RygelMediaExportPrefSection* rygel_media_export_pref_section_construct (GType ob
 			_g_error_free0 (err);
 		}
 	}
-	__finally10:
+	__finally11:
 	if (_inner_error_ != NULL) {
 		g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, _inner_error_->message);
 		g_clear_error (&_inner_error_);
@@ -266,7 +266,7 @@ static void rygel_media_export_pref_section_real_save (RygelPreferencesSection* 
 	GeeArrayList* uri_list;
 	self = (RygelMediaExportPrefSection*) base;
 	RYGEL_PREFERENCES_SECTION_CLASS (rygel_media_export_pref_section_parent_class)->save ((RygelPreferencesSection*) RYGEL_PLUGIN_PREF_SECTION (self));
-	uri_list = gee_array_list_new (G_TYPE_STRING, (GBoxedCopyFunc) g_strdup, g_free, g_direct_equal);
+	uri_list = gee_array_list_new (G_TYPE_STRING, (GBoxedCopyFunc) g_strdup, g_free, NULL);
 	if (gtk_tree_model_get_iter_first ((GtkTreeModel*) self->priv->liststore, &iter)) {
 		{
 			gboolean _tmp0_;
@@ -350,7 +350,7 @@ static void rygel_media_export_pref_section_on_remove_button_clicked (RygelMedia
 	g_return_if_fail (button != NULL);
 	selection = _g_object_ref0 (gtk_tree_view_get_selection (self->priv->treeview));
 	rows = gtk_tree_selection_get_selected_rows (selection, NULL);
-	row_refs = gee_array_list_new (GTK_TYPE_TREE_ROW_REFERENCE, (GBoxedCopyFunc) gtk_tree_row_reference_copy, gtk_tree_row_reference_free, g_direct_equal);
+	row_refs = gee_array_list_new (GTK_TYPE_TREE_ROW_REFERENCE, (GBoxedCopyFunc) gtk_tree_row_reference_copy, gtk_tree_row_reference_free, NULL);
 	{
 		GList* row_collection;
 		GList* row_it;

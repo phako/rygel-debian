@@ -92,7 +92,7 @@ struct _RygelIconInfo {
 	volatile int ref_count;
 	RygelIconInfoPrivate * priv;
 	char* mime_type;
-	char* path;
+	char* uri;
 	glong size;
 	gint width;
 	gint height;
@@ -107,7 +107,6 @@ struct _RygelIconInfoClass {
 struct _RygelThumbnail {
 	RygelIconInfo parent_instance;
 	RygelThumbnailPrivate * priv;
-	char* uri;
 	char* dlna_profile;
 };
 
@@ -174,7 +173,7 @@ static RygelThumbnailer* rygel_thumbnailer_construct (GType object_type, GError*
 					g_propagate_error (error, _inner_error_);
 					_g_free0 (dir);
 					_g_object_unref0 (file);
-					return;
+					return NULL;
 				} else {
 					_g_free0 (dir);
 					_g_object_unref0 (file);
@@ -229,14 +228,14 @@ RygelThumbnailer* rygel_thumbnailer_get_default (void) {
 			_tmp0_ = rygel_thumbnailer_new (&_inner_error_);
 			if (_inner_error_ != NULL) {
 				if (_inner_error_->domain == THUMBNAILER_ERROR) {
-					goto __catch34_thumbnailer_error;
+					goto __catch38_thumbnailer_error;
 				}
-				goto __finally34;
+				goto __finally38;
 			}
 			rygel_thumbnailer_thumbnailer = (_tmp1_ = _tmp0_, _g_object_unref0 (rygel_thumbnailer_thumbnailer), _tmp1_);
 		}
-		goto __finally34;
-		__catch34_thumbnailer_error:
+		goto __finally38;
+		__catch38_thumbnailer_error:
 		{
 			GError * err;
 			err = _inner_error_;
@@ -246,7 +245,7 @@ RygelThumbnailer* rygel_thumbnailer_get_default (void) {
 				_g_error_free0 (err);
 			}
 		}
-		__finally34:
+		__finally38:
 		if (_inner_error_ != NULL) {
 			g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, _inner_error_->message);
 			g_clear_error (&_inner_error_);
@@ -272,7 +271,6 @@ RygelThumbnail* rygel_thumbnailer_get_thumbnail (RygelThumbnailer* self, const c
 	RygelThumbnail* _tmp2_;
 	char* _tmp3_;
 	char* _tmp4_;
-	char* _tmp5_;
 	g_return_val_if_fail (self != NULL, NULL);
 	g_return_val_if_fail (uri != NULL, NULL);
 	_inner_error_ = NULL;
@@ -305,8 +303,7 @@ RygelThumbnail* rygel_thumbnailer_get_thumbnail (RygelThumbnailer* self, const c
 	((RygelIconInfo*) thumbnail)->width = ((RygelIconInfo*) self->priv->template)->width;
 	((RygelIconInfo*) thumbnail)->height = ((RygelIconInfo*) self->priv->template)->height;
 	((RygelIconInfo*) thumbnail)->depth = ((RygelIconInfo*) self->priv->template)->depth;
-	((RygelIconInfo*) thumbnail)->path = (_tmp3_ = g_strdup (path), _g_free0 (((RygelIconInfo*) thumbnail)->path), _tmp3_);
-	_tmp4_ = g_filename_to_uri (full_path, NULL, &_inner_error_);
+	_tmp3_ = g_filename_to_uri (full_path, NULL, &_inner_error_);
 	if (_inner_error_ != NULL) {
 		g_propagate_error (error, _inner_error_);
 		_rygel_icon_info_unref0 (thumbnail);
@@ -316,7 +313,7 @@ RygelThumbnail* rygel_thumbnailer_get_thumbnail (RygelThumbnailer* self, const c
 		_g_object_unref0 (info);
 		return NULL;
 	}
-	thumbnail->uri = (_tmp5_ = _tmp4_, _g_free0 (thumbnail->uri), _tmp5_);
+	((RygelIconInfo*) thumbnail)->uri = (_tmp4_ = _tmp3_, _g_free0 (((RygelIconInfo*) thumbnail)->uri), _tmp4_);
 	((RygelIconInfo*) thumbnail)->size = (glong) g_file_info_get_attribute_uint64 (info, G_FILE_ATTRIBUTE_STANDARD_SIZE);
 	result = thumbnail;
 	_g_free0 (path);

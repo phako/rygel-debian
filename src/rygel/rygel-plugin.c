@@ -74,6 +74,16 @@ typedef struct _RygelIconInfoClass RygelIconInfoClass;
 
 typedef struct _RygelConnectionManager RygelConnectionManager;
 typedef struct _RygelConnectionManagerClass RygelConnectionManagerClass;
+
+#define RYGEL_TYPE_SOURCE_CONNECTION_MANAGER (rygel_source_connection_manager_get_type ())
+#define RYGEL_SOURCE_CONNECTION_MANAGER(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_SOURCE_CONNECTION_MANAGER, RygelSourceConnectionManager))
+#define RYGEL_SOURCE_CONNECTION_MANAGER_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TYPE_SOURCE_CONNECTION_MANAGER, RygelSourceConnectionManagerClass))
+#define RYGEL_IS_SOURCE_CONNECTION_MANAGER(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TYPE_SOURCE_CONNECTION_MANAGER))
+#define RYGEL_IS_SOURCE_CONNECTION_MANAGER_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_TYPE_SOURCE_CONNECTION_MANAGER))
+#define RYGEL_SOURCE_CONNECTION_MANAGER_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_TYPE_SOURCE_CONNECTION_MANAGER, RygelSourceConnectionManagerClass))
+
+typedef struct _RygelSourceConnectionManager RygelSourceConnectionManager;
+typedef struct _RygelSourceConnectionManagerClass RygelSourceConnectionManagerClass;
 #define _rygel_resource_info_unref0(var) ((var == NULL) ? NULL : (var = (rygel_resource_info_unref (var), NULL)))
 typedef struct _RygelResourceInfoPrivate RygelResourceInfoPrivate;
 
@@ -135,15 +145,19 @@ enum  {
 void rygel_plugin_set_available (RygelPlugin* self, gboolean value);
 RygelPlugin* rygel_plugin_new (const char* desc_path, const char* name, const char* title);
 RygelPlugin* rygel_plugin_construct (GType object_type, const char* desc_path, const char* name, const char* title);
+#define RYGEL_CONTENT_DIRECTORY_UPNP_ID "urn:upnp-org:serviceId:ContentDirectory"
+#define RYGEL_CONTENT_DIRECTORY_UPNP_TYPE "urn:schemas-upnp-org:service:ContentDirectory:2"
+#define RYGEL_CONTENT_DIRECTORY_DESCRIPTION_PATH "xml/ContentDirectory.xml"
+RygelResourceInfo* rygel_resource_info_new (const char* upnp_id, const char* upnp_type, const char* description_path, GType type);
+RygelResourceInfo* rygel_resource_info_construct (GType object_type, const char* upnp_id, const char* upnp_type, const char* description_path, GType type);
+void rygel_plugin_add_resource (RygelPlugin* self, RygelResourceInfo* resource_info);
 #define RYGEL_CONNECTION_MANAGER_UPNP_ID "urn:upnp-org:serviceId:ConnectionManager"
 #define RYGEL_CONNECTION_MANAGER_UPNP_TYPE "urn:schemas-upnp-org:service:ConnectionManager:2"
 #define RYGEL_CONNECTION_MANAGER_DESCRIPTION_PATH "xml/ConnectionManager.xml"
 GType rygel_connection_manager_get_type (void);
-RygelResourceInfo* rygel_resource_info_new (const char* upnp_id, const char* upnp_type, const char* description_path, GType type);
-RygelResourceInfo* rygel_resource_info_construct (GType object_type, const char* upnp_id, const char* upnp_type, const char* description_path, GType type);
-void rygel_plugin_add_resource (RygelPlugin* self, RygelResourceInfo* resource_info);
-RygelPlugin* rygel_plugin_new_MediaServer (const char* name, const char* title);
-RygelPlugin* rygel_plugin_construct_MediaServer (GType object_type, const char* name, const char* title);
+GType rygel_source_connection_manager_get_type (void);
+RygelPlugin* rygel_plugin_new_MediaServer (const char* name, const char* title, GType content_dir_type);
+RygelPlugin* rygel_plugin_construct_MediaServer (GType object_type, const char* name, const char* title, GType content_dir_type);
 void rygel_plugin_add_icon (RygelPlugin* self, RygelIconInfo* icon_info);
 gboolean rygel_plugin_get_available (RygelPlugin* self);
 static void rygel_plugin_finalize (GObject* obj);
@@ -170,8 +184,8 @@ RygelPlugin* rygel_plugin_construct (GType object_type, const char* desc_path, c
 		char* _tmp3_;
 		self->title = (_tmp3_ = g_strdup (name), _g_free0 (self->title), _tmp3_);
 	}
-	self->resource_infos = (_tmp4_ = gee_array_list_new (RYGEL_TYPE_RESOURCE_INFO, (GBoxedCopyFunc) rygel_resource_info_ref, rygel_resource_info_unref, g_direct_equal), _g_object_unref0 (self->resource_infos), _tmp4_);
-	self->icon_infos = (_tmp5_ = gee_array_list_new (RYGEL_TYPE_ICON_INFO, (GBoxedCopyFunc) rygel_icon_info_ref, rygel_icon_info_unref, g_direct_equal), _g_object_unref0 (self->icon_infos), _tmp5_);
+	self->resource_infos = (_tmp4_ = gee_array_list_new (RYGEL_TYPE_RESOURCE_INFO, (GBoxedCopyFunc) rygel_resource_info_ref, rygel_resource_info_unref, NULL), _g_object_unref0 (self->resource_infos), _tmp4_);
+	self->icon_infos = (_tmp5_ = gee_array_list_new (RYGEL_TYPE_ICON_INFO, (GBoxedCopyFunc) rygel_icon_info_ref, rygel_icon_info_unref, NULL), _g_object_unref0 (self->icon_infos), _tmp5_);
 	return self;
 }
 
@@ -181,20 +195,23 @@ RygelPlugin* rygel_plugin_new (const char* desc_path, const char* name, const ch
 }
 
 
-RygelPlugin* rygel_plugin_construct_MediaServer (GType object_type, const char* name, const char* title) {
+RygelPlugin* rygel_plugin_construct_MediaServer (GType object_type, const char* name, const char* title, GType content_dir_type) {
 	RygelPlugin * self;
 	RygelResourceInfo* resource_info;
+	RygelResourceInfo* _tmp0_;
 	g_return_val_if_fail (name != NULL, NULL);
 	self = (RygelPlugin*) rygel_plugin_construct (object_type, RYGEL_PLUGIN_MEDIA_SERVER_DESC_PATH, name, title);
-	resource_info = rygel_resource_info_new (RYGEL_CONNECTION_MANAGER_UPNP_ID, RYGEL_CONNECTION_MANAGER_UPNP_TYPE, RYGEL_CONNECTION_MANAGER_DESCRIPTION_PATH, RYGEL_TYPE_CONNECTION_MANAGER);
+	resource_info = rygel_resource_info_new (RYGEL_CONTENT_DIRECTORY_UPNP_ID, RYGEL_CONTENT_DIRECTORY_UPNP_TYPE, RYGEL_CONTENT_DIRECTORY_DESCRIPTION_PATH, content_dir_type);
+	rygel_plugin_add_resource (self, resource_info);
+	resource_info = (_tmp0_ = rygel_resource_info_new (RYGEL_CONNECTION_MANAGER_UPNP_ID, RYGEL_CONNECTION_MANAGER_UPNP_TYPE, RYGEL_CONNECTION_MANAGER_DESCRIPTION_PATH, RYGEL_TYPE_SOURCE_CONNECTION_MANAGER), _rygel_resource_info_unref0 (resource_info), _tmp0_);
 	rygel_plugin_add_resource (self, resource_info);
 	_rygel_resource_info_unref0 (resource_info);
 	return self;
 }
 
 
-RygelPlugin* rygel_plugin_new_MediaServer (const char* name, const char* title) {
-	return rygel_plugin_construct_MediaServer (RYGEL_TYPE_PLUGIN, name, title);
+RygelPlugin* rygel_plugin_new_MediaServer (const char* name, const char* title, GType content_dir_type) {
+	return rygel_plugin_construct_MediaServer (RYGEL_TYPE_PLUGIN, name, title, content_dir_type);
 }
 
 

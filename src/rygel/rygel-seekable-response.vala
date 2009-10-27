@@ -54,33 +54,30 @@ internal class Rygel.SeekableResponse : Rygel.HTTPResponse {
             this.total_length = file_length;
         }
 
-        msg.wrote_chunk += on_wrote_chunk;
-
         this.buffer = new char[SeekableResponse.BUFFER_LENGTH];
         this.file = File.new_for_uri (uri);
     }
 
-    public override void run () {
-        this.cancellable = cancellable;
-
-        this.file.read_async (this.priority, cancellable, this.on_file_read);
-    }
-
-    private void on_file_read (GLib.Object?     source_object,
-                               GLib.AsyncResult result) {
+    public override async void run () {
         try {
-           this.input_stream = this.file.read_finish (result);
+           this.input_stream = yield this.file.read_async (this.priority,
+                                                           this.cancellable);
         } catch (Error err) {
             warning ("Failed to read from URI: %s: %s\n",
                      file.get_uri (),
                      err.message);
             this.end (false, Soup.KnownStatusCode.NOT_FOUND);
+
             return;
         }
 
-        if (seek != null) {
+        yield this.perform_seek ();
+    }
+
+    private async void perform_seek () {
+        if (this.seek != null) {
             try {
-                this.input_stream.seek (seek.start,
+                this.input_stream.seek (this.seek.start,
                                         SeekType.SET,
                                         this.cancellable);
             } catch (Error err) {
@@ -95,43 +92,60 @@ internal class Rygel.SeekableResponse : Rygel.HTTPResponse {
             }
         }
 
-        this.input_stream.read_async (this.buffer,
-                                      SeekableResponse.BUFFER_LENGTH,
-                                      this.priority,
-                                      this.cancellable,
-                                      on_contents_read);
+        yield this.start_reading ();
     }
 
-    private void on_contents_read (GLib.Object?     source_object,
-                                   GLib.AsyncResult result) {
-        FileInputStream input_stream = (FileInputStream) source_object;
-        ssize_t bytes_read;
-
+    private async void start_reading () {
         try {
-           bytes_read = input_stream.read_finish (result);
+            yield this.read_contents ();
         } catch (Error err) {
             warning ("Failed to read contents from URI: %s: %s\n",
                      this.file.get_uri (),
                      err.message);
             this.end (false, Soup.KnownStatusCode.NOT_FOUND);
+
             return;
         }
 
-        if (bytes_read > 0) {
+        yield this.close_stream ();
+    }
+
+    private size_t bytes_to_read () {
+        return size_t.min (this.total_length,
+                           SeekableResponse.BUFFER_LENGTH);
+    }
+
+    private async void read_contents () throws Error {
+        var bytes_read = yield this.input_stream.read_async (
+                                        this.buffer,
+                                        this.bytes_to_read (),
+                                        this.priority,
+                                        this.cancellable);
+        SourceFunc cb = read_contents.callback;
+        this.msg.wrote_chunk.connect ((msg) => {
+                cb ();
+        });
+
+        while (bytes_read > 0) {
             this.push_data (this.buffer, bytes_read);
-        } else {
-            input_stream.close_async (this.priority,
-                                      this.cancellable,
-                                      on_input_stream_closed);
+            this.total_length -= bytes_read;
+
+            // We return from this call when wrote_chunk signal is emitted
+            // and the handler we installed before the loop is called for it.
+            yield;
+
+            bytes_read = yield this.input_stream.read_async (
+                                        this.buffer,
+                                        this.bytes_to_read (),
+                                        this.priority,
+                                        this.cancellable);
         }
     }
 
-    private void on_input_stream_closed (GLib.Object?     source_object,
-                                         GLib.AsyncResult result) {
-        FileInputStream input_stream = (FileInputStream) source_object;
-
-        try  {
-            input_stream.close_finish (result);
+    private async void close_stream () {
+        try {
+            yield this.input_stream.close_async (this.priority,
+                                                 this.cancellable);
         } catch (Error err) {
             warning ("Failed to close stream to URI %s: %s\n",
                      this.file.get_uri (),
@@ -139,14 +153,6 @@ internal class Rygel.SeekableResponse : Rygel.HTTPResponse {
         }
 
         this.end (false, Soup.KnownStatusCode.NONE);
-    }
-
-    private void on_wrote_chunk (Soup.Message msg) {
-        this.input_stream.read_async (this.buffer,
-                                      SeekableResponse.BUFFER_LENGTH,
-                                      this.priority,
-                                      this.cancellable,
-                                      this.on_contents_read);
     }
 
     private int get_requested_priority () {

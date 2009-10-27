@@ -62,6 +62,7 @@ typedef struct _RygelMetaConfigClass RygelMetaConfigClass;
 
 typedef struct _RygelConfiguration RygelConfiguration;
 typedef struct _RygelConfigurationIface RygelConfigurationIface;
+#define _g_error_free0(var) ((var == NULL) ? NULL : (var = (g_error_free (var), NULL)))
 
 typedef enum  {
 	RYGEL_LOG_LEVEL_INVALID = 0,
@@ -116,13 +117,13 @@ enum  {
 static RygelLogHandler* rygel_log_handler_new (void);
 static RygelLogHandler* rygel_log_handler_construct (GType object_type);
 RygelLogHandler* rygel_log_handler_get_default (void);
-static void rygel_log_handler_log_func (RygelLogHandler* self, const char* log_domain, GLogLevelFlags log_levels, const char* message);
-static void _rygel_log_handler_log_func_glog_func (const char* log_domain, GLogLevelFlags log_levels, const char* message, gpointer self);
 GType rygel_meta_config_get_type (void);
 RygelMetaConfig* rygel_meta_config_get_default (void);
 GType rygel_configuration_get_type (void);
 RygelLogLevel rygel_configuration_get_log_level (RygelConfiguration* self, GError** error);
 static GLogLevelFlags rygel_log_handler_log_level_to_flags (RygelLogHandler* self, RygelLogLevel level);
+static void rygel_log_handler_log_func (RygelLogHandler* self, const char* log_domain, GLogLevelFlags log_levels, const char* message);
+static void _rygel_log_handler_log_func_glog_func (const char* log_domain, GLogLevelFlags log_levels, const char* message, gpointer self);
 static void rygel_log_handler_finalize (GObject* obj);
 
 
@@ -163,19 +164,38 @@ static RygelLogHandler* rygel_log_handler_construct (GType object_type) {
 	GError * _inner_error_;
 	RygelLogHandler * self;
 	RygelMetaConfig* config;
-	RygelLogLevel _tmp0_;
 	_inner_error_ = NULL;
 	self = (RygelLogHandler*) g_object_new (object_type, NULL);
-	g_log_set_default_handler (_rygel_log_handler_log_func_glog_func, self);
 	config = rygel_meta_config_get_default ();
-	_tmp0_ = rygel_configuration_get_log_level ((RygelConfiguration*) config, &_inner_error_);
+	{
+		RygelLogLevel _tmp0_;
+		_tmp0_ = rygel_configuration_get_log_level ((RygelConfiguration*) config, &_inner_error_);
+		if (_inner_error_ != NULL) {
+			goto __catch56_g_error;
+			goto __finally56;
+		}
+		self->levels = rygel_log_handler_log_level_to_flags (self, _tmp0_);
+	}
+	goto __finally56;
+	__catch56_g_error:
+	{
+		GError * err;
+		err = _inner_error_;
+		_inner_error_ = NULL;
+		{
+			self->levels = RYGEL_LOG_HANDLER_DEFAULT_LEVELS;
+			g_warning ("rygel-log-handler.vala:62: Failed to get log level from configuration sources: %s", err->message);
+			_g_error_free0 (err);
+		}
+	}
+	__finally56:
 	if (_inner_error_ != NULL) {
 		_g_object_unref0 (config);
 		g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, _inner_error_->message);
 		g_clear_error (&_inner_error_);
 		return NULL;
 	}
-	self->levels = rygel_log_handler_log_level_to_flags (self, _tmp0_);
+	g_log_set_default_handler (_rygel_log_handler_log_func_glog_func, self);
 	_g_object_unref0 (config);
 	return self;
 }

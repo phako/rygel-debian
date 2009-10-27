@@ -32,23 +32,17 @@ public class Rygel.TrackerSearchContainer : Rygel.MediaContainer {
     /* class-wide constants */
     private const string TRACKER_SERVICE = "org.freedesktop.Tracker";
     private const string TRACKER_PATH = "/org/freedesktop/Tracker";
-    private const string TRACKER_IFACE = "org.freedesktop.Tracker";
     private const string SEARCH_PATH = "/org/freedesktop/Tracker/Search";
-    private const string SEARCH_IFACE = "org.freedesktop.Tracker.Search";
     private const string METADATA_PATH = "/org/freedesktop/Tracker/Metadata";
-    private const string METADATA_IFACE = "org.freedesktop.Tracker.Metadata";
 
-    public dynamic DBus.Object metadata;
-    public dynamic DBus.Object search;
-    public dynamic DBus.Object tracker;
+    public TrackerMetadataIface metadata;
+    public TrackerSearchIface search;
 
     public string service;
 
     public string query_condition;
 
     public string[] keywords;
-
-    Gee.List<AsyncResult> results;
 
     public TrackerSearchContainer (string         id,
                                    MediaContainer parent,
@@ -68,31 +62,31 @@ public class Rygel.TrackerSearchContainer : Rygel.MediaContainer {
             /* FIXME: We need to hook to some tracker signals to keep
              *        this field up2date at all times
              */
-            this.get_children_count ();
-
-            this.results = new Gee.ArrayList<AsyncResult>();
+            this.get_children_count.begin ();
         } catch (DBus.Error error) {
             critical ("Failed to connect to session bus: %s\n", error.message);
         }
     }
 
-    private void get_children_count () {
+    private async void get_children_count () {
         try {
             // We are performing actual search (though an optimized one) to get
             // the hitcount rather than GetHitCount because GetHitCount only
             // allows us to get hit count for Text searches.
-            this.search.Query (0,
-                               this.service,
-                               new string[0],
-                               "",
-                               this.keywords,
-                               this.query_condition,
-                               false,
-                               new string[0],
-                               false,
-                               0,
-                               -1,
-                               on_search_query_cb);
+            var search_result = yield this.search.query (0,
+                                                         this.service,
+                                                         new string[0],
+                                                         "",
+                                                         this.keywords,
+                                                         this.query_condition,
+                                                         false,
+                                                         new string[0],
+                                                         false,
+                                                         0,
+                                                         -1);
+
+            this.child_count = search_result.length[0];
+            this.updated ();
         } catch (GLib.Error error) {
             critical ("error getting items under service '%s': %s",
                       this.service,
@@ -102,103 +96,55 @@ public class Rygel.TrackerSearchContainer : Rygel.MediaContainer {
         }
     }
 
-    private void on_search_query_cb (string[][] search_result,
-                                     GLib.Error error) {
-        if (error != null) {
-            critical ("error getting items under service '%s': %s",
-                      this.service,
-                      error.message);
+    public override async Gee.List<MediaObject>? get_children (
+                                        uint               offset,
+                                        uint               max_count,
+                                        Cancellable?       cancellable)
+                                        throws GLib.Error {
+        string[] keys = TrackerItem.get_metadata_keys ();
 
-            return;
+        var search_result = yield this.search.query (0,
+                                                     this.service,
+                                                     keys,
+                                                     "",
+                                                     this.keywords,
+                                                     this.query_condition,
+                                                     false,
+                                                     new string[0],
+                                                     false,
+                                                     (int) offset,
+                                                     (int) max_count);
+
+        var children = new ArrayList<MediaObject> ();
+        /* Iterate through all items */
+        for (uint i = 0; i < search_result.length[0]; i++) {
+            string path = search_result[i, 0];
+            string service = search_result[i, 1];
+            string[] metadata = this.slice_strvv_tail (search_result, i, 2);
+
+            var item = this.create_item (service, path, metadata);
+            children.add (item);
         }
 
-        this.child_count = search_result.length;
-        this.updated ();
+        return children;
     }
 
-    public override void get_children (uint               offset,
-                                       uint               max_count,
-                                       Cancellable?       cancellable,
-                                       AsyncReadyCallback callback) {
-        var res = new TrackerSearchResult (this, callback);
+    public override async MediaObject? find_object (string       id,
+                                                    Cancellable? cancellable)
+                                                    throws GLib.Error {
+        string parent_id;
+        string service;
 
-        this.results.add (res);
-
-        try {
-            this.search.Query (0,
-                               this.service,
-                               TrackerItem.get_metadata_keys (),
-                               "",
-                               this.keywords,
-                               this.query_condition,
-                               false,
-                               new string[0],
-                               false,
-                               (int) offset,
-                               (int) max_count,
-                               res.ready);
-        } catch (GLib.Error error) {
-            res.error = error;
-
-            res.complete_in_idle ();
+        var path = this.get_item_info (id, out parent_id, out service);
+        if (path == null) {
+            return null;
         }
-    }
 
-    public override Gee.List<MediaObject>? get_children_finish (
-                                                         AsyncResult res)
-                                                         throws GLib.Error {
-        var search_res = (Rygel.TrackerSearchResult) res;
+        string[] keys = TrackerItem.get_metadata_keys ();
 
-        this.results.remove (search_res);
+        var values = yield this.metadata.get (service, path, keys);
 
-        if (search_res.error != null) {
-            throw search_res.error;
-        } else {
-            return search_res.data;
-        }
-    }
-
-    public override void find_object (string             id,
-                                      Cancellable?       cancellable,
-                                      AsyncReadyCallback callback) {
-        var res = new TrackerGetMetadataResult (this, callback, id);
-
-        this.results.add (res);
-
-        try {
-            string parent_id;
-
-            res.item_path = this.get_item_info (id,
-                                                out parent_id,
-                                                out res.item_service);
-            if (res.item_path == null) {
-                res.complete_in_idle ();
-
-                return;
-            }
-
-            string[] keys = TrackerItem.get_metadata_keys ();
-
-            this.metadata.Get (res.item_service,
-                               res.item_path,
-                               keys,
-                               res.ready);
-        } catch (GLib.Error error) {
-            res.error = error;
-
-            res.complete_in_idle ();
-        }
-    }
-
-    public override MediaObject? find_object_finish (AsyncResult res)
-                                                     throws GLib.Error {
-        var metadata_res = (TrackerGetMetadataResult) res;
-
-        if (metadata_res.error != null) {
-            throw metadata_res.error;
-        } else {
-            return metadata_res.data;
-        }
+        return this.create_item (service, path, values);
     }
 
     public bool is_thy_child (string item_id) {
@@ -214,7 +160,8 @@ public class Rygel.TrackerSearchContainer : Rygel.MediaContainer {
 
     public MediaItem? create_item (string   service,
                                    string   path,
-                                   string[] metadata) {
+                                   string[] metadata)
+                                   throws GLib.Error {
         var id = service + ":" + this.id + ":" + path;
 
         if (service == TrackerVideoItem.SERVICE) {
@@ -258,14 +205,30 @@ public class Rygel.TrackerSearchContainer : Rygel.MediaContainer {
         DBus.Connection connection = DBus.Bus.get (DBus.BusType.SESSION);
 
         this.metadata = connection.get_object (TRACKER_SERVICE,
-                                               METADATA_PATH,
-                                               METADATA_IFACE);
+                                               METADATA_PATH)
+                                               as TrackerMetadataIface;
         this.search = connection.get_object (TRACKER_SERVICE,
-                                             SEARCH_PATH,
-                                             SEARCH_IFACE);
-        this.tracker = connection.get_object (TRACKER_SERVICE,
-                                              TRACKER_PATH,
-                                              TRACKER_IFACE);
+                                             SEARCH_PATH)
+                                             as TrackerSearchIface;
+    }
+
+    /**
+     * Chops the tail of a particular row in a 2-dimensional string array.
+     *
+     * param strvv the 2-dimenstional string array to chop the tail of.
+     * param row the row whose tail needs to be chopped off.
+     * param index index of the first element in the tail.
+     *
+     * FIXME: Stop using it once vala supports array[N:M] syntax.
+     */
+    private string[] slice_strvv_tail (string[,] strvv, uint row, uint index) {
+        var slice = new string[strvv.length[1] - index];
+
+        for (var i = 0; i < slice.length; i++) {
+            slice[i] = strvv[row, i + index];
+        }
+
+        return slice;
     }
 }
 

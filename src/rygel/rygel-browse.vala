@@ -67,9 +67,9 @@ internal class Rygel.Browse: GLib.Object, Rygel.StateMachine {
                 new Rygel.DIDLLiteWriter (content_dir.http_server);
     }
 
-    public void run () {
+    public async void run () {
         /* Start by parsing the 'in' arguments */
-        this.parse_args ();
+        yield this.parse_args ();
     }
 
     private void got_media_object () {
@@ -88,7 +88,7 @@ internal class Rygel.Browse: GLib.Object, Rygel.StateMachine {
         }
     }
 
-    private void fetch_media_object () {
+    private async void fetch_media_object () {
         if (this.object_id == this.root_container.id) {
             this.media_object = this.root_container;
 
@@ -96,17 +96,10 @@ internal class Rygel.Browse: GLib.Object, Rygel.StateMachine {
             return;
         }
 
-        this.root_container.find_object (this.object_id,
-                                         this.cancellable,
-                                         this.on_media_object_found);
-    }
-
-    private void on_media_object_found (Object?     source_object,
-                                        AsyncResult res) {
-        var container = (MediaContainer) source_object;
-
         try {
-            this.media_object = container.find_object_finish (res);
+            this.media_object = yield this.root_container.find_object (
+                                        this.object_id,
+                                        this.cancellable);
         } catch (Error err) {
             this.handle_error (err);
             return;
@@ -152,10 +145,10 @@ internal class Rygel.Browse: GLib.Object, Rygel.StateMachine {
             this.requested_count = this.total_matches;
         }
 
-        this.fetch_children ();
+        this.fetch_children.begin ();
     }
 
-    private void parse_args () {
+    private async void parse_args () {
         this.action.get ("ObjectID", typeof (string), out this.object_id,
                     "BrowseFlag", typeof (string), out this.browse_flag,
                     "Filter", typeof (string), out this.filter,
@@ -192,7 +185,7 @@ internal class Rygel.Browse: GLib.Object, Rygel.StateMachine {
             return;
         }
 
-        this.fetch_media_object ();
+        yield this.fetch_media_object ();
     }
 
     private void conclude () {
@@ -253,21 +246,13 @@ internal class Rygel.Browse: GLib.Object, Rygel.StateMachine {
         this.conclude ();
     }
 
-    private void fetch_children () {
+    private async void fetch_children () {
         var container = (MediaContainer) this.media_object;
 
-        container.get_children (this.index,
-                                this.requested_count,
-                                this.cancellable,
-                                this.on_children_fetched);
-    }
-
-    private void on_children_fetched (Object?     source_object,
-                                      AsyncResult res) {
-        var container = (MediaContainer) source_object;
-
         try {
-            var children = container.get_children_finish (res);
+            var children = yield container.get_children (this.index,
+                                                         this.requested_count,
+                                                         this.cancellable);
             this.number_returned = children.size;
 
             this.serialize_children (children);

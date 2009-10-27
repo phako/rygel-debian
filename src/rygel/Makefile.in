@@ -43,7 +43,7 @@ DIST_COMMON = $(librygelinc_HEADERS) $(srcdir)/Makefile.am \
 	$(srcdir)/Makefile.in librygel_configuration_a_vala.stamp \
 	rygel-browse.c rygel-cmdline-config.c rygel-configuration.c \
 	rygel-connection-manager.c rygel-content-directory.c \
-	rygel-dbus-service.c rygel-didl-lite-writer.c \
+	rygel-database.c rygel-dbus-service.c rygel-didl-lite-writer.c \
 	rygel-gst-utils.c rygel-http-identity-handler.c \
 	rygel-http-request-handler.c rygel-http-request.c \
 	rygel-http-response.c rygel-http-seek.c rygel-http-server.c \
@@ -52,14 +52,13 @@ DIST_COMMON = $(librygelinc_HEADERS) $(srcdir)/Makefile.am \
 	rygel-live-response.c rygel-log-handler.c rygel-main.c \
 	rygel-media-container.c rygel-media-db-container.c \
 	rygel-media-db-object-factory.c rygel-media-db.c \
-	rygel-media-item.c rygel-media-object-search.c \
-	rygel-media-object.c rygel-meta-config.c \
+	rygel-media-item.c rygel-media-object.c rygel-meta-config.c \
 	rygel-metadata-extractor.c rygel-mp2ts-transcoder-bin.c \
 	rygel-mp2ts-transcoder.c rygel-mp3-transcoder-bin.c \
 	rygel-mp3-transcoder.c rygel-plugin-loader.c rygel-plugin.c \
 	rygel-resource-info.c rygel-root-device-factory.c \
 	rygel-root-device.c rygel-seekable-response.c \
-	rygel-simple-async-result.c rygel-simple-container.c \
+	rygel-simple-container.c rygel-source-connection-manager.c \
 	rygel-state-machine.c rygel-thumbnail.c rygel-thumbnailer.c \
 	rygel-transcode-manager.c rygel-transcoder.c \
 	rygel-user-config.c rygel.h rygel_vala.stamp
@@ -97,6 +96,7 @@ am__objects_1 = rygel-configuration.$(OBJEXT) \
 	rygel-cmdline-config.$(OBJEXT) \
 	rygel-content-directory.$(OBJEXT) \
 	rygel-connection-manager.$(OBJEXT) \
+	rygel-source-connection-manager.$(OBJEXT) \
 	rygel-transcode-manager.$(OBJEXT) rygel-http-server.$(OBJEXT) \
 	rygel-state-machine.$(OBJEXT) rygel-http-request.$(OBJEXT) \
 	rygel-http-request-handler.$(OBJEXT) \
@@ -108,9 +108,7 @@ am__objects_1 = rygel-configuration.$(OBJEXT) \
 	rygel-resource-info.$(OBJEXT) rygel-icon-info.$(OBJEXT) \
 	rygel-plugin.$(OBJEXT) rygel-plugin-loader.$(OBJEXT) \
 	rygel-media-object.$(OBJEXT) rygel-media-container.$(OBJEXT) \
-	rygel-simple-container.$(OBJEXT) \
-	rygel-media-object-search.$(OBJEXT) \
-	rygel-simple-async-result.$(OBJEXT) rygel-media-item.$(OBJEXT) \
+	rygel-simple-container.$(OBJEXT) rygel-media-item.$(OBJEXT) \
 	rygel-thumbnail.$(OBJEXT) rygel-thumbnailer.$(OBJEXT) \
 	rygel-browse.$(OBJEXT) rygel-didl-lite-writer.$(OBJEXT) \
 	rygel-transcoder.$(OBJEXT) rygel-mp2ts-transcoder.$(OBJEXT) \
@@ -124,7 +122,8 @@ am__objects_1 = rygel-configuration.$(OBJEXT) \
 	rygel-log-handler.$(OBJEXT)
 am_rygel_OBJECTS = $(am__objects_1) rygel-dbus-service.$(OBJEXT) \
 	rygel-root-device.$(OBJEXT) \
-	rygel-root-device-factory.$(OBJEXT) rygel-main.$(OBJEXT)
+	rygel-root-device-factory.$(OBJEXT) rygel-database.$(OBJEXT) \
+	rygel-main.$(OBJEXT)
 rygel_OBJECTS = $(am_rygel_OBJECTS)
 am__DEPENDENCIES_1 =
 rygel_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
@@ -297,6 +296,7 @@ USE_NLS = @USE_NLS@
 UUID_CFLAGS = @UUID_CFLAGS@
 UUID_LIBS = @UUID_LIBS@
 VALAC = @VALAC@
+VALAFLAGS = @VALAFLAGS@
 VAPIDIR = @VAPIDIR@
 VERSION = @VERSION@
 XGETTEXT = @XGETTEXT@
@@ -381,6 +381,7 @@ rygel_SOURCES = $(VAPI_SOURCE_FILES) \
 		rygel-dbus-service.vala \
 		rygel-root-device.vala \
 		rygel-root-device-factory.vala \
+		rygel-database.vala \
 		rygel-main.vala
 
 VAPI_SOURCE_FILES = rygel-configuration.vala \
@@ -389,6 +390,7 @@ VAPI_SOURCE_FILES = rygel-configuration.vala \
 		    rygel-cmdline-config.vala \
 		    rygel-content-directory.vala \
 		    rygel-connection-manager.vala \
+		    rygel-source-connection-manager.vala \
 		    rygel-transcode-manager.vala \
 		    rygel-http-server.vala \
 		    rygel-state-machine.vala \
@@ -407,8 +409,6 @@ VAPI_SOURCE_FILES = rygel-configuration.vala \
 		    rygel-media-object.vala \
 		    rygel-media-container.vala \
 		    rygel-simple-container.vala \
-		    rygel-media-object-search.vala \
-		    rygel-simple-async-result.vala \
 		    rygel-media-item.vala \
 		    rygel-thumbnail.vala \
 		    rygel-thumbnailer.vala \
@@ -563,6 +563,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-configuration.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-connection-manager.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-content-directory.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-database.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-dbus-service.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-didl-lite-writer.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-gst-utils.Po@am__quote@
@@ -584,7 +585,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-media-db-object-factory.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-media-db.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-media-item.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-media-object-search.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-media-object.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-meta-config.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-metadata-extractor.Po@am__quote@
@@ -598,8 +598,8 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-root-device-factory.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-root-device.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-seekable-response.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-simple-async-result.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-simple-container.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-source-connection-manager.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-state-machine.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-thumbnail.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-thumbnailer.Po@am__quote@
@@ -656,6 +656,11 @@ $(srcdir)/rygel-content-directory.c: $(srcdir)/rygel_vala.stamp
 	  $(am__cd) $(srcdir) && $(MAKE) $(AM_MAKEFLAGS) rygel_vala.stamp; \
 	fi
 $(srcdir)/rygel-connection-manager.c: $(srcdir)/rygel_vala.stamp
+	@if test -f $@; then :; else \
+	  rm -f $(srcdir)/rygel_vala.stamp; \
+	  $(am__cd) $(srcdir) && $(MAKE) $(AM_MAKEFLAGS) rygel_vala.stamp; \
+	fi
+$(srcdir)/rygel-source-connection-manager.c: $(srcdir)/rygel_vala.stamp
 	@if test -f $@; then :; else \
 	  rm -f $(srcdir)/rygel_vala.stamp; \
 	  $(am__cd) $(srcdir) && $(MAKE) $(AM_MAKEFLAGS) rygel_vala.stamp; \
@@ -746,16 +751,6 @@ $(srcdir)/rygel-media-container.c: $(srcdir)/rygel_vala.stamp
 	  $(am__cd) $(srcdir) && $(MAKE) $(AM_MAKEFLAGS) rygel_vala.stamp; \
 	fi
 $(srcdir)/rygel-simple-container.c: $(srcdir)/rygel_vala.stamp
-	@if test -f $@; then :; else \
-	  rm -f $(srcdir)/rygel_vala.stamp; \
-	  $(am__cd) $(srcdir) && $(MAKE) $(AM_MAKEFLAGS) rygel_vala.stamp; \
-	fi
-$(srcdir)/rygel-media-object-search.c: $(srcdir)/rygel_vala.stamp
-	@if test -f $@; then :; else \
-	  rm -f $(srcdir)/rygel_vala.stamp; \
-	  $(am__cd) $(srcdir) && $(MAKE) $(AM_MAKEFLAGS) rygel_vala.stamp; \
-	fi
-$(srcdir)/rygel-simple-async-result.c: $(srcdir)/rygel_vala.stamp
 	@if test -f $@; then :; else \
 	  rm -f $(srcdir)/rygel_vala.stamp; \
 	  $(am__cd) $(srcdir) && $(MAKE) $(AM_MAKEFLAGS) rygel_vala.stamp; \
@@ -861,6 +856,11 @@ $(srcdir)/rygel-root-device.c: $(srcdir)/rygel_vala.stamp
 	  $(am__cd) $(srcdir) && $(MAKE) $(AM_MAKEFLAGS) rygel_vala.stamp; \
 	fi
 $(srcdir)/rygel-root-device-factory.c: $(srcdir)/rygel_vala.stamp
+	@if test -f $@; then :; else \
+	  rm -f $(srcdir)/rygel_vala.stamp; \
+	  $(am__cd) $(srcdir) && $(MAKE) $(AM_MAKEFLAGS) rygel_vala.stamp; \
+	fi
+$(srcdir)/rygel-database.c: $(srcdir)/rygel_vala.stamp
 	@if test -f $@; then :; else \
 	  rm -f $(srcdir)/rygel_vala.stamp; \
 	  $(am__cd) $(srcdir) && $(MAKE) $(AM_MAKEFLAGS) rygel_vala.stamp; \
@@ -1050,6 +1050,7 @@ maintainer-clean-generic:
 	-rm -f rygel-configuration.c
 	-rm -f rygel-connection-manager.c
 	-rm -f rygel-content-directory.c
+	-rm -f rygel-database.c
 	-rm -f rygel-dbus-service.c
 	-rm -f rygel-didl-lite-writer.c
 	-rm -f rygel-gst-utils.c
@@ -1071,7 +1072,6 @@ maintainer-clean-generic:
 	-rm -f rygel-media-db-object-factory.c
 	-rm -f rygel-media-db.c
 	-rm -f rygel-media-item.c
-	-rm -f rygel-media-object-search.c
 	-rm -f rygel-media-object.c
 	-rm -f rygel-meta-config.c
 	-rm -f rygel-metadata-extractor.c
@@ -1085,8 +1085,8 @@ maintainer-clean-generic:
 	-rm -f rygel-root-device-factory.c
 	-rm -f rygel-root-device.c
 	-rm -f rygel-seekable-response.c
-	-rm -f rygel-simple-async-result.c
 	-rm -f rygel-simple-container.c
+	-rm -f rygel-source-connection-manager.c
 	-rm -f rygel-state-machine.c
 	-rm -f rygel-thumbnail.c
 	-rm -f rygel-thumbnailer.c

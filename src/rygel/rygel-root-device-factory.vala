@@ -27,7 +27,6 @@ using CStuff;
 
 public errordomain RootDeviceFactoryError {
     XML_PARSE,
-    PLUGIN_DISABLED
 }
 
 /**
@@ -52,16 +51,6 @@ public class Rygel.RootDeviceFactory {
     }
 
     public RootDevice create (Plugin plugin) throws GLib.Error {
-        bool enabled = true;
-        try {
-            enabled = this.config.get_enabled (plugin.name);
-        } catch (GLib.Error err) {}
-
-        if (!enabled) {
-            throw new RootDeviceFactoryError.PLUGIN_DISABLED (
-                            "Plugin disabled in user configuration.");
-        }
-
         string modified_desc = plugin.name + ".xml";
         string desc_path = Path.build_filename (this.desc_dir,
                                                 modified_desc);
@@ -250,12 +239,22 @@ public class Rygel.RootDeviceFactory {
         icon_node->new_child (null, "height", height);
         icon_node->new_child (null, "depth", depth);
 
-        // PLUGIN_NAME-WIDTHxHEIGHTxDEPTH.png
-        string url = plugin.name + "-" +
-                     width + "x" + height + "x" + depth + ".png";
+        var uri = icon_info.uri;
 
-        this.context.host_path (icon_info.path, "/" + url);
-        icon_node->new_child (null, "url", url);
+        if (uri.has_prefix ("file://")) {
+            // /PLUGIN_NAME-WIDTHxHEIGHTxDEPTH.png
+            var remote_path = "/" + plugin.name + "-" +
+                              width + "x" +
+                              height + "x" +
+                              depth + ".png";
+            var local_path = uri.offset (7);
+
+            this.context.host_path (local_path, remote_path);
+            icon_node->new_child (null, "url", remote_path);
+        } else {
+            uri = uri.replace ("@ADDRESS@", this.context.host_ip);
+            icon_node->new_child (null, "url", uri);
+        }
     }
 
     private void save_modified_desc (XMLDoc doc,

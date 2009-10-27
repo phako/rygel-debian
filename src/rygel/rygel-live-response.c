@@ -74,12 +74,13 @@ typedef struct _RygelLiveResponsePrivate RygelLiveResponsePrivate;
 typedef struct _RygelHTTPSeek RygelHTTPSeek;
 typedef struct _RygelHTTPSeekClass RygelHTTPSeekClass;
 #define _gst_object_unref0(var) ((var == NULL) ? NULL : (var = (gst_object_unref (var), NULL)))
-#define _g_async_queue_unref0(var) ((var == NULL) ? NULL : (var = (g_async_queue_unref (var), NULL)))
 #define _g_object_unref0(var) ((var == NULL) ? NULL : (var = (g_object_unref (var), NULL)))
-#define _gst_buffer_unref0(var) ((var == NULL) ? NULL : (var = (gst_buffer_unref (var), NULL)))
+typedef struct _RygelLiveResponseRunData RygelLiveResponseRunData;
 #define _gst_caps_unref0(var) ((var == NULL) ? NULL : (var = (gst_caps_unref (var), NULL)))
 #define _gst_structure_free0(var) ((var == NULL) ? NULL : (var = (gst_structure_free (var), NULL)))
 #define __g_list_free_gst_object_unref0(var) ((var == NULL) ? NULL : (var = (_g_list_free_gst_object_unref (var), NULL)))
+typedef struct _Block1Data Block1Data;
+#define _gst_buffer_unref0(var) ((var == NULL) ? NULL : (var = (gst_buffer_unref (var), NULL)))
 #define _g_error_free0(var) ((var == NULL) ? NULL : (var = (g_error_free (var), NULL)))
 #define _g_free0(var) (var = (g_free (var), NULL))
 
@@ -90,7 +91,8 @@ typedef enum  {
 #define RYGEL_LIVE_RESPONSE_ERROR rygel_live_response_error_quark ()
 struct _RygelStateMachineIface {
 	GTypeInterface parent_iface;
-	void (*run) (RygelStateMachine* self);
+	void (*run) (RygelStateMachine* self, GAsyncReadyCallback _callback_, gpointer _user_data_);
+	void (*run_finish) (RygelStateMachine* self, GAsyncResult* _res_);
 	GCancellable* (*get_cancellable) (RygelStateMachine* self);
 	void (*set_cancellable) (RygelStateMachine* self, GCancellable* value);
 };
@@ -103,7 +105,8 @@ struct _RygelHTTPResponse {
 
 struct _RygelHTTPResponseClass {
 	GObjectClass parent_class;
-	void (*run) (RygelHTTPResponse* self);
+	void (*run) (RygelHTTPResponse* self, GAsyncReadyCallback _callback_, gpointer _user_data_);
+	void (*run_finish) (RygelHTTPResponse* self, GAsyncResult* _res_);
 	void (*end) (RygelHTTPResponse* self, gboolean aborted, guint status);
 };
 
@@ -118,8 +121,26 @@ struct _RygelLiveResponseClass {
 
 struct _RygelLiveResponsePrivate {
 	GstPipeline* pipeline;
-	GAsyncQueue* buffers;
 	RygelHTTPSeek* time_range;
+	guint idle_id;
+	GSourceFunc continuation;
+	gpointer continuation_target;
+	GDestroyNotify continuation_target_destroy_notify;
+};
+
+struct _RygelLiveResponseRunData {
+	int _state_;
+	GAsyncResult* _res_;
+	GSimpleAsyncResult* _async_result;
+	RygelLiveResponse* self;
+	gboolean _tmp0_;
+	GSourceFunc _tmp1_;
+};
+
+struct _Block1Data {
+	int _ref_count_;
+	RygelLiveResponse * self;
+	GstBuffer* buffer;
 };
 
 
@@ -139,9 +160,14 @@ RygelHTTPResponse* rygel_http_response_construct (GType object_type, SoupServer*
 static void rygel_live_response_prepare_pipeline (RygelLiveResponse* self, const char* name, GstElement* src, GError** error);
 RygelLiveResponse* rygel_live_response_new (SoupServer* server, SoupMessage* msg, const char* name, GstElement* src, RygelHTTPSeek* time_range, GCancellable* cancellable, GError** error);
 RygelLiveResponse* rygel_live_response_construct (GType object_type, SoupServer* server, SoupMessage* msg, const char* name, GstElement* src, RygelHTTPSeek* time_range, GCancellable* cancellable, GError** error);
-void rygel_http_response_run (RygelHTTPResponse* self);
+static void rygel_live_response_real_run_data_free (gpointer _data);
+static void rygel_live_response_real_run (RygelHTTPResponse* base, GAsyncReadyCallback _callback_, gpointer _user_data_);
+static void rygel_live_response_run_ready (GObject* source_object, GAsyncResult* _res_, gpointer _user_data_);
 gint64 rygel_http_seek_get_start (RygelHTTPSeek* self);
-static void rygel_live_response_real_run (RygelHTTPResponse* base);
+void rygel_http_response_run (RygelHTTPResponse* self, GAsyncReadyCallback _callback_, gpointer _user_data_);
+void rygel_http_response_run_finish (RygelHTTPResponse* self, GAsyncResult* _res_);
+static gboolean _rygel_live_response_real_run_co_gsource_func (gpointer self);
+static gboolean rygel_live_response_real_run_co (RygelLiveResponseRunData* data);
 void rygel_http_response_end (RygelHTTPResponse* self, gboolean aborted, guint status);
 static void rygel_live_response_real_end (RygelHTTPResponse* base, gboolean aborted, guint status);
 static inline void _dynamic_set_signal_handoffs0 (GstElement* obj, gboolean value);
@@ -160,9 +186,11 @@ static GstElement* rygel_live_response_get_best_depay (RygelLiveResponse* self, 
 static void _g_list_free_gst_object_unref (GList* self);
 static gint rygel_live_response_compare_factories (void* a, void* b);
 static gint _rygel_live_response_compare_factories_gcompare_func (void* a, void* b);
-static gboolean rygel_live_response_idle_handler (RygelLiveResponse* self);
-static gboolean _rygel_live_response_idle_handler_gsource_func (gpointer self);
 void rygel_http_response_push_data (RygelHTTPResponse* self, void* data, gsize length);
+static gboolean _lambda1_ (Block1Data* _data1_);
+static gboolean __lambda1__gsource_func (gpointer self);
+static Block1Data* block1_data_ref (Block1Data* _data1_);
+static void block1_data_unref (Block1Data* _data1_);
 static gboolean rygel_live_response_seek (RygelLiveResponse* self);
 gint64 rygel_http_seek_get_stop (RygelHTTPSeek* self);
 static void rygel_live_response_finalize (GObject* obj);
@@ -184,8 +212,7 @@ static gpointer _g_object_ref0 (gpointer self) {
 RygelLiveResponse* rygel_live_response_construct (GType object_type, SoupServer* server, SoupMessage* msg, const char* name, GstElement* src, RygelHTTPSeek* time_range, GCancellable* cancellable, GError** error) {
 	GError * _inner_error_;
 	RygelLiveResponse * self;
-	GAsyncQueue* _tmp0_;
-	RygelHTTPSeek* _tmp1_;
+	RygelHTTPSeek* _tmp0_;
 	g_return_val_if_fail (server != NULL, NULL);
 	g_return_val_if_fail (msg != NULL, NULL);
 	g_return_val_if_fail (name != NULL, NULL);
@@ -193,13 +220,12 @@ RygelLiveResponse* rygel_live_response_construct (GType object_type, SoupServer*
 	_inner_error_ = NULL;
 	self = (RygelLiveResponse*) rygel_http_response_construct (object_type, server, msg, FALSE, cancellable);
 	soup_message_headers_set_encoding (((RygelHTTPResponse*) self)->msg->response_headers, SOUP_ENCODING_EOF);
-	self->priv->buffers = (_tmp0_ = g_async_queue_new (), _g_async_queue_unref0 (self->priv->buffers), _tmp0_);
 	rygel_live_response_prepare_pipeline (self, name, src, &_inner_error_);
 	if (_inner_error_ != NULL) {
 		g_propagate_error (error, _inner_error_);
-		return;
+		return NULL;
 	}
-	self->priv->time_range = (_tmp1_ = _g_object_ref0 (time_range), _g_object_unref0 (self->priv->time_range), _tmp1_);
+	self->priv->time_range = (_tmp0_ = _g_object_ref0 (time_range), _g_object_unref0 (self->priv->time_range), _tmp0_);
 	return self;
 }
 
@@ -209,49 +235,92 @@ RygelLiveResponse* rygel_live_response_new (SoupServer* server, SoupMessage* msg
 }
 
 
-static void rygel_live_response_real_run (RygelHTTPResponse* base) {
+static void rygel_live_response_real_run_data_free (gpointer _data) {
+	RygelLiveResponseRunData* data;
+	data = _data;
+	g_slice_free (RygelLiveResponseRunData, data);
+}
+
+
+static void rygel_live_response_real_run (RygelHTTPResponse* base, GAsyncReadyCallback _callback_, gpointer _user_data_) {
 	RygelLiveResponse * self;
-	gboolean _tmp0_ = FALSE;
+	RygelLiveResponseRunData* _data_;
 	self = (RygelLiveResponse*) base;
-	RYGEL_HTTP_RESPONSE_CLASS (rygel_live_response_parent_class)->run (RYGEL_HTTP_RESPONSE (self));
-	if (self->priv->time_range != NULL) {
-		_tmp0_ = rygel_http_seek_get_start (self->priv->time_range) > 0;
-	} else {
-		_tmp0_ = FALSE;
-	}
-	if (_tmp0_) {
-		gst_element_set_state ((GstElement*) self->priv->pipeline, GST_STATE_PAUSED);
-	} else {
-		gst_element_set_state ((GstElement*) self->priv->pipeline, GST_STATE_PLAYING);
+	_data_ = g_slice_new0 (RygelLiveResponseRunData);
+	_data_->_async_result = g_simple_async_result_new (G_OBJECT (self), _callback_, _user_data_, rygel_live_response_real_run);
+	g_simple_async_result_set_op_res_gpointer (_data_->_async_result, _data_, rygel_live_response_real_run_data_free);
+	_data_->self = self;
+	rygel_live_response_real_run_co (_data_);
+}
+
+
+static void rygel_live_response_real_run_finish (RygelHTTPResponse* base, GAsyncResult* _res_) {
+	RygelLiveResponseRunData* _data_;
+	_data_ = g_simple_async_result_get_op_res_gpointer (G_SIMPLE_ASYNC_RESULT (_res_));
+}
+
+
+static void rygel_live_response_run_ready (GObject* source_object, GAsyncResult* _res_, gpointer _user_data_) {
+	RygelLiveResponseRunData* data;
+	data = _user_data_;
+	data->_res_ = _res_;
+	rygel_live_response_real_run_co (data);
+}
+
+
+static gboolean _rygel_live_response_real_run_co_gsource_func (gpointer self) {
+	return rygel_live_response_real_run_co (self);
+}
+
+
+static gboolean rygel_live_response_real_run_co (RygelLiveResponseRunData* data) {
+	switch (data->_state_) {
+		default:
+		g_assert_not_reached ();
+		case 0:
+		{
+			if (data->self->priv->time_range != NULL) {
+				data->_tmp0_ = rygel_http_seek_get_start (data->self->priv->time_range) > 0;
+			} else {
+				data->_tmp0_ = FALSE;
+			}
+			if (data->_tmp0_) {
+				gst_element_set_state ((GstElement*) data->self->priv->pipeline, GST_STATE_PAUSED);
+			} else {
+				gst_element_set_state ((GstElement*) data->self->priv->pipeline, GST_STATE_PLAYING);
+			}
+			data->self->priv->continuation = (data->_tmp1_ = _rygel_live_response_real_run_co_gsource_func, ((data->self->priv->continuation_target_destroy_notify == NULL) ? NULL : data->self->priv->continuation_target_destroy_notify (data->self->priv->continuation_target), data->self->priv->continuation = NULL, data->self->priv->continuation_target = NULL, data->self->priv->continuation_target_destroy_notify = NULL), data->self->priv->continuation_target = data, data->self->priv->continuation_target_destroy_notify = NULL, data->_tmp1_);
+			data->_state_ = 5;
+			return FALSE;
+			case 5:
+			;
+		}
+		{
+			if (data->_state_ == 0) {
+				g_simple_async_result_complete_in_idle (data->_async_result);
+			} else {
+				g_simple_async_result_complete (data->_async_result);
+			}
+			g_object_unref (data->_async_result);
+			return FALSE;
+		}
 	}
 }
 
 
 static void rygel_live_response_real_end (RygelHTTPResponse* base, gboolean aborted, guint status) {
 	RygelLiveResponse * self;
-	GstBuffer* buffer;
 	self = (RygelLiveResponse*) base;
 	gst_element_set_state ((GstElement*) self->priv->pipeline, GST_STATE_NULL);
-	buffer = NULL;
-	{
-		gboolean _tmp0_;
-		_tmp0_ = TRUE;
-		while (TRUE) {
-			GstBuffer* _tmp1_;
-			if (!_tmp0_) {
-				if (!(buffer != NULL)) {
-					break;
-				}
-			}
-			_tmp0_ = FALSE;
-			buffer = (_tmp1_ = (GstBuffer*) g_async_queue_try_pop (self->priv->buffers), _gst_buffer_unref0 (buffer), _tmp1_);
-		}
+	if (self->priv->idle_id != 0) {
+		g_source_remove (self->priv->idle_id);
+		self->priv->idle_id = (guint) 0;
 	}
 	if (!aborted) {
 		soup_message_body_complete (((RygelHTTPResponse*) self)->msg->response_body);
 	}
 	RYGEL_HTTP_RESPONSE_CLASS (rygel_live_response_parent_class)->end (RYGEL_HTTP_RESPONSE (self), aborted, status);
-	_gst_buffer_unref0 (buffer);
+	self->priv->continuation (self->priv->continuation_target);
 }
 
 
@@ -343,7 +412,7 @@ static void rygel_live_response_src_pad_added (RygelLiveResponse* self, GstEleme
 		GstPad* _tmp0_;
 		gst_bin_add ((GstBin*) self->priv->pipeline, _gst_object_ref0 (depay));
 		if (!gst_element_link (depay, sink)) {
-			g_critical ("rygel-live-response.vala:130: Failed to link %s to %s", gst_object_get_name ((GstObject*) depay), gst_object_get_name ((GstObject*) sink));
+			g_critical ("rygel-live-response.vala:133: Failed to link %s to %s", gst_object_get_name ((GstObject*) depay), gst_object_get_name ((GstObject*) sink));
 			rygel_http_response_end ((RygelHTTPResponse*) self, FALSE, (guint) SOUP_STATUS_NONE);
 			_gst_caps_unref0 (caps);
 			_gst_object_unref0 (sink);
@@ -357,7 +426,7 @@ static void rygel_live_response_src_pad_added (RygelLiveResponse* self, GstEleme
 		sink_pad = (_tmp1_ = _gst_object_ref0 (gst_element_get_compatible_pad (sink, src_pad, caps)), _gst_object_unref0 (sink_pad), _tmp1_);
 	}
 	if (gst_pad_link (src_pad, sink_pad) != GST_PAD_LINK_OK) {
-		g_critical ("rygel-live-response.vala:143: Failed to link pad %s to %s", gst_object_get_name ((GstObject*) src_pad), gst_object_get_name ((GstObject*) sink_pad));
+		g_critical ("rygel-live-response.vala:146: Failed to link pad %s to %s", gst_object_get_name ((GstObject*) src_pad), gst_object_get_name ((GstObject*) sink_pad));
 		rygel_http_response_end ((RygelHTTPResponse*) self, FALSE, (guint) SOUP_STATUS_NONE);
 		_gst_caps_unref0 (caps);
 		_gst_object_unref0 (sink);
@@ -503,37 +572,54 @@ static gint rygel_live_response_compare_factories (void* a, void* b) {
 }
 
 
+static gboolean _lambda1_ (Block1Data* _data1_) {
+	RygelLiveResponse * self;
+	gboolean result;
+	self = _data1_->self;
+	rygel_http_response_push_data ((RygelHTTPResponse*) self, _data1_->buffer->data, (gsize) _data1_->buffer->size);
+	self->priv->idle_id = (guint) 0;
+	result = FALSE;
+	return result;
+}
+
+
+static gboolean __lambda1__gsource_func (gpointer self) {
+	return _lambda1_ (self);
+}
+
+
 static gpointer _gst_buffer_ref0 (gpointer self) {
 	return self ? gst_buffer_ref (self) : NULL;
 }
 
 
-static gboolean _rygel_live_response_idle_handler_gsource_func (gpointer self) {
-	return rygel_live_response_idle_handler (self);
+static Block1Data* block1_data_ref (Block1Data* _data1_) {
+	++_data1_->_ref_count_;
+	return _data1_;
+}
+
+
+static void block1_data_unref (Block1Data* _data1_) {
+	if ((--_data1_->_ref_count_) == 0) {
+		_g_object_unref0 (_data1_->self);
+		_gst_buffer_unref0 (_data1_->buffer);
+		g_slice_free (Block1Data, _data1_);
+	}
 }
 
 
 static void rygel_live_response_on_new_buffer (RygelLiveResponse* self, GstElement* sink, GstBuffer* buffer, GstPad* pad) {
+	Block1Data* _data1_;
 	g_return_if_fail (self != NULL);
 	g_return_if_fail (sink != NULL);
 	g_return_if_fail (buffer != NULL);
 	g_return_if_fail (pad != NULL);
-	g_async_queue_push (self->priv->buffers, _gst_buffer_ref0 (buffer));
-	g_idle_add_full (G_PRIORITY_HIGH_IDLE, _rygel_live_response_idle_handler_gsource_func, g_object_ref (self), g_object_unref);
-}
-
-
-static gboolean rygel_live_response_idle_handler (RygelLiveResponse* self) {
-	gboolean result;
-	GstBuffer* buffer;
-	g_return_val_if_fail (self != NULL, FALSE);
-	buffer = (GstBuffer*) g_async_queue_try_pop (self->priv->buffers);
-	if (buffer != NULL) {
-		rygel_http_response_push_data ((RygelHTTPResponse*) self, buffer->data, (gsize) buffer->size);
-	}
-	result = FALSE;
-	_gst_buffer_unref0 (buffer);
-	return result;
+	_data1_ = g_slice_new0 (Block1Data);
+	_data1_->_ref_count_ = 1;
+	_data1_->self = g_object_ref (self);
+	_data1_->buffer = _gst_buffer_ref0 (buffer);
+	self->priv->idle_id = g_idle_add_full (G_PRIORITY_HIGH_IDLE, __lambda1__gsource_func, block1_data_ref (_data1_), block1_data_unref);
+	block1_data_unref (_data1_);
 }
 
 
@@ -586,7 +672,7 @@ static gboolean rygel_live_response_bus_handler (RygelLiveResponse* self, GstBus
 				GError* _tmp2_ = NULL;
 				(gst_message_parse_error (message, &_tmp2_, &_tmp4_), err = (_tmp3_ = _tmp2_, _g_error_free0 (err), _tmp3_));
 				err_msg = (_tmp5_ = _tmp4_, _g_free0 (err_msg), _tmp5_);
-				g_critical ("rygel-live-response.vala:262: Error from pipeline %s:%s", gst_object_get_name ((GstObject*) self->priv->pipeline), err_msg);
+				g_critical ("rygel-live-response.vala:261: Error from pipeline %s:%s", gst_object_get_name ((GstObject*) self->priv->pipeline), err_msg);
 				ret = FALSE;
 			} else {
 				if (message->type == GST_MESSAGE_WARNING) {
@@ -596,7 +682,7 @@ static gboolean rygel_live_response_bus_handler (RygelLiveResponse* self, GstBus
 					GError* _tmp6_ = NULL;
 					(gst_message_parse_warning (message, &_tmp6_, &_tmp8_), err = (_tmp7_ = _tmp6_, _g_error_free0 (err), _tmp7_));
 					err_msg = (_tmp9_ = _tmp8_, _g_free0 (err_msg), _tmp9_);
-					g_warning ("rygel-live-response.vala:269: Warning from pipeline %s:%s", gst_object_get_name ((GstObject*) self->priv->pipeline), err_msg);
+					g_warning ("rygel-live-response.vala:268: Warning from pipeline %s:%s", gst_object_get_name ((GstObject*) self->priv->pipeline), err_msg);
 				}
 			}
 			_g_error_free0 (err);
@@ -621,7 +707,7 @@ static gboolean rygel_live_response_seek (RygelLiveResponse* self) {
 		stop_type = GST_SEEK_TYPE_NONE;
 	}
 	if (!gst_element_seek ((GstElement*) self->priv->pipeline, 1.0, GST_FORMAT_TIME, GST_SEEK_FLAG_FLUSH, GST_SEEK_TYPE_SET, rygel_http_seek_get_start (self->priv->time_range), stop_type, rygel_http_seek_get_stop (self->priv->time_range))) {
-		g_warning ("rygel-live-response.vala:298: Failed to seek to offset %lld", rygel_http_seek_get_start (self->priv->time_range));
+		g_warning ("rygel-live-response.vala:297: Failed to seek to offset %lld", rygel_http_seek_get_start (self->priv->time_range));
 		rygel_http_response_end ((RygelHTTPResponse*) self, FALSE, (guint) SOUP_STATUS_REQUESTED_RANGE_NOT_SATISFIABLE);
 		result = FALSE;
 		return result;
@@ -635,6 +721,7 @@ static void rygel_live_response_class_init (RygelLiveResponseClass * klass) {
 	rygel_live_response_parent_class = g_type_class_peek_parent (klass);
 	g_type_class_add_private (klass, sizeof (RygelLiveResponsePrivate));
 	RYGEL_HTTP_RESPONSE_CLASS (klass)->run = rygel_live_response_real_run;
+	RYGEL_HTTP_RESPONSE_CLASS (klass)->run_finish = rygel_live_response_real_run_finish;
 	RYGEL_HTTP_RESPONSE_CLASS (klass)->end = rygel_live_response_real_end;
 	G_OBJECT_CLASS (klass)->finalize = rygel_live_response_finalize;
 }
@@ -649,8 +736,11 @@ static void rygel_live_response_finalize (GObject* obj) {
 	RygelLiveResponse * self;
 	self = RYGEL_LIVE_RESPONSE (obj);
 	_gst_object_unref0 (self->priv->pipeline);
-	_g_async_queue_unref0 (self->priv->buffers);
 	_g_object_unref0 (self->priv->time_range);
+	(self->priv->continuation_target_destroy_notify == NULL) ? NULL : self->priv->continuation_target_destroy_notify (self->priv->continuation_target);
+	self->priv->continuation = NULL;
+	self->priv->continuation_target = NULL;
+	self->priv->continuation_target_destroy_notify = NULL;
 	G_OBJECT_CLASS (rygel_live_response_parent_class)->finalize (obj);
 }
 

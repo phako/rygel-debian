@@ -201,7 +201,7 @@ RygelGeneralPrefSection* rygel_general_pref_section_construct (GType object_type
 	__finally1:
 	if (_inner_error_ != NULL) {
 		g_propagate_error (error, _inner_error_);
-		return;
+		return NULL;
 	}
 	{
 		gint _tmp10_;
@@ -225,7 +225,7 @@ RygelGeneralPrefSection* rygel_general_pref_section_construct (GType object_type
 	__finally2:
 	if (_inner_error_ != NULL) {
 		g_propagate_error (error, _inner_error_);
-		return;
+		return NULL;
 	}
 	{
 		gboolean _tmp11_;
@@ -249,7 +249,7 @@ RygelGeneralPrefSection* rygel_general_pref_section_construct (GType object_type
 	__finally3:
 	if (_inner_error_ != NULL) {
 		g_propagate_error (error, _inner_error_);
-		return;
+		return NULL;
 	}
 	{
 		gboolean _tmp12_;
@@ -273,7 +273,7 @@ RygelGeneralPrefSection* rygel_general_pref_section_construct (GType object_type
 	__finally4:
 	if (_inner_error_ != NULL) {
 		g_propagate_error (error, _inner_error_);
-		return;
+		return NULL;
 	}
 	{
 		gboolean _tmp13_;
@@ -297,7 +297,7 @@ RygelGeneralPrefSection* rygel_general_pref_section_construct (GType object_type
 	__finally5:
 	if (_inner_error_ != NULL) {
 		g_propagate_error (error, _inner_error_);
-		return;
+		return NULL;
 	}
 	{
 		gboolean _tmp14_;
@@ -321,7 +321,7 @@ RygelGeneralPrefSection* rygel_general_pref_section_construct (GType object_type
 	__finally6:
 	if (_inner_error_ != NULL) {
 		g_propagate_error (error, _inner_error_);
-		return;
+		return NULL;
 	}
 	{
 		gboolean _tmp15_;
@@ -345,7 +345,7 @@ RygelGeneralPrefSection* rygel_general_pref_section_construct (GType object_type
 	__finally7:
 	if (_inner_error_ != NULL) {
 		g_propagate_error (error, _inner_error_);
-		return;
+		return NULL;
 	}
 	g_signal_connect_object ((GtkToggleButton*) self->priv->trans_check, "toggled", (GCallback) _rygel_general_pref_section_on_trans_check_toggled_gtk_toggle_button_toggled, self, 0);
 	g_signal_connect_object (self->priv->context_manager, "context-available", (GCallback) _rygel_general_pref_section_on_context_available_gupnp_context_manager_context_available, self, 0);

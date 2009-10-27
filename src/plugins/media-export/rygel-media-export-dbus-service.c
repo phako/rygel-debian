@@ -128,17 +128,17 @@ RygelMediaExportDBusService* rygel_media_export_dbus_service_construct (GType ob
 		conn = dbus_g_bus_get (DBUS_BUS_SESSION, &_inner_error_);
 		if (_inner_error_ != NULL) {
 			if (_inner_error_->domain == DBUS_GERROR) {
-				goto __catch7_dbus_gerror;
+				goto __catch8_dbus_gerror;
 			}
-			goto __finally7;
+			goto __finally8;
 		}
 		if (conn != NULL) {
 			_vala_dbus_register_object (dbus_g_connection_get_connection (conn), RYGEL_MEDIA_EXPORT_DBUS_SERVICE_RYGEL_MEDIA_EXPORT_PATH, (GObject*) self);
 		}
 		_dbus_g_connection_unref0 (conn);
 	}
-	goto __finally7;
-	__catch7_dbus_gerror:
+	goto __finally8;
+	__catch8_dbus_gerror:
 	{
 		GError * err;
 		err = _inner_error_;
@@ -148,10 +148,10 @@ RygelMediaExportDBusService* rygel_media_export_dbus_service_construct (GType ob
 			_g_error_free0 (err);
 		}
 	}
-	__finally7:
+	__finally8:
 	if (_inner_error_ != NULL) {
 		g_propagate_error (error, _inner_error_);
-		return;
+		return NULL;
 	}
 	return self;
 }
@@ -253,7 +253,7 @@ static DBusHandlerResult _dbus_rygel_media_export_dbus_service_property_get_all 
 static DBusHandlerResult _dbus_rygel_media_export_dbus_service_AddUri (RygelMediaExportDBusService* self, DBusConnection* connection, DBusMessage* message) {
 	DBusMessageIter iter;
 	GError* error;
-	char* uri;
+	char* uri = NULL;
 	const char* _tmp1_;
 	DBusMessage* reply;
 	error = NULL;
@@ -261,7 +261,6 @@ static DBusHandlerResult _dbus_rygel_media_export_dbus_service_AddUri (RygelMedi
 		return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
 	}
 	dbus_message_iter_init (message, &iter);
-	uri = NULL;
 	dbus_message_iter_get_basic (&iter, &_tmp1_);
 	dbus_message_iter_next (&iter);
 	uri = g_strdup (_tmp1_);
@@ -282,7 +281,7 @@ static DBusHandlerResult _dbus_rygel_media_export_dbus_service_AddUri (RygelMedi
 static DBusHandlerResult _dbus_rygel_media_export_dbus_service_RemoveUri (RygelMediaExportDBusService* self, DBusConnection* connection, DBusMessage* message) {
 	DBusMessageIter iter;
 	GError* error;
-	char* uri;
+	char* uri = NULL;
 	const char* _tmp2_;
 	DBusMessage* reply;
 	error = NULL;
@@ -290,7 +289,6 @@ static DBusHandlerResult _dbus_rygel_media_export_dbus_service_RemoveUri (RygelM
 		return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
 	}
 	dbus_message_iter_init (message, &iter);
-	uri = NULL;
 	dbus_message_iter_get_basic (&iter, &_tmp2_);
 	dbus_message_iter_next (&iter);
 	uri = g_strdup (_tmp2_);

@@ -71,22 +71,107 @@ public class Rygel.MediaExportHarvester : GLib.Object {
         this.media_db = media_db;
         this.extractor.extraction_done.connect (on_extracted_cb);
         this.extractor.error.connect (on_extractor_error_cb);
-        this.files = new GLib.Queue<FileQueueEntry?> ();
-        this.containers = new GLib.Queue<DummyContainer> ();
+        this.files = new GLib.Queue<FileQueueEntry> ();
+        this.containers = new GLib.Queue<MediaContainer> ();
         this.origin = null;
         this.monitor = monitor;
     }
 
-    private void on_close_async (Object? obj, AsyncResult res) {
-        var enumerator = (FileEnumerator) obj;
+    private bool push_if_changed_or_unknown (File       file,
+                                             FileInfo   info,
+                                             out string id) {
+        id = Checksum.compute_for_string (ChecksumType.MD5, file.get_uri ());
+        int64 timestamp;
         try {
-            enumerator.close_finish (res);
-        } catch (Error error) {
-            // TODO
+            if (this.media_db.exists (id, out timestamp)) {
+                int64 mtime = (int64) info.get_attribute_uint64 (
+                                                FILE_ATTRIBUTE_TIME_MODIFIED);
+
+                if (mtime > timestamp) {
+                    this.files.push_tail (new FileQueueEntry (file, true));
+                    return true;
+                }
+            } else {
+                this.files.push_tail (new FileQueueEntry (file, false));
+                return true;
+            }
+        } catch (DatabaseError err) {
+            warning ("Failed to query database: %s", err.message);
         }
 
+        return false;
+    }
+
+    private bool process_children (GLib.List<FileInfo>? list) {
+        if (list == null)
+            return false;
+
+        foreach (var info in list) {
+            if (info.get_name ()[0] == '.') {
+                continue;
+            }
+            var parent_container =
+                (DummyContainer)this.containers.peek_head ();
+
+            var dir = parent_container.file;
+            var file = dir.get_child (info.get_name ());
+            if (info.get_file_type () == FileType.DIRECTORY) {
+                monitor.monitor (file);
+                var container = new DummyContainer (file,
+                                                    parent_container);
+                this.containers.push_tail (container);
+                parent_container.seen (container.id);
+                try {
+                    int64 timestamp;
+                    if (!this.media_db.exists (container.id,
+                                               out timestamp)) {
+                        this.media_db.save_object (container);
+                    }
+                } catch (Error err) {
+                    warning ("Failed to update database: %s",
+                             err.message);
+                }
+            } else {
+                string id;
+                push_if_changed_or_unknown (file, info, out id);
+                parent_container.seen (id);
+            }
+        }
+
+        return true;
+    }
+
+    private async void enumerate_directory (File directory) {
+        try {
+            var enumerator = yield directory.enumerate_children_async (
+                                          FILE_ATTRIBUTE_STANDARD_TYPE + "," +
+                                          FILE_ATTRIBUTE_STANDARD_NAME + "," +
+                                          FILE_ATTRIBUTE_TIME_MODIFIED,
+                                          FileQueryInfoFlags.NONE,
+                                          Priority.DEFAULT,
+                                          null);
+
+
+            GLib.List<FileInfo> list = null;
+            do {
+                list = yield enumerator.next_files_async (10,
+                                                          Priority.DEFAULT,
+                                                          null);
+            } while (process_children (list));
+
+            yield enumerator.close_async (Priority.DEFAULT, null);
+        } catch (Error err) {
+            warning ("failed to enumerate directory: %s",
+                     err.message);
+        }
+
+        cleanup_database (this.containers.peek_head() as DummyContainer);
+        this.do_update ();
+    }
+
+    void cleanup_database (DummyContainer container) {
         // delete all children which are not in filesystem anymore
-        var container = (DummyContainer) this.containers.peek_head ();
+        container = (DummyContainer) this.containers.peek_head ();
         try {
             var children = this.media_db.get_child_ids (container.id);
 
@@ -97,95 +182,12 @@ public class Rygel.MediaExportHarvester : GLib.Object {
             foreach (var child in children) {
                 this.media_db.remove_by_id (child);
             }
-
-            this.do_update ();
-        } catch (MediaDBError err) {
+        } catch (DatabaseError err) {
             warning("Failed to get children of container %s: %s",
                     container.id,
                     err.message);
         }
 
-        Idle.add(this.on_idle);
-    }
-
-    private bool push_if_changed_or_unknown (File       file,
-                                             FileInfo   info,
-                                             out string id) {
-        id = Checksum.compute_for_string (ChecksumType.MD5, file.get_uri ());
-        int64 timestamp;
-        if (this.media_db.exists (id, out timestamp)) {
-            int64 mtime = (int64) info.get_attribute_uint64 (
-                                                FILE_ATTRIBUTE_TIME_MODIFIED);
-
-            if (mtime > timestamp) {
-                this.files.push_tail (new FileQueueEntry (file, true));
-                return true;
-            }
-        } else {
-            this.files.push_tail (new FileQueueEntry (file, false));
-            return true;
-        }
-
-        return false;
-    }
-
-    private void on_next_files_ready (Object? obj, AsyncResult res) {
-        var enumerator = (FileEnumerator) obj;
-        try {
-            var list = enumerator.next_files_finish (res);
-            if (list != null) {
-                foreach (var info in list) {
-                    if (info.get_name ()[0] == '.') {
-                        continue;
-                    }
-                    var parent_container =
-                                 (DummyContainer)this.containers.peek_head ();
-
-                    var dir = parent_container.file;
-                    var file = dir.get_child (info.get_name ());
-                    if (info.get_file_type () == FileType.DIRECTORY) {
-                        monitor.monitor (file);
-                        var container = new DummyContainer (file,
-                                                            parent_container);
-                        this.containers.push_tail (container);
-                        parent_container.seen (container.id);
-                        int64 timestamp;
-                        if (!this.media_db.exists (container.id,
-                                                   out timestamp)) {
-                            this.media_db.save_object (container);
-                        }
-                    } else {
-                        string id;
-                        push_if_changed_or_unknown (file, info, out id);
-                        parent_container.seen (id);
-                    }
-                }
-
-                enumerator.next_files_async (10,
-                                             Priority.DEFAULT,
-                                             null,
-                                             this.on_next_files_ready);
-            } else {
-                enumerator.close_async (Priority.DEFAULT,
-                                        null,
-                                        this.on_close_async);
-            }
-        } catch (Error error) {
-            // TODO
-        }
-    }
-
-    private void on_enumerate_ready (Object? obj, AsyncResult res) {
-        var file = (File) obj;
-        try {
-            var enumerator = file.enumerate_children_finish (res);
-            enumerator.next_files_async (10,
-                                         Priority.DEFAULT,
-                                         null,
-                                         on_next_files_ready);
-        } catch (Error error) {
-            // TODO
-        }
     }
 
     private bool on_idle () {
@@ -194,14 +196,7 @@ public class Rygel.MediaExportHarvester : GLib.Object {
             this.extractor.extract (candidate);
         } else if (this.containers.get_length () > 0) {
             var directory = ((DummyContainer)this.containers.peek_head ()).file;
-            directory.enumerate_children_async (
-                            FILE_ATTRIBUTE_STANDARD_TYPE + "," +
-                            FILE_ATTRIBUTE_STANDARD_NAME + "," +
-                            FILE_ATTRIBUTE_TIME_MODIFIED,
-                            FileQueryInfoFlags.NONE,
-                            Priority.DEFAULT,
-                            null,
-                            this.on_enumerate_ready);
+            enumerate_directory (directory);
         } else {
             // nothing to do
             harvested (this.origin);
@@ -210,10 +205,35 @@ public class Rygel.MediaExportHarvester : GLib.Object {
         return false;
     }
 
-    private void on_initial_info_ready (Object? source, AsyncResult result) {
-        var file = (File) source;
+    /**
+     * Fired for every file passed to harvest.
+     */
+    public signal void harvested (File file);
+
+    /**
+     * Extract all metainformation from a given file.
+     *
+     * What action will be taken depends on the arguments
+     * * file is a simple file. Then only information of this
+     *   file will be extracted
+     * * file is a directory and recursive is false. The children
+     *   of the directory (if not directories themselves) will be
+     *   enqueued for extraction
+     * * file is a directory and recursive is true. ++ All ++ children
+     *   of the directory will be enqueued for extraction, even directories
+     *
+     * No matter how many children are contained within file's hierarchy,
+     * only one event is sent when all the children are done.
+     */
+    public async void harvest (File file) {
         try {
-            var info = file.query_info_finish (result);
+            var info = yield file.query_info_async (
+                                          FILE_ATTRIBUTE_STANDARD_NAME + "," +
+                                          FILE_ATTRIBUTE_STANDARD_TYPE + "," +
+                                          FILE_ATTRIBUTE_TIME_MODIFIED,
+                                          FileQueryInfoFlags.NONE,
+                                          Priority.DEFAULT,
+                                          null);
 
             if (info.get_file_type () == FileType.DIRECTORY) {
                 this.origin = file;
@@ -240,42 +260,11 @@ public class Rygel.MediaExportHarvester : GLib.Object {
             warning ("Failed to harvest file %s: %s",
                      file.get_uri (),
                      err.message);
-            this.harvested (file);
+            harvested (file);
         }
     }
 
-    /**
-     * Fired for every file passed to harvest.
-     */
-    public signal void harvested (File file);
-
-    /**
-     * Extract all metainformation from a given file.
-     *
-     * What action will be taken depends on the arguments
-     * * file is a simple file. Then only information of this
-     *   file will be extracted
-     * * file is a directory and recursive is false. The children
-     *   of the directory (if not directories themselves) will be
-     *   enqueued for extraction
-     * * file is a directory and recursive is true. ++ All ++ children
-     *   of the directory will be enqueued for extraction, even directories
-     *
-     * No matter how many children are contained within file's hierarchy,
-     * only one event is sent when all the children are done.
-     */
-    public void harvest (File file) {
-        file.query_info_async (FILE_ATTRIBUTE_STANDARD_NAME + "," +
-                               FILE_ATTRIBUTE_STANDARD_TYPE + "," +
-                               FILE_ATTRIBUTE_TIME_MODIFIED,
-                               FileQueryInfoFlags.NONE,
-                               Priority.DEFAULT,
-                               null,
-                               this.on_initial_info_ready);
-    }
-
     private void on_extracted_cb (File file, Gst.TagList tag_list) {
-
         var entry = this.files.peek_head ();
         if (entry == null) {
             // this event may be triggered by another instance
@@ -302,7 +291,6 @@ public class Rygel.MediaExportHarvester : GLib.Object {
 
             this.files.pop_head ();
             this.do_update ();
-            Idle.add(this.on_idle);
         }
     }
 
@@ -316,15 +304,21 @@ public class Rygel.MediaExportHarvester : GLib.Object {
         if (file == entry.file) {
             this.files.pop_head ();
             this.do_update ();
-            Idle.add(this.on_idle);
         }
     }
 
+    /**
+     * If all files of a container were processed, notify the container
+     * about this and set the updating signal.
+     * Reschedule the iteration and extraction
+     */
     private void do_update () {
         if (this.files.get_length () == 0 &&
             this.containers.get_length () != 0) {
             this.containers.peek_head ().updated ();
             this.containers.pop_head ();
         }
+
+        Idle.add(this.on_idle);
     }
 }

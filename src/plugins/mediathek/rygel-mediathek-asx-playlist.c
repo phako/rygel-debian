@@ -96,7 +96,7 @@ RygelMediathekAsxPlaylist* rygel_mediathek_asx_playlist_construct (GType object_
 	char* _tmp1_;
 	g_return_val_if_fail (uri != NULL, NULL);
 	self = (RygelMediathekAsxPlaylist*) g_object_new (object_type, NULL);
-	self->uris = (_tmp0_ = gee_array_list_new (G_TYPE_STRING, (GBoxedCopyFunc) g_strdup, g_free, g_direct_equal), _g_object_unref0 (self->uris), _tmp0_);
+	self->uris = (_tmp0_ = gee_array_list_new (G_TYPE_STRING, (GBoxedCopyFunc) g_strdup, g_free, NULL), _g_object_unref0 (self->uris), _tmp0_);
 	self->priv->uri = (_tmp1_ = g_strdup (uri), _g_free0 (self->priv->uri), _tmp1_);
 	return self;
 }

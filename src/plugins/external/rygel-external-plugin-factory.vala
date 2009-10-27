@@ -25,6 +25,7 @@
 using Rygel;
 using Gee;
 using CStuff;
+using FreeDesktop;
 
 private ExternalPluginFactory plugin_factory;
 
@@ -38,63 +39,62 @@ public void module_init (PluginLoader loader) {
     }
 }
 
-public class ExternalPluginFactory {
+public class Rygel.ExternalPluginFactory {
     private const string DBUS_SERVICE = "org.freedesktop.DBus";
     private const string DBUS_OBJECT = "/org/freedesktop/DBus";
-    private const string DBUS_IFACE = "org.freedesktop.DBus";
+
+    private static string OBJECT_IFACE = "org.gnome.UPnP.MediaObject1";
+    private static string CONTAINER_IFACE = "org.gnome.UPnP.MediaContainer1";
 
     private const string SERVICE_PREFIX = "org.gnome.UPnP.MediaServer1.";
 
-    dynamic DBus.Object dbus_obj;
+    DBusObject          dbus_obj;
     DBus.Connection     connection;
     PluginLoader        loader;
-
-    bool activatable; // Indicated if we have listed activatable services yet
+    ExternalIconFactory icon_factory;
 
     public ExternalPluginFactory (PluginLoader loader) throws DBus.Error {
         this.connection = DBus.Bus.get (DBus.BusType.SESSION);
+        this.icon_factory = new ExternalIconFactory (this.connection);
 
-        this.dbus_obj = connection.get_object (DBUS_SERVICE,
-                                               DBUS_OBJECT,
-                                               DBUS_IFACE);
+        this.dbus_obj = this.connection.get_object (DBUS_SERVICE,
+                                                    DBUS_OBJECT)
+                                                    as DBusObject;
         this.loader = loader;
 
-        this.activatable = false;
-        dbus_obj.ListNames (this.list_names_cb);
+        this.load_plugins.begin ();
     }
 
-    private void list_names_cb (string[]   services,
-                                GLib.Error err) {
-        if (err != null) {
-            critical ("Failed to fetch list of external services: %s\n",
-                      err.message);
-
-            return;
-        }
+    private async void load_plugins () throws DBus.Error {
+        var services = yield this.dbus_obj.list_names ();
 
         foreach (var service in services) {
             if (service.has_prefix (SERVICE_PREFIX) &&
                 this.loader.get_plugin_by_name (service) == null) {
-                this.loader.add_plugin (new ExternalPlugin (this.connection,
-                                                            service));
+                yield this.load_plugin (service);
             }
         }
 
-        if (this.activatable) {
-            // Activatable services are already taken-care of, now we can
-            // just relax but keep a watch on bus for plugins coming and
-            // going away on the fly.
-            dbus_obj.NameOwnerChanged += this.name_owner_changed;
-        } else {
-            dbus_obj.ListActivatableNames (this.list_names_cb);
-            this.activatable = true;
-        }
+        yield this.load_activatable_plugins ();
     }
 
-    private void name_owner_changed (dynamic DBus.Object dbus_obj,
-                                     string              name,
-                                     string              old_owner,
-                                     string              new_owner) {
+    private async void load_activatable_plugins () throws DBus.Error {
+        var services = yield this.dbus_obj.list_activatable_names ();
+
+        foreach (var service in services) {
+            if (service.has_prefix (SERVICE_PREFIX) &&
+                this.loader.get_plugin_by_name (service) == null) {
+                yield this.load_plugin (service);
+            }
+        }
+
+        this.dbus_obj.name_owner_changed += this.name_owner_changed;
+    }
+
+    private void name_owner_changed (DBusObject dbus_obj,
+                                     string     name,
+                                     string     old_owner,
+                                     string     new_owner) {
         var plugin = this.loader.get_plugin_by_name (name);
 
         if (plugin != null) {
@@ -109,8 +109,49 @@ public class ExternalPluginFactory {
             }
         } else if (name.has_prefix (SERVICE_PREFIX)) {
                 // Ah, new plugin available, lets use it
-                this.loader.add_plugin (new ExternalPlugin (this.connection,
-                                                            name));
+                this.load_plugin.begin (name);
         }
+    }
+
+    private async void load_plugin (string service_name) {
+        // org.gnome.UPnP.MediaServer1.NAME => /org/gnome/UPnP/MediaServer1/NAME
+        var root_object = "/" + service_name.replace (".", "/");
+
+        // Create proxy to MediaObject iface to get the display name through
+        var props = this.connection.get_object (service_name,
+                                                root_object)
+                                                as Properties;
+
+        HashTable<string,Value?> object_props;
+        HashTable<string,Value?> container_props;
+
+        try {
+            object_props = yield props.get_all (OBJECT_IFACE);
+            container_props = yield props.get_all (CONTAINER_IFACE);
+        } catch (DBus.Error err) {
+            warning ("Failed to fetch properties of plugin %s: %s.",
+                     service_name,
+                     err.message);
+
+            return;
+        }
+
+        var icon = yield this.icon_factory.create (service_name,
+                                                   container_props);
+
+        string title;
+        var value = object_props.lookup ("DisplayName");
+        if (value != null) {
+            title = value.get_string ();
+        } else {
+            title = service_name;
+        }
+
+        var plugin = new ExternalPlugin (service_name,
+                                         title,
+                                         root_object,
+                                         icon);
+
+        this.loader.add_plugin (plugin);
     }
 }

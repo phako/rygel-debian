@@ -26,6 +26,8 @@
 #include <glib.h>
 #include <glib-object.h>
 #include <rygel.h>
+#include <stdlib.h>
+#include <string.h>
 
 
 #define RYGEL_TYPE_TRACKER_PLUGIN (rygel_tracker_plugin_get_type ())
@@ -49,7 +51,7 @@ typedef struct _RygelTrackerPluginPrivate RygelTrackerPluginPrivate;
 typedef struct _RygelMediaTracker RygelMediaTracker;
 typedef struct _RygelMediaTrackerClass RygelMediaTrackerClass;
 #define _g_free0(var) (var = (g_free (var), NULL))
-#define _rygel_resource_info_unref0(var) ((var == NULL) ? NULL : (var = (rygel_resource_info_unref (var), NULL)))
+#define _g_error_free0(var) ((var == NULL) ? NULL : (var = (g_error_free (var), NULL)))
 #define _rygel_icon_info_unref0(var) ((var == NULL) ? NULL : (var = (rygel_icon_info_unref (var), NULL)))
 
 struct _RygelTrackerPlugin {
@@ -76,20 +78,46 @@ RygelTrackerPlugin* rygel_tracker_plugin_construct (GType object_type);
 
 
 RygelTrackerPlugin* rygel_tracker_plugin_construct (GType object_type) {
+	GError * _inner_error_;
 	RygelTrackerPlugin * self;
-	RygelResourceInfo* resource_info;
 	RygelIconInfo* icon_info;
-	char* _tmp0_;
-	self = (RygelTrackerPlugin*) rygel_plugin_construct_MediaServer (object_type, "Tracker", "@REALNAME@'s media");
-	resource_info = rygel_resource_info_new (RYGEL_CONTENT_DIRECTORY_UPNP_ID, RYGEL_CONTENT_DIRECTORY_UPNP_TYPE, RYGEL_CONTENT_DIRECTORY_DESCRIPTION_PATH, RYGEL_TYPE_MEDIA_TRACKER);
-	rygel_plugin_add_resource ((RygelPlugin*) self, resource_info);
+	_inner_error_ = NULL;
+	self = (RygelTrackerPlugin*) rygel_plugin_construct_MediaServer (object_type, "Tracker", "@REALNAME@'s media", RYGEL_TYPE_MEDIA_TRACKER);
 	icon_info = rygel_icon_info_new ("image/png");
-	icon_info->path = (_tmp0_ = g_strdup (RYGEL_TRACKER_PLUGIN_ICON), _g_free0 (icon_info->path), _tmp0_);
-	icon_info->width = 48;
-	icon_info->height = 48;
-	icon_info->depth = 24;
-	rygel_plugin_add_icon ((RygelPlugin*) self, icon_info);
-	_rygel_resource_info_unref0 (resource_info);
+	{
+		char* _tmp0_;
+		char* _tmp1_;
+		_tmp0_ = g_filename_to_uri (RYGEL_TRACKER_PLUGIN_ICON, NULL, &_inner_error_);
+		if (_inner_error_ != NULL) {
+			if (_inner_error_->domain == G_CONVERT_ERROR) {
+				goto __catch6_g_convert_error;
+			}
+			goto __finally6;
+		}
+		icon_info->uri = (_tmp1_ = _tmp0_, _g_free0 (icon_info->uri), _tmp1_);
+		icon_info->width = 48;
+		icon_info->height = 48;
+		icon_info->depth = 24;
+		rygel_plugin_add_icon ((RygelPlugin*) self, icon_info);
+	}
+	goto __finally6;
+	__catch6_g_convert_error:
+	{
+		GError * err;
+		err = _inner_error_;
+		_inner_error_ = NULL;
+		{
+			g_warning ("rygel-tracker-plugin.vala:46: Error creating URI from %s: %s", RYGEL_TRACKER_PLUGIN_ICON, err->message);
+			_g_error_free0 (err);
+		}
+	}
+	__finally6:
+	if (_inner_error_ != NULL) {
+		_rygel_icon_info_unref0 (icon_info);
+		g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, _inner_error_->message);
+		g_clear_error (&_inner_error_);
+		return NULL;
+	}
 	_rygel_icon_info_unref0 (icon_info);
 	return self;
 }

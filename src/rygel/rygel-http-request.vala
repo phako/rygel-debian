@@ -67,7 +67,7 @@ internal class Rygel.HTTPRequest : GLib.Object, Rygel.StateMachine {
         this.thumbnail_index = -1;
     }
 
-    public void run () {
+    public async void run () {
         this.server.pause_message (this.msg);
 
         var header = this.msg.request_headers.get (
@@ -96,17 +96,41 @@ internal class Rygel.HTTPRequest : GLib.Object, Rygel.StateMachine {
             this.request_handler = new HTTPIdentityHandler (this.cancellable);
         }
 
+        yield this.find_item ();
+    }
+
+    public async void find_item () {
         // Fetch the requested item
-        this.root_container.find_object (this.item_id,
-                                         null,
-                                         this.on_item_found);
+        MediaObject media_object;
+        try {
+            media_object = yield this.root_container.find_object (this.item_id,
+                                                                  null);
+        } catch (Error err) {
+            this.handle_error (err);
+            return;
+        }
+
+        if (media_object == null || !(media_object is MediaItem)) {
+            this.handle_error (new HTTPRequestError.NOT_FOUND (
+                                        "requested item '%s' not found",
+                                        this.item_id));
+            return;
+        }
+
+        this.item = (MediaItem) media_object;
+
+        if (this.thumbnail_index >= 0) {
+            this.thumbnail = this.item.thumbnails.get (this.thumbnail_index);
+        }
+
+        yield this.handle_item_request ();
     }
 
     private void on_response_completed (HTTPResponse response) {
         this.end (Soup.KnownStatusCode.NONE);
     }
 
-    private void handle_item_request () {
+    private async void handle_item_request () {
         try {
             this.byte_range = HTTPSeek.from_byte_range(this.msg);
             this.time_range = HTTPSeek.from_time_range(this.msg);
@@ -127,38 +151,10 @@ internal class Rygel.HTTPRequest : GLib.Object, Rygel.StateMachine {
 
             this.response = this.request_handler.render_body (this);
             this.response.completed += on_response_completed;
-            this.response.run ();
+            yield this.response.run ();
         } catch (Error error) {
             this.handle_error (error);
         }
-    }
-
-    private void on_item_found (GLib.Object? source_object,
-                                AsyncResult  res) {
-        var container = (MediaContainer) source_object;
-
-        MediaObject media_object;
-        try {
-            media_object = container.find_object_finish (res);
-        } catch (Error err) {
-            this.handle_error (err);
-            return;
-        }
-
-        if (media_object == null || !(media_object is MediaItem)) {
-            this.handle_error (new HTTPRequestError.NOT_FOUND (
-                                        "requested item '%s' not found",
-                                        this.item_id));
-            return;
-        }
-
-        this.item = (MediaItem) media_object;
-
-        if (this.thumbnail_index >= 0) {
-            this.thumbnail = this.item.thumbnails.get (this.thumbnail_index);
-        }
-
-        this.handle_item_request ();
     }
 
     private void parse_query () throws Error {

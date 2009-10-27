@@ -84,16 +84,6 @@ typedef struct _RygelTranscodeManagerClass RygelTranscodeManagerClass;
 
 typedef struct _RygelHTTPServer RygelHTTPServer;
 typedef struct _RygelHTTPServerClass RygelHTTPServerClass;
-
-#define RYGEL_TYPE_BROWSE (rygel_browse_get_type ())
-#define RYGEL_BROWSE(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_BROWSE, RygelBrowse))
-#define RYGEL_BROWSE_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TYPE_BROWSE, RygelBrowseClass))
-#define RYGEL_IS_BROWSE(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TYPE_BROWSE))
-#define RYGEL_IS_BROWSE_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_TYPE_BROWSE))
-#define RYGEL_BROWSE_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_TYPE_BROWSE, RygelBrowseClass))
-
-typedef struct _RygelBrowse RygelBrowse;
-typedef struct _RygelBrowseClass RygelBrowseClass;
 #define _g_free0(var) (var = (g_free (var), NULL))
 #define _g_object_unref0(var) ((var == NULL) ? NULL : (var = (g_object_unref (var), NULL)))
 #define _g_error_free0(var) ((var == NULL) ? NULL : (var = (g_error_free (var), NULL)))
@@ -105,6 +95,16 @@ typedef struct _RygelBrowseClass RygelBrowseClass;
 
 typedef struct _RygelStateMachine RygelStateMachine;
 typedef struct _RygelStateMachineIface RygelStateMachineIface;
+
+#define RYGEL_TYPE_BROWSE (rygel_browse_get_type ())
+#define RYGEL_BROWSE(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_BROWSE, RygelBrowse))
+#define RYGEL_BROWSE_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TYPE_BROWSE, RygelBrowseClass))
+#define RYGEL_IS_BROWSE(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TYPE_BROWSE))
+#define RYGEL_IS_BROWSE_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_TYPE_BROWSE))
+#define RYGEL_BROWSE_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_TYPE_BROWSE, RygelBrowseClass))
+
+typedef struct _RygelBrowse RygelBrowse;
+typedef struct _RygelBrowseClass RygelBrowseClass;
 typedef struct _RygelMediaObjectPrivate RygelMediaObjectPrivate;
 typedef struct _RygelMediaContainerPrivate RygelMediaContainerPrivate;
 
@@ -135,12 +135,12 @@ struct _RygelContentDirectoryPrivate {
 	GeeArrayList* updated_containers;
 	gboolean clear_updated_containers;
 	guint update_notify_id;
-	GeeArrayList* browses;
 };
 
 struct _RygelStateMachineIface {
 	GTypeInterface parent_iface;
-	void (*run) (RygelStateMachine* self);
+	void (*run) (RygelStateMachine* self, GAsyncReadyCallback _callback_, gpointer _user_data_);
+	void (*run_finish) (RygelStateMachine* self, GAsyncResult* _res_);
 	GCancellable* (*get_cancellable) (RygelStateMachine* self);
 	void (*set_cancellable) (RygelStateMachine* self, GCancellable* value);
 };
@@ -149,7 +149,6 @@ struct _RygelMediaObject {
 	GObject parent_instance;
 	RygelMediaObjectPrivate * priv;
 	char* id;
-	char* title;
 	guint64 modified;
 	GeeArrayList* uris;
 	RygelMediaContainer* parent;
@@ -169,10 +168,10 @@ struct _RygelMediaContainer {
 
 struct _RygelMediaContainerClass {
 	RygelMediaObjectClass parent_class;
-	void (*get_children) (RygelMediaContainer* self, guint offset, guint max_count, GCancellable* cancellable, GAsyncReadyCallback callback, void* callback_target);
-	GeeList* (*get_children_finish) (RygelMediaContainer* self, GAsyncResult* res, GError** error);
-	void (*find_object) (RygelMediaContainer* self, const char* id, GCancellable* cancellable, GAsyncReadyCallback callback, void* callback_target);
-	RygelMediaObject* (*find_object_finish) (RygelMediaContainer* self, GAsyncResult* res, GError** error);
+	void (*get_children) (RygelMediaContainer* self, guint offset, guint max_count, GCancellable* cancellable, GAsyncReadyCallback _callback_, gpointer _user_data_);
+	GeeList* (*get_children_finish) (RygelMediaContainer* self, GAsyncResult* _res_, GError** error);
+	void (*find_object) (RygelMediaContainer* self, const char* id, GCancellable* cancellable, GAsyncReadyCallback _callback_, gpointer _user_data_);
+	RygelMediaObject* (*find_object_finish) (RygelMediaContainer* self, GAsyncResult* _res_, GError** error);
 };
 
 
@@ -184,7 +183,6 @@ GType rygel_media_object_get_type (void);
 GType rygel_media_container_get_type (void);
 GType rygel_transcode_manager_get_type (void);
 GType rygel_http_server_get_type (void);
-GType rygel_browse_get_type (void);
 #define RYGEL_CONTENT_DIRECTORY_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), RYGEL_TYPE_CONTENT_DIRECTORY, RygelContentDirectoryPrivate))
 enum  {
 	RYGEL_CONTENT_DIRECTORY_DUMMY_PROPERTY
@@ -219,12 +217,12 @@ static void _rygel_content_directory_get_feature_list_cb_gupnp_service_action_in
 static void rygel_content_directory_query_feature_list (RygelContentDirectory* self, RygelContentDirectory* content_dir, const char* variable, GValue* value);
 static void _rygel_content_directory_query_feature_list_gupnp_service_query_variable (RygelContentDirectory* _sender, const char* variable, GValue* value, gpointer self);
 GType rygel_state_machine_get_type (void);
-void rygel_state_machine_run (RygelStateMachine* self);
+void rygel_state_machine_run (RygelStateMachine* self, GAsyncReadyCallback _callback_, gpointer _user_data_);
+void rygel_state_machine_run_finish (RygelStateMachine* self, GAsyncResult* _res_);
 static void rygel_content_directory_real_constructed (GObject* base);
 RygelBrowse* rygel_browse_new (RygelContentDirectory* content_dir, GUPnPServiceAction* action);
 RygelBrowse* rygel_browse_construct (GType object_type, RygelContentDirectory* content_dir, GUPnPServiceAction* action);
-static void rygel_content_directory_on_browse_completed (RygelContentDirectory* self, RygelBrowse* browse);
-static void _rygel_content_directory_on_browse_completed_rygel_state_machine_completed (RygelBrowse* _sender, gpointer self);
+GType rygel_browse_get_type (void);
 static void rygel_content_directory_real_browse_cb (RygelContentDirectory* self, RygelContentDirectory* content_dir, GUPnPServiceAction* action);
 static char* rygel_content_directory_create_container_update_ids (RygelContentDirectory* self);
 static gboolean rygel_content_directory_update_notify (RygelContentDirectory* self);
@@ -315,10 +313,9 @@ static void rygel_content_directory_real_constructed (GObject* base) {
 	GCancellable* _tmp0_;
 	RygelMediaContainer* _tmp1_;
 	GeeArrayList* _tmp4_;
-	GeeArrayList* _tmp5_;
+	char* _tmp5_;
 	char* _tmp6_;
 	char* _tmp7_;
-	char* _tmp8_;
 	self = (RygelContentDirectory*) base;
 	_inner_error_ = NULL;
 	self->cancellable = (_tmp0_ = g_cancellable_new (), _g_object_unref0 (self->cancellable), _tmp0_);
@@ -328,35 +325,34 @@ static void rygel_content_directory_real_constructed (GObject* base) {
 		RygelHTTPServer* _tmp3_;
 		_tmp2_ = rygel_http_server_new (self, g_type_name (G_TYPE_FROM_INSTANCE ((GObject*) self)), &_inner_error_);
 		if (_inner_error_ != NULL) {
-			goto __catch21_g_error;
-			goto __finally21;
+			goto __catch22_g_error;
+			goto __finally22;
 		}
 		self->http_server = (_tmp3_ = _tmp2_, _g_object_unref0 (self->http_server), _tmp3_);
 	}
-	goto __finally21;
-	__catch21_g_error:
+	goto __finally22;
+	__catch22_g_error:
 	{
 		GError * err;
 		err = _inner_error_;
 		_inner_error_ = NULL;
 		{
-			g_critical ("rygel-content-directory.vala:77: Failed to create HTTP server for %s: %s", g_type_name (G_TYPE_FROM_INSTANCE ((GObject*) self)), err->message);
+			g_critical ("rygel-content-directory.vala:76: Failed to create HTTP server for %s: %s", g_type_name (G_TYPE_FROM_INSTANCE ((GObject*) self)), err->message);
 			_g_error_free0 (err);
 			return;
 		}
 	}
-	__finally21:
+	__finally22:
 	if (_inner_error_ != NULL) {
 		g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, _inner_error_->message);
 		g_clear_error (&_inner_error_);
 		return;
 	}
-	self->priv->browses = (_tmp4_ = gee_array_list_new (RYGEL_TYPE_BROWSE, (GBoxedCopyFunc) g_object_ref, g_object_unref, g_direct_equal), _g_object_unref0 (self->priv->browses), _tmp4_);
-	self->priv->updated_containers = (_tmp5_ = gee_array_list_new (RYGEL_TYPE_MEDIA_CONTAINER, (GBoxedCopyFunc) g_object_ref, g_object_unref, g_direct_equal), _g_object_unref0 (self->priv->updated_containers), _tmp5_);
+	self->priv->updated_containers = (_tmp4_ = gee_array_list_new (RYGEL_TYPE_MEDIA_CONTAINER, (GBoxedCopyFunc) g_object_ref, g_object_unref, NULL), _g_object_unref0 (self->priv->updated_containers), _tmp4_);
 	g_signal_connect_object (self->root_container, "container-updated", (GCallback) _rygel_content_directory_on_container_updated_rygel_media_container_container_updated, self, 0);
-	self->feature_list = (_tmp6_ = g_strdup ("<?xml version=\"1.0\" encoding=\"UTF-8\"?>" "<Features xmlns=\"urn:schemas-upnp-org:av:avs\" " "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" " "xsi:schemaLocation=\"urn:schemas-upnp-org:av:avs" "http://www.upnp.org/schemas/av/avs-v1-20060531.xsd\">" "</Features>"), _g_free0 (self->feature_list), _tmp6_);
-	self->search_caps = (_tmp7_ = g_strdup (""), _g_free0 (self->search_caps), _tmp7_);
-	self->sort_caps = (_tmp8_ = g_strdup (""), _g_free0 (self->sort_caps), _tmp8_);
+	self->feature_list = (_tmp5_ = g_strdup ("<?xml version=\"1.0\" encoding=\"UTF-8\"?>" "<Features xmlns=\"urn:schemas-upnp-org:av:avs\" " "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" " "xsi:schemaLocation=\"urn:schemas-upnp-org:av:avs" "http://www.upnp.org/schemas/av/avs-v1-20060531.xsd\">" "</Features>"), _g_free0 (self->feature_list), _tmp5_);
+	self->search_caps = (_tmp6_ = g_strdup (""), _g_free0 (self->search_caps), _tmp6_);
+	self->sort_caps = (_tmp7_ = g_strdup (""), _g_free0 (self->sort_caps), _tmp7_);
 	g_signal_connect_object ((GUPnPService*) self, "action-invoked::Browse", (GCallback) _rygel_content_directory_browse_cb_gupnp_service_action_invoked, self, 0);
 	g_signal_connect_object ((GUPnPService*) self, "action-invoked::GetSystemUpdateID", (GCallback) _rygel_content_directory_get_system_update_id_cb_gupnp_service_action_invoked, self, 0);
 	g_signal_connect_object ((GUPnPService*) self, "query-variable::SystemUpdateID", (GCallback) _rygel_content_directory_query_system_update_id_gupnp_service_query_variable, self, 0);
@@ -367,12 +363,7 @@ static void rygel_content_directory_real_constructed (GObject* base) {
 	g_signal_connect_object ((GUPnPService*) self, "query-variable::SortCapabilities", (GCallback) _rygel_content_directory_query_sort_capabilities_gupnp_service_query_variable, self, 0);
 	g_signal_connect_object ((GUPnPService*) self, "action-invoked::GetFeatureList", (GCallback) _rygel_content_directory_get_feature_list_cb_gupnp_service_action_invoked, self, 0);
 	g_signal_connect_object ((GUPnPService*) self, "query-variable::FeatureList", (GCallback) _rygel_content_directory_query_feature_list_gupnp_service_query_variable, self, 0);
-	rygel_state_machine_run ((RygelStateMachine*) self->http_server);
-}
-
-
-static void _rygel_content_directory_on_browse_completed_rygel_state_machine_completed (RygelBrowse* _sender, gpointer self) {
-	rygel_content_directory_on_browse_completed (self, _sender);
+	rygel_state_machine_run ((RygelStateMachine*) self->http_server, NULL, NULL);
 }
 
 
@@ -382,9 +373,7 @@ static void rygel_content_directory_real_browse_cb (RygelContentDirectory* self,
 	g_return_if_fail (content_dir != NULL);
 	g_return_if_fail (action != NULL);
 	browse = rygel_browse_new (self, action);
-	gee_abstract_collection_add ((GeeAbstractCollection*) self->priv->browses, browse);
-	g_signal_connect_object ((RygelStateMachine*) browse, "completed", (GCallback) _rygel_content_directory_on_browse_completed_rygel_state_machine_completed, self, 0);
-	rygel_state_machine_run ((RygelStateMachine*) browse);
+	rygel_state_machine_run ((RygelStateMachine*) browse, NULL, NULL);
 	_g_object_unref0 (browse);
 }
 
@@ -475,13 +464,6 @@ static void rygel_content_directory_query_feature_list (RygelContentDirectory* s
 	g_return_if_fail (variable != NULL);
 	g_value_init (value, G_TYPE_STRING);
 	g_value_set_string (value, self->feature_list);
-}
-
-
-static void rygel_content_directory_on_browse_completed (RygelContentDirectory* self, RygelBrowse* browse) {
-	g_return_if_fail (self != NULL);
-	g_return_if_fail (browse != NULL);
-	gee_abstract_collection_remove ((GeeAbstractCollection*) self->priv->browses, browse);
 }
 
 
@@ -596,7 +578,6 @@ static void rygel_content_directory_finalize (GObject* obj) {
 	_g_object_unref0 (self->http_server);
 	_g_object_unref0 (self->root_container);
 	_g_object_unref0 (self->priv->updated_containers);
-	_g_object_unref0 (self->priv->browses);
 	_g_object_unref0 (self->cancellable);
 	G_OBJECT_CLASS (rygel_content_directory_parent_class)->finalize (obj);
 }

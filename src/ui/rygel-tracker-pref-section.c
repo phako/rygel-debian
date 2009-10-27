@@ -167,25 +167,25 @@ RygelTrackerPrefSection* rygel_tracker_pref_section_construct (GType object_type
 		gboolean _tmp5_;
 		_tmp3_ = rygel_configuration_get_bool ((RygelConfiguration*) config, ((RygelPreferencesSection*) self)->name, RYGEL_TRACKER_PREF_SECTION_VIDEOS_KEY, &_inner_error_);
 		if (_inner_error_ != NULL) {
-			goto __catch11_g_error;
-			goto __finally11;
+			goto __catch12_g_error;
+			goto __finally12;
 		}
 		gtk_toggle_button_set_active ((GtkToggleButton*) self->priv->videos_check, _tmp3_);
 		_tmp4_ = rygel_configuration_get_bool ((RygelConfiguration*) config, ((RygelPreferencesSection*) self)->name, RYGEL_TRACKER_PREF_SECTION_MUSIC_KEY, &_inner_error_);
 		if (_inner_error_ != NULL) {
-			goto __catch11_g_error;
-			goto __finally11;
+			goto __catch12_g_error;
+			goto __finally12;
 		}
 		gtk_toggle_button_set_active ((GtkToggleButton*) self->priv->music_check, _tmp4_);
 		_tmp5_ = rygel_configuration_get_bool ((RygelConfiguration*) config, ((RygelPreferencesSection*) self)->name, RYGEL_TRACKER_PREF_SECTION_PICTURES_KEY, &_inner_error_);
 		if (_inner_error_ != NULL) {
-			goto __catch11_g_error;
-			goto __finally11;
+			goto __catch12_g_error;
+			goto __finally12;
 		}
 		gtk_toggle_button_set_active ((GtkToggleButton*) self->priv->pictures_check, _tmp5_);
 	}
-	goto __finally11;
-	__catch11_g_error:
+	goto __finally12;
+	__catch12_g_error:
 	{
 		GError * err;
 		err = _inner_error_;
@@ -194,7 +194,7 @@ RygelTrackerPrefSection* rygel_tracker_pref_section_construct (GType object_type
 			_g_error_free0 (err);
 		}
 	}
-	__finally11:
+	__finally12:
 	if (_inner_error_ != NULL) {
 		g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, _inner_error_->message);
 		g_clear_error (&_inner_error_);

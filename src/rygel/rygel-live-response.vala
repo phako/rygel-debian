@@ -36,9 +36,10 @@ internal class Rygel.LiveResponse : Rygel.HTTPResponse {
 
     private Pipeline pipeline;
 
-    private AsyncQueue<Buffer> buffers;
-
     private HTTPSeek time_range;
+
+    private uint idle_id;
+    private SourceFunc continuation;
 
     public LiveResponse (Soup.Server  server,
                          Soup.Message msg,
@@ -50,36 +51,38 @@ internal class Rygel.LiveResponse : Rygel.HTTPResponse {
 
         this.msg.response_headers.set_encoding (Soup.Encoding.EOF);
 
-        this.buffers = new AsyncQueue<Buffer> ();
-
         this.prepare_pipeline (name, src);
         this.time_range = time_range;
     }
 
-    public override void run () {
-        base.run ();
-
+    public override async void run () {
         // Only bother attempting to seek if the offset is greater than zero.
         if (this.time_range != null && this.time_range.start > 0) {
             this.pipeline.set_state (State.PAUSED);
         } else {
             this.pipeline.set_state (State.PLAYING);
         }
+
+        this.continuation = run.callback;
+
+        yield;
     }
 
     public override void end (bool aborted, uint status) {
         this.pipeline.set_state (State.NULL);
-        // Flush the queue of buffers
-        Buffer buffer = null;
-        do {
-            buffer = this.buffers.try_pop ();
-        } while (buffer != null);
+
+        if (this.idle_id != 0) {
+           Source.remove (this.idle_id);
+           this.idle_id = 0;
+        }
 
         if (!aborted) {
             this.msg.response_body.complete ();
         }
 
         base.end (aborted, status);
+
+        this.continuation ();
     }
 
     private void prepare_pipeline (string name,
@@ -214,18 +217,14 @@ internal class Rygel.LiveResponse : Rygel.HTTPResponse {
     private void on_new_buffer (Element sink,
                                 Buffer  buffer,
                                 Pad     pad) {
-        this.buffers.push (buffer);
-        Idle.add_full (Priority.HIGH_IDLE, this.idle_handler);
-    }
-
-    private bool idle_handler () {
-        var buffer = this.buffers.try_pop ();
-
-        if (buffer != null) {
+        this.idle_id = Idle.add_full (Priority.HIGH_IDLE,
+                                      () => {
             this.push_data (buffer.data, buffer.size);
-        }
 
-        return false;
+            this.idle_id = 0;
+
+            return false;
+        });
     }
 
     private bool bus_handler (Gst.Bus     bus,

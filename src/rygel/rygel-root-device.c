@@ -143,8 +143,6 @@ static void rygel_root_device_finalize (GObject* obj);
 
 
 RygelRootDevice* rygel_root_device_construct (GType object_type, GUPnPContext* context, RygelPlugin* plugin, GUPnPXMLDoc* description_doc, const char* description_path, const char* description_dir) {
-	GParameter * __params;
-	GParameter * __params_it;
 	RygelRootDevice * self;
 	GeeArrayList* _tmp0_;
 	g_return_val_if_fail (context != NULL, NULL);
@@ -152,34 +150,8 @@ RygelRootDevice* rygel_root_device_construct (GType object_type, GUPnPContext* c
 	g_return_val_if_fail (description_doc != NULL, NULL);
 	g_return_val_if_fail (description_path != NULL, NULL);
 	g_return_val_if_fail (description_dir != NULL, NULL);
-	__params = g_new0 (GParameter, 6);
-	__params_it = __params;
-	__params_it->name = "resource-factory";
-	g_value_init (&__params_it->value, GUPNP_TYPE_RESOURCE_FACTORY);
-	g_value_set_object (&__params_it->value, (GUPnPResourceFactory*) plugin);
-	__params_it++;
-	__params_it->name = "root-device";
-	g_value_init (&__params_it->value, GUPNP_TYPE_ROOT_DEVICE);
-	g_value_set_object (&__params_it->value, NULL);
-	__params_it++;
-	__params_it->name = "context";
-	g_value_init (&__params_it->value, GUPNP_TYPE_CONTEXT);
-	g_value_set_object (&__params_it->value, context);
-	__params_it++;
-	__params_it->name = "description-doc";
-	g_value_init (&__params_it->value, GUPNP_TYPE_XML_DOC);
-	g_value_set_object (&__params_it->value, description_doc);
-	__params_it++;
-	__params_it->name = "description-path";
-	g_value_init (&__params_it->value, G_TYPE_STRING);
-	g_value_set_string (&__params_it->value, description_path);
-	__params_it++;
-	__params_it->name = "description-dir";
-	g_value_init (&__params_it->value, G_TYPE_STRING);
-	g_value_set_string (&__params_it->value, description_dir);
-	__params_it++;
-	self = g_object_newv (object_type, __params_it - __params, __params);
-	self->services = (_tmp0_ = gee_array_list_new (GUPNP_TYPE_SERVICE_INFO, (GBoxedCopyFunc) g_object_ref, g_object_unref, g_direct_equal), _g_object_unref0 (self->services), _tmp0_);
+	self = (RygelRootDevice*) g_object_new (object_type, "context", context, "resource-factory", plugin, "description-doc", description_doc, "description-path", description_path, "description-dir", description_dir, NULL);
+	self->services = (_tmp0_ = gee_array_list_new (GUPNP_TYPE_SERVICE_INFO, (GBoxedCopyFunc) g_object_ref, g_object_unref, NULL), _g_object_unref0 (self->services), _tmp0_);
 	{
 		GeeIterator* _info_it;
 		_info_it = gee_abstract_collection_iterator ((GeeAbstractCollection*) plugin->resource_infos);
@@ -199,11 +171,6 @@ RygelRootDevice* rygel_root_device_construct (GType object_type, GUPnPContext* c
 		}
 		_g_object_unref0 (_info_it);
 	}
-	while (__params_it > __params) {
-		--__params_it;
-		g_value_unset (&__params_it->value);
-	}
-	g_free (__params);
 	return self;
 }
 

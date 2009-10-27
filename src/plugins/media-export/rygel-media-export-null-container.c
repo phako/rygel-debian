@@ -40,7 +40,10 @@
 typedef struct _RygelNullContainer RygelNullContainer;
 typedef struct _RygelNullContainerClass RygelNullContainerClass;
 typedef struct _RygelNullContainerPrivate RygelNullContainerPrivate;
+typedef struct _RygelNullContainerGetChildrenData RygelNullContainerGetChildrenData;
 #define _g_object_unref0(var) ((var == NULL) ? NULL : (var = (g_object_unref (var), NULL)))
+typedef struct _RygelNullContainerFindObjectData RygelNullContainerFindObjectData;
+#define _g_free0(var) (var = (g_free (var), NULL))
 
 struct _RygelNullContainer {
 	RygelMediaContainer parent_instance;
@@ -49,6 +52,27 @@ struct _RygelNullContainer {
 
 struct _RygelNullContainerClass {
 	RygelMediaContainerClass parent_class;
+};
+
+struct _RygelNullContainerGetChildrenData {
+	int _state_;
+	GAsyncResult* _res_;
+	GSimpleAsyncResult* _async_result;
+	RygelNullContainer* self;
+	guint offset;
+	guint max_count;
+	GCancellable* cancellable;
+	GeeList* result;
+};
+
+struct _RygelNullContainerFindObjectData {
+	int _state_;
+	GAsyncResult* _res_;
+	GSimpleAsyncResult* _async_result;
+	RygelNullContainer* self;
+	char* id;
+	GCancellable* cancellable;
+	RygelMediaObject* result;
 };
 
 
@@ -60,10 +84,14 @@ enum  {
 };
 RygelNullContainer* rygel_null_container_new (void);
 RygelNullContainer* rygel_null_container_construct (GType object_type);
-static void rygel_null_container_real_get_children (RygelMediaContainer* base, guint offset, guint max_count, GCancellable* cancellable, GAsyncReadyCallback callback, void* callback_target);
-static GeeList* rygel_null_container_real_get_children_finish (RygelMediaContainer* base, GAsyncResult* res, GError** error);
-static void rygel_null_container_real_find_object (RygelMediaContainer* base, const char* id, GCancellable* cancellable, GAsyncReadyCallback callback, void* callback_target);
-static RygelMediaObject* rygel_null_container_real_find_object_finish (RygelMediaContainer* base, GAsyncResult* res, GError** error);
+static void rygel_null_container_real_get_children_data_free (gpointer _data);
+static void rygel_null_container_real_get_children (RygelMediaContainer* base, guint offset, guint max_count, GCancellable* cancellable, GAsyncReadyCallback _callback_, gpointer _user_data_);
+static void rygel_null_container_get_children_ready (GObject* source_object, GAsyncResult* _res_, gpointer _user_data_);
+static gboolean rygel_null_container_real_get_children_co (RygelNullContainerGetChildrenData* data);
+static void rygel_null_container_real_find_object_data_free (gpointer _data);
+static void rygel_null_container_real_find_object (RygelMediaContainer* base, const char* id, GCancellable* cancellable, GAsyncReadyCallback _callback_, gpointer _user_data_);
+static void rygel_null_container_find_object_ready (GObject* source_object, GAsyncResult* _res_, gpointer _user_data_);
+static gboolean rygel_null_container_real_find_object_co (RygelNullContainerFindObjectData* data);
 
 
 
@@ -79,44 +107,158 @@ RygelNullContainer* rygel_null_container_new (void) {
 }
 
 
-static void rygel_null_container_real_get_children (RygelMediaContainer* base, guint offset, guint max_count, GCancellable* cancellable, GAsyncReadyCallback callback, void* callback_target) {
-	RygelNullContainer * self;
-	RygelSimpleAsyncResult* res;
-	self = (RygelNullContainer*) base;
-	res = rygel_simple_async_result_new (G_TYPE_INT, NULL, NULL, (GObject*) self, callback, callback_target);
-	rygel_simple_async_result_complete_in_idle (res);
-	_g_object_unref0 (res);
+static void rygel_null_container_real_get_children_data_free (gpointer _data) {
+	RygelNullContainerGetChildrenData* data;
+	data = _data;
+	_g_object_unref0 (data->cancellable);
+	_g_object_unref0 (data->result);
+	g_slice_free (RygelNullContainerGetChildrenData, data);
 }
 
 
-static GeeList* rygel_null_container_real_get_children_finish (RygelMediaContainer* base, GAsyncResult* res, GError** error) {
+static gpointer _g_object_ref0 (gpointer self) {
+	return self ? g_object_ref (self) : NULL;
+}
+
+
+static void rygel_null_container_real_get_children (RygelMediaContainer* base, guint offset, guint max_count, GCancellable* cancellable, GAsyncReadyCallback _callback_, gpointer _user_data_) {
 	RygelNullContainer * self;
+	RygelNullContainerGetChildrenData* _data_;
+	self = (RygelNullContainer*) base;
+	_data_ = g_slice_new0 (RygelNullContainerGetChildrenData);
+	_data_->_async_result = g_simple_async_result_new (G_OBJECT (self), _callback_, _user_data_, rygel_null_container_real_get_children);
+	g_simple_async_result_set_op_res_gpointer (_data_->_async_result, _data_, rygel_null_container_real_get_children_data_free);
+	_data_->self = self;
+	_data_->offset = offset;
+	_data_->max_count = max_count;
+	_data_->cancellable = _g_object_ref0 (cancellable);
+	rygel_null_container_real_get_children_co (_data_);
+}
+
+
+static GeeList* rygel_null_container_real_get_children_finish (RygelMediaContainer* base, GAsyncResult* _res_, GError** error) {
 	GeeList* result;
-	self = (RygelNullContainer*) base;
-	g_return_val_if_fail (res != NULL, NULL);
-	result = (GeeList*) gee_array_list_new (RYGEL_TYPE_MEDIA_OBJECT, (GBoxedCopyFunc) g_object_ref, g_object_unref, g_direct_equal);
+	RygelNullContainerGetChildrenData* _data_;
+	if (g_simple_async_result_propagate_error (G_SIMPLE_ASYNC_RESULT (_res_), error)) {
+		return NULL;
+	}
+	_data_ = g_simple_async_result_get_op_res_gpointer (G_SIMPLE_ASYNC_RESULT (_res_));
+	result = _data_->result;
+	_data_->result = NULL;
 	return result;
 }
 
 
-static void rygel_null_container_real_find_object (RygelMediaContainer* base, const char* id, GCancellable* cancellable, GAsyncReadyCallback callback, void* callback_target) {
-	RygelNullContainer * self;
-	RygelSimpleAsyncResult* res;
-	self = (RygelNullContainer*) base;
-	g_return_if_fail (id != NULL);
-	res = rygel_simple_async_result_new (G_TYPE_INT, NULL, NULL, (GObject*) self, callback, callback_target);
-	rygel_simple_async_result_complete_in_idle (res);
-	_g_object_unref0 (res);
+static void rygel_null_container_get_children_ready (GObject* source_object, GAsyncResult* _res_, gpointer _user_data_) {
+	RygelNullContainerGetChildrenData* data;
+	data = _user_data_;
+	data->_res_ = _res_;
+	rygel_null_container_real_get_children_co (data);
 }
 
 
-static RygelMediaObject* rygel_null_container_real_find_object_finish (RygelMediaContainer* base, GAsyncResult* res, GError** error) {
+static gboolean rygel_null_container_real_get_children_co (RygelNullContainerGetChildrenData* data) {
+	switch (data->_state_) {
+		default:
+		g_assert_not_reached ();
+		case 0:
+		{
+			data->result = (GeeList*) gee_array_list_new (RYGEL_TYPE_MEDIA_OBJECT, (GBoxedCopyFunc) g_object_ref, g_object_unref, NULL);
+			{
+				if (data->_state_ == 0) {
+					g_simple_async_result_complete_in_idle (data->_async_result);
+				} else {
+					g_simple_async_result_complete (data->_async_result);
+				}
+				g_object_unref (data->_async_result);
+				return FALSE;
+			}
+		}
+		{
+			if (data->_state_ == 0) {
+				g_simple_async_result_complete_in_idle (data->_async_result);
+			} else {
+				g_simple_async_result_complete (data->_async_result);
+			}
+			g_object_unref (data->_async_result);
+			return FALSE;
+		}
+	}
+}
+
+
+static void rygel_null_container_real_find_object_data_free (gpointer _data) {
+	RygelNullContainerFindObjectData* data;
+	data = _data;
+	_g_free0 (data->id);
+	_g_object_unref0 (data->cancellable);
+	_g_object_unref0 (data->result);
+	g_slice_free (RygelNullContainerFindObjectData, data);
+}
+
+
+static void rygel_null_container_real_find_object (RygelMediaContainer* base, const char* id, GCancellable* cancellable, GAsyncReadyCallback _callback_, gpointer _user_data_) {
 	RygelNullContainer * self;
+	RygelNullContainerFindObjectData* _data_;
+	self = (RygelNullContainer*) base;
+	_data_ = g_slice_new0 (RygelNullContainerFindObjectData);
+	_data_->_async_result = g_simple_async_result_new (G_OBJECT (self), _callback_, _user_data_, rygel_null_container_real_find_object);
+	g_simple_async_result_set_op_res_gpointer (_data_->_async_result, _data_, rygel_null_container_real_find_object_data_free);
+	_data_->self = self;
+	_data_->id = g_strdup (id);
+	_data_->cancellable = _g_object_ref0 (cancellable);
+	rygel_null_container_real_find_object_co (_data_);
+}
+
+
+static RygelMediaObject* rygel_null_container_real_find_object_finish (RygelMediaContainer* base, GAsyncResult* _res_, GError** error) {
 	RygelMediaObject* result;
-	self = (RygelNullContainer*) base;
-	g_return_val_if_fail (res != NULL, NULL);
-	result = NULL;
+	RygelNullContainerFindObjectData* _data_;
+	if (g_simple_async_result_propagate_error (G_SIMPLE_ASYNC_RESULT (_res_), error)) {
+		return NULL;
+	}
+	_data_ = g_simple_async_result_get_op_res_gpointer (G_SIMPLE_ASYNC_RESULT (_res_));
+	result = _data_->result;
+	_data_->result = NULL;
 	return result;
+}
+
+
+static void rygel_null_container_find_object_ready (GObject* source_object, GAsyncResult* _res_, gpointer _user_data_) {
+	RygelNullContainerFindObjectData* data;
+	data = _user_data_;
+	data->_res_ = _res_;
+	rygel_null_container_real_find_object_co (data);
+}
+
+
+static gboolean rygel_null_container_real_find_object_co (RygelNullContainerFindObjectData* data) {
+	switch (data->_state_) {
+		default:
+		g_assert_not_reached ();
+		case 0:
+		{
+			data->result = NULL;
+			{
+				if (data->_state_ == 0) {
+					g_simple_async_result_complete_in_idle (data->_async_result);
+				} else {
+					g_simple_async_result_complete (data->_async_result);
+				}
+				g_object_unref (data->_async_result);
+				return FALSE;
+			}
+		}
+		{
+			if (data->_state_ == 0) {
+				g_simple_async_result_complete_in_idle (data->_async_result);
+			} else {
+				g_simple_async_result_complete (data->_async_result);
+			}
+			g_object_unref (data->_async_result);
+			return FALSE;
+		}
+	}
 }
 
 

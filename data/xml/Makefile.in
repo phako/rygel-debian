@@ -180,6 +180,7 @@ USE_NLS = @USE_NLS@
 UUID_CFLAGS = @UUID_CFLAGS@
 UUID_LIBS = @UUID_LIBS@
 VALAC = @VALAC@
+VALAFLAGS = @VALAFLAGS@
 VAPIDIR = @VAPIDIR@
 VERSION = @VERSION@
 XGETTEXT = @XGETTEXT@
@@ -236,8 +237,11 @@ top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 xml_DATA = MediaServer2.xml \
+	   MediaRenderer2.xml \
 	   ContentDirectory.xml \
-	   ConnectionManager.xml
+	   ConnectionManager.xml \
+	   AVTransport2.xml \
+	   RenderingControl2.xml
 
 xmldir = $(datadir)/rygel/xml
 EXTRA_DIST = $(xml_DATA)

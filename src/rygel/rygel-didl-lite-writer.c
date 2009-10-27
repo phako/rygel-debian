@@ -152,7 +152,6 @@ struct _RygelMediaObject {
 	GObject parent_instance;
 	RygelMediaObjectPrivate * priv;
 	char* id;
-	char* title;
 	guint64 modified;
 	GeeArrayList* uris;
 	RygelMediaContainer* parent;
@@ -208,7 +207,8 @@ struct _RygelTranscodeManagerClass {
 
 struct _RygelStateMachineIface {
 	GTypeInterface parent_iface;
-	void (*run) (RygelStateMachine* self);
+	void (*run) (RygelStateMachine* self, GAsyncReadyCallback _callback_, gpointer _user_data_);
+	void (*run_finish) (RygelStateMachine* self, GAsyncResult* _res_);
 	GCancellable* (*get_cancellable) (RygelStateMachine* self);
 	void (*set_cancellable) (RygelStateMachine* self, GCancellable* value);
 };
@@ -233,10 +233,10 @@ struct _RygelMediaContainer {
 
 struct _RygelMediaContainerClass {
 	RygelMediaObjectClass parent_class;
-	void (*get_children) (RygelMediaContainer* self, guint offset, guint max_count, GCancellable* cancellable, GAsyncReadyCallback callback, void* callback_target);
-	GeeList* (*get_children_finish) (RygelMediaContainer* self, GAsyncResult* res, GError** error);
-	void (*find_object) (RygelMediaContainer* self, const char* id, GCancellable* cancellable, GAsyncReadyCallback callback, void* callback_target);
-	RygelMediaObject* (*find_object_finish) (RygelMediaContainer* self, GAsyncResult* res, GError** error);
+	void (*get_children) (RygelMediaContainer* self, guint offset, guint max_count, GCancellable* cancellable, GAsyncReadyCallback _callback_, gpointer _user_data_);
+	GeeList* (*get_children_finish) (RygelMediaContainer* self, GAsyncResult* _res_, GError** error);
+	void (*find_object) (RygelMediaContainer* self, const char* id, GCancellable* cancellable, GAsyncReadyCallback _callback_, gpointer _user_data_);
+	RygelMediaObject* (*find_object_finish) (RygelMediaContainer* self, GAsyncResult* _res_, GError** error);
 };
 
 
@@ -258,6 +258,7 @@ static void rygel_didl_lite_writer_serialize_item (RygelDIDLLiteWriter* self, Ry
 GType rygel_media_container_get_type (void);
 static void rygel_didl_lite_writer_serialize_container (RygelDIDLLiteWriter* self, RygelMediaContainer* container, GError** error);
 void rygel_didl_lite_writer_serialize (RygelDIDLLiteWriter* self, RygelMediaObject* media_object, GError** error);
+const char* rygel_media_object_get_title (RygelMediaObject* self);
 gpointer rygel_icon_info_ref (gpointer instance);
 void rygel_icon_info_unref (gpointer instance);
 GParamSpec* rygel_param_spec_icon_info (const gchar* name, const gchar* nick, const gchar* blurb, GType object_type, GParamFlags flags);
@@ -348,7 +349,7 @@ static void rygel_didl_lite_writer_serialize_item (RygelDIDLLiteWriter* self, Ry
 		gupnp_didl_lite_object_set_parent_id ((GUPnPDIDLLiteObject*) didl_item, "0");
 	}
 	gupnp_didl_lite_object_set_restricted ((GUPnPDIDLLiteObject*) didl_item, FALSE);
-	gupnp_didl_lite_object_set_title ((GUPnPDIDLLiteObject*) didl_item, ((RygelMediaObject*) item)->title);
+	gupnp_didl_lite_object_set_title ((GUPnPDIDLLiteObject*) didl_item, rygel_media_object_get_title ((RygelMediaObject*) item));
 	gupnp_didl_lite_object_set_upnp_class ((GUPnPDIDLLiteObject*) didl_item, item->upnp_class);
 	if (item->author != NULL) {
 		_tmp0_ = _vala_strcmp0 (item->author, "") != 0;
@@ -417,7 +418,7 @@ static void rygel_didl_lite_writer_serialize_container (RygelDIDLLiteWriter* sel
 		gupnp_didl_lite_object_set_parent_id ((GUPnPDIDLLiteObject*) didl_container, "-1");
 	}
 	gupnp_didl_lite_object_set_id ((GUPnPDIDLLiteObject*) didl_container, ((RygelMediaObject*) container)->id);
-	gupnp_didl_lite_object_set_title ((GUPnPDIDLLiteObject*) didl_container, ((RygelMediaObject*) container)->title);
+	gupnp_didl_lite_object_set_title ((GUPnPDIDLLiteObject*) didl_container, rygel_media_object_get_title ((RygelMediaObject*) container));
 	gupnp_didl_lite_container_set_child_count (didl_container, container->child_count);
 	gupnp_didl_lite_object_set_restricted ((GUPnPDIDLLiteObject*) didl_container, FALSE);
 	gupnp_didl_lite_container_set_searchable (didl_container, FALSE);

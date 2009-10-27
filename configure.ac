@@ -20,14 +20,14 @@ AC_STDC_HEADERS
 AC_PROG_LIBTOOL
 AC_FUNC_MMAP
 
-VALA_REQUIRED=0.7.7
+VALA_REQUIRED=0.7.8
 GUPNP_REQUIRED=0.13
 GUPNP_AV_REQUIRED=0.5
 GUPNP_VALA_REQUIRED=0.6
 DBUS_GLIB_REQUIRED=0.74
 GSTREAMER_REQUIRED=0.10.23
 GIO_REQUIRED=2.16
-GEE_REQUIRED=0.3.0
+GEE_REQUIRED=0.5.0
 UUID_REQUIRED=1.41.3
 LIBSOUP_REQUIRED=2.26.0
 GTK_REQUIRED=2.16
@@ -50,6 +50,13 @@ AC_SUBST(GLIB_GENMARSHAL)
 AC_ARG_ENABLE(vala,
 	[  --enable-vala          enable checks for vala],,
         enable_vala=no)
+AC_ARG_ENABLE(sql-debugging,
+              [  --enable-sql-debugging         enable SQL statement debugging],,
+                 enable_sql_debugging=no)
+
+if test x$enable_sql_debugging = xyes ; then
+    VALAFLAGS="$VALAFLAGS -D RYGEL_DEBUG_SQL"
+fi
 
 # Vala
 if test x$enable_vala = xyes ; then
@@ -107,7 +114,7 @@ AC_ARG_ENABLE(debug,
 	[  --enable-debug          enable debugging],,
         enable_debug=no)
 if test "x$enable_debug" = "xyes"; then
-        CFLAGS="$CFLAGS -g"
+        CFLAGS="$CFLAGS -O0 -g"
 fi
 
 # Strict compiler
@@ -192,15 +199,20 @@ AC_ARG_ENABLE(external-plugin,
 	[  --enable-external-plugin          build External plugin],,
         enable_external_plugin=yes)
 
+# Build GstRenderer plugin
+AC_ARG_ENABLE(gst-renderer-plugin,
+	[  --enable-gst-renderer_plugin          build Gstreamer Renderer plugin],,
+        enable_gst_renderer_plugin=yes)
+
 # Build Mediathek plugin
 AC_ARG_ENABLE(mediathek-plugin,
 	[  --enable-mediathek-plugin          build Mediathek plugin],,
         enable_mediathek_plugin=no)
 
 # Build GstLaunch plugin
-AC_ARG_ENABLE(gstlaunch-plugin,
-	[  --enable-gstlaunch-plugin          build Gstreamer launchline plugin],,
-        enable_gstlaunch_plugin=no)
+AC_ARG_ENABLE(gst-launch-plugin,
+	[  --enable-gst-launch-plugin          build Gstreamer launchline plugin],,
+        enable_gst_launch_plugin=no)
 
 
 AC_SUBST(abs_top_builddir)
@@ -213,7 +225,8 @@ AM_CONDITIONAL([BUILD_TRACKER_PLUGIN],
 AM_CONDITIONAL([BUILD_MEDIATHEK_PLUGIN], [test "x$enable_mediathek_plugin" = "xyes"])
 AM_CONDITIONAL([BUILD_MEDIA_EXPORT_PLUGIN], [test "x$enable_media_export_plugin" = "xyes"])
 AM_CONDITIONAL([BUILD_EXTERNAL_PLUGIN], [test "x$enable_external_plugin" = "xyes"])
-AM_CONDITIONAL([BUILD_GSTLAUNCH_PLUGIN], [test "x$enable_gstlaunch_plugin" = "xyes"])
+AM_CONDITIONAL([BUILD_GST_RENDERER_PLUGIN], [test "x$enable_gst_renderer_plugin" = "xyes"])
+AM_CONDITIONAL([BUILD_GST_LAUNCH_PLUGIN], [test "x$enable_gst_launch_plugin" = "xyes"])
 
 # Gettext
 GETTEXT_PACKAGE=rygel
@@ -224,6 +237,8 @@ AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE, ["$GETTEXT_PACKAGE"],
 ALL_LINGUAS=""
 AM_GLIB_GNU_GETTEXT
 AM_GLIB_DEFINE_LOCALEDIR([LOCALEDIR])
+
+AC_SUBST(VALAFLAGS)
 
 dnl Shave the output
 AM_SILENT_RULES([yes])
@@ -236,9 +251,10 @@ src/ui/Makefile
 src/plugins/Makefile
 src/plugins/media-export/Makefile
 src/plugins/external/Makefile
-src/plugins/gstlaunch/Makefile
+src/plugins/gst-launch/Makefile
 src/plugins/mediathek/Makefile
 src/plugins/tracker/Makefile
+src/plugins/gst-renderer/Makefile
 src/plugins/test/Makefile
 data/Makefile
 data/xml/Makefile
@@ -258,11 +274,13 @@ echo "
         uninstalled:            ${enable_uninstalled}
         maemo support:          ${enable_maemo}
         preferences ui          ${BUILD_UI}
+        SQL debugging:          ${enable_sql_debugging}
     Plugins:
         test:                   ${enable_test_plugin}
         tracker:                ${enable_tracker_plugin}
         mediathek:              ${enable_mediathek_plugin}
         media-export            ${enable_media_export_plugin}
         external:               ${enable_external_plugin}
-        gstlaunch:              ${enable_gstlaunch_plugin}
+        gst-launch:             ${enable_gst_launch_plugin}
+        gst-renderer:           ${enable_gst_renderer_plugin}
 "

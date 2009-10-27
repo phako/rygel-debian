@@ -144,6 +144,7 @@ typedef struct _RygelThumbnailClass RygelThumbnailClass;
 typedef struct _RygelHTTPSeek RygelHTTPSeek;
 typedef struct _RygelHTTPSeekClass RygelHTTPSeekClass;
 #define _g_free0(var) (var = (g_free (var), NULL))
+#define _g_error_free0(var) ((var == NULL) ? NULL : (var = (g_error_free (var), NULL)))
 
 typedef enum  {
 	RYGEL_HTTP_REQUEST_ERROR_UNACCEPTABLE = SOUP_STATUS_NOT_ACCEPTABLE,
@@ -169,7 +170,8 @@ struct _RygelHTTPRequestHandlerPrivate {
 
 struct _RygelStateMachineIface {
 	GTypeInterface parent_iface;
-	void (*run) (RygelStateMachine* self);
+	void (*run) (RygelStateMachine* self, GAsyncReadyCallback _callback_, gpointer _user_data_);
+	void (*run_finish) (RygelStateMachine* self, GAsyncResult* _res_);
 	GCancellable* (*get_cancellable) (RygelStateMachine* self);
 	void (*set_cancellable) (RygelStateMachine* self, GCancellable* value);
 };
@@ -238,14 +240,6 @@ static void rygel_http_request_handler_real_add_response_headers (RygelHTTPReque
 	char* mode;
 	GUPnPDIDLLiteWriter* didl_writer;
 	GUPnPDIDLLiteItem* didl_item;
-	GUPnPDIDLLiteResource* resource;
-	char** _tmp3_;
-	gint tokens_size;
-	gint tokens_length1;
-	char** _tmp1_;
-	char* _tmp0_;
-	char** _tmp2_;
-	char** tokens;
 	g_return_if_fail (self != NULL);
 	g_return_if_fail (request != NULL);
 	_inner_error_ = NULL;
@@ -255,7 +249,38 @@ static void rygel_http_request_handler_real_add_response_headers (RygelHTTPReque
 	}
 	didl_writer = gupnp_didl_lite_writer_new (NULL);
 	didl_item = gupnp_didl_lite_writer_add_item (didl_writer);
-	resource = rygel_http_request_handler_add_resource (self, didl_item, request, &_inner_error_);
+	{
+		GUPnPDIDLLiteResource* resource;
+		char** _tmp3_;
+		gint tokens_size;
+		gint tokens_length1;
+		char** _tmp1_;
+		char* _tmp0_;
+		char** _tmp2_;
+		char** tokens;
+		resource = rygel_http_request_handler_add_resource (self, didl_item, request, &_inner_error_);
+		if (_inner_error_ != NULL) {
+			goto __catch26_g_error;
+			goto __finally26;
+		}
+		tokens = (_tmp3_ = (_tmp2_ = _tmp1_ = g_strsplit (_tmp0_ = gupnp_protocol_info_to_string (gupnp_didl_lite_resource_get_protocol_info (resource)), ":", 4), _g_free0 (_tmp0_), _tmp2_), tokens_length1 = _vala_array_length (_tmp1_), tokens_size = tokens_length1, _tmp3_);
+		g_assert (tokens_length1 == 4);
+		soup_message_headers_append (request->msg->response_headers, "contentFeatures.dlna.org", tokens[3]);
+		_g_object_unref0 (resource);
+		tokens = (_vala_array_free (tokens, tokens_length1, (GDestroyNotify) g_free), NULL);
+	}
+	goto __finally26;
+	__catch26_g_error:
+	{
+		GError * err;
+		err = _inner_error_;
+		_inner_error_ = NULL;
+		{
+			g_warning ("rygel-http-request-handler.vala:56: %s", "Received request for 'contentFeatures.dlna.org' but " "failed to provide the value in response headers");
+			_g_error_free0 (err);
+		}
+	}
+	__finally26:
 	if (_inner_error_ != NULL) {
 		if (_inner_error_->domain == RYGEL_HTTP_REQUEST_ERROR) {
 			g_propagate_error (error, _inner_error_);
@@ -272,14 +297,9 @@ static void rygel_http_request_handler_real_add_response_headers (RygelHTTPReque
 			return;
 		}
 	}
-	tokens = (_tmp3_ = (_tmp2_ = _tmp1_ = g_strsplit (_tmp0_ = gupnp_protocol_info_to_string (gupnp_didl_lite_resource_get_protocol_info (resource)), ":", 4), _g_free0 (_tmp0_), _tmp2_), tokens_length1 = _vala_array_length (_tmp1_), tokens_size = tokens_length1, _tmp3_);
-	g_assert (tokens_length1 == 4);
-	soup_message_headers_append (request->msg->response_headers, "contentFeatures.dlna.org", tokens[3]);
 	_g_free0 (mode);
 	_g_object_unref0 (didl_writer);
 	_g_object_unref0 (didl_item);
-	_g_object_unref0 (resource);
-	tokens = (_vala_array_free (tokens, tokens_length1, (GDestroyNotify) g_free), NULL);
 }
 
 

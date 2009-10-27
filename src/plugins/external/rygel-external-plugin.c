@@ -30,8 +30,6 @@
 #include <rygel.h>
 #include <stdlib.h>
 #include <string.h>
-#include <dbus/dbus-glib-lowlevel.h>
-#include <dbus/dbus-glib.h>
 
 
 #define RYGEL_TYPE_EXTERNAL_PLUGIN (rygel_external_plugin_get_type ())
@@ -45,9 +43,6 @@ typedef struct _RygelExternalPlugin RygelExternalPlugin;
 typedef struct _RygelExternalPluginClass RygelExternalPluginClass;
 typedef struct _RygelExternalPluginPrivate RygelExternalPluginPrivate;
 #define _g_free0(var) (var = (g_free (var), NULL))
-#define _g_regex_unref0(var) ((var == NULL) ? NULL : (var = (g_regex_unref (var), NULL)))
-#define _g_error_free0(var) ((var == NULL) ? NULL : (var = (g_error_free (var), NULL)))
-#define _g_object_unref0(var) ((var == NULL) ? NULL : (var = (g_object_unref (var), NULL)))
 
 #define RYGEL_TYPE_EXTERNAL_CONTENT_DIR (rygel_external_content_dir_get_type ())
 #define RYGEL_EXTERNAL_CONTENT_DIR(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_EXTERNAL_CONTENT_DIR, RygelExternalContentDir))
@@ -58,7 +53,6 @@ typedef struct _RygelExternalPluginPrivate RygelExternalPluginPrivate;
 
 typedef struct _RygelExternalContentDir RygelExternalContentDir;
 typedef struct _RygelExternalContentDirClass RygelExternalContentDirClass;
-#define _rygel_resource_info_unref0(var) ((var == NULL) ? NULL : (var = (rygel_resource_info_unref (var), NULL)))
 
 struct _RygelExternalPlugin {
 	RygelPlugin parent_instance;
@@ -78,121 +72,32 @@ GType rygel_external_plugin_get_type (void);
 enum  {
 	RYGEL_EXTERNAL_PLUGIN_DUMMY_PROPERTY
 };
-#define RYGEL_EXTERNAL_PLUGIN_PROPS_IFACE "org.freedesktop.DBus.Properties"
-#define RYGEL_EXTERNAL_PLUGIN_OBJECT_IFACE "org.gnome.UPnP.MediaObject1"
-void _dynamic_Get6 (DBusGProxy* self, const char* param1, const char* param2, GValue* param3, GError** error);
 GType rygel_external_content_dir_get_type (void);
-RygelExternalPlugin* rygel_external_plugin_new (DBusGConnection* connection, const char* service_name);
-RygelExternalPlugin* rygel_external_plugin_construct (GType object_type, DBusGConnection* connection, const char* service_name);
+RygelExternalPlugin* rygel_external_plugin_new (const char* service_name, const char* title, const char* root_object, RygelIconInfo* icon);
+RygelExternalPlugin* rygel_external_plugin_construct (GType object_type, const char* service_name, const char* title, const char* root_object, RygelIconInfo* icon);
 static void rygel_external_plugin_finalize (GObject* obj);
 
 
 
-static char* string_replace (const char* self, const char* old, const char* replacement) {
-	char* result;
-	GError * _inner_error_;
-	g_return_val_if_fail (self != NULL, NULL);
-	g_return_val_if_fail (old != NULL, NULL);
-	g_return_val_if_fail (replacement != NULL, NULL);
-	_inner_error_ = NULL;
-	{
-		char* _tmp0_;
-		GRegex* _tmp1_;
-		GRegex* regex;
-		char* _tmp2_;
-		regex = (_tmp1_ = g_regex_new (_tmp0_ = g_regex_escape_string (old, -1), 0, 0, &_inner_error_), _g_free0 (_tmp0_), _tmp1_);
-		if (_inner_error_ != NULL) {
-			if (_inner_error_->domain == G_REGEX_ERROR) {
-				goto __catch6_g_regex_error;
-			}
-			goto __finally6;
-		}
-		_tmp2_ = g_regex_replace_literal (regex, self, (glong) (-1), 0, replacement, 0, &_inner_error_);
-		if (_inner_error_ != NULL) {
-			_g_regex_unref0 (regex);
-			if (_inner_error_->domain == G_REGEX_ERROR) {
-				goto __catch6_g_regex_error;
-			}
-			goto __finally6;
-		}
-		result = _tmp2_;
-		_g_regex_unref0 (regex);
-		return result;
-	}
-	goto __finally6;
-	__catch6_g_regex_error:
-	{
-		GError * e;
-		e = _inner_error_;
-		_inner_error_ = NULL;
-		{
-			g_assert_not_reached ();
-			_g_error_free0 (e);
-		}
-	}
-	__finally6:
-	if (_inner_error_ != NULL) {
-		g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, _inner_error_->message);
-		g_clear_error (&_inner_error_);
-		return NULL;
-	}
-}
-
-
-void _dynamic_Get6 (DBusGProxy* self, const char* param1, const char* param2, GValue* param3, GError** error) {
-	dbus_g_proxy_call (self, "Get", error, G_TYPE_STRING, param1, G_TYPE_STRING, param2, G_TYPE_INVALID, G_TYPE_VALUE, param3, G_TYPE_INVALID);
-	if (*error) {
-		return;
-	}
-}
-
-
-RygelExternalPlugin* rygel_external_plugin_construct (GType object_type, DBusGConnection* connection, const char* service_name) {
-	GError * _inner_error_;
+RygelExternalPlugin* rygel_external_plugin_construct (GType object_type, const char* service_name, const char* title, const char* root_object, RygelIconInfo* icon) {
 	RygelExternalPlugin * self;
 	char* _tmp0_;
 	char* _tmp1_;
-	char* root_object;
-	DBusGProxy* props;
-	GValue value = {0};
-	GValue _tmp3_;
-	GValue _tmp2_ = {0};
-	char* title;
-	char* _tmp4_;
-	char* _tmp5_;
-	RygelResourceInfo* resource_info;
-	g_return_val_if_fail (connection != NULL, NULL);
 	g_return_val_if_fail (service_name != NULL, NULL);
-	_inner_error_ = NULL;
-	root_object = (_tmp1_ = g_strconcat ("/", _tmp0_ = string_replace (service_name, ".", "/"), NULL), _g_free0 (_tmp0_), _tmp1_);
-	props = dbus_g_proxy_new_for_name (connection, service_name, root_object, RYGEL_EXTERNAL_PLUGIN_PROPS_IFACE);
-	_dynamic_Get6 (props, RYGEL_EXTERNAL_PLUGIN_OBJECT_IFACE, "DisplayName", &_tmp2_, &_inner_error_);
-	value = (_tmp3_ = _tmp2_, G_IS_VALUE (&value) ? (g_value_unset (&value), NULL) : NULL, _tmp3_);
-	if (_inner_error_ != NULL) {
-		_g_free0 (root_object);
-		_g_object_unref0 (props);
-		G_IS_VALUE (&value) ? (g_value_unset (&value), NULL) : NULL;
-		g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, _inner_error_->message);
-		g_clear_error (&_inner_error_);
-		return NULL;
+	g_return_val_if_fail (title != NULL, NULL);
+	g_return_val_if_fail (root_object != NULL, NULL);
+	self = (RygelExternalPlugin*) rygel_plugin_construct_MediaServer (object_type, service_name, title, RYGEL_TYPE_EXTERNAL_CONTENT_DIR);
+	self->service_name = (_tmp0_ = g_strdup (service_name), _g_free0 (self->service_name), _tmp0_);
+	self->root_object = (_tmp1_ = g_strdup (root_object), _g_free0 (self->root_object), _tmp1_);
+	if (icon != NULL) {
+		rygel_plugin_add_icon ((RygelPlugin*) self, icon);
 	}
-	title = g_strdup (g_value_get_string (&value));
-	self = (RygelExternalPlugin*) rygel_plugin_construct_MediaServer (object_type, service_name, title);
-	self->service_name = (_tmp4_ = g_strdup (service_name), _g_free0 (self->service_name), _tmp4_);
-	self->root_object = (_tmp5_ = g_strdup (root_object), _g_free0 (self->root_object), _tmp5_);
-	resource_info = rygel_resource_info_new (RYGEL_CONTENT_DIRECTORY_UPNP_ID, RYGEL_CONTENT_DIRECTORY_UPNP_TYPE, RYGEL_CONTENT_DIRECTORY_DESCRIPTION_PATH, RYGEL_TYPE_EXTERNAL_CONTENT_DIR);
-	rygel_plugin_add_resource ((RygelPlugin*) self, resource_info);
-	_g_free0 (root_object);
-	_g_object_unref0 (props);
-	G_IS_VALUE (&value) ? (g_value_unset (&value), NULL) : NULL;
-	_g_free0 (title);
-	_rygel_resource_info_unref0 (resource_info);
 	return self;
 }
 
 
-RygelExternalPlugin* rygel_external_plugin_new (DBusGConnection* connection, const char* service_name) {
-	return rygel_external_plugin_construct (RYGEL_TYPE_EXTERNAL_PLUGIN, connection, service_name);
+RygelExternalPlugin* rygel_external_plugin_new (const char* service_name, const char* title, const char* root_object, RygelIconInfo* icon) {
+	return rygel_external_plugin_construct (RYGEL_TYPE_EXTERNAL_PLUGIN, service_name, title, root_object, icon);
 }
 
 

@@ -169,7 +169,7 @@ typedef struct _RygelMediaObjectPrivate RygelMediaObjectPrivate;
 typedef struct _RygelMediaContainer RygelMediaContainer;
 typedef struct _RygelMediaContainerClass RygelMediaContainerClass;
 typedef struct _RygelMediaItemPrivate RygelMediaItemPrivate;
-typedef struct _RygelThumbnailPrivate RygelThumbnailPrivate;
+#define _g_error_free0(var) ((var == NULL) ? NULL : (var = (g_error_free (var), NULL)))
 
 #define RYGEL_TYPE_SEEKABLE_RESPONSE (rygel_seekable_response_get_type ())
 #define RYGEL_SEEKABLE_RESPONSE(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_SEEKABLE_RESPONSE, RygelSeekableResponse))
@@ -222,7 +222,8 @@ struct _RygelHTTPIdentityHandlerClass {
 
 struct _RygelStateMachineIface {
 	GTypeInterface parent_iface;
-	void (*run) (RygelStateMachine* self);
+	void (*run) (RygelStateMachine* self, GAsyncReadyCallback _callback_, gpointer _user_data_);
+	void (*run_finish) (RygelStateMachine* self, GAsyncResult* _res_);
 	GCancellable* (*get_cancellable) (RygelStateMachine* self);
 	void (*set_cancellable) (RygelStateMachine* self, GCancellable* value);
 };
@@ -248,7 +249,7 @@ struct _RygelIconInfo {
 	volatile int ref_count;
 	RygelIconInfoPrivate * priv;
 	char* mime_type;
-	char* path;
+	char* uri;
 	glong size;
 	gint width;
 	gint height;
@@ -264,7 +265,6 @@ struct _RygelMediaObject {
 	GObject parent_instance;
 	RygelMediaObjectPrivate * priv;
 	char* id;
-	char* title;
 	guint64 modified;
 	GeeArrayList* uris;
 	RygelMediaContainer* parent;
@@ -305,17 +305,6 @@ struct _RygelMediaItemClass {
 	gboolean (*should_stream) (RygelMediaItem* self);
 };
 
-struct _RygelThumbnail {
-	RygelIconInfo parent_instance;
-	RygelThumbnailPrivate * priv;
-	char* uri;
-	char* dlna_profile;
-};
-
-struct _RygelThumbnailClass {
-	RygelIconInfoClass parent_class;
-};
-
 
 static gpointer rygel_http_identity_handler_parent_class = NULL;
 
@@ -347,8 +336,15 @@ GType rygel_http_seek_get_type (void);
 GType rygel_media_container_get_type (void);
 gboolean rygel_media_item_should_stream (RygelMediaItem* self);
 void rygel_http_seek_add_response_header (RygelHTTPSeek* self, SoupMessage* msg, gint64 length);
+gint64 rygel_http_seek_get_length (RygelHTTPSeek* self);
 void rygel_http_request_handler_add_response_headers (RygelHTTPRequestHandler* self, RygelHTTPRequest* request, GError** error);
 static void rygel_http_identity_handler_real_add_response_headers (RygelHTTPRequestHandler* base, RygelHTTPRequest* request, GError** error);
+static RygelHTTPResponse* rygel_http_identity_handler_render_body_real (RygelHTTPIdentityHandler* self, RygelHTTPRequest* request, GError** error);
+static RygelHTTPResponse* rygel_http_identity_handler_real_render_body (RygelHTTPRequestHandler* base, RygelHTTPRequest* request, GError** error);
+char* rygel_transcode_manager_get_protocol (RygelTranscodeManager* self);
+GUPnPDIDLLiteResource* rygel_thumbnail_add_resource (RygelThumbnail* self, GUPnPDIDLLiteItem* didl_item, const char* protocol);
+GUPnPDIDLLiteResource* rygel_media_item_add_resource (RygelMediaItem* self, GUPnPDIDLLiteItem* didl_item, const char* uri, const char* protocol, GError** error);
+static GUPnPDIDLLiteResource* rygel_http_identity_handler_real_add_resource (RygelHTTPRequestHandler* base, GUPnPDIDLLiteItem* didl_item, RygelHTTPRequest* request, GError** error);
 GCancellable* rygel_http_request_handler_get_cancellable (RygelHTTPRequestHandler* self);
 RygelSeekableResponse* rygel_seekable_response_new (SoupServer* server, SoupMessage* msg, const char* uri, RygelHTTPSeek* seek, gsize file_length, GCancellable* cancellable);
 RygelSeekableResponse* rygel_seekable_response_construct (GType object_type, SoupServer* server, SoupMessage* msg, const char* uri, RygelHTTPSeek* seek, gsize file_length, GCancellable* cancellable);
@@ -357,11 +353,6 @@ GstElement* rygel_media_item_create_stream_source (RygelMediaItem* self);
 RygelLiveResponse* rygel_live_response_new (SoupServer* server, SoupMessage* msg, const char* name, GstElement* src, RygelHTTPSeek* time_range, GCancellable* cancellable, GError** error);
 RygelLiveResponse* rygel_live_response_construct (GType object_type, SoupServer* server, SoupMessage* msg, const char* name, GstElement* src, RygelHTTPSeek* time_range, GCancellable* cancellable, GError** error);
 GType rygel_live_response_get_type (void);
-static RygelHTTPResponse* rygel_http_identity_handler_real_render_body (RygelHTTPRequestHandler* base, RygelHTTPRequest* request, GError** error);
-char* rygel_transcode_manager_get_protocol (RygelTranscodeManager* self);
-GUPnPDIDLLiteResource* rygel_thumbnail_add_resource (RygelThumbnail* self, GUPnPDIDLLiteItem* didl_item, const char* protocol);
-GUPnPDIDLLiteResource* rygel_media_item_add_resource (RygelMediaItem* self, GUPnPDIDLLiteItem* didl_item, const char* uri, const char* protocol, GError** error);
-static GUPnPDIDLLiteResource* rygel_http_identity_handler_real_add_resource (RygelHTTPRequestHandler* base, GUPnPDIDLLiteItem* didl_item, RygelHTTPRequest* request, GError** error);
 
 
 
@@ -413,6 +404,7 @@ static void rygel_http_identity_handler_real_add_response_headers (RygelHTTPRequ
 	} else {
 		soup_message_headers_append (request->msg->response_headers, "Accept-Ranges", "bytes");
 		if (request->byte_range != NULL) {
+			soup_message_headers_set_content_length (request->msg->response_headers, rygel_http_seek_get_length (request->byte_range));
 			rygel_http_seek_add_response_header (request->byte_range, request->msg, (gint64) size);
 		}
 	}
@@ -433,87 +425,49 @@ static void rygel_http_identity_handler_real_add_response_headers (RygelHTTPRequ
 }
 
 
-static gpointer _g_object_ref0 (gpointer self) {
-	return self ? g_object_ref (self) : NULL;
-}
-
-
 static RygelHTTPResponse* rygel_http_identity_handler_real_render_body (RygelHTTPRequestHandler* base, RygelHTTPRequest* request, GError** error) {
 	RygelHTTPIdentityHandler * self;
 	RygelHTTPResponse* result;
 	GError * _inner_error_;
-	RygelMediaItem* item;
 	self = (RygelHTTPIdentityHandler*) base;
 	g_return_val_if_fail (request != NULL, NULL);
 	_inner_error_ = NULL;
-	if (request->thumbnail != NULL) {
-		result = (RygelHTTPResponse*) rygel_seekable_response_new (request->server, request->msg, request->thumbnail->uri, request->byte_range, (gsize) ((RygelIconInfo*) request->thumbnail)->size, rygel_http_request_handler_get_cancellable ((RygelHTTPRequestHandler*) self));
-		return result;
-	}
-	item = _g_object_ref0 (request->item);
-	if (rygel_media_item_should_stream (item)) {
-		GstElement* src;
-		RygelLiveResponse* _tmp0_;
-		src = rygel_media_item_create_stream_source (item);
-		if (src == NULL) {
-			_inner_error_ = g_error_new_literal (RYGEL_HTTP_REQUEST_ERROR, RYGEL_HTTP_REQUEST_ERROR_NOT_FOUND, "Not found");
-			if (_inner_error_ != NULL) {
-				if (_inner_error_->domain == RYGEL_HTTP_REQUEST_ERROR) {
-					g_propagate_error (error, _inner_error_);
-					_gst_object_unref0 (src);
-					_g_object_unref0 (item);
-					return NULL;
-				} else {
-					_gst_object_unref0 (src);
-					_g_object_unref0 (item);
-					g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, _inner_error_->message);
-					g_clear_error (&_inner_error_);
-					return NULL;
-				}
-			}
-		}
-		_tmp0_ = rygel_live_response_new (request->server, request->msg, "RygelLiveResponse", src, request->time_range, rygel_http_request_handler_get_cancellable ((RygelHTTPRequestHandler*) self), &_inner_error_);
+	{
+		RygelHTTPResponse* _tmp0_;
+		_tmp0_ = rygel_http_identity_handler_render_body_real (self, request, &_inner_error_);
 		if (_inner_error_ != NULL) {
-			if (_inner_error_->domain == RYGEL_HTTP_REQUEST_ERROR) {
-				g_propagate_error (error, _inner_error_);
-				_gst_object_unref0 (src);
-				_g_object_unref0 (item);
-				return NULL;
-			} else {
-				_gst_object_unref0 (src);
-				_g_object_unref0 (item);
-				g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, _inner_error_->message);
-				g_clear_error (&_inner_error_);
-				return NULL;
-			}
+			goto __catch27_g_error;
+			goto __finally27;
 		}
-		result = (RygelHTTPResponse*) _tmp0_;
-		_gst_object_unref0 (src);
-		_g_object_unref0 (item);
-		return result;
-	} else {
-		char* _tmp1_;
-		RygelHTTPResponse* _tmp2_;
-		if (gee_collection_get_size ((GeeCollection*) ((RygelMediaObject*) item)->uris) == 0) {
-			_inner_error_ = g_error_new (RYGEL_HTTP_REQUEST_ERROR, RYGEL_HTTP_REQUEST_ERROR_NOT_FOUND, "Requested item '%s' didn't provide a URI\n", ((RygelMediaObject*) item)->id);
-			if (_inner_error_ != NULL) {
-				if (_inner_error_->domain == RYGEL_HTTP_REQUEST_ERROR) {
-					g_propagate_error (error, _inner_error_);
-					_g_object_unref0 (item);
-					return NULL;
-				} else {
-					_g_object_unref0 (item);
-					g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, _inner_error_->message);
-					g_clear_error (&_inner_error_);
-					return NULL;
-				}
-			}
-		}
-		result = (_tmp2_ = (RygelHTTPResponse*) rygel_seekable_response_new (request->server, request->msg, _tmp1_ = (char*) gee_abstract_list_get ((GeeAbstractList*) ((RygelMediaObject*) item)->uris, 0), request->byte_range, (gsize) item->size, rygel_http_request_handler_get_cancellable ((RygelHTTPRequestHandler*) self)), _g_free0 (_tmp1_), _tmp2_);
-		_g_object_unref0 (item);
+		result = _tmp0_;
 		return result;
 	}
-	_g_object_unref0 (item);
+	goto __finally27;
+	__catch27_g_error:
+	{
+		GError * err;
+		err = _inner_error_;
+		_inner_error_ = NULL;
+		{
+			_inner_error_ = g_error_new_literal (RYGEL_HTTP_REQUEST_ERROR, RYGEL_HTTP_REQUEST_ERROR_NOT_FOUND, err->message);
+			if (_inner_error_ != NULL) {
+				_g_error_free0 (err);
+				goto __finally27;
+			}
+			_g_error_free0 (err);
+		}
+	}
+	__finally27:
+	if (_inner_error_ != NULL) {
+		if (_inner_error_->domain == RYGEL_HTTP_REQUEST_ERROR) {
+			g_propagate_error (error, _inner_error_);
+			return NULL;
+		} else {
+			g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, _inner_error_->message);
+			g_clear_error (&_inner_error_);
+			return NULL;
+		}
+	}
 }
 
 
@@ -535,22 +489,75 @@ static GUPnPDIDLLiteResource* rygel_http_identity_handler_real_add_resource (Ryg
 		GUPnPDIDLLiteResource* _tmp0_;
 		_tmp0_ = rygel_media_item_add_resource (request->item, didl_item, NULL, protocol, &_inner_error_);
 		if (_inner_error_ != NULL) {
-			if (_inner_error_->domain == RYGEL_HTTP_REQUEST_ERROR) {
-				g_propagate_error (error, _inner_error_);
-				_g_free0 (protocol);
-				return NULL;
-			} else {
-				_g_free0 (protocol);
-				g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, _inner_error_->message);
-				g_clear_error (&_inner_error_);
-				return NULL;
-			}
+			g_propagate_error (error, _inner_error_);
+			_g_free0 (protocol);
+			return NULL;
 		}
 		result = _tmp0_;
 		_g_free0 (protocol);
 		return result;
 	}
 	_g_free0 (protocol);
+}
+
+
+static gpointer _g_object_ref0 (gpointer self) {
+	return self ? g_object_ref (self) : NULL;
+}
+
+
+static RygelHTTPResponse* rygel_http_identity_handler_render_body_real (RygelHTTPIdentityHandler* self, RygelHTTPRequest* request, GError** error) {
+	RygelHTTPResponse* result;
+	GError * _inner_error_;
+	RygelMediaItem* item;
+	g_return_val_if_fail (self != NULL, NULL);
+	g_return_val_if_fail (request != NULL, NULL);
+	_inner_error_ = NULL;
+	if (request->thumbnail != NULL) {
+		result = (RygelHTTPResponse*) rygel_seekable_response_new (request->server, request->msg, ((RygelIconInfo*) request->thumbnail)->uri, request->byte_range, (gsize) ((RygelIconInfo*) request->thumbnail)->size, rygel_http_request_handler_get_cancellable ((RygelHTTPRequestHandler*) self));
+		return result;
+	}
+	item = _g_object_ref0 (request->item);
+	if (rygel_media_item_should_stream (item)) {
+		GstElement* src;
+		RygelLiveResponse* _tmp0_;
+		src = rygel_media_item_create_stream_source (item);
+		if (src == NULL) {
+			_inner_error_ = g_error_new_literal (RYGEL_HTTP_REQUEST_ERROR, RYGEL_HTTP_REQUEST_ERROR_NOT_FOUND, "Not found");
+			if (_inner_error_ != NULL) {
+				g_propagate_error (error, _inner_error_);
+				_gst_object_unref0 (src);
+				_g_object_unref0 (item);
+				return NULL;
+			}
+		}
+		_tmp0_ = rygel_live_response_new (request->server, request->msg, "RygelLiveResponse", src, request->time_range, rygel_http_request_handler_get_cancellable ((RygelHTTPRequestHandler*) self), &_inner_error_);
+		if (_inner_error_ != NULL) {
+			g_propagate_error (error, _inner_error_);
+			_gst_object_unref0 (src);
+			_g_object_unref0 (item);
+			return NULL;
+		}
+		result = (RygelHTTPResponse*) _tmp0_;
+		_gst_object_unref0 (src);
+		_g_object_unref0 (item);
+		return result;
+	} else {
+		char* _tmp1_;
+		RygelHTTPResponse* _tmp2_;
+		if (gee_collection_get_size ((GeeCollection*) ((RygelMediaObject*) item)->uris) == 0) {
+			_inner_error_ = g_error_new (RYGEL_HTTP_REQUEST_ERROR, RYGEL_HTTP_REQUEST_ERROR_NOT_FOUND, "Requested item '%s' didn't provide a URI\n", ((RygelMediaObject*) item)->id);
+			if (_inner_error_ != NULL) {
+				g_propagate_error (error, _inner_error_);
+				_g_object_unref0 (item);
+				return NULL;
+			}
+		}
+		result = (_tmp2_ = (RygelHTTPResponse*) rygel_seekable_response_new (request->server, request->msg, _tmp1_ = (char*) gee_abstract_list_get ((GeeAbstractList*) ((RygelMediaObject*) item)->uris, 0), request->byte_range, (gsize) item->size, rygel_http_request_handler_get_cancellable ((RygelHTTPRequestHandler*) self)), _g_free0 (_tmp1_), _tmp2_);
+		_g_object_unref0 (item);
+		return result;
+	}
+	_g_object_unref0 (item);
 }
 
 

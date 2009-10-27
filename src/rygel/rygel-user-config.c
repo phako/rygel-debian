@@ -58,9 +58,9 @@ typedef struct _RygelUserConfigClass RygelUserConfigClass;
 typedef struct _RygelUserConfigPrivate RygelUserConfigPrivate;
 #define _g_key_file_free0(var) ((var == NULL) ? NULL : (var = (g_key_file_free (var), NULL)))
 #define _g_object_unref0(var) ((var == NULL) ? NULL : (var = (g_object_unref (var), NULL)))
+#define _g_error_free0(var) ((var == NULL) ? NULL : (var = (g_error_free (var), NULL)))
 #define _g_free0(var) (var = (g_free (var), NULL))
 #define _dbus_g_connection_unref0(var) ((var == NULL) ? NULL : (var = (dbus_g_connection_unref (var), NULL)))
-#define _g_error_free0(var) ((var == NULL) ? NULL : (var = (g_error_free (var), NULL)))
 
 typedef enum  {
 	RYGEL_LOG_LEVEL_INVALID = 0,
@@ -177,8 +177,8 @@ static gint rygel_user_config_real_get_int (RygelConfiguration* base, const char
 static GeeArrayList* rygel_user_config_real_get_int_list (RygelConfiguration* base, const char* section, const char* key, GError** error);
 static gboolean rygel_user_config_real_get_bool (RygelConfiguration* base, const char* section, const char* key, GError** error);
 void rygel_user_config_set_string_list (RygelUserConfig* self, const char* section, const char* key, GeeArrayList* str_list);
-void _dynamic_StartServiceByName0 (DBusGProxy* self, const char* param1, guint32 param2, guint32* param3, GError** error);
-void _dynamic_Shutdown1 (DBusGProxy* self, GError** error);
+static void _dynamic_StartServiceByName0 (DBusGProxy* self, const char* param1, guint32 param2, guint32* param3, GError** error);
+static void _dynamic_Shutdown1 (DBusGProxy* self, GError** error);
 static void rygel_user_config_finalize (GObject* obj);
 static void _vala_array_destroy (gpointer array, gint array_length, GDestroyNotify destroy_func);
 static void _vala_array_free (gpointer array, gint array_length, GDestroyNotify destroy_func);
@@ -205,16 +205,36 @@ static gboolean rygel_user_config_real_get_upnp_enabled (RygelConfiguration* bas
 
 void rygel_user_config_set_upnp_enabled (RygelUserConfig* self, gboolean value) {
 	GError * _inner_error_;
-	gboolean _tmp0_;
+	gboolean enabled;
 	g_return_if_fail (self != NULL);
 	_inner_error_ = NULL;
-	_tmp0_ = rygel_configuration_get_upnp_enabled ((RygelConfiguration*) self, &_inner_error_);
+	enabled = FALSE;
+	{
+		gboolean _tmp0_;
+		_tmp0_ = rygel_configuration_get_upnp_enabled ((RygelConfiguration*) self, &_inner_error_);
+		if (_inner_error_ != NULL) {
+			goto __catch0_g_error;
+			goto __finally0;
+		}
+		enabled = _tmp0_;
+	}
+	goto __finally0;
+	__catch0_g_error:
+	{
+		GError * err;
+		err = _inner_error_;
+		_inner_error_ = NULL;
+		{
+			_g_error_free0 (err);
+		}
+	}
+	__finally0:
 	if (_inner_error_ != NULL) {
 		g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, _inner_error_->message);
 		g_clear_error (&_inner_error_);
 		return;
 	}
-	if (value != _tmp0_) {
+	if (value != enabled) {
 		rygel_user_config_enable_upnp (self, value);
 	}
 }
@@ -429,9 +449,9 @@ RygelUserConfig* rygel_user_config_construct (GType object_type, gboolean read_o
 		g_propagate_error (error, _inner_error_);
 		dirs = (_vala_array_free (dirs, dirs_length1, (GDestroyNotify) g_free), NULL);
 		_g_free0 (path);
-		return;
+		return NULL;
 	}
-	g_debug ("rygel-user-config.vala:148: Loaded user configuration from file '%s'", path);
+	g_debug ("rygel-user-config.vala:154: Loaded user configuration from file '%s'", path);
 	{
 		DBusGConnection* connection;
 		DBusGProxy* _tmp7_;
@@ -439,31 +459,31 @@ RygelUserConfig* rygel_user_config_construct (GType object_type, gboolean read_o
 		connection = dbus_g_bus_get (DBUS_BUS_SESSION, &_inner_error_);
 		if (_inner_error_ != NULL) {
 			if (_inner_error_->domain == DBUS_GERROR) {
-				goto __catch0_dbus_gerror;
+				goto __catch1_dbus_gerror;
 			}
-			goto __finally0;
+			goto __finally1;
 		}
 		self->priv->rygel_obj = (_tmp7_ = dbus_g_proxy_new_for_name (connection, RYGEL_USER_CONFIG_RYGEL_SERVICE, RYGEL_USER_CONFIG_RYGEL_PATH, RYGEL_USER_CONFIG_RYGEL_INTERFACE), _g_object_unref0 (self->priv->rygel_obj), _tmp7_);
 		self->priv->dbus_obj = (_tmp8_ = dbus_g_proxy_new_for_name (connection, RYGEL_USER_CONFIG_DBUS_SERVICE, RYGEL_USER_CONFIG_DBUS_PATH, RYGEL_USER_CONFIG_DBUS_INTERFACE), _g_object_unref0 (self->priv->dbus_obj), _tmp8_);
 		_dbus_g_connection_unref0 (connection);
 	}
-	goto __finally0;
-	__catch0_dbus_gerror:
+	goto __finally1;
+	__catch1_dbus_gerror:
 	{
 		GError * err;
 		err = _inner_error_;
 		_inner_error_ = NULL;
 		{
-			g_debug ("rygel-user-config.vala:162: Failed to connect to session bus: %s", err->message);
+			g_debug ("rygel-user-config.vala:168: Failed to connect to session bus: %s", err->message);
 			_g_error_free0 (err);
 		}
 	}
-	__finally0:
+	__finally1:
 	if (_inner_error_ != NULL) {
 		g_propagate_error (error, _inner_error_);
 		dirs = (_vala_array_free (dirs, dirs_length1, (GDestroyNotify) g_free), NULL);
 		_g_free0 (path);
-		return;
+		return NULL;
 	}
 	dirs = (_vala_array_free (dirs, dirs_length1, (GDestroyNotify) g_free), NULL);
 	_g_free0 (path);
@@ -490,23 +510,23 @@ void rygel_user_config_save (RygelUserConfig* self) {
 		g_file_set_contents (path, data, (glong) length, &_inner_error_);
 		if (_inner_error_ != NULL) {
 			if (_inner_error_->domain == G_FILE_ERROR) {
-				goto __catch1_g_file_error;
+				goto __catch2_g_file_error;
 			}
-			goto __finally1;
+			goto __finally2;
 		}
 	}
-	goto __finally1;
-	__catch1_g_file_error:
+	goto __finally2;
+	__catch2_g_file_error:
 	{
 		GError * err;
 		err = _inner_error_;
 		_inner_error_ = NULL;
 		{
-			g_critical ("rygel-user-config.vala:179: Failed to save configuration data to file '%s': %s", path, err->message);
+			g_critical ("rygel-user-config.vala:185: Failed to save configuration data to file '%s': %s", path, err->message);
 			_g_error_free0 (err);
 		}
 	}
-	__finally1:
+	__finally2:
 	if (_inner_error_ != NULL) {
 		_g_free0 (path);
 		_g_free0 (data);
@@ -602,7 +622,7 @@ static GeeArrayList* rygel_user_config_real_get_string_list (RygelConfiguration*
 	g_return_val_if_fail (section != NULL, NULL);
 	g_return_val_if_fail (key != NULL, NULL);
 	_inner_error_ = NULL;
-	str_list = gee_array_list_new (G_TYPE_STRING, (GBoxedCopyFunc) g_strdup, g_free, g_direct_equal);
+	str_list = gee_array_list_new (G_TYPE_STRING, (GBoxedCopyFunc) g_strdup, g_free, NULL);
 	strings = (_tmp1_ = g_key_file_get_string_list (self->key_file, section, key, &_tmp0_, &_inner_error_), strings_length1 = _tmp0_, strings_size = strings_length1, _tmp1_);
 	if (_inner_error_ != NULL) {
 		g_propagate_error (error, _inner_error_);
@@ -682,7 +702,7 @@ static GeeArrayList* rygel_user_config_real_get_int_list (RygelConfiguration* ba
 	g_return_val_if_fail (section != NULL, NULL);
 	g_return_val_if_fail (key != NULL, NULL);
 	_inner_error_ = NULL;
-	int_list = gee_array_list_new (G_TYPE_INT, NULL, NULL, g_direct_equal);
+	int_list = gee_array_list_new (G_TYPE_INT, NULL, NULL, NULL);
 	ints = (_tmp1_ = g_key_file_get_integer_list (self->key_file, section, key, &_tmp0_, &_inner_error_), ints_length1 = _tmp0_, ints_size = ints_length1, _tmp1_);
 	if (_inner_error_ != NULL) {
 		g_propagate_error (error, _inner_error_);
@@ -790,7 +810,7 @@ void rygel_user_config_set_bool (RygelUserConfig* self, const char* section, con
 }
 
 
-void _dynamic_StartServiceByName0 (DBusGProxy* self, const char* param1, guint32 param2, guint32* param3, GError** error) {
+static void _dynamic_StartServiceByName0 (DBusGProxy* self, const char* param1, guint32 param2, guint32* param3, GError** error) {
 	dbus_g_proxy_call (self, "StartServiceByName", error, G_TYPE_STRING, param1, G_TYPE_UINT, param2, G_TYPE_INVALID, G_TYPE_UINT, param3, G_TYPE_INVALID);
 	if (*error) {
 		return;
@@ -798,7 +818,7 @@ void _dynamic_StartServiceByName0 (DBusGProxy* self, const char* param1, guint32
 }
 
 
-void _dynamic_Shutdown1 (DBusGProxy* self, GError** error) {
+static void _dynamic_Shutdown1 (DBusGProxy* self, GError** error) {
 	dbus_g_proxy_call (self, "Shutdown", error, G_TYPE_INVALID, G_TYPE_INVALID);
 	if (*error) {
 		return;
@@ -821,8 +841,8 @@ static void rygel_user_config_enable_upnp (RygelUserConfig* self, gboolean enabl
 			if (self->priv->dbus_obj != NULL) {
 				_dynamic_StartServiceByName0 (self->priv->dbus_obj, RYGEL_USER_CONFIG_RYGEL_SERVICE, (guint32) 0, &res, &_inner_error_);
 				if (_inner_error_ != NULL) {
-					goto __catch2_g_error;
-					goto __finally2;
+					goto __catch3_g_error;
+					goto __finally3;
 				}
 			}
 			source_path = g_build_filename (DESKTOP_DIR, "rygel.desktop", NULL);
@@ -830,48 +850,13 @@ static void rygel_user_config_enable_upnp (RygelUserConfig* self, gboolean enabl
 				g_file_make_symbolic_link (dest, source_path, NULL, &_inner_error_);
 				if (_inner_error_ != NULL) {
 					if (g_error_matches (_inner_error_, G_IO_ERROR, G_IO_ERROR_EXISTS)) {
-						goto __catch3_g_io_error_exists;
-					}
-					goto __finally3;
-				}
-			}
-			goto __finally3;
-			__catch3_g_io_error_exists:
-			{
-				GError * err;
-				err = _inner_error_;
-				_inner_error_ = NULL;
-				{
-					_g_error_free0 (err);
-				}
-			}
-			__finally3:
-			if (_inner_error_ != NULL) {
-				_g_free0 (source_path);
-				goto __catch2_g_error;
-				goto __finally2;
-			}
-			rygel_user_config_set_bool (self, "general", RYGEL_USER_CONFIG_ENABLED_KEY, TRUE);
-			_g_free0 (source_path);
-		} else {
-			if (self->priv->rygel_obj != NULL) {
-				_dynamic_Shutdown1 (self->priv->rygel_obj, &_inner_error_);
-				if (_inner_error_ != NULL) {
-					goto __catch2_g_error;
-					goto __finally2;
-				}
-			}
-			{
-				g_file_delete (dest, NULL, &_inner_error_);
-				if (_inner_error_ != NULL) {
-					if (g_error_matches (_inner_error_, G_IO_ERROR, G_IO_ERROR_NOT_FOUND)) {
-						goto __catch4_g_io_error_not_found;
+						goto __catch4_g_io_error_exists;
 					}
 					goto __finally4;
 				}
 			}
 			goto __finally4;
-			__catch4_g_io_error_not_found:
+			__catch4_g_io_error_exists:
 			{
 				GError * err;
 				err = _inner_error_;
@@ -882,14 +867,49 @@ static void rygel_user_config_enable_upnp (RygelUserConfig* self, gboolean enabl
 			}
 			__finally4:
 			if (_inner_error_ != NULL) {
-				goto __catch2_g_error;
-				goto __finally2;
+				_g_free0 (source_path);
+				goto __catch3_g_error;
+				goto __finally3;
+			}
+			rygel_user_config_set_bool (self, "general", RYGEL_USER_CONFIG_ENABLED_KEY, TRUE);
+			_g_free0 (source_path);
+		} else {
+			if (self->priv->rygel_obj != NULL) {
+				_dynamic_Shutdown1 (self->priv->rygel_obj, &_inner_error_);
+				if (_inner_error_ != NULL) {
+					goto __catch3_g_error;
+					goto __finally3;
+				}
+			}
+			{
+				g_file_delete (dest, NULL, &_inner_error_);
+				if (_inner_error_ != NULL) {
+					if (g_error_matches (_inner_error_, G_IO_ERROR, G_IO_ERROR_NOT_FOUND)) {
+						goto __catch5_g_io_error_not_found;
+					}
+					goto __finally5;
+				}
+			}
+			goto __finally5;
+			__catch5_g_io_error_not_found:
+			{
+				GError * err;
+				err = _inner_error_;
+				_inner_error_ = NULL;
+				{
+					_g_error_free0 (err);
+				}
+			}
+			__finally5:
+			if (_inner_error_ != NULL) {
+				goto __catch3_g_error;
+				goto __finally3;
 			}
 			rygel_user_config_set_bool (self, "general", RYGEL_USER_CONFIG_ENABLED_KEY, FALSE);
 		}
 	}
-	goto __finally2;
-	__catch2_g_error:
+	goto __finally3;
+	__catch3_g_error:
 	{
 		GError * err;
 		err = _inner_error_;
@@ -902,11 +922,11 @@ static void rygel_user_config_enable_upnp (RygelUserConfig* self, gboolean enabl
 			} else {
 				_tmp0_ = "stop";
 			}
-			g_warning ("rygel-user-config.vala:325: Failed to %s Rygel service: %s\n", _tmp0_, err->message);
+			g_warning ("rygel-user-config.vala:331: Failed to %s Rygel service: %s\n", _tmp0_, err->message);
 			_g_error_free0 (err);
 		}
 	}
-	__finally2:
+	__finally3:
 	if (_inner_error_ != NULL) {
 		_g_free0 (dest_path);
 		_g_object_unref0 (dest);

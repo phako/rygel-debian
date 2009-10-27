@@ -123,6 +123,17 @@ typedef struct _RygelConnectionManager RygelConnectionManager;
 typedef struct _RygelConnectionManagerClass RygelConnectionManagerClass;
 typedef struct _RygelConnectionManagerPrivate RygelConnectionManagerPrivate;
 
+#define RYGEL_TYPE_SOURCE_CONNECTION_MANAGER (rygel_source_connection_manager_get_type ())
+#define RYGEL_SOURCE_CONNECTION_MANAGER(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_SOURCE_CONNECTION_MANAGER, RygelSourceConnectionManager))
+#define RYGEL_SOURCE_CONNECTION_MANAGER_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TYPE_SOURCE_CONNECTION_MANAGER, RygelSourceConnectionManagerClass))
+#define RYGEL_IS_SOURCE_CONNECTION_MANAGER(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TYPE_SOURCE_CONNECTION_MANAGER))
+#define RYGEL_IS_SOURCE_CONNECTION_MANAGER_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_TYPE_SOURCE_CONNECTION_MANAGER))
+#define RYGEL_SOURCE_CONNECTION_MANAGER_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_TYPE_SOURCE_CONNECTION_MANAGER, RygelSourceConnectionManagerClass))
+
+typedef struct _RygelSourceConnectionManager RygelSourceConnectionManager;
+typedef struct _RygelSourceConnectionManagerClass RygelSourceConnectionManagerClass;
+typedef struct _RygelSourceConnectionManagerPrivate RygelSourceConnectionManagerPrivate;
+
 #define RYGEL_TYPE_STATE_MACHINE (rygel_state_machine_get_type ())
 #define RYGEL_STATE_MACHINE(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_STATE_MACHINE, RygelStateMachine))
 #define RYGEL_IS_STATE_MACHINE(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TYPE_STATE_MACHINE))
@@ -187,17 +198,6 @@ typedef struct _RygelMediaContainerPrivate RygelMediaContainerPrivate;
 typedef struct _RygelSimpleContainer RygelSimpleContainer;
 typedef struct _RygelSimpleContainerClass RygelSimpleContainerClass;
 typedef struct _RygelSimpleContainerPrivate RygelSimpleContainerPrivate;
-
-#define RYGEL_TYPE_SIMPLE_ASYNC_RESULT (rygel_simple_async_result_get_type ())
-#define RYGEL_SIMPLE_ASYNC_RESULT(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_SIMPLE_ASYNC_RESULT, RygelSimpleAsyncResult))
-#define RYGEL_SIMPLE_ASYNC_RESULT_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TYPE_SIMPLE_ASYNC_RESULT, RygelSimpleAsyncResultClass))
-#define RYGEL_IS_SIMPLE_ASYNC_RESULT(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TYPE_SIMPLE_ASYNC_RESULT))
-#define RYGEL_IS_SIMPLE_ASYNC_RESULT_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_TYPE_SIMPLE_ASYNC_RESULT))
-#define RYGEL_SIMPLE_ASYNC_RESULT_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_TYPE_SIMPLE_ASYNC_RESULT, RygelSimpleAsyncResultClass))
-
-typedef struct _RygelSimpleAsyncResult RygelSimpleAsyncResult;
-typedef struct _RygelSimpleAsyncResultClass RygelSimpleAsyncResultClass;
-typedef struct _RygelSimpleAsyncResultPrivate RygelSimpleAsyncResultPrivate;
 
 #define RYGEL_TYPE_MEDIA_ITEM (rygel_media_item_get_type ())
 #define RYGEL_MEDIA_ITEM(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_MEDIA_ITEM, RygelMediaItem))
@@ -416,15 +416,26 @@ struct _RygelConnectionManager {
 	RygelConnectionManagerPrivate * priv;
 	char* sink_protocol_info;
 	char* connection_ids;
+	char* source_protocol_info;
 };
 
 struct _RygelConnectionManagerClass {
 	GUPnPServiceClass parent_class;
 };
 
+struct _RygelSourceConnectionManager {
+	RygelConnectionManager parent_instance;
+	RygelSourceConnectionManagerPrivate * priv;
+};
+
+struct _RygelSourceConnectionManagerClass {
+	RygelConnectionManagerClass parent_class;
+};
+
 struct _RygelStateMachineIface {
 	GTypeInterface parent_iface;
-	void (*run) (RygelStateMachine* self);
+	void (*run) (RygelStateMachine* self, GAsyncReadyCallback _callback_, gpointer _user_data_);
+	void (*run_finish) (RygelStateMachine* self, GAsyncResult* _res_);
 	GCancellable* (*get_cancellable) (RygelStateMachine* self);
 	void (*set_cancellable) (RygelStateMachine* self, GCancellable* value);
 };
@@ -449,7 +460,7 @@ struct _RygelIconInfo {
 	volatile int ref_count;
 	RygelIconInfoPrivate * priv;
 	char* mime_type;
-	char* path;
+	char* uri;
 	glong size;
 	gint width;
 	gint height;
@@ -488,7 +499,6 @@ struct _RygelMediaObject {
 	GObject parent_instance;
 	RygelMediaObjectPrivate * priv;
 	char* id;
-	char* title;
 	guint64 modified;
 	GeeArrayList* uris;
 	RygelMediaContainer* parent;
@@ -508,10 +518,10 @@ struct _RygelMediaContainer {
 
 struct _RygelMediaContainerClass {
 	RygelMediaObjectClass parent_class;
-	void (*get_children) (RygelMediaContainer* self, guint offset, guint max_count, GCancellable* cancellable, GAsyncReadyCallback callback, void* callback_target);
-	GeeList* (*get_children_finish) (RygelMediaContainer* self, GAsyncResult* res, GError** error);
-	void (*find_object) (RygelMediaContainer* self, const char* id, GCancellable* cancellable, GAsyncReadyCallback callback, void* callback_target);
-	RygelMediaObject* (*find_object_finish) (RygelMediaContainer* self, GAsyncResult* res, GError** error);
+	void (*get_children) (RygelMediaContainer* self, guint offset, guint max_count, GCancellable* cancellable, GAsyncReadyCallback _callback_, gpointer _user_data_);
+	GeeList* (*get_children_finish) (RygelMediaContainer* self, GAsyncResult* _res_, GError** error);
+	void (*find_object) (RygelMediaContainer* self, const char* id, GCancellable* cancellable, GAsyncReadyCallback _callback_, gpointer _user_data_);
+	RygelMediaObject* (*find_object_finish) (RygelMediaContainer* self, GAsyncResult* _res_, GError** error);
 };
 
 struct _RygelSimpleContainer {
@@ -522,21 +532,6 @@ struct _RygelSimpleContainer {
 
 struct _RygelSimpleContainerClass {
 	RygelMediaContainerClass parent_class;
-};
-
-struct _RygelSimpleAsyncResult {
-	GObject parent_instance;
-	RygelSimpleAsyncResultPrivate * priv;
-	GObject* source_object;
-	GAsyncReadyCallback callback;
-	gpointer callback_target;
-	GDestroyNotify callback_target_destroy_notify;
-	gpointer data;
-	GError* error;
-};
-
-struct _RygelSimpleAsyncResultClass {
-	GObjectClass parent_class;
 };
 
 struct _RygelMediaItem {
@@ -572,7 +567,6 @@ struct _RygelMediaItemClass {
 struct _RygelThumbnail {
 	RygelIconInfo parent_instance;
 	RygelThumbnailPrivate * priv;
-	char* uri;
 	char* dlna_profile;
 };
 
@@ -600,6 +594,10 @@ struct _RygelMediaDBClass {
 	GObjectClass parent_class;
 };
 
+typedef enum  {
+	RYGEL_DATABASE_ERROR_SQLITE_ERROR
+} RygelDatabaseError;
+#define RYGEL_DATABASE_ERROR rygel_database_error_quark ()
 struct _RygelMetadataExtractor {
 	GObject parent_instance;
 	RygelMetadataExtractorPrivate * priv;
@@ -660,8 +658,7 @@ struct _RygelRootDeviceClass {
 };
 
 typedef enum  {
-	ROOT_DEVICE_FACTORY_ERROR_XML_PARSE,
-	ROOT_DEVICE_FACTORY_ERROR_PLUGIN_DISABLED
+	ROOT_DEVICE_FACTORY_ERROR_XML_PARSE
 } RootDeviceFactoryError;
 #define ROOT_DEVICE_FACTORY_ERROR root_device_factory_error_quark ()
 struct _RygelRootDeviceFactory {
@@ -758,9 +755,10 @@ GType rygel_connection_manager_get_type (void);
 #define RYGEL_CONNECTION_MANAGER_DESCRIPTION_PATH "xml/ConnectionManager.xml"
 RygelConnectionManager* rygel_connection_manager_new (void);
 RygelConnectionManager* rygel_connection_manager_construct (GType object_type);
-char* rygel_connection_manager_get_source_protocol_info (RygelConnectionManager* self);
+GType rygel_source_connection_manager_get_type (void);
+RygelSourceConnectionManager* rygel_source_connection_manager_new (void);
+RygelSourceConnectionManager* rygel_source_connection_manager_construct (GType object_type);
 GType rygel_state_machine_get_type (void);
-void rygel_state_machine_run (RygelStateMachine* self);
 GCancellable* rygel_state_machine_get_cancellable (RygelStateMachine* self);
 void rygel_state_machine_set_cancellable (RygelStateMachine* self, GCancellable* value);
 gpointer rygel_resource_info_ref (gpointer instance);
@@ -782,8 +780,8 @@ RygelIconInfo* rygel_icon_info_construct (GType object_type, const char* mime_ty
 GType rygel_plugin_get_type (void);
 RygelPlugin* rygel_plugin_new (const char* desc_path, const char* name, const char* title);
 RygelPlugin* rygel_plugin_construct (GType object_type, const char* desc_path, const char* name, const char* title);
-RygelPlugin* rygel_plugin_new_MediaServer (const char* name, const char* title);
-RygelPlugin* rygel_plugin_construct_MediaServer (GType object_type, const char* name, const char* title);
+RygelPlugin* rygel_plugin_new_MediaServer (const char* name, const char* title, GType content_dir_type);
+RygelPlugin* rygel_plugin_construct_MediaServer (GType object_type, const char* name, const char* title, GType content_dir_type);
 void rygel_plugin_add_resource (RygelPlugin* self, RygelResourceInfo* resource_info);
 void rygel_plugin_add_icon (RygelPlugin* self, RygelIconInfo* icon_info);
 gboolean rygel_plugin_get_available (RygelPlugin* self);
@@ -796,12 +794,10 @@ void rygel_plugin_loader_add_plugin (RygelPluginLoader* self, RygelPlugin* plugi
 RygelPlugin* rygel_plugin_loader_get_plugin_by_name (RygelPluginLoader* self, const char* name);
 GeeCollection* rygel_plugin_loader_list_plugins (RygelPluginLoader* self);
 RygelMediaObject* rygel_media_object_construct (GType object_type);
+const char* rygel_media_object_get_title (RygelMediaObject* self);
+void rygel_media_object_set_title (RygelMediaObject* self, const char* value);
 RygelMediaContainer* rygel_media_container_construct (GType object_type, const char* id, RygelMediaContainer* parent, const char* title, guint child_count);
 RygelMediaContainer* rygel_media_container_construct_root (GType object_type, const char* title, guint child_count);
-void rygel_media_container_get_children (RygelMediaContainer* self, guint offset, guint max_count, GCancellable* cancellable, GAsyncReadyCallback callback, void* callback_target);
-GeeList* rygel_media_container_get_children_finish (RygelMediaContainer* self, GAsyncResult* res, GError** error);
-void rygel_media_container_find_object (RygelMediaContainer* self, const char* id, GCancellable* cancellable, GAsyncReadyCallback callback, void* callback_target);
-RygelMediaObject* rygel_media_container_find_object_finish (RygelMediaContainer* self, GAsyncResult* res, GError** error);
 void rygel_media_container_updated (RygelMediaContainer* self);
 GType rygel_simple_container_get_type (void);
 RygelSimpleContainer* rygel_simple_container_new (const char* id, RygelMediaContainer* parent, const char* title);
@@ -810,11 +806,8 @@ RygelSimpleContainer* rygel_simple_container_new_root (const char* title);
 RygelSimpleContainer* rygel_simple_container_construct_root (GType object_type, const char* title);
 void rygel_simple_container_add_child (RygelSimpleContainer* self, RygelMediaObject* child);
 void rygel_simple_container_remove_child (RygelSimpleContainer* self, RygelMediaObject* child);
-GType rygel_simple_async_result_get_type (void);
-RygelSimpleAsyncResult* rygel_simple_async_result_new (GType g_type, GBoxedCopyFunc g_dup_func, GDestroyNotify g_destroy_func, GObject* source_object, GAsyncReadyCallback callback, void* callback_target);
-RygelSimpleAsyncResult* rygel_simple_async_result_construct (GType object_type, GType g_type, GBoxedCopyFunc g_dup_func, GDestroyNotify g_destroy_func, GObject* source_object, GAsyncReadyCallback callback, void* callback_target);
-void rygel_simple_async_result_complete (RygelSimpleAsyncResult* self);
-void rygel_simple_async_result_complete_in_idle (RygelSimpleAsyncResult* self);
+void rygel_simple_container_find_object_in_children (RygelSimpleContainer* self, const char* id, GCancellable* cancellable, GAsyncReadyCallback _callback_, gpointer _user_data_);
+RygelMediaObject* rygel_simple_container_find_object_in_children_finish (RygelSimpleContainer* self, GAsyncResult* _res_, GError** error);
 GType rygel_media_item_get_type (void);
 GType rygel_thumbnail_get_type (void);
 #define RYGEL_MEDIA_ITEM_IMAGE_CLASS "object.item.imageItem"
@@ -834,6 +827,7 @@ GType rygel_media_db_get_type (void);
 RygelMediaDB* rygel_media_db_create (const char* name, GError** error);
 GType rygel_media_db_object_factory_get_type (void);
 RygelMediaDB* rygel_media_db_create_with_factory (const char* name, RygelMediaDBObjectFactory* factory, GError** error);
+GQuark rygel_database_error_quark (void);
 void rygel_media_db_remove_by_id (RygelMediaDB* self, const char* id, GError** error);
 void rygel_media_db_remove_object (RygelMediaDB* self, RygelMediaObject* obj, GError** error);
 void rygel_media_db_save_object (RygelMediaDB* self, RygelMediaObject* obj, GError** error);
@@ -846,7 +840,7 @@ RygelMediaContainer* rygel_media_db_get_container (RygelMediaDB* self, const cha
 GeeArrayList* rygel_media_db_get_child_ids (RygelMediaDB* self, const char* container_id, GError** error);
 gint rygel_media_db_get_child_count (RygelMediaDB* self, const char* container_id, GError** error);
 gboolean rygel_media_db_exists (RygelMediaDB* self, const char* object_id, gint64* timestamp, GError** error);
-GeeArrayList* rygel_media_db_get_children (RygelMediaDB* self, const char* container_id, glong offset, glong max_count);
+GeeArrayList* rygel_media_db_get_children (RygelMediaDB* self, const char* container_id, glong offset, glong max_count, GError** error);
 GType rygel_metadata_extractor_get_type (void);
 #define RYGEL_METADATA_EXTRACTOR_TAG_RYGEL_SIZE "rygel-size"
 #define RYGEL_METADATA_EXTRACTOR_TAG_RYGEL_DURATION "rygel-duration"
@@ -857,8 +851,7 @@ GType rygel_metadata_extractor_get_type (void);
 #define RYGEL_METADATA_EXTRACTOR_TAG_RYGEL_HEIGHT "rygel-height"
 #define RYGEL_METADATA_EXTRACTOR_TAG_RYGEL_DEPTH "rygel-depth"
 #define RYGEL_METADATA_EXTRACTOR_TAG_RYGEL_MTIME "rygel-mtime"
-RygelMetadataExtractor* rygel_metadata_extractor_new (void);
-RygelMetadataExtractor* rygel_metadata_extractor_construct (GType object_type);
+RygelMetadataExtractor* rygel_metadata_extractor_create (void);
 void rygel_metadata_extractor_extract (RygelMetadataExtractor* self, GFile* file);
 GType rygel_media_db_container_get_type (void);
 RygelMediaDBContainer* rygel_media_db_container_new (RygelMediaDB* media_db, const char* id, const char* title);

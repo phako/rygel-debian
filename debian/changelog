@@ -1,10 +1,14 @@
 rygel (0.4.4-1) UNRELEASED; urgency=low
 
+  [ Marc-André Lureau ]
   * New Upstream Version
   * debian/patches:
     + removed 0002-VALAC-port-to-libgee-0.5.patch
 
- -- Marc-André Lureau <marcandre.lureau@gmail.com>  Tue, 27 Oct 2009 17:40:52 +0100
+  [ Andreas Henriksson ]
+  * Update debian/copyright w.r.t. gst-renderer and convert to DEP5
+
+ -- Andreas Henriksson <andreas@fatal.se>  Tue, 27 Oct 2009 21:33:55 +0100
 
 rygel (0.4.2-1) unstable; urgency=low
 

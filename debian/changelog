@@ -1,4 +1,4 @@
-rygel (0.4.4-1) UNRELEASED; urgency=low
+rygel (0.4.4-1) unstable; urgency=low
 
   [ Marc-André Lureau ]
   * New Upstream Version
@@ -12,7 +12,7 @@ rygel (0.4.4-1) UNRELEASED; urgency=low
   * Add rygel-gst-renderer package.
   * Add tight rygel dependency to plugin packages.
 
- -- Marc-André Lureau <marcandre.lureau@gmail.com>  Tue, 27 Oct 2009 23:55:21 +0100
+ -- Andreas Henriksson <andreas@fatal.se>  Tue, 10 Nov 2009 12:17:16 +0100
 
 rygel (0.4.2-1) unstable; urgency=low
 

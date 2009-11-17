@@ -51,6 +51,7 @@ Description: GNOME UPnP/DLNA services
      provided by external applications.
 
 Package: rygel-1.0-dev
+Section: devel
 Architecture: any
 Depends: ${misc:Depends}, libgupnp-1.0-dev, libgstreamer0.10-dev
 Description: GNOME UPnP/DLNA services - plugin development files

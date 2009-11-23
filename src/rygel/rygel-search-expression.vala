@@ -1,5 +1,7 @@
 /*
- * Copyright (C) 2009 Jens Georg <mail@jensge.org>.
+ * Copyright (C) 2009 Nokia Corporation.
+ *
+ * Author: Zeeshan Ali (Khattak) <zeeshanak@gnome.org>
  *
  * This file is part of Rygel.
  *
@@ -18,23 +20,16 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-using Rygel;
-using Gee;
-
 /**
- * This is an empty container used to satisfy rygel if no mediadb could be
- * created
+ * Represents a SearchExpression tree.
  */
-internal class Rygel.NullContainer : MediaContainer {
-    public NullContainer () {
-        base.root ("MediaExport", 0);
-    }
+public abstract class Rygel.SearchExpression<G,H,I> {
+    public G op; // Operator
 
-    public override async Gee.List<MediaObject>? get_children (
-                                        uint         offset,
-                                        uint         max_count,
-                                        Cancellable? cancellable)
-                                        throws Error {
-        return new Gee.ArrayList<MediaObject>();
-    }
+    public H operand1;
+    public I operand2;
+
+    public abstract bool satisfied_by (MediaObject media_object);
+
+    public abstract string to_string ();
 }

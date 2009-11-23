@@ -55,7 +55,6 @@ typedef struct _RygelTrackerMetadataIfaceIface RygelTrackerMetadataIfaceIface;
 #define _g_object_unref0(var) ((var == NULL) ? NULL : (var = (g_object_unref (var), NULL)))
 #define _g_free0(var) (var = (g_free (var), NULL))
 #define _g_error_free0(var) ((var == NULL) ? NULL : (var = (g_error_free (var), NULL)))
-typedef struct _RygelTrackerMetadataValuesFetchMetadataValuesData RygelTrackerMetadataValuesFetchMetadataValuesData;
 
 #define RYGEL_TYPE_TRACKER_SEARCH_CONTAINER (rygel_tracker_search_container_get_type ())
 #define RYGEL_TRACKER_SEARCH_CONTAINER(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_TRACKER_SEARCH_CONTAINER, RygelTrackerSearchContainer))
@@ -66,6 +65,7 @@ typedef struct _RygelTrackerMetadataValuesFetchMetadataValuesData RygelTrackerMe
 
 typedef struct _RygelTrackerSearchContainer RygelTrackerSearchContainer;
 typedef struct _RygelTrackerSearchContainerClass RygelTrackerSearchContainerClass;
+typedef struct _RygelTrackerMetadataValuesFetchMetadataValuesData RygelTrackerMetadataValuesFetchMetadataValuesData;
 #define _dbus_g_connection_unref0(var) ((var == NULL) ? NULL : (var = (dbus_g_connection_unref (var), NULL)))
 
 struct _RygelTrackerMetadataIfaceIface {
@@ -132,7 +132,7 @@ enum  {
 #define RYGEL_TRACKER_METADATA_VALUES_TRACKER_SERVICE "org.freedesktop.Tracker"
 #define RYGEL_TRACKER_METADATA_VALUES_METADATA_PATH "/org/freedesktop/Tracker/Metadata"
 #define RYGEL_TRACKER_METADATA_VALUES_SERVICE "Files"
-#define RYGEL_TRACKER_METADATA_VALUES_QUERY_CONDITION "<rdfq:Condition>\n" "<rdfq:equals>\n" "<rdfq:Property name=\"%s\" />\n" "<rdf:String>%s</rdf:String>\n" "</rdfq:equals>\n" "</rdfq:Condition>"
+#define RYGEL_TRACKER_METADATA_VALUES_QUERY_CONDITION "<rdfq:equals>\n" "<rdfq:Property name=\"%s\" />\n" "<rdf:String>%s</rdf:String>\n" "</rdfq:equals>\n"
 static void rygel_tracker_metadata_values_create_proxies (RygelTrackerMetadataValues* self, GError** error);
 static void rygel_tracker_metadata_values_fetch_metadata_values (RygelTrackerMetadataValues* self, GAsyncReadyCallback _callback_, gpointer _user_data_);
 static void rygel_tracker_metadata_values_fetch_metadata_values_finish (RygelTrackerMetadataValues* self, GAsyncResult* _res_);
@@ -180,7 +180,7 @@ RygelTrackerMetadataValues* rygel_tracker_metadata_values_construct (GType objec
 		_error_ = _inner_error_;
 		_inner_error_ = NULL;
 		{
-			g_critical ("rygel-tracker-metadata-values.vala:60: Failed to create to Session bus: %s\n", _error_->message);
+			g_critical ("rygel-tracker-metadata-values.vala:58: Failed to create to Session bus: %s\n", _error_->message);
 			_g_error_free0 (_error_);
 			return self;
 		}
@@ -239,6 +239,7 @@ static gboolean rygel_tracker_metadata_values_fetch_metadata_values_co (RygelTra
 		case 0:
 		{
 			{
+				data->_tmp0_ = NULL;
 				data->keys = (data->_tmp1_ = (data->_tmp0_ = g_new0 (char*, 1 + 1), data->_tmp0_[0] = g_strdup (data->self->key), data->_tmp0_), data->keys_length1 = 1, data->keys_size = data->keys_length1, data->_tmp1_);
 				rygel_tracker_metadata_iface_get_unique_values (data->self->metadata, RYGEL_TRACKER_METADATA_VALUES_SERVICE, data->keys, data->keys_length1, "", FALSE, 0, -1, rygel_tracker_metadata_values_fetch_metadata_values_ready, data);
 				data->_state_ = 1;
@@ -261,7 +262,7 @@ static gboolean rygel_tracker_metadata_values_fetch_metadata_values_co (RygelTra
 				data->_error_ = data->_inner_error_;
 				data->_inner_error_ = NULL;
 				{
-					g_critical ("rygel-tracker-metadata-values.vala:85: error getting all values for '%s': %s", data->self->key, data->_error_->message);
+					g_critical ("rygel-tracker-metadata-values.vala:83: error getting all values for '%s': %s", data->self->key, data->_error_->message);
 					_g_error_free0 (data->_error_);
 					data->values = (_vala_array_free (data->values, data->values_length1 * data->values_length2, (GDestroyNotify) g_free), NULL);
 					{

@@ -125,7 +125,6 @@ typedef struct _RygelPluginClass RygelPluginClass;
 #define _g_error_free0(var) ((var == NULL) ? NULL : (var = (g_error_free (var), NULL)))
 #define _g_free0(var) (var = (g_free (var), NULL))
 typedef struct _RygelRootDeviceFactoryPrivate RygelRootDeviceFactoryPrivate;
-typedef struct _RygelMainCreateDeviceData RygelMainCreateDeviceData;
 typedef struct _RygelPluginPrivate RygelPluginPrivate;
 
 #define RYGEL_TYPE_RESOURCE_INFO (rygel_resource_info_get_type ())
@@ -147,6 +146,7 @@ typedef struct _RygelResourceInfoClass RygelResourceInfoClass;
 
 typedef struct _RygelIconInfo RygelIconInfo;
 typedef struct _RygelIconInfoClass RygelIconInfoClass;
+typedef struct _RygelMainCreateDeviceData RygelMainCreateDeviceData;
 
 #define RYGEL_TYPE_DBUS_SERVICE (rygel_dbus_service_get_type ())
 #define RYGEL_DBUS_SERVICE(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_DBUS_SERVICE, RygelDBusService))
@@ -219,18 +219,6 @@ struct _RygelRootDeviceFactoryClass {
 	void (*finalize) (RygelRootDeviceFactory *self);
 };
 
-struct _RygelMainCreateDeviceData {
-	int _state_;
-	GAsyncResult* _res_;
-	GSimpleAsyncResult* _async_result;
-	RygelMain* self;
-	RygelPlugin* plugin;
-	RygelRootDeviceFactory* factory;
-	RygelRootDevice* device;
-	GError * _error_;
-	GError * _inner_error_;
-};
-
 struct _RygelPlugin {
 	GUPnPResourceFactory parent_instance;
 	RygelPluginPrivate * priv;
@@ -243,6 +231,18 @@ struct _RygelPlugin {
 
 struct _RygelPluginClass {
 	GUPnPResourceFactoryClass parent_class;
+};
+
+struct _RygelMainCreateDeviceData {
+	int _state_;
+	GAsyncResult* _res_;
+	GSimpleAsyncResult* _async_result;
+	RygelMain* self;
+	RygelPlugin* plugin;
+	RygelRootDeviceFactory* factory;
+	RygelRootDevice* device;
+	GError * _error_;
+	GError * _inner_error_;
 };
 
 typedef enum  {
@@ -647,9 +647,9 @@ static gboolean rygel_main_create_device_co (RygelMainCreateDeviceData* data) {
 		case 0:
 		{
 			g_idle_add_full (G_PRIORITY_DEFAULT_IDLE, _rygel_main_create_device_co_gsource_func, data, NULL);
-			data->_state_ = 23;
+			data->_state_ = 30;
 			return FALSE;
-			case 23:
+			case 30:
 			;
 			{
 				data->device = rygel_root_device_factory_create (data->factory, data->plugin, &data->_inner_error_);

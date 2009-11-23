@@ -154,7 +154,6 @@ struct _RygelContentDirectory {
 	GUPnPService parent_instance;
 	RygelContentDirectoryPrivate * priv;
 	char* feature_list;
-	char* search_caps;
 	char* sort_caps;
 	RygelHTTPServer* http_server;
 	RygelMediaContainer* root_container;
@@ -166,6 +165,7 @@ struct _RygelContentDirectoryClass {
 	GUPnPServiceClass parent_class;
 	RygelMediaContainer* (*create_root_container) (RygelContentDirectory* self);
 	void (*browse_cb) (RygelContentDirectory* self, RygelContentDirectory* content_dir, GUPnPServiceAction* action);
+	void (*search_cb) (RygelContentDirectory* self, RygelContentDirectory* content_dir, GUPnPServiceAction* action);
 };
 
 

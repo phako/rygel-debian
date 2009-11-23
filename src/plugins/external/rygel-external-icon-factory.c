@@ -47,7 +47,6 @@ typedef struct _RygelExternalIconFactory RygelExternalIconFactory;
 typedef struct _RygelExternalIconFactoryClass RygelExternalIconFactoryClass;
 typedef struct _RygelExternalIconFactoryPrivate RygelExternalIconFactoryPrivate;
 #define _dbus_g_connection_unref0(var) ((var == NULL) ? NULL : (var = (dbus_g_connection_unref (var), NULL)))
-typedef struct _RygelExternalIconFactoryCreateData RygelExternalIconFactoryCreateData;
 #define _g_free0(var) (var = (g_free (var), NULL))
 #define _g_hash_table_unref0(var) ((var == NULL) ? NULL : (var = (g_hash_table_unref (var), NULL)))
 #define _rygel_icon_info_unref0(var) ((var == NULL) ? NULL : (var = (rygel_icon_info_unref (var), NULL)))
@@ -61,6 +60,7 @@ typedef struct _FreeDesktopProperties FreeDesktopProperties;
 typedef struct _FreeDesktopPropertiesIface FreeDesktopPropertiesIface;
 #define _g_error_free0(var) ((var == NULL) ? NULL : (var = (g_error_free (var), NULL)))
 #define _g_object_unref0(var) ((var == NULL) ? NULL : (var = (g_object_unref (var), NULL)))
+typedef struct _RygelExternalIconFactoryCreateData RygelExternalIconFactoryCreateData;
 typedef struct _RygelParamSpecExternalIconFactory RygelParamSpecExternalIconFactory;
 
 struct _RygelExternalIconFactory {
@@ -76,6 +76,12 @@ struct _RygelExternalIconFactoryClass {
 
 struct _RygelExternalIconFactoryPrivate {
 	DBusGConnection* connection;
+};
+
+struct _FreeDesktopPropertiesIface {
+	GTypeInterface parent_iface;
+	void (*get_all) (FreeDesktopProperties* self, const char* iface, GAsyncReadyCallback _callback_, gpointer _user_data_);
+	GHashTable* (*get_all_finish) (FreeDesktopProperties* self, GAsyncResult* _res_, GError** error);
 };
 
 struct _RygelExternalIconFactoryCreateData {
@@ -107,12 +113,6 @@ struct _RygelExternalIconFactoryCreateData {
 	GValue* _tmp9_;
 	GValue* _tmp10_;
 	GError * _inner_error_;
-};
-
-struct _FreeDesktopPropertiesIface {
-	GTypeInterface parent_iface;
-	void (*get_all) (FreeDesktopProperties* self, const char* iface, GAsyncReadyCallback _callback_, gpointer _user_data_);
-	GHashTable* (*get_all_finish) (FreeDesktopProperties* self, GAsyncResult* _res_, GError** error);
 };
 
 struct _RygelParamSpecExternalIconFactory {
@@ -248,9 +248,9 @@ static gboolean rygel_external_icon_factory_create_co (RygelExternalIconFactoryC
 			data->props = free_desktop_properties_dbus_proxy_new (data->self->priv->connection, data->service_name, data->icon_path);
 			{
 				free_desktop_properties_get_all (data->props, rygel_external_icon_factory_ITEM_IFACE, rygel_external_icon_factory_create_ready, data);
-				data->_state_ = 17;
+				data->_state_ = 19;
 				return FALSE;
-				case 17:
+				case 19:
 				data->_tmp0_ = free_desktop_properties_get_all_finish (data->props, data->_res_, &data->_inner_error_);
 				if (data->_inner_error_ != NULL) {
 					if (data->_inner_error_->domain == DBUS_GERROR) {

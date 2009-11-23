@@ -97,9 +97,9 @@ typedef struct _RygelResourceInfoClass RygelResourceInfoClass;
 typedef struct _RygelIconInfo RygelIconInfo;
 typedef struct _RygelIconInfoClass RygelIconInfoClass;
 #define _g_error_free0(var) ((var == NULL) ? NULL : (var = (g_error_free (var), NULL)))
-typedef struct _RygelPluginLoaderLoadModulesFromDirData RygelPluginLoaderLoadModulesFromDirData;
 #define __g_list_free_g_object_unref0(var) ((var == NULL) ? NULL : (var = (_g_list_free_g_object_unref (var), NULL)))
 #define _g_free0(var) (var = (g_free (var), NULL))
+typedef struct _RygelPluginLoaderLoadModulesFromDirData RygelPluginLoaderLoadModulesFromDirData;
 #define _g_module_close0(var) ((var == NULL) ? NULL : (var = (g_module_close (var), NULL)))
 
 struct _RygelPluginLoader {
@@ -272,14 +272,14 @@ void rygel_plugin_loader_add_plugin (RygelPluginLoader* self, RygelPlugin* plugi
 		_tmp0_ = rygel_configuration_get_enabled ((RygelConfiguration*) config, plugin->name, &_inner_error_);
 		if (_inner_error_ != NULL) {
 			_g_object_unref0 (config);
-			goto __catch33_g_error;
-			goto __finally33;
+			goto __catch34_g_error;
+			goto __finally34;
 		}
 		enabled = _tmp0_;
 		_g_object_unref0 (config);
 	}
-	goto __finally33;
-	__catch33_g_error:
+	goto __finally34;
+	__catch34_g_error:
 	{
 		GError * err;
 		err = _inner_error_;
@@ -288,7 +288,7 @@ void rygel_plugin_loader_add_plugin (RygelPluginLoader* self, RygelPlugin* plugi
 			_g_error_free0 (err);
 		}
 	}
-	__finally33:
+	__finally34:
 	if (_inner_error_ != NULL) {
 		g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, _inner_error_->message);
 		g_clear_error (&_inner_error_);
@@ -379,8 +379,8 @@ static gboolean rygel_plugin_loader_load_modules_from_dir_co (RygelPluginLoaderL
 				case 15:
 				data->_tmp0_ = g_file_enumerate_children_finish (data->dir, data->_res_, &data->_inner_error_);
 				if (data->_inner_error_ != NULL) {
-					goto __catch34_g_error;
-					goto __finally34;
+					goto __catch35_g_error;
+					goto __finally35;
 				}
 				data->enumerator = (data->_tmp1_ = data->_tmp0_, _g_object_unref0 (data->enumerator), data->_tmp1_);
 				g_file_enumerator_next_files_async (data->enumerator, G_MAXINT, G_PRIORITY_DEFAULT, NULL, rygel_plugin_loader_load_modules_from_dir_ready, data);
@@ -389,13 +389,13 @@ static gboolean rygel_plugin_loader_load_modules_from_dir_co (RygelPluginLoaderL
 				case 16:
 				data->_tmp2_ = g_file_enumerator_next_files_finish (data->enumerator, data->_res_, &data->_inner_error_);
 				if (data->_inner_error_ != NULL) {
-					goto __catch34_g_error;
-					goto __finally34;
+					goto __catch35_g_error;
+					goto __finally35;
 				}
 				data->infos = (data->_tmp3_ = data->_tmp2_, __g_list_free_g_object_unref0 (data->infos), data->_tmp3_);
 			}
-			goto __finally34;
-			__catch34_g_error:
+			goto __finally35;
+			__catch35_g_error:
 			{
 				data->_error_ = data->_inner_error_;
 				data->_inner_error_ = NULL;
@@ -418,7 +418,7 @@ static gboolean rygel_plugin_loader_load_modules_from_dir_co (RygelPluginLoaderL
 					_g_error_free0 (data->_error_);
 				}
 			}
-			__finally34:
+			__finally35:
 			if (data->_inner_error_ != NULL) {
 				_g_free0 (data->attributes);
 				__g_list_free_g_object_unref0 (data->infos);
@@ -515,13 +515,13 @@ static gboolean rygel_plugin_loader_is_dir (GFile* file) {
 		GFileInfo* _tmp1_;
 		_tmp0_ = g_file_query_info (file, G_FILE_ATTRIBUTE_STANDARD_TYPE, G_FILE_QUERY_INFO_NONE, NULL, &_inner_error_);
 		if (_inner_error_ != NULL) {
-			goto __catch35_g_error;
-			goto __finally35;
+			goto __catch36_g_error;
+			goto __finally36;
 		}
 		file_info = (_tmp1_ = _tmp0_, _g_object_unref0 (file_info), _tmp1_);
 	}
-	goto __finally35;
-	__catch35_g_error:
+	goto __finally36;
+	__catch36_g_error:
 	{
 		GError * _error_;
 		_error_ = _inner_error_;
@@ -536,7 +536,7 @@ static gboolean rygel_plugin_loader_is_dir (GFile* file) {
 			return result;
 		}
 	}
-	__finally35:
+	__finally36:
 	if (_inner_error_ != NULL) {
 		_g_object_unref0 (file_info);
 		g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, _inner_error_->message);

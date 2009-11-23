@@ -105,11 +105,32 @@ typedef struct _RygelStateMachineIface RygelStateMachineIface;
 
 typedef struct _RygelBrowse RygelBrowse;
 typedef struct _RygelBrowseClass RygelBrowseClass;
+
+#define RYGEL_TYPE_SEARCH (rygel_search_get_type ())
+#define RYGEL_SEARCH(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_SEARCH, RygelSearch))
+#define RYGEL_SEARCH_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TYPE_SEARCH, RygelSearchClass))
+#define RYGEL_IS_SEARCH(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TYPE_SEARCH))
+#define RYGEL_IS_SEARCH_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_TYPE_SEARCH))
+#define RYGEL_SEARCH_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_TYPE_SEARCH, RygelSearchClass))
+
+typedef struct _RygelSearch RygelSearch;
+typedef struct _RygelSearchClass RygelSearchClass;
 typedef struct _RygelMediaObjectPrivate RygelMediaObjectPrivate;
 typedef struct _RygelMediaContainerPrivate RygelMediaContainerPrivate;
 
+#define RYGEL_TYPE_SEARCH_EXPRESSION (rygel_search_expression_get_type ())
+#define RYGEL_SEARCH_EXPRESSION(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_SEARCH_EXPRESSION, RygelSearchExpression))
+#define RYGEL_SEARCH_EXPRESSION_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TYPE_SEARCH_EXPRESSION, RygelSearchExpressionClass))
+#define RYGEL_IS_SEARCH_EXPRESSION(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TYPE_SEARCH_EXPRESSION))
+#define RYGEL_IS_SEARCH_EXPRESSION_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_TYPE_SEARCH_EXPRESSION))
+#define RYGEL_SEARCH_EXPRESSION_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_TYPE_SEARCH_EXPRESSION, RygelSearchExpressionClass))
+
+typedef struct _RygelSearchExpression RygelSearchExpression;
+typedef struct _RygelSearchExpressionClass RygelSearchExpressionClass;
+
 typedef enum  {
 	RYGEL_CONTENT_DIRECTORY_ERROR_NO_SUCH_OBJECT = 701,
+	RYGEL_CONTENT_DIRECTORY_ERROR_CANT_PROCESS = 720,
 	RYGEL_CONTENT_DIRECTORY_ERROR_INVALID_ARGS = 402
 } RygelContentDirectoryError;
 #define RYGEL_CONTENT_DIRECTORY_ERROR rygel_content_directory_error_quark ()
@@ -117,7 +138,6 @@ struct _RygelContentDirectory {
 	GUPnPService parent_instance;
 	RygelContentDirectoryPrivate * priv;
 	char* feature_list;
-	char* search_caps;
 	char* sort_caps;
 	RygelHTTPServer* http_server;
 	RygelMediaContainer* root_container;
@@ -129,6 +149,7 @@ struct _RygelContentDirectoryClass {
 	GUPnPServiceClass parent_class;
 	RygelMediaContainer* (*create_root_container) (RygelContentDirectory* self);
 	void (*browse_cb) (RygelContentDirectory* self, RygelContentDirectory* content_dir, GUPnPServiceAction* action);
+	void (*search_cb) (RygelContentDirectory* self, RygelContentDirectory* content_dir, GUPnPServiceAction* action);
 };
 
 struct _RygelContentDirectoryPrivate {
@@ -149,6 +170,7 @@ struct _RygelMediaObject {
 	GObject parent_instance;
 	RygelMediaObjectPrivate * priv;
 	char* id;
+	char* upnp_class;
 	guint64 modified;
 	GeeArrayList* uris;
 	RygelMediaContainer* parent;
@@ -170,8 +192,8 @@ struct _RygelMediaContainerClass {
 	RygelMediaObjectClass parent_class;
 	void (*get_children) (RygelMediaContainer* self, guint offset, guint max_count, GCancellable* cancellable, GAsyncReadyCallback _callback_, gpointer _user_data_);
 	GeeList* (*get_children_finish) (RygelMediaContainer* self, GAsyncResult* _res_, GError** error);
-	void (*find_object) (RygelMediaContainer* self, const char* id, GCancellable* cancellable, GAsyncReadyCallback _callback_, gpointer _user_data_);
-	RygelMediaObject* (*find_object_finish) (RygelMediaContainer* self, GAsyncResult* _res_, GError** error);
+	void (*search) (RygelMediaContainer* self, RygelSearchExpression* expression, guint offset, guint max_count, GCancellable* cancellable, GAsyncReadyCallback _callback_, gpointer _user_data_);
+	GeeList* (*search_finish) (RygelMediaContainer* self, GAsyncResult* _res_, guint* total_matches, GError** error);
 };
 
 
@@ -190,6 +212,7 @@ enum  {
 #define RYGEL_CONTENT_DIRECTORY_UPNP_ID "urn:upnp-org:serviceId:ContentDirectory"
 #define RYGEL_CONTENT_DIRECTORY_UPNP_TYPE "urn:schemas-upnp-org:service:ContentDirectory:2"
 #define RYGEL_CONTENT_DIRECTORY_DESCRIPTION_PATH "xml/ContentDirectory.xml"
+#define RYGEL_CONTENT_DIRECTORY_SEARCH_CAPS "@id,@parentID,@refID," "upnp:class,dc:title,dc:creator," "res,res@protocolInfo"
 RygelMediaContainer* rygel_content_directory_create_root_container (RygelContentDirectory* self);
 static RygelMediaContainer* rygel_content_directory_real_create_root_container (RygelContentDirectory* self);
 RygelHTTPServer* rygel_http_server_new (RygelContentDirectory* content_dir, const char* name, GError** error);
@@ -198,6 +221,8 @@ static void rygel_content_directory_on_container_updated (RygelContentDirectory*
 static void _rygel_content_directory_on_container_updated_rygel_media_container_container_updated (RygelMediaContainer* _sender, RygelMediaContainer* container, gpointer self);
 static void rygel_content_directory_browse_cb (RygelContentDirectory* self, RygelContentDirectory* content_dir, GUPnPServiceAction* action);
 static void _rygel_content_directory_browse_cb_gupnp_service_action_invoked (RygelContentDirectory* _sender, GUPnPServiceAction* action, gpointer self);
+static void rygel_content_directory_search_cb (RygelContentDirectory* self, RygelContentDirectory* content_dir, GUPnPServiceAction* action);
+static void _rygel_content_directory_search_cb_gupnp_service_action_invoked (RygelContentDirectory* _sender, GUPnPServiceAction* action, gpointer self);
 static void rygel_content_directory_get_system_update_id_cb (RygelContentDirectory* self, RygelContentDirectory* content_dir, GUPnPServiceAction* action);
 static void _rygel_content_directory_get_system_update_id_cb_gupnp_service_action_invoked (RygelContentDirectory* _sender, GUPnPServiceAction* action, gpointer self);
 static void rygel_content_directory_query_system_update_id (RygelContentDirectory* self, RygelContentDirectory* content_dir, const char* variable, GValue* value);
@@ -224,7 +249,17 @@ RygelBrowse* rygel_browse_new (RygelContentDirectory* content_dir, GUPnPServiceA
 RygelBrowse* rygel_browse_construct (GType object_type, RygelContentDirectory* content_dir, GUPnPServiceAction* action);
 GType rygel_browse_get_type (void);
 static void rygel_content_directory_real_browse_cb (RygelContentDirectory* self, RygelContentDirectory* content_dir, GUPnPServiceAction* action);
+RygelSearch* rygel_search_new (RygelContentDirectory* content_dir, GUPnPServiceAction* action);
+RygelSearch* rygel_search_construct (GType object_type, RygelContentDirectory* content_dir, GUPnPServiceAction* action);
+GType rygel_search_get_type (void);
+static void rygel_content_directory_real_search_cb (RygelContentDirectory* self, RygelContentDirectory* content_dir, GUPnPServiceAction* action);
 static char* rygel_content_directory_create_container_update_ids (RygelContentDirectory* self);
+gpointer rygel_search_expression_ref (gpointer instance);
+void rygel_search_expression_unref (gpointer instance);
+GParamSpec* rygel_param_spec_search_expression (const gchar* name, const gchar* nick, const gchar* blurb, GType object_type, GParamFlags flags);
+void rygel_value_set_search_expression (GValue* value, gpointer v_object);
+gpointer rygel_value_get_search_expression (const GValue* value);
+GType rygel_search_expression_get_type (void);
 static gboolean rygel_content_directory_update_notify (RygelContentDirectory* self);
 static gboolean _rygel_content_directory_update_notify_gsource_func (gpointer self);
 RygelContentDirectory* rygel_content_directory_new (void);
@@ -259,6 +294,11 @@ static void _rygel_content_directory_on_container_updated_rygel_media_container_
 
 static void _rygel_content_directory_browse_cb_gupnp_service_action_invoked (RygelContentDirectory* _sender, GUPnPServiceAction* action, gpointer self) {
 	rygel_content_directory_browse_cb (self, _sender, action);
+}
+
+
+static void _rygel_content_directory_search_cb_gupnp_service_action_invoked (RygelContentDirectory* _sender, GUPnPServiceAction* action, gpointer self) {
+	rygel_content_directory_search_cb (self, _sender, action);
 }
 
 
@@ -315,7 +355,6 @@ static void rygel_content_directory_real_constructed (GObject* base) {
 	GeeArrayList* _tmp4_;
 	char* _tmp5_;
 	char* _tmp6_;
-	char* _tmp7_;
 	self = (RygelContentDirectory*) base;
 	_inner_error_ = NULL;
 	self->cancellable = (_tmp0_ = g_cancellable_new (), _g_object_unref0 (self->cancellable), _tmp0_);
@@ -325,24 +364,24 @@ static void rygel_content_directory_real_constructed (GObject* base) {
 		RygelHTTPServer* _tmp3_;
 		_tmp2_ = rygel_http_server_new (self, g_type_name (G_TYPE_FROM_INSTANCE ((GObject*) self)), &_inner_error_);
 		if (_inner_error_ != NULL) {
-			goto __catch22_g_error;
-			goto __finally22;
+			goto __catch23_g_error;
+			goto __finally23;
 		}
 		self->http_server = (_tmp3_ = _tmp2_, _g_object_unref0 (self->http_server), _tmp3_);
 	}
-	goto __finally22;
-	__catch22_g_error:
+	goto __finally23;
+	__catch23_g_error:
 	{
 		GError * err;
 		err = _inner_error_;
 		_inner_error_ = NULL;
 		{
-			g_critical ("rygel-content-directory.vala:76: Failed to create HTTP server for %s: %s", g_type_name (G_TYPE_FROM_INSTANCE ((GObject*) self)), err->message);
+			g_critical ("rygel-content-directory.vala:79: Failed to create HTTP server for %s: %s", g_type_name (G_TYPE_FROM_INSTANCE ((GObject*) self)), err->message);
 			_g_error_free0 (err);
 			return;
 		}
 	}
-	__finally22:
+	__finally23:
 	if (_inner_error_ != NULL) {
 		g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, _inner_error_->message);
 		g_clear_error (&_inner_error_);
@@ -351,9 +390,9 @@ static void rygel_content_directory_real_constructed (GObject* base) {
 	self->priv->updated_containers = (_tmp4_ = gee_array_list_new (RYGEL_TYPE_MEDIA_CONTAINER, (GBoxedCopyFunc) g_object_ref, g_object_unref, NULL), _g_object_unref0 (self->priv->updated_containers), _tmp4_);
 	g_signal_connect_object (self->root_container, "container-updated", (GCallback) _rygel_content_directory_on_container_updated_rygel_media_container_container_updated, self, 0);
 	self->feature_list = (_tmp5_ = g_strdup ("<?xml version=\"1.0\" encoding=\"UTF-8\"?>" "<Features xmlns=\"urn:schemas-upnp-org:av:avs\" " "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" " "xsi:schemaLocation=\"urn:schemas-upnp-org:av:avs" "http://www.upnp.org/schemas/av/avs-v1-20060531.xsd\">" "</Features>"), _g_free0 (self->feature_list), _tmp5_);
-	self->search_caps = (_tmp6_ = g_strdup (""), _g_free0 (self->search_caps), _tmp6_);
-	self->sort_caps = (_tmp7_ = g_strdup (""), _g_free0 (self->sort_caps), _tmp7_);
+	self->sort_caps = (_tmp6_ = g_strdup (""), _g_free0 (self->sort_caps), _tmp6_);
 	g_signal_connect_object ((GUPnPService*) self, "action-invoked::Browse", (GCallback) _rygel_content_directory_browse_cb_gupnp_service_action_invoked, self, 0);
+	g_signal_connect_object ((GUPnPService*) self, "action-invoked::Search", (GCallback) _rygel_content_directory_search_cb_gupnp_service_action_invoked, self, 0);
 	g_signal_connect_object ((GUPnPService*) self, "action-invoked::GetSystemUpdateID", (GCallback) _rygel_content_directory_get_system_update_id_cb_gupnp_service_action_invoked, self, 0);
 	g_signal_connect_object ((GUPnPService*) self, "query-variable::SystemUpdateID", (GCallback) _rygel_content_directory_query_system_update_id_gupnp_service_query_variable, self, 0);
 	g_signal_connect_object ((GUPnPService*) self, "query-variable::ContainerUpdateIDs", (GCallback) _rygel_content_directory_query_container_update_ids_gupnp_service_query_variable, self, 0);
@@ -380,6 +419,22 @@ static void rygel_content_directory_real_browse_cb (RygelContentDirectory* self,
 
 void rygel_content_directory_browse_cb (RygelContentDirectory* self, RygelContentDirectory* content_dir, GUPnPServiceAction* action) {
 	RYGEL_CONTENT_DIRECTORY_GET_CLASS (self)->browse_cb (self, content_dir, action);
+}
+
+
+static void rygel_content_directory_real_search_cb (RygelContentDirectory* self, RygelContentDirectory* content_dir, GUPnPServiceAction* action) {
+	RygelSearch* search;
+	g_return_if_fail (self != NULL);
+	g_return_if_fail (content_dir != NULL);
+	g_return_if_fail (action != NULL);
+	search = rygel_search_new (self, action);
+	rygel_state_machine_run ((RygelStateMachine*) search, NULL, NULL);
+	_g_object_unref0 (search);
+}
+
+
+void rygel_content_directory_search_cb (RygelContentDirectory* self, RygelContentDirectory* content_dir, GUPnPServiceAction* action) {
+	RYGEL_CONTENT_DIRECTORY_GET_CLASS (self)->search_cb (self, content_dir, action);
 }
 
 
@@ -417,7 +472,7 @@ static void rygel_content_directory_get_search_capabilities_cb (RygelContentDire
 	g_return_if_fail (self != NULL);
 	g_return_if_fail (content_dir != NULL);
 	g_return_if_fail (action != NULL);
-	gupnp_service_action_set (action, "SearchCaps", G_TYPE_STRING, self->search_caps, NULL);
+	gupnp_service_action_set (action, "SearchCaps", G_TYPE_STRING, RYGEL_CONTENT_DIRECTORY_SEARCH_CAPS, NULL);
 	gupnp_service_action_return (action);
 }
 
@@ -427,7 +482,7 @@ static void rygel_content_directory_query_search_capabilities (RygelContentDirec
 	g_return_if_fail (content_dir != NULL);
 	g_return_if_fail (variable != NULL);
 	g_value_init (value, G_TYPE_STRING);
-	g_value_set_string (value, self->search_caps);
+	g_value_set_string (value, RYGEL_CONTENT_DIRECTORY_SEARCH_CAPS);
 }
 
 
@@ -557,6 +612,7 @@ static void rygel_content_directory_class_init (RygelContentDirectoryClass * kla
 	RYGEL_CONTENT_DIRECTORY_CLASS (klass)->create_root_container = rygel_content_directory_real_create_root_container;
 	G_OBJECT_CLASS (klass)->constructed = rygel_content_directory_real_constructed;
 	RYGEL_CONTENT_DIRECTORY_CLASS (klass)->browse_cb = rygel_content_directory_real_browse_cb;
+	RYGEL_CONTENT_DIRECTORY_CLASS (klass)->search_cb = rygel_content_directory_real_search_cb;
 	G_OBJECT_CLASS (klass)->finalize = rygel_content_directory_finalize;
 }
 
@@ -573,7 +629,6 @@ static void rygel_content_directory_finalize (GObject* obj) {
 		g_cancellable_cancel (self->cancellable);
 	}
 	_g_free0 (self->feature_list);
-	_g_free0 (self->search_caps);
 	_g_free0 (self->sort_caps);
 	_g_object_unref0 (self->http_server);
 	_g_object_unref0 (self->root_container);

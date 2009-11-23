@@ -177,6 +177,7 @@ static gint rygel_user_config_real_get_int (RygelConfiguration* base, const char
 static GeeArrayList* rygel_user_config_real_get_int_list (RygelConfiguration* base, const char* section, const char* key, GError** error);
 static gboolean rygel_user_config_real_get_bool (RygelConfiguration* base, const char* section, const char* key, GError** error);
 void rygel_user_config_set_string_list (RygelUserConfig* self, const char* section, const char* key, GeeArrayList* str_list);
+static void rygel_user_config_ensure_dir_exists (RygelUserConfig* self, const char* dir_path, GError** error);
 static void _dynamic_StartServiceByName0 (DBusGProxy* self, const char* param1, guint32 param2, guint32* param3, GError** error);
 static void _dynamic_Shutdown1 (DBusGProxy* self, GError** error);
 static void rygel_user_config_finalize (GObject* obj);
@@ -507,7 +508,7 @@ void rygel_user_config_save (RygelUserConfig* self) {
 	path = g_build_filename (g_get_user_config_dir (), RYGEL_USER_CONFIG_CONFIG_FILE, NULL);
 	data = g_key_file_to_data (self->key_file, &length, NULL);
 	{
-		g_file_set_contents (path, data, (glong) length, &_inner_error_);
+		g_file_set_contents (path, data, (gssize) ((glong) length), &_inner_error_);
 		if (_inner_error_ != NULL) {
 			if (_inner_error_->domain == G_FILE_ERROR) {
 				goto __catch2_g_file_error;
@@ -828,19 +829,28 @@ static void _dynamic_Shutdown1 (DBusGProxy* self, GError** error) {
 
 static void rygel_user_config_enable_upnp (RygelUserConfig* self, gboolean enable) {
 	GError * _inner_error_;
-	char* dest_path;
-	GFile* dest;
+	char* dest_dir;
 	g_return_if_fail (self != NULL);
 	_inner_error_ = NULL;
-	dest_path = g_build_filename (g_get_user_config_dir (), "autostart", "rygel.desktop", NULL);
-	dest = g_file_new_for_path (dest_path);
+	dest_dir = g_build_filename (g_get_user_config_dir (), "autostart", NULL);
 	{
+		char* dest_path;
+		GFile* dest;
+		rygel_user_config_ensure_dir_exists (self, dest_dir, &_inner_error_);
+		if (_inner_error_ != NULL) {
+			goto __catch3_g_error;
+			goto __finally3;
+		}
+		dest_path = g_build_filename (dest_dir, "rygel.desktop", NULL);
+		dest = g_file_new_for_path (dest_path);
 		if (enable) {
 			guint32 res = 0U;
 			char* source_path;
 			if (self->priv->dbus_obj != NULL) {
 				_dynamic_StartServiceByName0 (self->priv->dbus_obj, RYGEL_USER_CONFIG_RYGEL_SERVICE, (guint32) 0, &res, &_inner_error_);
 				if (_inner_error_ != NULL) {
+					_g_free0 (dest_path);
+					_g_object_unref0 (dest);
 					goto __catch3_g_error;
 					goto __finally3;
 				}
@@ -868,6 +878,8 @@ static void rygel_user_config_enable_upnp (RygelUserConfig* self, gboolean enabl
 			__finally4:
 			if (_inner_error_ != NULL) {
 				_g_free0 (source_path);
+				_g_free0 (dest_path);
+				_g_object_unref0 (dest);
 				goto __catch3_g_error;
 				goto __finally3;
 			}
@@ -877,6 +889,8 @@ static void rygel_user_config_enable_upnp (RygelUserConfig* self, gboolean enabl
 			if (self->priv->rygel_obj != NULL) {
 				_dynamic_Shutdown1 (self->priv->rygel_obj, &_inner_error_);
 				if (_inner_error_ != NULL) {
+					_g_free0 (dest_path);
+					_g_object_unref0 (dest);
 					goto __catch3_g_error;
 					goto __finally3;
 				}
@@ -902,11 +916,15 @@ static void rygel_user_config_enable_upnp (RygelUserConfig* self, gboolean enabl
 			}
 			__finally5:
 			if (_inner_error_ != NULL) {
+				_g_free0 (dest_path);
+				_g_object_unref0 (dest);
 				goto __catch3_g_error;
 				goto __finally3;
 			}
 			rygel_user_config_set_bool (self, "general", RYGEL_USER_CONFIG_ENABLED_KEY, FALSE);
 		}
+		_g_free0 (dest_path);
+		_g_object_unref0 (dest);
 	}
 	goto __finally3;
 	__catch3_g_error:
@@ -922,20 +940,54 @@ static void rygel_user_config_enable_upnp (RygelUserConfig* self, gboolean enabl
 			} else {
 				_tmp0_ = "stop";
 			}
-			g_warning ("rygel-user-config.vala:331: Failed to %s Rygel service: %s\n", _tmp0_, err->message);
+			g_warning ("rygel-user-config.vala:333: Failed to %s Rygel service: %s\n", _tmp0_, err->message);
 			_g_error_free0 (err);
 		}
 	}
 	__finally3:
 	if (_inner_error_ != NULL) {
-		_g_free0 (dest_path);
-		_g_object_unref0 (dest);
+		_g_free0 (dest_dir);
 		g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, _inner_error_->message);
 		g_clear_error (&_inner_error_);
 		return;
 	}
-	_g_free0 (dest_path);
-	_g_object_unref0 (dest);
+	_g_free0 (dest_dir);
+}
+
+
+static void rygel_user_config_ensure_dir_exists (RygelUserConfig* self, const char* dir_path, GError** error) {
+	GError * _inner_error_;
+	GFile* dir;
+	g_return_if_fail (self != NULL);
+	g_return_if_fail (dir_path != NULL);
+	_inner_error_ = NULL;
+	dir = g_file_new_for_path (dir_path);
+	{
+		g_file_make_directory (dir, NULL, &_inner_error_);
+		if (_inner_error_ != NULL) {
+			if (g_error_matches (_inner_error_, G_IO_ERROR, G_IO_ERROR_EXISTS)) {
+				goto __catch6_g_io_error_exists;
+			}
+			goto __finally6;
+		}
+	}
+	goto __finally6;
+	__catch6_g_io_error_exists:
+	{
+		GError * err;
+		err = _inner_error_;
+		_inner_error_ = NULL;
+		{
+			_g_error_free0 (err);
+		}
+	}
+	__finally6:
+	if (_inner_error_ != NULL) {
+		g_propagate_error (error, _inner_error_);
+		_g_object_unref0 (dir);
+		return;
+	}
+	_g_object_unref0 (dir);
 }
 
 

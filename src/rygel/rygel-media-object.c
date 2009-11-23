@@ -59,6 +59,7 @@ struct _RygelMediaObject {
 	GObject parent_instance;
 	RygelMediaObjectPrivate * priv;
 	char* id;
+	char* upnp_class;
 	guint64 modified;
 	GeeArrayList* uris;
 	RygelMediaContainer* parent;
@@ -123,24 +124,24 @@ static char* string_replace (const char* self, const char* old, const char* repl
 		regex = (_tmp1_ = g_regex_new (_tmp0_ = g_regex_escape_string (old, -1), 0, 0, &_inner_error_), _g_free0 (_tmp0_), _tmp1_);
 		if (_inner_error_ != NULL) {
 			if (_inner_error_->domain == G_REGEX_ERROR) {
-				goto __catch36_g_regex_error;
+				goto __catch37_g_regex_error;
 			}
-			goto __finally36;
+			goto __finally37;
 		}
-		_tmp2_ = g_regex_replace_literal (regex, self, (glong) (-1), 0, replacement, 0, &_inner_error_);
+		_tmp2_ = g_regex_replace_literal (regex, self, (gssize) (-1), 0, replacement, 0, &_inner_error_);
 		if (_inner_error_ != NULL) {
 			_g_regex_unref0 (regex);
 			if (_inner_error_->domain == G_REGEX_ERROR) {
-				goto __catch36_g_regex_error;
+				goto __catch37_g_regex_error;
 			}
-			goto __finally36;
+			goto __finally37;
 		}
 		result = _tmp2_;
 		_g_regex_unref0 (regex);
 		return result;
 	}
-	goto __finally36;
-	__catch36_g_regex_error:
+	goto __finally37;
+	__catch37_g_regex_error:
 	{
 		GError * e;
 		e = _inner_error_;
@@ -150,7 +151,7 @@ static char* string_replace (const char* self, const char* old, const char* repl
 			_g_error_free0 (e);
 		}
 	}
-	__finally36:
+	__finally37:
 	if (_inner_error_ != NULL) {
 		g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, _inner_error_->message);
 		g_clear_error (&_inner_error_);
@@ -206,6 +207,7 @@ static void rygel_media_object_finalize (GObject* obj) {
 	RygelMediaObject * self;
 	self = RYGEL_MEDIA_OBJECT (obj);
 	_g_free0 (self->id);
+	_g_free0 (self->upnp_class);
 	_g_object_unref0 (self->uris);
 	_g_object_unref0 (self->parent_ref);
 	_g_free0 (self->priv->_title);

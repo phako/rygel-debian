@@ -54,7 +54,6 @@ typedef struct _RygelTrackerKeywordsIface RygelTrackerKeywordsIface;
 typedef struct _RygelTrackerKeywordsIfaceIface RygelTrackerKeywordsIfaceIface;
 #define _g_object_unref0(var) ((var == NULL) ? NULL : (var = (g_object_unref (var), NULL)))
 #define _g_error_free0(var) ((var == NULL) ? NULL : (var = (g_error_free (var), NULL)))
-typedef struct _RygelTrackerKeywordsFetchKeywordsData RygelTrackerKeywordsFetchKeywordsData;
 
 #define RYGEL_TYPE_TRACKER_SEARCH_CONTAINER (rygel_tracker_search_container_get_type ())
 #define RYGEL_TRACKER_SEARCH_CONTAINER(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_TRACKER_SEARCH_CONTAINER, RygelTrackerSearchContainer))
@@ -66,6 +65,7 @@ typedef struct _RygelTrackerKeywordsFetchKeywordsData RygelTrackerKeywordsFetchK
 typedef struct _RygelTrackerSearchContainer RygelTrackerSearchContainer;
 typedef struct _RygelTrackerSearchContainerClass RygelTrackerSearchContainerClass;
 #define _g_free0(var) (var = (g_free (var), NULL))
+typedef struct _RygelTrackerKeywordsFetchKeywordsData RygelTrackerKeywordsFetchKeywordsData;
 #define _dbus_g_connection_unref0(var) ((var == NULL) ? NULL : (var = (dbus_g_connection_unref (var), NULL)))
 
 struct _RygelTrackerKeywordsIfaceIface {
@@ -279,6 +279,7 @@ static gboolean rygel_tracker_keywords_fetch_keywords_co (RygelTrackerKeywordsFe
 							break;
 						}
 						data->keyword = g_strdup (data->keywords_list[(data->i * data->keywords_list_length2) + 0]);
+						data->_tmp6_ = NULL;
 						data->keywords = (data->_tmp7_ = (data->_tmp6_ = g_new0 (char*, 1 + 1), data->_tmp6_[0] = g_strdup (data->keyword), data->_tmp6_), data->keywords_length1 = 1, data->keywords_size = data->keywords_length1, data->_tmp7_);
 						data->container = rygel_tracker_search_container_new (data->keyword, (RygelMediaContainer*) data->self, data->keyword, RYGEL_TRACKER_KEYWORDS_SERVICE, "", data->keywords, data->keywords_length1);
 						rygel_simple_container_add_child ((RygelSimpleContainer*) data->self, (RygelMediaObject*) data->container);

@@ -250,6 +250,7 @@ struct _RygelMediaObject {
 	GObject parent_instance;
 	RygelMediaObjectPrivate * priv;
 	char* id;
+	char* upnp_class;
 	guint64 modified;
 	GeeArrayList* uris;
 	RygelMediaContainer* parent;
@@ -266,7 +267,6 @@ struct _RygelMediaItem {
 	char* author;
 	char* album;
 	char* date;
-	char* upnp_class;
 	char* mime_type;
 	char* dlna_profile;
 	glong size;
@@ -417,22 +417,22 @@ static RygelHTTPResponse* rygel_http_transcode_handler_real_render_body (RygelHT
 		RygelLiveResponse* _tmp2_;
 		_tmp0_ = rygel_transcoder_create_source (self->priv->transcoder, item, src, &_inner_error_);
 		if (_inner_error_ != NULL) {
-			goto __catch28_g_error;
-			goto __finally28;
+			goto __catch29_g_error;
+			goto __finally29;
 		}
 		src = (_tmp1_ = _tmp0_, _gst_object_unref0 (src), _tmp1_);
 		_tmp2_ = rygel_live_response_new (request->server, request->msg, "RygelLiveResponse", src, request->time_range, rygel_http_request_handler_get_cancellable ((RygelHTTPRequestHandler*) self), &_inner_error_);
 		if (_inner_error_ != NULL) {
-			goto __catch28_g_error;
-			goto __finally28;
+			goto __catch29_g_error;
+			goto __finally29;
 		}
 		result = (RygelHTTPResponse*) _tmp2_;
 		_g_object_unref0 (item);
 		_gst_object_unref0 (src);
 		return result;
 	}
-	goto __finally28;
-	__catch28_g_error:
+	goto __finally29;
+	__catch29_g_error:
 	{
 		GError * err;
 		err = _inner_error_;
@@ -443,12 +443,12 @@ static RygelHTTPResponse* rygel_http_transcode_handler_real_render_body (RygelHT
 				_g_error_free0 (err);
 				_g_object_unref0 (item);
 				_gst_object_unref0 (src);
-				goto __finally28;
+				goto __finally29;
 			}
 			_g_error_free0 (err);
 		}
 	}
-	__finally28:
+	__finally29:
 	if (_inner_error_ != NULL) {
 		if (_inner_error_->domain == RYGEL_HTTP_REQUEST_ERROR) {
 			g_propagate_error (error, _inner_error_);

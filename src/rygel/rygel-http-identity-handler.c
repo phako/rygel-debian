@@ -265,6 +265,7 @@ struct _RygelMediaObject {
 	GObject parent_instance;
 	RygelMediaObjectPrivate * priv;
 	char* id;
+	char* upnp_class;
 	guint64 modified;
 	GeeArrayList* uris;
 	RygelMediaContainer* parent;
@@ -281,7 +282,6 @@ struct _RygelMediaItem {
 	char* author;
 	char* album;
 	char* date;
-	char* upnp_class;
 	char* mime_type;
 	char* dlna_profile;
 	glong size;
@@ -436,14 +436,14 @@ static RygelHTTPResponse* rygel_http_identity_handler_real_render_body (RygelHTT
 		RygelHTTPResponse* _tmp0_;
 		_tmp0_ = rygel_http_identity_handler_render_body_real (self, request, &_inner_error_);
 		if (_inner_error_ != NULL) {
-			goto __catch27_g_error;
-			goto __finally27;
+			goto __catch28_g_error;
+			goto __finally28;
 		}
 		result = _tmp0_;
 		return result;
 	}
-	goto __finally27;
-	__catch27_g_error:
+	goto __finally28;
+	__catch28_g_error:
 	{
 		GError * err;
 		err = _inner_error_;
@@ -452,12 +452,12 @@ static RygelHTTPResponse* rygel_http_identity_handler_real_render_body (RygelHTT
 			_inner_error_ = g_error_new_literal (RYGEL_HTTP_REQUEST_ERROR, RYGEL_HTTP_REQUEST_ERROR_NOT_FOUND, err->message);
 			if (_inner_error_ != NULL) {
 				_g_error_free0 (err);
-				goto __finally27;
+				goto __finally28;
 			}
 			_g_error_free0 (err);
 		}
 	}
-	__finally27:
+	__finally28:
 	if (_inner_error_ != NULL) {
 		if (_inner_error_->domain == RYGEL_HTTP_REQUEST_ERROR) {
 			g_propagate_error (error, _inner_error_);

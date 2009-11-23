@@ -374,11 +374,9 @@ static void rygel_general_pref_section_real_save (RygelPreferencesSection* base)
 
 
 static void rygel_general_pref_section_on_trans_check_toggled (RygelGeneralPrefSection* self, GtkCheckButton* trans_check) {
-	gboolean _tmp0_;
-	gboolean _tmp1_;
 	g_return_if_fail (self != NULL);
 	g_return_if_fail (trans_check != NULL);
-	g_object_set ((GtkWidget*) self->priv->mp3_check, "sensitive", (g_object_set ((GtkWidget*) self->priv->mp2ts_check, "sensitive", (g_object_set ((GtkWidget*) self->priv->lpcm_check, "sensitive", gtk_toggle_button_get_active ((GtkToggleButton*) trans_check), NULL), (g_object_get ((GtkWidget*) self->priv->lpcm_check, "sensitive", &_tmp0_, NULL), _tmp0_)), NULL), (g_object_get ((GtkWidget*) self->priv->mp2ts_check, "sensitive", &_tmp1_, NULL), _tmp1_)), NULL);
+	gtk_widget_set_sensitive ((GtkWidget*) self->priv->mp3_check, (gtk_widget_set_sensitive ((GtkWidget*) self->priv->mp2ts_check, (gtk_widget_set_sensitive ((GtkWidget*) self->priv->lpcm_check, gtk_toggle_button_get_active ((GtkToggleButton*) trans_check)), gtk_widget_get_sensitive ((GtkWidget*) self->priv->lpcm_check))), gtk_widget_get_sensitive ((GtkWidget*) self->priv->mp2ts_check)));
 }
 
 

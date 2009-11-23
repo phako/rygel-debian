@@ -131,6 +131,7 @@ struct _RygelMediaObject {
 	GObject parent_instance;
 	RygelMediaObjectPrivate * priv;
 	char* id;
+	char* upnp_class;
 	guint64 modified;
 	GeeArrayList* uris;
 	RygelMediaContainer* parent;
@@ -147,7 +148,6 @@ struct _RygelMediaItem {
 	char* author;
 	char* album;
 	char* date;
-	char* upnp_class;
 	char* mime_type;
 	char* dlna_profile;
 	glong size;

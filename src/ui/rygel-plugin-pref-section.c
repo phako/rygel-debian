@@ -133,7 +133,7 @@ static char* string_replace (const char* self, const char* old, const char* repl
 			}
 			goto __finally10;
 		}
-		_tmp2_ = g_regex_replace_literal (regex, self, (glong) (-1), 0, replacement, 0, &_inner_error_);
+		_tmp2_ = g_regex_replace_literal (regex, self, (gssize) (-1), 0, replacement, 0, &_inner_error_);
 		if (_inner_error_ != NULL) {
 			_g_regex_unref0 (regex);
 			if (_inner_error_->domain == G_REGEX_ERROR) {
@@ -296,7 +296,7 @@ static void rygel_plugin_pref_section_real_save (RygelPreferencesSection* base) 
 
 void rygel_plugin_pref_section_reset_widgets_sensitivity (RygelPluginPrefSection* self) {
 	g_return_if_fail (self != NULL);
-	g_object_set ((GtkWidget*) self->priv->title_entry, "sensitive", gtk_toggle_button_get_active ((GtkToggleButton*) self->priv->enabled_check), NULL);
+	gtk_widget_set_sensitive ((GtkWidget*) self->priv->title_entry, gtk_toggle_button_get_active ((GtkToggleButton*) self->priv->enabled_check));
 	{
 		GeeIterator* _widget_it;
 		_widget_it = gee_abstract_collection_iterator ((GeeAbstractCollection*) self->widgets);
@@ -306,7 +306,7 @@ void rygel_plugin_pref_section_reset_widgets_sensitivity (RygelPluginPrefSection
 				break;
 			}
 			widget = (GtkWidget*) gee_iterator_get (_widget_it);
-			g_object_set (widget, "sensitive", gtk_toggle_button_get_active ((GtkToggleButton*) self->priv->enabled_check), NULL);
+			gtk_widget_set_sensitive (widget, gtk_toggle_button_get_active ((GtkToggleButton*) self->priv->enabled_check));
 			_g_object_unref0 (widget);
 		}
 		_g_object_unref0 (_widget_it);

@@ -118,6 +118,7 @@ struct _RygelMediaObject {
 	GObject parent_instance;
 	RygelMediaObjectPrivate * priv;
 	char* id;
+	char* upnp_class;
 	guint64 modified;
 	GeeArrayList* uris;
 	RygelMediaContainer* parent;
@@ -134,7 +135,6 @@ struct _RygelMediaItem {
 	char* author;
 	char* album;
 	char* date;
-	char* upnp_class;
 	char* mime_type;
 	char* dlna_profile;
 	glong size;
@@ -240,7 +240,7 @@ RygelMediaItem* rygel_media_item_construct (GType object_type, const char* id, R
 	((RygelMediaObject*) self)->id = (_tmp0_ = g_strdup (id), _g_free0 (((RygelMediaObject*) self)->id), _tmp0_);
 	((RygelMediaObject*) self)->parent = parent;
 	rygel_media_object_set_title ((RygelMediaObject*) self, title);
-	self->upnp_class = (_tmp1_ = g_strdup (upnp_class), _g_free0 (self->upnp_class), _tmp1_);
+	((RygelMediaObject*) self)->upnp_class = (_tmp1_ = g_strdup (upnp_class), _g_free0 (((RygelMediaObject*) self)->upnp_class), _tmp1_);
 	self->thumbnails = (_tmp2_ = gee_array_list_new (RYGEL_TYPE_THUMBNAIL, (GBoxedCopyFunc) rygel_icon_info_ref, rygel_icon_info_unref, NULL), _g_object_unref0 (self->thumbnails), _tmp2_);
 	return self;
 }
@@ -309,10 +309,10 @@ void rygel_media_item_add_uri (RygelMediaItem* self, const char* uri, RygelThumb
 		gee_abstract_collection_add ((GeeAbstractCollection*) self->thumbnails, thumbnail);
 	} else {
 		gboolean _tmp0_ = FALSE;
-		if (g_str_has_prefix (self->upnp_class, RYGEL_MEDIA_ITEM_IMAGE_CLASS)) {
+		if (g_str_has_prefix (((RygelMediaObject*) self)->upnp_class, RYGEL_MEDIA_ITEM_IMAGE_CLASS)) {
 			_tmp0_ = TRUE;
 		} else {
-			_tmp0_ = g_str_has_prefix (self->upnp_class, RYGEL_MEDIA_ITEM_VIDEO_CLASS);
+			_tmp0_ = g_str_has_prefix (((RygelMediaObject*) self)->upnp_class, RYGEL_MEDIA_ITEM_VIDEO_CLASS);
 		}
 		if (_tmp0_) {
 			RygelThumbnailer* thumbnailer;
@@ -325,14 +325,14 @@ void rygel_media_item_add_uri (RygelMediaItem* self, const char* uri, RygelThumb
 				RygelThumbnail* thumb;
 				thumb = rygel_thumbnailer_get_thumbnail (thumbnailer, uri, &_inner_error_);
 				if (_inner_error_ != NULL) {
-					goto __catch37_g_error;
-					goto __finally37;
+					goto __catch38_g_error;
+					goto __finally38;
 				}
 				gee_abstract_collection_add ((GeeAbstractCollection*) self->thumbnails, thumb);
 				_rygel_icon_info_unref0 (thumb);
 			}
-			goto __finally37;
-			__catch37_g_error:
+			goto __finally38;
+			__catch38_g_error:
 			{
 				GError * err;
 				err = _inner_error_;
@@ -341,7 +341,7 @@ void rygel_media_item_add_uri (RygelMediaItem* self, const char* uri, RygelThumb
 					_g_error_free0 (err);
 				}
 			}
-			__finally37:
+			__finally38:
 			if (_inner_error_ != NULL) {
 				_g_object_unref0 (thumbnailer);
 				g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, _inner_error_->message);
@@ -490,7 +490,7 @@ static GUPnPProtocolInfo* rygel_media_item_get_protocol_info (RygelMediaItem* se
 	gupnp_protocol_info_set_mime_type (protocol_info, self->mime_type);
 	gupnp_protocol_info_set_dlna_profile (protocol_info, self->dlna_profile);
 	gupnp_protocol_info_set_protocol (protocol_info, protocol);
-	if (g_str_has_prefix (self->upnp_class, RYGEL_MEDIA_ITEM_IMAGE_CLASS)) {
+	if (g_str_has_prefix (((RygelMediaObject*) self)->upnp_class, RYGEL_MEDIA_ITEM_IMAGE_CLASS)) {
 		gupnp_protocol_info_set_dlna_flags (protocol_info, gupnp_protocol_info_get_dlna_flags (protocol_info) | GUPNP_DLNA_FLAGS_INTERACTIVE_TRANSFER_MODE);
 	} else {
 		gupnp_protocol_info_set_dlna_flags (protocol_info, gupnp_protocol_info_get_dlna_flags (protocol_info) | GUPNP_DLNA_FLAGS_STREAMING_TRANSFER_MODE);
@@ -535,7 +535,7 @@ static char* rygel_media_item_get_protocol_for_uri (RygelMediaItem* self, const 
 				_g_free0 (scheme);
 				return result;
 			} else {
-				g_warning ("rygel-media-item.vala:223: Failed to probe protocol for URI %s. Assuming '%s'", uri, scheme);
+				g_warning ("rygel-media-item.vala:222: Failed to probe protocol for URI %s. Assuming '%s'", uri, scheme);
 				result = scheme;
 				return result;
 			}
@@ -575,7 +575,6 @@ static void rygel_media_item_finalize (GObject* obj) {
 	_g_free0 (self->author);
 	_g_free0 (self->album);
 	_g_free0 (self->date);
-	_g_free0 (self->upnp_class);
 	_g_free0 (self->mime_type);
 	_g_free0 (self->dlna_profile);
 	_g_object_unref0 (self->thumbnails);

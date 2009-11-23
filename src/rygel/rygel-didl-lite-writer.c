@@ -131,6 +131,16 @@ typedef struct _RygelStateMachineIface RygelStateMachineIface;
 typedef struct _RygelHTTPServerPrivate RygelHTTPServerPrivate;
 typedef struct _RygelMediaContainerPrivate RygelMediaContainerPrivate;
 
+#define RYGEL_TYPE_SEARCH_EXPRESSION (rygel_search_expression_get_type ())
+#define RYGEL_SEARCH_EXPRESSION(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_SEARCH_EXPRESSION, RygelSearchExpression))
+#define RYGEL_SEARCH_EXPRESSION_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TYPE_SEARCH_EXPRESSION, RygelSearchExpressionClass))
+#define RYGEL_IS_SEARCH_EXPRESSION(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TYPE_SEARCH_EXPRESSION))
+#define RYGEL_IS_SEARCH_EXPRESSION_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_TYPE_SEARCH_EXPRESSION))
+#define RYGEL_SEARCH_EXPRESSION_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_TYPE_SEARCH_EXPRESSION, RygelSearchExpressionClass))
+
+typedef struct _RygelSearchExpression RygelSearchExpression;
+typedef struct _RygelSearchExpressionClass RygelSearchExpressionClass;
+
 typedef enum  {
 	RYGEL_DIDL_LITE_WRITER_ERROR_UNSUPPORTED_OBJECT
 } RygelDIDLLiteWriterError;
@@ -152,6 +162,7 @@ struct _RygelMediaObject {
 	GObject parent_instance;
 	RygelMediaObjectPrivate * priv;
 	char* id;
+	char* upnp_class;
 	guint64 modified;
 	GeeArrayList* uris;
 	RygelMediaContainer* parent;
@@ -168,7 +179,6 @@ struct _RygelMediaItem {
 	char* author;
 	char* album;
 	char* date;
-	char* upnp_class;
 	char* mime_type;
 	char* dlna_profile;
 	glong size;
@@ -235,8 +245,8 @@ struct _RygelMediaContainerClass {
 	RygelMediaObjectClass parent_class;
 	void (*get_children) (RygelMediaContainer* self, guint offset, guint max_count, GCancellable* cancellable, GAsyncReadyCallback _callback_, gpointer _user_data_);
 	GeeList* (*get_children_finish) (RygelMediaContainer* self, GAsyncResult* _res_, GError** error);
-	void (*find_object) (RygelMediaContainer* self, const char* id, GCancellable* cancellable, GAsyncReadyCallback _callback_, gpointer _user_data_);
-	RygelMediaObject* (*find_object_finish) (RygelMediaContainer* self, GAsyncResult* _res_, GError** error);
+	void (*search) (RygelMediaContainer* self, RygelSearchExpression* expression, guint offset, guint max_count, GCancellable* cancellable, GAsyncReadyCallback _callback_, gpointer _user_data_);
+	GeeList* (*search_finish) (RygelMediaContainer* self, GAsyncResult* _res_, guint* total_matches, GError** error);
 };
 
 
@@ -271,6 +281,12 @@ GType rygel_thumbnail_get_type (void);
 void rygel_transcode_manager_add_resources (RygelTranscodeManager* self, GUPnPDIDLLiteItem* didl_item, RygelMediaItem* item, GError** error);
 GType rygel_state_machine_get_type (void);
 void rygel_media_item_add_resources (RygelMediaItem* self, GUPnPDIDLLiteItem* didl_item, gboolean allow_internal, GError** error);
+gpointer rygel_search_expression_ref (gpointer instance);
+void rygel_search_expression_unref (gpointer instance);
+GParamSpec* rygel_param_spec_search_expression (const gchar* name, const gchar* nick, const gchar* blurb, GType object_type, GParamFlags flags);
+void rygel_value_set_search_expression (GValue* value, gpointer v_object);
+gpointer rygel_value_get_search_expression (const GValue* value);
+GType rygel_search_expression_get_type (void);
 static void rygel_didl_lite_writer_finalize (GObject* obj);
 static int _vala_strcmp0 (const char * str1, const char * str2);
 
@@ -350,7 +366,7 @@ static void rygel_didl_lite_writer_serialize_item (RygelDIDLLiteWriter* self, Ry
 	}
 	gupnp_didl_lite_object_set_restricted ((GUPnPDIDLLiteObject*) didl_item, FALSE);
 	gupnp_didl_lite_object_set_title ((GUPnPDIDLLiteObject*) didl_item, rygel_media_object_get_title ((RygelMediaObject*) item));
-	gupnp_didl_lite_object_set_upnp_class ((GUPnPDIDLLiteObject*) didl_item, item->upnp_class);
+	gupnp_didl_lite_object_set_upnp_class ((GUPnPDIDLLiteObject*) didl_item, ((RygelMediaObject*) item)->upnp_class);
 	if (item->author != NULL) {
 		_tmp0_ = _vala_strcmp0 (item->author, "") != 0;
 	} else {
@@ -358,10 +374,10 @@ static void rygel_didl_lite_writer_serialize_item (RygelDIDLLiteWriter* self, Ry
 	}
 	if (_tmp0_) {
 		gupnp_didl_lite_object_set_creator ((GUPnPDIDLLiteObject*) didl_item, item->author);
-		if (g_str_has_prefix (item->upnp_class, RYGEL_MEDIA_ITEM_VIDEO_CLASS)) {
+		if (g_str_has_prefix (((RygelMediaObject*) item)->upnp_class, RYGEL_MEDIA_ITEM_VIDEO_CLASS)) {
 			gupnp_didl_lite_object_set_author ((GUPnPDIDLLiteObject*) didl_item, item->author);
 		} else {
-			if (g_str_has_prefix (item->upnp_class, RYGEL_MEDIA_ITEM_MUSIC_CLASS)) {
+			if (g_str_has_prefix (((RygelMediaObject*) item)->upnp_class, RYGEL_MEDIA_ITEM_MUSIC_CLASS)) {
 				gupnp_didl_lite_object_set_artist ((GUPnPDIDLLiteObject*) didl_item, item->author);
 			}
 		}
@@ -420,9 +436,9 @@ static void rygel_didl_lite_writer_serialize_container (RygelDIDLLiteWriter* sel
 	gupnp_didl_lite_object_set_id ((GUPnPDIDLLiteObject*) didl_container, ((RygelMediaObject*) container)->id);
 	gupnp_didl_lite_object_set_title ((GUPnPDIDLLiteObject*) didl_container, rygel_media_object_get_title ((RygelMediaObject*) container));
 	gupnp_didl_lite_container_set_child_count (didl_container, container->child_count);
+	gupnp_didl_lite_object_set_upnp_class ((GUPnPDIDLLiteObject*) didl_container, ((RygelMediaObject*) container)->upnp_class);
 	gupnp_didl_lite_object_set_restricted ((GUPnPDIDLLiteObject*) didl_container, FALSE);
-	gupnp_didl_lite_container_set_searchable (didl_container, FALSE);
-	gupnp_didl_lite_object_set_upnp_class ((GUPnPDIDLLiteObject*) didl_container, "object.container.storageFolder");
+	gupnp_didl_lite_container_set_searchable (didl_container, TRUE);
 	_g_object_unref0 (didl_container);
 }
 

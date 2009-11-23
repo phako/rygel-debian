@@ -46,7 +46,6 @@
 typedef struct _RygelExternalThumbnailFactory RygelExternalThumbnailFactory;
 typedef struct _RygelExternalThumbnailFactoryClass RygelExternalThumbnailFactoryClass;
 typedef struct _RygelExternalThumbnailFactoryPrivate RygelExternalThumbnailFactoryPrivate;
-typedef struct _RygelExternalThumbnailFactoryCreateData RygelExternalThumbnailFactoryCreateData;
 #define _g_free0(var) (var = (g_free (var), NULL))
 #define _rygel_icon_info_unref0(var) ((var == NULL) ? NULL : (var = (rygel_icon_info_unref (var), NULL)))
 
@@ -62,6 +61,7 @@ typedef struct _FreeDesktopPropertiesIface FreeDesktopPropertiesIface;
 #define _g_regex_unref0(var) ((var == NULL) ? NULL : (var = (g_regex_unref (var), NULL)))
 #define _g_error_free0(var) ((var == NULL) ? NULL : (var = (g_error_free (var), NULL)))
 #define _g_hash_table_unref0(var) ((var == NULL) ? NULL : (var = (g_hash_table_unref (var), NULL)))
+typedef struct _RygelExternalThumbnailFactoryCreateData RygelExternalThumbnailFactoryCreateData;
 typedef struct _RygelParamSpecExternalThumbnailFactory RygelParamSpecExternalThumbnailFactory;
 
 struct _RygelExternalThumbnailFactory {
@@ -73,6 +73,12 @@ struct _RygelExternalThumbnailFactory {
 struct _RygelExternalThumbnailFactoryClass {
 	GTypeClass parent_class;
 	void (*finalize) (RygelExternalThumbnailFactory *self);
+};
+
+struct _FreeDesktopPropertiesIface {
+	GTypeInterface parent_iface;
+	void (*get_all) (FreeDesktopProperties* self, const char* iface, GAsyncReadyCallback _callback_, gpointer _user_data_);
+	GHashTable* (*get_all_finish) (FreeDesktopProperties* self, GAsyncResult* _res_, GError** error);
 };
 
 struct _RygelExternalThumbnailFactoryCreateData {
@@ -104,12 +110,6 @@ struct _RygelExternalThumbnailFactoryCreateData {
 	GValue* _tmp9_;
 	GValue* _tmp10_;
 	GError * _inner_error_;
-};
-
-struct _FreeDesktopPropertiesIface {
-	GTypeInterface parent_iface;
-	void (*get_all) (FreeDesktopProperties* self, const char* iface, GAsyncReadyCallback _callback_, gpointer _user_data_);
-	GHashTable* (*get_all_finish) (FreeDesktopProperties* self, GAsyncResult* _res_, GError** error);
 };
 
 struct _RygelParamSpecExternalThumbnailFactory {
@@ -219,7 +219,7 @@ static char* string_replace (const char* self, const char* old, const char* repl
 			}
 			goto __finally4;
 		}
-		_tmp2_ = g_regex_replace_literal (regex, self, (glong) (-1), 0, replacement, 0, &_inner_error_);
+		_tmp2_ = g_regex_replace_literal (regex, self, (gssize) (-1), 0, replacement, 0, &_inner_error_);
 		if (_inner_error_ != NULL) {
 			_g_regex_unref0 (regex);
 			if (_inner_error_->domain == G_REGEX_ERROR) {
@@ -273,9 +273,9 @@ static gboolean rygel_external_thumbnail_factory_create_co (RygelExternalThumbna
 			}
 			data->props = free_desktop_properties_dbus_proxy_new (data->connection, data->service_name, data->object_path);
 			free_desktop_properties_get_all (data->props, rygel_external_thumbnail_factory_ITEM_IFACE, rygel_external_thumbnail_factory_create_ready, data);
-			data->_state_ = 8;
+			data->_state_ = 10;
 			return FALSE;
-			case 8:
+			case 10:
 			data->item_props = free_desktop_properties_get_all_finish (data->props, data->_res_, &data->_inner_error_);
 			if (data->_inner_error_ != NULL) {
 				g_simple_async_result_set_from_error (data->_async_result, data->_inner_error_);

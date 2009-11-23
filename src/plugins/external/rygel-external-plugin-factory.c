@@ -69,10 +69,9 @@ typedef struct _RygelExternalIconFactoryClass RygelExternalIconFactoryClass;
 #define _g_object_unref0(var) ((var == NULL) ? NULL : (var = (g_object_unref (var), NULL)))
 #define _dbus_g_connection_unref0(var) ((var == NULL) ? NULL : (var = (dbus_g_connection_unref (var), NULL)))
 #define _rygel_external_icon_factory_unref0(var) ((var == NULL) ? NULL : (var = (rygel_external_icon_factory_unref (var), NULL)))
-typedef struct _RygelExternalPluginFactoryLoadPluginsData RygelExternalPluginFactoryLoadPluginsData;
 #define _g_free0(var) (var = (g_free (var), NULL))
+typedef struct _RygelExternalPluginFactoryLoadPluginsData RygelExternalPluginFactoryLoadPluginsData;
 typedef struct _RygelExternalPluginFactoryLoadActivatablePluginsData RygelExternalPluginFactoryLoadActivatablePluginsData;
-typedef struct _RygelExternalPluginFactoryLoadPluginData RygelExternalPluginFactoryLoadPluginData;
 #define _g_regex_unref0(var) ((var == NULL) ? NULL : (var = (g_regex_unref (var), NULL)))
 
 #define FREE_DESKTOP_TYPE_PROPERTIES (free_desktop_properties_get_type ())
@@ -94,6 +93,7 @@ typedef struct _FreeDesktopPropertiesIface FreeDesktopPropertiesIface;
 typedef struct _RygelExternalPlugin RygelExternalPlugin;
 typedef struct _RygelExternalPluginClass RygelExternalPluginClass;
 #define _rygel_icon_info_unref0(var) ((var == NULL) ? NULL : (var = (rygel_icon_info_unref (var), NULL)))
+typedef struct _RygelExternalPluginFactoryLoadPluginData RygelExternalPluginFactoryLoadPluginData;
 typedef struct _RygelParamSpecExternalPluginFactory RygelParamSpecExternalPluginFactory;
 
 struct _RygelExternalPluginFactory {
@@ -160,6 +160,12 @@ struct _RygelExternalPluginFactoryLoadActivatablePluginsData {
 	GError * _inner_error_;
 };
 
+struct _FreeDesktopPropertiesIface {
+	GTypeInterface parent_iface;
+	void (*get_all) (FreeDesktopProperties* self, const char* iface, GAsyncReadyCallback _callback_, gpointer _user_data_);
+	GHashTable* (*get_all_finish) (FreeDesktopProperties* self, GAsyncResult* _res_, GError** error);
+};
+
 struct _RygelExternalPluginFactoryLoadPluginData {
 	int _state_;
 	GAsyncResult* _res_;
@@ -184,12 +190,6 @@ struct _RygelExternalPluginFactoryLoadPluginData {
 	char* _tmp7_;
 	RygelExternalPlugin* plugin;
 	GError * _inner_error_;
-};
-
-struct _FreeDesktopPropertiesIface {
-	GTypeInterface parent_iface;
-	void (*get_all) (FreeDesktopProperties* self, const char* iface, GAsyncReadyCallback _callback_, gpointer _user_data_);
-	GHashTable* (*get_all_finish) (FreeDesktopProperties* self, GAsyncResult* _res_, GError** error);
 };
 
 struct _RygelParamSpecExternalPluginFactory {
@@ -385,9 +385,9 @@ static gboolean rygel_external_plugin_factory_load_plugins_co (RygelExternalPlug
 		case 0:
 		{
 			free_desktop_dbus_object_list_names (data->self->priv->dbus_obj, rygel_external_plugin_factory_load_plugins_ready, data);
-			data->_state_ = 9;
+			data->_state_ = 11;
 			return FALSE;
-			case 9:
+			case 11:
 			data->services = (data->_tmp1_ = free_desktop_dbus_object_list_names_finish (data->self->priv->dbus_obj, data->_res_, &data->_tmp0_, &data->_inner_error_), data->services_length1 = data->_tmp0_, data->services_size = data->services_length1, data->_tmp1_);
 			if (data->_inner_error_ != NULL) {
 				if (data->_inner_error_->domain == DBUS_GERROR) {
@@ -422,9 +422,9 @@ static gboolean rygel_external_plugin_factory_load_plugins_co (RygelExternalPlug
 						}
 						if (data->_tmp2_) {
 							rygel_external_plugin_factory_load_plugin (data->self, data->service, rygel_external_plugin_factory_load_plugins_ready, data);
-							data->_state_ = 10;
+							data->_state_ = 12;
 							return FALSE;
-							case 10:
+							case 12:
 							rygel_external_plugin_factory_load_plugin_finish (data->self, data->_res_);
 						}
 						_g_free0 (data->service);
@@ -432,9 +432,9 @@ static gboolean rygel_external_plugin_factory_load_plugins_co (RygelExternalPlug
 				}
 			}
 			rygel_external_plugin_factory_load_activatable_plugins (data->self, rygel_external_plugin_factory_load_plugins_ready, data);
-			data->_state_ = 11;
+			data->_state_ = 13;
 			return FALSE;
-			case 11:
+			case 13:
 			rygel_external_plugin_factory_load_activatable_plugins_finish (data->self, data->_res_, &data->_inner_error_);
 			if (data->_inner_error_ != NULL) {
 				if (data->_inner_error_->domain == DBUS_GERROR) {
@@ -518,9 +518,9 @@ static gboolean rygel_external_plugin_factory_load_activatable_plugins_co (Rygel
 		case 0:
 		{
 			free_desktop_dbus_object_list_activatable_names (data->self->priv->dbus_obj, rygel_external_plugin_factory_load_activatable_plugins_ready, data);
-			data->_state_ = 12;
+			data->_state_ = 14;
 			return FALSE;
-			case 12:
+			case 14:
 			data->services = (data->_tmp1_ = free_desktop_dbus_object_list_activatable_names_finish (data->self->priv->dbus_obj, data->_res_, &data->_tmp0_, &data->_inner_error_), data->services_length1 = data->_tmp0_, data->services_size = data->services_length1, data->_tmp1_);
 			if (data->_inner_error_ != NULL) {
 				if (data->_inner_error_->domain == DBUS_GERROR) {
@@ -555,9 +555,9 @@ static gboolean rygel_external_plugin_factory_load_activatable_plugins_co (Rygel
 						}
 						if (data->_tmp2_) {
 							rygel_external_plugin_factory_load_plugin (data->self, data->service, rygel_external_plugin_factory_load_activatable_plugins_ready, data);
-							data->_state_ = 13;
+							data->_state_ = 15;
 							return FALSE;
-							case 13:
+							case 15:
 							rygel_external_plugin_factory_load_plugin_finish (data->self, data->_res_);
 						}
 						_g_free0 (data->service);
@@ -671,7 +671,7 @@ static char* string_replace (const char* self, const char* old, const char* repl
 			}
 			goto __finally6;
 		}
-		_tmp2_ = g_regex_replace_literal (regex, self, (glong) (-1), 0, replacement, 0, &_inner_error_);
+		_tmp2_ = g_regex_replace_literal (regex, self, (gssize) (-1), 0, replacement, 0, &_inner_error_);
 		if (_inner_error_ != NULL) {
 			_g_regex_unref0 (regex);
 			if (_inner_error_->domain == G_REGEX_ERROR) {
@@ -723,9 +723,9 @@ static gboolean rygel_external_plugin_factory_load_plugin_co (RygelExternalPlugi
 			data->props = free_desktop_properties_dbus_proxy_new (data->self->priv->connection, data->service_name, data->root_object);
 			{
 				free_desktop_properties_get_all (data->props, rygel_external_plugin_factory_OBJECT_IFACE, rygel_external_plugin_factory_load_plugin_ready, data);
-				data->_state_ = 14;
+				data->_state_ = 16;
 				return FALSE;
-				case 14:
+				case 16:
 				data->_tmp2_ = free_desktop_properties_get_all_finish (data->props, data->_res_, &data->_inner_error_);
 				if (data->_inner_error_ != NULL) {
 					if (data->_inner_error_->domain == DBUS_GERROR) {
@@ -735,9 +735,9 @@ static gboolean rygel_external_plugin_factory_load_plugin_co (RygelExternalPlugi
 				}
 				data->object_props = (data->_tmp3_ = data->_tmp2_, _g_hash_table_unref0 (data->object_props), data->_tmp3_);
 				free_desktop_properties_get_all (data->props, rygel_external_plugin_factory_CONTAINER_IFACE, rygel_external_plugin_factory_load_plugin_ready, data);
-				data->_state_ = 15;
+				data->_state_ = 17;
 				return FALSE;
-				case 15:
+				case 17:
 				data->_tmp4_ = free_desktop_properties_get_all_finish (data->props, data->_res_, &data->_inner_error_);
 				if (data->_inner_error_ != NULL) {
 					if (data->_inner_error_->domain == DBUS_GERROR) {
@@ -782,9 +782,9 @@ static gboolean rygel_external_plugin_factory_load_plugin_co (RygelExternalPlugi
 				return FALSE;
 			}
 			rygel_external_icon_factory_create (data->self->priv->icon_factory, data->service_name, data->container_props, rygel_external_plugin_factory_load_plugin_ready, data);
-			data->_state_ = 16;
+			data->_state_ = 18;
 			return FALSE;
-			case 16:
+			case 18:
 			data->icon = rygel_external_icon_factory_create_finish (data->self->priv->icon_factory, data->_res_);
 			data->value = __g_value_dup0 ((GValue*) g_hash_table_lookup (data->object_props, "DisplayName"));
 			if (data->value != NULL) {

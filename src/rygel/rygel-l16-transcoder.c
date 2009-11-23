@@ -167,6 +167,7 @@ struct _RygelMediaObject {
 	GObject parent_instance;
 	RygelMediaObjectPrivate * priv;
 	char* id;
+	char* upnp_class;
 	guint64 modified;
 	GeeArrayList* uris;
 	RygelMediaContainer* parent;
@@ -183,7 +184,6 @@ struct _RygelMediaItem {
 	char* author;
 	char* album;
 	char* date;
-	char* upnp_class;
 	char* mime_type;
 	char* dlna_profile;
 	glong size;
@@ -240,6 +240,7 @@ static GstElement* rygel_l16_transcoder_real_create_source (RygelTranscoder* bas
 GUPnPDIDLLiteResource* rygel_transcoder_add_resource (RygelTranscoder* self, GUPnPDIDLLiteItem* didl_item, RygelMediaItem* item, RygelTranscodeManager* manager, GError** error);
 static GUPnPDIDLLiteResource* rygel_l16_transcoder_real_add_resource (RygelTranscoder* base, GUPnPDIDLLiteItem* didl_item, RygelMediaItem* item, RygelTranscodeManager* manager, GError** error);
 GType rygel_media_container_get_type (void);
+#define RYGEL_MEDIA_ITEM_IMAGE_CLASS "object.item.imageItem"
 gpointer rygel_icon_info_ref (gpointer instance);
 void rygel_icon_info_unref (gpointer instance);
 GParamSpec* rygel_param_spec_icon_info (const gchar* name, const gchar* nick, const gchar* blurb, GType object_type, GParamFlags flags);
@@ -247,7 +248,6 @@ void rygel_value_set_icon_info (GValue* value, gpointer v_object);
 gpointer rygel_value_get_icon_info (const GValue* value);
 GType rygel_icon_info_get_type (void);
 GType rygel_thumbnail_get_type (void);
-#define RYGEL_MEDIA_ITEM_IMAGE_CLASS "object.item.imageItem"
 static guint rygel_l16_transcoder_real_get_distance (RygelTranscoder* base, RygelMediaItem* item);
 GstElement* rygel_gst_utils_create_element (const char* factoryname, const char* name, GError** error);
 static inline void _dynamic_set_caps5 (GstElement* obj, GstCaps* value);
@@ -345,11 +345,11 @@ static guint rygel_l16_transcoder_real_get_distance (RygelTranscoder* base, Ryge
 	guint distance = 0U;
 	self = (RygelL16Transcoder*) base;
 	g_return_val_if_fail (item != NULL, 0U);
-	if (g_str_has_prefix (item->upnp_class, RYGEL_MEDIA_ITEM_IMAGE_CLASS)) {
+	if (g_str_has_prefix (((RygelMediaObject*) item)->upnp_class, RYGEL_MEDIA_ITEM_IMAGE_CLASS)) {
 		result = G_MAXUINT;
 		return result;
 	}
-	if (g_str_has_prefix (item->upnp_class, RYGEL_MEDIA_ITEM_AUDIO_CLASS)) {
+	if (g_str_has_prefix (((RygelMediaObject*) item)->upnp_class, RYGEL_MEDIA_ITEM_AUDIO_CLASS)) {
 		distance = 0;
 		if (item->sample_freq > 0) {
 			distance = distance + ((guint) abs (item->sample_freq - RYGEL_L16_TRANSCODER_FREQUENCY));

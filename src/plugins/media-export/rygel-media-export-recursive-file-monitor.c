@@ -39,8 +39,8 @@ typedef struct _RygelMediaExportRecursiveFileMonitorClass RygelMediaExportRecurs
 typedef struct _RygelMediaExportRecursiveFileMonitorPrivate RygelMediaExportRecursiveFileMonitorPrivate;
 #define _g_object_unref0(var) ((var == NULL) ? NULL : (var = (g_object_unref (var), NULL)))
 #define _g_free0(var) (var = (g_free (var), NULL))
-typedef struct _RygelMediaExportRecursiveFileMonitorMonitorData RygelMediaExportRecursiveFileMonitorMonitorData;
 #define _g_error_free0(var) ((var == NULL) ? NULL : (var = (g_error_free (var), NULL)))
+typedef struct _RygelMediaExportRecursiveFileMonitorMonitorData RygelMediaExportRecursiveFileMonitorMonitorData;
 
 struct _RygelMediaExportRecursiveFileMonitor {
 	GObject parent_instance;

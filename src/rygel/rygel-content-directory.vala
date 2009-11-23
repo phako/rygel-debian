@@ -30,6 +30,7 @@ using Gee;
  */
 public errordomain Rygel.ContentDirectoryError {
     NO_SUCH_OBJECT = 701,
+    CANT_PROCESS = 720,
     INVALID_ARGS = 402
 }
 
@@ -43,9 +44,11 @@ public class Rygel.ContentDirectory: Service {
     public const string UPNP_TYPE =
                     "urn:schemas-upnp-org:service:ContentDirectory:2";
     public const string DESCRIPTION_PATH = "xml/ContentDirectory.xml";
+    private const string SEARCH_CAPS = "@id,@parentID,@refID," +
+                                       "upnp:class,dc:title,dc:creator," +
+                                       "res,res@protocolInfo";
 
     protected string feature_list;
-    protected string search_caps;
     protected string sort_caps;
 
     internal HTTPServer http_server;
@@ -90,10 +93,10 @@ public class Rygel.ContentDirectory: Service {
             "xsi:schemaLocation=\"urn:schemas-upnp-org:av:avs" +
             "http://www.upnp.org/schemas/av/avs-v1-20060531.xsd\">" +
             "</Features>";
-        this.search_caps = "";
         this.sort_caps = "";
 
         this.action_invoked["Browse"] += this.browse_cb;
+        this.action_invoked["Search"] += this.search_cb;
 
         /* Connect SystemUpdateID related signals */
         this.action_invoked["GetSystemUpdateID"] +=
@@ -134,6 +137,14 @@ public class Rygel.ContentDirectory: Service {
         browse.run.begin ();
     }
 
+    /* Search action implementation */
+    private virtual void search_cb (ContentDirectory    content_dir,
+                                    owned ServiceAction action) {
+        var search = new Search (this, action);
+
+        search.run.begin ();
+    }
+
     /* GetSystemUpdateID action implementation */
     private void get_system_update_id_cb (ContentDirectory    content_dir,
                                           owned ServiceAction action) {
@@ -167,7 +178,7 @@ public class Rygel.ContentDirectory: Service {
     private void get_search_capabilities_cb (ContentDirectory    content_dir,
                                              owned ServiceAction action) {
         /* Set action return arguments */
-        action.set ("SearchCaps", typeof (string), this.search_caps);
+        action.set ("SearchCaps", typeof (string), SEARCH_CAPS);
 
         action.return ();
     }
@@ -178,7 +189,7 @@ public class Rygel.ContentDirectory: Service {
                                             ref GLib.Value   value) {
         /* Set action return arguments */
         value.init (typeof (string));
-        value.set_string (this.search_caps);
+        value.set_string (SEARCH_CAPS);
     }
 
     /* action GetSortCapabilities implementation */

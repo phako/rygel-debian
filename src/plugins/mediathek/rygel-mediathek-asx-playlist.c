@@ -137,7 +137,7 @@ void rygel_mediathek_asx_playlist_parse (RygelMediathekAsxPlaylist* self, GError
 				}
 				goto __finally0;
 			}
-			normalized_content = g_regex_replace (normalizer, message->response_body->data, (glong) message->response_body->length, 0, "\\1\\L\\2\\E", 0, &_inner_error_);
+			normalized_content = g_regex_replace (normalizer, message->response_body->data, (gssize) ((glong) message->response_body->length), 0, "\\1\\L\\2\\E", 0, &_inner_error_);
 			if (_inner_error_ != NULL) {
 				_g_regex_unref0 (normalizer);
 				if (_inner_error_->domain == G_REGEX_ERROR) {

@@ -228,14 +228,14 @@ RygelThumbnailer* rygel_thumbnailer_get_default (void) {
 			_tmp0_ = rygel_thumbnailer_new (&_inner_error_);
 			if (_inner_error_ != NULL) {
 				if (_inner_error_->domain == THUMBNAILER_ERROR) {
-					goto __catch38_thumbnailer_error;
+					goto __catch39_thumbnailer_error;
 				}
-				goto __finally38;
+				goto __finally39;
 			}
 			rygel_thumbnailer_thumbnailer = (_tmp1_ = _tmp0_, _g_object_unref0 (rygel_thumbnailer_thumbnailer), _tmp1_);
 		}
-		goto __finally38;
-		__catch38_thumbnailer_error:
+		goto __finally39;
+		__catch39_thumbnailer_error:
 		{
 			GError * err;
 			err = _inner_error_;
@@ -245,7 +245,7 @@ RygelThumbnailer* rygel_thumbnailer_get_default (void) {
 				_g_error_free0 (err);
 			}
 		}
-		__finally38:
+		__finally39:
 		if (_inner_error_ != NULL) {
 			g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, _inner_error_->message);
 			g_clear_error (&_inner_error_);

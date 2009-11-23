@@ -49,15 +49,18 @@ DIST_COMMON = $(librygelinc_HEADERS) $(srcdir)/Makefile.am \
 	rygel-http-response.c rygel-http-seek.c rygel-http-server.c \
 	rygel-http-transcode-handler.c rygel-icon-info.c \
 	rygel-l16-transcoder-bin.c rygel-l16-transcoder.c \
-	rygel-live-response.c rygel-log-handler.c rygel-main.c \
+	rygel-live-response.c rygel-log-handler.c \
+	rygel-logical-expression.c rygel-main.c \
 	rygel-media-container.c rygel-media-db-container.c \
 	rygel-media-db-object-factory.c rygel-media-db.c \
 	rygel-media-item.c rygel-media-object.c rygel-meta-config.c \
 	rygel-metadata-extractor.c rygel-mp2ts-transcoder-bin.c \
 	rygel-mp2ts-transcoder.c rygel-mp3-transcoder-bin.c \
 	rygel-mp3-transcoder.c rygel-plugin-loader.c rygel-plugin.c \
-	rygel-resource-info.c rygel-root-device-factory.c \
-	rygel-root-device.c rygel-seekable-response.c \
+	rygel-relational-expression.c rygel-resource-info.c \
+	rygel-root-device-factory.c rygel-root-device.c \
+	rygel-search-criteria-parser.c rygel-search-expression.c \
+	rygel-search.c rygel-seekable-response.c \
 	rygel-simple-container.c rygel-source-connection-manager.c \
 	rygel-state-machine.c rygel-thumbnail.c rygel-thumbnailer.c \
 	rygel-transcode-manager.c rygel-transcoder.c \
@@ -110,8 +113,13 @@ am__objects_1 = rygel-configuration.$(OBJEXT) \
 	rygel-media-object.$(OBJEXT) rygel-media-container.$(OBJEXT) \
 	rygel-simple-container.$(OBJEXT) rygel-media-item.$(OBJEXT) \
 	rygel-thumbnail.$(OBJEXT) rygel-thumbnailer.$(OBJEXT) \
-	rygel-browse.$(OBJEXT) rygel-didl-lite-writer.$(OBJEXT) \
-	rygel-transcoder.$(OBJEXT) rygel-mp2ts-transcoder.$(OBJEXT) \
+	rygel-browse.$(OBJEXT) rygel-search.$(OBJEXT) \
+	rygel-search-expression.$(OBJEXT) \
+	rygel-relational-expression.$(OBJEXT) \
+	rygel-logical-expression.$(OBJEXT) \
+	rygel-search-criteria-parser.$(OBJEXT) \
+	rygel-didl-lite-writer.$(OBJEXT) rygel-transcoder.$(OBJEXT) \
+	rygel-mp2ts-transcoder.$(OBJEXT) \
 	rygel-mp3-transcoder.$(OBJEXT) rygel-l16-transcoder.$(OBJEXT) \
 	rygel-mp2ts-transcoder-bin.$(OBJEXT) \
 	rygel-mp3-transcoder-bin.$(OBJEXT) \
@@ -413,6 +421,11 @@ VAPI_SOURCE_FILES = rygel-configuration.vala \
 		    rygel-thumbnail.vala \
 		    rygel-thumbnailer.vala \
 		    rygel-browse.vala \
+		    rygel-search.vala \
+		    rygel-search-expression.vala \
+		    rygel-relational-expression.vala \
+		    rygel-logical-expression.vala \
+		    rygel-search-criteria-parser.vala \
 		    rygel-didl-lite-writer.vala \
 		    rygel-transcoder.vala \
 		    rygel-mp2ts-transcoder.vala \
@@ -579,6 +592,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-l16-transcoder.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-live-response.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-log-handler.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-logical-expression.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-main.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-media-container.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-media-db-container.Po@am__quote@
@@ -594,9 +608,13 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-mp3-transcoder.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-plugin-loader.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-plugin.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-relational-expression.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-resource-info.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-root-device-factory.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-root-device.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-search-criteria-parser.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-search-expression.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-search.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-seekable-response.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-simple-container.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-source-connection-manager.Po@am__quote@
@@ -771,6 +789,31 @@ $(srcdir)/rygel-thumbnailer.c: $(srcdir)/rygel_vala.stamp
 	  $(am__cd) $(srcdir) && $(MAKE) $(AM_MAKEFLAGS) rygel_vala.stamp; \
 	fi
 $(srcdir)/rygel-browse.c: $(srcdir)/rygel_vala.stamp
+	@if test -f $@; then :; else \
+	  rm -f $(srcdir)/rygel_vala.stamp; \
+	  $(am__cd) $(srcdir) && $(MAKE) $(AM_MAKEFLAGS) rygel_vala.stamp; \
+	fi
+$(srcdir)/rygel-search.c: $(srcdir)/rygel_vala.stamp
+	@if test -f $@; then :; else \
+	  rm -f $(srcdir)/rygel_vala.stamp; \
+	  $(am__cd) $(srcdir) && $(MAKE) $(AM_MAKEFLAGS) rygel_vala.stamp; \
+	fi
+$(srcdir)/rygel-search-expression.c: $(srcdir)/rygel_vala.stamp
+	@if test -f $@; then :; else \
+	  rm -f $(srcdir)/rygel_vala.stamp; \
+	  $(am__cd) $(srcdir) && $(MAKE) $(AM_MAKEFLAGS) rygel_vala.stamp; \
+	fi
+$(srcdir)/rygel-relational-expression.c: $(srcdir)/rygel_vala.stamp
+	@if test -f $@; then :; else \
+	  rm -f $(srcdir)/rygel_vala.stamp; \
+	  $(am__cd) $(srcdir) && $(MAKE) $(AM_MAKEFLAGS) rygel_vala.stamp; \
+	fi
+$(srcdir)/rygel-logical-expression.c: $(srcdir)/rygel_vala.stamp
+	@if test -f $@; then :; else \
+	  rm -f $(srcdir)/rygel_vala.stamp; \
+	  $(am__cd) $(srcdir) && $(MAKE) $(AM_MAKEFLAGS) rygel_vala.stamp; \
+	fi
+$(srcdir)/rygel-search-criteria-parser.c: $(srcdir)/rygel_vala.stamp
 	@if test -f $@; then :; else \
 	  rm -f $(srcdir)/rygel_vala.stamp; \
 	  $(am__cd) $(srcdir) && $(MAKE) $(AM_MAKEFLAGS) rygel_vala.stamp; \
@@ -1066,6 +1109,7 @@ maintainer-clean-generic:
 	-rm -f rygel-l16-transcoder.c
 	-rm -f rygel-live-response.c
 	-rm -f rygel-log-handler.c
+	-rm -f rygel-logical-expression.c
 	-rm -f rygel-main.c
 	-rm -f rygel-media-container.c
 	-rm -f rygel-media-db-container.c
@@ -1081,9 +1125,13 @@ maintainer-clean-generic:
 	-rm -f rygel-mp3-transcoder.c
 	-rm -f rygel-plugin-loader.c
 	-rm -f rygel-plugin.c
+	-rm -f rygel-relational-expression.c
 	-rm -f rygel-resource-info.c
 	-rm -f rygel-root-device-factory.c
 	-rm -f rygel-root-device.c
+	-rm -f rygel-search-criteria-parser.c
+	-rm -f rygel-search-expression.c
+	-rm -f rygel-search.c
 	-rm -f rygel-seekable-response.c
 	-rm -f rygel-simple-container.c
 	-rm -f rygel-source-connection-manager.c

@@ -90,8 +90,8 @@ typedef struct _RygelMediaExportRecursiveFileMonitor RygelMediaExportRecursiveFi
 typedef struct _RygelMediaExportRecursiveFileMonitorClass RygelMediaExportRecursiveFileMonitorClass;
 #define _g_queue_free0(var) ((var == NULL) ? NULL : (var = (g_queue_free (var), NULL)))
 #define _g_error_free0(var) ((var == NULL) ? NULL : (var = (g_error_free (var), NULL)))
-typedef struct _RygelMediaExportHarvesterEnumerateDirectoryData RygelMediaExportHarvesterEnumerateDirectoryData;
 #define __g_list_free_g_object_unref0(var) ((var == NULL) ? NULL : (var = (_g_list_free_g_object_unref (var), NULL)))
+typedef struct _RygelMediaExportHarvesterEnumerateDirectoryData RygelMediaExportHarvesterEnumerateDirectoryData;
 typedef struct _RygelMediaExportHarvesterHarvestData RygelMediaExportHarvesterHarvestData;
 #define _rygel_file_queue_entry_unref0(var) ((var == NULL) ? NULL : (var = (rygel_file_queue_entry_unref (var), NULL)))
 
@@ -983,6 +983,7 @@ static gboolean rygel_media_export_harvester_harvest_co (RygelMediaExportHarvest
 					g_idle_add_full (G_PRIORITY_DEFAULT_IDLE, _rygel_media_export_harvester_on_idle_gsource_func, g_object_ref (data->self), g_object_unref);
 					_g_object_unref0 (data->container);
 				} else {
+					data->_tmp2_ = NULL;
 					if ((data->_tmp3_ = rygel_media_export_harvester_push_if_changed_or_unknown (data->self, data->file, data->info, &data->_tmp2_), data->id = (data->_tmp4_ = data->_tmp2_, _g_free0 (data->id), data->_tmp4_), data->_tmp3_)) {
 						g_idle_add_full (G_PRIORITY_DEFAULT_IDLE, _rygel_media_export_harvester_on_idle_gsource_func, g_object_ref (data->self), g_object_unref);
 						data->self->priv->origin = (data->_tmp5_ = _g_object_ref0 (data->file), _g_object_unref0 (data->self->priv->origin), data->_tmp5_);

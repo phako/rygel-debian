@@ -188,6 +188,16 @@ typedef struct _RygelPluginLoaderPrivate RygelPluginLoaderPrivate;
 typedef struct _RygelMediaObjectPrivate RygelMediaObjectPrivate;
 typedef struct _RygelMediaContainerPrivate RygelMediaContainerPrivate;
 
+#define RYGEL_TYPE_SEARCH_EXPRESSION (rygel_search_expression_get_type ())
+#define RYGEL_SEARCH_EXPRESSION(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_SEARCH_EXPRESSION, RygelSearchExpression))
+#define RYGEL_SEARCH_EXPRESSION_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TYPE_SEARCH_EXPRESSION, RygelSearchExpressionClass))
+#define RYGEL_IS_SEARCH_EXPRESSION(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TYPE_SEARCH_EXPRESSION))
+#define RYGEL_IS_SEARCH_EXPRESSION_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_TYPE_SEARCH_EXPRESSION))
+#define RYGEL_SEARCH_EXPRESSION_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_TYPE_SEARCH_EXPRESSION, RygelSearchExpressionClass))
+
+typedef struct _RygelSearchExpression RygelSearchExpression;
+typedef struct _RygelSearchExpressionClass RygelSearchExpressionClass;
+
 #define RYGEL_TYPE_SIMPLE_CONTAINER (rygel_simple_container_get_type ())
 #define RYGEL_SIMPLE_CONTAINER(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_SIMPLE_CONTAINER, RygelSimpleContainer))
 #define RYGEL_SIMPLE_CONTAINER_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TYPE_SIMPLE_CONTAINER, RygelSimpleContainerClass))
@@ -220,6 +230,31 @@ typedef struct _RygelMediaItemPrivate RygelMediaItemPrivate;
 typedef struct _RygelThumbnail RygelThumbnail;
 typedef struct _RygelThumbnailClass RygelThumbnailClass;
 typedef struct _RygelThumbnailPrivate RygelThumbnailPrivate;
+typedef struct _RygelSearchExpressionPrivate RygelSearchExpressionPrivate;
+
+#define RYGEL_TYPE_RELATIONAL_EXPRESSION (rygel_relational_expression_get_type ())
+#define RYGEL_RELATIONAL_EXPRESSION(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_RELATIONAL_EXPRESSION, RygelRelationalExpression))
+#define RYGEL_RELATIONAL_EXPRESSION_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TYPE_RELATIONAL_EXPRESSION, RygelRelationalExpressionClass))
+#define RYGEL_IS_RELATIONAL_EXPRESSION(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TYPE_RELATIONAL_EXPRESSION))
+#define RYGEL_IS_RELATIONAL_EXPRESSION_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_TYPE_RELATIONAL_EXPRESSION))
+#define RYGEL_RELATIONAL_EXPRESSION_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_TYPE_RELATIONAL_EXPRESSION, RygelRelationalExpressionClass))
+
+typedef struct _RygelRelationalExpression RygelRelationalExpression;
+typedef struct _RygelRelationalExpressionClass RygelRelationalExpressionClass;
+typedef struct _RygelRelationalExpressionPrivate RygelRelationalExpressionPrivate;
+
+#define RYGEL_TYPE_LOGICAL_OPERATOR (rygel_logical_operator_get_type ())
+
+#define RYGEL_TYPE_LOGICAL_EXPRESSION (rygel_logical_expression_get_type ())
+#define RYGEL_LOGICAL_EXPRESSION(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_LOGICAL_EXPRESSION, RygelLogicalExpression))
+#define RYGEL_LOGICAL_EXPRESSION_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TYPE_LOGICAL_EXPRESSION, RygelLogicalExpressionClass))
+#define RYGEL_IS_LOGICAL_EXPRESSION(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TYPE_LOGICAL_EXPRESSION))
+#define RYGEL_IS_LOGICAL_EXPRESSION_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_TYPE_LOGICAL_EXPRESSION))
+#define RYGEL_LOGICAL_EXPRESSION_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_TYPE_LOGICAL_EXPRESSION, RygelLogicalExpressionClass))
+
+typedef struct _RygelLogicalExpression RygelLogicalExpression;
+typedef struct _RygelLogicalExpressionClass RygelLogicalExpressionClass;
+typedef struct _RygelLogicalExpressionPrivate RygelLogicalExpressionPrivate;
 
 #define RYGEL_TYPE_MEDIA_DB_OBJECT_TYPE (rygel_media_db_object_type_get_type ())
 
@@ -390,6 +425,7 @@ struct _RygelCmdlineConfigClass {
 
 typedef enum  {
 	RYGEL_CONTENT_DIRECTORY_ERROR_NO_SUCH_OBJECT = 701,
+	RYGEL_CONTENT_DIRECTORY_ERROR_CANT_PROCESS = 720,
 	RYGEL_CONTENT_DIRECTORY_ERROR_INVALID_ARGS = 402
 } RygelContentDirectoryError;
 #define RYGEL_CONTENT_DIRECTORY_ERROR rygel_content_directory_error_quark ()
@@ -397,7 +433,6 @@ struct _RygelContentDirectory {
 	GUPnPService parent_instance;
 	RygelContentDirectoryPrivate * priv;
 	char* feature_list;
-	char* search_caps;
 	char* sort_caps;
 	RygelHTTPServer* http_server;
 	RygelMediaContainer* root_container;
@@ -409,6 +444,7 @@ struct _RygelContentDirectoryClass {
 	GUPnPServiceClass parent_class;
 	RygelMediaContainer* (*create_root_container) (RygelContentDirectory* self);
 	void (*browse_cb) (RygelContentDirectory* self, RygelContentDirectory* content_dir, GUPnPServiceAction* action);
+	void (*search_cb) (RygelContentDirectory* self, RygelContentDirectory* content_dir, GUPnPServiceAction* action);
 };
 
 struct _RygelConnectionManager {
@@ -499,6 +535,7 @@ struct _RygelMediaObject {
 	GObject parent_instance;
 	RygelMediaObjectPrivate * priv;
 	char* id;
+	char* upnp_class;
 	guint64 modified;
 	GeeArrayList* uris;
 	RygelMediaContainer* parent;
@@ -520,8 +557,8 @@ struct _RygelMediaContainerClass {
 	RygelMediaObjectClass parent_class;
 	void (*get_children) (RygelMediaContainer* self, guint offset, guint max_count, GCancellable* cancellable, GAsyncReadyCallback _callback_, gpointer _user_data_);
 	GeeList* (*get_children_finish) (RygelMediaContainer* self, GAsyncResult* _res_, GError** error);
-	void (*find_object) (RygelMediaContainer* self, const char* id, GCancellable* cancellable, GAsyncReadyCallback _callback_, gpointer _user_data_);
-	RygelMediaObject* (*find_object_finish) (RygelMediaContainer* self, GAsyncResult* _res_, GError** error);
+	void (*search) (RygelMediaContainer* self, RygelSearchExpression* expression, guint offset, guint max_count, GCancellable* cancellable, GAsyncReadyCallback _callback_, gpointer _user_data_);
+	GeeList* (*search_finish) (RygelMediaContainer* self, GAsyncResult* _res_, guint* total_matches, GError** error);
 };
 
 struct _RygelSimpleContainer {
@@ -540,7 +577,6 @@ struct _RygelMediaItem {
 	char* author;
 	char* album;
 	char* date;
-	char* upnp_class;
 	char* mime_type;
 	char* dlna_profile;
 	glong size;
@@ -572,6 +608,45 @@ struct _RygelThumbnail {
 
 struct _RygelThumbnailClass {
 	RygelIconInfoClass parent_class;
+};
+
+struct _RygelSearchExpression {
+	GTypeInstance parent_instance;
+	volatile int ref_count;
+	RygelSearchExpressionPrivate * priv;
+	gpointer op;
+	gpointer operand1;
+	gpointer operand2;
+};
+
+struct _RygelSearchExpressionClass {
+	GTypeClass parent_class;
+	void (*finalize) (RygelSearchExpression *self);
+	gboolean (*satisfied_by) (RygelSearchExpression* self, RygelMediaObject* media_object);
+	char* (*to_string) (RygelSearchExpression* self);
+};
+
+struct _RygelRelationalExpression {
+	RygelSearchExpression parent_instance;
+	RygelRelationalExpressionPrivate * priv;
+};
+
+struct _RygelRelationalExpressionClass {
+	RygelSearchExpressionClass parent_class;
+};
+
+typedef enum  {
+	RYGEL_LOGICAL_OPERATOR_AND,
+	RYGEL_LOGICAL_OPERATOR_OR
+} RygelLogicalOperator;
+
+struct _RygelLogicalExpression {
+	RygelSearchExpression parent_instance;
+	RygelLogicalExpressionPrivate * priv;
+};
+
+struct _RygelLogicalExpressionClass {
+	RygelSearchExpressionClass parent_class;
 };
 
 typedef enum  {
@@ -796,8 +871,16 @@ GeeCollection* rygel_plugin_loader_list_plugins (RygelPluginLoader* self);
 RygelMediaObject* rygel_media_object_construct (GType object_type);
 const char* rygel_media_object_get_title (RygelMediaObject* self);
 void rygel_media_object_set_title (RygelMediaObject* self, const char* value);
+gpointer rygel_search_expression_ref (gpointer instance);
+void rygel_search_expression_unref (gpointer instance);
+GParamSpec* rygel_param_spec_search_expression (const gchar* name, const gchar* nick, const gchar* blurb, GType object_type, GParamFlags flags);
+void rygel_value_set_search_expression (GValue* value, gpointer v_object);
+gpointer rygel_value_get_search_expression (const GValue* value);
+GType rygel_search_expression_get_type (void);
 RygelMediaContainer* rygel_media_container_construct (GType object_type, const char* id, RygelMediaContainer* parent, const char* title, guint child_count);
 RygelMediaContainer* rygel_media_container_construct_root (GType object_type, const char* title, guint child_count);
+void rygel_media_container_search (RygelMediaContainer* self, RygelSearchExpression* expression, guint offset, guint max_count, GCancellable* cancellable, GAsyncReadyCallback _callback_, gpointer _user_data_);
+GeeList* rygel_media_container_search_finish (RygelMediaContainer* self, GAsyncResult* _res_, guint* total_matches, GError** error);
 void rygel_media_container_updated (RygelMediaContainer* self);
 GType rygel_simple_container_get_type (void);
 RygelSimpleContainer* rygel_simple_container_new (const char* id, RygelMediaContainer* parent, const char* title);
@@ -806,8 +889,6 @@ RygelSimpleContainer* rygel_simple_container_new_root (const char* title);
 RygelSimpleContainer* rygel_simple_container_construct_root (GType object_type, const char* title);
 void rygel_simple_container_add_child (RygelSimpleContainer* self, RygelMediaObject* child);
 void rygel_simple_container_remove_child (RygelSimpleContainer* self, RygelMediaObject* child);
-void rygel_simple_container_find_object_in_children (RygelSimpleContainer* self, const char* id, GCancellable* cancellable, GAsyncReadyCallback _callback_, gpointer _user_data_);
-RygelMediaObject* rygel_simple_container_find_object_in_children_finish (RygelSimpleContainer* self, GAsyncResult* _res_, GError** error);
 GType rygel_media_item_get_type (void);
 GType rygel_thumbnail_get_type (void);
 #define RYGEL_MEDIA_ITEM_IMAGE_CLASS "object.item.imageItem"
@@ -821,6 +902,17 @@ gboolean rygel_media_item_should_stream (RygelMediaItem* self);
 void rygel_media_item_add_uri (RygelMediaItem* self, const char* uri, RygelThumbnail* thumbnail);
 RygelThumbnail* rygel_thumbnail_new (const char* mime_type, const char* dlna_profile);
 RygelThumbnail* rygel_thumbnail_construct (GType object_type, const char* mime_type, const char* dlna_profile);
+gboolean rygel_search_expression_satisfied_by (RygelSearchExpression* self, RygelMediaObject* media_object);
+char* rygel_search_expression_to_string (RygelSearchExpression* self);
+RygelSearchExpression* rygel_search_expression_construct (GType object_type, GType g_type, GBoxedCopyFunc g_dup_func, GDestroyNotify g_destroy_func, GType h_type, GBoxedCopyFunc h_dup_func, GDestroyNotify h_destroy_func, GType i_type, GBoxedCopyFunc i_dup_func, GDestroyNotify i_destroy_func);
+GType rygel_relational_expression_get_type (void);
+gboolean rygel_relational_expression_compare_string (RygelRelationalExpression* self, const char* str);
+RygelRelationalExpression* rygel_relational_expression_new (void);
+RygelRelationalExpression* rygel_relational_expression_construct (GType object_type);
+GType rygel_logical_operator_get_type (void);
+GType rygel_logical_expression_get_type (void);
+RygelLogicalExpression* rygel_logical_expression_new (void);
+RygelLogicalExpression* rygel_logical_expression_construct (GType object_type);
 GQuark rygel_media_db_error_quark (void);
 GType rygel_media_db_object_type_get_type (void);
 GType rygel_media_db_get_type (void);

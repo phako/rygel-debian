@@ -174,6 +174,7 @@ struct _RygelMediaObject {
 	GObject parent_instance;
 	RygelMediaObjectPrivate * priv;
 	char* id;
+	char* upnp_class;
 	guint64 modified;
 	GeeArrayList* uris;
 	RygelMediaContainer* parent;
@@ -190,7 +191,6 @@ struct _RygelMediaItem {
 	char* author;
 	char* album;
 	char* date;
-	char* upnp_class;
 	char* mime_type;
 	char* dlna_profile;
 	glong size;
@@ -298,10 +298,10 @@ void rygel_database_analyze (RygelDatabase* self);
 static void rygel_media_db_update_v4_v5 (RygelMediaDB* self);
 RygelDatabase* rygel_database_new (const char* name);
 RygelDatabase* rygel_database_construct (GType object_type, const char* name);
-static gboolean _lambda8_ (sqlite3_stmt* stmt, Block3Data* _data3_);
-static gboolean __lambda8__rygel_database_row_callback (sqlite3_stmt* stmt, gpointer self);
-static gboolean _lambda9_ (sqlite3_stmt* stmt, Block4Data* _data4_);
-static gboolean __lambda9__rygel_database_row_callback (sqlite3_stmt* stmt, gpointer self);
+static gboolean _lambda11_ (sqlite3_stmt* stmt, Block3Data* _data3_);
+static gboolean __lambda11__rygel_database_row_callback (sqlite3_stmt* stmt, gpointer self);
+static gboolean _lambda12_ (sqlite3_stmt* stmt, Block4Data* _data4_);
+static gboolean __lambda12__rygel_database_row_callback (sqlite3_stmt* stmt, gpointer self);
 static gboolean rygel_media_db_create_schema (RygelMediaDB* self);
 static Block4Data* block4_data_ref (Block4Data* _data4_);
 static void block4_data_unref (Block4Data* _data4_);
@@ -339,8 +339,8 @@ GType rygel_icon_info_get_type (void);
 GType rygel_thumbnail_get_type (void);
 void rygel_database_null (GValue* result);
 void rygel_media_item_add_uri (RygelMediaItem* self, const char* uri, RygelThumbnail* thumbnail);
-static gboolean _lambda6_ (sqlite3_stmt* stmt, Block5Data* _data5_);
-static gboolean __lambda6__rygel_database_row_callback (sqlite3_stmt* stmt, gpointer self);
+static gboolean _lambda9_ (sqlite3_stmt* stmt, Block5Data* _data5_);
+static gboolean __lambda9__rygel_database_row_callback (sqlite3_stmt* stmt, gpointer self);
 static Block5Data* block5_data_ref (Block5Data* _data5_);
 static void block5_data_unref (Block5Data* _data5_);
 static void rygel_media_db_add_uris (RygelMediaDB* self, RygelMediaObject* obj, GError** error);
@@ -348,30 +348,30 @@ RygelMediaContainer* rygel_media_db_object_factory_get_container (RygelMediaDBOb
 RygelMediaItem* rygel_media_db_object_factory_get_item (RygelMediaDBObjectFactory* self, RygelMediaDB* media_db, RygelMediaContainer* parent, const char* id, const char* title, const char* upnp_class);
 static void rygel_media_db_fill_item (RygelMediaDB* self, sqlite3_stmt* statement, RygelMediaItem* item);
 static RygelMediaObject* rygel_media_db_get_object_from_statement (RygelMediaDB* self, RygelMediaContainer* parent, const char* object_id, sqlite3_stmt* statement);
-static gboolean _lambda5_ (sqlite3_stmt* stmt, Block6Data* _data6_);
-static gboolean __lambda5__rygel_database_row_callback (sqlite3_stmt* stmt, gpointer self);
+static gboolean _lambda8_ (sqlite3_stmt* stmt, Block6Data* _data6_);
+static gboolean __lambda8__rygel_database_row_callback (sqlite3_stmt* stmt, gpointer self);
 static Block6Data* block6_data_ref (Block6Data* _data6_);
 static void block6_data_unref (Block6Data* _data6_);
 RygelMediaObject* rygel_media_db_get_object (RygelMediaDB* self, const char* object_id, GError** error);
 RygelMediaItem* rygel_media_db_get_item (RygelMediaDB* self, const char* item_id, GError** error);
 RygelMediaContainer* rygel_media_db_get_container (RygelMediaDB* self, const char* container_id, GError** error);
-static gboolean _lambda10_ (sqlite3_stmt* stmt, Block7Data* _data7_);
-static gboolean __lambda10__rygel_database_row_callback (sqlite3_stmt* stmt, gpointer self);
+static gboolean _lambda13_ (sqlite3_stmt* stmt, Block7Data* _data7_);
+static gboolean __lambda13__rygel_database_row_callback (sqlite3_stmt* stmt, gpointer self);
 static Block7Data* block7_data_ref (Block7Data* _data7_);
 static void block7_data_unref (Block7Data* _data7_);
 GeeArrayList* rygel_media_db_get_child_ids (RygelMediaDB* self, const char* container_id, GError** error);
-static gboolean _lambda4_ (sqlite3_stmt* stmt, Block8Data* _data8_);
-static gboolean __lambda4__rygel_database_row_callback (sqlite3_stmt* stmt, gpointer self);
+static gboolean _lambda7_ (sqlite3_stmt* stmt, Block8Data* _data8_);
+static gboolean __lambda7__rygel_database_row_callback (sqlite3_stmt* stmt, gpointer self);
 static Block8Data* block8_data_ref (Block8Data* _data8_);
 static void block8_data_unref (Block8Data* _data8_);
 gint rygel_media_db_get_child_count (RygelMediaDB* self, const char* container_id, GError** error);
-static gboolean _lambda11_ (sqlite3_stmt* stmt, Block9Data* _data9_);
-static gboolean __lambda11__rygel_database_row_callback (sqlite3_stmt* stmt, gpointer self);
+static gboolean _lambda14_ (sqlite3_stmt* stmt, Block9Data* _data9_);
+static gboolean __lambda14__rygel_database_row_callback (sqlite3_stmt* stmt, gpointer self);
 static Block9Data* block9_data_ref (Block9Data* _data9_);
 static void block9_data_unref (Block9Data* _data9_);
 gboolean rygel_media_db_exists (RygelMediaDB* self, const char* object_id, gint64* timestamp, GError** error);
-static gboolean _lambda7_ (sqlite3_stmt* stmt, Block10Data* _data10_);
-static gboolean __lambda7__rygel_database_row_callback (sqlite3_stmt* stmt, gpointer self);
+static gboolean _lambda10_ (sqlite3_stmt* stmt, Block10Data* _data10_);
+static gboolean __lambda10__rygel_database_row_callback (sqlite3_stmt* stmt, gpointer self);
 static Block10Data* block10_data_ref (Block10Data* _data10_);
 static void block10_data_unref (Block10Data* _data10_);
 GeeArrayList* rygel_media_db_get_children (RygelMediaDB* self, const char* container_id, glong offset, glong max_count, GError** error);
@@ -615,7 +615,7 @@ static void rygel_media_db_update_v4_v5 (RygelMediaDB* self) {
 }
 
 
-static gboolean _lambda8_ (sqlite3_stmt* stmt, Block3Data* _data3_) {
+static gboolean _lambda11_ (sqlite3_stmt* stmt, Block3Data* _data3_) {
 	RygelMediaDB * self;
 	gboolean result;
 	self = _data3_->self;
@@ -626,12 +626,12 @@ static gboolean _lambda8_ (sqlite3_stmt* stmt, Block3Data* _data3_) {
 }
 
 
-static gboolean __lambda8__rygel_database_row_callback (sqlite3_stmt* stmt, gpointer self) {
-	return _lambda8_ (stmt, self);
+static gboolean __lambda11__rygel_database_row_callback (sqlite3_stmt* stmt, gpointer self) {
+	return _lambda11_ (stmt, self);
 }
 
 
-static gboolean _lambda9_ (sqlite3_stmt* stmt, Block4Data* _data4_) {
+static gboolean _lambda12_ (sqlite3_stmt* stmt, Block4Data* _data4_) {
 	Block3Data* _data3_;
 	RygelMediaDB * self;
 	gboolean result;
@@ -642,8 +642,8 @@ static gboolean _lambda9_ (sqlite3_stmt* stmt, Block4Data* _data4_) {
 }
 
 
-static gboolean __lambda9__rygel_database_row_callback (sqlite3_stmt* stmt, gpointer self) {
-	return _lambda9_ (stmt, self);
+static gboolean __lambda12__rygel_database_row_callback (sqlite3_stmt* stmt, gpointer self) {
+	return _lambda12_ (stmt, self);
 }
 
 
@@ -689,7 +689,7 @@ static void rygel_media_db_open_db (RygelMediaDB* self, const char* name) {
 	_data3_->old_version = -1;
 	{
 		gint current_version;
-		rygel_database_exec (self->priv->db, "SELECT version FROM schema_info", NULL, 0, __lambda8__rygel_database_row_callback, _data3_, &_inner_error_);
+		rygel_database_exec (self->priv->db, "SELECT version FROM schema_info", NULL, 0, __lambda11__rygel_database_row_callback, _data3_, &_inner_error_);
 		if (_inner_error_ != NULL) {
 			if (_inner_error_->domain == RYGEL_DATABASE_ERROR) {
 				goto __catch45_rygel_database_error;
@@ -742,7 +742,7 @@ static void rygel_media_db_open_db (RygelMediaDB* self, const char* name) {
 				_data4_->_ref_count_ = 1;
 				_data4_->_data3_ = block3_data_ref (_data3_);
 				_data4_->rows = -1;
-				rygel_database_exec (self->priv->db, "SELECT count(type) FROM sqlite_master " "WHERE rowid=1", NULL, 0, __lambda9__rygel_database_row_callback, _data4_, &_inner_error_);
+				rygel_database_exec (self->priv->db, "SELECT count(type) FROM sqlite_master " "WHERE rowid=1", NULL, 0, __lambda12__rygel_database_row_callback, _data4_, &_inner_error_);
 				if (_inner_error_ != NULL) {
 					if (_inner_error_->domain == RYGEL_DATABASE_ERROR) {
 						goto __catch46_rygel_database_error;
@@ -1271,7 +1271,7 @@ static void rygel_media_db_save_metadata (RygelMediaDB* self, RygelMediaItem* it
 	g_return_if_fail (item != NULL);
 	g_return_if_fail (sql != NULL);
 	_inner_error_ = NULL;
-	values = (_tmp17_ = (_tmp16_ = g_new0 (GValue, 16), _tmp16_[0] = (g_value_init (&_tmp0_, G_TYPE_LONG), g_value_set_long (&_tmp0_, item->size), _tmp0_), _tmp16_[1] = (g_value_init (&_tmp1_, G_TYPE_STRING), g_value_set_string (&_tmp1_, item->mime_type), _tmp1_), _tmp16_[2] = (g_value_init (&_tmp2_, G_TYPE_INT), g_value_set_int (&_tmp2_, item->width), _tmp2_), _tmp16_[3] = (g_value_init (&_tmp3_, G_TYPE_INT), g_value_set_int (&_tmp3_, item->height), _tmp3_), _tmp16_[4] = (g_value_init (&_tmp4_, G_TYPE_STRING), g_value_set_string (&_tmp4_, item->upnp_class), _tmp4_), _tmp16_[5] = (g_value_init (&_tmp5_, G_TYPE_STRING), g_value_set_string (&_tmp5_, item->author), _tmp5_), _tmp16_[6] = (g_value_init (&_tmp6_, G_TYPE_STRING), g_value_set_string (&_tmp6_, item->album), _tmp6_), _tmp16_[7] = (g_value_init (&_tmp7_, G_TYPE_STRING), g_value_set_string (&_tmp7_, item->date), _tmp7_), _tmp16_[8] = (g_value_init (&_tmp8_, G_TYPE_INT), g_value_set_int (&_tmp8_, item->bitrate), _tmp8_), _tmp16_[9] = (g_value_init (&_tmp9_, G_TYPE_INT), g_value_set_int (&_tmp9_, item->sample_freq), _tmp9_), _tmp16_[10] = (g_value_init (&_tmp10_, G_TYPE_INT), g_value_set_int (&_tmp10_, item->bits_per_sample), _tmp10_), _tmp16_[11] = (g_value_init (&_tmp11_, G_TYPE_INT), g_value_set_int (&_tmp11_, item->n_audio_channels), _tmp11_), _tmp16_[12] = (g_value_init (&_tmp12_, G_TYPE_INT), g_value_set_int (&_tmp12_, item->track_number), _tmp12_), _tmp16_[13] = (g_value_init (&_tmp13_, G_TYPE_INT), g_value_set_int (&_tmp13_, item->color_depth), _tmp13_), _tmp16_[14] = (g_value_init (&_tmp14_, G_TYPE_LONG), g_value_set_long (&_tmp14_, item->duration), _tmp14_), _tmp16_[15] = (g_value_init (&_tmp15_, G_TYPE_STRING), g_value_set_string (&_tmp15_, ((RygelMediaObject*) item)->id), _tmp15_), _tmp16_), values_length1 = 16, values_size = values_length1, _tmp17_);
+	values = (_tmp17_ = (_tmp16_ = g_new0 (GValue, 16), _tmp16_[0] = (g_value_init (&_tmp0_, G_TYPE_LONG), g_value_set_long (&_tmp0_, item->size), _tmp0_), _tmp16_[1] = (g_value_init (&_tmp1_, G_TYPE_STRING), g_value_set_string (&_tmp1_, item->mime_type), _tmp1_), _tmp16_[2] = (g_value_init (&_tmp2_, G_TYPE_INT), g_value_set_int (&_tmp2_, item->width), _tmp2_), _tmp16_[3] = (g_value_init (&_tmp3_, G_TYPE_INT), g_value_set_int (&_tmp3_, item->height), _tmp3_), _tmp16_[4] = (g_value_init (&_tmp4_, G_TYPE_STRING), g_value_set_string (&_tmp4_, ((RygelMediaObject*) item)->upnp_class), _tmp4_), _tmp16_[5] = (g_value_init (&_tmp5_, G_TYPE_STRING), g_value_set_string (&_tmp5_, item->author), _tmp5_), _tmp16_[6] = (g_value_init (&_tmp6_, G_TYPE_STRING), g_value_set_string (&_tmp6_, item->album), _tmp6_), _tmp16_[7] = (g_value_init (&_tmp7_, G_TYPE_STRING), g_value_set_string (&_tmp7_, item->date), _tmp7_), _tmp16_[8] = (g_value_init (&_tmp8_, G_TYPE_INT), g_value_set_int (&_tmp8_, item->bitrate), _tmp8_), _tmp16_[9] = (g_value_init (&_tmp9_, G_TYPE_INT), g_value_set_int (&_tmp9_, item->sample_freq), _tmp9_), _tmp16_[10] = (g_value_init (&_tmp10_, G_TYPE_INT), g_value_set_int (&_tmp10_, item->bits_per_sample), _tmp10_), _tmp16_[11] = (g_value_init (&_tmp11_, G_TYPE_INT), g_value_set_int (&_tmp11_, item->n_audio_channels), _tmp11_), _tmp16_[12] = (g_value_init (&_tmp12_, G_TYPE_INT), g_value_set_int (&_tmp12_, item->track_number), _tmp12_), _tmp16_[13] = (g_value_init (&_tmp13_, G_TYPE_INT), g_value_set_int (&_tmp13_, item->color_depth), _tmp13_), _tmp16_[14] = (g_value_init (&_tmp14_, G_TYPE_LONG), g_value_set_long (&_tmp14_, item->duration), _tmp14_), _tmp16_[15] = (g_value_init (&_tmp15_, G_TYPE_STRING), g_value_set_string (&_tmp15_, ((RygelMediaObject*) item)->id), _tmp15_), _tmp16_), values_length1 = 16, values_size = values_length1, _tmp17_);
 	rygel_database_exec (self->priv->db, sql, values, values_length1, NULL, NULL, &_inner_error_);
 	if (_inner_error_ != NULL) {
 		g_propagate_error (error, _inner_error_);
@@ -1432,7 +1432,7 @@ static gboolean rygel_media_db_create_schema (RygelMediaDB* self) {
 }
 
 
-static gboolean _lambda6_ (sqlite3_stmt* stmt, Block5Data* _data5_) {
+static gboolean _lambda9_ (sqlite3_stmt* stmt, Block5Data* _data5_) {
 	RygelMediaDB * self;
 	gboolean result;
 	self = _data5_->self;
@@ -1445,8 +1445,8 @@ static gboolean _lambda6_ (sqlite3_stmt* stmt, Block5Data* _data5_) {
 }
 
 
-static gboolean __lambda6__rygel_database_row_callback (sqlite3_stmt* stmt, gpointer self) {
-	return _lambda6_ (stmt, self);
+static gboolean __lambda9__rygel_database_row_callback (sqlite3_stmt* stmt, gpointer self) {
+	return _lambda9_ (stmt, self);
 }
 
 
@@ -1482,7 +1482,7 @@ static void rygel_media_db_add_uris (RygelMediaDB* self, RygelMediaObject* obj, 
 	_data5_->self = g_object_ref (self);
 	_data5_->obj = _g_object_ref0 (obj);
 	values = (_tmp2_ = (_tmp1_ = g_new0 (GValue, 1), _tmp1_[0] = (g_value_init (&_tmp0_, G_TYPE_STRING), g_value_set_string (&_tmp0_, _data5_->obj->id), _tmp0_), _tmp1_), values_length1 = 1, values_size = values_length1, _tmp2_);
-	rygel_database_exec (self->priv->db, RYGEL_MEDIA_DB_URI_GET_STRING, values, values_length1, __lambda6__rygel_database_row_callback, _data5_, &_inner_error_);
+	rygel_database_exec (self->priv->db, RYGEL_MEDIA_DB_URI_GET_STRING, values, values_length1, __lambda9__rygel_database_row_callback, _data5_, &_inner_error_);
 	if (_inner_error_ != NULL) {
 		if (_inner_error_->domain == RYGEL_DATABASE_ERROR) {
 			g_propagate_error (error, _inner_error_);
@@ -1567,7 +1567,7 @@ static RygelMediaObject* rygel_media_db_get_object_from_statement (RygelMediaDB*
 }
 
 
-static gboolean _lambda5_ (sqlite3_stmt* stmt, Block6Data* _data6_) {
+static gboolean _lambda8_ (sqlite3_stmt* stmt, Block6Data* _data6_) {
 	RygelMediaDB * self;
 	gboolean result;
 	RygelMediaObject* obj;
@@ -1585,8 +1585,8 @@ static gboolean _lambda5_ (sqlite3_stmt* stmt, Block6Data* _data6_) {
 }
 
 
-static gboolean __lambda5__rygel_database_row_callback (sqlite3_stmt* stmt, gpointer self) {
-	return _lambda5_ (stmt, self);
+static gboolean __lambda8__rygel_database_row_callback (sqlite3_stmt* stmt, gpointer self) {
+	return _lambda8_ (stmt, self);
 }
 
 
@@ -1627,7 +1627,7 @@ RygelMediaObject* rygel_media_db_get_object (RygelMediaDB* self, const char* obj
 	_data6_->self = g_object_ref (self);
 	values = (_tmp2_ = (_tmp1_ = g_new0 (GValue, 1), _tmp1_[0] = (g_value_init (&_tmp0_, G_TYPE_STRING), g_value_set_string (&_tmp0_, object_id), _tmp0_), _tmp1_), values_length1 = 1, values_size = values_length1, _tmp2_);
 	_data6_->parent = NULL;
-	cb = (_tmp3_ = __lambda5__rygel_database_row_callback, cb_target = block6_data_ref (_data6_), cb_target_destroy_notify = block6_data_unref, _tmp3_);
+	cb = (_tmp3_ = __lambda8__rygel_database_row_callback, cb_target = block6_data_ref (_data6_), cb_target_destroy_notify = block6_data_unref, _tmp3_);
 	rygel_database_exec (self->priv->db, RYGEL_MEDIA_DB_GET_OBJECT_WITH_CLOSURE, values, values_length1, cb, cb_target, &_inner_error_);
 	if (_inner_error_ != NULL) {
 		if (_inner_error_->domain == RYGEL_DATABASE_ERROR) {
@@ -1777,7 +1777,7 @@ static void rygel_media_db_fill_item (RygelMediaDB* self, sqlite3_stmt* statemen
 }
 
 
-static gboolean _lambda10_ (sqlite3_stmt* stmt, Block7Data* _data7_) {
+static gboolean _lambda13_ (sqlite3_stmt* stmt, Block7Data* _data7_) {
 	RygelMediaDB * self;
 	gboolean result;
 	self = _data7_->self;
@@ -1788,8 +1788,8 @@ static gboolean _lambda10_ (sqlite3_stmt* stmt, Block7Data* _data7_) {
 }
 
 
-static gboolean __lambda10__rygel_database_row_callback (sqlite3_stmt* stmt, gpointer self) {
-	return _lambda10_ (stmt, self);
+static gboolean __lambda13__rygel_database_row_callback (sqlite3_stmt* stmt, gpointer self) {
+	return _lambda13_ (stmt, self);
 }
 
 
@@ -1826,7 +1826,7 @@ GeeArrayList* rygel_media_db_get_child_ids (RygelMediaDB* self, const char* cont
 	_data7_->self = g_object_ref (self);
 	_data7_->children = gee_array_list_new (G_TYPE_STRING, (GBoxedCopyFunc) g_strdup, g_free, g_str_equal);
 	values = (_tmp2_ = (_tmp1_ = g_new0 (GValue, 1), _tmp1_[0] = (g_value_init (&_tmp0_, G_TYPE_STRING), g_value_set_string (&_tmp0_, container_id), _tmp0_), _tmp1_), values_length1 = 1, values_size = values_length1, _tmp2_);
-	rygel_database_exec (self->priv->db, RYGEL_MEDIA_DB_GET_CHILD_ID_STRING, values, values_length1, __lambda10__rygel_database_row_callback, _data7_, &_inner_error_);
+	rygel_database_exec (self->priv->db, RYGEL_MEDIA_DB_GET_CHILD_ID_STRING, values, values_length1, __lambda13__rygel_database_row_callback, _data7_, &_inner_error_);
 	if (_inner_error_ != NULL) {
 		if (_inner_error_->domain == RYGEL_DATABASE_ERROR) {
 			g_propagate_error (error, _inner_error_);
@@ -1848,7 +1848,7 @@ GeeArrayList* rygel_media_db_get_child_ids (RygelMediaDB* self, const char* cont
 }
 
 
-static gboolean _lambda4_ (sqlite3_stmt* stmt, Block8Data* _data8_) {
+static gboolean _lambda7_ (sqlite3_stmt* stmt, Block8Data* _data8_) {
 	RygelMediaDB * self;
 	gboolean result;
 	self = _data8_->self;
@@ -1859,8 +1859,8 @@ static gboolean _lambda4_ (sqlite3_stmt* stmt, Block8Data* _data8_) {
 }
 
 
-static gboolean __lambda4__rygel_database_row_callback (sqlite3_stmt* stmt, gpointer self) {
-	return _lambda4_ (stmt, self);
+static gboolean __lambda7__rygel_database_row_callback (sqlite3_stmt* stmt, gpointer self) {
+	return _lambda7_ (stmt, self);
 }
 
 
@@ -1896,7 +1896,7 @@ gint rygel_media_db_get_child_count (RygelMediaDB* self, const char* container_i
 	_data8_->self = g_object_ref (self);
 	_data8_->count = 0;
 	values = (_tmp2_ = (_tmp1_ = g_new0 (GValue, 1), _tmp1_[0] = (g_value_init (&_tmp0_, G_TYPE_STRING), g_value_set_string (&_tmp0_, container_id), _tmp0_), _tmp1_), values_length1 = 1, values_size = values_length1, _tmp2_);
-	rygel_database_exec (self->priv->db, RYGEL_MEDIA_DB_CHILDREN_COUNT_STRING, values, values_length1, __lambda4__rygel_database_row_callback, _data8_, &_inner_error_);
+	rygel_database_exec (self->priv->db, RYGEL_MEDIA_DB_CHILDREN_COUNT_STRING, values, values_length1, __lambda7__rygel_database_row_callback, _data8_, &_inner_error_);
 	if (_inner_error_ != NULL) {
 		if (_inner_error_->domain == RYGEL_DATABASE_ERROR) {
 			g_propagate_error (error, _inner_error_);
@@ -1918,7 +1918,7 @@ gint rygel_media_db_get_child_count (RygelMediaDB* self, const char* container_i
 }
 
 
-static gboolean _lambda11_ (sqlite3_stmt* stmt, Block9Data* _data9_) {
+static gboolean _lambda14_ (sqlite3_stmt* stmt, Block9Data* _data9_) {
 	RygelMediaDB * self;
 	gboolean result;
 	self = _data9_->self;
@@ -1930,8 +1930,8 @@ static gboolean _lambda11_ (sqlite3_stmt* stmt, Block9Data* _data9_) {
 }
 
 
-static gboolean __lambda11__rygel_database_row_callback (sqlite3_stmt* stmt, gpointer self) {
-	return _lambda11_ (stmt, self);
+static gboolean __lambda14__rygel_database_row_callback (sqlite3_stmt* stmt, gpointer self) {
+	return _lambda14_ (stmt, self);
 }
 
 
@@ -1968,7 +1968,7 @@ gboolean rygel_media_db_exists (RygelMediaDB* self, const char* object_id, gint6
 	_data9_->exists = FALSE;
 	values = (_tmp2_ = (_tmp1_ = g_new0 (GValue, 1), _tmp1_[0] = (g_value_init (&_tmp0_, G_TYPE_STRING), g_value_set_string (&_tmp0_, object_id), _tmp0_), _tmp1_), values_length1 = 1, values_size = values_length1, _tmp2_);
 	_data9_->tmp_timestamp = (gint64) 0;
-	rygel_database_exec (self->priv->db, RYGEL_MEDIA_DB_OBJECT_EXISTS_STRING, values, values_length1, __lambda11__rygel_database_row_callback, _data9_, &_inner_error_);
+	rygel_database_exec (self->priv->db, RYGEL_MEDIA_DB_OBJECT_EXISTS_STRING, values, values_length1, __lambda14__rygel_database_row_callback, _data9_, &_inner_error_);
 	if (_inner_error_ != NULL) {
 		if (_inner_error_->domain == RYGEL_DATABASE_ERROR) {
 			g_propagate_error (error, _inner_error_);
@@ -1991,7 +1991,7 @@ gboolean rygel_media_db_exists (RygelMediaDB* self, const char* object_id, gint6
 }
 
 
-static gboolean _lambda7_ (sqlite3_stmt* stmt, Block10Data* _data10_) {
+static gboolean _lambda10_ (sqlite3_stmt* stmt, Block10Data* _data10_) {
 	RygelMediaDB * self;
 	gboolean result;
 	char* child_id;
@@ -2016,8 +2016,8 @@ static gboolean _lambda7_ (sqlite3_stmt* stmt, Block10Data* _data10_) {
 }
 
 
-static gboolean __lambda7__rygel_database_row_callback (sqlite3_stmt* stmt, gpointer self) {
-	return _lambda7_ (stmt, self);
+static gboolean __lambda10__rygel_database_row_callback (sqlite3_stmt* stmt, gpointer self) {
+	return _lambda10_ (stmt, self);
 }
 
 
@@ -2071,7 +2071,7 @@ GeeArrayList* rygel_media_db_get_children (RygelMediaDB* self, const char* conta
 	}
 	_data10_->parent = (_tmp1_ = RYGEL_MEDIA_CONTAINER (_tmp0_), _g_object_unref0 (_data10_->parent), _tmp1_);
 	values = (_tmp6_ = (_tmp5_ = g_new0 (GValue, 3), _tmp5_[0] = (g_value_init (&_tmp2_, G_TYPE_STRING), g_value_set_string (&_tmp2_, container_id), _tmp2_), _tmp5_[1] = (g_value_init (&_tmp3_, G_TYPE_INT64), g_value_set_int64 (&_tmp3_, (gint64) offset), _tmp3_), _tmp5_[2] = (g_value_init (&_tmp4_, G_TYPE_INT64), g_value_set_int64 (&_tmp4_, (gint64) max_count), _tmp4_), _tmp5_), values_length1 = 3, values_size = values_length1, _tmp6_);
-	cb = (_tmp7_ = __lambda7__rygel_database_row_callback, cb_target = block10_data_ref (_data10_), cb_target_destroy_notify = block10_data_unref, _tmp7_);
+	cb = (_tmp7_ = __lambda10__rygel_database_row_callback, cb_target = block10_data_ref (_data10_), cb_target_destroy_notify = block10_data_unref, _tmp7_);
 	rygel_database_exec (self->priv->db, RYGEL_MEDIA_DB_GET_CHILDREN_STRING, values, values_length1, cb, cb_target, &_inner_error_);
 	if (_inner_error_ != NULL) {
 		g_propagate_error (error, _inner_error_);

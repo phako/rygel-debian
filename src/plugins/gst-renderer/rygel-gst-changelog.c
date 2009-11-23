@@ -120,7 +120,7 @@ static gboolean rygel_gst_change_log_timeout (RygelGstChangeLog* self) {
 	_g_free0 (_tmp0_);
 	g_debug ("rygel-gst-changelog.vala:59: LastChange sent");
 	gee_abstract_map_clear ((GeeAbstractMap*) self->priv->hash);
-	g_string_erase (self->priv->str, (glong) 0, (glong) (-1));
+	g_string_erase (self->priv->str, (gssize) 0, (gssize) (-1));
 	self->priv->timeout_id = (guint) 0;
 	result = FALSE;
 	return result;

@@ -47,7 +47,6 @@
 typedef struct _RygelExternalItemFactory RygelExternalItemFactory;
 typedef struct _RygelExternalItemFactoryClass RygelExternalItemFactoryClass;
 typedef struct _RygelExternalItemFactoryPrivate RygelExternalItemFactoryPrivate;
-typedef struct _RygelExternalItemFactoryCreateForPathData RygelExternalItemFactoryCreateForPathData;
 #define _g_free0(var) (var = (g_free (var), NULL))
 #define _g_object_unref0(var) ((var == NULL) ? NULL : (var = (g_object_unref (var), NULL)))
 
@@ -60,8 +59,8 @@ typedef struct _RygelExternalItemFactoryCreateForPathData RygelExternalItemFacto
 
 typedef struct _RygelExternalContainer RygelExternalContainer;
 typedef struct _RygelExternalContainerClass RygelExternalContainerClass;
+typedef struct _RygelExternalItemFactoryCreateForPathData RygelExternalItemFactoryCreateForPathData;
 typedef struct _RygelExternalItemFactoryCreateForIdData RygelExternalItemFactoryCreateForIdData;
-typedef struct _RygelExternalItemFactoryCreateData RygelExternalItemFactoryCreateData;
 typedef struct _RygelExternalContainerPrivate RygelExternalContainerPrivate;
 
 #define RYGEL_TYPE_EXTERNAL_MEDIA_OBJECT (rygel_external_media_object_get_type ())
@@ -89,6 +88,14 @@ typedef struct _FreeDesktopProperties FreeDesktopProperties;
 typedef struct _FreeDesktopPropertiesIface FreeDesktopPropertiesIface;
 #define _dbus_g_connection_unref0(var) ((var == NULL) ? NULL : (var = (dbus_g_connection_unref (var), NULL)))
 #define _g_hash_table_unref0(var) ((var == NULL) ? NULL : (var = (g_hash_table_unref (var), NULL)))
+
+#define RYGEL_TYPE_EXTERNAL_MEDIA_ITEM (rygel_external_media_item_get_type ())
+#define RYGEL_EXTERNAL_MEDIA_ITEM(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_EXTERNAL_MEDIA_ITEM, RygelExternalMediaItem))
+#define RYGEL_IS_EXTERNAL_MEDIA_ITEM(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TYPE_EXTERNAL_MEDIA_ITEM))
+#define RYGEL_EXTERNAL_MEDIA_ITEM_GET_INTERFACE(obj) (G_TYPE_INSTANCE_GET_INTERFACE ((obj), RYGEL_TYPE_EXTERNAL_MEDIA_ITEM, RygelExternalMediaItemIface))
+
+typedef struct _RygelExternalMediaItem RygelExternalMediaItem;
+typedef struct _RygelExternalMediaItemIface RygelExternalMediaItemIface;
 #define _g_regex_unref0(var) ((var == NULL) ? NULL : (var = (g_regex_unref (var), NULL)))
 #define _g_error_free0(var) ((var == NULL) ? NULL : (var = (g_error_free (var), NULL)))
 
@@ -103,6 +110,7 @@ typedef struct _RygelExternalThumbnailFactory RygelExternalThumbnailFactory;
 typedef struct _RygelExternalThumbnailFactoryClass RygelExternalThumbnailFactoryClass;
 #define _rygel_external_thumbnail_factory_unref0(var) ((var == NULL) ? NULL : (var = (rygel_external_thumbnail_factory_unref (var), NULL)))
 #define _rygel_icon_info_unref0(var) ((var == NULL) ? NULL : (var = (rygel_icon_info_unref (var), NULL)))
+typedef struct _RygelExternalItemFactoryCreateData RygelExternalItemFactoryCreateData;
 typedef struct _RygelParamSpecExternalItemFactory RygelParamSpecExternalItemFactory;
 
 struct _RygelExternalItemFactory {
@@ -140,61 +148,6 @@ struct _RygelExternalItemFactoryCreateForIdData {
 	RygelMediaItem* result;
 	char* object_path;
 	RygelMediaItem* _tmp0_;
-	GError * _inner_error_;
-};
-
-struct _RygelExternalItemFactoryCreateData {
-	int _state_;
-	GAsyncResult* _res_;
-	GSimpleAsyncResult* _async_result;
-	RygelExternalItemFactory* self;
-	char* id;
-	char* object_path;
-	RygelExternalContainer* parent;
-	RygelMediaItem* result;
-	DBusGConnection* connection;
-	FreeDesktopProperties* props;
-	GHashTable* object_props;
-	GHashTable* item_props;
-	RygelMediaItem* item;
-	GValue* value;
-	GValue* _tmp0_;
-	char* type;
-	char* _tmp1_;
-	char* _tmp2_;
-	char* _tmp3_;
-	char* _tmp4_;
-	GValue* _tmp5_;
-	char* _tmp6_;
-	GValue* _tmp7_;
-	char** uris;
-	char** _tmp8_;
-	gint uris_size;
-	gint uris_length1;
-	gint i;
-	gboolean _tmp9_;
-	char* tmp;
-	GValue* _tmp10_;
-	char* _tmp11_;
-	GValue* _tmp12_;
-	GValue* _tmp13_;
-	char* _tmp14_;
-	GValue* _tmp15_;
-	char* _tmp16_;
-	GValue* _tmp17_;
-	char* _tmp18_;
-	GValue* _tmp19_;
-	GValue* _tmp20_;
-	GValue* _tmp21_;
-	GValue* _tmp22_;
-	GValue* _tmp23_;
-	GValue* _tmp24_;
-	GValue* _tmp25_;
-	GValue* _tmp26_;
-	GValue* _tmp27_;
-	GValue* _tmp28_;
-	RygelExternalThumbnailFactory* factory;
-	RygelThumbnail* thumbnail;
 	GError * _inner_error_;
 };
 
@@ -238,6 +191,102 @@ struct _FreeDesktopPropertiesIface {
 	GHashTable* (*get_all_finish) (FreeDesktopProperties* self, GAsyncResult* _res_, GError** error);
 };
 
+struct _RygelExternalMediaItemIface {
+	GTypeInterface parent_iface;
+	char** (*get_urls) (RygelExternalMediaItem* self, int* result_length1);
+	void (*set_urls) (RygelExternalMediaItem* self, char** value, int value_length1);
+	char* (*get_mime_type) (RygelExternalMediaItem* self);
+	void (*set_mime_type) (RygelExternalMediaItem* self, const char* value);
+	char* (*get_media_type) (RygelExternalMediaItem* self);
+	void (*set_media_type) (RygelExternalMediaItem* self, const char* value);
+	gint (*get_size) (RygelExternalMediaItem* self);
+	void (*set_size) (RygelExternalMediaItem* self, gint value);
+	char* (*get_artist) (RygelExternalMediaItem* self);
+	void (*set_artist) (RygelExternalMediaItem* self, const char* value);
+	char* (*get_album) (RygelExternalMediaItem* self);
+	void (*set_album) (RygelExternalMediaItem* self, const char* value);
+	char* (*get_date) (RygelExternalMediaItem* self);
+	void (*set_date) (RygelExternalMediaItem* self, const char* value);
+	char* (*get_genre) (RygelExternalMediaItem* self);
+	void (*set_genre) (RygelExternalMediaItem* self, const char* value);
+	char* (*get_dlna_profile) (RygelExternalMediaItem* self);
+	void (*set_dlna_profile) (RygelExternalMediaItem* self, const char* value);
+	gint (*get_duration) (RygelExternalMediaItem* self);
+	void (*set_duration) (RygelExternalMediaItem* self, gint value);
+	gint (*get_bitrate) (RygelExternalMediaItem* self);
+	void (*set_bitrate) (RygelExternalMediaItem* self, gint value);
+	gint (*get_sample_rate) (RygelExternalMediaItem* self);
+	void (*set_sample_rate) (RygelExternalMediaItem* self, gint value);
+	gint (*get_bits_per_sample) (RygelExternalMediaItem* self);
+	void (*set_bits_per_sample) (RygelExternalMediaItem* self, gint value);
+	gint (*get_width) (RygelExternalMediaItem* self);
+	void (*set_width) (RygelExternalMediaItem* self, gint value);
+	gint (*get_height) (RygelExternalMediaItem* self);
+	void (*set_height) (RygelExternalMediaItem* self, gint value);
+	gint (*get_color_depth) (RygelExternalMediaItem* self);
+	void (*set_color_depth) (RygelExternalMediaItem* self, gint value);
+	char* (*get_thumbnail) (RygelExternalMediaItem* self);
+	void (*set_thumbnail) (RygelExternalMediaItem* self, const char* value);
+	char* (*get_album_art) (RygelExternalMediaItem* self);
+	void (*set_album_art) (RygelExternalMediaItem* self, const char* value);
+};
+
+struct _RygelExternalItemFactoryCreateData {
+	int _state_;
+	GAsyncResult* _res_;
+	GSimpleAsyncResult* _async_result;
+	RygelExternalItemFactory* self;
+	char* id;
+	char* object_path;
+	RygelExternalContainer* parent;
+	RygelMediaItem* result;
+	DBusGConnection* connection;
+	FreeDesktopProperties* props;
+	GHashTable* object_props;
+	GHashTable* item_props;
+	RygelMediaItem* item;
+	GValue* value;
+	GValue* _tmp0_;
+	char* type;
+	char* _tmp1_;
+	char* _tmp2_;
+	char* _tmp3_;
+	char* _tmp4_;
+	GValue* _tmp5_;
+	char* _tmp6_;
+	RygelExternalMediaItem* item_iface;
+	char** uris;
+	gint _tmp7_;
+	char** _tmp8_;
+	gint uris_size;
+	gint uris_length1;
+	gint i;
+	gboolean _tmp9_;
+	char* tmp;
+	GValue* _tmp10_;
+	char* _tmp11_;
+	GValue* _tmp12_;
+	GValue* _tmp13_;
+	char* _tmp14_;
+	GValue* _tmp15_;
+	char* _tmp16_;
+	GValue* _tmp17_;
+	char* _tmp18_;
+	GValue* _tmp19_;
+	GValue* _tmp20_;
+	GValue* _tmp21_;
+	GValue* _tmp22_;
+	GValue* _tmp23_;
+	GValue* _tmp24_;
+	GValue* _tmp25_;
+	GValue* _tmp26_;
+	GValue* _tmp27_;
+	GValue* _tmp28_;
+	RygelExternalThumbnailFactory* factory;
+	RygelThumbnail* thumbnail;
+	GError * _inner_error_;
+};
+
 struct _RygelParamSpecExternalItemFactory {
 	GParamSpec parent_instance;
 };
@@ -279,6 +328,8 @@ GType free_desktop_properties_get_type (void);
 void free_desktop_properties_get_all (FreeDesktopProperties* self, const char* iface, GAsyncReadyCallback _callback_, gpointer _user_data_);
 GHashTable* free_desktop_properties_get_all_finish (FreeDesktopProperties* self, GAsyncResult* _res_, GError** error);
 static GValue* _g_value_dup (GValue* self);
+GType rygel_external_media_item_get_type (void);
+char** rygel_external_media_item_get_urls (RygelExternalMediaItem* self, int* result_length1);
 RygelExternalThumbnailFactory* rygel_external_thumbnail_factory_new (void);
 RygelExternalThumbnailFactory* rygel_external_thumbnail_factory_construct (GType object_type);
 gpointer rygel_external_thumbnail_factory_ref (gpointer instance);
@@ -294,6 +345,8 @@ gboolean rygel_external_item_factory_id_valid (const char* id);
 RygelExternalItemFactory* rygel_external_item_factory_new (void);
 RygelExternalItemFactory* rygel_external_item_factory_construct (GType object_type);
 static void rygel_external_item_factory_finalize (RygelExternalItemFactory* obj);
+static void _vala_array_destroy (gpointer array, gint array_length, GDestroyNotify destroy_func);
+static void _vala_array_free (gpointer array, gint array_length, GDestroyNotify destroy_func);
 static int _vala_strcmp0 (const char * str1, const char * str2);
 
 
@@ -353,9 +406,9 @@ static gboolean rygel_external_item_factory_create_for_path_co (RygelExternalIte
 		case 0:
 		{
 			rygel_external_item_factory_create (data->self, data->_tmp0_ = g_strconcat ("item:", data->object_path, NULL), data->object_path, data->parent, rygel_external_item_factory_create_for_path_ready, data);
-			data->_state_ = 3;
+			data->_state_ = 5;
 			return FALSE;
-			case 3:
+			case 5:
 			data->_tmp2_ = (data->_tmp1_ = rygel_external_item_factory_create_finish (data->self, data->_res_, &data->_inner_error_), _g_free0 (data->_tmp0_), data->_tmp1_);
 			if (data->_inner_error_ != NULL) {
 				g_simple_async_result_set_from_error (data->_async_result, data->_inner_error_);
@@ -446,9 +499,9 @@ static gboolean rygel_external_item_factory_create_for_id_co (RygelExternalItemF
 			data->object_path = g_strdup (strstr (data->id, "/"));
 			g_assert (data->object_path != NULL);
 			rygel_external_item_factory_create (data->self, data->id, data->object_path, data->parent, rygel_external_item_factory_create_for_id_ready, data);
-			data->_state_ = 4;
+			data->_state_ = 6;
 			return FALSE;
-			case 4:
+			case 6:
 			data->_tmp0_ = rygel_external_item_factory_create_finish (data->self, data->_res_, &data->_inner_error_);
 			if (data->_inner_error_ != NULL) {
 				g_simple_async_result_set_from_error (data->_async_result, data->_inner_error_);
@@ -564,7 +617,7 @@ static char* string_replace (const char* self, const char* old, const char* repl
 			}
 			goto __finally3;
 		}
-		_tmp2_ = g_regex_replace_literal (regex, self, (glong) (-1), 0, replacement, 0, &_inner_error_);
+		_tmp2_ = g_regex_replace_literal (regex, self, (gssize) (-1), 0, replacement, 0, &_inner_error_);
 		if (_inner_error_ != NULL) {
 			_g_regex_unref0 (regex);
 			if (_inner_error_->domain == G_REGEX_ERROR) {
@@ -618,9 +671,9 @@ static gboolean rygel_external_item_factory_create_co (RygelExternalItemFactoryC
 			}
 			data->props = free_desktop_properties_dbus_proxy_new (data->connection, data->parent->service_name, data->object_path);
 			free_desktop_properties_get_all (data->props, rygel_external_item_factory_OBJECT_IFACE, rygel_external_item_factory_create_ready, data);
-			data->_state_ = 5;
+			data->_state_ = 7;
 			return FALSE;
-			case 5:
+			case 7:
 			data->object_props = free_desktop_properties_get_all_finish (data->props, data->_res_, &data->_inner_error_);
 			if (data->_inner_error_ != NULL) {
 				g_simple_async_result_set_from_error (data->_async_result, data->_inner_error_);
@@ -638,9 +691,9 @@ static gboolean rygel_external_item_factory_create_co (RygelExternalItemFactoryC
 				}
 			}
 			free_desktop_properties_get_all (data->props, rygel_external_item_factory_ITEM_IFACE, rygel_external_item_factory_create_ready, data);
-			data->_state_ = 6;
+			data->_state_ = 8;
 			return FALSE;
-			case 6:
+			case 8:
 			data->item_props = free_desktop_properties_get_all_finish (data->props, data->_res_, &data->_inner_error_);
 			if (data->_inner_error_ != NULL) {
 				g_simple_async_result_set_from_error (data->_async_result, data->_inner_error_);
@@ -664,22 +717,22 @@ static gboolean rygel_external_item_factory_create_co (RygelExternalItemFactoryC
 			data->value = (data->_tmp0_ = __g_value_dup0 ((GValue*) g_hash_table_lookup (data->item_props, "Type")), _g_free0 (data->value), data->_tmp0_);
 			data->type = g_strdup (g_value_get_string (data->value));
 			if (_vala_strcmp0 (data->type, "audio") == 0) {
-				data->item->upnp_class = (data->_tmp1_ = g_strdup (RYGEL_MEDIA_ITEM_AUDIO_CLASS), _g_free0 (data->item->upnp_class), data->_tmp1_);
+				((RygelMediaObject*) data->item)->upnp_class = (data->_tmp1_ = g_strdup (RYGEL_MEDIA_ITEM_AUDIO_CLASS), _g_free0 (((RygelMediaObject*) data->item)->upnp_class), data->_tmp1_);
 			} else {
 				if (_vala_strcmp0 (data->type, "music") == 0) {
-					data->item->upnp_class = (data->_tmp2_ = g_strdup (RYGEL_MEDIA_ITEM_MUSIC_CLASS), _g_free0 (data->item->upnp_class), data->_tmp2_);
+					((RygelMediaObject*) data->item)->upnp_class = (data->_tmp2_ = g_strdup (RYGEL_MEDIA_ITEM_MUSIC_CLASS), _g_free0 (((RygelMediaObject*) data->item)->upnp_class), data->_tmp2_);
 				} else {
 					if (_vala_strcmp0 (data->type, "video") == 0) {
-						data->item->upnp_class = (data->_tmp3_ = g_strdup (RYGEL_MEDIA_ITEM_VIDEO_CLASS), _g_free0 (data->item->upnp_class), data->_tmp3_);
+						((RygelMediaObject*) data->item)->upnp_class = (data->_tmp3_ = g_strdup (RYGEL_MEDIA_ITEM_VIDEO_CLASS), _g_free0 (((RygelMediaObject*) data->item)->upnp_class), data->_tmp3_);
 					} else {
-						data->item->upnp_class = (data->_tmp4_ = g_strdup (RYGEL_MEDIA_ITEM_IMAGE_CLASS), _g_free0 (data->item->upnp_class), data->_tmp4_);
+						((RygelMediaObject*) data->item)->upnp_class = (data->_tmp4_ = g_strdup (RYGEL_MEDIA_ITEM_IMAGE_CLASS), _g_free0 (((RygelMediaObject*) data->item)->upnp_class), data->_tmp4_);
 					}
 				}
 			}
 			data->value = (data->_tmp5_ = __g_value_dup0 ((GValue*) g_hash_table_lookup (data->item_props, "MIMEType")), _g_free0 (data->value), data->_tmp5_);
 			data->item->mime_type = (data->_tmp6_ = g_strdup (g_value_get_string (data->value)), _g_free0 (data->item->mime_type), data->_tmp6_);
-			data->value = (data->_tmp7_ = __g_value_dup0 ((GValue*) g_hash_table_lookup (data->item_props, "URLs")), _g_free0 (data->value), data->_tmp7_);
-			data->uris = (data->_tmp8_ = (char**) g_value_get_boxed (data->value), data->uris_length1 = -1, data->uris_size = data->uris_length1, data->_tmp8_);
+			data->item_iface = rygel_external_media_item_dbus_proxy_new (data->connection, data->parent->service_name, data->object_path);
+			data->uris = (data->_tmp8_ = rygel_external_media_item_get_urls (data->item_iface, &data->_tmp7_), data->uris_length1 = data->_tmp7_, data->uris_size = data->uris_length1, data->_tmp8_);
 			{
 				data->i = 0;
 				{
@@ -758,9 +811,9 @@ static gboolean rygel_external_item_factory_create_co (RygelExternalItemFactoryC
 			if (data->value != NULL) {
 				data->factory = rygel_external_thumbnail_factory_new ();
 				rygel_external_thumbnail_factory_create (data->factory, g_value_get_string (data->value), data->parent->service_name, data->parent->host_ip, rygel_external_item_factory_create_ready, data);
-				data->_state_ = 7;
+				data->_state_ = 9;
 				return FALSE;
-				case 7:
+				case 9:
 				data->thumbnail = rygel_external_thumbnail_factory_create_finish (data->factory, data->_res_, &data->_inner_error_);
 				if (data->_inner_error_ != NULL) {
 					g_simple_async_result_set_from_error (data->_async_result, data->_inner_error_);
@@ -773,6 +826,8 @@ static gboolean rygel_external_item_factory_create_co (RygelExternalItemFactoryC
 					_g_object_unref0 (data->item);
 					_g_free0 (data->value);
 					_g_free0 (data->type);
+					_g_object_unref0 (data->item_iface);
+					data->uris = (_vala_array_free (data->uris, data->uris_length1, (GDestroyNotify) g_free), NULL);
 					{
 						if (data->_state_ == 0) {
 							g_simple_async_result_complete_in_idle (data->_async_result);
@@ -794,6 +849,8 @@ static gboolean rygel_external_item_factory_create_co (RygelExternalItemFactoryC
 			_g_hash_table_unref0 (data->item_props);
 			_g_free0 (data->value);
 			_g_free0 (data->type);
+			_g_object_unref0 (data->item_iface);
+			data->uris = (_vala_array_free (data->uris, data->uris_length1, (GDestroyNotify) g_free), NULL);
 			{
 				if (data->_state_ == 0) {
 					g_simple_async_result_complete_in_idle (data->_async_result);
@@ -810,6 +867,8 @@ static gboolean rygel_external_item_factory_create_co (RygelExternalItemFactoryC
 			_g_object_unref0 (data->item);
 			_g_free0 (data->value);
 			_g_free0 (data->type);
+			_g_object_unref0 (data->item_iface);
+			data->uris = (_vala_array_free (data->uris, data->uris_length1, (GDestroyNotify) g_free), NULL);
 		}
 		{
 			if (data->_state_ == 0) {
@@ -983,6 +1042,24 @@ void rygel_external_item_factory_unref (gpointer instance) {
 		RYGEL_EXTERNAL_ITEM_FACTORY_GET_CLASS (self)->finalize (self);
 		g_type_free_instance ((GTypeInstance *) self);
 	}
+}
+
+
+static void _vala_array_destroy (gpointer array, gint array_length, GDestroyNotify destroy_func) {
+	if ((array != NULL) && (destroy_func != NULL)) {
+		int i;
+		for (i = 0; i < array_length; i = i + 1) {
+			if (((gpointer*) array)[i] != NULL) {
+				destroy_func (((gpointer*) array)[i]);
+			}
+		}
+	}
+}
+
+
+static void _vala_array_free (gpointer array, gint array_length, GDestroyNotify destroy_func) {
+	_vala_array_destroy (array, array_length, destroy_func);
+	g_free (array);
 }
 
 

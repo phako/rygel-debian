@@ -1,10 +1,11 @@
-rygel (0.4.6-1) UNRELEASED; urgency=low
+rygel (0.4.6-1) unstable; urgency=low
 
   * Set rygel-1.0-dev section to devel.
   * Imported Upstream version 0.4.6
   * Bump libgupnp-av-1.0-dev build-dependency to >= 0.5.2
+  * Make long description more compact (Closes: #558397)
 
- -- Andreas Henriksson <andreas@fatal.se>  Mon, 23 Nov 2009 01:45:15 +0100
+ -- Andreas Henriksson <andreas@fatal.se>  Mon, 30 Nov 2009 16:01:12 +0100
 
 rygel (0.4.4-1) unstable; urgency=low
 

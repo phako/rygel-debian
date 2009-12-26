@@ -138,7 +138,7 @@ RygelDBusService* rygel_dbus_service_construct (GType object_type, RygelMain* ma
 			g_propagate_error (error, _inner_error_);
 			return NULL;
 		} else {
-			g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, _inner_error_->message);
+			g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
 			g_clear_error (&_inner_error_);
 			return NULL;
 		}
@@ -154,7 +154,7 @@ RygelDBusService* rygel_dbus_service_construct (GType object_type, RygelMain* ma
 		} else {
 			_dbus_g_connection_unref0 (conn);
 			_g_object_unref0 (bus);
-			g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, _inner_error_->message);
+			g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
 			g_clear_error (&_inner_error_);
 			return NULL;
 		}

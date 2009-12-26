@@ -187,7 +187,7 @@ RygelTrackerMetadataValues* rygel_tracker_metadata_values_construct (GType objec
 	}
 	__finally0:
 	if (_inner_error_ != NULL) {
-		g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, _inner_error_->message);
+		g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
 		g_clear_error (&_inner_error_);
 		return NULL;
 	}
@@ -280,7 +280,7 @@ static gboolean rygel_tracker_metadata_values_fetch_metadata_values_co (RygelTra
 			__finally1:
 			if (data->_inner_error_ != NULL) {
 				data->values = (_vala_array_free (data->values, data->values_length1 * data->values_length2, (GDestroyNotify) g_free), NULL);
-				g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, data->_inner_error_->message);
+				g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, data->_inner_error_->message, g_quark_to_string (data->_inner_error_->domain), data->_inner_error_->code);
 				g_clear_error (&data->_inner_error_);
 				return FALSE;
 			}
@@ -338,7 +338,7 @@ static void rygel_tracker_metadata_values_create_proxies (RygelTrackerMetadataVa
 			g_propagate_error (error, _inner_error_);
 			return;
 		} else {
-			g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, _inner_error_->message);
+			g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
 			g_clear_error (&_inner_error_);
 			return;
 		}

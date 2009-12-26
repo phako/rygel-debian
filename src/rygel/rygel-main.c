@@ -448,7 +448,7 @@ static GUPnPContextManager* rygel_main_create_context_manager (RygelMain* self) 
 	}
 	__finally59:
 	if (_inner_error_ != NULL) {
-		g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, _inner_error_->message);
+		g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
 		g_clear_error (&_inner_error_);
 		return NULL;
 	}
@@ -493,7 +493,7 @@ static void rygel_main_on_context_available (RygelMain* self, GUPnPContextManage
 	__finally60:
 	if (_inner_error_ != NULL) {
 		_g_free0 (iface);
-		g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, _inner_error_->message);
+		g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
 		g_clear_error (&_inner_error_);
 		return;
 	}
@@ -540,7 +540,7 @@ static void rygel_main_on_context_available (RygelMain* self, GUPnPContextManage
 		__finally61:
 		if (_inner_error_ != NULL) {
 			_g_free0 (iface);
-			g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, _inner_error_->message);
+			g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
 			g_clear_error (&_inner_error_);
 			return;
 		}
@@ -674,7 +674,7 @@ static gboolean rygel_main_create_device_co (RygelMainCreateDeviceData* data) {
 			}
 			__finally62:
 			if (data->_inner_error_ != NULL) {
-				g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, data->_inner_error_->message);
+				g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, data->_inner_error_->message, g_quark_to_string (data->_inner_error_->domain), data->_inner_error_->code);
 				g_clear_error (&data->_inner_error_);
 				return FALSE;
 			}
@@ -818,7 +818,7 @@ static gint rygel_main_main (char** args, int args_length1) {
 	if (_inner_error_ != NULL) {
 		_g_object_unref0 (main);
 		_g_object_unref0 (service);
-		g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, _inner_error_->message);
+		g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
 		g_clear_error (&_inner_error_);
 		return 0;
 	}

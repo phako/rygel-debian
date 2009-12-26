@@ -184,8 +184,8 @@ struct _RygelHTTPRequest {
 	SoupMessage* msg;
 	RygelMediaItem* item;
 	RygelThumbnail* thumbnail;
-	RygelHTTPSeek* byte_range;
-	RygelHTTPSeek* time_range;
+	RygelHTTPSeek* seek;
+	RygelHTTPRequestHandler* handler;
 };
 
 struct _RygelHTTPRequestClass {
@@ -292,7 +292,7 @@ static void rygel_http_request_handler_real_add_response_headers (RygelHTTPReque
 			_g_free0 (mode);
 			_g_object_unref0 (didl_writer);
 			_g_object_unref0 (didl_item);
-			g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, _inner_error_->message);
+			g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
 			g_clear_error (&_inner_error_);
 			return;
 		}

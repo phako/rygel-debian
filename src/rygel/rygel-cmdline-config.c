@@ -210,7 +210,7 @@ void rygel_cmdline_config_parse_args (char*** args, int* args_length1, GError** 
 		} else {
 			_g_free0 (parameter_string);
 			_g_option_context_free0 (opt_context);
-			g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, _inner_error_->message);
+			g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
 			g_clear_error (&_inner_error_);
 			return;
 		}
@@ -227,7 +227,7 @@ void rygel_cmdline_config_parse_args (char*** args, int* args_length1, GError** 
 			} else {
 				_g_free0 (parameter_string);
 				_g_option_context_free0 (opt_context);
-				g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, _inner_error_->message);
+				g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
 				g_clear_error (&_inner_error_);
 				return;
 			}

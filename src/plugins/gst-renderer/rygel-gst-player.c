@@ -161,7 +161,7 @@ static RygelGstPlayer* rygel_gst_player_construct (GType object_type) {
 	self->priv->playbin = (_tmp0_ = gst_element_factory_make ("playbin2", NULL), _gst_object_unref0 (self->priv->playbin), _tmp0_);
 	g_assert (self->priv->playbin != NULL);
 	bus = gst_element_get_bus (self->priv->playbin);
-	gst_bus_add_watch (bus, _rygel_gst_player_bus_handler_gst_bus_func, self);
+	gst_bus_add_watch_full (bus, G_PRIORITY_DEFAULT, _rygel_gst_player_bus_handler_gst_bus_func, g_object_ref (self), g_object_unref);
 	_gst_object_unref0 (bus);
 	return self;
 }

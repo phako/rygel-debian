@@ -127,6 +127,16 @@ typedef struct _RygelThumbnailClass RygelThumbnailClass;
 typedef struct _RygelHTTPSeek RygelHTTPSeek;
 typedef struct _RygelHTTPSeekClass RygelHTTPSeekClass;
 
+#define RYGEL_TYPE_HTTP_REQUEST_HANDLER (rygel_http_request_handler_get_type ())
+#define RYGEL_HTTP_REQUEST_HANDLER(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_HTTP_REQUEST_HANDLER, RygelHTTPRequestHandler))
+#define RYGEL_HTTP_REQUEST_HANDLER_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TYPE_HTTP_REQUEST_HANDLER, RygelHTTPRequestHandlerClass))
+#define RYGEL_IS_HTTP_REQUEST_HANDLER(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TYPE_HTTP_REQUEST_HANDLER))
+#define RYGEL_IS_HTTP_REQUEST_HANDLER_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_TYPE_HTTP_REQUEST_HANDLER))
+#define RYGEL_HTTP_REQUEST_HANDLER_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_TYPE_HTTP_REQUEST_HANDLER, RygelHTTPRequestHandlerClass))
+
+typedef struct _RygelHTTPRequestHandler RygelHTTPRequestHandler;
+typedef struct _RygelHTTPRequestHandlerClass RygelHTTPRequestHandlerClass;
+
 #define RYGEL_TYPE_MEDIA_CONTAINER (rygel_media_container_get_type ())
 #define RYGEL_MEDIA_CONTAINER(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_MEDIA_CONTAINER, RygelMediaContainer))
 #define RYGEL_MEDIA_CONTAINER_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TYPE_MEDIA_CONTAINER, RygelMediaContainerClass))
@@ -146,16 +156,6 @@ typedef struct _RygelMediaContainerClass RygelMediaContainerClass;
 
 typedef struct _RygelHTTPResponse RygelHTTPResponse;
 typedef struct _RygelHTTPResponseClass RygelHTTPResponseClass;
-
-#define RYGEL_TYPE_HTTP_REQUEST_HANDLER (rygel_http_request_handler_get_type ())
-#define RYGEL_HTTP_REQUEST_HANDLER(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_HTTP_REQUEST_HANDLER, RygelHTTPRequestHandler))
-#define RYGEL_HTTP_REQUEST_HANDLER_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TYPE_HTTP_REQUEST_HANDLER, RygelHTTPRequestHandlerClass))
-#define RYGEL_IS_HTTP_REQUEST_HANDLER(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TYPE_HTTP_REQUEST_HANDLER))
-#define RYGEL_IS_HTTP_REQUEST_HANDLER_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_TYPE_HTTP_REQUEST_HANDLER))
-#define RYGEL_HTTP_REQUEST_HANDLER_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_TYPE_HTTP_REQUEST_HANDLER, RygelHTTPRequestHandlerClass))
-
-typedef struct _RygelHTTPRequestHandler RygelHTTPRequestHandler;
-typedef struct _RygelHTTPRequestHandlerClass RygelHTTPRequestHandlerClass;
 #define _g_object_unref0(var) ((var == NULL) ? NULL : (var = (g_object_unref (var), NULL)))
 #define _g_hash_table_unref0(var) ((var == NULL) ? NULL : (var = (g_hash_table_unref (var), NULL)))
 #define _g_free0(var) (var = (g_free (var), NULL))
@@ -177,6 +177,26 @@ typedef struct _RygelHttpRequestRunData RygelHttpRequestRunData;
 typedef struct _RygelMediaObjectPrivate RygelMediaObjectPrivate;
 typedef struct _RygelMediaItemPrivate RygelMediaItemPrivate;
 typedef struct _RygelHttpRequestFindItemData RygelHttpRequestFindItemData;
+
+#define RYGEL_TYPE_HTTP_TIME_SEEK (rygel_http_time_seek_get_type ())
+#define RYGEL_HTTP_TIME_SEEK(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_HTTP_TIME_SEEK, RygelHTTPTimeSeek))
+#define RYGEL_HTTP_TIME_SEEK_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TYPE_HTTP_TIME_SEEK, RygelHTTPTimeSeekClass))
+#define RYGEL_IS_HTTP_TIME_SEEK(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TYPE_HTTP_TIME_SEEK))
+#define RYGEL_IS_HTTP_TIME_SEEK_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_TYPE_HTTP_TIME_SEEK))
+#define RYGEL_HTTP_TIME_SEEK_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_TYPE_HTTP_TIME_SEEK, RygelHTTPTimeSeekClass))
+
+typedef struct _RygelHTTPTimeSeek RygelHTTPTimeSeek;
+typedef struct _RygelHTTPTimeSeekClass RygelHTTPTimeSeekClass;
+
+#define RYGEL_TYPE_HTTP_BYTE_SEEK (rygel_http_byte_seek_get_type ())
+#define RYGEL_HTTP_BYTE_SEEK(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_HTTP_BYTE_SEEK, RygelHTTPByteSeek))
+#define RYGEL_HTTP_BYTE_SEEK_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TYPE_HTTP_BYTE_SEEK, RygelHTTPByteSeekClass))
+#define RYGEL_IS_HTTP_BYTE_SEEK(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TYPE_HTTP_BYTE_SEEK))
+#define RYGEL_IS_HTTP_BYTE_SEEK_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_TYPE_HTTP_BYTE_SEEK))
+#define RYGEL_HTTP_BYTE_SEEK_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_TYPE_HTTP_BYTE_SEEK, RygelHTTPByteSeekClass))
+
+typedef struct _RygelHTTPByteSeek RygelHTTPByteSeek;
+typedef struct _RygelHTTPByteSeekClass RygelHTTPByteSeekClass;
 typedef struct _RygelHttpRequestHandleItemRequestData RygelHttpRequestHandleItemRequestData;
 
 #define RYGEL_TYPE_TRANSCODER (rygel_transcoder_get_type ())
@@ -221,8 +241,8 @@ struct _RygelHTTPRequest {
 	SoupMessage* msg;
 	RygelMediaItem* item;
 	RygelThumbnail* thumbnail;
-	RygelHTTPSeek* byte_range;
-	RygelHTTPSeek* time_range;
+	RygelHTTPSeek* seek;
+	RygelHTTPRequestHandler* handler;
 };
 
 struct _RygelHTTPRequestClass {
@@ -236,7 +256,6 @@ struct _RygelHTTPRequestPrivate {
 	RygelHTTPResponse* response;
 	char* item_id;
 	gint thumbnail_index;
-	RygelHTTPRequestHandler* request_handler;
 };
 
 struct _RygelTranscodeManager {
@@ -354,9 +373,9 @@ struct _RygelHttpRequestHandleItemRequestData {
 	GAsyncResult* _res_;
 	GSimpleAsyncResult* _async_result;
 	RygelHTTPRequest* self;
-	RygelHTTPSeek* _tmp0_;
+	RygelHTTPTimeSeek* _tmp0_;
 	RygelHTTPSeek* _tmp1_;
-	RygelHTTPSeek* _tmp2_;
+	RygelHTTPByteSeek* _tmp2_;
 	RygelHTTPSeek* _tmp3_;
 	char* _tmp5_;
 	char* _tmp4_;
@@ -386,9 +405,9 @@ gpointer rygel_value_get_icon_info (const GValue* value);
 GType rygel_icon_info_get_type (void);
 GType rygel_thumbnail_get_type (void);
 GType rygel_http_seek_get_type (void);
+GType rygel_http_request_handler_get_type (void);
 GType rygel_media_container_get_type (void);
 GType rygel_http_response_get_type (void);
-GType rygel_http_request_handler_get_type (void);
 #define RYGEL_HTTP_REQUEST_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), RYGEL_TYPE_HTTP_REQUEST, RygelHTTPRequestPrivate))
 enum  {
 	RYGEL_HTTP_REQUEST_DUMMY_PROPERTY,
@@ -420,9 +439,15 @@ void rygel_http_request_end (RygelHTTPRequest* self, guint status);
 static void rygel_http_request_on_response_completed (RygelHTTPRequest* self, RygelHTTPResponse* response);
 static void rygel_http_request_handle_item_request_data_free (gpointer _data);
 static void rygel_http_request_handle_item_request_ready (GObject* source_object, GAsyncResult* _res_, gpointer _user_data_);
+gboolean rygel_http_time_seek_needed (RygelHTTPRequest* request);
 GQuark rygel_http_seek_error_quark (void);
-RygelHTTPSeek* rygel_http_seek_from_byte_range (SoupMessage* msg, GError** error);
-RygelHTTPSeek* rygel_http_seek_from_time_range (SoupMessage* msg, GError** error);
+RygelHTTPTimeSeek* rygel_http_time_seek_new (RygelHTTPRequest* request, GError** error);
+RygelHTTPTimeSeek* rygel_http_time_seek_construct (GType object_type, RygelHTTPRequest* request, GError** error);
+GType rygel_http_time_seek_get_type (void);
+gboolean rygel_http_byte_seek_needed (RygelHTTPRequest* request);
+RygelHTTPByteSeek* rygel_http_byte_seek_new (RygelHTTPRequest* request, GError** error);
+RygelHTTPByteSeek* rygel_http_byte_seek_construct (GType object_type, RygelHTTPRequest* request, GError** error);
+GType rygel_http_byte_seek_get_type (void);
 void rygel_http_request_handler_add_response_headers (RygelHTTPRequestHandler* self, RygelHTTPRequest* request, GError** error);
 static void _lambda3_ (const char* name, const char* value, RygelHTTPRequest* self);
 static void __lambda3__soup_message_headers_foreach_func (const char* name, const char* value, gpointer self);
@@ -570,14 +595,14 @@ static gboolean rygel_http_request_real_run_co (RygelHttpRequestRunData* data) {
 				data->err = data->_inner_error_;
 				data->_inner_error_ = NULL;
 				{
-					g_warning ("rygel-http-request.vala:87: Failed to parse query: %s", data->err->message);
+					g_warning ("rygel-http-request.vala:86: Failed to parse query: %s", data->err->message);
 					_g_error_free0 (data->err);
 				}
 			}
 			__finally24:
 			if (data->_inner_error_ != NULL) {
 				_g_free0 (data->header);
-				g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, data->_inner_error_->message);
+				g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, data->_inner_error_->message, g_quark_to_string (data->_inner_error_->domain), data->_inner_error_->code);
 				g_clear_error (&data->_inner_error_);
 				return FALSE;
 			}
@@ -595,8 +620,8 @@ static gboolean rygel_http_request_real_run_co (RygelHttpRequestRunData* data) {
 					return FALSE;
 				}
 			}
-			if (data->self->priv->request_handler == NULL) {
-				data->self->priv->request_handler = (data->_tmp10_ = (RygelHTTPRequestHandler*) rygel_http_identity_handler_new (rygel_state_machine_get_cancellable ((RygelStateMachine*) data->self)), _g_object_unref0 (data->self->priv->request_handler), data->_tmp10_);
+			if (data->self->handler == NULL) {
+				data->self->handler = (data->_tmp10_ = (RygelHTTPRequestHandler*) rygel_http_identity_handler_new (rygel_state_machine_get_cancellable ((RygelStateMachine*) data->self)), _g_object_unref0 (data->self->handler), data->_tmp10_);
 			}
 			rygel_http_request_find_item (data->self, rygel_http_request_run_ready, data);
 			data->_state_ = 1;
@@ -691,7 +716,7 @@ static gboolean rygel_http_request_find_item_co (RygelHttpRequestFindItemData* d
 			__finally25:
 			if (data->_inner_error_ != NULL) {
 				_g_object_unref0 (data->media_object);
-				g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, data->_inner_error_->message);
+				g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, data->_inner_error_->message, g_quark_to_string (data->_inner_error_->domain), data->_inner_error_->code);
 				g_clear_error (&data->_inner_error_);
 				return FALSE;
 			}
@@ -779,7 +804,7 @@ static void rygel_http_request_handle_item_request_ready (GObject* source_object
 static void _lambda3_ (const char* name, const char* value, RygelHTTPRequest* self) {
 	g_return_if_fail (name != NULL);
 	g_return_if_fail (value != NULL);
-	g_debug ("rygel-http-request.vala:142: %s : %s", name, value);
+	g_debug ("rygel-http-request.vala:144: %s : %s", name, value);
 }
 
 
@@ -800,24 +825,29 @@ static gboolean rygel_http_request_handle_item_request_co (RygelHttpRequestHandl
 		case 0:
 		{
 			{
-				data->_tmp0_ = rygel_http_seek_from_byte_range (data->self->msg, &data->_inner_error_);
+				if (rygel_http_time_seek_needed (data->self)) {
+					data->_tmp0_ = rygel_http_time_seek_new (data->self, &data->_inner_error_);
+					if (data->_inner_error_ != NULL) {
+						goto __catch26_g_error;
+						goto __finally26;
+					}
+					data->self->seek = (data->_tmp1_ = (RygelHTTPSeek*) data->_tmp0_, _g_object_unref0 (data->self->seek), data->_tmp1_);
+				} else {
+					if (rygel_http_byte_seek_needed (data->self)) {
+						data->_tmp2_ = rygel_http_byte_seek_new (data->self, &data->_inner_error_);
+						if (data->_inner_error_ != NULL) {
+							goto __catch26_g_error;
+							goto __finally26;
+						}
+						data->self->seek = (data->_tmp3_ = (RygelHTTPSeek*) data->_tmp2_, _g_object_unref0 (data->self->seek), data->_tmp3_);
+					}
+				}
+				rygel_http_request_handler_add_response_headers (data->self->handler, data->self, &data->_inner_error_);
 				if (data->_inner_error_ != NULL) {
 					goto __catch26_g_error;
 					goto __finally26;
 				}
-				data->self->byte_range = (data->_tmp1_ = data->_tmp0_, _g_object_unref0 (data->self->byte_range), data->_tmp1_);
-				data->_tmp2_ = rygel_http_seek_from_time_range (data->self->msg, &data->_inner_error_);
-				if (data->_inner_error_ != NULL) {
-					goto __catch26_g_error;
-					goto __finally26;
-				}
-				data->self->time_range = (data->_tmp3_ = data->_tmp2_, _g_object_unref0 (data->self->time_range), data->_tmp3_);
-				rygel_http_request_handler_add_response_headers (data->self->priv->request_handler, data->self, &data->_inner_error_);
-				if (data->_inner_error_ != NULL) {
-					goto __catch26_g_error;
-					goto __finally26;
-				}
-				g_debug ("rygel-http-request.vala:140: Following HTTP headers appended to response:");
+				g_debug ("rygel-http-request.vala:142: Following HTTP headers appended to response:");
 				soup_message_headers_foreach (data->self->msg->response_headers, __lambda3__soup_message_headers_foreach_func, data->self);
 				data->_tmp4_ = NULL;
 				if ((data->_tmp6_ = _vala_strcmp0 (data->_tmp5_ = (g_object_get (data->self->msg, "method", &data->_tmp4_, NULL), data->_tmp4_), "HEAD") == 0, _g_free0 (data->_tmp5_), data->_tmp6_)) {
@@ -833,7 +863,7 @@ static gboolean rygel_http_request_handle_item_request_co (RygelHttpRequestHandl
 						return FALSE;
 					}
 				}
-				data->_tmp7_ = rygel_http_request_handler_render_body (data->self->priv->request_handler, data->self, &data->_inner_error_);
+				data->_tmp7_ = rygel_http_request_handler_render_body (data->self->handler, data->self, &data->_inner_error_);
 				if (data->_inner_error_ != NULL) {
 					goto __catch26_g_error;
 					goto __finally26;
@@ -858,7 +888,7 @@ static gboolean rygel_http_request_handle_item_request_co (RygelHttpRequestHandl
 			}
 			__finally26:
 			if (data->_inner_error_ != NULL) {
-				g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, data->_inner_error_->message);
+				g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, data->_inner_error_->message, g_quark_to_string (data->_inner_error_->domain), data->_inner_error_->code);
 				g_clear_error (&data->_inner_error_);
 				return FALSE;
 			}
@@ -891,14 +921,14 @@ static void rygel_http_request_parse_query (RygelHTTPRequest* self, GError** err
 	if (target != NULL) {
 		RygelTranscoder* transcoder;
 		RygelHTTPRequestHandler* _tmp1_;
-		g_debug ("rygel-http-request.vala:168: Transcoding target: %s", target);
+		g_debug ("rygel-http-request.vala:170: Transcoding target: %s", target);
 		transcoder = rygel_transcode_manager_get_transcoder ((RygelTranscodeManager*) self->http_server, target, &_inner_error_);
 		if (_inner_error_ != NULL) {
 			g_propagate_error (error, _inner_error_);
 			_g_free0 (target);
 			return;
 		}
-		self->priv->request_handler = (_tmp1_ = (RygelHTTPRequestHandler*) rygel_http_transcode_handler_new (transcoder, rygel_state_machine_get_cancellable ((RygelStateMachine*) self)), _g_object_unref0 (self->priv->request_handler), _tmp1_);
+		self->handler = (_tmp1_ = (RygelHTTPRequestHandler*) rygel_http_transcode_handler_new (transcoder, rygel_state_machine_get_cancellable ((RygelStateMachine*) self)), _g_object_unref0 (self->handler), _tmp1_);
 		_g_object_unref0 (transcoder);
 	}
 	index = g_strdup ((const char*) g_hash_table_lookup (self->priv->query, "thumbnail"));
@@ -913,7 +943,7 @@ static void rygel_http_request_parse_query (RygelHTTPRequest* self, GError** err
 static void rygel_http_request_handle_error (RygelHTTPRequest* self, GError* _error_) {
 	guint status = 0U;
 	g_return_if_fail (self != NULL);
-	g_warning ("rygel-http-request.vala:182: %s", _error_->message);
+	g_warning ("rygel-http-request.vala:184: %s", _error_->message);
 	if (_error_->domain == RYGEL_HTTP_REQUEST_ERROR) {
 		status = (guint) _error_->code;
 	} else {
@@ -987,9 +1017,8 @@ static void rygel_http_request_finalize (GObject* obj) {
 	_g_free0 (self->priv->item_id);
 	_g_object_unref0 (self->item);
 	_rygel_icon_info_unref0 (self->thumbnail);
-	_g_object_unref0 (self->byte_range);
-	_g_object_unref0 (self->time_range);
-	_g_object_unref0 (self->priv->request_handler);
+	_g_object_unref0 (self->seek);
+	_g_object_unref0 (self->handler);
 	G_OBJECT_CLASS (rygel_http_request_parent_class)->finalize (obj);
 }
 

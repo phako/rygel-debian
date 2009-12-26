@@ -296,7 +296,7 @@ void module_init (RygelPluginLoader* loader) {
 	}
 	__finally5:
 	if (_inner_error_ != NULL) {
-		g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, _inner_error_->message);
+		g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
 		g_clear_error (&_inner_error_);
 		return;
 	}
@@ -325,7 +325,7 @@ RygelExternalPluginFactory* rygel_external_plugin_factory_construct (GType objec
 			g_propagate_error (error, _inner_error_);
 			return NULL;
 		} else {
-			g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, _inner_error_->message);
+			g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
 			g_clear_error (&_inner_error_);
 			return NULL;
 		}
@@ -403,7 +403,7 @@ static gboolean rygel_external_plugin_factory_load_plugins_co (RygelExternalPlug
 						return FALSE;
 					}
 				} else {
-					g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, data->_inner_error_->message);
+					g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, data->_inner_error_->message, g_quark_to_string (data->_inner_error_->domain), data->_inner_error_->code);
 					g_clear_error (&data->_inner_error_);
 					return FALSE;
 				}
@@ -452,7 +452,7 @@ static gboolean rygel_external_plugin_factory_load_plugins_co (RygelExternalPlug
 					}
 				} else {
 					data->services = (_vala_array_free (data->services, data->services_length1, (GDestroyNotify) g_free), NULL);
-					g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, data->_inner_error_->message);
+					g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, data->_inner_error_->message, g_quark_to_string (data->_inner_error_->domain), data->_inner_error_->code);
 					g_clear_error (&data->_inner_error_);
 					return FALSE;
 				}
@@ -536,7 +536,7 @@ static gboolean rygel_external_plugin_factory_load_activatable_plugins_co (Rygel
 						return FALSE;
 					}
 				} else {
-					g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, data->_inner_error_->message);
+					g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, data->_inner_error_->message, g_quark_to_string (data->_inner_error_->domain), data->_inner_error_->code);
 					g_clear_error (&data->_inner_error_);
 					return FALSE;
 				}
@@ -696,7 +696,7 @@ static char* string_replace (const char* self, const char* old, const char* repl
 	}
 	__finally6:
 	if (_inner_error_ != NULL) {
-		g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, _inner_error_->message);
+		g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
 		g_clear_error (&_inner_error_);
 		return NULL;
 	}
@@ -777,7 +777,7 @@ static gboolean rygel_external_plugin_factory_load_plugin_co (RygelExternalPlugi
 				_g_object_unref0 (data->props);
 				_g_hash_table_unref0 (data->object_props);
 				_g_hash_table_unref0 (data->container_props);
-				g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, data->_inner_error_->message);
+				g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, data->_inner_error_->message, g_quark_to_string (data->_inner_error_->domain), data->_inner_error_->code);
 				g_clear_error (&data->_inner_error_);
 				return FALSE;
 			}

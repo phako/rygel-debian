@@ -227,7 +227,7 @@ static gboolean rygel_media_export_recursive_file_monitor_monitor_co (RygelMedia
 			}
 			__finally9:
 			if (data->_inner_error_ != NULL) {
-				g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, data->_inner_error_->message);
+				g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, data->_inner_error_->message, g_quark_to_string (data->_inner_error_->domain), data->_inner_error_->code);
 				g_clear_error (&data->_inner_error_);
 				return FALSE;
 			}

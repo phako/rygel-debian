@@ -156,6 +156,16 @@ typedef struct _RygelHTTPRequestPrivate RygelHTTPRequestPrivate;
 typedef struct _RygelHTTPSeek RygelHTTPSeek;
 typedef struct _RygelHTTPSeekClass RygelHTTPSeekClass;
 
+#define RYGEL_TYPE_HTTP_REQUEST_HANDLER (rygel_http_request_handler_get_type ())
+#define RYGEL_HTTP_REQUEST_HANDLER(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_HTTP_REQUEST_HANDLER, RygelHTTPRequestHandler))
+#define RYGEL_HTTP_REQUEST_HANDLER_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TYPE_HTTP_REQUEST_HANDLER, RygelHTTPRequestHandlerClass))
+#define RYGEL_IS_HTTP_REQUEST_HANDLER(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TYPE_HTTP_REQUEST_HANDLER))
+#define RYGEL_IS_HTTP_REQUEST_HANDLER_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_TYPE_HTTP_REQUEST_HANDLER))
+#define RYGEL_HTTP_REQUEST_HANDLER_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_TYPE_HTTP_REQUEST_HANDLER, RygelHTTPRequestHandlerClass))
+
+typedef struct _RygelHTTPRequestHandler RygelHTTPRequestHandler;
+typedef struct _RygelHTTPRequestHandlerClass RygelHTTPRequestHandlerClass;
+
 struct _RygelTranscodeManager {
 	GObject parent_instance;
 	RygelTranscodeManagerPrivate * priv;
@@ -287,8 +297,8 @@ struct _RygelHTTPRequest {
 	SoupMessage* msg;
 	RygelMediaItem* item;
 	RygelThumbnail* thumbnail;
-	RygelHTTPSeek* byte_range;
-	RygelHTTPSeek* time_range;
+	RygelHTTPSeek* seek;
+	RygelHTTPRequestHandler* handler;
 };
 
 struct _RygelHTTPRequestClass {
@@ -347,6 +357,7 @@ char* rygel_transcode_manager_get_protocol_info (RygelTranscodeManager* self);
 static char* rygel_http_server_real_get_protocol_info (RygelTranscodeManager* base);
 GType rygel_http_request_get_type (void);
 GType rygel_http_seek_get_type (void);
+GType rygel_http_request_handler_get_type (void);
 static void rygel_http_server_on_request_completed (RygelHTTPServer* self, RygelHTTPRequest* request);
 static void _lambda0_ (const char* name, const char* value, RygelHTTPServer* self);
 static void __lambda0__soup_message_headers_foreach_func (const char* name, const char* value, gpointer self);

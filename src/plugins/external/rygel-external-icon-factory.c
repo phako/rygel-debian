@@ -291,7 +291,7 @@ static gboolean rygel_external_icon_factory_create_co (RygelExternalIconFactoryC
 				_g_free0 (data->icon_path);
 				_g_object_unref0 (data->props);
 				_g_hash_table_unref0 (data->item_props);
-				g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, data->_inner_error_->message);
+				g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, data->_inner_error_->message, g_quark_to_string (data->_inner_error_->domain), data->_inner_error_->code);
 				g_clear_error (&data->_inner_error_);
 				return FALSE;
 			}

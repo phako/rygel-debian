@@ -173,7 +173,7 @@ RygelTrackerKeywords* rygel_tracker_keywords_construct (GType object_type, const
 	}
 	__finally2:
 	if (_inner_error_ != NULL) {
-		g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, _inner_error_->message);
+		g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
 		g_clear_error (&_inner_error_);
 		return NULL;
 	}
@@ -262,7 +262,7 @@ static gboolean rygel_tracker_keywords_fetch_keywords_co (RygelTrackerKeywordsFe
 			__finally3:
 			if (data->_inner_error_ != NULL) {
 				data->keywords_list = (_vala_array_free (data->keywords_list, data->keywords_list_length1 * data->keywords_list_length2, (GDestroyNotify) g_free), NULL);
-				g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, data->_inner_error_->message);
+				g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, data->_inner_error_->message, g_quark_to_string (data->_inner_error_->domain), data->_inner_error_->code);
 				g_clear_error (&data->_inner_error_);
 				return FALSE;
 			}
@@ -317,7 +317,7 @@ static void rygel_tracker_keywords_create_proxies (RygelTrackerKeywords* self, G
 			g_propagate_error (error, _inner_error_);
 			return;
 		} else {
-			g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, _inner_error_->message);
+			g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
 			g_clear_error (&_inner_error_);
 			return;
 		}

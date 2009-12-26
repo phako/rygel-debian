@@ -31,7 +31,6 @@
 #include <gio/gio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <gee.h>
 #include <gst/gst.h>
 
 
@@ -166,18 +165,6 @@ typedef struct _RygelThumbnailClass RygelThumbnailClass;
 
 typedef struct _RygelHTTPSeek RygelHTTPSeek;
 typedef struct _RygelHTTPSeekClass RygelHTTPSeekClass;
-typedef struct _RygelMediaObjectPrivate RygelMediaObjectPrivate;
-
-#define RYGEL_TYPE_MEDIA_CONTAINER (rygel_media_container_get_type ())
-#define RYGEL_MEDIA_CONTAINER(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_MEDIA_CONTAINER, RygelMediaContainer))
-#define RYGEL_MEDIA_CONTAINER_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TYPE_MEDIA_CONTAINER, RygelMediaContainerClass))
-#define RYGEL_IS_MEDIA_CONTAINER(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TYPE_MEDIA_CONTAINER))
-#define RYGEL_IS_MEDIA_CONTAINER_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_TYPE_MEDIA_CONTAINER))
-#define RYGEL_MEDIA_CONTAINER_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_TYPE_MEDIA_CONTAINER, RygelMediaContainerClass))
-
-typedef struct _RygelMediaContainer RygelMediaContainer;
-typedef struct _RygelMediaContainerClass RygelMediaContainerClass;
-typedef struct _RygelMediaItemPrivate RygelMediaItemPrivate;
 #define _gst_object_unref0(var) ((var == NULL) ? NULL : (var = (gst_object_unref (var), NULL)))
 
 #define RYGEL_TYPE_LIVE_RESPONSE (rygel_live_response_get_type ())
@@ -238,56 +225,12 @@ struct _RygelHTTPRequest {
 	SoupMessage* msg;
 	RygelMediaItem* item;
 	RygelThumbnail* thumbnail;
-	RygelHTTPSeek* byte_range;
-	RygelHTTPSeek* time_range;
+	RygelHTTPSeek* seek;
+	RygelHTTPRequestHandler* handler;
 };
 
 struct _RygelHTTPRequestClass {
 	GObjectClass parent_class;
-};
-
-struct _RygelMediaObject {
-	GObject parent_instance;
-	RygelMediaObjectPrivate * priv;
-	char* id;
-	char* upnp_class;
-	guint64 modified;
-	GeeArrayList* uris;
-	RygelMediaContainer* parent;
-	RygelMediaContainer* parent_ref;
-};
-
-struct _RygelMediaObjectClass {
-	GObjectClass parent_class;
-};
-
-struct _RygelMediaItem {
-	RygelMediaObject parent_instance;
-	RygelMediaItemPrivate * priv;
-	char* author;
-	char* album;
-	char* date;
-	char* mime_type;
-	char* dlna_profile;
-	glong size;
-	glong duration;
-	gint bitrate;
-	gint sample_freq;
-	gint bits_per_sample;
-	gint n_audio_channels;
-	gint track_number;
-	gint width;
-	gint height;
-	gint pixel_width;
-	gint pixel_height;
-	gint color_depth;
-	GeeArrayList* thumbnails;
-};
-
-struct _RygelMediaItemClass {
-	RygelMediaObjectClass parent_class;
-	GstElement* (*create_stream_source) (RygelMediaItem* self);
-	gboolean (*should_stream) (RygelMediaItem* self);
 };
 
 
@@ -321,8 +264,7 @@ GType rygel_icon_info_get_type (void);
 GType rygel_thumbnail_get_type (void);
 GType rygel_http_seek_get_type (void);
 const char* rygel_transcoder_get_mime_type (RygelTranscoder* self);
-void rygel_http_seek_add_response_header (RygelHTTPSeek* self, SoupMessage* msg, gint64 length);
-GType rygel_media_container_get_type (void);
+void rygel_http_seek_add_response_headers (RygelHTTPSeek* self);
 void rygel_http_request_handler_add_response_headers (RygelHTTPRequestHandler* self, RygelHTTPRequest* request, GError** error);
 static void rygel_http_transcode_handler_real_add_response_headers (RygelHTTPRequestHandler* base, RygelHTTPRequest* request, GError** error);
 GstElement* rygel_media_item_create_stream_source (RygelMediaItem* self);
@@ -366,8 +308,8 @@ static void rygel_http_transcode_handler_real_add_response_headers (RygelHTTPReq
 	g_return_if_fail (request != NULL);
 	_inner_error_ = NULL;
 	soup_message_headers_append (request->msg->response_headers, "Content-Type", rygel_transcoder_get_mime_type (self->priv->transcoder));
-	if (request->time_range != NULL) {
-		rygel_http_seek_add_response_header (request->time_range, request->msg, (gint64) request->item->duration);
+	if (request->seek != NULL) {
+		rygel_http_seek_add_response_headers (request->seek);
 	}
 	RYGEL_HTTP_REQUEST_HANDLER_CLASS (rygel_http_transcode_handler_parent_class)->add_response_headers (RYGEL_HTTP_REQUEST_HANDLER (self), request, &_inner_error_);
 	if (_inner_error_ != NULL) {
@@ -375,7 +317,7 @@ static void rygel_http_transcode_handler_real_add_response_headers (RygelHTTPReq
 			g_propagate_error (error, _inner_error_);
 			return;
 		} else {
-			g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, _inner_error_->message);
+			g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
 			g_clear_error (&_inner_error_);
 			return;
 		}
@@ -405,7 +347,7 @@ static RygelHTTPResponse* rygel_http_transcode_handler_real_render_body (RygelHT
 			} else {
 				_g_object_unref0 (item);
 				_gst_object_unref0 (src);
-				g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, _inner_error_->message);
+				g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
 				g_clear_error (&_inner_error_);
 				return NULL;
 			}
@@ -421,7 +363,7 @@ static RygelHTTPResponse* rygel_http_transcode_handler_real_render_body (RygelHT
 			goto __finally29;
 		}
 		src = (_tmp1_ = _tmp0_, _gst_object_unref0 (src), _tmp1_);
-		_tmp2_ = rygel_live_response_new (request->server, request->msg, "RygelLiveResponse", src, request->time_range, rygel_http_request_handler_get_cancellable ((RygelHTTPRequestHandler*) self), &_inner_error_);
+		_tmp2_ = rygel_live_response_new (request->server, request->msg, "RygelLiveResponse", src, request->seek, rygel_http_request_handler_get_cancellable ((RygelHTTPRequestHandler*) self), &_inner_error_);
 		if (_inner_error_ != NULL) {
 			goto __catch29_g_error;
 			goto __finally29;
@@ -458,7 +400,7 @@ static RygelHTTPResponse* rygel_http_transcode_handler_real_render_body (RygelHT
 		} else {
 			_g_object_unref0 (item);
 			_gst_object_unref0 (src);
-			g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, _inner_error_->message);
+			g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
 			g_clear_error (&_inner_error_);
 			return NULL;
 		}

@@ -578,7 +578,7 @@ static gboolean rygel_media_export_harvester_push_if_changed_or_unknown (RygelMe
 	}
 	__finally10:
 	if (_inner_error_ != NULL) {
-		g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, _inner_error_->message);
+		g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
 		g_clear_error (&_inner_error_);
 		return FALSE;
 	}
@@ -654,7 +654,7 @@ static gboolean rygel_media_export_harvester_process_children (RygelMediaExportH
 						_g_object_unref0 (parent_container);
 						_g_object_unref0 (dir);
 						_g_object_unref0 (file);
-						g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, _inner_error_->message);
+						g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
 						g_clear_error (&_inner_error_);
 						return FALSE;
 					}
@@ -788,7 +788,7 @@ static gboolean rygel_media_export_harvester_enumerate_directory_co (RygelMediaE
 			}
 			__finally12:
 			if (data->_inner_error_ != NULL) {
-				g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, data->_inner_error_->message);
+				g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, data->_inner_error_->message, g_quark_to_string (data->_inner_error_->domain), data->_inner_error_->code);
 				g_clear_error (&data->_inner_error_);
 				return FALSE;
 			}
@@ -875,7 +875,7 @@ static void rygel_media_export_harvester_cleanup_database (RygelMediaExportHarve
 	}
 	__finally13:
 	if (_inner_error_ != NULL) {
-		g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, _inner_error_->message);
+		g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
 		g_clear_error (&_inner_error_);
 		return;
 	}
@@ -1007,7 +1007,7 @@ static gboolean rygel_media_export_harvester_harvest_co (RygelMediaExportHarvest
 			}
 			__finally14:
 			if (data->_inner_error_ != NULL) {
-				g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, data->_inner_error_->message);
+				g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, data->_inner_error_->message, g_quark_to_string (data->_inner_error_->domain), data->_inner_error_->code);
 				g_clear_error (&data->_inner_error_);
 				return FALSE;
 			}
@@ -1078,7 +1078,7 @@ static void rygel_media_export_harvester_on_extracted_cb (RygelMediaExportHarves
 			if (_inner_error_ != NULL) {
 				_g_object_unref0 (item);
 				_rygel_file_queue_entry_unref0 (entry);
-				g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, _inner_error_->message);
+				g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
 				g_clear_error (&_inner_error_);
 				return;
 			}

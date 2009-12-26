@@ -158,7 +158,7 @@ static char* string_replace (const char* self, const char* old, const char* repl
 	}
 	__finally10:
 	if (_inner_error_ != NULL) {
-		g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, _inner_error_->message);
+		g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
 		g_clear_error (&_inner_error_);
 		return NULL;
 	}
@@ -228,7 +228,7 @@ RygelPluginPrefSection* rygel_plugin_pref_section_construct (GType object_type, 
 	__finally8:
 	if (_inner_error_ != NULL) {
 		_g_object_unref0 (title_label);
-		g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, _inner_error_->message);
+		g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
 		g_clear_error (&_inner_error_);
 		return NULL;
 	}
@@ -259,7 +259,7 @@ RygelPluginPrefSection* rygel_plugin_pref_section_construct (GType object_type, 
 	if (_inner_error_ != NULL) {
 		_g_object_unref0 (title_label);
 		_g_free0 (title);
-		g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, _inner_error_->message);
+		g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
 		g_clear_error (&_inner_error_);
 		return NULL;
 	}

@@ -344,7 +344,7 @@ void rygel_media_item_add_uri (RygelMediaItem* self, const char* uri, RygelThumb
 			__finally38:
 			if (_inner_error_ != NULL) {
 				_g_object_unref0 (thumbnailer);
-				g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, _inner_error_->message);
+				g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
 				g_clear_error (&_inner_error_);
 				return;
 			}

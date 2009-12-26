@@ -44,9 +44,10 @@ DIST_COMMON = $(librygelinc_HEADERS) $(srcdir)/Makefile.am \
 	rygel-browse.c rygel-cmdline-config.c rygel-configuration.c \
 	rygel-connection-manager.c rygel-content-directory.c \
 	rygel-database.c rygel-dbus-service.c rygel-didl-lite-writer.c \
-	rygel-gst-utils.c rygel-http-identity-handler.c \
-	rygel-http-request-handler.c rygel-http-request.c \
-	rygel-http-response.c rygel-http-seek.c rygel-http-server.c \
+	rygel-gst-utils.c rygel-http-byte-seek.c \
+	rygel-http-identity-handler.c rygel-http-request-handler.c \
+	rygel-http-request.c rygel-http-response.c rygel-http-seek.c \
+	rygel-http-server.c rygel-http-time-seek.c \
 	rygel-http-transcode-handler.c rygel-icon-info.c \
 	rygel-l16-transcoder-bin.c rygel-l16-transcoder.c \
 	rygel-live-response.c rygel-log-handler.c \
@@ -105,7 +106,8 @@ am__objects_1 = rygel-configuration.$(OBJEXT) \
 	rygel-http-request-handler.$(OBJEXT) \
 	rygel-http-identity-handler.$(OBJEXT) \
 	rygel-http-transcode-handler.$(OBJEXT) \
-	rygel-http-seek.$(OBJEXT) rygel-http-response.$(OBJEXT) \
+	rygel-http-seek.$(OBJEXT) rygel-http-byte-seek.$(OBJEXT) \
+	rygel-http-time-seek.$(OBJEXT) rygel-http-response.$(OBJEXT) \
 	rygel-live-response.$(OBJEXT) \
 	rygel-seekable-response.$(OBJEXT) \
 	rygel-resource-info.$(OBJEXT) rygel-icon-info.$(OBJEXT) \
@@ -407,6 +409,8 @@ VAPI_SOURCE_FILES = rygel-configuration.vala \
 		    rygel-http-identity-handler.vala \
 		    rygel-http-transcode-handler.vala \
 		    rygel-http-seek.vala \
+		    rygel-http-byte-seek.vala \
+		    rygel-http-time-seek.vala \
 		    rygel-http-response.vala \
 		    rygel-live-response.vala \
 		    rygel-seekable-response.vala \
@@ -580,12 +584,14 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-dbus-service.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-didl-lite-writer.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-gst-utils.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-http-byte-seek.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-http-identity-handler.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-http-request-handler.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-http-request.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-http-response.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-http-seek.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-http-server.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-http-time-seek.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-http-transcode-handler.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-icon-info.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-l16-transcoder-bin.Po@am__quote@
@@ -719,6 +725,16 @@ $(srcdir)/rygel-http-transcode-handler.c: $(srcdir)/rygel_vala.stamp
 	  $(am__cd) $(srcdir) && $(MAKE) $(AM_MAKEFLAGS) rygel_vala.stamp; \
 	fi
 $(srcdir)/rygel-http-seek.c: $(srcdir)/rygel_vala.stamp
+	@if test -f $@; then :; else \
+	  rm -f $(srcdir)/rygel_vala.stamp; \
+	  $(am__cd) $(srcdir) && $(MAKE) $(AM_MAKEFLAGS) rygel_vala.stamp; \
+	fi
+$(srcdir)/rygel-http-byte-seek.c: $(srcdir)/rygel_vala.stamp
+	@if test -f $@; then :; else \
+	  rm -f $(srcdir)/rygel_vala.stamp; \
+	  $(am__cd) $(srcdir) && $(MAKE) $(AM_MAKEFLAGS) rygel_vala.stamp; \
+	fi
+$(srcdir)/rygel-http-time-seek.c: $(srcdir)/rygel_vala.stamp
 	@if test -f $@; then :; else \
 	  rm -f $(srcdir)/rygel_vala.stamp; \
 	  $(am__cd) $(srcdir) && $(MAKE) $(AM_MAKEFLAGS) rygel_vala.stamp; \
@@ -1097,12 +1113,14 @@ maintainer-clean-generic:
 	-rm -f rygel-dbus-service.c
 	-rm -f rygel-didl-lite-writer.c
 	-rm -f rygel-gst-utils.c
+	-rm -f rygel-http-byte-seek.c
 	-rm -f rygel-http-identity-handler.c
 	-rm -f rygel-http-request-handler.c
 	-rm -f rygel-http-request.c
 	-rm -f rygel-http-response.c
 	-rm -f rygel-http-seek.c
 	-rm -f rygel-http-server.c
+	-rm -f rygel-http-time-seek.c
 	-rm -f rygel-http-transcode-handler.c
 	-rm -f rygel-icon-info.c
 	-rm -f rygel-l16-transcoder-bin.c

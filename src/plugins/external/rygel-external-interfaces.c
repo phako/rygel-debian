@@ -1648,8 +1648,8 @@ static char** rygel_external_media_container_dbus_proxy_get_items (RygelExternal
 	dbus_g_connection_unref (_connection);
 	dbus_message_unref (_message);
 	dbus_message_iter_init (_reply, &_iter);
-	_result_length1 = 0;
 	dbus_message_iter_recurse (&_iter, &_subiter);
+	_result_length1 = 0;
 	_tmp73_ = g_new (char*, 5);
 	_tmp73__length = 0;
 	_tmp73__size = 4;
@@ -1740,8 +1740,8 @@ static char** rygel_external_media_container_dbus_proxy_get_containers (RygelExt
 	dbus_g_connection_unref (_connection);
 	dbus_message_unref (_message);
 	dbus_message_iter_init (_reply, &_iter);
-	_result_length1 = 0;
 	dbus_message_iter_recurse (&_iter, &_subiter);
+	_result_length1 = 0;
 	_tmp84_ = g_new (char*, 5);
 	_tmp84__length = 0;
 	_tmp84__size = 4;
@@ -3196,8 +3196,8 @@ static char** rygel_external_media_item_dbus_proxy_get_urls (RygelExternalMediaI
 	dbus_g_connection_unref (_connection);
 	dbus_message_unref (_message);
 	dbus_message_iter_init (_reply, &_iter);
-	_result_length1 = 0;
 	dbus_message_iter_recurse (&_iter, &_subiter);
+	_result_length1 = 0;
 	_tmp192_ = g_new (char*, 5);
 	_tmp192__length = 0;
 	_tmp192__size = 4;

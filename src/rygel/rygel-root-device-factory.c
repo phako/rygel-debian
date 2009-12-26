@@ -434,7 +434,7 @@ static char* string_replace (const char* self, const char* old, const char* repl
 	}
 	__finally58:
 	if (_inner_error_ != NULL) {
-		g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, _inner_error_->message);
+		g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
 		g_clear_error (&_inner_error_);
 		return NULL;
 	}
@@ -485,7 +485,7 @@ static void rygel_root_device_factory_set_friendly_name_and_udn (RygelRootDevice
 	__finally57:
 	if (_inner_error_ != NULL) {
 		_g_free0 (title);
-		g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, _inner_error_->message);
+		g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
 		g_clear_error (&_inner_error_);
 		return;
 	}

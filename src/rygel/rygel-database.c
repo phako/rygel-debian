@@ -151,7 +151,7 @@ gint rygel_database_exec (RygelDatabase* self, const char* sql, GValue* values, 
 				g_propagate_error (error, _inner_error_);
 				return 0;
 			} else {
-				g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, _inner_error_->message);
+				g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
 				g_clear_error (&_inner_error_);
 				return 0;
 			}
@@ -181,7 +181,7 @@ gint rygel_database_exec (RygelDatabase* self, const char* sql, GValue* values, 
 				g_propagate_error (error, _inner_error_);
 				return 0;
 			} else {
-				g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, _inner_error_->message);
+				g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
 				g_clear_error (&_inner_error_);
 				return 0;
 			}
@@ -214,7 +214,7 @@ static sqlite3_stmt* rygel_database_prepare_statement (RygelDatabase* self, cons
 				return NULL;
 			} else {
 				_sqlite3_finalize0 (statement);
-				g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, _inner_error_->message);
+				g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
 				g_clear_error (&_inner_error_);
 				return NULL;
 			}
@@ -283,7 +283,7 @@ static sqlite3_stmt* rygel_database_prepare_statement (RygelDatabase* self, cons
 								return NULL;
 							} else {
 								_sqlite3_finalize0 (statement);
-								g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, _inner_error_->message);
+								g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
 								g_clear_error (&_inner_error_);
 								return NULL;
 							}
@@ -325,7 +325,7 @@ void rygel_database_begin (RygelDatabase* self, GError** error) {
 				g_propagate_error (error, _inner_error_);
 				return;
 			} else {
-				g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, _inner_error_->message);
+				g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
 				g_clear_error (&_inner_error_);
 				return;
 			}
@@ -345,7 +345,7 @@ void rygel_database_commit (RygelDatabase* self, GError** error) {
 				g_propagate_error (error, _inner_error_);
 				return;
 			} else {
-				g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, _inner_error_->message);
+				g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
 				g_clear_error (&_inner_error_);
 				return;
 			}

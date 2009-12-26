@@ -132,7 +132,7 @@ RygelGstLaunchRootContainer* rygel_gst_launch_root_container_construct (GType ob
 	}
 	__finally0:
 	if (_inner_error_ != NULL) {
-		g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, _inner_error_->message);
+		g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
 		g_clear_error (&_inner_error_);
 		return NULL;
 	}
@@ -198,7 +198,7 @@ static void rygel_gst_launch_root_container_add_launch_item (RygelGstLaunchRootC
 	}
 	__finally1:
 	if (_inner_error_ != NULL) {
-		g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, _inner_error_->message);
+		g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
 		g_clear_error (&_inner_error_);
 		return;
 	}

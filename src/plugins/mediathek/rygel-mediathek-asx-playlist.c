@@ -208,7 +208,7 @@ void rygel_mediathek_asx_playlist_parse (RygelMediathekAsxPlaylist* self, GError
 			} else {
 				_g_object_unref0 (session);
 				_g_object_unref0 (message);
-				g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, _inner_error_->message);
+				g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
 				g_clear_error (&_inner_error_);
 				return;
 			}
@@ -228,7 +228,7 @@ void rygel_mediathek_asx_playlist_parse (RygelMediathekAsxPlaylist* self, GError
 			} else {
 				_g_object_unref0 (session);
 				_g_object_unref0 (message);
-				g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, _inner_error_->message);
+				g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
 				g_clear_error (&_inner_error_);
 				return;
 			}

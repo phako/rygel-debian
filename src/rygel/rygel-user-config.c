@@ -231,7 +231,7 @@ void rygel_user_config_set_upnp_enabled (RygelUserConfig* self, gboolean value) 
 	}
 	__finally0:
 	if (_inner_error_ != NULL) {
-		g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, _inner_error_->message);
+		g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
 		g_clear_error (&_inner_error_);
 		return;
 	}
@@ -531,7 +531,7 @@ void rygel_user_config_save (RygelUserConfig* self) {
 	if (_inner_error_ != NULL) {
 		_g_free0 (path);
 		_g_free0 (data);
-		g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, _inner_error_->message);
+		g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
 		g_clear_error (&_inner_error_);
 		return;
 	}
@@ -947,7 +947,7 @@ static void rygel_user_config_enable_upnp (RygelUserConfig* self, gboolean enabl
 	__finally3:
 	if (_inner_error_ != NULL) {
 		_g_free0 (dest_dir);
-		g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, _inner_error_->message);
+		g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
 		g_clear_error (&_inner_error_);
 		return;
 	}

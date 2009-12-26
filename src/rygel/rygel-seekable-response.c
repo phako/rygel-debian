@@ -352,7 +352,7 @@ static gboolean rygel_seekable_response_real_run_co (RygelSeekableResponseRunDat
 			}
 			__finally30:
 			if (data->_inner_error_ != NULL) {
-				g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, data->_inner_error_->message);
+				g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, data->_inner_error_->message, g_quark_to_string (data->_inner_error_->domain), data->_inner_error_->code);
 				g_clear_error (&data->_inner_error_);
 				return FALSE;
 			}
@@ -446,7 +446,7 @@ static gboolean rygel_seekable_response_perform_seek_co (RygelSeekableResponsePe
 				}
 				__finally31:
 				if (data->_inner_error_ != NULL) {
-					g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, data->_inner_error_->message);
+					g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, data->_inner_error_->message, g_quark_to_string (data->_inner_error_->domain), data->_inner_error_->code);
 					g_clear_error (&data->_inner_error_);
 					return FALSE;
 				}
@@ -542,7 +542,7 @@ static gboolean rygel_seekable_response_start_reading_co (RygelSeekableResponseS
 			}
 			__finally32:
 			if (data->_inner_error_ != NULL) {
-				g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, data->_inner_error_->message);
+				g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, data->_inner_error_->message, g_quark_to_string (data->_inner_error_->domain), data->_inner_error_->code);
 				g_clear_error (&data->_inner_error_);
 				return FALSE;
 			}
@@ -780,7 +780,7 @@ static gboolean rygel_seekable_response_close_stream_co (RygelSeekableResponseCl
 			}
 			__finally33:
 			if (data->_inner_error_ != NULL) {
-				g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, data->_inner_error_->message);
+				g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, data->_inner_error_->message, g_quark_to_string (data->_inner_error_->domain), data->_inner_error_->code);
 				g_clear_error (&data->_inner_error_);
 				return FALSE;
 			}

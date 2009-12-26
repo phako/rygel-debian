@@ -191,7 +191,7 @@ RygelMediathekAsxPlaylist* rygel_mediathek_video_item_handle_content (xmlNode* g
 					} else {
 						_g_free0 (url);
 						_g_object_unref0 (asx);
-						g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, _inner_error_->message);
+						g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
 						g_clear_error (&_inner_error_);
 						return NULL;
 					}
@@ -207,7 +207,7 @@ RygelMediathekAsxPlaylist* rygel_mediathek_video_item_handle_content (xmlNode* g
 					return NULL;
 				} else {
 					_g_object_unref0 (asx);
-					g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, _inner_error_->message);
+					g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
 					g_clear_error (&_inner_error_);
 					return NULL;
 				}
@@ -222,7 +222,7 @@ RygelMediathekAsxPlaylist* rygel_mediathek_video_item_handle_content (xmlNode* g
 				return NULL;
 			} else {
 				_g_object_unref0 (asx);
-				g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, _inner_error_->message);
+				g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
 				g_clear_error (&_inner_error_);
 				return NULL;
 			}
@@ -302,7 +302,7 @@ RygelMediathekVideoItem* rygel_mediathek_video_item_create_from_xml (RygelMediaC
 												_g_free0 (title);
 												_g_object_unref0 (video_item);
 												_g_object_unref0 (asx);
-												g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, _inner_error_->message);
+												g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
 												g_clear_error (&_inner_error_);
 												return NULL;
 											}
@@ -325,7 +325,7 @@ RygelMediathekVideoItem* rygel_mediathek_video_item_create_from_xml (RygelMediaC
 								_g_free0 (title);
 								_g_object_unref0 (video_item);
 								_g_object_unref0 (asx);
-								g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, _inner_error_->message);
+								g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
 								g_clear_error (&_inner_error_);
 								return NULL;
 							}
@@ -352,7 +352,7 @@ RygelMediathekVideoItem* rygel_mediathek_video_item_create_from_xml (RygelMediaC
 				_g_free0 (title);
 				_g_object_unref0 (video_item);
 				_g_object_unref0 (asx);
-				g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, _inner_error_->message);
+				g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
 				g_clear_error (&_inner_error_);
 				return NULL;
 			}
@@ -371,7 +371,7 @@ RygelMediathekVideoItem* rygel_mediathek_video_item_create_from_xml (RygelMediaC
 				_g_free0 (title);
 				_g_object_unref0 (video_item);
 				_g_object_unref0 (asx);
-				g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, _inner_error_->message);
+				g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
 				g_clear_error (&_inner_error_);
 				return NULL;
 			}

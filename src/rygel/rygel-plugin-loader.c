@@ -290,7 +290,7 @@ void rygel_plugin_loader_add_plugin (RygelPluginLoader* self, RygelPlugin* plugi
 	}
 	__finally34:
 	if (_inner_error_ != NULL) {
-		g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, _inner_error_->message);
+		g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
 		g_clear_error (&_inner_error_);
 		return;
 	}
@@ -423,7 +423,7 @@ static gboolean rygel_plugin_loader_load_modules_from_dir_co (RygelPluginLoaderL
 				_g_free0 (data->attributes);
 				__g_list_free_g_object_unref0 (data->infos);
 				_g_object_unref0 (data->enumerator);
-				g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, data->_inner_error_->message);
+				g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, data->_inner_error_->message, g_quark_to_string (data->_inner_error_->domain), data->_inner_error_->code);
 				g_clear_error (&data->_inner_error_);
 				return FALSE;
 			}
@@ -539,7 +539,7 @@ static gboolean rygel_plugin_loader_is_dir (GFile* file) {
 	__finally36:
 	if (_inner_error_ != NULL) {
 		_g_object_unref0 (file_info);
-		g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, _inner_error_->message);
+		g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
 		g_clear_error (&_inner_error_);
 		return FALSE;
 	}

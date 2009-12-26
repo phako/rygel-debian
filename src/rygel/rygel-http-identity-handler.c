@@ -156,7 +156,6 @@ typedef struct _RygelThumbnailClass RygelThumbnailClass;
 typedef struct _RygelHTTPSeek RygelHTTPSeek;
 typedef struct _RygelHTTPSeekClass RygelHTTPSeekClass;
 typedef struct _RygelIconInfoPrivate RygelIconInfoPrivate;
-#define _g_free0(var) (var = (g_free (var), NULL))
 typedef struct _RygelMediaObjectPrivate RygelMediaObjectPrivate;
 
 #define RYGEL_TYPE_MEDIA_CONTAINER (rygel_media_container_get_type ())
@@ -170,6 +169,7 @@ typedef struct _RygelMediaContainer RygelMediaContainer;
 typedef struct _RygelMediaContainerClass RygelMediaContainerClass;
 typedef struct _RygelMediaItemPrivate RygelMediaItemPrivate;
 #define _g_error_free0(var) ((var == NULL) ? NULL : (var = (g_error_free (var), NULL)))
+#define _g_free0(var) (var = (g_free (var), NULL))
 
 #define RYGEL_TYPE_SEEKABLE_RESPONSE (rygel_seekable_response_get_type ())
 #define RYGEL_SEEKABLE_RESPONSE(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_SEEKABLE_RESPONSE, RygelSeekableResponse))
@@ -236,8 +236,8 @@ struct _RygelHTTPRequest {
 	SoupMessage* msg;
 	RygelMediaItem* item;
 	RygelThumbnail* thumbnail;
-	RygelHTTPSeek* byte_range;
-	RygelHTTPSeek* time_range;
+	RygelHTTPSeek* seek;
+	RygelHTTPRequestHandler* handler;
 };
 
 struct _RygelHTTPRequestClass {
@@ -334,9 +334,7 @@ GType rygel_icon_info_get_type (void);
 GType rygel_thumbnail_get_type (void);
 GType rygel_http_seek_get_type (void);
 GType rygel_media_container_get_type (void);
-gboolean rygel_media_item_should_stream (RygelMediaItem* self);
-void rygel_http_seek_add_response_header (RygelHTTPSeek* self, SoupMessage* msg, gint64 length);
-gint64 rygel_http_seek_get_length (RygelHTTPSeek* self);
+void rygel_http_seek_add_response_headers (RygelHTTPSeek* self);
 void rygel_http_request_handler_add_response_headers (RygelHTTPRequestHandler* self, RygelHTTPRequest* request, GError** error);
 static void rygel_http_identity_handler_real_add_response_headers (RygelHTTPRequestHandler* base, RygelHTTPRequest* request, GError** error);
 static RygelHTTPResponse* rygel_http_identity_handler_render_body_real (RygelHTTPIdentityHandler* self, RygelHTTPRequest* request, GError** error);
@@ -349,6 +347,7 @@ GCancellable* rygel_http_request_handler_get_cancellable (RygelHTTPRequestHandle
 RygelSeekableResponse* rygel_seekable_response_new (SoupServer* server, SoupMessage* msg, const char* uri, RygelHTTPSeek* seek, gsize file_length, GCancellable* cancellable);
 RygelSeekableResponse* rygel_seekable_response_construct (GType object_type, SoupServer* server, SoupMessage* msg, const char* uri, RygelHTTPSeek* seek, gsize file_length, GCancellable* cancellable);
 GType rygel_seekable_response_get_type (void);
+gboolean rygel_media_item_should_stream (RygelMediaItem* self);
 GstElement* rygel_media_item_create_stream_source (RygelMediaItem* self);
 RygelLiveResponse* rygel_live_response_new (SoupServer* server, SoupMessage* msg, const char* name, GstElement* src, RygelHTTPSeek* time_range, GCancellable* cancellable, GError** error);
 RygelLiveResponse* rygel_live_response_construct (GType object_type, SoupServer* server, SoupMessage* msg, const char* name, GstElement* src, RygelHTTPSeek* time_range, GCancellable* cancellable, GError** error);
@@ -372,56 +371,28 @@ RygelHTTPIdentityHandler* rygel_http_identity_handler_new (GCancellable* cancell
 static void rygel_http_identity_handler_real_add_response_headers (RygelHTTPRequestHandler* base, RygelHTTPRequest* request, GError** error) {
 	RygelHTTPIdentityHandler * self;
 	GError * _inner_error_;
-	glong size = 0L;
-	char* mime_type;
-	gboolean _tmp2_ = FALSE;
 	self = (RygelHTTPIdentityHandler*) base;
 	g_return_if_fail (request != NULL);
 	_inner_error_ = NULL;
-	mime_type = NULL;
 	if (request->thumbnail != NULL) {
-		char* _tmp0_;
-		size = ((RygelIconInfo*) request->thumbnail)->size;
-		mime_type = (_tmp0_ = g_strdup (((RygelIconInfo*) request->thumbnail)->mime_type), _g_free0 (mime_type), _tmp0_);
+		soup_message_headers_append (request->msg->response_headers, "Content-Type", ((RygelIconInfo*) request->thumbnail)->mime_type);
 	} else {
-		char* _tmp1_;
-		size = request->item->size;
-		mime_type = (_tmp1_ = g_strdup (request->item->mime_type), _g_free0 (mime_type), _tmp1_);
+		soup_message_headers_append (request->msg->response_headers, "Content-Type", request->item->mime_type);
 	}
-	soup_message_headers_append (request->msg->response_headers, "Content-Type", mime_type);
-	if (size >= 0) {
-		soup_message_headers_set_content_length (request->msg->response_headers, (gint64) size);
-	}
-	if (request->thumbnail == NULL) {
-		_tmp2_ = rygel_media_item_should_stream (request->item);
-	} else {
-		_tmp2_ = FALSE;
-	}
-	if (_tmp2_) {
-		if (request->time_range != NULL) {
-			rygel_http_seek_add_response_header (request->time_range, request->msg, (gint64) request->item->duration);
-		}
-	} else {
-		soup_message_headers_append (request->msg->response_headers, "Accept-Ranges", "bytes");
-		if (request->byte_range != NULL) {
-			soup_message_headers_set_content_length (request->msg->response_headers, rygel_http_seek_get_length (request->byte_range));
-			rygel_http_seek_add_response_header (request->byte_range, request->msg, (gint64) size);
-		}
+	if (request->seek != NULL) {
+		rygel_http_seek_add_response_headers (request->seek);
 	}
 	RYGEL_HTTP_REQUEST_HANDLER_CLASS (rygel_http_identity_handler_parent_class)->add_response_headers (RYGEL_HTTP_REQUEST_HANDLER (self), request, &_inner_error_);
 	if (_inner_error_ != NULL) {
 		if (_inner_error_->domain == RYGEL_HTTP_REQUEST_ERROR) {
 			g_propagate_error (error, _inner_error_);
-			_g_free0 (mime_type);
 			return;
 		} else {
-			_g_free0 (mime_type);
-			g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, _inner_error_->message);
+			g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
 			g_clear_error (&_inner_error_);
 			return;
 		}
 	}
-	_g_free0 (mime_type);
 }
 
 
@@ -463,7 +434,7 @@ static RygelHTTPResponse* rygel_http_identity_handler_real_render_body (RygelHTT
 			g_propagate_error (error, _inner_error_);
 			return NULL;
 		} else {
-			g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, _inner_error_->message);
+			g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
 			g_clear_error (&_inner_error_);
 			return NULL;
 		}
@@ -514,7 +485,7 @@ static RygelHTTPResponse* rygel_http_identity_handler_render_body_real (RygelHTT
 	g_return_val_if_fail (request != NULL, NULL);
 	_inner_error_ = NULL;
 	if (request->thumbnail != NULL) {
-		result = (RygelHTTPResponse*) rygel_seekable_response_new (request->server, request->msg, ((RygelIconInfo*) request->thumbnail)->uri, request->byte_range, (gsize) ((RygelIconInfo*) request->thumbnail)->size, rygel_http_request_handler_get_cancellable ((RygelHTTPRequestHandler*) self));
+		result = (RygelHTTPResponse*) rygel_seekable_response_new (request->server, request->msg, ((RygelIconInfo*) request->thumbnail)->uri, request->seek, (gsize) ((RygelIconInfo*) request->thumbnail)->size, rygel_http_request_handler_get_cancellable ((RygelHTTPRequestHandler*) self));
 		return result;
 	}
 	item = _g_object_ref0 (request->item);
@@ -531,7 +502,7 @@ static RygelHTTPResponse* rygel_http_identity_handler_render_body_real (RygelHTT
 				return NULL;
 			}
 		}
-		_tmp0_ = rygel_live_response_new (request->server, request->msg, "RygelLiveResponse", src, request->time_range, rygel_http_request_handler_get_cancellable ((RygelHTTPRequestHandler*) self), &_inner_error_);
+		_tmp0_ = rygel_live_response_new (request->server, request->msg, "RygelLiveResponse", src, request->seek, rygel_http_request_handler_get_cancellable ((RygelHTTPRequestHandler*) self), &_inner_error_);
 		if (_inner_error_ != NULL) {
 			g_propagate_error (error, _inner_error_);
 			_gst_object_unref0 (src);
@@ -553,7 +524,7 @@ static RygelHTTPResponse* rygel_http_identity_handler_render_body_real (RygelHTT
 				return NULL;
 			}
 		}
-		result = (_tmp2_ = (RygelHTTPResponse*) rygel_seekable_response_new (request->server, request->msg, _tmp1_ = (char*) gee_abstract_list_get ((GeeAbstractList*) ((RygelMediaObject*) item)->uris, 0), request->byte_range, (gsize) item->size, rygel_http_request_handler_get_cancellable ((RygelHTTPRequestHandler*) self)), _g_free0 (_tmp1_), _tmp2_);
+		result = (_tmp2_ = (RygelHTTPResponse*) rygel_seekable_response_new (request->server, request->msg, _tmp1_ = (char*) gee_abstract_list_get ((GeeAbstractList*) ((RygelMediaObject*) item)->uris, 0), request->seek, (gsize) item->size, rygel_http_request_handler_get_cancellable ((RygelHTTPRequestHandler*) self)), _g_free0 (_tmp1_), _tmp2_);
 		_g_object_unref0 (item);
 		return result;
 	}

@@ -390,7 +390,7 @@ static void rygel_live_response_prepare_pipeline (RygelLiveResponse* self, const
 		}
 	}
 	bus = gst_pipeline_get_bus (self->priv->pipeline);
-	gst_bus_add_watch (bus, _rygel_live_response_bus_handler_gst_bus_func, self);
+	gst_bus_add_watch_full (bus, G_PRIORITY_DEFAULT, _rygel_live_response_bus_handler_gst_bus_func, g_object_ref (self), g_object_unref);
 	_gst_object_unref0 (sink);
 	_gst_object_unref0 (bus);
 }

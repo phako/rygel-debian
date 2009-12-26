@@ -473,7 +473,7 @@ static void rygel_media_db_update_v3_v4 (RygelMediaDB* self) {
 	}
 	__finally43:
 	if (_inner_error_ != NULL) {
-		g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, _inner_error_->message);
+		g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
 		g_clear_error (&_inner_error_);
 		return;
 	}
@@ -608,7 +608,7 @@ static void rygel_media_db_update_v4_v5 (RygelMediaDB* self) {
 	}
 	__finally44:
 	if (_inner_error_ != NULL) {
-		g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, _inner_error_->message);
+		g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
 		g_clear_error (&_inner_error_);
 		return;
 	}
@@ -794,7 +794,7 @@ static void rygel_media_db_open_db (RygelMediaDB* self, const char* name) {
 	__finally45:
 	if (_inner_error_ != NULL) {
 		block3_data_unref (_data3_);
-		g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, _inner_error_->message);
+		g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
 		g_clear_error (&_inner_error_);
 		return;
 	}
@@ -845,7 +845,7 @@ RygelMediaDB* rygel_media_db_create (const char* name, GError** error) {
 			return NULL;
 		} else {
 			_g_object_unref0 (instance);
-			g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, _inner_error_->message);
+			g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
 			g_clear_error (&_inner_error_);
 			return NULL;
 		}
@@ -874,7 +874,7 @@ RygelMediaDB* rygel_media_db_create_with_factory (const char* name, RygelMediaDB
 			return NULL;
 		} else {
 			_g_object_unref0 (instance);
-			g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, _inner_error_->message);
+			g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
 			g_clear_error (&_inner_error_);
 			return NULL;
 		}
@@ -914,7 +914,7 @@ void rygel_media_db_remove_by_id (RygelMediaDB* self, const char* id, GError** e
 			return;
 		} else {
 			values = (_vala_GValue_array_free (values, values_length1), NULL);
-			g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, _inner_error_->message);
+			g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
 			g_clear_error (&_inner_error_);
 			return;
 		}
@@ -935,7 +935,7 @@ void rygel_media_db_remove_object (RygelMediaDB* self, RygelMediaObject* obj, GE
 			g_propagate_error (error, _inner_error_);
 			return;
 		} else {
-			g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, _inner_error_->message);
+			g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
 			g_clear_error (&_inner_error_);
 			return;
 		}
@@ -952,7 +952,7 @@ void rygel_media_db_remove_object (RygelMediaDB* self, RygelMediaObject* obj, GE
 					g_propagate_error (error, _inner_error_);
 					return;
 				} else {
-					g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, _inner_error_->message);
+					g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
 					g_clear_error (&_inner_error_);
 					return;
 				}
@@ -1423,7 +1423,7 @@ static gboolean rygel_media_db_create_schema (RygelMediaDB* self) {
 	}
 	__finally50:
 	if (_inner_error_ != NULL) {
-		g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, _inner_error_->message);
+		g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
 		g_clear_error (&_inner_error_);
 		return FALSE;
 	}
@@ -1492,7 +1492,7 @@ static void rygel_media_db_add_uris (RygelMediaDB* self, RygelMediaObject* obj, 
 		} else {
 			values = (_vala_GValue_array_free (values, values_length1), NULL);
 			block5_data_unref (_data5_);
-			g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, _inner_error_->message);
+			g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
 			g_clear_error (&_inner_error_);
 			return;
 		}
@@ -1558,7 +1558,7 @@ static RygelMediaObject* rygel_media_db_get_object_from_statement (RygelMediaDB*
 	__finally51:
 	if (_inner_error_ != NULL) {
 		_g_object_unref0 (obj);
-		g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, _inner_error_->message);
+		g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
 		g_clear_error (&_inner_error_);
 		return NULL;
 	}
@@ -1646,7 +1646,7 @@ RygelMediaObject* rygel_media_db_get_object (RygelMediaDB* self, const char* obj
 			cb_target = NULL;
 			cb_target_destroy_notify = NULL;
 			block6_data_unref (_data6_);
-			g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, _inner_error_->message);
+			g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
 			g_clear_error (&_inner_error_);
 			return NULL;
 		}
@@ -1676,7 +1676,7 @@ RygelMediaItem* rygel_media_db_get_item (RygelMediaDB* self, const char* item_id
 			g_propagate_error (error, _inner_error_);
 			return NULL;
 		} else {
-			g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, _inner_error_->message);
+			g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
 			g_clear_error (&_inner_error_);
 			return NULL;
 		}
@@ -1695,7 +1695,7 @@ RygelMediaItem* rygel_media_db_get_item (RygelMediaDB* self, const char* item_id
 				return NULL;
 			} else {
 				_g_object_unref0 (obj);
-				g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, _inner_error_->message);
+				g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
 				g_clear_error (&_inner_error_);
 				return NULL;
 			}
@@ -1721,7 +1721,7 @@ RygelMediaContainer* rygel_media_db_get_container (RygelMediaDB* self, const cha
 			g_propagate_error (error, _inner_error_);
 			return NULL;
 		} else {
-			g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, _inner_error_->message);
+			g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
 			g_clear_error (&_inner_error_);
 			return NULL;
 		}
@@ -1740,7 +1740,7 @@ RygelMediaContainer* rygel_media_db_get_container (RygelMediaDB* self, const cha
 				return NULL;
 			} else {
 				_g_object_unref0 (obj);
-				g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, _inner_error_->message);
+				g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
 				g_clear_error (&_inner_error_);
 				return NULL;
 			}
@@ -1836,7 +1836,7 @@ GeeArrayList* rygel_media_db_get_child_ids (RygelMediaDB* self, const char* cont
 		} else {
 			values = (_vala_GValue_array_free (values, values_length1), NULL);
 			block7_data_unref (_data7_);
-			g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, _inner_error_->message);
+			g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
 			g_clear_error (&_inner_error_);
 			return NULL;
 		}
@@ -1906,7 +1906,7 @@ gint rygel_media_db_get_child_count (RygelMediaDB* self, const char* container_i
 		} else {
 			values = (_vala_GValue_array_free (values, values_length1), NULL);
 			block8_data_unref (_data8_);
-			g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, _inner_error_->message);
+			g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
 			g_clear_error (&_inner_error_);
 			return 0;
 		}
@@ -1978,7 +1978,7 @@ gboolean rygel_media_db_exists (RygelMediaDB* self, const char* object_id, gint6
 		} else {
 			values = (_vala_GValue_array_free (values, values_length1), NULL);
 			block9_data_unref (_data9_);
-			g_critical ("file %s: line %d: uncaught error: %s", __FILE__, __LINE__, _inner_error_->message);
+			g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
 			g_clear_error (&_inner_error_);
 			return FALSE;
 		}

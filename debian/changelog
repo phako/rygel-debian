@@ -1,3 +1,9 @@
+rygel (0.4.8-1) UNRELEASED; urgency=low
+
+  * Imported Upstream version 0.4.8
+
+ -- Andreas Henriksson <andreas@fatal.se>  Sat, 26 Dec 2009 11:48:21 +0100
+
 rygel (0.4.6-1) unstable; urgency=low
 
   * Set rygel-1.0-dev section to devel.

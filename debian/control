@@ -22,6 +22,7 @@ Vcs-Browser: http://git.debian.org/?p=collab-maint/rygel.git
 Package: rygel
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
+Recommends: gstreamer0.10-plugins-base, gstreamer0.10-plugins-ugly
 Suggests: rygel-tracker, rygel-mediathek
 Description: GNOME UPnP/DLNA services
  Rygel is a collection of DLNA (UPnP AV) services (devices in UPnP speak),

@@ -1,3 +1,9 @@
+rygel (0.4.8-2) UNRELEASED; urgency=low
+
+  * Add recommends on gstreamer plugin sets base and ugly. (Closes: #565284)
+
+ -- Andreas Henriksson <andreas@fatal.se>  Tue, 19 Jan 2010 10:37:38 +0100
+
 rygel (0.4.8-1) unstable; urgency=low
 
   * Imported Upstream version 0.4.8

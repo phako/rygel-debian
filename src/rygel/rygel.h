@@ -751,6 +751,7 @@ struct _RygelRootDeviceFactoryClass {
 struct _RygelMain {
 	GObject parent_instance;
 	RygelMainPrivate * priv;
+	gboolean restart;
 };
 
 struct _RygelMainClass {

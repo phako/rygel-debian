@@ -26,9 +26,9 @@
 #include <glib.h>
 #include <glib-object.h>
 #include <rygel.h>
-#include <gee.h>
 #include <stdlib.h>
 #include <string.h>
+#include <gee.h>
 
 
 #define RYGEL_TYPE_GST_LAUNCH_ROOT_CONTAINER (rygel_gst_launch_root_container_get_type ())
@@ -88,17 +88,26 @@ static void rygel_gst_launch_root_container_finalize (GObject* obj);
 
 
 
+#line 38 "rygel-gst-launch-root-container.vala"
 RygelGstLaunchRootContainer* rygel_gst_launch_root_container_construct (GType object_type, const char* title) {
+#line 94 "rygel-gst-launch-root-container.c"
 	GError * _inner_error_;
 	RygelGstLaunchRootContainer * self;
+#line 38 "rygel-gst-launch-root-container.vala"
 	g_return_val_if_fail (title != NULL, NULL);
+#line 99 "rygel-gst-launch-root-container.c"
 	_inner_error_ = NULL;
+#line 39 "rygel-gst-launch-root-container.vala"
 	self = (RygelGstLaunchRootContainer*) rygel_simple_container_construct_root (object_type, title);
+#line 103 "rygel-gst-launch-root-container.c"
 	{
 		RygelMetaConfig* _tmp0_;
 		GeeArrayList* item_names;
+#line 42 "rygel-gst-launch-root-container.vala"
 		self->priv->config = (_tmp0_ = rygel_meta_config_get_default (), _g_object_unref0 (self->priv->config), _tmp0_);
+#line 44 "rygel-gst-launch-root-container.vala"
 		item_names = rygel_configuration_get_string_list ((RygelConfiguration*) self->priv->config, RYGEL_GST_LAUNCH_ROOT_CONTAINER_CONFIG_GROUP, RYGEL_GST_LAUNCH_ROOT_CONTAINER_ITEM_NAMES, &_inner_error_);
+#line 111 "rygel-gst-launch-root-container.c"
 		if (_inner_error_ != NULL) {
 			goto __catch0_g_error;
 			goto __finally0;
@@ -106,13 +115,21 @@ RygelGstLaunchRootContainer* rygel_gst_launch_root_container_construct (GType ob
 		{
 			GeeIterator* _name_it;
 			_name_it = gee_abstract_collection_iterator ((GeeAbstractCollection*) item_names);
+#line 45 "rygel-gst-launch-root-container.vala"
 			while (TRUE) {
+#line 121 "rygel-gst-launch-root-container.c"
 				char* name;
+#line 45 "rygel-gst-launch-root-container.vala"
 				if (!gee_iterator_next (_name_it)) {
+#line 45 "rygel-gst-launch-root-container.vala"
 					break;
+#line 127 "rygel-gst-launch-root-container.c"
 				}
+#line 45 "rygel-gst-launch-root-container.vala"
 				name = (char*) gee_iterator_get (_name_it);
+#line 46 "rygel-gst-launch-root-container.vala"
 				rygel_gst_launch_root_container_add_launch_item (self, name);
+#line 133 "rygel-gst-launch-root-container.c"
 				_g_free0 (name);
 			}
 			_g_object_unref0 (_name_it);
@@ -126,7 +143,9 @@ RygelGstLaunchRootContainer* rygel_gst_launch_root_container_construct (GType ob
 		err = _inner_error_;
 		_inner_error_ = NULL;
 		{
+#line 49 "rygel-gst-launch-root-container.vala"
 			g_debug ("rygel-gst-launch-root-container.vala:49: GstLaunch init failed: %s", err->message);
+#line 149 "rygel-gst-launch-root-container.c"
 			_g_error_free0 (err);
 		}
 	}
@@ -140,15 +159,23 @@ RygelGstLaunchRootContainer* rygel_gst_launch_root_container_construct (GType ob
 }
 
 
+#line 38 "rygel-gst-launch-root-container.vala"
 RygelGstLaunchRootContainer* rygel_gst_launch_root_container_new (const char* title) {
+#line 38 "rygel-gst-launch-root-container.vala"
 	return rygel_gst_launch_root_container_construct (RYGEL_TYPE_GST_LAUNCH_ROOT_CONTAINER, title);
+#line 167 "rygel-gst-launch-root-container.c"
 }
 
 
+#line 53 "rygel-gst-launch-root-container.vala"
 static void rygel_gst_launch_root_container_add_launch_item (RygelGstLaunchRootContainer* self, const char* name) {
+#line 173 "rygel-gst-launch-root-container.c"
 	GError * _inner_error_;
+#line 53 "rygel-gst-launch-root-container.vala"
 	g_return_if_fail (self != NULL);
+#line 53 "rygel-gst-launch-root-container.vala"
 	g_return_if_fail (name != NULL);
+#line 179 "rygel-gst-launch-root-container.c"
 	_inner_error_ = NULL;
 	{
 		char* _tmp0_;
@@ -161,25 +188,33 @@ static void rygel_gst_launch_root_container_add_launch_item (RygelGstLaunchRootC
 		char* _tmp5_;
 		char* launch_line;
 		RygelGstLaunchItem* _tmp6_;
+#line 55 "rygel-gst-launch-root-container.vala"
 		title = (_tmp1_ = rygel_configuration_get_string ((RygelConfiguration*) self->priv->config, RYGEL_GST_LAUNCH_ROOT_CONTAINER_CONFIG_GROUP, _tmp0_ = g_strdup_printf ("%s_title", name), &_inner_error_), _g_free0 (_tmp0_), _tmp1_);
+#line 194 "rygel-gst-launch-root-container.c"
 		if (_inner_error_ != NULL) {
 			goto __catch1_g_error;
 			goto __finally1;
 		}
+#line 57 "rygel-gst-launch-root-container.vala"
 		mime_type = (_tmp3_ = rygel_configuration_get_string ((RygelConfiguration*) self->priv->config, RYGEL_GST_LAUNCH_ROOT_CONTAINER_CONFIG_GROUP, _tmp2_ = g_strdup_printf ("%s_mime", name), &_inner_error_), _g_free0 (_tmp2_), _tmp3_);
+#line 201 "rygel-gst-launch-root-container.c"
 		if (_inner_error_ != NULL) {
 			_g_free0 (title);
 			goto __catch1_g_error;
 			goto __finally1;
 		}
+#line 59 "rygel-gst-launch-root-container.vala"
 		launch_line = (_tmp5_ = rygel_configuration_get_string ((RygelConfiguration*) self->priv->config, RYGEL_GST_LAUNCH_ROOT_CONTAINER_CONFIG_GROUP, _tmp4_ = g_strdup_printf ("%s_launch", name), &_inner_error_), _g_free0 (_tmp4_), _tmp5_);
+#line 209 "rygel-gst-launch-root-container.c"
 		if (_inner_error_ != NULL) {
 			_g_free0 (title);
 			_g_free0 (mime_type);
 			goto __catch1_g_error;
 			goto __finally1;
 		}
+#line 62 "rygel-gst-launch-root-container.vala"
 		rygel_simple_container_add_child ((RygelSimpleContainer*) self, (RygelMediaObject*) (_tmp6_ = rygel_gst_launch_item_new (name, (RygelMediaContainer*) self, title, mime_type, launch_line)));
+#line 218 "rygel-gst-launch-root-container.c"
 		_g_object_unref0 (_tmp6_);
 		_g_free0 (title);
 		_g_free0 (mime_type);
@@ -192,7 +227,9 @@ static void rygel_gst_launch_root_container_add_launch_item (RygelGstLaunchRootC
 		err = _inner_error_;
 		_inner_error_ = NULL;
 		{
+#line 68 "rygel-gst-launch-root-container.vala"
 			g_debug ("rygel-gst-launch-root-container.vala:68: GstLaunch failed item '%s': %s", name, err->message);
+#line 233 "rygel-gst-launch-root-container.c"
 			_g_error_free0 (err);
 		}
 	}

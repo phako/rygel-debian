@@ -77,15 +77,22 @@ static gboolean rygel_null_container_real_get_children_co (RygelNullContainerGet
 
 
 
+#line 29 "rygel-media-export-null-container.vala"
 RygelNullContainer* rygel_null_container_construct (GType object_type) {
+#line 83 "rygel-media-export-null-container.c"
 	RygelNullContainer * self;
+#line 30 "rygel-media-export-null-container.vala"
 	self = (RygelNullContainer*) rygel_media_container_construct_root (object_type, "MediaExport", (guint) 0);
+#line 87 "rygel-media-export-null-container.c"
 	return self;
 }
 
 
+#line 29 "rygel-media-export-null-container.vala"
 RygelNullContainer* rygel_null_container_new (void) {
+#line 29 "rygel-media-export-null-container.vala"
 	return rygel_null_container_construct (RYGEL_TYPE_NULL_CONTAINER);
+#line 96 "rygel-media-export-null-container.c"
 }
 
 

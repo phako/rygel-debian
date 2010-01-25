@@ -90,20 +90,30 @@ GQuark rygel_mediathek_asx_playlist_error_quark (void) {
 }
 
 
+#line 46 "rygel-mediathek-asx-playlist.vala"
 RygelMediathekAsxPlaylist* rygel_mediathek_asx_playlist_construct (GType object_type, const char* uri) {
+#line 96 "rygel-mediathek-asx-playlist.c"
 	RygelMediathekAsxPlaylist * self;
 	GeeArrayList* _tmp0_;
 	char* _tmp1_;
+#line 46 "rygel-mediathek-asx-playlist.vala"
 	g_return_val_if_fail (uri != NULL, NULL);
+#line 46 "rygel-mediathek-asx-playlist.vala"
 	self = (RygelMediathekAsxPlaylist*) g_object_new (object_type, NULL);
+#line 47 "rygel-mediathek-asx-playlist.vala"
 	self->uris = (_tmp0_ = gee_array_list_new (G_TYPE_STRING, (GBoxedCopyFunc) g_strdup, g_free, NULL), _g_object_unref0 (self->uris), _tmp0_);
+#line 48 "rygel-mediathek-asx-playlist.vala"
 	self->priv->uri = (_tmp1_ = g_strdup (uri), _g_free0 (self->priv->uri), _tmp1_);
+#line 108 "rygel-mediathek-asx-playlist.c"
 	return self;
 }
 
 
+#line 46 "rygel-mediathek-asx-playlist.vala"
 RygelMediathekAsxPlaylist* rygel_mediathek_asx_playlist_new (const char* uri) {
+#line 46 "rygel-mediathek-asx-playlist.vala"
 	return rygel_mediathek_asx_playlist_construct (RYGEL_TYPE_MEDIATHEK_ASX_PLAYLIST, uri);
+#line 117 "rygel-mediathek-asx-playlist.c"
 }
 
 
@@ -111,33 +121,48 @@ static glong string_get_length (const char* self) {
 	glong result;
 	g_return_val_if_fail (self != NULL, 0L);
 	result = g_utf8_strlen (self, -1);
+#line 1037 "glib-2.0.vapi"
 	return result;
+#line 127 "rygel-mediathek-asx-playlist.c"
 }
 
 
+#line 61 "rygel-mediathek-asx-playlist.vala"
 void rygel_mediathek_asx_playlist_parse (RygelMediathekAsxPlaylist* self, GError** error) {
+#line 133 "rygel-mediathek-asx-playlist.c"
 	GError * _inner_error_;
 	SoupSessionSync* session;
 	SoupMessage* message;
 	guint _tmp0_;
+#line 61 "rygel-mediathek-asx-playlist.vala"
 	g_return_if_fail (self != NULL);
+#line 140 "rygel-mediathek-asx-playlist.c"
 	_inner_error_ = NULL;
+#line 63 "rygel-mediathek-asx-playlist.vala"
 	session = (SoupSessionSync*) soup_session_sync_new ();
+#line 64 "rygel-mediathek-asx-playlist.vala"
 	message = soup_message_new ("GET", self->priv->uri);
+#line 67 "rygel-mediathek-asx-playlist.vala"
 	soup_session_send_message ((SoupSession*) session, message);
+#line 68 "rygel-mediathek-asx-playlist.vala"
 	if ((g_object_get (message, "status-code", &_tmp0_, NULL), _tmp0_) == 200) {
+#line 150 "rygel-mediathek-asx-playlist.c"
 		{
 			GRegex* normalizer;
 			char* normalized_content;
 			xmlDoc* doc;
+#line 71 "rygel-mediathek-asx-playlist.vala"
 			normalizer = g_regex_new ("(<[/]?)([a-zA-Z:]+)", 0, 0, &_inner_error_);
+#line 157 "rygel-mediathek-asx-playlist.c"
 			if (_inner_error_ != NULL) {
 				if (_inner_error_->domain == G_REGEX_ERROR) {
 					goto __catch0_g_regex_error;
 				}
 				goto __finally0;
 			}
+#line 73 "rygel-mediathek-asx-playlist.vala"
 			normalized_content = g_regex_replace (normalizer, message->response_body->data, (gssize) ((glong) message->response_body->length), 0, "\\1\\L\\2\\E", 0, &_inner_error_);
+#line 166 "rygel-mediathek-asx-playlist.c"
 			if (_inner_error_ != NULL) {
 				_g_regex_unref0 (normalizer);
 				if (_inner_error_->domain == G_REGEX_ERROR) {
@@ -145,30 +170,52 @@ void rygel_mediathek_asx_playlist_parse (RygelMediathekAsxPlaylist* self, GError
 				}
 				goto __finally0;
 			}
+#line 78 "rygel-mediathek-asx-playlist.vala"
 			doc = xmlParseMemory (normalized_content, (gint) string_get_length (normalized_content));
+#line 81 "rygel-mediathek-asx-playlist.vala"
 			if (doc != NULL) {
+#line 178 "rygel-mediathek-asx-playlist.c"
 				xmlXPathContext* ctx;
 				xmlXPathObject* xpo;
+#line 82 "rygel-mediathek-asx-playlist.vala"
 				ctx = xmlXPathNewContext (doc);
+#line 83 "rygel-mediathek-asx-playlist.vala"
 				xpo = xmlXPathEval ("/asx/entry/ref/@href", ctx);
+#line 84 "rygel-mediathek-asx-playlist.vala"
 				if (xpo->type == XPATH_NODESET) {
+#line 187 "rygel-mediathek-asx-playlist.c"
 					{
 						gint i;
+#line 85 "rygel-mediathek-asx-playlist.vala"
 						i = 0;
+#line 192 "rygel-mediathek-asx-playlist.c"
 						{
 							gboolean _tmp1_;
+#line 85 "rygel-mediathek-asx-playlist.vala"
 							_tmp1_ = TRUE;
+#line 85 "rygel-mediathek-asx-playlist.vala"
 							while (TRUE) {
+#line 199 "rygel-mediathek-asx-playlist.c"
 								xmlNode* item;
+#line 85 "rygel-mediathek-asx-playlist.vala"
 								if (!_tmp1_) {
+#line 85 "rygel-mediathek-asx-playlist.vala"
 									i++;
+#line 205 "rygel-mediathek-asx-playlist.c"
 								}
+#line 85 "rygel-mediathek-asx-playlist.vala"
 								_tmp1_ = FALSE;
+#line 85 "rygel-mediathek-asx-playlist.vala"
 								if (!(i < xmlXPathNodeSetGetLength (xpo->nodesetval))) {
+#line 85 "rygel-mediathek-asx-playlist.vala"
 									break;
+#line 213 "rygel-mediathek-asx-playlist.c"
 								}
+#line 86 "rygel-mediathek-asx-playlist.vala"
 								item = xmlXPathNodeSetItem (xpo->nodesetval, i);
+#line 87 "rygel-mediathek-asx-playlist.vala"
 								gee_abstract_collection_add ((GeeAbstractCollection*) self->uris, item->children->content);
+#line 219 "rygel-mediathek-asx-playlist.c"
 							}
 						}
 					}

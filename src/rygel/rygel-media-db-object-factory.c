@@ -126,49 +126,82 @@ RygelMediaDBObjectFactory* rygel_media_db_object_factory_construct (GType object
 
 
 
+#line 43 "rygel-media-db-object-factory.vala"
 static RygelMediaContainer* rygel_media_db_object_factory_real_get_container (RygelMediaDBObjectFactory* self, RygelMediaDB* media_db, const char* id, const char* title, guint child_count) {
+#line 132 "rygel-media-db-object-factory.c"
 	RygelMediaContainer* result;
+#line 43 "rygel-media-db-object-factory.vala"
 	g_return_val_if_fail (self != NULL, NULL);
+#line 43 "rygel-media-db-object-factory.vala"
 	g_return_val_if_fail (media_db != NULL, NULL);
+#line 43 "rygel-media-db-object-factory.vala"
 	g_return_val_if_fail (id != NULL, NULL);
+#line 43 "rygel-media-db-object-factory.vala"
 	g_return_val_if_fail (title != NULL, NULL);
+#line 142 "rygel-media-db-object-factory.c"
 	result = (RygelMediaContainer*) rygel_media_db_container_new (media_db, id, title);
+#line 47 "rygel-media-db-object-factory.vala"
 	return result;
+#line 146 "rygel-media-db-object-factory.c"
 }
 
 
+#line 43 "rygel-media-db-object-factory.vala"
 RygelMediaContainer* rygel_media_db_object_factory_get_container (RygelMediaDBObjectFactory* self, RygelMediaDB* media_db, const char* id, const char* title, guint child_count) {
+#line 43 "rygel-media-db-object-factory.vala"
 	return RYGEL_MEDIA_DB_OBJECT_FACTORY_GET_CLASS (self)->get_container (self, media_db, id, title, child_count);
+#line 154 "rygel-media-db-object-factory.c"
 }
 
 
+#line 58 "rygel-media-db-object-factory.vala"
 static RygelMediaItem* rygel_media_db_object_factory_real_get_item (RygelMediaDBObjectFactory* self, RygelMediaDB* media_db, RygelMediaContainer* parent, const char* id, const char* title, const char* upnp_class) {
+#line 160 "rygel-media-db-object-factory.c"
 	RygelMediaItem* result;
+#line 58 "rygel-media-db-object-factory.vala"
 	g_return_val_if_fail (self != NULL, NULL);
+#line 58 "rygel-media-db-object-factory.vala"
 	g_return_val_if_fail (media_db != NULL, NULL);
+#line 58 "rygel-media-db-object-factory.vala"
 	g_return_val_if_fail (parent != NULL, NULL);
+#line 58 "rygel-media-db-object-factory.vala"
 	g_return_val_if_fail (id != NULL, NULL);
+#line 58 "rygel-media-db-object-factory.vala"
 	g_return_val_if_fail (title != NULL, NULL);
+#line 58 "rygel-media-db-object-factory.vala"
 	g_return_val_if_fail (upnp_class != NULL, NULL);
+#line 174 "rygel-media-db-object-factory.c"
 	result = rygel_media_item_new (id, parent, title, upnp_class);
+#line 63 "rygel-media-db-object-factory.vala"
 	return result;
+#line 178 "rygel-media-db-object-factory.c"
 }
 
 
+#line 58 "rygel-media-db-object-factory.vala"
 RygelMediaItem* rygel_media_db_object_factory_get_item (RygelMediaDBObjectFactory* self, RygelMediaDB* media_db, RygelMediaContainer* parent, const char* id, const char* title, const char* upnp_class) {
+#line 58 "rygel-media-db-object-factory.vala"
 	return RYGEL_MEDIA_DB_OBJECT_FACTORY_GET_CLASS (self)->get_item (self, media_db, parent, id, title, upnp_class);
+#line 186 "rygel-media-db-object-factory.c"
 }
 
 
+#line 35 "rygel-media-db-object-factory.vala"
 RygelMediaDBObjectFactory* rygel_media_db_object_factory_construct (GType object_type) {
+#line 192 "rygel-media-db-object-factory.c"
 	RygelMediaDBObjectFactory * self;
+#line 35 "rygel-media-db-object-factory.vala"
 	self = (RygelMediaDBObjectFactory*) g_object_new (object_type, NULL);
+#line 196 "rygel-media-db-object-factory.c"
 	return self;
 }
 
 
+#line 35 "rygel-media-db-object-factory.vala"
 RygelMediaDBObjectFactory* rygel_media_db_object_factory_new (void) {
+#line 35 "rygel-media-db-object-factory.vala"
 	return rygel_media_db_object_factory_construct (RYGEL_TYPE_MEDIA_DB_OBJECT_FACTORY);
+#line 205 "rygel-media-db-object-factory.c"
 }
 
 

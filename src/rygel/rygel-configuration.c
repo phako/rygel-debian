@@ -104,78 +104,123 @@ GQuark rygel_configuration_error_quark (void) {
 }
 
 
+#line 36 "rygel-configuration.vala"
 gboolean rygel_configuration_get_upnp_enabled (RygelConfiguration* self, GError** error) {
+#line 36 "rygel-configuration.vala"
 	return RYGEL_CONFIGURATION_GET_INTERFACE (self)->get_upnp_enabled (self, error);
+#line 112 "rygel-configuration.c"
 }
 
 
+#line 38 "rygel-configuration.vala"
 char* rygel_configuration_get_interface (RygelConfiguration* self, GError** error) {
+#line 38 "rygel-configuration.vala"
 	return RYGEL_CONFIGURATION_GET_INTERFACE (self)->get_interface (self, error);
+#line 120 "rygel-configuration.c"
 }
 
 
+#line 40 "rygel-configuration.vala"
 gint rygel_configuration_get_port (RygelConfiguration* self, GError** error) {
+#line 40 "rygel-configuration.vala"
 	return RYGEL_CONFIGURATION_GET_INTERFACE (self)->get_port (self, error);
+#line 128 "rygel-configuration.c"
 }
 
 
+#line 42 "rygel-configuration.vala"
 gboolean rygel_configuration_get_transcoding (RygelConfiguration* self, GError** error) {
+#line 42 "rygel-configuration.vala"
 	return RYGEL_CONFIGURATION_GET_INTERFACE (self)->get_transcoding (self, error);
+#line 136 "rygel-configuration.c"
 }
 
 
+#line 44 "rygel-configuration.vala"
 gboolean rygel_configuration_get_mp3_transcoder (RygelConfiguration* self, GError** error) {
+#line 44 "rygel-configuration.vala"
 	return RYGEL_CONFIGURATION_GET_INTERFACE (self)->get_mp3_transcoder (self, error);
+#line 144 "rygel-configuration.c"
 }
 
 
+#line 46 "rygel-configuration.vala"
 gboolean rygel_configuration_get_mp2ts_transcoder (RygelConfiguration* self, GError** error) {
+#line 46 "rygel-configuration.vala"
 	return RYGEL_CONFIGURATION_GET_INTERFACE (self)->get_mp2ts_transcoder (self, error);
+#line 152 "rygel-configuration.c"
 }
 
 
+#line 48 "rygel-configuration.vala"
 gboolean rygel_configuration_get_lpcm_transcoder (RygelConfiguration* self, GError** error) {
+#line 48 "rygel-configuration.vala"
 	return RYGEL_CONFIGURATION_GET_INTERFACE (self)->get_lpcm_transcoder (self, error);
+#line 160 "rygel-configuration.c"
 }
 
 
+#line 50 "rygel-configuration.vala"
 RygelLogLevel rygel_configuration_get_log_level (RygelConfiguration* self, GError** error) {
+#line 50 "rygel-configuration.vala"
 	return RYGEL_CONFIGURATION_GET_INTERFACE (self)->get_log_level (self, error);
+#line 168 "rygel-configuration.c"
 }
 
 
+#line 52 "rygel-configuration.vala"
 gboolean rygel_configuration_get_enabled (RygelConfiguration* self, const char* section, GError** error) {
+#line 52 "rygel-configuration.vala"
 	return RYGEL_CONFIGURATION_GET_INTERFACE (self)->get_enabled (self, section, error);
+#line 176 "rygel-configuration.c"
 }
 
 
+#line 54 "rygel-configuration.vala"
 char* rygel_configuration_get_title (RygelConfiguration* self, const char* section, GError** error) {
+#line 54 "rygel-configuration.vala"
 	return RYGEL_CONFIGURATION_GET_INTERFACE (self)->get_title (self, section, error);
+#line 184 "rygel-configuration.c"
 }
 
 
+#line 56 "rygel-configuration.vala"
 char* rygel_configuration_get_string (RygelConfiguration* self, const char* section, const char* key, GError** error) {
+#line 56 "rygel-configuration.vala"
 	return RYGEL_CONFIGURATION_GET_INTERFACE (self)->get_string (self, section, key, error);
+#line 192 "rygel-configuration.c"
 }
 
 
+#line 59 "rygel-configuration.vala"
 GeeArrayList* rygel_configuration_get_string_list (RygelConfiguration* self, const char* section, const char* key, GError** error) {
+#line 59 "rygel-configuration.vala"
 	return RYGEL_CONFIGURATION_GET_INTERFACE (self)->get_string_list (self, section, key, error);
+#line 200 "rygel-configuration.c"
 }
 
 
+#line 64 "rygel-configuration.vala"
 gint rygel_configuration_get_int (RygelConfiguration* self, const char* section, const char* key, gint min, gint max, GError** error) {
+#line 64 "rygel-configuration.vala"
 	return RYGEL_CONFIGURATION_GET_INTERFACE (self)->get_int (self, section, key, min, max, error);
+#line 208 "rygel-configuration.c"
 }
 
 
+#line 70 "rygel-configuration.vala"
 GeeArrayList* rygel_configuration_get_int_list (RygelConfiguration* self, const char* section, const char* key, GError** error) {
+#line 70 "rygel-configuration.vala"
 	return RYGEL_CONFIGURATION_GET_INTERFACE (self)->get_int_list (self, section, key, error);
+#line 216 "rygel-configuration.c"
 }
 
 
+#line 74 "rygel-configuration.vala"
 gboolean rygel_configuration_get_bool (RygelConfiguration* self, const char* section, const char* key, GError** error) {
+#line 74 "rygel-configuration.vala"
 	return RYGEL_CONFIGURATION_GET_INTERFACE (self)->get_bool (self, section, key, error);
+#line 224 "rygel-configuration.c"
 }
 
 

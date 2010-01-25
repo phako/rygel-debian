@@ -90,22 +90,34 @@ static GstElement* rygel_test_audio_item_real_create_stream_source (RygelMediaIt
 
 
 
+#line 35 "rygel-test-audio-item.vala"
 RygelTestAudioItem* rygel_test_audio_item_construct (GType object_type, const char* id, RygelMediaContainer* parent, const char* title) {
+#line 96 "rygel-test-audio-item.c"
 	RygelTestAudioItem * self;
+#line 35 "rygel-test-audio-item.vala"
 	g_return_val_if_fail (id != NULL, NULL);
+#line 35 "rygel-test-audio-item.vala"
 	g_return_val_if_fail (parent != NULL, NULL);
+#line 35 "rygel-test-audio-item.vala"
 	g_return_val_if_fail (title != NULL, NULL);
+#line 38 "rygel-test-audio-item.vala"
 	self = (RygelTestAudioItem*) rygel_test_item_construct (object_type, id, parent, title, RYGEL_TEST_AUDIO_ITEM_TEST_MIMETYPE, RYGEL_MEDIA_ITEM_AUDIO_CLASS);
+#line 106 "rygel-test-audio-item.c"
 	return self;
 }
 
 
+#line 35 "rygel-test-audio-item.vala"
 RygelTestAudioItem* rygel_test_audio_item_new (const char* id, RygelMediaContainer* parent, const char* title) {
+#line 35 "rygel-test-audio-item.vala"
 	return rygel_test_audio_item_construct (RYGEL_TYPE_TEST_AUDIO_ITEM, id, parent, title);
+#line 115 "rygel-test-audio-item.c"
 }
 
 
+#line 45 "rygel-test-audio-item.vala"
 static GstElement* rygel_test_audio_item_real_create_stream_source (RygelMediaItem* base) {
+#line 121 "rygel-test-audio-item.c"
 	RygelTestAudioItem * self;
 	GstElement* result;
 	GError * _inner_error_;
@@ -113,13 +125,17 @@ static GstElement* rygel_test_audio_item_real_create_stream_source (RygelMediaIt
 	_inner_error_ = NULL;
 	{
 		GstElement* _tmp0_;
+#line 47 "rygel-test-audio-item.vala"
 		_tmp0_ = gst_parse_bin_from_description ("audiotestsrc is-live=1 ! wavenc", TRUE, &_inner_error_);
+#line 131 "rygel-test-audio-item.c"
 		if (_inner_error_ != NULL) {
 			goto __catch0_g_error;
 			goto __finally0;
 		}
 		result = _tmp0_;
+#line 47 "rygel-test-audio-item.vala"
 		return result;
+#line 139 "rygel-test-audio-item.c"
 	}
 	goto __finally0;
 	__catch0_g_error:
@@ -128,10 +144,14 @@ static GstElement* rygel_test_audio_item_real_create_stream_source (RygelMediaIt
 		err = _inner_error_;
 		_inner_error_ = NULL;
 		{
+#line 49 "rygel-test-audio-item.vala"
 			g_warning ("rygel-test-audio-item.vala:49: Required plugin missing (%s)", err->message);
+#line 150 "rygel-test-audio-item.c"
 			result = NULL;
 			_g_error_free0 (err);
+#line 50 "rygel-test-audio-item.vala"
 			return result;
+#line 155 "rygel-test-audio-item.c"
 		}
 	}
 	__finally0:

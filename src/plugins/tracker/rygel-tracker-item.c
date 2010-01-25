@@ -121,40 +121,63 @@ GType rygel_tracker_item_metadata_get_type (void) {
 }
 
 
+#line 66 "rygel-tracker-item.vala"
 RygelTrackerItem* rygel_tracker_item_construct (GType object_type, const char* id, const char* path, RygelTrackerSearchContainer* parent, const char* upnp_class, char** metadata, int metadata_length1, GError** error) {
+#line 127 "rygel-tracker-item.c"
 	GError * _inner_error_;
 	RygelTrackerItem * self;
 	char* _tmp0_;
 	char* _tmp2_;
 	char* _tmp3_;
 	char* _tmp4_;
+#line 66 "rygel-tracker-item.vala"
 	g_return_val_if_fail (id != NULL, NULL);
+#line 66 "rygel-tracker-item.vala"
 	g_return_val_if_fail (path != NULL, NULL);
+#line 66 "rygel-tracker-item.vala"
 	g_return_val_if_fail (parent != NULL, NULL);
+#line 66 "rygel-tracker-item.vala"
 	g_return_val_if_fail (upnp_class != NULL, NULL);
+#line 142 "rygel-tracker-item.c"
 	_inner_error_ = NULL;
+#line 72 "rygel-tracker-item.vala"
 	self = (RygelTrackerItem*) rygel_media_item_construct (object_type, id, (RygelMediaContainer*) parent, "", upnp_class);
+#line 74 "rygel-tracker-item.vala"
 	self->path = (_tmp0_ = g_strdup (path), _g_free0 (self->path), _tmp0_);
+#line 76 "rygel-tracker-item.vala"
 	if (_vala_strcmp0 (metadata[RYGEL_TRACKER_ITEM_METADATA_SIZE], "") != 0) {
+#line 77 "rygel-tracker-item.vala"
 		((RygelMediaItem*) self)->size = (glong) atoi (metadata[RYGEL_TRACKER_ITEM_METADATA_SIZE]);
+#line 152 "rygel-tracker-item.c"
 	}
+#line 79 "rygel-tracker-item.vala"
 	if (_vala_strcmp0 (metadata[RYGEL_TRACKER_ITEM_METADATA_DATE], "") != 0) {
+#line 156 "rygel-tracker-item.c"
 		char* _tmp1_;
+#line 80 "rygel-tracker-item.vala"
 		((RygelMediaItem*) self)->date = (_tmp1_ = rygel_tracker_item_seconds_to_iso8601 (self, metadata[RYGEL_TRACKER_ITEM_METADATA_DATE]), _g_free0 (((RygelMediaItem*) self)->date), _tmp1_);
+#line 160 "rygel-tracker-item.c"
 	}
+#line 82 "rygel-tracker-item.vala"
 	((RygelMediaItem*) self)->mime_type = (_tmp2_ = g_strdup (metadata[RYGEL_TRACKER_ITEM_METADATA_MIME]), _g_free0 (((RygelMediaItem*) self)->mime_type), _tmp2_);
+#line 84 "rygel-tracker-item.vala"
 	_tmp3_ = g_filename_to_uri (path, NULL, &_inner_error_);
+#line 166 "rygel-tracker-item.c"
 	if (_inner_error_ != NULL) {
 		g_propagate_error (error, _inner_error_);
 		return NULL;
 	}
+#line 84 "rygel-tracker-item.vala"
 	rygel_media_item_add_uri ((RygelMediaItem*) self, _tmp4_ = _tmp3_, NULL);
+#line 173 "rygel-tracker-item.c"
 	_g_free0 (_tmp4_);
 	return self;
 }
 
 
+#line 87 "rygel-tracker-item.vala"
 char** rygel_tracker_item_get_metadata_keys (int* result_length1) {
+#line 181 "rygel-tracker-item.c"
 	char** result;
 	char** _tmp0_;
 	gint keys_size;
@@ -184,54 +207,95 @@ char** rygel_tracker_item_get_metadata_keys (int* result_length1) {
 	char* _tmp22_;
 	char** _tmp23_;
 	keys = (_tmp0_ = g_new0 (char*, RYGEL_TRACKER_ITEM_METADATA_LAST_KEY + 1), keys_length1 = RYGEL_TRACKER_ITEM_METADATA_LAST_KEY, keys_size = keys_length1, _tmp0_);
+#line 89 "rygel-tracker-item.vala"
 	keys[RYGEL_TRACKER_ITEM_METADATA_FILE_NAME] = (_tmp1_ = g_strdup ("File:Name"), _g_free0 (keys[RYGEL_TRACKER_ITEM_METADATA_FILE_NAME]), _tmp1_);
+#line 90 "rygel-tracker-item.vala"
 	keys[RYGEL_TRACKER_ITEM_METADATA_MIME] = (_tmp2_ = g_strdup ("File:Mime"), _g_free0 (keys[RYGEL_TRACKER_ITEM_METADATA_MIME]), _tmp2_);
+#line 91 "rygel-tracker-item.vala"
 	keys[RYGEL_TRACKER_ITEM_METADATA_SIZE] = (_tmp3_ = g_strdup ("File:Size"), _g_free0 (keys[RYGEL_TRACKER_ITEM_METADATA_SIZE]), _tmp3_);
+#line 92 "rygel-tracker-item.vala"
 	keys[RYGEL_TRACKER_ITEM_METADATA_DATE] = (_tmp4_ = g_strdup ("DC:Date"), _g_free0 (keys[RYGEL_TRACKER_ITEM_METADATA_DATE]), _tmp4_);
+#line 95 "rygel-tracker-item.vala"
 	keys[RYGEL_TRACKER_ITEM_METADATA_IMAGE_TITLE] = (_tmp5_ = g_strdup ("Image:Title"), _g_free0 (keys[RYGEL_TRACKER_ITEM_METADATA_IMAGE_TITLE]), _tmp5_);
+#line 96 "rygel-tracker-item.vala"
 	keys[RYGEL_TRACKER_ITEM_METADATA_CREATOR] = (_tmp6_ = g_strdup ("Image:Creator"), _g_free0 (keys[RYGEL_TRACKER_ITEM_METADATA_CREATOR]), _tmp6_);
+#line 97 "rygel-tracker-item.vala"
 	keys[RYGEL_TRACKER_ITEM_METADATA_IMAGE_WIDTH] = (_tmp7_ = g_strdup ("Image:Width"), _g_free0 (keys[RYGEL_TRACKER_ITEM_METADATA_IMAGE_WIDTH]), _tmp7_);
+#line 98 "rygel-tracker-item.vala"
 	keys[RYGEL_TRACKER_ITEM_METADATA_IMAGE_HEIGHT] = (_tmp8_ = g_strdup ("Image:Height"), _g_free0 (keys[RYGEL_TRACKER_ITEM_METADATA_IMAGE_HEIGHT]), _tmp8_);
+#line 99 "rygel-tracker-item.vala"
 	keys[RYGEL_TRACKER_ITEM_METADATA_IMAGE_ALBUM] = (_tmp9_ = g_strdup ("Image:Album"), _g_free0 (keys[RYGEL_TRACKER_ITEM_METADATA_IMAGE_ALBUM]), _tmp9_);
+#line 100 "rygel-tracker-item.vala"
 	keys[RYGEL_TRACKER_ITEM_METADATA_IMAGE_DATE] = (_tmp10_ = g_strdup ("Image:Date"), _g_free0 (keys[RYGEL_TRACKER_ITEM_METADATA_IMAGE_DATE]), _tmp10_);
+#line 103 "rygel-tracker-item.vala"
 	keys[RYGEL_TRACKER_ITEM_METADATA_AUDIO_TITLE] = (_tmp11_ = g_strdup ("Audio:Title"), _g_free0 (keys[RYGEL_TRACKER_ITEM_METADATA_AUDIO_TITLE]), _tmp11_);
+#line 104 "rygel-tracker-item.vala"
 	keys[RYGEL_TRACKER_ITEM_METADATA_AUDIO_DURATION] = (_tmp12_ = g_strdup ("Audio:Duration"), _g_free0 (keys[RYGEL_TRACKER_ITEM_METADATA_AUDIO_DURATION]), _tmp12_);
+#line 105 "rygel-tracker-item.vala"
 	keys[RYGEL_TRACKER_ITEM_METADATA_ARTIST] = (_tmp13_ = g_strdup ("Audio:Artist"), _g_free0 (keys[RYGEL_TRACKER_ITEM_METADATA_ARTIST]), _tmp13_);
+#line 106 "rygel-tracker-item.vala"
 	keys[RYGEL_TRACKER_ITEM_METADATA_AUDIO_ALBUM] = (_tmp14_ = g_strdup ("Audio:Album"), _g_free0 (keys[RYGEL_TRACKER_ITEM_METADATA_AUDIO_ALBUM]), _tmp14_);
+#line 107 "rygel-tracker-item.vala"
 	keys[RYGEL_TRACKER_ITEM_METADATA_TRACK_NUM] = (_tmp15_ = g_strdup ("Audio:TrackNo"), _g_free0 (keys[RYGEL_TRACKER_ITEM_METADATA_TRACK_NUM]), _tmp15_);
+#line 108 "rygel-tracker-item.vala"
 	keys[RYGEL_TRACKER_ITEM_METADATA_RELEASE] = (_tmp16_ = g_strdup ("Audio:ReleaseDate"), _g_free0 (keys[RYGEL_TRACKER_ITEM_METADATA_RELEASE]), _tmp16_);
+#line 109 "rygel-tracker-item.vala"
 	keys[RYGEL_TRACKER_ITEM_METADATA_DATE_ADDED] = (_tmp17_ = g_strdup ("Audio:DateAdded"), _g_free0 (keys[RYGEL_TRACKER_ITEM_METADATA_DATE_ADDED]), _tmp17_);
+#line 112 "rygel-tracker-item.vala"
 	keys[RYGEL_TRACKER_ITEM_METADATA_VIDEO_DURATION] = (_tmp18_ = g_strdup ("Video:Duration"), _g_free0 (keys[RYGEL_TRACKER_ITEM_METADATA_VIDEO_DURATION]), _tmp18_);
+#line 113 "rygel-tracker-item.vala"
 	keys[RYGEL_TRACKER_ITEM_METADATA_VIDEO_TITLE] = (_tmp19_ = g_strdup ("Video:Title"), _g_free0 (keys[RYGEL_TRACKER_ITEM_METADATA_VIDEO_TITLE]), _tmp19_);
+#line 114 "rygel-tracker-item.vala"
 	keys[RYGEL_TRACKER_ITEM_METADATA_AUTHOR] = (_tmp20_ = g_strdup ("Video:Author"), _g_free0 (keys[RYGEL_TRACKER_ITEM_METADATA_AUTHOR]), _tmp20_);
+#line 115 "rygel-tracker-item.vala"
 	keys[RYGEL_TRACKER_ITEM_METADATA_VIDEO_WIDTH] = (_tmp21_ = g_strdup ("Video:Width"), _g_free0 (keys[RYGEL_TRACKER_ITEM_METADATA_VIDEO_WIDTH]), _tmp21_);
+#line 116 "rygel-tracker-item.vala"
 	keys[RYGEL_TRACKER_ITEM_METADATA_VIDEO_HEIGHT] = (_tmp22_ = g_strdup ("Video:Height"), _g_free0 (keys[RYGEL_TRACKER_ITEM_METADATA_VIDEO_HEIGHT]), _tmp22_);
+#line 255 "rygel-tracker-item.c"
 	result = (_tmp23_ = keys, *result_length1 = keys_length1, _tmp23_);
+#line 118 "rygel-tracker-item.vala"
 	return result;
+#line 259 "rygel-tracker-item.c"
 	keys = (_vala_array_free (keys, keys_length1, (GDestroyNotify) g_free), NULL);
 }
 
 
+#line 121 "rygel-tracker-item.vala"
 char* rygel_tracker_item_seconds_to_iso8601 (RygelTrackerItem* self, const char* seconds) {
+#line 266 "rygel-tracker-item.c"
 	char* result;
 	char* date;
+#line 121 "rygel-tracker-item.vala"
 	g_return_val_if_fail (self != NULL, NULL);
+#line 121 "rygel-tracker-item.vala"
 	g_return_val_if_fail (seconds != NULL, NULL);
+#line 273 "rygel-tracker-item.c"
 	date = NULL;
+#line 124 "rygel-tracker-item.vala"
 	if (_vala_strcmp0 (seconds, "") != 0) {
+#line 277 "rygel-tracker-item.c"
 		GTimeVal _tmp0_ = {0};
 		GTimeVal tv;
 		char* _tmp1_;
+#line 125 "rygel-tracker-item.vala"
 		tv = (g_get_current_time (&_tmp0_), _tmp0_);
+#line 127 "rygel-tracker-item.vala"
 		tv.tv_sec = (glong) atoi (seconds);
+#line 128 "rygel-tracker-item.vala"
 		tv.tv_usec = (glong) 0;
+#line 130 "rygel-tracker-item.vala"
 		date = (_tmp1_ = g_time_val_to_iso8601 (&tv), _g_free0 (date), _tmp1_);
+#line 289 "rygel-tracker-item.c"
 	} else {
 		char* _tmp2_;
+#line 132 "rygel-tracker-item.vala"
 		date = (_tmp2_ = g_strdup (""), _g_free0 (date), _tmp2_);
+#line 294 "rygel-tracker-item.c"
 	}
 	result = date;
+#line 135 "rygel-tracker-item.vala"
 	return result;
+#line 299 "rygel-tracker-item.c"
 }
 
 

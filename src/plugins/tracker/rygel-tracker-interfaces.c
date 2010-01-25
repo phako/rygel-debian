@@ -263,13 +263,19 @@ static const DBusObjectPathVTable _rygel_tracker_search_iface_dbus_path_vtable =
 static const _DBusObjectVTable _rygel_tracker_search_iface_dbus_vtable = {rygel_tracker_search_iface_dbus_register_object};
 
 
+#line 49 "rygel-tracker-plugin-factory.vala"
 void rygel_tracker_iface_get_version (RygelTrackerIface* self, GAsyncReadyCallback _callback_, gpointer _user_data_) {
+#line 49 "rygel-tracker-plugin-factory.vala"
 	RYGEL_TRACKER_IFACE_GET_INTERFACE (self)->get_version (self, _callback_, _user_data_);
+#line 271 "rygel-tracker-interfaces.c"
 }
 
 
+#line 49 "rygel-tracker-plugin-factory.vala"
 gint rygel_tracker_iface_get_version_finish (RygelTrackerIface* self, GAsyncResult* _res_, GError** error) {
+#line 49 "rygel-tracker-plugin-factory.vala"
 	return RYGEL_TRACKER_IFACE_GET_INTERFACE (self)->get_version_finish (self, _res_, error);
+#line 279 "rygel-tracker-interfaces.c"
 }
 
 
@@ -734,13 +740,19 @@ static void rygel_tracker_iface_dbus_proxy_set_property (GObject * object, guint
 }
 
 
+#line 49 "rygel-tracker-plugin-factory.vala"
 void rygel_tracker_keywords_iface_get_list (RygelTrackerKeywordsIface* self, const char* service, GAsyncReadyCallback _callback_, gpointer _user_data_) {
+#line 49 "rygel-tracker-plugin-factory.vala"
 	RYGEL_TRACKER_KEYWORDS_IFACE_GET_INTERFACE (self)->get_list (self, service, _callback_, _user_data_);
+#line 748 "rygel-tracker-interfaces.c"
 }
 
 
+#line 49 "rygel-tracker-plugin-factory.vala"
 char** rygel_tracker_keywords_iface_get_list_finish (RygelTrackerKeywordsIface* self, GAsyncResult* _res_, int* result_length1, int* result_length2, GError** error) {
+#line 49 "rygel-tracker-plugin-factory.vala"
 	return RYGEL_TRACKER_KEYWORDS_IFACE_GET_INTERFACE (self)->get_list_finish (self, _res_, result_length1, result_length2, error);
+#line 756 "rygel-tracker-interfaces.c"
 }
 
 
@@ -1268,23 +1280,35 @@ static void rygel_tracker_keywords_iface_dbus_proxy_set_property (GObject * obje
 }
 
 
+#line 49 "rygel-tracker-plugin-factory.vala"
 void rygel_tracker_metadata_iface_get_unique_values (RygelTrackerMetadataIface* self, const char* service, char** meta_types, int meta_types_length1, const char* query, gboolean descending, gint offset, gint max_hits, GAsyncReadyCallback _callback_, gpointer _user_data_) {
+#line 49 "rygel-tracker-plugin-factory.vala"
 	RYGEL_TRACKER_METADATA_IFACE_GET_INTERFACE (self)->get_unique_values (self, service, meta_types, meta_types_length1, query, descending, offset, max_hits, _callback_, _user_data_);
+#line 1288 "rygel-tracker-interfaces.c"
 }
 
 
+#line 49 "rygel-tracker-plugin-factory.vala"
 char** rygel_tracker_metadata_iface_get_unique_values_finish (RygelTrackerMetadataIface* self, GAsyncResult* _res_, int* result_length1, int* result_length2, GError** error) {
+#line 49 "rygel-tracker-plugin-factory.vala"
 	return RYGEL_TRACKER_METADATA_IFACE_GET_INTERFACE (self)->get_unique_values_finish (self, _res_, result_length1, result_length2, error);
+#line 1296 "rygel-tracker-interfaces.c"
 }
 
 
+#line 49 "rygel-tracker-plugin-factory.vala"
 void rygel_tracker_metadata_iface_get (RygelTrackerMetadataIface* self, const char* service_type, const char* uri, char** keys, int keys_length1, GAsyncReadyCallback _callback_, gpointer _user_data_) {
+#line 49 "rygel-tracker-plugin-factory.vala"
 	RYGEL_TRACKER_METADATA_IFACE_GET_INTERFACE (self)->get (self, service_type, uri, keys, keys_length1, _callback_, _user_data_);
+#line 1304 "rygel-tracker-interfaces.c"
 }
 
 
+#line 49 "rygel-tracker-plugin-factory.vala"
 char** rygel_tracker_metadata_iface_get_finish (RygelTrackerMetadataIface* self, GAsyncResult* _res_, int* result_length1, GError** error) {
+#line 49 "rygel-tracker-plugin-factory.vala"
 	return RYGEL_TRACKER_METADATA_IFACE_GET_INTERFACE (self)->get_finish (self, _res_, result_length1, error);
+#line 1312 "rygel-tracker-interfaces.c"
 }
 
 
@@ -2260,13 +2284,19 @@ static void rygel_tracker_metadata_iface_dbus_proxy_set_property (GObject * obje
 }
 
 
+#line 49 "rygel-tracker-plugin-factory.vala"
 void rygel_tracker_search_iface_query (RygelTrackerSearchIface* self, gint live_query_id, const char* service, char** fields, int fields_length1, const char* search_text, char** keywords, int keywords_length1, const char* query_condition, gboolean sort_by_service, char** sort_fields, int sort_fields_length1, gboolean sort_descending, gint offset, gint max_hits, GAsyncReadyCallback _callback_, gpointer _user_data_) {
+#line 49 "rygel-tracker-plugin-factory.vala"
 	RYGEL_TRACKER_SEARCH_IFACE_GET_INTERFACE (self)->query (self, live_query_id, service, fields, fields_length1, search_text, keywords, keywords_length1, query_condition, sort_by_service, sort_fields, sort_fields_length1, sort_descending, offset, max_hits, _callback_, _user_data_);
+#line 2292 "rygel-tracker-interfaces.c"
 }
 
 
+#line 49 "rygel-tracker-plugin-factory.vala"
 char** rygel_tracker_search_iface_query_finish (RygelTrackerSearchIface* self, GAsyncResult* _res_, int* result_length1, int* result_length2, GError** error) {
+#line 49 "rygel-tracker-plugin-factory.vala"
 	return RYGEL_TRACKER_SEARCH_IFACE_GET_INTERFACE (self)->query_finish (self, _res_, result_length1, result_length2, error);
+#line 2300 "rygel-tracker-interfaces.c"
 }
 
 

@@ -160,12 +160,16 @@ static gpointer _gst_object_ref0 (gpointer self) {
 }
 
 
+#line 67 "rygel-mp2ts-transcoder-bin.vala"
 static void _rygel_mp2_ts_transcoder_bin_decodebin_pad_added_gst_element_pad_added (GstElement* _sender, GstPad* pad, gpointer self) {
+#line 166 "rygel-mp2ts-transcoder-bin.c"
 	rygel_mp2_ts_transcoder_bin_decodebin_pad_added (self, _sender, pad);
 }
 
 
+#line 41 "rygel-mp2ts-transcoder-bin.vala"
 RygelMP2TSTranscoderBin* rygel_mp2_ts_transcoder_bin_construct (GType object_type, RygelMediaItem* item, GstElement* src, RygelMP2TSTranscoder* transcoder, GError** error) {
+#line 173 "rygel-mp2ts-transcoder-bin.c"
 	GError * _inner_error_;
 	RygelMP2TSTranscoderBin * self;
 	GstElement* decodebin;
@@ -178,47 +182,70 @@ RygelMP2TSTranscoderBin* rygel_mp2_ts_transcoder_bin_construct (GType object_typ
 	GstElement* _tmp5_;
 	GstPad* src_pad;
 	GstGhostPad* ghost;
+#line 41 "rygel-mp2ts-transcoder-bin.vala"
 	g_return_val_if_fail (item != NULL, NULL);
+#line 41 "rygel-mp2ts-transcoder-bin.vala"
 	g_return_val_if_fail (src != NULL, NULL);
+#line 41 "rygel-mp2ts-transcoder-bin.vala"
 	g_return_val_if_fail (transcoder != NULL, NULL);
+#line 192 "rygel-mp2ts-transcoder-bin.c"
 	_inner_error_ = NULL;
 	self = g_object_newv (object_type, 0, NULL);
+#line 45 "rygel-mp2ts-transcoder-bin.vala"
 	decodebin = rygel_gst_utils_create_element (RYGEL_MP2_TS_TRANSCODER_BIN_DECODEBIN, RYGEL_MP2_TS_TRANSCODER_BIN_DECODEBIN, &_inner_error_);
+#line 197 "rygel-mp2ts-transcoder-bin.c"
 	if (_inner_error_ != NULL) {
 		g_propagate_error (error, _inner_error_);
 		return NULL;
 	}
+#line 46 "rygel-mp2ts-transcoder-bin.vala"
 	mp3_transcoder = rygel_mp3_transcoder_new (RYGEL_MP3_LAYER_TWO);
+#line 47 "rygel-mp2ts-transcoder-bin.vala"
 	_tmp0_ = rygel_mp3_transcoder_create_encoder (mp3_transcoder, item, NULL, RYGEL_MP2_TS_TRANSCODER_BIN_AUDIO_ENC_SINK, &_inner_error_);
+#line 206 "rygel-mp2ts-transcoder-bin.c"
 	if (_inner_error_ != NULL) {
 		g_propagate_error (error, _inner_error_);
 		_gst_object_unref0 (decodebin);
 		_g_object_unref0 (mp3_transcoder);
 		return NULL;
 	}
+#line 47 "rygel-mp2ts-transcoder-bin.vala"
 	self->priv->audio_enc = (_tmp1_ = _tmp0_, _gst_object_unref0 (self->priv->audio_enc), _tmp1_);
+#line 50 "rygel-mp2ts-transcoder-bin.vala"
 	_tmp2_ = rygel_mp2_ts_transcoder_create_encoder (transcoder, item, NULL, RYGEL_MP2_TS_TRANSCODER_BIN_VIDEO_ENC_SINK, &_inner_error_);
+#line 217 "rygel-mp2ts-transcoder-bin.c"
 	if (_inner_error_ != NULL) {
 		g_propagate_error (error, _inner_error_);
 		_gst_object_unref0 (decodebin);
 		_g_object_unref0 (mp3_transcoder);
 		return NULL;
 	}
+#line 50 "rygel-mp2ts-transcoder-bin.vala"
 	self->priv->video_enc = (_tmp3_ = _tmp2_, _gst_object_unref0 (self->priv->video_enc), _tmp3_);
+#line 51 "rygel-mp2ts-transcoder-bin.vala"
 	_tmp4_ = rygel_gst_utils_create_element (RYGEL_MP2_TS_TRANSCODER_BIN_MUXER, RYGEL_MP2_TS_TRANSCODER_BIN_MUXER, &_inner_error_);
+#line 228 "rygel-mp2ts-transcoder-bin.c"
 	if (_inner_error_ != NULL) {
 		g_propagate_error (error, _inner_error_);
 		_gst_object_unref0 (decodebin);
 		_g_object_unref0 (mp3_transcoder);
 		return NULL;
 	}
+#line 51 "rygel-mp2ts-transcoder-bin.vala"
 	self->priv->muxer = (_tmp5_ = _tmp4_, _gst_object_unref0 (self->priv->muxer), _tmp5_);
+#line 53 "rygel-mp2ts-transcoder-bin.vala"
 	gst_bin_add_many ((GstBin*) self, _gst_object_ref0 (src), _gst_object_ref0 (decodebin), _gst_object_ref0 (self->priv->audio_enc), _gst_object_ref0 (self->priv->video_enc), _gst_object_ref0 (self->priv->muxer), NULL);
+#line 58 "rygel-mp2ts-transcoder-bin.vala"
 	gst_element_link (src, decodebin);
+#line 60 "rygel-mp2ts-transcoder-bin.vala"
 	src_pad = gst_element_get_static_pad (self->priv->muxer, "src");
+#line 61 "rygel-mp2ts-transcoder-bin.vala"
 	ghost = (GstGhostPad*) gst_ghost_pad_new (NULL, src_pad);
+#line 62 "rygel-mp2ts-transcoder-bin.vala"
 	gst_element_add_pad ((GstElement*) self, _gst_object_ref0 ((GstPad*) ghost));
+#line 64 "rygel-mp2ts-transcoder-bin.vala"
 	g_signal_connect_object (decodebin, "pad-added", (GCallback) _rygel_mp2_ts_transcoder_bin_decodebin_pad_added_gst_element_pad_added, self, 0);
+#line 249 "rygel-mp2ts-transcoder-bin.c"
 	_gst_object_unref0 (decodebin);
 	_g_object_unref0 (mp3_transcoder);
 	_gst_object_unref0 (src_pad);
@@ -227,52 +254,82 @@ RygelMP2TSTranscoderBin* rygel_mp2_ts_transcoder_bin_construct (GType object_typ
 }
 
 
+#line 41 "rygel-mp2ts-transcoder-bin.vala"
 RygelMP2TSTranscoderBin* rygel_mp2_ts_transcoder_bin_new (RygelMediaItem* item, GstElement* src, RygelMP2TSTranscoder* transcoder, GError** error) {
+#line 41 "rygel-mp2ts-transcoder-bin.vala"
 	return rygel_mp2_ts_transcoder_bin_construct (RYGEL_TYPE_MP2_TS_TRANSCODER_BIN, item, src, transcoder, error);
+#line 262 "rygel-mp2ts-transcoder-bin.c"
 }
 
 
+#line 67 "rygel-mp2ts-transcoder-bin.vala"
 static void rygel_mp2_ts_transcoder_bin_decodebin_pad_added (RygelMP2TSTranscoderBin* self, GstElement* decodebin, GstPad* new_pad) {
+#line 268 "rygel-mp2ts-transcoder-bin.c"
 	GstElement* encoder;
 	GstPad* enc_pad;
 	GstPad* audio_enc_pad;
 	GstPad* video_enc_pad;
+#line 67 "rygel-mp2ts-transcoder-bin.vala"
 	g_return_if_fail (self != NULL);
+#line 67 "rygel-mp2ts-transcoder-bin.vala"
 	g_return_if_fail (decodebin != NULL);
+#line 67 "rygel-mp2ts-transcoder-bin.vala"
 	g_return_if_fail (new_pad != NULL);
+#line 279 "rygel-mp2ts-transcoder-bin.c"
 	encoder = NULL;
 	enc_pad = NULL;
+#line 71 "rygel-mp2ts-transcoder-bin.vala"
 	audio_enc_pad = _gst_object_ref0 (gst_element_get_pad (self->priv->audio_enc, RYGEL_MP2_TS_TRANSCODER_BIN_AUDIO_ENC_SINK));
+#line 72 "rygel-mp2ts-transcoder-bin.vala"
 	video_enc_pad = _gst_object_ref0 (gst_element_get_pad (self->priv->video_enc, RYGEL_MP2_TS_TRANSCODER_BIN_VIDEO_ENC_SINK));
+#line 75 "rygel-mp2ts-transcoder-bin.vala"
 	if (gst_pad_can_link (new_pad, audio_enc_pad)) {
+#line 288 "rygel-mp2ts-transcoder-bin.c"
 		GstElement* _tmp0_;
 		GstPad* _tmp1_;
+#line 76 "rygel-mp2ts-transcoder-bin.vala"
 		encoder = (_tmp0_ = _gst_object_ref0 (self->priv->audio_enc), _gst_object_unref0 (encoder), _tmp0_);
+#line 77 "rygel-mp2ts-transcoder-bin.vala"
 		enc_pad = (_tmp1_ = _gst_object_ref0 (audio_enc_pad), _gst_object_unref0 (enc_pad), _tmp1_);
+#line 295 "rygel-mp2ts-transcoder-bin.c"
 	} else {
+#line 78 "rygel-mp2ts-transcoder-bin.vala"
 		if (gst_pad_can_link (new_pad, video_enc_pad)) {
+#line 299 "rygel-mp2ts-transcoder-bin.c"
 			GstElement* _tmp2_;
 			GstPad* _tmp3_;
+#line 79 "rygel-mp2ts-transcoder-bin.vala"
 			encoder = (_tmp2_ = _gst_object_ref0 (self->priv->video_enc), _gst_object_unref0 (encoder), _tmp2_);
+#line 80 "rygel-mp2ts-transcoder-bin.vala"
 			enc_pad = (_tmp3_ = _gst_object_ref0 (video_enc_pad), _gst_object_unref0 (enc_pad), _tmp3_);
+#line 306 "rygel-mp2ts-transcoder-bin.c"
 		} else {
 			_gst_object_unref0 (encoder);
 			_gst_object_unref0 (enc_pad);
 			_gst_object_unref0 (audio_enc_pad);
 			_gst_object_unref0 (video_enc_pad);
+#line 82 "rygel-mp2ts-transcoder-bin.vala"
 			return;
+#line 314 "rygel-mp2ts-transcoder-bin.c"
 		}
 	}
+#line 85 "rygel-mp2ts-transcoder-bin.vala"
 	gst_element_link (encoder, self->priv->muxer);
+#line 87 "rygel-mp2ts-transcoder-bin.vala"
 	if (gst_pad_link (new_pad, enc_pad) != GST_PAD_LINK_OK) {
+#line 321 "rygel-mp2ts-transcoder-bin.c"
 		GError* _tmp4_;
+#line 88 "rygel-mp2ts-transcoder-bin.vala"
 		rygel_gst_utils_post_error ((GstElement*) self, _tmp4_ = g_error_new (RYGEL_LIVE_RESPONSE_ERROR, RYGEL_LIVE_RESPONSE_ERROR_LINK, "Failed to link pad %s to %s", gst_object_get_name ((GstObject*) new_pad), gst_object_get_name ((GstObject*) enc_pad)));
+#line 325 "rygel-mp2ts-transcoder-bin.c"
 		_g_error_free0 (_tmp4_);
 		_gst_object_unref0 (encoder);
 		_gst_object_unref0 (enc_pad);
 		_gst_object_unref0 (audio_enc_pad);
 		_gst_object_unref0 (video_enc_pad);
+#line 93 "rygel-mp2ts-transcoder-bin.vala"
 		return;
+#line 333 "rygel-mp2ts-transcoder-bin.c"
 	}
 	_gst_object_unref0 (encoder);
 	_gst_object_unref0 (enc_pad);

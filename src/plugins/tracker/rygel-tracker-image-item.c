@@ -130,37 +130,64 @@ static int _vala_strcmp0 (const char * str1, const char * str2);
 
 
 
+#line 33 "rygel-tracker-image-item.vala"
 RygelTrackerImageItem* rygel_tracker_image_item_construct (GType object_type, const char* id, const char* path, RygelTrackerSearchContainer* parent, char** metadata, int metadata_length1, GError** error) {
+#line 136 "rygel-tracker-image-item.c"
 	RygelTrackerImageItem * self;
 	char* _tmp1_;
 	char* _tmp2_;
+#line 33 "rygel-tracker-image-item.vala"
 	g_return_val_if_fail (id != NULL, NULL);
+#line 33 "rygel-tracker-image-item.vala"
 	g_return_val_if_fail (path != NULL, NULL);
+#line 33 "rygel-tracker-image-item.vala"
 	g_return_val_if_fail (parent != NULL, NULL);
+#line 38 "rygel-tracker-image-item.vala"
 	self = (RygelTrackerImageItem*) rygel_tracker_item_construct (object_type, id, path, parent, RYGEL_MEDIA_ITEM_IMAGE_CLASS, metadata, metadata_length1, error);
+#line 40 "rygel-tracker-image-item.vala"
 	if (_vala_strcmp0 (metadata[RYGEL_TRACKER_ITEM_METADATA_IMAGE_TITLE], "") != 0) {
+#line 41 "rygel-tracker-image-item.vala"
 		rygel_media_object_set_title ((RygelMediaObject*) self, metadata[RYGEL_TRACKER_ITEM_METADATA_IMAGE_TITLE]);
+#line 152 "rygel-tracker-image-item.c"
 	} else {
+#line 44 "rygel-tracker-image-item.vala"
 		rygel_media_object_set_title ((RygelMediaObject*) self, metadata[RYGEL_TRACKER_ITEM_METADATA_FILE_NAME]);
+#line 156 "rygel-tracker-image-item.c"
 	}
+#line 46 "rygel-tracker-image-item.vala"
 	if (_vala_strcmp0 (metadata[RYGEL_TRACKER_ITEM_METADATA_IMAGE_WIDTH], "") != 0) {
+#line 47 "rygel-tracker-image-item.vala"
 		((RygelMediaItem*) self)->width = atoi (metadata[RYGEL_TRACKER_ITEM_METADATA_IMAGE_WIDTH]);
+#line 162 "rygel-tracker-image-item.c"
 	}
+#line 49 "rygel-tracker-image-item.vala"
 	if (_vala_strcmp0 (metadata[RYGEL_TRACKER_ITEM_METADATA_IMAGE_HEIGHT], "") != 0) {
+#line 50 "rygel-tracker-image-item.vala"
 		((RygelMediaItem*) self)->height = atoi (metadata[RYGEL_TRACKER_ITEM_METADATA_IMAGE_HEIGHT]);
+#line 168 "rygel-tracker-image-item.c"
 	}
+#line 52 "rygel-tracker-image-item.vala"
 	if (_vala_strcmp0 (metadata[RYGEL_TRACKER_ITEM_METADATA_IMAGE_DATE], "") != 0) {
+#line 172 "rygel-tracker-image-item.c"
 		char* _tmp0_;
+#line 53 "rygel-tracker-image-item.vala"
 		((RygelMediaItem*) self)->date = (_tmp0_ = rygel_tracker_item_seconds_to_iso8601 ((RygelTrackerItem*) self, metadata[RYGEL_TRACKER_ITEM_METADATA_IMAGE_DATE]), _g_free0 (((RygelMediaItem*) self)->date), _tmp0_);
+#line 176 "rygel-tracker-image-item.c"
 	}
+#line 56 "rygel-tracker-image-item.vala"
 	((RygelMediaItem*) self)->author = (_tmp1_ = g_strdup (metadata[RYGEL_TRACKER_ITEM_METADATA_CREATOR]), _g_free0 (((RygelMediaItem*) self)->author), _tmp1_);
+#line 57 "rygel-tracker-image-item.vala"
 	((RygelMediaItem*) self)->album = (_tmp2_ = g_strdup (metadata[RYGEL_TRACKER_ITEM_METADATA_IMAGE_ALBUM]), _g_free0 (((RygelMediaItem*) self)->album), _tmp2_);
+#line 182 "rygel-tracker-image-item.c"
 	return self;
 }
 
 
+#line 33 "rygel-tracker-image-item.vala"
 RygelTrackerImageItem* rygel_tracker_image_item_new (const char* id, const char* path, RygelTrackerSearchContainer* parent, char** metadata, int metadata_length1, GError** error) {
+#line 33 "rygel-tracker-image-item.vala"
 	return rygel_tracker_image_item_construct (RYGEL_TYPE_TRACKER_IMAGE_ITEM, id, path, parent, metadata, metadata_length1, error);
+#line 191 "rygel-tracker-image-item.c"
 }
 
 

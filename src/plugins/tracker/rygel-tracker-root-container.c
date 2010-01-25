@@ -109,7 +109,9 @@ static void _vala_array_free (gpointer array, gint array_length, GDestroyNotify 
 
 
 
+#line 33 "rygel-tracker-root-container.vala"
 RygelTrackerRootContainer* rygel_tracker_root_container_construct (GType object_type, const char* title) {
+#line 115 "rygel-tracker-root-container.c"
 	RygelTrackerRootContainer * self;
 	RygelTrackerSearchContainer* _tmp1_;
 	gint _tmp0__length1;
@@ -123,29 +125,46 @@ RygelTrackerRootContainer* rygel_tracker_root_container_construct (GType object_
 	RygelTrackerMetadataValues* _tmp6_;
 	RygelTrackerMetadataValues* _tmp7_;
 	RygelTrackerKeywords* _tmp8_;
+#line 33 "rygel-tracker-root-container.vala"
 	g_return_val_if_fail (title != NULL, NULL);
+#line 34 "rygel-tracker-root-container.vala"
 	self = (RygelTrackerRootContainer*) rygel_simple_container_construct_root (object_type, title);
+#line 36 "rygel-tracker-root-container.vala"
 	rygel_simple_container_add_child ((RygelSimpleContainer*) self, (RygelMediaObject*) (_tmp1_ = rygel_tracker_search_container_new ("16", (RygelMediaContainer*) self, "Pictures", RYGEL_TRACKER_IMAGE_ITEM_SERVICE, "", (_tmp0_ = g_new0 (char*, 0 + 1), _tmp0__length1 = 0, _tmp0_), 0)));
+#line 135 "rygel-tracker-root-container.c"
 	_g_object_unref0 (_tmp1_);
 	_tmp0_ = (_vala_array_free (_tmp0_, _tmp0__length1, (GDestroyNotify) g_free), NULL);
+#line 41 "rygel-tracker-root-container.vala"
 	rygel_simple_container_add_child ((RygelSimpleContainer*) self, (RygelMediaObject*) (_tmp3_ = rygel_tracker_search_container_new ("14", (RygelMediaContainer*) self, "Music", RYGEL_TRACKER_MUSIC_ITEM_SERVICE, "", (_tmp2_ = g_new0 (char*, 0 + 1), _tmp2__length1 = 0, _tmp2_), 0)));
+#line 140 "rygel-tracker-root-container.c"
 	_g_object_unref0 (_tmp3_);
 	_tmp2_ = (_vala_array_free (_tmp2_, _tmp2__length1, (GDestroyNotify) g_free), NULL);
+#line 46 "rygel-tracker-root-container.vala"
 	rygel_simple_container_add_child ((RygelSimpleContainer*) self, (RygelMediaObject*) (_tmp5_ = rygel_tracker_search_container_new ("15", (RygelMediaContainer*) self, "Videos", RYGEL_TRACKER_VIDEO_ITEM_SERVICE, "", (_tmp4_ = g_new0 (char*, 0 + 1), _tmp4__length1 = 0, _tmp4_), 0)));
+#line 145 "rygel-tracker-root-container.c"
 	_g_object_unref0 (_tmp5_);
 	_tmp4_ = (_vala_array_free (_tmp4_, _tmp4__length1, (GDestroyNotify) g_free), NULL);
+#line 51 "rygel-tracker-root-container.vala"
 	rygel_simple_container_add_child ((RygelSimpleContainer*) self, (RygelMediaObject*) (_tmp6_ = rygel_tracker_metadata_values_new ("Audio:Artist", "17", (RygelMediaContainer*) self, "Artists")));
+#line 150 "rygel-tracker-root-container.c"
 	_g_object_unref0 (_tmp6_);
+#line 55 "rygel-tracker-root-container.vala"
 	rygel_simple_container_add_child ((RygelSimpleContainer*) self, (RygelMediaObject*) (_tmp7_ = rygel_tracker_metadata_values_new ("Audio:Album", "18", (RygelMediaContainer*) self, "Albums")));
+#line 154 "rygel-tracker-root-container.c"
 	_g_object_unref0 (_tmp7_);
+#line 59 "rygel-tracker-root-container.vala"
 	rygel_simple_container_add_child ((RygelSimpleContainer*) self, (RygelMediaObject*) (_tmp8_ = rygel_tracker_keywords_new ("19", (RygelMediaContainer*) self)));
+#line 158 "rygel-tracker-root-container.c"
 	_g_object_unref0 (_tmp8_);
 	return self;
 }
 
 
+#line 33 "rygel-tracker-root-container.vala"
 RygelTrackerRootContainer* rygel_tracker_root_container_new (const char* title) {
+#line 33 "rygel-tracker-root-container.vala"
 	return rygel_tracker_root_container_construct (RYGEL_TYPE_TRACKER_ROOT_CONTAINER, title);
+#line 168 "rygel-tracker-root-container.c"
 }
 
 

@@ -80,7 +80,9 @@ RygelMediaTracker* rygel_media_tracker_construct (GType object_type);
 
 
 
+#line 33 "rygel-media-tracker.vala"
 static RygelMediaContainer* rygel_media_tracker_real_create_root_container (RygelContentDirectory* base) {
+#line 86 "rygel-media-tracker.c"
 	RygelMediaTracker * self;
 	RygelMediaContainer* result;
 	GUPnPRootDevice* _tmp1_;
@@ -88,22 +90,33 @@ static RygelMediaContainer* rygel_media_tracker_real_create_root_container (Ryge
 	char* _tmp2_;
 	char* friendly_name;
 	self = (RygelMediaTracker*) base;
+#line 34 "rygel-media-tracker.vala"
 	friendly_name = (_tmp2_ = gupnp_device_info_get_friendly_name ((GUPnPDeviceInfo*) (_tmp1_ = (g_object_get ((GUPnPService*) self, "root-device", &_tmp0_, NULL), _tmp0_))), _g_object_unref0 (_tmp1_), _tmp2_);
+#line 96 "rygel-media-tracker.c"
 	result = (RygelMediaContainer*) rygel_tracker_root_container_new (friendly_name);
 	_g_free0 (friendly_name);
+#line 35 "rygel-media-tracker.vala"
 	return result;
+#line 101 "rygel-media-tracker.c"
 }
 
 
+#line 31 "rygel-media-tracker.vala"
 RygelMediaTracker* rygel_media_tracker_construct (GType object_type) {
+#line 107 "rygel-media-tracker.c"
 	RygelMediaTracker * self;
+#line 31 "rygel-media-tracker.vala"
 	self = (RygelMediaTracker*) rygel_content_directory_construct (object_type);
+#line 111 "rygel-media-tracker.c"
 	return self;
 }
 
 
+#line 31 "rygel-media-tracker.vala"
 RygelMediaTracker* rygel_media_tracker_new (void) {
+#line 31 "rygel-media-tracker.vala"
 	return rygel_media_tracker_construct (RYGEL_TYPE_MEDIA_TRACKER);
+#line 120 "rygel-media-tracker.c"
 }
 
 

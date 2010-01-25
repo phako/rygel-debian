@@ -79,7 +79,9 @@ RygelGstLaunchContentDir* rygel_gst_launch_content_dir_construct (GType object_t
 
 
 
+#line 29 "rygel-gst-launch-content-dir.vala"
 static RygelMediaContainer* rygel_gst_launch_content_dir_real_create_root_container (RygelContentDirectory* base) {
+#line 85 "rygel-gst-launch-content-dir.c"
 	RygelGstLaunchContentDir * self;
 	RygelMediaContainer* result;
 	GUPnPRootDevice* _tmp1_;
@@ -87,22 +89,33 @@ static RygelMediaContainer* rygel_gst_launch_content_dir_real_create_root_contai
 	char* _tmp2_;
 	char* friendly_name;
 	self = (RygelGstLaunchContentDir*) base;
+#line 30 "rygel-gst-launch-content-dir.vala"
 	friendly_name = (_tmp2_ = gupnp_device_info_get_friendly_name ((GUPnPDeviceInfo*) (_tmp1_ = (g_object_get ((GUPnPService*) self, "root-device", &_tmp0_, NULL), _tmp0_))), _g_object_unref0 (_tmp1_), _tmp2_);
+#line 95 "rygel-gst-launch-content-dir.c"
 	result = (RygelMediaContainer*) rygel_gst_launch_root_container_new (friendly_name);
 	_g_free0 (friendly_name);
+#line 31 "rygel-gst-launch-content-dir.vala"
 	return result;
+#line 100 "rygel-gst-launch-content-dir.c"
 }
 
 
+#line 27 "rygel-gst-launch-content-dir.vala"
 RygelGstLaunchContentDir* rygel_gst_launch_content_dir_construct (GType object_type) {
+#line 106 "rygel-gst-launch-content-dir.c"
 	RygelGstLaunchContentDir * self;
+#line 27 "rygel-gst-launch-content-dir.vala"
 	self = (RygelGstLaunchContentDir*) rygel_content_directory_construct (object_type);
+#line 110 "rygel-gst-launch-content-dir.c"
 	return self;
 }
 
 
+#line 27 "rygel-gst-launch-content-dir.vala"
 RygelGstLaunchContentDir* rygel_gst_launch_content_dir_new (void) {
+#line 27 "rygel-gst-launch-content-dir.vala"
 	return rygel_gst_launch_content_dir_construct (RYGEL_TYPE_GST_LAUNCH_CONTENT_DIR);
+#line 119 "rygel-gst-launch-content-dir.c"
 }
 
 

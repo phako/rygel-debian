@@ -161,6 +161,7 @@ typedef struct _RygelDBusServiceClass RygelDBusServiceClass;
 struct _RygelMain {
 	GObject parent_instance;
 	RygelMainPrivate * priv;
+	gboolean restart;
 };
 
 struct _RygelMainClass {
@@ -277,8 +278,8 @@ static GUPnPContextManager* rygel_main_create_context_manager (RygelMain* self);
 GType rygel_plugin_get_type (void);
 static void rygel_main_on_plugin_loaded (RygelMain* self, RygelPluginLoader* plugin_loader, RygelPlugin* plugin);
 static void _rygel_main_on_plugin_loaded_rygel_plugin_loader_plugin_available (RygelPluginLoader* _sender, RygelPlugin* plugin, gpointer self);
-static void rygel_main_application_exit_cb (RygelMain* self);
-static void _rygel_main_application_exit_cb_cstuff_utils_application_exit_cb (gpointer self);
+static void rygel_main_application_exit_cb (RygelMain* self, gboolean restart);
+static void _rygel_main_application_exit_cb_cstuff_utils_application_exit_cb (gboolean restart, gpointer self);
 static RygelMain* rygel_main_new (GError** error);
 static RygelMain* rygel_main_construct (GType object_type, GError** error);
 void rygel_main_exit (RygelMain* self, gint exit_code);
@@ -316,6 +317,7 @@ gpointer rygel_value_get_icon_info (const GValue* value);
 GType rygel_icon_info_get_type (void);
 static gboolean rygel_main_create_device_co (RygelMainCreateDeviceData* data);
 GType rygel_dbus_service_get_type (void);
+static char** _vala_array_dup1 (char** self, int length);
 GQuark rygel_cmdline_config_error_quark (void);
 void rygel_cmdline_config_parse_args (char*** args, int* args_length1, GError** error);
 RygelDBusService* rygel_dbus_service_new (RygelMain* main, GError** error);
@@ -328,17 +330,23 @@ static int _vala_strcmp0 (const char * str1, const char * str2);
 
 
 
+#line 80 "rygel-main.vala"
 static void _rygel_main_on_plugin_loaded_rygel_plugin_loader_plugin_available (RygelPluginLoader* _sender, RygelPlugin* plugin, gpointer self) {
+#line 336 "rygel-main.c"
 	rygel_main_on_plugin_loaded (self, _sender, plugin);
 }
 
 
-static void _rygel_main_application_exit_cb_cstuff_utils_application_exit_cb (gpointer self) {
-	rygel_main_application_exit_cb (self);
+#line 74 "rygel-main.vala"
+static void _rygel_main_application_exit_cb_cstuff_utils_application_exit_cb (gboolean restart, gpointer self) {
+#line 343 "rygel-main.c"
+	rygel_main_application_exit_cb (self, restart);
 }
 
 
+#line 42 "rygel-main.vala"
 static RygelMain* rygel_main_construct (GType object_type, GError** error) {
+#line 350 "rygel-main.c"
 	RygelMain * self;
 	RygelLogHandler* _tmp0_;
 	RygelConfiguration* _tmp1_;
@@ -347,94 +355,156 @@ static RygelMain* rygel_main_construct (GType object_type, GError** error) {
 	GeeArrayList* _tmp4_;
 	GUPnPContextManager* _tmp5_;
 	GMainLoop* _tmp6_;
+#line 42 "rygel-main.vala"
 	self = (RygelMain*) g_object_new (object_type, NULL);
+#line 43 "rygel-main.vala"
 	g_set_application_name (_ (PACKAGE_NAME));
+#line 45 "rygel-main.vala"
 	self->priv->log_handler = (_tmp0_ = rygel_log_handler_get_default (), _g_object_unref0 (self->priv->log_handler), _tmp0_);
+#line 46 "rygel-main.vala"
 	self->priv->config = (_tmp1_ = (RygelConfiguration*) rygel_meta_config_get_default (), _g_object_unref0 (self->priv->config), _tmp1_);
+#line 47 "rygel-main.vala"
 	self->priv->plugin_loader = (_tmp2_ = rygel_plugin_loader_new (), _g_object_unref0 (self->priv->plugin_loader), _tmp2_);
+#line 48 "rygel-main.vala"
 	self->priv->root_devices = (_tmp3_ = gee_array_list_new (RYGEL_TYPE_ROOT_DEVICE, (GBoxedCopyFunc) g_object_ref, g_object_unref, NULL), _g_object_unref0 (self->priv->root_devices), _tmp3_);
+#line 49 "rygel-main.vala"
 	self->priv->factories = (_tmp4_ = gee_array_list_new (RYGEL_TYPE_ROOT_DEVICE_FACTORY, (GBoxedCopyFunc) rygel_root_device_factory_ref, rygel_root_device_factory_unref, NULL), _g_object_unref0 (self->priv->factories), _tmp4_);
+#line 50 "rygel-main.vala"
 	self->priv->context_manager = (_tmp5_ = rygel_main_create_context_manager (self), _g_object_unref0 (self->priv->context_manager), _tmp5_);
+#line 51 "rygel-main.vala"
 	self->priv->main_loop = (_tmp6_ = g_main_loop_new (NULL, FALSE), _g_main_loop_unref0 (self->priv->main_loop), _tmp6_);
+#line 53 "rygel-main.vala"
 	self->priv->exit_code = 0;
+#line 55 "rygel-main.vala"
 	g_signal_connect_object (self->priv->plugin_loader, "plugin-available", (GCallback) _rygel_main_on_plugin_loaded_rygel_plugin_loader_plugin_available, self, 0);
+#line 57 "rygel-main.vala"
 	on_application_exit (_rygel_main_application_exit_cb_cstuff_utils_application_exit_cb, self);
+#line 383 "rygel-main.c"
 	return self;
 }
 
 
+#line 42 "rygel-main.vala"
 static RygelMain* rygel_main_new (GError** error) {
+#line 42 "rygel-main.vala"
 	return rygel_main_construct (RYGEL_TYPE_MAIN, error);
+#line 392 "rygel-main.c"
 }
 
 
+#line 60 "rygel-main.vala"
 void rygel_main_exit (RygelMain* self, gint exit_code) {
+#line 60 "rygel-main.vala"
 	g_return_if_fail (self != NULL);
+#line 61 "rygel-main.vala"
 	self->priv->exit_code = exit_code;
+#line 63 "rygel-main.vala"
 	g_main_loop_quit (self->priv->main_loop);
+#line 404 "rygel-main.c"
 }
 
 
+#line 66 "rygel-main.vala"
 static gint rygel_main_run (RygelMain* self) {
+#line 410 "rygel-main.c"
 	gint result;
+#line 66 "rygel-main.vala"
 	g_return_val_if_fail (self != NULL, 0);
+#line 67 "rygel-main.vala"
 	rygel_plugin_loader_load_plugins (self->priv->plugin_loader);
+#line 69 "rygel-main.vala"
 	g_main_loop_run (self->priv->main_loop);
+#line 418 "rygel-main.c"
 	result = self->priv->exit_code;
+#line 71 "rygel-main.vala"
 	return result;
+#line 422 "rygel-main.c"
 }
 
 
-static void rygel_main_application_exit_cb (RygelMain* self) {
+#line 74 "rygel-main.vala"
+static void rygel_main_application_exit_cb (RygelMain* self, gboolean restart) {
+#line 74 "rygel-main.vala"
 	g_return_if_fail (self != NULL);
+#line 75 "rygel-main.vala"
+	self->restart = restart;
+#line 77 "rygel-main.vala"
 	rygel_main_exit (self, 0);
+#line 434 "rygel-main.c"
 }
 
 
+#line 80 "rygel-main.vala"
 static void rygel_main_on_plugin_loaded (RygelMain* self, RygelPluginLoader* plugin_loader, RygelPlugin* plugin) {
+#line 440 "rygel-main.c"
 	GeeIterator* iterator;
+#line 80 "rygel-main.vala"
 	g_return_if_fail (self != NULL);
+#line 80 "rygel-main.vala"
 	g_return_if_fail (plugin_loader != NULL);
+#line 80 "rygel-main.vala"
 	g_return_if_fail (plugin != NULL);
+#line 82 "rygel-main.vala"
 	iterator = gee_abstract_collection_iterator ((GeeAbstractCollection*) self->priv->factories);
+#line 83 "rygel-main.vala"
 	while (TRUE) {
+#line 452 "rygel-main.c"
 		RygelRootDeviceFactory* _tmp0_;
+#line 83 "rygel-main.vala"
 		if (!gee_iterator_next (iterator)) {
+#line 83 "rygel-main.vala"
 			break;
+#line 458 "rygel-main.c"
 		}
+#line 84 "rygel-main.vala"
 		rygel_main_create_device (self, plugin, _tmp0_ = (RygelRootDeviceFactory*) gee_iterator_get (iterator), NULL, NULL);
+#line 462 "rygel-main.c"
 		_rygel_root_device_factory_unref0 (_tmp0_);
 	}
 	_g_object_unref0 (iterator);
 }
 
 
+#line 103 "rygel-main.vala"
 static void _rygel_main_on_context_available_gupnp_context_manager_context_available (GUPnPContextManager* _sender, GUPnPContext* p0, gpointer self) {
+#line 471 "rygel-main.c"
 	rygel_main_on_context_available (self, _sender, p0);
 }
 
 
+#line 135 "rygel-main.vala"
 static void _rygel_main_on_context_unavailable_gupnp_context_manager_context_unavailable (GUPnPContextManager* _sender, GUPnPContext* p0, gpointer self) {
+#line 478 "rygel-main.c"
 	rygel_main_on_context_unavailable (self, _sender, p0);
 }
 
 
+#line 88 "rygel-main.vala"
 static GUPnPContextManager* rygel_main_create_context_manager (RygelMain* self) {
+#line 485 "rygel-main.c"
 	GUPnPContextManager* result;
 	GError * _inner_error_;
 	gint port;
 	GUPnPContextManager* manager;
+#line 88 "rygel-main.vala"
 	g_return_val_if_fail (self != NULL, NULL);
+#line 492 "rygel-main.c"
 	_inner_error_ = NULL;
+#line 89 "rygel-main.vala"
 	port = 0;
+#line 496 "rygel-main.c"
 	{
 		gint _tmp0_;
+#line 92 "rygel-main.vala"
 		_tmp0_ = rygel_configuration_get_port (self->priv->config, &_inner_error_);
+#line 501 "rygel-main.c"
 		if (_inner_error_ != NULL) {
 			goto __catch59_g_error;
 			goto __finally59;
 		}
+#line 92 "rygel-main.vala"
 		port = _tmp0_;
+#line 508 "rygel-main.c"
 	}
 	goto __finally59;
 	__catch59_g_error:
@@ -452,33 +522,52 @@ static GUPnPContextManager* rygel_main_create_context_manager (RygelMain* self) 
 		g_clear_error (&_inner_error_);
 		return NULL;
 	}
+#line 95 "rygel-main.vala"
 	manager = gupnp_context_manager_new (NULL, (guint) port);
+#line 97 "rygel-main.vala"
 	g_signal_connect_object (manager, "context-available", (GCallback) _rygel_main_on_context_available_gupnp_context_manager_context_available, self, 0);
+#line 98 "rygel-main.vala"
 	g_signal_connect_object (manager, "context-unavailable", (GCallback) _rygel_main_on_context_unavailable_gupnp_context_manager_context_unavailable, self, 0);
+#line 532 "rygel-main.c"
 	result = manager;
+#line 100 "rygel-main.vala"
 	return result;
+#line 536 "rygel-main.c"
 }
 
 
+#line 103 "rygel-main.vala"
 static void rygel_main_on_context_available (RygelMain* self, GUPnPContextManager* manager, GUPnPContext* context) {
+#line 542 "rygel-main.c"
 	GError * _inner_error_;
 	char* iface;
 	gboolean _tmp2_ = FALSE;
+#line 103 "rygel-main.vala"
 	g_return_if_fail (self != NULL);
+#line 103 "rygel-main.vala"
 	g_return_if_fail (manager != NULL);
+#line 103 "rygel-main.vala"
 	g_return_if_fail (context != NULL);
+#line 552 "rygel-main.c"
 	_inner_error_ = NULL;
+#line 105 "rygel-main.vala"
 	iface = NULL;
-	g_debug ("rygel-main.vala:103: new network context %s (%s) available.", gssdp_client_get_interface ((GSSDPClient*) context), gssdp_client_get_host_ip ((GSSDPClient*) context));
+#line 107 "rygel-main.vala"
+	g_debug ("rygel-main.vala:107: new network context %s (%s) available.", gssdp_client_get_interface ((GSSDPClient*) context), gssdp_client_get_host_ip ((GSSDPClient*) context));
+#line 558 "rygel-main.c"
 	{
 		char* _tmp0_;
 		char* _tmp1_;
+#line 112 "rygel-main.vala"
 		_tmp0_ = rygel_configuration_get_interface (self->priv->config, &_inner_error_);
+#line 564 "rygel-main.c"
 		if (_inner_error_ != NULL) {
 			goto __catch60_g_error;
 			goto __finally60;
 		}
+#line 112 "rygel-main.vala"
 		iface = (_tmp1_ = _tmp0_, _g_free0 (iface), _tmp1_);
+#line 571 "rygel-main.c"
 	}
 	goto __finally60;
 	__catch60_g_error:
@@ -497,30 +586,48 @@ static void rygel_main_on_context_available (RygelMain* self, GUPnPContextManage
 		g_clear_error (&_inner_error_);
 		return;
 	}
+#line 115 "rygel-main.vala"
 	if (iface == NULL) {
+#line 115 "rygel-main.vala"
 		_tmp2_ = TRUE;
+#line 594 "rygel-main.c"
 	} else {
+#line 115 "rygel-main.vala"
 		_tmp2_ = _vala_strcmp0 (iface, gssdp_client_get_interface ((GSSDPClient*) context)) == 0;
+#line 598 "rygel-main.c"
 	}
+#line 115 "rygel-main.vala"
 	if (_tmp2_) {
+#line 602 "rygel-main.c"
 		{
 			RygelRootDeviceFactory* factory;
 			GeeCollection* _tmp3_;
 			GeeIterator* _tmp4_;
 			GeeIterator* iterator;
+#line 117 "rygel-main.vala"
 			factory = rygel_root_device_factory_new (context, &_inner_error_);
+#line 610 "rygel-main.c"
 			if (_inner_error_ != NULL) {
 				goto __catch61_g_error;
 				goto __finally61;
 			}
+#line 118 "rygel-main.vala"
 			gee_abstract_collection_add ((GeeAbstractCollection*) self->priv->factories, factory);
+#line 120 "rygel-main.vala"
 			iterator = (_tmp4_ = gee_iterable_iterator ((GeeIterable*) (_tmp3_ = rygel_plugin_loader_list_plugins (self->priv->plugin_loader))), _g_object_unref0 (_tmp3_), _tmp4_);
+#line 121 "rygel-main.vala"
 			while (TRUE) {
+#line 621 "rygel-main.c"
 				RygelPlugin* _tmp5_;
+#line 121 "rygel-main.vala"
 				if (!gee_iterator_next (iterator)) {
+#line 121 "rygel-main.vala"
 					break;
+#line 627 "rygel-main.c"
 				}
+#line 122 "rygel-main.vala"
 				rygel_main_create_device (self, _tmp5_ = (RygelPlugin*) gee_iterator_get (iterator), factory, NULL, NULL);
+#line 631 "rygel-main.c"
 				_g_object_unref0 (_tmp5_);
 			}
 			_rygel_root_device_factory_unref0 (factory);
@@ -533,7 +640,9 @@ static void rygel_main_on_context_available (RygelMain* self, GUPnPContextManage
 			err = _inner_error_;
 			_inner_error_ = NULL;
 			{
-				g_warning ("rygel-main.vala:121: Failed to create root device factory: %s\n", err->message);
+#line 125 "rygel-main.vala"
+				g_warning ("rygel-main.vala:125: Failed to create root device factory: %s\n", err->message);
+#line 646 "rygel-main.c"
 				_g_error_free0 (err);
 			}
 		}
@@ -545,39 +654,65 @@ static void rygel_main_on_context_available (RygelMain* self, GUPnPContextManage
 			return;
 		}
 	} else {
-		g_debug ("rygel-main.vala:125: Ignoring network context %s (%s).", gssdp_client_get_interface ((GSSDPClient*) context), gssdp_client_get_host_ip ((GSSDPClient*) context));
+#line 129 "rygel-main.vala"
+		g_debug ("rygel-main.vala:129: Ignoring network context %s (%s).", gssdp_client_get_interface ((GSSDPClient*) context), gssdp_client_get_host_ip ((GSSDPClient*) context));
+#line 660 "rygel-main.c"
 	}
 	_g_free0 (iface);
 }
 
 
+#line 135 "rygel-main.vala"
 static void rygel_main_on_context_unavailable (RygelMain* self, GUPnPContextManager* manager, GUPnPContext* context) {
+#line 668 "rygel-main.c"
 	GeeIterator* factory_iter;
 	GeeIterator* device_iter;
+#line 135 "rygel-main.vala"
 	g_return_if_fail (self != NULL);
+#line 135 "rygel-main.vala"
 	g_return_if_fail (manager != NULL);
+#line 135 "rygel-main.vala"
 	g_return_if_fail (context != NULL);
-	g_debug ("rygel-main.vala:133: Network context %s (%s) now unavailable.", gssdp_client_get_interface ((GSSDPClient*) context), gssdp_client_get_host_ip ((GSSDPClient*) context));
+#line 137 "rygel-main.vala"
+	g_debug ("rygel-main.vala:137: Network context %s (%s) now unavailable.", gssdp_client_get_interface ((GSSDPClient*) context), gssdp_client_get_host_ip ((GSSDPClient*) context));
+#line 141 "rygel-main.vala"
 	factory_iter = gee_abstract_collection_iterator ((GeeAbstractCollection*) self->priv->factories);
+#line 142 "rygel-main.vala"
 	while (TRUE) {
+#line 683 "rygel-main.c"
 		RygelRootDeviceFactory* _tmp0_;
 		gboolean _tmp1_;
+#line 142 "rygel-main.vala"
 		if (!gee_iterator_next (factory_iter)) {
+#line 142 "rygel-main.vala"
 			break;
+#line 690 "rygel-main.c"
 		}
+#line 143 "rygel-main.vala"
 		if ((_tmp1_ = context == (_tmp0_ = (RygelRootDeviceFactory*) gee_iterator_get (factory_iter))->context, _rygel_root_device_factory_unref0 (_tmp0_), _tmp1_)) {
+#line 144 "rygel-main.vala"
 			gee_iterator_remove (factory_iter);
+#line 696 "rygel-main.c"
 		}
 	}
+#line 148 "rygel-main.vala"
 	device_iter = gee_abstract_collection_iterator ((GeeAbstractCollection*) self->priv->root_devices);
+#line 149 "rygel-main.vala"
 	while (TRUE) {
+#line 703 "rygel-main.c"
 		RygelRootDevice* _tmp2_;
 		gboolean _tmp3_;
+#line 149 "rygel-main.vala"
 		if (!gee_iterator_next (device_iter)) {
+#line 149 "rygel-main.vala"
 			break;
+#line 710 "rygel-main.c"
 		}
+#line 150 "rygel-main.vala"
 		if ((_tmp3_ = context == gupnp_device_info_get_context ((GUPnPDeviceInfo*) (_tmp2_ = (RygelRootDevice*) gee_iterator_get (device_iter))), _g_object_unref0 (_tmp2_), _tmp3_)) {
+#line 151 "rygel-main.vala"
 			gee_iterator_remove (device_iter);
+#line 716 "rygel-main.c"
 		}
 	}
 	_g_object_unref0 (factory_iter);
@@ -630,12 +765,16 @@ static void rygel_main_create_device_ready (GObject* source_object, GAsyncResult
 }
 
 
+#line 156 "rygel-main.vala"
 static gboolean _rygel_main_create_device_co_gsource_func (gpointer self) {
+#line 771 "rygel-main.c"
 	return rygel_main_create_device_co (self);
 }
 
 
+#line 182 "rygel-main.vala"
 static void _rygel_main_on_plugin_notify_g_object_notify (RygelPlugin* _sender, GParamSpec* pspec, gpointer self) {
+#line 778 "rygel-main.c"
 	rygel_main_on_plugin_notify (self, _sender, pspec);
 }
 
@@ -646,7 +785,9 @@ static gboolean rygel_main_create_device_co (RygelMainCreateDeviceData* data) {
 		g_assert_not_reached ();
 		case 0:
 		{
+#line 164 "rygel-main.vala"
 			g_idle_add_full (G_PRIORITY_DEFAULT_IDLE, _rygel_main_create_device_co_gsource_func, data, NULL);
+#line 791 "rygel-main.c"
 			data->_state_ = 30;
 			return FALSE;
 			case 30:
@@ -657,9 +798,13 @@ static gboolean rygel_main_create_device_co (RygelMainCreateDeviceData* data) {
 					goto __catch62_g_error;
 					goto __finally62;
 				}
+#line 170 "rygel-main.vala"
 				gupnp_root_device_set_available ((GUPnPRootDevice*) data->device, rygel_plugin_get_available (data->plugin));
+#line 172 "rygel-main.vala"
 				gee_abstract_collection_add ((GeeAbstractCollection*) data->self->priv->root_devices, data->device);
+#line 174 "rygel-main.vala"
 				g_signal_connect_object ((GObject*) data->plugin, "notify::available", (GCallback) _rygel_main_on_plugin_notify_g_object_notify, data->self, 0);
+#line 808 "rygel-main.c"
 				_g_object_unref0 (data->device);
 			}
 			goto __finally62;
@@ -668,7 +813,9 @@ static gboolean rygel_main_create_device_co (RygelMainCreateDeviceData* data) {
 				data->_error_ = data->_inner_error_;
 				data->_inner_error_ = NULL;
 				{
-					g_warning ("rygel-main.vala:172: Failed to create RootDevice for %s. Reason: %s\n", data->plugin->name, data->_error_->message);
+#line 176 "rygel-main.vala"
+					g_warning ("rygel-main.vala:176: Failed to create RootDevice for %s. Reason: %s\n", data->plugin->name, data->_error_->message);
+#line 819 "rygel-main.c"
 					_g_error_free0 (data->_error_);
 				}
 			}
@@ -692,21 +839,35 @@ static gboolean rygel_main_create_device_co (RygelMainCreateDeviceData* data) {
 }
 
 
+#line 182 "rygel-main.vala"
 static void rygel_main_on_plugin_notify (RygelMain* self, RygelPlugin* plugin, GParamSpec* spec) {
+#line 182 "rygel-main.vala"
 	g_return_if_fail (self != NULL);
+#line 182 "rygel-main.vala"
 	g_return_if_fail (plugin != NULL);
+#line 182 "rygel-main.vala"
 	g_return_if_fail (spec != NULL);
+#line 851 "rygel-main.c"
 	{
 		GeeIterator* _device_it;
 		_device_it = gee_abstract_collection_iterator ((GeeAbstractCollection*) self->priv->root_devices);
+#line 184 "rygel-main.vala"
 		while (TRUE) {
+#line 857 "rygel-main.c"
 			RygelRootDevice* device;
+#line 184 "rygel-main.vala"
 			if (!gee_iterator_next (_device_it)) {
+#line 184 "rygel-main.vala"
 				break;
+#line 863 "rygel-main.c"
 			}
+#line 184 "rygel-main.vala"
 			device = (RygelRootDevice*) gee_iterator_get (_device_it);
+#line 185 "rygel-main.vala"
 			if (gupnp_device_info_get_resource_factory ((GUPnPDeviceInfo*) device) == GUPNP_RESOURCE_FACTORY (plugin)) {
+#line 186 "rygel-main.vala"
 				gupnp_root_device_set_available ((GUPnPRootDevice*) device, rygel_plugin_get_available (plugin));
+#line 871 "rygel-main.c"
 			}
 			_g_object_unref0 (device);
 		}
@@ -715,25 +876,46 @@ static void rygel_main_on_plugin_notify (RygelMain* self, RygelPlugin* plugin, G
 }
 
 
+static char** _vala_array_dup1 (char** self, int length) {
+	char** result;
+	int i;
+	result = g_new0 (char*, length + 1);
+	for (i = 0; i < length; i++) {
+		result[i] = g_strdup (self[i]);
+	}
+	return result;
+}
+
+
+#line 191 "rygel-main.vala"
 static gint rygel_main_main (char** args, int args_length1) {
+#line 893 "rygel-main.c"
 	gint result;
 	GError * _inner_error_;
 	RygelMain* main;
 	RygelDBusService* service;
+	char** _tmp1_;
+	gint original_args_size;
+	gint original_args_length1;
+	char** _tmp0_;
+	char** original_args;
 	gint exit_code;
 	_inner_error_ = NULL;
 	main = NULL;
 	service = NULL;
+	original_args = (_tmp1_ = (_tmp0_ = args, (_tmp0_ == NULL) ? ((gpointer) _tmp0_) : _vala_array_dup1 (_tmp0_, args_length1)), original_args_length1 = args_length1, original_args_size = original_args_length1, _tmp1_);
 	{
-		char** _tmp0_;
+		char** _tmp2_;
 		gint dummy_args_size;
 		gint dummy_args_length1;
 		char** dummy_args;
-		RygelMain* _tmp1_;
-		RygelMain* _tmp2_;
-		RygelDBusService* _tmp3_;
-		RygelDBusService* _tmp4_;
+		RygelMain* _tmp3_;
+		RygelMain* _tmp4_;
+		RygelDBusService* _tmp5_;
+		RygelDBusService* _tmp6_;
+#line 199 "rygel-main.vala"
 		rygel_cmdline_config_parse_args (&args, &args_length1, &_inner_error_);
+#line 919 "rygel-main.c"
 		if (_inner_error_ != NULL) {
 			if (_inner_error_->domain == DBUS_GERROR) {
 				goto __catch63_dbus_gerror;
@@ -744,9 +926,12 @@ static gint rygel_main_main (char** args, int args_length1) {
 			goto __catch63_g_error;
 			goto __finally63;
 		}
-		dummy_args = (_tmp0_ = g_new0 (char*, 0 + 1), dummy_args_length1 = 0, dummy_args_size = dummy_args_length1, _tmp0_);
+		dummy_args = (_tmp2_ = g_new0 (char*, 0 + 1), dummy_args_length1 = 0, dummy_args_size = dummy_args_length1, _tmp2_);
+#line 203 "rygel-main.vala"
 		gst_init (&dummy_args_length1, &dummy_args);
-		_tmp1_ = rygel_main_new (&_inner_error_);
+#line 205 "rygel-main.vala"
+		_tmp3_ = rygel_main_new (&_inner_error_);
+#line 935 "rygel-main.c"
 		if (_inner_error_ != NULL) {
 			dummy_args = (_vala_array_free (dummy_args, dummy_args_length1, (GDestroyNotify) g_free), NULL);
 			if (_inner_error_->domain == DBUS_GERROR) {
@@ -758,8 +943,11 @@ static gint rygel_main_main (char** args, int args_length1) {
 			goto __catch63_g_error;
 			goto __finally63;
 		}
-		main = (_tmp2_ = _tmp1_, _g_object_unref0 (main), _tmp2_);
-		_tmp3_ = rygel_dbus_service_new (main, &_inner_error_);
+#line 205 "rygel-main.vala"
+		main = (_tmp4_ = _tmp3_, _g_object_unref0 (main), _tmp4_);
+#line 206 "rygel-main.vala"
+		_tmp5_ = rygel_dbus_service_new (main, &_inner_error_);
+#line 951 "rygel-main.c"
 		if (_inner_error_ != NULL) {
 			dummy_args = (_vala_array_free (dummy_args, dummy_args_length1, (GDestroyNotify) g_free), NULL);
 			if (_inner_error_->domain == DBUS_GERROR) {
@@ -771,7 +959,9 @@ static gint rygel_main_main (char** args, int args_length1) {
 			goto __catch63_g_error;
 			goto __finally63;
 		}
-		service = (_tmp4_ = _tmp3_, _g_object_unref0 (service), _tmp4_);
+#line 206 "rygel-main.vala"
+		service = (_tmp6_ = _tmp5_, _g_object_unref0 (service), _tmp6_);
+#line 965 "rygel-main.c"
 		dummy_args = (_vala_array_free (dummy_args, dummy_args_length1, (GDestroyNotify) g_free), NULL);
 	}
 	goto __finally63;
@@ -781,7 +971,9 @@ static gint rygel_main_main (char** args, int args_length1) {
 		err = _inner_error_;
 		_inner_error_ = NULL;
 		{
-			g_warning ("rygel-main.vala:202: Failed to start D-Bus service: %s", err->message);
+#line 208 "rygel-main.vala"
+			g_warning ("rygel-main.vala:208: Failed to start D-Bus service: %s", err->message);
+#line 977 "rygel-main.c"
 			_g_error_free0 (err);
 		}
 	}
@@ -796,7 +988,10 @@ static gint rygel_main_main (char** args, int args_length1) {
 			_g_error_free0 (err);
 			_g_object_unref0 (main);
 			_g_object_unref0 (service);
+			original_args = (_vala_array_free (original_args, original_args_length1, (GDestroyNotify) g_free), NULL);
+#line 210 "rygel-main.vala"
 			return result;
+#line 995 "rygel-main.c"
 		}
 	}
 	goto __finally63;
@@ -806,34 +1001,55 @@ static gint rygel_main_main (char** args, int args_length1) {
 		err = _inner_error_;
 		_inner_error_ = NULL;
 		{
-			g_error ("rygel-main.vala:206: %s", err->message);
+#line 212 "rygel-main.vala"
+			g_error ("rygel-main.vala:212: %s", err->message);
+#line 1007 "rygel-main.c"
 			result = -1;
 			_g_error_free0 (err);
 			_g_object_unref0 (main);
 			_g_object_unref0 (service);
+			original_args = (_vala_array_free (original_args, original_args_length1, (GDestroyNotify) g_free), NULL);
+#line 214 "rygel-main.vala"
 			return result;
+#line 1015 "rygel-main.c"
 		}
 	}
 	__finally63:
 	if (_inner_error_ != NULL) {
 		_g_object_unref0 (main);
 		_g_object_unref0 (service);
+		original_args = (_vala_array_free (original_args, original_args_length1, (GDestroyNotify) g_free), NULL);
 		g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
 		g_clear_error (&_inner_error_);
 		return 0;
 	}
+#line 217 "rygel-main.vala"
 	exit_code = rygel_main_run (main);
+#line 219 "rygel-main.vala"
+	if (main->restart) {
+#line 220 "rygel-main.vala"
+		restart_application (original_args);
+#line 1033 "rygel-main.c"
+	}
 	result = exit_code;
 	_g_object_unref0 (main);
 	_g_object_unref0 (service);
+	original_args = (_vala_array_free (original_args, original_args_length1, (GDestroyNotify) g_free), NULL);
+#line 223 "rygel-main.vala"
 	return result;
+#line 1041 "rygel-main.c"
 }
 
 
+#line 191 "rygel-main.vala"
 int main (int argc, char ** argv) {
+#line 1047 "rygel-main.c"
 	g_thread_init (NULL);
+#line 191 "rygel-main.vala"
 	g_type_init ();
+#line 191 "rygel-main.vala"
 	return rygel_main_main (argv, argc);
+#line 1053 "rygel-main.c"
 }
 
 

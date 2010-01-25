@@ -139,50 +139,79 @@ static gpointer _g_object_ref0 (gpointer self) {
 }
 
 
+#line 40 "rygel-tracker-pref-section.vala"
 RygelTrackerPrefSection* rygel_tracker_pref_section_construct (GType object_type, GtkBuilder* builder, RygelUserConfig* config) {
+#line 145 "rygel-tracker-pref-section.c"
 	GError * _inner_error_;
 	RygelTrackerPrefSection * self;
 	GtkCheckButton* _tmp0_;
 	GtkCheckButton* _tmp1_;
 	GtkCheckButton* _tmp2_;
+#line 40 "rygel-tracker-pref-section.vala"
 	g_return_val_if_fail (builder != NULL, NULL);
+#line 40 "rygel-tracker-pref-section.vala"
 	g_return_val_if_fail (config != NULL, NULL);
+#line 155 "rygel-tracker-pref-section.c"
 	_inner_error_ = NULL;
+#line 41 "rygel-tracker-pref-section.vala"
 	self = (RygelTrackerPrefSection*) rygel_plugin_pref_section_construct (object_type, builder, config, RYGEL_TRACKER_PREF_SECTION_NAME);
+#line 43 "rygel-tracker-pref-section.vala"
 	self->priv->videos_check = (_tmp0_ = _g_object_ref0 (GTK_CHECK_BUTTON (gtk_builder_get_object (builder, RYGEL_TRACKER_PREF_SECTION_VIDEOS_CHECK))), _g_object_unref0 (self->priv->videos_check), _tmp0_);
+#line 44 "rygel-tracker-pref-section.vala"
 	g_assert (self->priv->videos_check != NULL);
+#line 45 "rygel-tracker-pref-section.vala"
 	self->priv->music_check = (_tmp1_ = _g_object_ref0 (GTK_CHECK_BUTTON (gtk_builder_get_object (builder, RYGEL_TRACKER_PREF_SECTION_MUSIC_CHECK))), _g_object_unref0 (self->priv->music_check), _tmp1_);
+#line 46 "rygel-tracker-pref-section.vala"
 	g_assert (self->priv->music_check != NULL);
+#line 47 "rygel-tracker-pref-section.vala"
 	self->priv->pictures_check = (_tmp2_ = _g_object_ref0 (GTK_CHECK_BUTTON (gtk_builder_get_object (builder, RYGEL_TRACKER_PREF_SECTION_PICTURES_CHECK))), _g_object_unref0 (self->priv->pictures_check), _tmp2_);
+#line 48 "rygel-tracker-pref-section.vala"
 	g_assert (self->priv->pictures_check != NULL);
+#line 50 "rygel-tracker-pref-section.vala"
 	gee_abstract_collection_add ((GeeAbstractCollection*) ((RygelPluginPrefSection*) self)->widgets, (GtkWidget*) self->priv->videos_check);
+#line 51 "rygel-tracker-pref-section.vala"
 	gee_abstract_collection_add ((GeeAbstractCollection*) ((RygelPluginPrefSection*) self)->widgets, (GtkWidget*) self->priv->music_check);
+#line 52 "rygel-tracker-pref-section.vala"
 	gee_abstract_collection_add ((GeeAbstractCollection*) ((RygelPluginPrefSection*) self)->widgets, (GtkWidget*) self->priv->pictures_check);
+#line 54 "rygel-tracker-pref-section.vala"
 	gtk_toggle_button_set_active ((GtkToggleButton*) self->priv->videos_check, TRUE);
+#line 55 "rygel-tracker-pref-section.vala"
 	gtk_toggle_button_set_active ((GtkToggleButton*) self->priv->music_check, TRUE);
+#line 56 "rygel-tracker-pref-section.vala"
 	gtk_toggle_button_set_active ((GtkToggleButton*) self->priv->pictures_check, TRUE);
+#line 183 "rygel-tracker-pref-section.c"
 	{
 		gboolean _tmp3_;
 		gboolean _tmp4_;
 		gboolean _tmp5_;
+#line 59 "rygel-tracker-pref-section.vala"
 		_tmp3_ = rygel_configuration_get_bool ((RygelConfiguration*) config, ((RygelPreferencesSection*) self)->name, RYGEL_TRACKER_PREF_SECTION_VIDEOS_KEY, &_inner_error_);
+#line 190 "rygel-tracker-pref-section.c"
 		if (_inner_error_ != NULL) {
 			goto __catch12_g_error;
 			goto __finally12;
 		}
+#line 59 "rygel-tracker-pref-section.vala"
 		gtk_toggle_button_set_active ((GtkToggleButton*) self->priv->videos_check, _tmp3_);
+#line 60 "rygel-tracker-pref-section.vala"
 		_tmp4_ = rygel_configuration_get_bool ((RygelConfiguration*) config, ((RygelPreferencesSection*) self)->name, RYGEL_TRACKER_PREF_SECTION_MUSIC_KEY, &_inner_error_);
+#line 199 "rygel-tracker-pref-section.c"
 		if (_inner_error_ != NULL) {
 			goto __catch12_g_error;
 			goto __finally12;
 		}
+#line 60 "rygel-tracker-pref-section.vala"
 		gtk_toggle_button_set_active ((GtkToggleButton*) self->priv->music_check, _tmp4_);
+#line 61 "rygel-tracker-pref-section.vala"
 		_tmp5_ = rygel_configuration_get_bool ((RygelConfiguration*) config, ((RygelPreferencesSection*) self)->name, RYGEL_TRACKER_PREF_SECTION_PICTURES_KEY, &_inner_error_);
+#line 208 "rygel-tracker-pref-section.c"
 		if (_inner_error_ != NULL) {
 			goto __catch12_g_error;
 			goto __finally12;
 		}
+#line 61 "rygel-tracker-pref-section.vala"
 		gtk_toggle_button_set_active ((GtkToggleButton*) self->priv->pictures_check, _tmp5_);
+#line 215 "rygel-tracker-pref-section.c"
 	}
 	goto __finally12;
 	__catch12_g_error:
@@ -200,23 +229,35 @@ RygelTrackerPrefSection* rygel_tracker_pref_section_construct (GType object_type
 		g_clear_error (&_inner_error_);
 		return NULL;
 	}
+#line 66 "rygel-tracker-pref-section.vala"
 	rygel_plugin_pref_section_reset_widgets_sensitivity ((RygelPluginPrefSection*) self);
+#line 235 "rygel-tracker-pref-section.c"
 	return self;
 }
 
 
+#line 40 "rygel-tracker-pref-section.vala"
 RygelTrackerPrefSection* rygel_tracker_pref_section_new (GtkBuilder* builder, RygelUserConfig* config) {
+#line 40 "rygel-tracker-pref-section.vala"
 	return rygel_tracker_pref_section_construct (RYGEL_TYPE_TRACKER_PREF_SECTION, builder, config);
+#line 244 "rygel-tracker-pref-section.c"
 }
 
 
+#line 69 "rygel-tracker-pref-section.vala"
 static void rygel_tracker_pref_section_real_save (RygelPreferencesSection* base) {
+#line 250 "rygel-tracker-pref-section.c"
 	RygelTrackerPrefSection * self;
 	self = (RygelTrackerPrefSection*) base;
+#line 70 "rygel-tracker-pref-section.vala"
 	RYGEL_PREFERENCES_SECTION_CLASS (rygel_tracker_pref_section_parent_class)->save ((RygelPreferencesSection*) RYGEL_PLUGIN_PREF_SECTION (self));
+#line 72 "rygel-tracker-pref-section.vala"
 	rygel_user_config_set_bool (((RygelPreferencesSection*) self)->config, ((RygelPreferencesSection*) self)->name, RYGEL_TRACKER_PREF_SECTION_VIDEOS_KEY, gtk_toggle_button_get_active ((GtkToggleButton*) self->priv->videos_check));
+#line 73 "rygel-tracker-pref-section.vala"
 	rygel_user_config_set_bool (((RygelPreferencesSection*) self)->config, ((RygelPreferencesSection*) self)->name, RYGEL_TRACKER_PREF_SECTION_MUSIC_KEY, gtk_toggle_button_get_active ((GtkToggleButton*) self->priv->music_check));
+#line 74 "rygel-tracker-pref-section.vala"
 	rygel_user_config_set_bool (((RygelPreferencesSection*) self)->config, ((RygelPreferencesSection*) self)->name, RYGEL_TRACKER_PREF_SECTION_PICTURES_KEY, gtk_toggle_button_get_active ((GtkToggleButton*) self->priv->pictures_check));
+#line 261 "rygel-tracker-pref-section.c"
 }
 
 

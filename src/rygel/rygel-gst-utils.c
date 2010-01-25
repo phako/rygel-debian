@@ -86,14 +86,21 @@ static void rygel_gst_utils_finalize (RygelGstUtils* obj);
 
 
 
+#line 27 "rygel-gst-utils.vala"
 GstElement* rygel_gst_utils_create_element (const char* factoryname, const char* name, GError** error) {
+#line 92 "rygel-gst-utils.c"
 	GstElement* result;
 	GError * _inner_error_;
 	GstElement* element;
+#line 27 "rygel-gst-utils.vala"
 	g_return_val_if_fail (factoryname != NULL, NULL);
+#line 98 "rygel-gst-utils.c"
 	_inner_error_ = NULL;
+#line 30 "rygel-gst-utils.vala"
 	element = gst_element_factory_make (factoryname, name);
+#line 31 "rygel-gst-utils.vala"
 	if (element == NULL) {
+#line 104 "rygel-gst-utils.c"
 		_inner_error_ = g_error_new (RYGEL_LIVE_RESPONSE_ERROR, RYGEL_LIVE_RESPONSE_ERROR_MISSING_PLUGIN, "Required element factory '%s' missing", factoryname);
 		if (_inner_error_ != NULL) {
 			g_propagate_error (error, _inner_error_);
@@ -102,7 +109,9 @@ GstElement* rygel_gst_utils_create_element (const char* factoryname, const char*
 		}
 	}
 	result = element;
+#line 37 "rygel-gst-utils.vala"
 	return result;
+#line 115 "rygel-gst-utils.c"
 }
 
 
@@ -111,16 +120,24 @@ static gpointer _gst_message_ref0 (gpointer self) {
 }
 
 
+#line 40 "rygel-gst-utils.vala"
 void rygel_gst_utils_post_error (GstElement* dest, GError* _error_) {
+#line 126 "rygel-gst-utils.c"
 	GstMessage* msg;
+#line 40 "rygel-gst-utils.vala"
 	g_return_if_fail (dest != NULL);
+#line 41 "rygel-gst-utils.vala"
 	msg = gst_message_new_error ((GstObject*) dest, _error_, _error_->message);
+#line 42 "rygel-gst-utils.vala"
 	gst_element_post_message (dest, _gst_message_ref0 (msg));
+#line 134 "rygel-gst-utils.c"
 	_gst_message_unref0 (msg);
 }
 
 
+#line 26 "rygel-gst-utils.vala"
 RygelGstUtils* rygel_gst_utils_construct (GType object_type) {
+#line 141 "rygel-gst-utils.c"
 	RygelGstUtils* self;
 	self = (RygelGstUtils*) g_type_create_instance (object_type);
 	return self;

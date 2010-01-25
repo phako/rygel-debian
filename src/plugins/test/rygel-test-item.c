@@ -65,18 +65,29 @@ RygelTestItem* rygel_test_item_construct (GType object_type, const char* id, Ryg
 
 
 
+#line 34 "rygel-test-item.vala"
 RygelTestItem* rygel_test_item_construct (GType object_type, const char* id, RygelMediaContainer* parent, const char* title, const char* mime, const char* upnp_class) {
+#line 71 "rygel-test-item.c"
 	RygelTestItem * self;
 	char* _tmp0_;
 	char* _tmp1_;
+#line 34 "rygel-test-item.vala"
 	g_return_val_if_fail (id != NULL, NULL);
+#line 34 "rygel-test-item.vala"
 	g_return_val_if_fail (parent != NULL, NULL);
+#line 34 "rygel-test-item.vala"
 	g_return_val_if_fail (title != NULL, NULL);
+#line 34 "rygel-test-item.vala"
 	g_return_val_if_fail (mime != NULL, NULL);
+#line 34 "rygel-test-item.vala"
 	g_return_val_if_fail (upnp_class != NULL, NULL);
+#line 39 "rygel-test-item.vala"
 	self = (RygelTestItem*) rygel_media_item_construct (object_type, id, parent, title, upnp_class);
+#line 41 "rygel-test-item.vala"
 	((RygelMediaItem*) self)->mime_type = (_tmp0_ = g_strdup (mime), _g_free0 (((RygelMediaItem*) self)->mime_type), _tmp0_);
+#line 42 "rygel-test-item.vala"
 	((RygelMediaItem*) self)->author = (_tmp1_ = g_strdup (RYGEL_TEST_ITEM_TEST_AUTHOR), _g_free0 (((RygelMediaItem*) self)->author), _tmp1_);
+#line 91 "rygel-test-item.c"
 	return self;
 }
 

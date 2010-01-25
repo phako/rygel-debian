@@ -121,18 +121,26 @@ static guint _dynamic_request_name2 (DBusGProxy* self, const char* param1, guint
 }
 
 
+#line 31 "rygel-dbus-service.vala"
 RygelDBusService* rygel_dbus_service_construct (GType object_type, RygelMain* main, GError** error) {
+#line 127 "rygel-dbus-service.c"
 	GError * _inner_error_;
 	RygelDBusService * self;
 	RygelMain* _tmp0_;
 	DBusGConnection* conn;
 	DBusGProxy* bus;
 	guint request_name_result;
+#line 31 "rygel-dbus-service.vala"
 	g_return_val_if_fail (main != NULL, NULL);
+#line 136 "rygel-dbus-service.c"
 	_inner_error_ = NULL;
+#line 31 "rygel-dbus-service.vala"
 	self = (RygelDBusService*) g_object_new (object_type, NULL);
+#line 32 "rygel-dbus-service.vala"
 	self->priv->main = (_tmp0_ = _g_object_ref0 (main), _g_object_unref0 (self->priv->main), _tmp0_);
+#line 34 "rygel-dbus-service.vala"
 	conn = dbus_g_bus_get (DBUS_BUS_SESSION, &_inner_error_);
+#line 144 "rygel-dbus-service.c"
 	if (_inner_error_ != NULL) {
 		if (_inner_error_->domain == DBUS_GERROR) {
 			g_propagate_error (error, _inner_error_);
@@ -143,8 +151,11 @@ RygelDBusService* rygel_dbus_service_construct (GType object_type, RygelMain* ma
 			return NULL;
 		}
 	}
+#line 36 "rygel-dbus-service.vala"
 	bus = dbus_g_proxy_new_for_name (conn, "org.freedesktop.DBus", "/org/freedesktop/DBus", "org.freedesktop.DBus");
+#line 41 "rygel-dbus-service.vala"
 	request_name_result = _dynamic_request_name2 (bus, rygel_dbus_service_RYGEL_SERVICE, (guint) 0, &_inner_error_);
+#line 159 "rygel-dbus-service.c"
 	if (_inner_error_ != NULL) {
 		if (_inner_error_->domain == DBUS_GERROR) {
 			g_propagate_error (error, _inner_error_);
@@ -159,10 +170,15 @@ RygelDBusService* rygel_dbus_service_construct (GType object_type, RygelMain* ma
 			return NULL;
 		}
 	}
+#line 44 "rygel-dbus-service.vala"
 	if (request_name_result != DBUS_REQUEST_NAME_REPLY_PRIMARY_OWNER) {
+#line 45 "rygel-dbus-service.vala"
 		g_warning ("rygel-dbus-service.vala:45: Failed to start D-Bus service, name '%s' already taken", rygel_dbus_service_RYGEL_SERVICE);
+#line 178 "rygel-dbus-service.c"
 	} else {
+#line 48 "rygel-dbus-service.vala"
 		_vala_dbus_register_object (dbus_g_connection_get_connection (conn), rygel_dbus_service_RYGEL_PATH, (GObject*) self);
+#line 182 "rygel-dbus-service.c"
 	}
 	_dbus_g_connection_unref0 (conn);
 	_g_object_unref0 (bus);
@@ -170,14 +186,21 @@ RygelDBusService* rygel_dbus_service_construct (GType object_type, RygelMain* ma
 }
 
 
+#line 31 "rygel-dbus-service.vala"
 RygelDBusService* rygel_dbus_service_new (RygelMain* main, GError** error) {
+#line 31 "rygel-dbus-service.vala"
 	return rygel_dbus_service_construct (RYGEL_TYPE_DBUS_SERVICE, main, error);
+#line 194 "rygel-dbus-service.c"
 }
 
 
+#line 52 "rygel-dbus-service.vala"
 void rygel_dbus_service_Shutdown (RygelDBusService* self) {
+#line 52 "rygel-dbus-service.vala"
 	g_return_if_fail (self != NULL);
+#line 53 "rygel-dbus-service.vala"
 	rygel_main_exit (self->priv->main, 0);
+#line 204 "rygel-dbus-service.c"
 }
 
 

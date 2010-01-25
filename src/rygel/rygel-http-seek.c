@@ -98,30 +98,46 @@ GQuark rygel_http_seek_error_quark (void) {
 }
 
 
+#line 37 "rygel-http-seek.vala"
 RygelHTTPSeek* rygel_http_seek_construct (GType object_type, SoupMessage* msg, gint64 start, gint64 stop, gint64 length) {
+#line 104 "rygel-http-seek.c"
 	RygelHTTPSeek * self;
+#line 37 "rygel-http-seek.vala"
 	g_return_val_if_fail (msg != NULL, NULL);
+#line 37 "rygel-http-seek.vala"
 	self = (RygelHTTPSeek*) g_object_new (object_type, NULL);
+#line 41 "rygel-http-seek.vala"
 	rygel_http_seek_set_msg (self, msg);
+#line 42 "rygel-http-seek.vala"
 	rygel_http_seek_set_start (self, start);
+#line 43 "rygel-http-seek.vala"
 	rygel_http_seek_set_stop (self, stop);
+#line 44 "rygel-http-seek.vala"
 	rygel_http_seek_set_length (self, length);
+#line 46 "rygel-http-seek.vala"
 	if (length > 0) {
+#line 47 "rygel-http-seek.vala"
 		rygel_http_seek_set_stop (self, CLAMP (stop, start + 1, length - 1));
+#line 122 "rygel-http-seek.c"
 	}
 	return self;
 }
 
 
+#line 51 "rygel-http-seek.vala"
 static void rygel_http_seek_real_add_response_headers (RygelHTTPSeek* self) {
+#line 130 "rygel-http-seek.c"
 	g_return_if_fail (self != NULL);
 	g_critical ("Type `%s' does not implement abstract method `rygel_http_seek_add_response_headers'", g_type_name (G_TYPE_FROM_INSTANCE (self)));
 	return;
 }
 
 
+#line 51 "rygel-http-seek.vala"
 void rygel_http_seek_add_response_headers (RygelHTTPSeek* self) {
+#line 51 "rygel-http-seek.vala"
 	RYGEL_HTTP_SEEK_GET_CLASS (self)->add_response_headers (self);
+#line 141 "rygel-http-seek.c"
 }
 
 
@@ -129,7 +145,9 @@ SoupMessage* rygel_http_seek_get_msg (RygelHTTPSeek* self) {
 	SoupMessage* result;
 	g_return_val_if_fail (self != NULL, NULL);
 	result = self->priv->_msg;
+#line 30 "rygel-http-seek.vala"
 	return result;
+#line 151 "rygel-http-seek.c"
 }
 
 
@@ -150,7 +168,9 @@ gint64 rygel_http_seek_get_start (RygelHTTPSeek* self) {
 	gint64 result;
 	g_return_val_if_fail (self != NULL, 0LL);
 	result = self->priv->_start;
+#line 33 "rygel-http-seek.vala"
 	return result;
+#line 174 "rygel-http-seek.c"
 }
 
 
@@ -165,7 +185,9 @@ gint64 rygel_http_seek_get_stop (RygelHTTPSeek* self) {
 	gint64 result;
 	g_return_val_if_fail (self != NULL, 0LL);
 	result = self->priv->_stop;
+#line 34 "rygel-http-seek.vala"
 	return result;
+#line 191 "rygel-http-seek.c"
 }
 
 
@@ -180,7 +202,9 @@ gint64 rygel_http_seek_get_length (RygelHTTPSeek* self) {
 	gint64 result;
 	g_return_val_if_fail (self != NULL, 0LL);
 	result = self->priv->_length;
+#line 35 "rygel-http-seek.vala"
 	return result;
+#line 208 "rygel-http-seek.c"
 }
 
 

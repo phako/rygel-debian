@@ -94,7 +94,9 @@ static void rygel_media_object_set_property (GObject * object, guint property_id
 
 
 
+#line 29 "rygel-media-object.vala"
 RygelMediaObject* rygel_media_object_construct (GType object_type) {
+#line 100 "rygel-media-object.c"
 	RygelMediaObject * self;
 	self = g_object_newv (object_type, 0, NULL);
 	return self;
@@ -105,30 +107,42 @@ const char* rygel_media_object_get_title (RygelMediaObject* self) {
 	const char* result;
 	g_return_val_if_fail (self != NULL, NULL);
 	result = self->priv->_title;
+#line 49 "rygel-media-object.vala"
 	return result;
+#line 113 "rygel-media-object.c"
 }
 
 
+#line 1027 "glib-2.0.vapi"
 static char* string_replace (const char* self, const char* old, const char* replacement) {
+#line 119 "rygel-media-object.c"
 	char* result;
 	GError * _inner_error_;
+#line 1027 "glib-2.0.vapi"
 	g_return_val_if_fail (self != NULL, NULL);
+#line 1027 "glib-2.0.vapi"
 	g_return_val_if_fail (old != NULL, NULL);
+#line 1027 "glib-2.0.vapi"
 	g_return_val_if_fail (replacement != NULL, NULL);
+#line 128 "rygel-media-object.c"
 	_inner_error_ = NULL;
 	{
 		char* _tmp0_;
 		GRegex* _tmp1_;
 		GRegex* regex;
 		char* _tmp2_;
+#line 1029 "glib-2.0.vapi"
 		regex = (_tmp1_ = g_regex_new (_tmp0_ = g_regex_escape_string (old, -1), 0, 0, &_inner_error_), _g_free0 (_tmp0_), _tmp1_);
+#line 137 "rygel-media-object.c"
 		if (_inner_error_ != NULL) {
 			if (_inner_error_->domain == G_REGEX_ERROR) {
 				goto __catch37_g_regex_error;
 			}
 			goto __finally37;
 		}
+#line 1030 "glib-2.0.vapi"
 		_tmp2_ = g_regex_replace_literal (regex, self, (gssize) (-1), 0, replacement, 0, &_inner_error_);
+#line 146 "rygel-media-object.c"
 		if (_inner_error_ != NULL) {
 			_g_regex_unref0 (regex);
 			if (_inner_error_->domain == G_REGEX_ERROR) {
@@ -138,7 +152,9 @@ static char* string_replace (const char* self, const char* old, const char* repl
 		}
 		result = _tmp2_;
 		_g_regex_unref0 (regex);
+#line 1030 "glib-2.0.vapi"
 		return result;
+#line 158 "rygel-media-object.c"
 	}
 	goto __finally37;
 	__catch37_g_regex_error:
@@ -147,7 +163,9 @@ static char* string_replace (const char* self, const char* old, const char* repl
 		e = _inner_error_;
 		_inner_error_ = NULL;
 		{
+#line 1032 "glib-2.0.vapi"
 			g_assert_not_reached ();
+#line 169 "rygel-media-object.c"
 			_g_error_free0 (e);
 		}
 	}
@@ -165,9 +183,13 @@ void rygel_media_object_set_title (RygelMediaObject* self, const char* value) {
 	char* _tmp1_;
 	char* _tmp2_;
 	g_return_if_fail (self != NULL);
+#line 53 "rygel-media-object.vala"
 	self->priv->_title = (_tmp0_ = string_replace (value, "@REALNAME@", g_get_real_name ()), _g_free0 (self->priv->_title), _tmp0_);
+#line 55 "rygel-media-object.vala"
 	self->priv->_title = (_tmp1_ = string_replace (self->priv->_title, "@USERNAME@", g_get_user_name ()), _g_free0 (self->priv->_title), _tmp1_);
+#line 57 "rygel-media-object.vala"
 	self->priv->_title = (_tmp2_ = string_replace (self->priv->_title, "@HOSTNAME@", g_get_host_name ()), _g_free0 (self->priv->_title), _tmp2_);
+#line 193 "rygel-media-object.c"
 	g_object_notify ((GObject *) self, "title");
 }
 
@@ -181,7 +203,9 @@ static GObject * rygel_media_object_constructor (GType type, guint n_construct_p
 	self = RYGEL_MEDIA_OBJECT (obj);
 	{
 		GeeArrayList* _tmp0_;
+#line 63 "rygel-media-object.vala"
 		self->uris = (_tmp0_ = gee_array_list_new (G_TYPE_STRING, (GBoxedCopyFunc) g_strdup, g_free, NULL), _g_object_unref0 (self->uris), _tmp0_);
+#line 209 "rygel-media-object.c"
 	}
 	return obj;
 }

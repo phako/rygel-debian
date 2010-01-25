@@ -31,8 +31,8 @@
 #include <libgupnp-av/gupnp-av.h>
 #include <gio/gio.h>
 #include <libgupnp/gupnp.h>
-#include <libsoup/soup.h>
 #include <gee.h>
+#include <libsoup/soup.h>
 #include <gst/gst.h>
 #include <libgssdp/gssdp.h>
 
@@ -96,6 +96,16 @@ typedef struct _RygelHTTPServerPrivate RygelHTTPServerPrivate;
 
 typedef struct _RygelMediaContainer RygelMediaContainer;
 typedef struct _RygelMediaContainerClass RygelMediaContainerClass;
+
+#define RYGEL_TYPE_HTTP_REQUEST (rygel_http_request_get_type ())
+#define RYGEL_HTTP_REQUEST(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_HTTP_REQUEST, RygelHTTPRequest))
+#define RYGEL_HTTP_REQUEST_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TYPE_HTTP_REQUEST, RygelHTTPRequestClass))
+#define RYGEL_IS_HTTP_REQUEST(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TYPE_HTTP_REQUEST))
+#define RYGEL_IS_HTTP_REQUEST_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_TYPE_HTTP_REQUEST))
+#define RYGEL_HTTP_REQUEST_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_TYPE_HTTP_REQUEST, RygelHTTPRequestClass))
+
+typedef struct _RygelHTTPRequest RygelHTTPRequest;
+typedef struct _RygelHTTPRequestClass RygelHTTPRequestClass;
 #define _g_free0(var) (var = (g_free (var), NULL))
 #define _g_object_unref0(var) ((var == NULL) ? NULL : (var = (g_object_unref (var), NULL)))
 
@@ -134,16 +144,6 @@ typedef struct _RygelThumbnail RygelThumbnail;
 typedef struct _RygelThumbnailClass RygelThumbnailClass;
 typedef struct _RygelIconInfoPrivate RygelIconInfoPrivate;
 #define _rygel_icon_info_unref0(var) ((var == NULL) ? NULL : (var = (rygel_icon_info_unref (var), NULL)))
-
-#define RYGEL_TYPE_HTTP_REQUEST (rygel_http_request_get_type ())
-#define RYGEL_HTTP_REQUEST(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_HTTP_REQUEST, RygelHTTPRequest))
-#define RYGEL_HTTP_REQUEST_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TYPE_HTTP_REQUEST, RygelHTTPRequestClass))
-#define RYGEL_IS_HTTP_REQUEST(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TYPE_HTTP_REQUEST))
-#define RYGEL_IS_HTTP_REQUEST_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_TYPE_HTTP_REQUEST))
-#define RYGEL_HTTP_REQUEST_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_TYPE_HTTP_REQUEST, RygelHTTPRequestClass))
-
-typedef struct _RygelHTTPRequest RygelHTTPRequest;
-typedef struct _RygelHTTPRequestClass RygelHTTPRequestClass;
 typedef struct _RygelHTTPRequestPrivate RygelHTTPRequestPrivate;
 
 #define RYGEL_TYPE_HTTP_SEEK (rygel_http_seek_get_type ())
@@ -200,6 +200,7 @@ struct _RygelHTTPServerClass {
 
 struct _RygelHTTPServerPrivate {
 	char* path_root;
+	GeeArrayList* requests;
 	GCancellable* _cancellable;
 };
 
@@ -315,6 +316,7 @@ GType rygel_media_item_get_type (void);
 GType rygel_state_machine_get_type (void);
 GType rygel_http_server_get_type (void);
 GType rygel_media_container_get_type (void);
+GType rygel_http_request_get_type (void);
 #define RYGEL_HTTP_SERVER_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), RYGEL_TYPE_HTTP_SERVER, RygelHTTPServerPrivate))
 enum  {
 	RYGEL_HTTP_SERVER_DUMMY_PROPERTY,
@@ -331,6 +333,8 @@ static void rygel_http_server_real_run (RygelStateMachine* base, GAsyncReadyCall
 static void rygel_http_server_run_ready (GObject* source_object, GAsyncResult* _res_, gpointer _user_data_);
 static void rygel_http_server_server_handler (RygelHTTPServer* self, SoupServer* server, SoupMessage* msg, const char* server_path, GHashTable* query, SoupClientContext* soup_client);
 static void _rygel_http_server_server_handler_soup_server_callback (SoupServer* server, SoupMessage* msg, const char* path, GHashTable* query, SoupClientContext* client, gpointer self);
+static void rygel_http_server_on_request_aborted (RygelHTTPServer* self, SoupServer* server, SoupMessage* message, SoupClientContext* client);
+static void _rygel_http_server_on_request_aborted_soup_server_request_aborted (SoupServer* _sender, SoupMessage* msg, SoupClientContext* client, gpointer self);
 GCancellable* rygel_state_machine_get_cancellable (RygelStateMachine* self);
 static void rygel_http_server_on_cancelled (RygelHTTPServer* self, GCancellable* cancellable);
 static void _rygel_http_server_on_cancelled_g_cancellable_cancelled (GCancellable* _sender, gpointer self);
@@ -355,12 +359,11 @@ static char* rygel_http_server_real_get_protocol (RygelTranscodeManager* base);
 char* rygel_transcode_manager_get_protocol (RygelTranscodeManager* self);
 char* rygel_transcode_manager_get_protocol_info (RygelTranscodeManager* self);
 static char* rygel_http_server_real_get_protocol_info (RygelTranscodeManager* base);
-GType rygel_http_request_get_type (void);
 GType rygel_http_seek_get_type (void);
 GType rygel_http_request_handler_get_type (void);
 static void rygel_http_server_on_request_completed (RygelHTTPServer* self, RygelHTTPRequest* request);
-static void _lambda0_ (const char* name, const char* value, RygelHTTPServer* self);
-static void __lambda0__soup_message_headers_foreach_func (const char* name, const char* value, gpointer self);
+static void _lambda4_ (const char* name, const char* value, RygelHTTPServer* self);
+static void __lambda4__soup_message_headers_foreach_func (const char* name, const char* value, gpointer self);
 RygelHTTPRequest* rygel_http_request_new (RygelHTTPServer* http_server, SoupServer* server, SoupMessage* msg, GHashTable* query);
 RygelHTTPRequest* rygel_http_request_construct (GType object_type, RygelHTTPServer* http_server, SoupServer* server, SoupMessage* msg, GHashTable* query);
 static void _rygel_http_server_on_request_completed_rygel_state_machine_completed (RygelHTTPRequest* _sender, gpointer self);
@@ -378,24 +381,40 @@ static gpointer _g_object_ref0 (gpointer self) {
 }
 
 
+#line 39 "rygel-http-server.vala"
 RygelHTTPServer* rygel_http_server_construct (GType object_type, RygelContentDirectory* content_dir, const char* name, GError** error) {
+#line 387 "rygel-http-server.c"
 	RygelHTTPServer * self;
 	RygelMediaContainer* _tmp0_;
 	GUPnPContext* _tmp1_;
-	char* _tmp2_;
+	GeeArrayList* _tmp2_;
+	char* _tmp3_;
+#line 39 "rygel-http-server.vala"
 	g_return_val_if_fail (content_dir != NULL, NULL);
+#line 39 "rygel-http-server.vala"
 	g_return_val_if_fail (name != NULL, NULL);
+#line 41 "rygel-http-server.vala"
 	self = (RygelHTTPServer*) rygel_transcode_manager_construct (object_type, error);
+#line 43 "rygel-http-server.vala"
 	self->root_container = (_tmp0_ = _g_object_ref0 (content_dir->root_container), _g_object_unref0 (self->root_container), _tmp0_);
+#line 44 "rygel-http-server.vala"
 	self->context = (_tmp1_ = _g_object_ref0 (gupnp_service_info_get_context ((GUPnPServiceInfo*) content_dir)), _g_object_unref0 (self->context), _tmp1_);
+#line 45 "rygel-http-server.vala"
+	self->priv->requests = (_tmp2_ = gee_array_list_new (RYGEL_TYPE_HTTP_REQUEST, (GBoxedCopyFunc) g_object_ref, g_object_unref, NULL), _g_object_unref0 (self->priv->requests), _tmp2_);
+#line 46 "rygel-http-server.vala"
 	rygel_state_machine_set_cancellable ((RygelStateMachine*) self, content_dir->cancellable);
-	self->priv->path_root = (_tmp2_ = g_strconcat (RYGEL_HTTP_SERVER_SERVER_PATH_PREFIX "/", name, NULL), _g_free0 (self->priv->path_root), _tmp2_);
+#line 48 "rygel-http-server.vala"
+	self->priv->path_root = (_tmp3_ = g_strconcat (RYGEL_HTTP_SERVER_SERVER_PATH_PREFIX "/", name, NULL), _g_free0 (self->priv->path_root), _tmp3_);
+#line 409 "rygel-http-server.c"
 	return self;
 }
 
 
+#line 39 "rygel-http-server.vala"
 RygelHTTPServer* rygel_http_server_new (RygelContentDirectory* content_dir, const char* name, GError** error) {
+#line 39 "rygel-http-server.vala"
 	return rygel_http_server_construct (RYGEL_TYPE_HTTP_SERVER, content_dir, name, error);
+#line 418 "rygel-http-server.c"
 }
 
 
@@ -432,12 +451,23 @@ static void rygel_http_server_run_ready (GObject* source_object, GAsyncResult* _
 }
 
 
+#line 172 "rygel-http-server.vala"
 static void _rygel_http_server_server_handler_soup_server_callback (SoupServer* server, SoupMessage* msg, const char* path, GHashTable* query, SoupClientContext* client, gpointer self) {
+#line 457 "rygel-http-server.c"
 	rygel_http_server_server_handler (self, server, msg, path, query, client);
 }
 
 
+#line 192 "rygel-http-server.vala"
+static void _rygel_http_server_on_request_aborted_soup_server_request_aborted (SoupServer* _sender, SoupMessage* msg, SoupClientContext* client, gpointer self) {
+#line 464 "rygel-http-server.c"
+	rygel_http_server_on_request_aborted (self, _sender, msg, client);
+}
+
+
+#line 114 "rygel-http-server.vala"
 static void _rygel_http_server_on_cancelled_g_cancellable_cancelled (GCancellable* _sender, gpointer self) {
+#line 471 "rygel-http-server.c"
 	rygel_http_server_on_cancelled (self, _sender);
 }
 
@@ -448,9 +478,15 @@ static gboolean rygel_http_server_real_run_co (RygelHttpServerRunData* data) {
 		g_assert_not_reached ();
 		case 0:
 		{
+#line 52 "rygel-http-server.vala"
 			soup_server_add_handler (gupnp_context_get_server (data->self->context), data->self->priv->path_root, _rygel_http_server_server_handler_soup_server_callback, g_object_ref (data->self), g_object_unref);
+#line 53 "rygel-http-server.vala"
+			g_signal_connect_object (gupnp_context_get_server (data->self->context), "request-aborted", (GCallback) _rygel_http_server_on_request_aborted_soup_server_request_aborted, data->self, 0);
+#line 55 "rygel-http-server.vala"
 			if (rygel_state_machine_get_cancellable ((RygelStateMachine*) data->self) != NULL) {
+#line 56 "rygel-http-server.vala"
 				g_signal_connect_object (rygel_state_machine_get_cancellable ((RygelStateMachine*) data->self), "cancelled", (GCallback) _rygel_http_server_on_cancelled_g_cancellable_cancelled, data->self, 0);
+#line 490 "rygel-http-server.c"
 			}
 		}
 		{
@@ -466,14 +502,21 @@ static gboolean rygel_http_server_real_run_co (RygelHttpServerRunData* data) {
 }
 
 
+#line 65 "rygel-http-server.vala"
 static void rygel_http_server_real_add_resources (RygelTranscodeManager* base, GUPnPDIDLLiteItem* didl_item, RygelMediaItem* item, GError** error) {
+#line 508 "rygel-http-server.c"
 	RygelHTTPServer * self;
 	GError * _inner_error_;
 	self = (RygelHTTPServer*) base;
+#line 65 "rygel-http-server.vala"
 	g_return_if_fail (didl_item != NULL);
+#line 65 "rygel-http-server.vala"
 	g_return_if_fail (item != NULL);
+#line 516 "rygel-http-server.c"
 	_inner_error_ = NULL;
+#line 68 "rygel-http-server.vala"
 	if (!rygel_http_server_http_uri_present (self, item)) {
+#line 520 "rygel-http-server.c"
 		char* protocol;
 		char* _tmp2_;
 		char* _tmp1_;
@@ -481,8 +524,11 @@ static void rygel_http_server_real_add_resources (RygelTranscodeManager* base, G
 		char* uri;
 		GUPnPDIDLLiteResource* _tmp3_;
 		protocol = NULL;
+#line 71 "rygel-http-server.vala"
 		uri = (_tmp1_ = rygel_transcode_manager_create_uri_for_item ((RygelTranscodeManager*) self, item, -1, NULL, &_tmp0_), protocol = (_tmp2_ = _tmp0_, _g_free0 (protocol), _tmp2_), _tmp1_);
+#line 72 "rygel-http-server.vala"
 		_tmp3_ = rygel_media_item_add_resource (item, didl_item, uri, protocol, &_inner_error_);
+#line 532 "rygel-http-server.c"
 		if (_inner_error_ != NULL) {
 			g_propagate_error (error, _inner_error_);
 			_g_free0 (protocol);
@@ -493,7 +539,9 @@ static void rygel_http_server_real_add_resources (RygelTranscodeManager* base, G
 		_g_free0 (protocol);
 		_g_free0 (uri);
 	}
+#line 75 "rygel-http-server.vala"
 	RYGEL_TRANSCODE_MANAGER_CLASS (rygel_http_server_parent_class)->add_resources (RYGEL_TRANSCODE_MANAGER (self), didl_item, item, &_inner_error_);
+#line 545 "rygel-http-server.c"
 	if (_inner_error_ != NULL) {
 		g_propagate_error (error, _inner_error_);
 		return;
@@ -501,13 +549,21 @@ static void rygel_http_server_real_add_resources (RygelTranscodeManager* base, G
 	{
 		GeeIterator* _thumbnail_it;
 		_thumbnail_it = gee_abstract_collection_iterator ((GeeAbstractCollection*) item->thumbnails);
+#line 78 "rygel-http-server.vala"
 		while (TRUE) {
+#line 555 "rygel-http-server.c"
 			RygelThumbnail* thumbnail;
+#line 78 "rygel-http-server.vala"
 			if (!gee_iterator_next (_thumbnail_it)) {
+#line 78 "rygel-http-server.vala"
 				break;
+#line 561 "rygel-http-server.c"
 			}
+#line 78 "rygel-http-server.vala"
 			thumbnail = (RygelThumbnail*) gee_iterator_get (_thumbnail_it);
+#line 79 "rygel-http-server.vala"
 			if (!rygel_http_server_is_http_uri (self, ((RygelIconInfo*) thumbnail)->uri)) {
+#line 567 "rygel-http-server.c"
 				char* uri;
 				gint index;
 				char* protocol;
@@ -517,13 +573,21 @@ static void rygel_http_server_real_add_resources (RygelTranscodeManager* base, G
 				char* _tmp4_ = NULL;
 				GUPnPDIDLLiteResource* _tmp8_;
 				char* _tmp9_;
+#line 80 "rygel-http-server.vala"
 				uri = g_strdup (((RygelIconInfo*) thumbnail)->uri);
+#line 81 "rygel-http-server.vala"
 				index = gee_abstract_list_index_of ((GeeAbstractList*) item->thumbnails, thumbnail);
+#line 581 "rygel-http-server.c"
 				protocol = NULL;
+#line 84 "rygel-http-server.vala"
 				((RygelIconInfo*) thumbnail)->uri = (_tmp7_ = (_tmp5_ = rygel_transcode_manager_create_uri_for_item ((RygelTranscodeManager*) self, item, index, NULL, &_tmp4_), protocol = (_tmp6_ = _tmp4_, _g_free0 (protocol), _tmp6_), _tmp5_), _g_free0 (((RygelIconInfo*) thumbnail)->uri), _tmp7_);
+#line 88 "rygel-http-server.vala"
 				_tmp8_ = rygel_thumbnail_add_resource (thumbnail, didl_item, protocol);
+#line 587 "rygel-http-server.c"
 				_g_object_unref0 (_tmp8_);
+#line 91 "rygel-http-server.vala"
 				((RygelIconInfo*) thumbnail)->uri = (_tmp9_ = g_strdup (uri), _g_free0 (((RygelIconInfo*) thumbnail)->uri), _tmp9_);
+#line 591 "rygel-http-server.c"
 				_g_free0 (uri);
 				_g_free0 (protocol);
 			}
@@ -534,111 +598,176 @@ static void rygel_http_server_real_add_resources (RygelTranscodeManager* base, G
 }
 
 
+#line 96 "rygel-http-server.vala"
 static gboolean rygel_http_server_http_uri_present (RygelHTTPServer* self, RygelMediaItem* item) {
+#line 604 "rygel-http-server.c"
 	gboolean result;
 	gboolean present;
+#line 96 "rygel-http-server.vala"
 	g_return_val_if_fail (self != NULL, FALSE);
+#line 96 "rygel-http-server.vala"
 	g_return_val_if_fail (item != NULL, FALSE);
+#line 97 "rygel-http-server.vala"
 	present = FALSE;
+#line 613 "rygel-http-server.c"
 	{
 		GeeIterator* _uri_it;
 		_uri_it = gee_abstract_collection_iterator ((GeeAbstractCollection*) ((RygelMediaObject*) item)->uris);
+#line 99 "rygel-http-server.vala"
 		while (TRUE) {
+#line 619 "rygel-http-server.c"
 			char* uri;
+#line 99 "rygel-http-server.vala"
 			if (!gee_iterator_next (_uri_it)) {
+#line 99 "rygel-http-server.vala"
 				break;
+#line 625 "rygel-http-server.c"
 			}
+#line 99 "rygel-http-server.vala"
 			uri = (char*) gee_iterator_get (_uri_it);
+#line 100 "rygel-http-server.vala"
 			if (rygel_http_server_is_http_uri (self, uri)) {
+#line 101 "rygel-http-server.vala"
 				present = TRUE;
+#line 633 "rygel-http-server.c"
 				_g_free0 (uri);
+#line 103 "rygel-http-server.vala"
 				break;
+#line 637 "rygel-http-server.c"
 			}
 			_g_free0 (uri);
 		}
 		_g_object_unref0 (_uri_it);
 	}
 	result = present;
+#line 107 "rygel-http-server.vala"
 	return result;
+#line 646 "rygel-http-server.c"
 }
 
 
+#line 110 "rygel-http-server.vala"
 static gboolean rygel_http_server_is_http_uri (RygelHTTPServer* self, const char* uri) {
+#line 652 "rygel-http-server.c"
 	gboolean result;
 	char* _tmp0_;
 	gboolean _tmp1_;
+#line 110 "rygel-http-server.vala"
 	g_return_val_if_fail (self != NULL, FALSE);
+#line 110 "rygel-http-server.vala"
 	g_return_val_if_fail (uri != NULL, FALSE);
+#line 660 "rygel-http-server.c"
 	result = (_tmp1_ = _vala_strcmp0 (_tmp0_ = g_uri_parse_scheme (uri), "http") == 0, _g_free0 (_tmp0_), _tmp1_);
+#line 111 "rygel-http-server.vala"
 	return result;
+#line 664 "rygel-http-server.c"
 }
 
 
+#line 114 "rygel-http-server.vala"
 static void rygel_http_server_on_cancelled (RygelHTTPServer* self, GCancellable* cancellable) {
+#line 114 "rygel-http-server.vala"
 	g_return_if_fail (self != NULL);
+#line 114 "rygel-http-server.vala"
 	g_return_if_fail (cancellable != NULL);
+#line 116 "rygel-http-server.vala"
 	g_cancellable_cancel (rygel_state_machine_get_cancellable ((RygelStateMachine*) self));
+#line 118 "rygel-http-server.vala"
 	soup_server_remove_handler (gupnp_context_get_server (self->context), self->priv->path_root);
+#line 120 "rygel-http-server.vala"
 	g_signal_emit_by_name ((RygelStateMachine*) self, "completed");
+#line 680 "rygel-http-server.c"
 }
 
 
+#line 123 "rygel-http-server.vala"
 static char* rygel_http_server_create_uri_for_path (RygelHTTPServer* self, const char* path) {
+#line 686 "rygel-http-server.c"
 	char* result;
+#line 123 "rygel-http-server.vala"
 	g_return_val_if_fail (self != NULL, NULL);
+#line 123 "rygel-http-server.vala"
 	g_return_val_if_fail (path != NULL, NULL);
+#line 692 "rygel-http-server.c"
 	result = g_strdup_printf ("http://%s:%u%s%s", gssdp_client_get_host_ip ((GSSDPClient*) self->context), gupnp_context_get_port (self->context), self->priv->path_root, path);
+#line 124 "rygel-http-server.vala"
 	return result;
+#line 696 "rygel-http-server.c"
 }
 
 
+#line 130 "rygel-http-server.vala"
 static char* rygel_http_server_real_create_uri_for_item (RygelTranscodeManager* base, RygelMediaItem* item, gint thumbnail_index, const char* transcode_target, char** protocol) {
+#line 702 "rygel-http-server.c"
 	RygelHTTPServer * self;
 	char* result;
 	char* escaped;
 	char* query;
 	char* _tmp6_;
 	self = (RygelHTTPServer*) base;
+#line 130 "rygel-http-server.vala"
 	g_return_val_if_fail (item != NULL, NULL);
+#line 711 "rygel-http-server.c"
 	if (protocol != NULL) {
 		*protocol = NULL;
 	}
+#line 134 "rygel-http-server.vala"
 	escaped = g_uri_escape_string (((RygelMediaObject*) item)->id, "", TRUE);
+#line 135 "rygel-http-server.vala"
 	query = g_strconcat ("?itemid=", escaped, NULL);
+#line 136 "rygel-http-server.vala"
 	if (thumbnail_index >= 0) {
+#line 721 "rygel-http-server.c"
 		char* _tmp2_;
 		char* _tmp1_;
 		char* _tmp0_;
+#line 137 "rygel-http-server.vala"
 		query = (_tmp2_ = g_strconcat (query, _tmp1_ = g_strconcat ("&thumbnail=", _tmp0_ = g_strdup_printf ("%i", thumbnail_index), NULL), NULL), _g_free0 (query), _tmp2_);
+#line 727 "rygel-http-server.c"
 		_g_free0 (_tmp1_);
 		_g_free0 (_tmp0_);
 	}
+#line 140 "rygel-http-server.vala"
 	if (transcode_target != NULL) {
+#line 733 "rygel-http-server.c"
 		char* _tmp3_;
 		char* _tmp5_;
 		char* _tmp4_;
+#line 141 "rygel-http-server.vala"
 		escaped = (_tmp3_ = g_uri_escape_string (transcode_target, "", TRUE), _g_free0 (escaped), _tmp3_);
+#line 142 "rygel-http-server.vala"
 		query = (_tmp5_ = g_strconcat (query, _tmp4_ = g_strconcat ("&transcode=", escaped, NULL), NULL), _g_free0 (query), _tmp5_);
+#line 741 "rygel-http-server.c"
 		_g_free0 (_tmp4_);
 	}
+#line 145 "rygel-http-server.vala"
 	*protocol = (_tmp6_ = g_strdup ("http-get"), _g_free0 (*protocol), _tmp6_);
+#line 746 "rygel-http-server.c"
 	result = rygel_http_server_create_uri_for_path (self, query);
 	_g_free0 (escaped);
 	_g_free0 (query);
+#line 147 "rygel-http-server.vala"
 	return result;
+#line 752 "rygel-http-server.c"
 }
 
 
+#line 150 "rygel-http-server.vala"
 static char* rygel_http_server_real_get_protocol (RygelTranscodeManager* base) {
+#line 758 "rygel-http-server.c"
 	RygelHTTPServer * self;
 	char* result;
 	self = (RygelHTTPServer*) base;
 	result = g_strdup ("http-get");
+#line 151 "rygel-http-server.vala"
 	return result;
+#line 765 "rygel-http-server.c"
 }
 
 
+#line 154 "rygel-http-server.vala"
 static char* rygel_http_server_real_get_protocol_info (RygelTranscodeManager* base) {
+#line 771 "rygel-http-server.c"
 	RygelHTTPServer * self;
 	char* result;
 	char* _tmp0_;
@@ -646,67 +775,154 @@ static char* rygel_http_server_real_get_protocol_info (RygelTranscodeManager* ba
 	char* protocol_info;
 	char* base_info;
 	self = (RygelHTTPServer*) base;
+#line 155 "rygel-http-server.vala"
 	protocol_info = (_tmp1_ = g_strconcat (_tmp0_ = rygel_transcode_manager_get_protocol ((RygelTranscodeManager*) self), ":*:*:*", NULL), _g_free0 (_tmp0_), _tmp1_);
+#line 156 "rygel-http-server.vala"
 	base_info = RYGEL_TRANSCODE_MANAGER_CLASS (rygel_http_server_parent_class)->get_protocol_info (RYGEL_TRANSCODE_MANAGER (self));
+#line 158 "rygel-http-server.vala"
 	if (_vala_strcmp0 (base_info, "") != 0) {
+#line 785 "rygel-http-server.c"
 		char* _tmp3_;
 		char* _tmp2_;
+#line 159 "rygel-http-server.vala"
 		protocol_info = (_tmp3_ = g_strconcat (protocol_info, _tmp2_ = g_strconcat (",", base_info, NULL), NULL), _g_free0 (protocol_info), _tmp3_);
+#line 790 "rygel-http-server.c"
 		_g_free0 (_tmp2_);
 	}
 	result = protocol_info;
 	_g_free0 (base_info);
+#line 161 "rygel-http-server.vala"
 	return result;
+#line 797 "rygel-http-server.c"
 }
 
 
+#line 164 "rygel-http-server.vala"
 static void rygel_http_server_on_request_completed (RygelHTTPServer* self, RygelHTTPRequest* request) {
+#line 803 "rygel-http-server.c"
 	char* _tmp2_;
 	char* _tmp1_;
 	char* _tmp0_ = NULL;
+#line 164 "rygel-http-server.vala"
 	g_return_if_fail (self != NULL);
+#line 164 "rygel-http-server.vala"
 	g_return_if_fail (request != NULL);
-	g_debug ("rygel-http-server.vala:162: HTTP %s request for URI '%s' handled.", _tmp1_ = (g_object_get (request->msg, "method", &_tmp0_, NULL), _tmp0_), _tmp2_ = soup_uri_to_string (soup_message_get_uri (request->msg), FALSE));
+#line 165 "rygel-http-server.vala"
+	gee_abstract_collection_remove ((GeeAbstractCollection*) self->priv->requests, request);
+#line 167 "rygel-http-server.vala"
+	g_debug ("rygel-http-server.vala:167: HTTP %s request for URI '%s' handled.", _tmp1_ = (g_object_get (request->msg, "method", &_tmp0_, NULL), _tmp0_), _tmp2_ = soup_uri_to_string (soup_message_get_uri (request->msg), FALSE));
+#line 815 "rygel-http-server.c"
 	_g_free0 (_tmp2_);
 	_g_free0 (_tmp1_);
 }
 
 
-static void _lambda0_ (const char* name, const char* value, RygelHTTPServer* self) {
+static void _lambda4_ (const char* name, const char* value, RygelHTTPServer* self) {
 	g_return_if_fail (name != NULL);
 	g_return_if_fail (value != NULL);
-	g_debug ("rygel-http-server.vala:176: %s : %s", name, value);
+#line 181 "rygel-http-server.vala"
+	g_debug ("rygel-http-server.vala:181: %s : %s", name, value);
+#line 826 "rygel-http-server.c"
 }
 
 
-static void __lambda0__soup_message_headers_foreach_func (const char* name, const char* value, gpointer self) {
-	_lambda0_ (name, value, self);
+static void __lambda4__soup_message_headers_foreach_func (const char* name, const char* value, gpointer self) {
+	_lambda4_ (name, value, self);
 }
 
 
+#line 164 "rygel-http-server.vala"
 static void _rygel_http_server_on_request_completed_rygel_state_machine_completed (RygelHTTPRequest* _sender, gpointer self) {
+#line 837 "rygel-http-server.c"
 	rygel_http_server_on_request_completed (self, _sender);
 }
 
 
+#line 172 "rygel-http-server.vala"
 static void rygel_http_server_server_handler (RygelHTTPServer* self, SoupServer* server, SoupMessage* msg, const char* server_path, GHashTable* query, SoupClientContext* soup_client) {
+#line 844 "rygel-http-server.c"
 	char* _tmp2_;
 	char* _tmp1_;
 	char* _tmp0_ = NULL;
 	RygelHTTPRequest* request;
+#line 172 "rygel-http-server.vala"
 	g_return_if_fail (self != NULL);
+#line 172 "rygel-http-server.vala"
 	g_return_if_fail (server != NULL);
+#line 172 "rygel-http-server.vala"
 	g_return_if_fail (msg != NULL);
+#line 172 "rygel-http-server.vala"
 	g_return_if_fail (server_path != NULL);
+#line 172 "rygel-http-server.vala"
 	g_return_if_fail (soup_client != NULL);
-	g_debug ("rygel-http-server.vala:172: HTTP %s request for URI '%s'. Headers:", _tmp1_ = (g_object_get (msg, "method", &_tmp0_, NULL), _tmp0_), _tmp2_ = soup_uri_to_string (soup_message_get_uri (msg), FALSE));
+#line 177 "rygel-http-server.vala"
+	g_debug ("rygel-http-server.vala:177: HTTP %s request for URI '%s'. Headers:", _tmp1_ = (g_object_get (msg, "method", &_tmp0_, NULL), _tmp0_), _tmp2_ = soup_uri_to_string (soup_message_get_uri (msg), FALSE));
+#line 861 "rygel-http-server.c"
 	_g_free0 (_tmp2_);
 	_g_free0 (_tmp1_);
-	soup_message_headers_foreach (msg->request_headers, __lambda0__soup_message_headers_foreach_func, self);
+#line 180 "rygel-http-server.vala"
+	soup_message_headers_foreach (msg->request_headers, __lambda4__soup_message_headers_foreach_func, self);
+#line 184 "rygel-http-server.vala"
 	request = rygel_http_request_new (self, server, msg, query);
+#line 186 "rygel-http-server.vala"
 	g_signal_connect_object ((RygelStateMachine*) request, "completed", (GCallback) _rygel_http_server_on_request_completed_rygel_state_machine_completed, self, 0);
+#line 187 "rygel-http-server.vala"
+	gee_abstract_collection_add ((GeeAbstractCollection*) self->priv->requests, request);
+#line 189 "rygel-http-server.vala"
 	rygel_state_machine_run ((RygelStateMachine*) request, NULL, NULL);
+#line 874 "rygel-http-server.c"
 	_g_object_unref0 (request);
+}
+
+
+#line 192 "rygel-http-server.vala"
+static void rygel_http_server_on_request_aborted (RygelHTTPServer* self, SoupServer* server, SoupMessage* message, SoupClientContext* client) {
+#line 192 "rygel-http-server.vala"
+	g_return_if_fail (self != NULL);
+#line 192 "rygel-http-server.vala"
+	g_return_if_fail (server != NULL);
+#line 192 "rygel-http-server.vala"
+	g_return_if_fail (message != NULL);
+#line 192 "rygel-http-server.vala"
+	g_return_if_fail (client != NULL);
+#line 889 "rygel-http-server.c"
+	{
+		GeeIterator* _request_it;
+		_request_it = gee_abstract_collection_iterator ((GeeAbstractCollection*) self->priv->requests);
+#line 195 "rygel-http-server.vala"
+		while (TRUE) {
+#line 895 "rygel-http-server.c"
+			RygelHTTPRequest* request;
+#line 195 "rygel-http-server.vala"
+			if (!gee_iterator_next (_request_it)) {
+#line 195 "rygel-http-server.vala"
+				break;
+#line 901 "rygel-http-server.c"
+			}
+#line 195 "rygel-http-server.vala"
+			request = (RygelHTTPRequest*) gee_iterator_get (_request_it);
+#line 196 "rygel-http-server.vala"
+			if (request->msg == message) {
+#line 907 "rygel-http-server.c"
+				char* _tmp2_;
+				char* _tmp1_;
+				char* _tmp0_ = NULL;
+#line 197 "rygel-http-server.vala"
+				g_cancellable_cancel (rygel_state_machine_get_cancellable ((RygelStateMachine*) request));
+#line 198 "rygel-http-server.vala"
+				g_debug ("rygel-http-server.vala:198: HTTP client aborted %s request for URI '%s'.", _tmp1_ = (g_object_get (request->msg, "method", &_tmp0_, NULL), _tmp0_), _tmp2_ = soup_uri_to_string (soup_message_get_uri (request->msg), FALSE));
+#line 915 "rygel-http-server.c"
+				_g_free0 (_tmp2_);
+				_g_free0 (_tmp1_);
+				_g_object_unref0 (request);
+#line 202 "rygel-http-server.vala"
+				break;
+#line 921 "rygel-http-server.c"
+			}
+			_g_object_unref0 (request);
+		}
+		_g_object_unref0 (_request_it);
+	}
 }
 
 
@@ -715,7 +931,9 @@ static GCancellable* rygel_http_server_real_get_cancellable (RygelStateMachine* 
 	RygelHTTPServer* self;
 	self = (RygelHTTPServer*) base;
 	result = self->priv->_cancellable;
+#line 37 "rygel-http-server.vala"
 	return result;
+#line 937 "rygel-http-server.c"
 }
 
 
@@ -762,6 +980,7 @@ static void rygel_http_server_finalize (GObject* obj) {
 	_g_free0 (self->priv->path_root);
 	_g_object_unref0 (self->root_container);
 	_g_object_unref0 (self->context);
+	_g_object_unref0 (self->priv->requests);
 	_g_object_unref0 (self->priv->_cancellable);
 	G_OBJECT_CLASS (rygel_http_server_parent_class)->finalize (obj);
 }

@@ -64,6 +64,7 @@ namespace Rygel {
 	}
 	[CCode (cheader_filename = "rygel.h")]
 	public class Main : GLib.Object {
+		public bool restart;
 		public void exit (int exit_code);
 	}
 	[CCode (cheader_filename = "rygel.h")]

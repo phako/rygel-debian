@@ -497,7 +497,9 @@ static gboolean rygel_external_item_factory_create_for_id_co (RygelExternalItemF
 		case 0:
 		{
 			data->object_path = g_strdup (strstr (data->id, "/"));
+#line 46 "rygel-external-item-factory.vala"
 			g_assert (data->object_path != NULL);
+#line 503 "rygel-external-item-factory.c"
 			rygel_external_item_factory_create (data->self, data->id, data->object_path, data->parent, rygel_external_item_factory_create_for_id_ready, data);
 			data->_state_ = 6;
 			return FALSE;
@@ -598,26 +600,36 @@ static gpointer __g_value_dup0 (gpointer self) {
 }
 
 
+#line 1027 "glib-2.0.vapi"
 static char* string_replace (const char* self, const char* old, const char* replacement) {
+#line 606 "rygel-external-item-factory.c"
 	char* result;
 	GError * _inner_error_;
+#line 1027 "glib-2.0.vapi"
 	g_return_val_if_fail (self != NULL, NULL);
+#line 1027 "glib-2.0.vapi"
 	g_return_val_if_fail (old != NULL, NULL);
+#line 1027 "glib-2.0.vapi"
 	g_return_val_if_fail (replacement != NULL, NULL);
+#line 615 "rygel-external-item-factory.c"
 	_inner_error_ = NULL;
 	{
 		char* _tmp0_;
 		GRegex* _tmp1_;
 		GRegex* regex;
 		char* _tmp2_;
+#line 1029 "glib-2.0.vapi"
 		regex = (_tmp1_ = g_regex_new (_tmp0_ = g_regex_escape_string (old, -1), 0, 0, &_inner_error_), _g_free0 (_tmp0_), _tmp1_);
+#line 624 "rygel-external-item-factory.c"
 		if (_inner_error_ != NULL) {
 			if (_inner_error_->domain == G_REGEX_ERROR) {
 				goto __catch3_g_regex_error;
 			}
 			goto __finally3;
 		}
+#line 1030 "glib-2.0.vapi"
 		_tmp2_ = g_regex_replace_literal (regex, self, (gssize) (-1), 0, replacement, 0, &_inner_error_);
+#line 633 "rygel-external-item-factory.c"
 		if (_inner_error_ != NULL) {
 			_g_regex_unref0 (regex);
 			if (_inner_error_->domain == G_REGEX_ERROR) {
@@ -627,7 +639,9 @@ static char* string_replace (const char* self, const char* old, const char* repl
 		}
 		result = _tmp2_;
 		_g_regex_unref0 (regex);
+#line 1030 "glib-2.0.vapi"
 		return result;
+#line 645 "rygel-external-item-factory.c"
 	}
 	goto __finally3;
 	__catch3_g_regex_error:
@@ -636,7 +650,9 @@ static char* string_replace (const char* self, const char* old, const char* repl
 		e = _inner_error_;
 		_inner_error_ = NULL;
 		{
+#line 1032 "glib-2.0.vapi"
 			g_assert_not_reached ();
+#line 656 "rygel-external-item-factory.c"
 			_g_error_free0 (e);
 		}
 	}
@@ -713,102 +729,188 @@ static gboolean rygel_external_item_factory_create_co (RygelExternalItemFactoryC
 			}
 			data->item = rygel_media_item_new (data->id, (RygelMediaContainer*) data->parent, "Unknown", "Unknown");
 			data->value = __g_value_dup0 ((GValue*) g_hash_table_lookup (data->object_props, "DisplayName"));
+#line 70 "rygel-external-item-factory.vala"
 			rygel_media_object_set_title ((RygelMediaObject*) data->item, g_value_get_string (data->value));
+#line 72 "rygel-external-item-factory.vala"
 			data->value = (data->_tmp0_ = __g_value_dup0 ((GValue*) g_hash_table_lookup (data->item_props, "Type")), _g_free0 (data->value), data->_tmp0_);
+#line 737 "rygel-external-item-factory.c"
 			data->type = g_strdup (g_value_get_string (data->value));
+#line 74 "rygel-external-item-factory.vala"
 			if (_vala_strcmp0 (data->type, "audio") == 0) {
+#line 75 "rygel-external-item-factory.vala"
 				((RygelMediaObject*) data->item)->upnp_class = (data->_tmp1_ = g_strdup (RYGEL_MEDIA_ITEM_AUDIO_CLASS), _g_free0 (((RygelMediaObject*) data->item)->upnp_class), data->_tmp1_);
+#line 743 "rygel-external-item-factory.c"
 			} else {
+#line 76 "rygel-external-item-factory.vala"
 				if (_vala_strcmp0 (data->type, "music") == 0) {
+#line 77 "rygel-external-item-factory.vala"
 					((RygelMediaObject*) data->item)->upnp_class = (data->_tmp2_ = g_strdup (RYGEL_MEDIA_ITEM_MUSIC_CLASS), _g_free0 (((RygelMediaObject*) data->item)->upnp_class), data->_tmp2_);
+#line 749 "rygel-external-item-factory.c"
 				} else {
+#line 78 "rygel-external-item-factory.vala"
 					if (_vala_strcmp0 (data->type, "video") == 0) {
+#line 79 "rygel-external-item-factory.vala"
 						((RygelMediaObject*) data->item)->upnp_class = (data->_tmp3_ = g_strdup (RYGEL_MEDIA_ITEM_VIDEO_CLASS), _g_free0 (((RygelMediaObject*) data->item)->upnp_class), data->_tmp3_);
+#line 755 "rygel-external-item-factory.c"
 					} else {
+#line 81 "rygel-external-item-factory.vala"
 						((RygelMediaObject*) data->item)->upnp_class = (data->_tmp4_ = g_strdup (RYGEL_MEDIA_ITEM_IMAGE_CLASS), _g_free0 (((RygelMediaObject*) data->item)->upnp_class), data->_tmp4_);
+#line 759 "rygel-external-item-factory.c"
 					}
 				}
 			}
+#line 84 "rygel-external-item-factory.vala"
 			data->value = (data->_tmp5_ = __g_value_dup0 ((GValue*) g_hash_table_lookup (data->item_props, "MIMEType")), _g_free0 (data->value), data->_tmp5_);
+#line 85 "rygel-external-item-factory.vala"
 			data->item->mime_type = (data->_tmp6_ = g_strdup (g_value_get_string (data->value)), _g_free0 (data->item->mime_type), data->_tmp6_);
+#line 767 "rygel-external-item-factory.c"
 			data->item_iface = rygel_external_media_item_dbus_proxy_new (data->connection, data->parent->service_name, data->object_path);
 			data->uris = (data->_tmp8_ = rygel_external_media_item_get_urls (data->item_iface, &data->_tmp7_), data->uris_length1 = data->_tmp7_, data->uris_size = data->uris_length1, data->_tmp8_);
 			{
 				data->i = 0;
 				{
 					data->_tmp9_ = TRUE;
+#line 94 "rygel-external-item-factory.vala"
 					while (TRUE) {
+#line 94 "rygel-external-item-factory.vala"
 						if (!data->_tmp9_) {
+#line 94 "rygel-external-item-factory.vala"
 							data->i++;
+#line 780 "rygel-external-item-factory.c"
 						}
+#line 94 "rygel-external-item-factory.vala"
 						data->_tmp9_ = FALSE;
+#line 94 "rygel-external-item-factory.vala"
 						if (!(data->uris[data->i] != NULL)) {
+#line 94 "rygel-external-item-factory.vala"
 							break;
+#line 788 "rygel-external-item-factory.c"
 						}
 						data->tmp = string_replace (data->uris[data->i], "@ADDRESS@", data->parent->host_ip);
+#line 97 "rygel-external-item-factory.vala"
 						rygel_media_item_add_uri (data->item, data->tmp, NULL);
+#line 793 "rygel-external-item-factory.c"
 						_g_free0 (data->tmp);
 					}
 				}
 			}
+#line 108 "rygel-external-item-factory.vala"
 			data->value = (data->_tmp10_ = __g_value_dup0 ((GValue*) g_hash_table_lookup (data->item_props, "DLNAProfile")), _g_free0 (data->value), data->_tmp10_);
+#line 109 "rygel-external-item-factory.vala"
 			if (data->value != NULL) {
+#line 110 "rygel-external-item-factory.vala"
 				data->item->dlna_profile = (data->_tmp11_ = g_strdup (g_value_get_string (data->value)), _g_free0 (data->item->dlna_profile), data->_tmp11_);
+#line 804 "rygel-external-item-factory.c"
 			}
+#line 113 "rygel-external-item-factory.vala"
 			data->value = (data->_tmp12_ = __g_value_dup0 ((GValue*) g_hash_table_lookup (data->item_props, "Size")), _g_free0 (data->value), data->_tmp12_);
+#line 114 "rygel-external-item-factory.vala"
 			if (data->value != NULL) {
+#line 115 "rygel-external-item-factory.vala"
 				data->item->size = (glong) g_value_get_int (data->value);
+#line 812 "rygel-external-item-factory.c"
 			}
+#line 118 "rygel-external-item-factory.vala"
 			data->value = (data->_tmp13_ = __g_value_dup0 ((GValue*) g_hash_table_lookup (data->item_props, "Artist")), _g_free0 (data->value), data->_tmp13_);
+#line 119 "rygel-external-item-factory.vala"
 			if (data->value != NULL) {
+#line 120 "rygel-external-item-factory.vala"
 				data->item->author = (data->_tmp14_ = g_strdup (g_value_get_string (data->value)), _g_free0 (data->item->author), data->_tmp14_);
+#line 820 "rygel-external-item-factory.c"
 			}
+#line 123 "rygel-external-item-factory.vala"
 			data->value = (data->_tmp15_ = __g_value_dup0 ((GValue*) g_hash_table_lookup (data->item_props, "Album")), _g_free0 (data->value), data->_tmp15_);
+#line 124 "rygel-external-item-factory.vala"
 			if (data->value != NULL) {
+#line 125 "rygel-external-item-factory.vala"
 				data->item->album = (data->_tmp16_ = g_strdup (g_value_get_string (data->value)), _g_free0 (data->item->album), data->_tmp16_);
+#line 828 "rygel-external-item-factory.c"
 			}
+#line 128 "rygel-external-item-factory.vala"
 			data->value = (data->_tmp17_ = __g_value_dup0 ((GValue*) g_hash_table_lookup (data->item_props, "Date")), _g_free0 (data->value), data->_tmp17_);
+#line 129 "rygel-external-item-factory.vala"
 			if (data->value != NULL) {
+#line 130 "rygel-external-item-factory.vala"
 				data->item->date = (data->_tmp18_ = g_strdup (g_value_get_string (data->value)), _g_free0 (data->item->date), data->_tmp18_);
+#line 836 "rygel-external-item-factory.c"
 			}
+#line 135 "rygel-external-item-factory.vala"
 			data->value = (data->_tmp19_ = __g_value_dup0 ((GValue*) g_hash_table_lookup (data->item_props, "Duration")), _g_free0 (data->value), data->_tmp19_);
+#line 136 "rygel-external-item-factory.vala"
 			if (data->value != NULL) {
+#line 137 "rygel-external-item-factory.vala"
 				data->item->duration = (glong) g_value_get_int (data->value);
+#line 844 "rygel-external-item-factory.c"
 			}
+#line 140 "rygel-external-item-factory.vala"
 			data->value = (data->_tmp20_ = __g_value_dup0 ((GValue*) g_hash_table_lookup (data->item_props, "Bitrate")), _g_free0 (data->value), data->_tmp20_);
+#line 141 "rygel-external-item-factory.vala"
 			if (data->value != NULL) {
+#line 142 "rygel-external-item-factory.vala"
 				data->item->bitrate = g_value_get_int (data->value);
+#line 852 "rygel-external-item-factory.c"
 			}
+#line 145 "rygel-external-item-factory.vala"
 			data->value = (data->_tmp21_ = __g_value_dup0 ((GValue*) g_hash_table_lookup (data->item_props, "SampleRate")), _g_free0 (data->value), data->_tmp21_);
+#line 146 "rygel-external-item-factory.vala"
 			if (data->value != NULL) {
+#line 147 "rygel-external-item-factory.vala"
 				data->item->sample_freq = g_value_get_int (data->value);
+#line 860 "rygel-external-item-factory.c"
 			}
+#line 150 "rygel-external-item-factory.vala"
 			data->value = (data->_tmp22_ = __g_value_dup0 ((GValue*) g_hash_table_lookup (data->item_props, "BitsPerSample")), _g_free0 (data->value), data->_tmp22_);
+#line 151 "rygel-external-item-factory.vala"
 			if (data->value != NULL) {
+#line 152 "rygel-external-item-factory.vala"
 				data->item->bits_per_sample = g_value_get_int (data->value);
+#line 868 "rygel-external-item-factory.c"
 			}
+#line 157 "rygel-external-item-factory.vala"
 			data->value = (data->_tmp23_ = __g_value_dup0 ((GValue*) g_hash_table_lookup (data->item_props, "Width")), _g_free0 (data->value), data->_tmp23_);
+#line 158 "rygel-external-item-factory.vala"
 			if (data->value != NULL) {
+#line 159 "rygel-external-item-factory.vala"
 				data->item->width = g_value_get_int (data->value);
+#line 876 "rygel-external-item-factory.c"
 			}
+#line 162 "rygel-external-item-factory.vala"
 			data->value = (data->_tmp24_ = __g_value_dup0 ((GValue*) g_hash_table_lookup (data->item_props, "Height")), _g_free0 (data->value), data->_tmp24_);
+#line 163 "rygel-external-item-factory.vala"
 			if (data->value != NULL) {
+#line 164 "rygel-external-item-factory.vala"
 				data->item->height = g_value_get_int (data->value);
+#line 884 "rygel-external-item-factory.c"
 			}
+#line 167 "rygel-external-item-factory.vala"
 			data->value = (data->_tmp25_ = __g_value_dup0 ((GValue*) g_hash_table_lookup (data->item_props, "ColorDepth")), _g_free0 (data->value), data->_tmp25_);
+#line 168 "rygel-external-item-factory.vala"
 			if (data->value != NULL) {
+#line 169 "rygel-external-item-factory.vala"
 				data->item->color_depth = g_value_get_int (data->value);
+#line 892 "rygel-external-item-factory.c"
 			}
+#line 172 "rygel-external-item-factory.vala"
 			data->value = (data->_tmp26_ = __g_value_dup0 ((GValue*) g_hash_table_lookup (data->item_props, "PixelWidth")), _g_free0 (data->value), data->_tmp26_);
+#line 173 "rygel-external-item-factory.vala"
 			if (data->value != NULL) {
+#line 174 "rygel-external-item-factory.vala"
 				data->item->pixel_width = g_value_get_int (data->value);
+#line 900 "rygel-external-item-factory.c"
 			}
+#line 177 "rygel-external-item-factory.vala"
 			data->value = (data->_tmp27_ = __g_value_dup0 ((GValue*) g_hash_table_lookup (data->item_props, "PixelHeight")), _g_free0 (data->value), data->_tmp27_);
+#line 178 "rygel-external-item-factory.vala"
 			if (data->value != NULL) {
+#line 179 "rygel-external-item-factory.vala"
 				data->item->pixel_height = g_value_get_int (data->value);
+#line 908 "rygel-external-item-factory.c"
 			}
+#line 182 "rygel-external-item-factory.vala"
 			data->value = (data->_tmp28_ = __g_value_dup0 ((GValue*) g_hash_table_lookup (data->item_props, "Thumbnail")), _g_free0 (data->value), data->_tmp28_);
+#line 183 "rygel-external-item-factory.vala"
 			if (data->value != NULL) {
+#line 914 "rygel-external-item-factory.c"
 				data->factory = rygel_external_thumbnail_factory_new ();
 				rygel_external_thumbnail_factory_create (data->factory, g_value_get_string (data->value), data->parent->service_name, data->parent->host_ip, rygel_external_item_factory_create_ready, data);
 				data->_state_ = 9;
@@ -838,7 +940,9 @@ static gboolean rygel_external_item_factory_create_co (RygelExternalItemFactoryC
 						return FALSE;
 					}
 				}
+#line 188 "rygel-external-item-factory.vala"
 				gee_abstract_collection_add ((GeeAbstractCollection*) data->item->thumbnails, data->thumbnail);
+#line 946 "rygel-external-item-factory.c"
 				_rygel_external_thumbnail_factory_unref0 (data->factory);
 				_rygel_icon_info_unref0 (data->thumbnail);
 			}
@@ -883,23 +987,34 @@ static gboolean rygel_external_item_factory_create_co (RygelExternalItemFactoryC
 }
 
 
+#line 194 "rygel-external-item-factory.vala"
 gboolean rygel_external_item_factory_id_valid (const char* id) {
+#line 993 "rygel-external-item-factory.c"
 	gboolean result;
+#line 194 "rygel-external-item-factory.vala"
 	g_return_val_if_fail (id != NULL, FALSE);
+#line 997 "rygel-external-item-factory.c"
 	result = g_str_has_prefix (id, "item:/");
+#line 195 "rygel-external-item-factory.vala"
 	return result;
+#line 1001 "rygel-external-item-factory.c"
 }
 
 
+#line 32 "rygel-external-item-factory.vala"
 RygelExternalItemFactory* rygel_external_item_factory_construct (GType object_type) {
+#line 1007 "rygel-external-item-factory.c"
 	RygelExternalItemFactory* self;
 	self = (RygelExternalItemFactory*) g_type_create_instance (object_type);
 	return self;
 }
 
 
+#line 32 "rygel-external-item-factory.vala"
 RygelExternalItemFactory* rygel_external_item_factory_new (void) {
+#line 32 "rygel-external-item-factory.vala"
 	return rygel_external_item_factory_construct (RYGEL_TYPE_EXTERNAL_ITEM_FACTORY);
+#line 1018 "rygel-external-item-factory.c"
 }
 
 

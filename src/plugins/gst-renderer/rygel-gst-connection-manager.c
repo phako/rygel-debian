@@ -67,28 +67,42 @@ RygelGstConnectionManager* rygel_gst_connection_manager_construct (GType object_
 
 
 
+#line 66 "rygel-gst-connection-manager.vala"
 static void rygel_gst_connection_manager_real_constructed (GObject* base) {
+#line 73 "rygel-gst-connection-manager.c"
 	RygelGstConnectionManager * self;
 	char* _tmp0_;
 	char* _tmp1_;
 	char* _tmp2_;
 	self = (RygelGstConnectionManager*) base;
+#line 67 "rygel-gst-connection-manager.vala"
 	G_OBJECT_CLASS (rygel_gst_connection_manager_parent_class)->constructed ((GObject*) RYGEL_CONNECTION_MANAGER (self));
+#line 69 "rygel-gst-connection-manager.vala"
 	((RygelConnectionManager*) self)->connection_ids = (_tmp0_ = g_strdup ("0"), _g_free0 (((RygelConnectionManager*) self)->connection_ids), _tmp0_);
+#line 70 "rygel-gst-connection-manager.vala"
 	((RygelConnectionManager*) self)->source_protocol_info = (_tmp1_ = g_strdup (""), _g_free0 (((RygelConnectionManager*) self)->source_protocol_info), _tmp1_);
+#line 71 "rygel-gst-connection-manager.vala"
 	((RygelConnectionManager*) self)->sink_protocol_info = (_tmp2_ = g_strdup ("http-get:*:audio/mpeg:*," "http-get:*:application/ogg:*," "http-get:*:audio/x-vorbis:*," "http-get:*:audio/x-vorbis+ogg:*," "http-get:*:audio/x-ms-wma:*," "http-get:*:audio/x-ms-asf:*," "http-get:*:audio/x-flac:*," "http-get:*:audio/x-mod:*," "http-get:*:audio/x-wav:*," "http-get:*:audio/x-ac3:*," "http-get:*:audio/x-m4a:*," "http-get:*:video/x-theora:*," "http-get:*:video/x-dirac:*," "http-get:*:video/x-wmv:*," "http-get:*:video/x-wma:*," "http-get:*:video/x-msvideo:*," "http-get:*:video/x-3ivx:*," "http-get:*:video/x-3ivx:*," "http-get:*:video/x-matroska:*," "http-get:*:video/mpeg:*," "http-get:*:video/x-ms-asf:*," "http-get:*:video/x-xvid:*," "http-get:*:video/x-ms-wmv:*," "http-get:*:audio/L16;" "rate=44100;" "channels=2:*," "http-get:*:audio/L16;" "rate=44100;" "channels=1:*"), _g_free0 (((RygelConnectionManager*) self)->sink_protocol_info), _tmp2_);
+#line 87 "rygel-gst-connection-manager.c"
 }
 
 
+#line 30 "rygel-gst-connection-manager.vala"
 RygelGstConnectionManager* rygel_gst_connection_manager_construct (GType object_type) {
+#line 93 "rygel-gst-connection-manager.c"
 	RygelGstConnectionManager * self;
+#line 30 "rygel-gst-connection-manager.vala"
 	self = (RygelGstConnectionManager*) rygel_connection_manager_construct (object_type);
+#line 97 "rygel-gst-connection-manager.c"
 	return self;
 }
 
 
+#line 30 "rygel-gst-connection-manager.vala"
 RygelGstConnectionManager* rygel_gst_connection_manager_new (void) {
+#line 30 "rygel-gst-connection-manager.vala"
 	return rygel_gst_connection_manager_construct (RYGEL_TYPE_GST_CONNECTION_MANAGER);
+#line 106 "rygel-gst-connection-manager.c"
 }
 
 

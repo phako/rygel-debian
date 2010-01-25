@@ -107,31 +107,43 @@ static void rygel_search_expression_finalize (RygelSearchExpression* obj);
 
 
 
+#line 32 "rygel-search-expression.vala"
 static gboolean rygel_search_expression_real_satisfied_by (RygelSearchExpression* self, RygelMediaObject* media_object) {
+#line 113 "rygel-search-expression.c"
 	g_return_val_if_fail (self != NULL, FALSE);
 	g_critical ("Type `%s' does not implement abstract method `rygel_search_expression_satisfied_by'", g_type_name (G_TYPE_FROM_INSTANCE (self)));
 	return FALSE;
 }
 
 
+#line 32 "rygel-search-expression.vala"
 gboolean rygel_search_expression_satisfied_by (RygelSearchExpression* self, RygelMediaObject* media_object) {
+#line 32 "rygel-search-expression.vala"
 	return RYGEL_SEARCH_EXPRESSION_GET_CLASS (self)->satisfied_by (self, media_object);
+#line 124 "rygel-search-expression.c"
 }
 
 
+#line 34 "rygel-search-expression.vala"
 static char* rygel_search_expression_real_to_string (RygelSearchExpression* self) {
+#line 130 "rygel-search-expression.c"
 	g_return_val_if_fail (self != NULL, NULL);
 	g_critical ("Type `%s' does not implement abstract method `rygel_search_expression_to_string'", g_type_name (G_TYPE_FROM_INSTANCE (self)));
 	return NULL;
 }
 
 
+#line 34 "rygel-search-expression.vala"
 char* rygel_search_expression_to_string (RygelSearchExpression* self) {
+#line 34 "rygel-search-expression.vala"
 	return RYGEL_SEARCH_EXPRESSION_GET_CLASS (self)->to_string (self);
+#line 141 "rygel-search-expression.c"
 }
 
 
+#line 26 "rygel-search-expression.vala"
 RygelSearchExpression* rygel_search_expression_construct (GType object_type, GType g_type, GBoxedCopyFunc g_dup_func, GDestroyNotify g_destroy_func, GType h_type, GBoxedCopyFunc h_dup_func, GDestroyNotify h_destroy_func, GType i_type, GBoxedCopyFunc i_dup_func, GDestroyNotify i_destroy_func) {
+#line 147 "rygel-search-expression.c"
 	RygelSearchExpression* self;
 	self = (RygelSearchExpression*) g_type_create_instance (object_type);
 	self->priv->g_type = g_type;

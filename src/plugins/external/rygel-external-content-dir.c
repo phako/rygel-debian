@@ -109,7 +109,9 @@ static gpointer _g_object_ref0 (gpointer self) {
 }
 
 
+#line 34 "rygel-external-content-dir.vala"
 static RygelMediaContainer* rygel_external_content_dir_real_create_root_container (RygelContentDirectory* base) {
+#line 115 "rygel-external-content-dir.c"
 	RygelExternalContentDir * self;
 	RygelMediaContainer* result;
 	GUPnPRootDevice* _tmp1_;
@@ -117,22 +119,33 @@ static RygelMediaContainer* rygel_external_content_dir_real_create_root_containe
 	RygelExternalPlugin* _tmp2_;
 	RygelExternalPlugin* plugin;
 	self = (RygelExternalContentDir*) base;
+#line 35 "rygel-external-content-dir.vala"
 	plugin = (_tmp2_ = _g_object_ref0 (RYGEL_EXTERNAL_PLUGIN (gupnp_device_info_get_resource_factory ((GUPnPDeviceInfo*) (_tmp1_ = (g_object_get ((GUPnPService*) self, "root-device", &_tmp0_, NULL), _tmp0_))))), _g_object_unref0 (_tmp1_), _tmp2_);
+#line 125 "rygel-external-content-dir.c"
 	result = (RygelMediaContainer*) rygel_external_container_new ("0", plugin->service_name, plugin->root_object, gssdp_client_get_host_ip ((GSSDPClient*) gupnp_service_info_get_context ((GUPnPServiceInfo*) self)), NULL);
 	_g_object_unref0 (plugin);
+#line 37 "rygel-external-content-dir.vala"
 	return result;
+#line 130 "rygel-external-content-dir.c"
 }
 
 
+#line 32 "rygel-external-content-dir.vala"
 RygelExternalContentDir* rygel_external_content_dir_construct (GType object_type) {
+#line 136 "rygel-external-content-dir.c"
 	RygelExternalContentDir * self;
+#line 32 "rygel-external-content-dir.vala"
 	self = (RygelExternalContentDir*) rygel_content_directory_construct (object_type);
+#line 140 "rygel-external-content-dir.c"
 	return self;
 }
 
 
+#line 32 "rygel-external-content-dir.vala"
 RygelExternalContentDir* rygel_external_content_dir_new (void) {
+#line 32 "rygel-external-content-dir.vala"
 	return rygel_external_content_dir_construct (RYGEL_TYPE_EXTERNAL_CONTENT_DIR);
+#line 149 "rygel-external-content-dir.c"
 }
 
 

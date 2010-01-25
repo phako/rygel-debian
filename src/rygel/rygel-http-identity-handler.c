@@ -355,34 +355,56 @@ GType rygel_live_response_get_type (void);
 
 
 
+#line 29 "rygel-http-identity-handler.vala"
 RygelHTTPIdentityHandler* rygel_http_identity_handler_construct (GType object_type, GCancellable* cancellable) {
+#line 361 "rygel-http-identity-handler.c"
 	RygelHTTPIdentityHandler * self;
+#line 29 "rygel-http-identity-handler.vala"
 	self = (RygelHTTPIdentityHandler*) rygel_http_request_handler_construct (object_type);
+#line 30 "rygel-http-identity-handler.vala"
 	rygel_http_request_handler_set_cancellable ((RygelHTTPRequestHandler*) self, cancellable);
+#line 367 "rygel-http-identity-handler.c"
 	return self;
 }
 
 
+#line 29 "rygel-http-identity-handler.vala"
 RygelHTTPIdentityHandler* rygel_http_identity_handler_new (GCancellable* cancellable) {
+#line 29 "rygel-http-identity-handler.vala"
 	return rygel_http_identity_handler_construct (RYGEL_TYPE_HTTP_IDENTITY_HANDLER, cancellable);
+#line 376 "rygel-http-identity-handler.c"
 }
 
 
+#line 33 "rygel-http-identity-handler.vala"
 static void rygel_http_identity_handler_real_add_response_headers (RygelHTTPRequestHandler* base, RygelHTTPRequest* request, GError** error) {
+#line 382 "rygel-http-identity-handler.c"
 	RygelHTTPIdentityHandler * self;
 	GError * _inner_error_;
 	self = (RygelHTTPIdentityHandler*) base;
+#line 33 "rygel-http-identity-handler.vala"
 	g_return_if_fail (request != NULL);
+#line 388 "rygel-http-identity-handler.c"
 	_inner_error_ = NULL;
+#line 35 "rygel-http-identity-handler.vala"
 	if (request->thumbnail != NULL) {
+#line 36 "rygel-http-identity-handler.vala"
 		soup_message_headers_append (request->msg->response_headers, "Content-Type", ((RygelIconInfo*) request->thumbnail)->mime_type);
+#line 394 "rygel-http-identity-handler.c"
 	} else {
+#line 39 "rygel-http-identity-handler.vala"
 		soup_message_headers_append (request->msg->response_headers, "Content-Type", request->item->mime_type);
+#line 398 "rygel-http-identity-handler.c"
 	}
+#line 43 "rygel-http-identity-handler.vala"
 	if (request->seek != NULL) {
+#line 44 "rygel-http-identity-handler.vala"
 		rygel_http_seek_add_response_headers (request->seek);
+#line 404 "rygel-http-identity-handler.c"
 	}
+#line 48 "rygel-http-identity-handler.vala"
 	RYGEL_HTTP_REQUEST_HANDLER_CLASS (rygel_http_identity_handler_parent_class)->add_response_headers (RYGEL_HTTP_REQUEST_HANDLER (self), request, &_inner_error_);
+#line 408 "rygel-http-identity-handler.c"
 	if (_inner_error_ != NULL) {
 		if (_inner_error_->domain == RYGEL_HTTP_REQUEST_ERROR) {
 			g_propagate_error (error, _inner_error_);
@@ -396,22 +418,30 @@ static void rygel_http_identity_handler_real_add_response_headers (RygelHTTPRequ
 }
 
 
+#line 51 "rygel-http-identity-handler.vala"
 static RygelHTTPResponse* rygel_http_identity_handler_real_render_body (RygelHTTPRequestHandler* base, RygelHTTPRequest* request, GError** error) {
+#line 424 "rygel-http-identity-handler.c"
 	RygelHTTPIdentityHandler * self;
 	RygelHTTPResponse* result;
 	GError * _inner_error_;
 	self = (RygelHTTPIdentityHandler*) base;
+#line 51 "rygel-http-identity-handler.vala"
 	g_return_val_if_fail (request != NULL, NULL);
+#line 431 "rygel-http-identity-handler.c"
 	_inner_error_ = NULL;
 	{
 		RygelHTTPResponse* _tmp0_;
+#line 54 "rygel-http-identity-handler.vala"
 		_tmp0_ = rygel_http_identity_handler_render_body_real (self, request, &_inner_error_);
+#line 437 "rygel-http-identity-handler.c"
 		if (_inner_error_ != NULL) {
 			goto __catch28_g_error;
 			goto __finally28;
 		}
 		result = _tmp0_;
+#line 54 "rygel-http-identity-handler.vala"
 		return result;
+#line 445 "rygel-http-identity-handler.c"
 	}
 	goto __finally28;
 	__catch28_g_error:
@@ -442,23 +472,35 @@ static RygelHTTPResponse* rygel_http_identity_handler_real_render_body (RygelHTT
 }
 
 
+#line 60 "rygel-http-identity-handler.vala"
 static GUPnPDIDLLiteResource* rygel_http_identity_handler_real_add_resource (RygelHTTPRequestHandler* base, GUPnPDIDLLiteItem* didl_item, RygelHTTPRequest* request, GError** error) {
+#line 478 "rygel-http-identity-handler.c"
 	RygelHTTPIdentityHandler * self;
 	GUPnPDIDLLiteResource* result;
 	GError * _inner_error_;
 	char* protocol;
 	self = (RygelHTTPIdentityHandler*) base;
+#line 60 "rygel-http-identity-handler.vala"
 	g_return_val_if_fail (didl_item != NULL, NULL);
+#line 60 "rygel-http-identity-handler.vala"
 	g_return_val_if_fail (request != NULL, NULL);
+#line 488 "rygel-http-identity-handler.c"
 	_inner_error_ = NULL;
+#line 63 "rygel-http-identity-handler.vala"
 	protocol = rygel_transcode_manager_get_protocol ((RygelTranscodeManager*) request->http_server);
+#line 65 "rygel-http-identity-handler.vala"
 	if (request->thumbnail != NULL) {
+#line 494 "rygel-http-identity-handler.c"
 		result = rygel_thumbnail_add_resource (request->thumbnail, didl_item, protocol);
 		_g_free0 (protocol);
+#line 66 "rygel-http-identity-handler.vala"
 		return result;
+#line 499 "rygel-http-identity-handler.c"
 	} else {
 		GUPnPDIDLLiteResource* _tmp0_;
+#line 68 "rygel-http-identity-handler.vala"
 		_tmp0_ = rygel_media_item_add_resource (request->item, didl_item, NULL, protocol, &_inner_error_);
+#line 504 "rygel-http-identity-handler.c"
 		if (_inner_error_ != NULL) {
 			g_propagate_error (error, _inner_error_);
 			_g_free0 (protocol);
@@ -466,7 +508,9 @@ static GUPnPDIDLLiteResource* rygel_http_identity_handler_real_add_resource (Ryg
 		}
 		result = _tmp0_;
 		_g_free0 (protocol);
+#line 68 "rygel-http-identity-handler.vala"
 		return result;
+#line 514 "rygel-http-identity-handler.c"
 	}
 	_g_free0 (protocol);
 }
@@ -477,23 +521,38 @@ static gpointer _g_object_ref0 (gpointer self) {
 }
 
 
+#line 72 "rygel-http-identity-handler.vala"
 static RygelHTTPResponse* rygel_http_identity_handler_render_body_real (RygelHTTPIdentityHandler* self, RygelHTTPRequest* request, GError** error) {
+#line 527 "rygel-http-identity-handler.c"
 	RygelHTTPResponse* result;
 	GError * _inner_error_;
 	RygelMediaItem* item;
+#line 72 "rygel-http-identity-handler.vala"
 	g_return_val_if_fail (self != NULL, NULL);
+#line 72 "rygel-http-identity-handler.vala"
 	g_return_val_if_fail (request != NULL, NULL);
+#line 535 "rygel-http-identity-handler.c"
 	_inner_error_ = NULL;
+#line 73 "rygel-http-identity-handler.vala"
 	if (request->thumbnail != NULL) {
+#line 539 "rygel-http-identity-handler.c"
 		result = (RygelHTTPResponse*) rygel_seekable_response_new (request->server, request->msg, ((RygelIconInfo*) request->thumbnail)->uri, request->seek, (gsize) ((RygelIconInfo*) request->thumbnail)->size, rygel_http_request_handler_get_cancellable ((RygelHTTPRequestHandler*) self));
+#line 74 "rygel-http-identity-handler.vala"
 		return result;
+#line 543 "rygel-http-identity-handler.c"
 	}
+#line 82 "rygel-http-identity-handler.vala"
 	item = _g_object_ref0 (request->item);
+#line 84 "rygel-http-identity-handler.vala"
 	if (rygel_media_item_should_stream (item)) {
+#line 549 "rygel-http-identity-handler.c"
 		GstElement* src;
 		RygelLiveResponse* _tmp0_;
+#line 85 "rygel-http-identity-handler.vala"
 		src = rygel_media_item_create_stream_source (item);
+#line 86 "rygel-http-identity-handler.vala"
 		if (src == NULL) {
+#line 556 "rygel-http-identity-handler.c"
 			_inner_error_ = g_error_new_literal (RYGEL_HTTP_REQUEST_ERROR, RYGEL_HTTP_REQUEST_ERROR_NOT_FOUND, "Not found");
 			if (_inner_error_ != NULL) {
 				g_propagate_error (error, _inner_error_);
@@ -502,7 +561,9 @@ static RygelHTTPResponse* rygel_http_identity_handler_render_body_real (RygelHTT
 				return NULL;
 			}
 		}
+#line 90 "rygel-http-identity-handler.vala"
 		_tmp0_ = rygel_live_response_new (request->server, request->msg, "RygelLiveResponse", src, request->seek, rygel_http_request_handler_get_cancellable ((RygelHTTPRequestHandler*) self), &_inner_error_);
+#line 567 "rygel-http-identity-handler.c"
 		if (_inner_error_ != NULL) {
 			g_propagate_error (error, _inner_error_);
 			_gst_object_unref0 (src);
@@ -512,11 +573,15 @@ static RygelHTTPResponse* rygel_http_identity_handler_render_body_real (RygelHTT
 		result = (RygelHTTPResponse*) _tmp0_;
 		_gst_object_unref0 (src);
 		_g_object_unref0 (item);
+#line 90 "rygel-http-identity-handler.vala"
 		return result;
+#line 579 "rygel-http-identity-handler.c"
 	} else {
 		char* _tmp1_;
 		RygelHTTPResponse* _tmp2_;
+#line 97 "rygel-http-identity-handler.vala"
 		if (gee_collection_get_size ((GeeCollection*) ((RygelMediaObject*) item)->uris) == 0) {
+#line 585 "rygel-http-identity-handler.c"
 			_inner_error_ = g_error_new (RYGEL_HTTP_REQUEST_ERROR, RYGEL_HTTP_REQUEST_ERROR_NOT_FOUND, "Requested item '%s' didn't provide a URI\n", ((RygelMediaObject*) item)->id);
 			if (_inner_error_ != NULL) {
 				g_propagate_error (error, _inner_error_);
@@ -526,7 +591,9 @@ static RygelHTTPResponse* rygel_http_identity_handler_render_body_real (RygelHTT
 		}
 		result = (_tmp2_ = (RygelHTTPResponse*) rygel_seekable_response_new (request->server, request->msg, _tmp1_ = (char*) gee_abstract_list_get ((GeeAbstractList*) ((RygelMediaObject*) item)->uris, 0), request->seek, (gsize) item->size, rygel_http_request_handler_get_cancellable ((RygelHTTPRequestHandler*) self)), _g_free0 (_tmp1_), _tmp2_);
 		_g_object_unref0 (item);
+#line 103 "rygel-http-identity-handler.vala"
 		return result;
+#line 597 "rygel-http-identity-handler.c"
 	}
 	_g_object_unref0 (item);
 }

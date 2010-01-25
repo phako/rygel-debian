@@ -75,28 +75,41 @@ static gpointer _g_object_ref0 (gpointer self) {
 }
 
 
+#line 30 "rygel-preferences-section.vala"
 RygelPreferencesSection* rygel_preferences_section_construct (GType object_type, RygelUserConfig* config, const char* name) {
+#line 81 "rygel-preferences-section.c"
 	RygelPreferencesSection * self;
 	char* _tmp0_;
 	RygelUserConfig* _tmp1_;
+#line 30 "rygel-preferences-section.vala"
 	g_return_val_if_fail (config != NULL, NULL);
+#line 30 "rygel-preferences-section.vala"
 	g_return_val_if_fail (name != NULL, NULL);
+#line 30 "rygel-preferences-section.vala"
 	self = (RygelPreferencesSection*) g_object_new (object_type, NULL);
+#line 32 "rygel-preferences-section.vala"
 	self->name = (_tmp0_ = g_strdup (name), _g_free0 (self->name), _tmp0_);
+#line 33 "rygel-preferences-section.vala"
 	self->config = (_tmp1_ = _g_object_ref0 (config), _g_object_unref0 (self->config), _tmp1_);
+#line 95 "rygel-preferences-section.c"
 	return self;
 }
 
 
+#line 36 "rygel-preferences-section.vala"
 static void rygel_preferences_section_real_save (RygelPreferencesSection* self) {
+#line 102 "rygel-preferences-section.c"
 	g_return_if_fail (self != NULL);
 	g_critical ("Type `%s' does not implement abstract method `rygel_preferences_section_save'", g_type_name (G_TYPE_FROM_INSTANCE (self)));
 	return;
 }
 
 
+#line 36 "rygel-preferences-section.vala"
 void rygel_preferences_section_save (RygelPreferencesSection* self) {
+#line 36 "rygel-preferences-section.vala"
 	RYGEL_PREFERENCES_SECTION_GET_CLASS (self)->save (self);
+#line 113 "rygel-preferences-section.c"
 }
 
 

@@ -183,30 +183,42 @@ static gpointer _g_object_ref0 (gpointer self) {
 }
 
 
+#line 41 "rygel-media-db-container.vala"
 static void _rygel_media_db_container_on_db_container_updated_rygel_media_container_container_updated (RygelMediaContainer* _sender, RygelMediaContainer* container, gpointer self) {
+#line 189 "rygel-media-db-container.c"
 	rygel_media_db_container_on_db_container_updated (self, _sender, container);
 }
 
 
+#line 26 "rygel-media-db-container.vala"
 RygelMediaDBContainer* rygel_media_db_container_construct (GType object_type, RygelMediaDB* media_db, const char* id, const char* title) {
+#line 196 "rygel-media-db-container.c"
 	GError * _inner_error_;
 	RygelMediaDBContainer * self;
 	gint count = 0;
 	RygelMediaDB* _tmp1_;
+#line 26 "rygel-media-db-container.vala"
 	g_return_val_if_fail (media_db != NULL, NULL);
+#line 26 "rygel-media-db-container.vala"
 	g_return_val_if_fail (id != NULL, NULL);
+#line 26 "rygel-media-db-container.vala"
 	g_return_val_if_fail (title != NULL, NULL);
+#line 207 "rygel-media-db-container.c"
 	_inner_error_ = NULL;
 	{
 		gint _tmp0_;
+#line 29 "rygel-media-db-container.vala"
 		_tmp0_ = rygel_media_db_get_child_count (media_db, id, &_inner_error_);
+#line 213 "rygel-media-db-container.c"
 		if (_inner_error_ != NULL) {
 			if (_inner_error_->domain == RYGEL_DATABASE_ERROR) {
 				goto __catch54_rygel_database_error;
 			}
 			goto __finally54;
 		}
+#line 29 "rygel-media-db-container.vala"
 		count = _tmp0_;
+#line 222 "rygel-media-db-container.c"
 	}
 	goto __finally54;
 	__catch54_rygel_database_error:
@@ -215,8 +227,11 @@ RygelMediaDBContainer* rygel_media_db_container_construct (GType object_type, Ry
 		e = _inner_error_;
 		_inner_error_ = NULL;
 		{
+#line 31 "rygel-media-db-container.vala"
 			g_debug ("rygel-media-db-container.vala:31: Could not get child count from database: %s", e->message);
+#line 33 "rygel-media-db-container.vala"
 			count = 0;
+#line 235 "rygel-media-db-container.c"
 			_g_error_free0 (e);
 		}
 	}
@@ -226,34 +241,51 @@ RygelMediaDBContainer* rygel_media_db_container_construct (GType object_type, Ry
 		g_clear_error (&_inner_error_);
 		return NULL;
 	}
+#line 35 "rygel-media-db-container.vala"
 	self = (RygelMediaDBContainer*) rygel_media_container_construct (object_type, id, NULL, title, (guint) count);
+#line 37 "rygel-media-db-container.vala"
 	self->media_db = (_tmp1_ = _g_object_ref0 (media_db), _g_object_unref0 (self->media_db), _tmp1_);
+#line 38 "rygel-media-db-container.vala"
 	g_signal_connect_object ((RygelMediaContainer*) self, "container-updated", (GCallback) _rygel_media_db_container_on_db_container_updated_rygel_media_container_container_updated, self, 0);
+#line 251 "rygel-media-db-container.c"
 	return self;
 }
 
 
+#line 26 "rygel-media-db-container.vala"
 RygelMediaDBContainer* rygel_media_db_container_new (RygelMediaDB* media_db, const char* id, const char* title) {
+#line 26 "rygel-media-db-container.vala"
 	return rygel_media_db_container_construct (RYGEL_TYPE_MEDIA_DB_CONTAINER, media_db, id, title);
+#line 260 "rygel-media-db-container.c"
 }
 
 
+#line 41 "rygel-media-db-container.vala"
 static void rygel_media_db_container_on_db_container_updated (RygelMediaDBContainer* self, RygelMediaContainer* container, RygelMediaContainer* container_updated) {
+#line 266 "rygel-media-db-container.c"
 	GError * _inner_error_;
+#line 41 "rygel-media-db-container.vala"
 	g_return_if_fail (self != NULL);
+#line 41 "rygel-media-db-container.vala"
 	g_return_if_fail (container != NULL);
+#line 41 "rygel-media-db-container.vala"
 	g_return_if_fail (container_updated != NULL);
+#line 274 "rygel-media-db-container.c"
 	_inner_error_ = NULL;
 	{
 		gint _tmp0_;
+#line 44 "rygel-media-db-container.vala"
 		_tmp0_ = rygel_media_db_get_child_count (self->media_db, ((RygelMediaObject*) self)->id, &_inner_error_);
+#line 280 "rygel-media-db-container.c"
 		if (_inner_error_ != NULL) {
 			if (_inner_error_->domain == RYGEL_DATABASE_ERROR) {
 				goto __catch55_rygel_database_error;
 			}
 			goto __finally55;
 		}
+#line 44 "rygel-media-db-container.vala"
 		((RygelMediaContainer*) self)->child_count = (guint) _tmp0_;
+#line 289 "rygel-media-db-container.c"
 	}
 	goto __finally55;
 	__catch55_rygel_database_error:
@@ -262,8 +294,11 @@ static void rygel_media_db_container_on_db_container_updated (RygelMediaDBContai
 		e = _inner_error_;
 		_inner_error_ = NULL;
 		{
+#line 46 "rygel-media-db-container.vala"
 			g_debug ("rygel-media-db-container.vala:46: Could not get child count from database: %s", e->message);
+#line 48 "rygel-media-db-container.vala"
 			((RygelMediaContainer*) self)->child_count = (guint) 0;
+#line 302 "rygel-media-db-container.c"
 			_g_error_free0 (e);
 		}
 	}
@@ -343,12 +378,18 @@ static gboolean rygel_media_db_container_real_get_children_co (RygelMediaDbConta
 			}
 			{
 				data->_child_it = gee_abstract_collection_iterator ((GeeAbstractCollection*) data->children);
+#line 60 "rygel-media-db-container.vala"
 				while (TRUE) {
+#line 60 "rygel-media-db-container.vala"
 					if (!gee_iterator_next (data->_child_it)) {
+#line 60 "rygel-media-db-container.vala"
 						break;
+#line 388 "rygel-media-db-container.c"
 					}
 					data->child = (RygelMediaObject*) gee_iterator_get (data->_child_it);
+#line 61 "rygel-media-db-container.vala"
 					data->child->parent = (RygelMediaContainer*) data->self;
+#line 393 "rygel-media-db-container.c"
 					_g_object_unref0 (data->child);
 				}
 				_g_object_unref0 (data->_child_it);

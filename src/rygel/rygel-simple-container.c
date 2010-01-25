@@ -160,48 +160,78 @@ static void rygel_simple_container_finalize (GObject* obj);
 
 
 
+#line 35 "rygel-simple-container.vala"
 RygelSimpleContainer* rygel_simple_container_construct (GType object_type, const char* id, RygelMediaContainer* parent, const char* title) {
+#line 166 "rygel-simple-container.c"
 	RygelSimpleContainer * self;
 	GeeArrayList* _tmp0_;
+#line 35 "rygel-simple-container.vala"
 	g_return_val_if_fail (id != NULL, NULL);
+#line 35 "rygel-simple-container.vala"
 	g_return_val_if_fail (title != NULL, NULL);
+#line 38 "rygel-simple-container.vala"
 	self = (RygelSimpleContainer*) rygel_media_container_construct (object_type, id, parent, title, (guint) 0);
+#line 40 "rygel-simple-container.vala"
 	self->children = (_tmp0_ = gee_array_list_new (RYGEL_TYPE_MEDIA_OBJECT, (GBoxedCopyFunc) g_object_ref, g_object_unref, NULL), _g_object_unref0 (self->children), _tmp0_);
+#line 177 "rygel-simple-container.c"
 	return self;
 }
 
 
+#line 35 "rygel-simple-container.vala"
 RygelSimpleContainer* rygel_simple_container_new (const char* id, RygelMediaContainer* parent, const char* title) {
+#line 35 "rygel-simple-container.vala"
 	return rygel_simple_container_construct (RYGEL_TYPE_SIMPLE_CONTAINER, id, parent, title);
+#line 186 "rygel-simple-container.c"
 }
 
 
+#line 43 "rygel-simple-container.vala"
 RygelSimpleContainer* rygel_simple_container_construct_root (GType object_type, const char* title) {
+#line 192 "rygel-simple-container.c"
 	RygelSimpleContainer * self;
+#line 43 "rygel-simple-container.vala"
 	g_return_val_if_fail (title != NULL, NULL);
+#line 44 "rygel-simple-container.vala"
 	self = (RygelSimpleContainer*) rygel_simple_container_construct (object_type, "0", NULL, title);
+#line 198 "rygel-simple-container.c"
 	return self;
 }
 
 
+#line 43 "rygel-simple-container.vala"
 RygelSimpleContainer* rygel_simple_container_new_root (const char* title) {
+#line 43 "rygel-simple-container.vala"
 	return rygel_simple_container_construct_root (RYGEL_TYPE_SIMPLE_CONTAINER, title);
+#line 207 "rygel-simple-container.c"
 }
 
 
+#line 47 "rygel-simple-container.vala"
 void rygel_simple_container_add_child (RygelSimpleContainer* self, RygelMediaObject* child) {
+#line 47 "rygel-simple-container.vala"
 	g_return_if_fail (self != NULL);
+#line 47 "rygel-simple-container.vala"
 	g_return_if_fail (child != NULL);
+#line 48 "rygel-simple-container.vala"
 	gee_abstract_collection_add ((GeeAbstractCollection*) self->children, child);
+#line 50 "rygel-simple-container.vala"
 	((RygelMediaContainer*) self)->child_count++;
+#line 221 "rygel-simple-container.c"
 }
 
 
+#line 53 "rygel-simple-container.vala"
 void rygel_simple_container_remove_child (RygelSimpleContainer* self, RygelMediaObject* child) {
+#line 53 "rygel-simple-container.vala"
 	g_return_if_fail (self != NULL);
+#line 53 "rygel-simple-container.vala"
 	g_return_if_fail (child != NULL);
+#line 54 "rygel-simple-container.vala"
 	gee_abstract_collection_remove ((GeeAbstractCollection*) self->children, child);
+#line 56 "rygel-simple-container.vala"
 	((RygelMediaContainer*) self)->child_count--;
+#line 235 "rygel-simple-container.c"
 }
 
 
@@ -262,7 +292,9 @@ static gboolean rygel_simple_container_real_get_children_co (RygelSimpleContaine
 		case 0:
 		{
 			data->stop = data->offset + data->max_count;
+#line 65 "rygel-simple-container.vala"
 			data->stop = CLAMP (data->stop, (guint) 0, ((RygelMediaContainer*) data->self)->child_count);
+#line 298 "rygel-simple-container.c"
 			data->result = gee_abstract_list_slice ((GeeAbstractList*) data->self->children, (gint) data->offset, (gint) data->stop);
 			{
 				if (data->_state_ == 0) {

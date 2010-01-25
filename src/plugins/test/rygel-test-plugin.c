@@ -48,11 +48,17 @@ void module_init (RygelPluginLoader* loader);
 
 
 
+#line 30 "rygel-test-plugin.vala"
 void module_init (RygelPluginLoader* loader) {
+#line 54 "rygel-test-plugin.c"
 	RygelPlugin* plugin;
+#line 30 "rygel-test-plugin.vala"
 	g_return_if_fail (loader != NULL);
+#line 31 "rygel-test-plugin.vala"
 	plugin = rygel_plugin_new_MediaServer ("Test", "Test Streams", RYGEL_TYPE_TEST_CONTENT_DIR);
+#line 34 "rygel-test-plugin.vala"
 	rygel_plugin_loader_add_plugin (loader, plugin);
+#line 62 "rygel-test-plugin.c"
 	_g_object_unref0 (plugin);
 }
 

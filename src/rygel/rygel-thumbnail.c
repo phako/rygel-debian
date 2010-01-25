@@ -104,54 +104,91 @@ static void rygel_thumbnail_finalize (RygelIconInfo* obj);
 
 
 
+#line 31 "rygel-thumbnail.vala"
 RygelThumbnail* rygel_thumbnail_construct (GType object_type, const char* mime_type, const char* dlna_profile) {
+#line 110 "rygel-thumbnail.c"
 	RygelThumbnail* self;
 	char* _tmp0_;
+#line 31 "rygel-thumbnail.vala"
 	g_return_val_if_fail (mime_type != NULL, NULL);
+#line 31 "rygel-thumbnail.vala"
 	g_return_val_if_fail (dlna_profile != NULL, NULL);
+#line 33 "rygel-thumbnail.vala"
 	self = (RygelThumbnail*) rygel_icon_info_construct (object_type, mime_type);
+#line 35 "rygel-thumbnail.vala"
 	self->dlna_profile = (_tmp0_ = g_strdup (dlna_profile), _g_free0 (self->dlna_profile), _tmp0_);
+#line 121 "rygel-thumbnail.c"
 	return self;
 }
 
 
+#line 31 "rygel-thumbnail.vala"
 RygelThumbnail* rygel_thumbnail_new (const char* mime_type, const char* dlna_profile) {
+#line 31 "rygel-thumbnail.vala"
 	return rygel_thumbnail_construct (RYGEL_TYPE_THUMBNAIL, mime_type, dlna_profile);
+#line 130 "rygel-thumbnail.c"
 }
 
 
+#line 38 "rygel-thumbnail.vala"
 GUPnPDIDLLiteResource* rygel_thumbnail_add_resource (RygelThumbnail* self, GUPnPDIDLLiteItem* didl_item, const char* protocol) {
+#line 136 "rygel-thumbnail.c"
 	GUPnPDIDLLiteResource* result;
 	GUPnPDIDLLiteResource* res;
 	GUPnPProtocolInfo* _tmp0_;
+#line 38 "rygel-thumbnail.vala"
 	g_return_val_if_fail (self != NULL, NULL);
+#line 38 "rygel-thumbnail.vala"
 	g_return_val_if_fail (didl_item != NULL, NULL);
+#line 38 "rygel-thumbnail.vala"
 	g_return_val_if_fail (protocol != NULL, NULL);
+#line 40 "rygel-thumbnail.vala"
 	res = gupnp_didl_lite_object_add_resource ((GUPnPDIDLLiteObject*) didl_item);
+#line 42 "rygel-thumbnail.vala"
 	gupnp_didl_lite_resource_set_uri (res, ((RygelIconInfo*) self)->uri);
+#line 43 "rygel-thumbnail.vala"
 	gupnp_didl_lite_resource_set_size (res, ((RygelIconInfo*) self)->size);
+#line 45 "rygel-thumbnail.vala"
 	gupnp_didl_lite_resource_set_width (res, ((RygelIconInfo*) self)->width);
+#line 46 "rygel-thumbnail.vala"
 	gupnp_didl_lite_resource_set_height (res, ((RygelIconInfo*) self)->height);
+#line 47 "rygel-thumbnail.vala"
 	gupnp_didl_lite_resource_set_color_depth (res, ((RygelIconInfo*) self)->depth);
+#line 50 "rygel-thumbnail.vala"
 	gupnp_didl_lite_resource_set_protocol_info (res, _tmp0_ = rygel_thumbnail_get_protocol_info (self, protocol));
+#line 160 "rygel-thumbnail.c"
 	_g_object_unref0 (_tmp0_);
 	result = res;
+#line 52 "rygel-thumbnail.vala"
 	return result;
+#line 165 "rygel-thumbnail.c"
 }
 
 
+#line 55 "rygel-thumbnail.vala"
 static GUPnPProtocolInfo* rygel_thumbnail_get_protocol_info (RygelThumbnail* self, const char* protocol) {
+#line 171 "rygel-thumbnail.c"
 	GUPnPProtocolInfo* result;
 	GUPnPProtocolInfo* protocol_info;
+#line 55 "rygel-thumbnail.vala"
 	g_return_val_if_fail (self != NULL, NULL);
+#line 55 "rygel-thumbnail.vala"
 	g_return_val_if_fail (protocol != NULL, NULL);
+#line 56 "rygel-thumbnail.vala"
 	protocol_info = gupnp_protocol_info_new ();
+#line 58 "rygel-thumbnail.vala"
 	gupnp_protocol_info_set_mime_type (protocol_info, ((RygelIconInfo*) self)->mime_type);
+#line 59 "rygel-thumbnail.vala"
 	gupnp_protocol_info_set_dlna_profile (protocol_info, self->dlna_profile);
+#line 60 "rygel-thumbnail.vala"
 	gupnp_protocol_info_set_protocol (protocol_info, protocol);
+#line 61 "rygel-thumbnail.vala"
 	gupnp_protocol_info_set_dlna_flags (protocol_info, gupnp_protocol_info_get_dlna_flags (protocol_info) | (GUPNP_DLNA_FLAGS_INTERACTIVE_TRANSFER_MODE | GUPNP_DLNA_FLAGS_BACKGROUND_TRANSFER_MODE));
+#line 188 "rygel-thumbnail.c"
 	result = protocol_info;
+#line 64 "rygel-thumbnail.vala"
 	return result;
+#line 192 "rygel-thumbnail.c"
 }
 
 

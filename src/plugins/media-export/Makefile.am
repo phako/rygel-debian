@@ -31,7 +31,7 @@ librygel_media_export_la_VALAFLAGS = --vapidir=$(top_srcdir)/src/rygel \
                                      --pkg gupnp-av-1.0 \
                                      --pkg libsoup-2.4 \
                                      --pkg gee-1.0 \
-                                     --pkg libxml-2.0
+                                     --pkg libxml-2.0 -g
 
 librygel_media_export_la_LIBADD = $(LIBGUPNP_LIBS) \
 				  $(LIBGUPNP_AV_LIBS) \

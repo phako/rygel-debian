@@ -235,20 +235,32 @@ static gint _vala_array_length (gpointer array);
 
 
 
+#line 33 "rygel-http-request-handler.vala"
 static void rygel_http_request_handler_real_add_response_headers (RygelHTTPRequestHandler* self, RygelHTTPRequest* request, GError** error) {
+#line 241 "rygel-http-request-handler.c"
 	GError * _inner_error_;
 	char* mode;
 	GUPnPDIDLLiteWriter* didl_writer;
 	GUPnPDIDLLiteItem* didl_item;
+#line 33 "rygel-http-request-handler.vala"
 	g_return_if_fail (self != NULL);
+#line 33 "rygel-http-request-handler.vala"
 	g_return_if_fail (request != NULL);
+#line 250 "rygel-http-request-handler.c"
 	_inner_error_ = NULL;
+#line 35 "rygel-http-request-handler.vala"
 	mode = g_strdup (soup_message_headers_get (request->msg->request_headers, "transferMode.dlna.org"));
+#line 36 "rygel-http-request-handler.vala"
 	if (mode != NULL) {
+#line 40 "rygel-http-request-handler.vala"
 		soup_message_headers_append (request->msg->response_headers, "transferMode.dlna.org", mode);
+#line 258 "rygel-http-request-handler.c"
 	}
+#line 46 "rygel-http-request-handler.vala"
 	didl_writer = gupnp_didl_lite_writer_new (NULL);
+#line 47 "rygel-http-request-handler.vala"
 	didl_item = gupnp_didl_lite_writer_add_item (didl_writer);
+#line 264 "rygel-http-request-handler.c"
 	{
 		GUPnPDIDLLiteResource* resource;
 		char** _tmp3_;
@@ -258,14 +270,19 @@ static void rygel_http_request_handler_real_add_response_headers (RygelHTTPReque
 		char* _tmp0_;
 		char** _tmp2_;
 		char** tokens;
+#line 49 "rygel-http-request-handler.vala"
 		resource = rygel_http_request_handler_add_resource (self, didl_item, request, &_inner_error_);
+#line 276 "rygel-http-request-handler.c"
 		if (_inner_error_ != NULL) {
 			goto __catch27_g_error;
 			goto __finally27;
 		}
 		tokens = (_tmp3_ = (_tmp2_ = _tmp1_ = g_strsplit (_tmp0_ = gupnp_protocol_info_to_string (gupnp_didl_lite_resource_get_protocol_info (resource)), ":", 4), _g_free0 (_tmp0_), _tmp2_), tokens_length1 = _vala_array_length (_tmp1_), tokens_size = tokens_length1, _tmp3_);
+#line 51 "rygel-http-request-handler.vala"
 		g_assert (tokens_length1 == 4);
+#line 53 "rygel-http-request-handler.vala"
 		soup_message_headers_append (request->msg->response_headers, "contentFeatures.dlna.org", tokens[3]);
+#line 286 "rygel-http-request-handler.c"
 		_g_object_unref0 (resource);
 		tokens = (_vala_array_free (tokens, tokens_length1, (GDestroyNotify) g_free), NULL);
 	}
@@ -276,7 +293,9 @@ static void rygel_http_request_handler_real_add_response_headers (RygelHTTPReque
 		err = _inner_error_;
 		_inner_error_ = NULL;
 		{
+#line 56 "rygel-http-request-handler.vala"
 			g_warning ("rygel-http-request-handler.vala:56: %s", "Received request for 'contentFeatures.dlna.org' but " "failed to provide the value in response headers");
+#line 299 "rygel-http-request-handler.c"
 			_g_error_free0 (err);
 		}
 	}
@@ -303,38 +322,55 @@ static void rygel_http_request_handler_real_add_response_headers (RygelHTTPReque
 }
 
 
+#line 33 "rygel-http-request-handler.vala"
 void rygel_http_request_handler_add_response_headers (RygelHTTPRequestHandler* self, RygelHTTPRequest* request, GError** error) {
+#line 33 "rygel-http-request-handler.vala"
 	RYGEL_HTTP_REQUEST_HANDLER_GET_CLASS (self)->add_response_headers (self, request, error);
+#line 330 "rygel-http-request-handler.c"
 }
 
 
+#line 62 "rygel-http-request-handler.vala"
 static RygelHTTPResponse* rygel_http_request_handler_real_render_body (RygelHTTPRequestHandler* self, RygelHTTPRequest* request, GError** error) {
+#line 336 "rygel-http-request-handler.c"
 	g_return_val_if_fail (self != NULL, NULL);
 	g_critical ("Type `%s' does not implement abstract method `rygel_http_request_handler_render_body'", g_type_name (G_TYPE_FROM_INSTANCE (self)));
 	return NULL;
 }
 
 
+#line 62 "rygel-http-request-handler.vala"
 RygelHTTPResponse* rygel_http_request_handler_render_body (RygelHTTPRequestHandler* self, RygelHTTPRequest* request, GError** error) {
+#line 62 "rygel-http-request-handler.vala"
 	return RYGEL_HTTP_REQUEST_HANDLER_GET_CLASS (self)->render_body (self, request, error);
+#line 347 "rygel-http-request-handler.c"
 }
 
 
+#line 65 "rygel-http-request-handler.vala"
 static GUPnPDIDLLiteResource* rygel_http_request_handler_real_add_resource (RygelHTTPRequestHandler* self, GUPnPDIDLLiteItem* didl_item, RygelHTTPRequest* request, GError** error) {
+#line 353 "rygel-http-request-handler.c"
 	g_return_val_if_fail (self != NULL, NULL);
 	g_critical ("Type `%s' does not implement abstract method `rygel_http_request_handler_add_resource'", g_type_name (G_TYPE_FROM_INSTANCE (self)));
 	return NULL;
 }
 
 
+#line 65 "rygel-http-request-handler.vala"
 GUPnPDIDLLiteResource* rygel_http_request_handler_add_resource (RygelHTTPRequestHandler* self, GUPnPDIDLLiteItem* didl_item, RygelHTTPRequest* request, GError** error) {
+#line 65 "rygel-http-request-handler.vala"
 	return RYGEL_HTTP_REQUEST_HANDLER_GET_CLASS (self)->add_resource (self, didl_item, request, error);
+#line 364 "rygel-http-request-handler.c"
 }
 
 
+#line 29 "rygel-http-request-handler.vala"
 RygelHTTPRequestHandler* rygel_http_request_handler_construct (GType object_type) {
+#line 370 "rygel-http-request-handler.c"
 	RygelHTTPRequestHandler * self;
+#line 29 "rygel-http-request-handler.vala"
 	self = (RygelHTTPRequestHandler*) g_object_new (object_type, NULL);
+#line 374 "rygel-http-request-handler.c"
 	return self;
 }
 
@@ -343,7 +379,9 @@ GCancellable* rygel_http_request_handler_get_cancellable (RygelHTTPRequestHandle
 	GCancellable* result;
 	g_return_val_if_fail (self != NULL, NULL);
 	result = self->priv->_cancellable;
+#line 30 "rygel-http-request-handler.vala"
 	return result;
+#line 385 "rygel-http-request-handler.c"
 }
 
 

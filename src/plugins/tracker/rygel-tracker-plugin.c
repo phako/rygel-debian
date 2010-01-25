@@ -77,28 +77,41 @@ RygelTrackerPlugin* rygel_tracker_plugin_construct (GType object_type);
 
 
 
+#line 31 "rygel-tracker-plugin.vala"
 RygelTrackerPlugin* rygel_tracker_plugin_construct (GType object_type) {
+#line 83 "rygel-tracker-plugin.c"
 	GError * _inner_error_;
 	RygelTrackerPlugin * self;
 	RygelIconInfo* icon_info;
 	_inner_error_ = NULL;
+#line 32 "rygel-tracker-plugin.vala"
 	self = (RygelTrackerPlugin*) rygel_plugin_construct_MediaServer (object_type, "Tracker", "@REALNAME@'s media", RYGEL_TYPE_MEDIA_TRACKER);
+#line 36 "rygel-tracker-plugin.vala"
 	icon_info = rygel_icon_info_new ("image/png");
+#line 92 "rygel-tracker-plugin.c"
 	{
 		char* _tmp0_;
 		char* _tmp1_;
+#line 39 "rygel-tracker-plugin.vala"
 		_tmp0_ = g_filename_to_uri (RYGEL_TRACKER_PLUGIN_ICON, NULL, &_inner_error_);
+#line 98 "rygel-tracker-plugin.c"
 		if (_inner_error_ != NULL) {
 			if (_inner_error_->domain == G_CONVERT_ERROR) {
 				goto __catch6_g_convert_error;
 			}
 			goto __finally6;
 		}
+#line 39 "rygel-tracker-plugin.vala"
 		icon_info->uri = (_tmp1_ = _tmp0_, _g_free0 (icon_info->uri), _tmp1_);
+#line 40 "rygel-tracker-plugin.vala"
 		icon_info->width = 48;
+#line 41 "rygel-tracker-plugin.vala"
 		icon_info->height = 48;
+#line 42 "rygel-tracker-plugin.vala"
 		icon_info->depth = 24;
+#line 44 "rygel-tracker-plugin.vala"
 		rygel_plugin_add_icon ((RygelPlugin*) self, icon_info);
+#line 115 "rygel-tracker-plugin.c"
 	}
 	goto __finally6;
 	__catch6_g_convert_error:
@@ -107,7 +120,9 @@ RygelTrackerPlugin* rygel_tracker_plugin_construct (GType object_type) {
 		err = _inner_error_;
 		_inner_error_ = NULL;
 		{
+#line 46 "rygel-tracker-plugin.vala"
 			g_warning ("rygel-tracker-plugin.vala:46: Error creating URI from %s: %s", RYGEL_TRACKER_PLUGIN_ICON, err->message);
+#line 126 "rygel-tracker-plugin.c"
 			_g_error_free0 (err);
 		}
 	}
@@ -123,8 +138,11 @@ RygelTrackerPlugin* rygel_tracker_plugin_construct (GType object_type) {
 }
 
 
+#line 31 "rygel-tracker-plugin.vala"
 RygelTrackerPlugin* rygel_tracker_plugin_new (void) {
+#line 31 "rygel-tracker-plugin.vala"
 	return rygel_tracker_plugin_construct (RYGEL_TYPE_TRACKER_PLUGIN);
+#line 146 "rygel-tracker-plugin.c"
 }
 
 

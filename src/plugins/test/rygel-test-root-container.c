@@ -102,22 +102,33 @@ RygelTestRootContainer* rygel_test_root_container_construct (GType object_type, 
 
 
 
+#line 33 "rygel-test-root-container.vala"
 RygelTestRootContainer* rygel_test_root_container_construct (GType object_type, const char* title) {
+#line 108 "rygel-test-root-container.c"
 	RygelTestRootContainer * self;
 	RygelTestAudioItem* _tmp0_;
 	RygelTestVideoItem* _tmp1_;
+#line 33 "rygel-test-root-container.vala"
 	g_return_val_if_fail (title != NULL, NULL);
+#line 34 "rygel-test-root-container.vala"
 	self = (RygelTestRootContainer*) rygel_simple_container_construct_root (object_type, title);
+#line 36 "rygel-test-root-container.vala"
 	rygel_simple_container_add_child ((RygelSimpleContainer*) self, (RygelMediaObject*) (_tmp0_ = rygel_test_audio_item_new ("sinewave", (RygelMediaContainer*) self, "Sine Wave")));
+#line 118 "rygel-test-root-container.c"
 	_g_object_unref0 (_tmp0_);
+#line 39 "rygel-test-root-container.vala"
 	rygel_simple_container_add_child ((RygelSimpleContainer*) self, (RygelMediaObject*) (_tmp1_ = rygel_test_video_item_new ("smtpe", (RygelMediaContainer*) self, "SMTPE")));
+#line 122 "rygel-test-root-container.c"
 	_g_object_unref0 (_tmp1_);
 	return self;
 }
 
 
+#line 33 "rygel-test-root-container.vala"
 RygelTestRootContainer* rygel_test_root_container_new (const char* title) {
+#line 33 "rygel-test-root-container.vala"
 	return rygel_test_root_container_construct (RYGEL_TYPE_TEST_ROOT_CONTAINER, title);
+#line 132 "rygel-test-root-container.c"
 }
 
 

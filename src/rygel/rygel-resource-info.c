@@ -81,25 +81,39 @@ static void rygel_resource_info_finalize (RygelResourceInfo* obj);
 
 
 
+#line 39 "rygel-resource-info.vala"
 RygelResourceInfo* rygel_resource_info_construct (GType object_type, const char* upnp_id, const char* upnp_type, const char* description_path, GType type) {
+#line 87 "rygel-resource-info.c"
 	RygelResourceInfo* self;
 	char* _tmp0_;
 	char* _tmp1_;
 	char* _tmp2_;
+#line 39 "rygel-resource-info.vala"
 	g_return_val_if_fail (upnp_id != NULL, NULL);
+#line 39 "rygel-resource-info.vala"
 	g_return_val_if_fail (upnp_type != NULL, NULL);
+#line 39 "rygel-resource-info.vala"
 	g_return_val_if_fail (description_path != NULL, NULL);
+#line 98 "rygel-resource-info.c"
 	self = (RygelResourceInfo*) g_type_create_instance (object_type);
+#line 43 "rygel-resource-info.vala"
 	self->upnp_type = (_tmp0_ = g_strdup (upnp_type), _g_free0 (self->upnp_type), _tmp0_);
+#line 44 "rygel-resource-info.vala"
 	self->upnp_id = (_tmp1_ = g_strdup (upnp_id), _g_free0 (self->upnp_id), _tmp1_);
+#line 45 "rygel-resource-info.vala"
 	self->description_path = (_tmp2_ = g_strdup (description_path), _g_free0 (self->description_path), _tmp2_);
+#line 46 "rygel-resource-info.vala"
 	self->type = type;
+#line 108 "rygel-resource-info.c"
 	return self;
 }
 
 
+#line 39 "rygel-resource-info.vala"
 RygelResourceInfo* rygel_resource_info_new (const char* upnp_id, const char* upnp_type, const char* description_path, GType type) {
+#line 39 "rygel-resource-info.vala"
 	return rygel_resource_info_construct (RYGEL_TYPE_RESOURCE_INFO, upnp_id, upnp_type, description_path, type);
+#line 117 "rygel-resource-info.c"
 }
 
 

@@ -130,40 +130,69 @@ static int _vala_strcmp0 (const char * str1, const char * str2);
 
 
 
+#line 33 "rygel-tracker-music-item.vala"
 RygelTrackerMusicItem* rygel_tracker_music_item_construct (GType object_type, const char* id, const char* path, RygelTrackerSearchContainer* parent, char** metadata, int metadata_length1, GError** error) {
+#line 136 "rygel-tracker-music-item.c"
 	RygelTrackerMusicItem * self;
 	char* _tmp2_;
 	char* _tmp3_;
+#line 33 "rygel-tracker-music-item.vala"
 	g_return_val_if_fail (id != NULL, NULL);
+#line 33 "rygel-tracker-music-item.vala"
 	g_return_val_if_fail (path != NULL, NULL);
+#line 33 "rygel-tracker-music-item.vala"
 	g_return_val_if_fail (parent != NULL, NULL);
+#line 38 "rygel-tracker-music-item.vala"
 	self = (RygelTrackerMusicItem*) rygel_tracker_item_construct (object_type, id, path, parent, RYGEL_MEDIA_ITEM_MUSIC_CLASS, metadata, metadata_length1, error);
+#line 40 "rygel-tracker-music-item.vala"
 	if (_vala_strcmp0 (metadata[RYGEL_TRACKER_ITEM_METADATA_AUDIO_TITLE], "") != 0) {
+#line 41 "rygel-tracker-music-item.vala"
 		rygel_media_object_set_title ((RygelMediaObject*) self, metadata[RYGEL_TRACKER_ITEM_METADATA_AUDIO_TITLE]);
+#line 152 "rygel-tracker-music-item.c"
 	} else {
+#line 44 "rygel-tracker-music-item.vala"
 		rygel_media_object_set_title ((RygelMediaObject*) self, metadata[RYGEL_TRACKER_ITEM_METADATA_FILE_NAME]);
+#line 156 "rygel-tracker-music-item.c"
 	}
+#line 46 "rygel-tracker-music-item.vala"
 	if (_vala_strcmp0 (metadata[RYGEL_TRACKER_ITEM_METADATA_AUDIO_DURATION], "") != 0) {
+#line 47 "rygel-tracker-music-item.vala"
 		((RygelMediaItem*) self)->duration = (glong) atoi (metadata[RYGEL_TRACKER_ITEM_METADATA_AUDIO_DURATION]);
+#line 162 "rygel-tracker-music-item.c"
 	}
+#line 49 "rygel-tracker-music-item.vala"
 	if (_vala_strcmp0 (metadata[RYGEL_TRACKER_ITEM_METADATA_TRACK_NUM], "") != 0) {
+#line 50 "rygel-tracker-music-item.vala"
 		((RygelMediaItem*) self)->track_number = atoi (metadata[RYGEL_TRACKER_ITEM_METADATA_TRACK_NUM]);
+#line 168 "rygel-tracker-music-item.c"
 	}
+#line 52 "rygel-tracker-music-item.vala"
 	if (_vala_strcmp0 (metadata[RYGEL_TRACKER_ITEM_METADATA_RELEASE], "") != 0) {
+#line 172 "rygel-tracker-music-item.c"
 		char* _tmp0_;
+#line 53 "rygel-tracker-music-item.vala"
 		((RygelMediaItem*) self)->date = (_tmp0_ = rygel_tracker_item_seconds_to_iso8601 ((RygelTrackerItem*) self, metadata[RYGEL_TRACKER_ITEM_METADATA_RELEASE]), _g_free0 (((RygelMediaItem*) self)->date), _tmp0_);
+#line 176 "rygel-tracker-music-item.c"
 	} else {
 		char* _tmp1_;
+#line 55 "rygel-tracker-music-item.vala"
 		((RygelMediaItem*) self)->date = (_tmp1_ = rygel_tracker_item_seconds_to_iso8601 ((RygelTrackerItem*) self, metadata[RYGEL_TRACKER_ITEM_METADATA_DATE_ADDED]), _g_free0 (((RygelMediaItem*) self)->date), _tmp1_);
+#line 181 "rygel-tracker-music-item.c"
 	}
+#line 58 "rygel-tracker-music-item.vala"
 	((RygelMediaItem*) self)->author = (_tmp2_ = g_strdup (metadata[RYGEL_TRACKER_ITEM_METADATA_ARTIST]), _g_free0 (((RygelMediaItem*) self)->author), _tmp2_);
+#line 59 "rygel-tracker-music-item.vala"
 	((RygelMediaItem*) self)->album = (_tmp3_ = g_strdup (metadata[RYGEL_TRACKER_ITEM_METADATA_AUDIO_ALBUM]), _g_free0 (((RygelMediaItem*) self)->album), _tmp3_);
+#line 187 "rygel-tracker-music-item.c"
 	return self;
 }
 
 
+#line 33 "rygel-tracker-music-item.vala"
 RygelTrackerMusicItem* rygel_tracker_music_item_new (const char* id, const char* path, RygelTrackerSearchContainer* parent, char** metadata, int metadata_length1, GError** error) {
+#line 33 "rygel-tracker-music-item.vala"
 	return rygel_tracker_music_item_construct (RYGEL_TYPE_TRACKER_MUSIC_ITEM, id, path, parent, metadata, metadata_length1, error);
+#line 196 "rygel-tracker-music-item.c"
 }
 
 

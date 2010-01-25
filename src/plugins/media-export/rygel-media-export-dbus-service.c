@@ -24,10 +24,10 @@
 #include <glib.h>
 #include <glib-object.h>
 #include <rygel.h>
-#include <dbus/dbus-glib-lowlevel.h>
-#include <dbus/dbus-glib.h>
 #include <stdlib.h>
 #include <string.h>
+#include <dbus/dbus-glib-lowlevel.h>
+#include <dbus/dbus-glib.h>
 #include <dbus/dbus.h>
 
 
@@ -115,25 +115,37 @@ static gpointer _g_object_ref0 (gpointer self) {
 }
 
 
+#line 28 "rygel-media-export-dbus-service.vala"
 RygelMediaExportDBusService* rygel_media_export_dbus_service_construct (GType object_type, RygelMediaExportRootContainer* root_container, GError** error) {
+#line 121 "rygel-media-export-dbus-service.c"
 	GError * _inner_error_;
 	RygelMediaExportDBusService * self;
 	RygelMediaExportRootContainer* _tmp0_;
+#line 28 "rygel-media-export-dbus-service.vala"
 	g_return_val_if_fail (root_container != NULL, NULL);
+#line 127 "rygel-media-export-dbus-service.c"
 	_inner_error_ = NULL;
+#line 28 "rygel-media-export-dbus-service.vala"
 	self = (RygelMediaExportDBusService*) g_object_new (object_type, NULL);
+#line 30 "rygel-media-export-dbus-service.vala"
 	self->priv->root_container = (_tmp0_ = _g_object_ref0 (root_container), _g_object_unref0 (self->priv->root_container), _tmp0_);
+#line 133 "rygel-media-export-dbus-service.c"
 	{
 		DBusGConnection* conn;
+#line 33 "rygel-media-export-dbus-service.vala"
 		conn = dbus_g_bus_get (DBUS_BUS_SESSION, &_inner_error_);
+#line 138 "rygel-media-export-dbus-service.c"
 		if (_inner_error_ != NULL) {
 			if (_inner_error_->domain == DBUS_GERROR) {
 				goto __catch8_dbus_gerror;
 			}
 			goto __finally8;
 		}
+#line 34 "rygel-media-export-dbus-service.vala"
 		if (conn != NULL) {
+#line 35 "rygel-media-export-dbus-service.vala"
 			_vala_dbus_register_object (dbus_g_connection_get_connection (conn), RYGEL_MEDIA_EXPORT_DBUS_SERVICE_RYGEL_MEDIA_EXPORT_PATH, (GObject*) self);
+#line 149 "rygel-media-export-dbus-service.c"
 		}
 		_dbus_g_connection_unref0 (conn);
 	}
@@ -144,7 +156,9 @@ RygelMediaExportDBusService* rygel_media_export_dbus_service_construct (GType ob
 		err = _inner_error_;
 		_inner_error_ = NULL;
 		{
+#line 37 "rygel-media-export-dbus-service.vala"
 			g_warning ("rygel-media-export-dbus-service.vala:37: Failed to attach to DBus session bus: %s", err->message);
+#line 162 "rygel-media-export-dbus-service.c"
 			_g_error_free0 (err);
 		}
 	}
@@ -157,32 +171,51 @@ RygelMediaExportDBusService* rygel_media_export_dbus_service_construct (GType ob
 }
 
 
+#line 28 "rygel-media-export-dbus-service.vala"
 RygelMediaExportDBusService* rygel_media_export_dbus_service_new (RygelMediaExportRootContainer* root_container, GError** error) {
+#line 28 "rygel-media-export-dbus-service.vala"
 	return rygel_media_export_dbus_service_construct (RYGEL_TYPE_MEDIA_EXPORT_DBUS_SERVICE, root_container, error);
+#line 179 "rygel-media-export-dbus-service.c"
 }
 
 
+#line 41 "rygel-media-export-dbus-service.vala"
 void rygel_media_export_dbus_service_AddUri (RygelMediaExportDBusService* self, const char* uri) {
+#line 41 "rygel-media-export-dbus-service.vala"
 	g_return_if_fail (self != NULL);
+#line 41 "rygel-media-export-dbus-service.vala"
 	g_return_if_fail (uri != NULL);
+#line 42 "rygel-media-export-dbus-service.vala"
 	rygel_media_export_root_container_add_uri (self->priv->root_container, uri);
+#line 191 "rygel-media-export-dbus-service.c"
 }
 
 
+#line 45 "rygel-media-export-dbus-service.vala"
 void rygel_media_export_dbus_service_RemoveUri (RygelMediaExportDBusService* self, const char* uri) {
+#line 45 "rygel-media-export-dbus-service.vala"
 	g_return_if_fail (self != NULL);
+#line 45 "rygel-media-export-dbus-service.vala"
 	g_return_if_fail (uri != NULL);
+#line 46 "rygel-media-export-dbus-service.vala"
 	rygel_media_export_root_container_remove_uri (self->priv->root_container, uri);
+#line 203 "rygel-media-export-dbus-service.c"
 }
 
 
+#line 49 "rygel-media-export-dbus-service.vala"
 char** rygel_media_export_dbus_service_GetUris (RygelMediaExportDBusService* self, int* result_length1) {
+#line 209 "rygel-media-export-dbus-service.c"
 	char** result;
 	gint _tmp0_;
 	char** _tmp1_;
+#line 49 "rygel-media-export-dbus-service.vala"
 	g_return_val_if_fail (self != NULL, NULL);
+#line 215 "rygel-media-export-dbus-service.c"
 	result = (_tmp1_ = rygel_media_export_root_container_get_dynamic_uris (self->priv->root_container, &_tmp0_), *result_length1 = _tmp0_, _tmp1_);
+#line 50 "rygel-media-export-dbus-service.vala"
 	return result;
+#line 219 "rygel-media-export-dbus-service.c"
 }
 
 

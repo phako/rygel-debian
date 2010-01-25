@@ -62,33 +62,50 @@ RygelMediaExportContentDir* rygel_media_export_content_dir_construct (GType obje
 
 
 
+#line 31 "rygel-media-export-plugin.vala"
 void module_init (RygelPluginLoader* loader) {
+#line 68 "rygel-media-export-plugin.c"
 	RygelPlugin* plugin;
+#line 31 "rygel-media-export-plugin.vala"
 	g_return_if_fail (loader != NULL);
+#line 32 "rygel-media-export-plugin.vala"
 	plugin = rygel_plugin_new_MediaServer ("MediaExport", "@REALNAME@'s media", RYGEL_TYPE_MEDIA_EXPORT_CONTENT_DIR);
+#line 35 "rygel-media-export-plugin.vala"
 	rygel_plugin_loader_add_plugin (loader, plugin);
+#line 76 "rygel-media-export-plugin.c"
 	_g_object_unref0 (plugin);
 }
 
 
+#line 39 "rygel-media-export-plugin.vala"
 static RygelMediaContainer* rygel_media_export_content_dir_real_create_root_container (RygelContentDirectory* base) {
+#line 83 "rygel-media-export-plugin.c"
 	RygelMediaExportContentDir * self;
 	RygelMediaContainer* result;
 	self = (RygelMediaExportContentDir*) base;
 	result = rygel_media_export_root_container_get_instance ();
+#line 40 "rygel-media-export-plugin.vala"
 	return result;
+#line 90 "rygel-media-export-plugin.c"
 }
 
 
+#line 38 "rygel-media-export-plugin.vala"
 RygelMediaExportContentDir* rygel_media_export_content_dir_construct (GType object_type) {
+#line 96 "rygel-media-export-plugin.c"
 	RygelMediaExportContentDir * self;
+#line 38 "rygel-media-export-plugin.vala"
 	self = (RygelMediaExportContentDir*) rygel_content_directory_construct (object_type);
+#line 100 "rygel-media-export-plugin.c"
 	return self;
 }
 
 
+#line 38 "rygel-media-export-plugin.vala"
 RygelMediaExportContentDir* rygel_media_export_content_dir_new (void) {
+#line 38 "rygel-media-export-plugin.vala"
 	return rygel_media_export_content_dir_construct (RYGEL_TYPE_MEDIA_EXPORT_CONTENT_DIR);
+#line 109 "rygel-media-export-plugin.c"
 }
 
 

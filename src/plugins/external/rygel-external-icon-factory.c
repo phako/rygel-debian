@@ -154,18 +154,27 @@ static gpointer _dbus_g_connection_ref0 (gpointer self) {
 }
 
 
+#line 32 "rygel-external-icon-factory.vala"
 RygelExternalIconFactory* rygel_external_icon_factory_construct (GType object_type, DBusGConnection* connection) {
+#line 160 "rygel-external-icon-factory.c"
 	RygelExternalIconFactory* self;
 	DBusGConnection* _tmp0_;
+#line 32 "rygel-external-icon-factory.vala"
 	g_return_val_if_fail (connection != NULL, NULL);
+#line 165 "rygel-external-icon-factory.c"
 	self = (RygelExternalIconFactory*) g_type_create_instance (object_type);
+#line 33 "rygel-external-icon-factory.vala"
 	self->priv->connection = (_tmp0_ = _dbus_g_connection_ref0 (connection), _dbus_g_connection_unref0 (self->priv->connection), _tmp0_);
+#line 169 "rygel-external-icon-factory.c"
 	return self;
 }
 
 
+#line 32 "rygel-external-icon-factory.vala"
 RygelExternalIconFactory* rygel_external_icon_factory_new (DBusGConnection* connection) {
+#line 32 "rygel-external-icon-factory.vala"
 	return rygel_external_icon_factory_construct (RYGEL_TYPE_EXTERNAL_ICON_FACTORY, connection);
+#line 178 "rygel-external-icon-factory.c"
 }
 
 
@@ -231,7 +240,9 @@ static gboolean rygel_external_icon_factory_create_co (RygelExternalIconFactoryC
 		case 0:
 		{
 			data->value = __g_value_dup0 ((GValue*) g_hash_table_lookup (data->container_props, "Icon"));
+#line 39 "rygel-external-icon-factory.vala"
 			if (data->value == NULL) {
+#line 246 "rygel-external-icon-factory.c"
 				data->result = NULL;
 				_g_free0 (data->value);
 				{
@@ -258,7 +269,9 @@ static gboolean rygel_external_icon_factory_create_co (RygelExternalIconFactoryC
 					}
 					goto __finally8;
 				}
+#line 51 "rygel-external-icon-factory.vala"
 				data->item_props = (data->_tmp1_ = data->_tmp0_, _g_hash_table_unref0 (data->item_props), data->_tmp1_);
+#line 275 "rygel-external-icon-factory.c"
 			}
 			goto __finally8;
 			__catch8_dbus_gerror:
@@ -266,7 +279,9 @@ static gboolean rygel_external_icon_factory_create_co (RygelExternalIconFactoryC
 				data->err = data->_inner_error_;
 				data->_inner_error_ = NULL;
 				{
+#line 53 "rygel-external-icon-factory.vala"
 					g_warning ("rygel-external-icon-factory.vala:53: Error fetching icon properties from %s", data->service_name);
+#line 285 "rygel-external-icon-factory.c"
 					data->result = NULL;
 					_g_error_free0 (data->err);
 					_g_free0 (data->value);
@@ -295,33 +310,61 @@ static gboolean rygel_external_icon_factory_create_co (RygelExternalIconFactoryC
 				g_clear_error (&data->_inner_error_);
 				return FALSE;
 			}
+#line 58 "rygel-external-icon-factory.vala"
 			data->value = (data->_tmp2_ = __g_value_dup0 ((GValue*) g_hash_table_lookup (data->item_props, "MIMEType")), _g_free0 (data->value), data->_tmp2_);
+#line 316 "rygel-external-icon-factory.c"
 			data->icon = rygel_icon_info_new (g_value_get_string (data->value));
+#line 61 "rygel-external-icon-factory.vala"
 			data->value = (data->_tmp3_ = __g_value_dup0 ((GValue*) g_hash_table_lookup (data->item_props, "URLs")), _g_free0 (data->value), data->_tmp3_);
+#line 320 "rygel-external-icon-factory.c"
 			data->uris = (data->_tmp4_ = (char**) g_value_get_boxed (data->value), data->uris_length1 = -1, data->uris_size = data->uris_length1, data->_tmp4_);
+#line 63 "rygel-external-icon-factory.vala"
 			if (data->uris != NULL) {
+#line 63 "rygel-external-icon-factory.vala"
 				data->_tmp5_ = data->uris[0] != NULL;
+#line 326 "rygel-external-icon-factory.c"
 			} else {
+#line 63 "rygel-external-icon-factory.vala"
 				data->_tmp5_ = FALSE;
+#line 330 "rygel-external-icon-factory.c"
 			}
+#line 63 "rygel-external-icon-factory.vala"
 			if (data->_tmp5_) {
+#line 64 "rygel-external-icon-factory.vala"
 				data->icon->uri = (data->_tmp6_ = g_strdup (data->uris[0]), _g_free0 (data->icon->uri), data->_tmp6_);
+#line 336 "rygel-external-icon-factory.c"
 			}
+#line 67 "rygel-external-icon-factory.vala"
 			data->value = (data->_tmp7_ = __g_value_dup0 ((GValue*) g_hash_table_lookup (data->item_props, "Size")), _g_free0 (data->value), data->_tmp7_);
+#line 68 "rygel-external-icon-factory.vala"
 			if (data->value != NULL) {
+#line 69 "rygel-external-icon-factory.vala"
 				data->icon->size = (glong) g_value_get_int (data->value);
+#line 344 "rygel-external-icon-factory.c"
 			}
+#line 72 "rygel-external-icon-factory.vala"
 			data->value = (data->_tmp8_ = __g_value_dup0 ((GValue*) g_hash_table_lookup (data->item_props, "Width")), _g_free0 (data->value), data->_tmp8_);
+#line 73 "rygel-external-icon-factory.vala"
 			if (data->value != NULL) {
+#line 74 "rygel-external-icon-factory.vala"
 				data->icon->width = g_value_get_int (data->value);
+#line 352 "rygel-external-icon-factory.c"
 			}
+#line 77 "rygel-external-icon-factory.vala"
 			data->value = (data->_tmp9_ = __g_value_dup0 ((GValue*) g_hash_table_lookup (data->item_props, "Height")), _g_free0 (data->value), data->_tmp9_);
+#line 78 "rygel-external-icon-factory.vala"
 			if (data->value != NULL) {
+#line 79 "rygel-external-icon-factory.vala"
 				data->icon->height = g_value_get_int (data->value);
+#line 360 "rygel-external-icon-factory.c"
 			}
+#line 82 "rygel-external-icon-factory.vala"
 			data->value = (data->_tmp10_ = __g_value_dup0 ((GValue*) g_hash_table_lookup (data->item_props, "ColorDepth")), _g_free0 (data->value), data->_tmp10_);
+#line 83 "rygel-external-icon-factory.vala"
 			if (data->value != NULL) {
+#line 84 "rygel-external-icon-factory.vala"
 				data->icon->depth = g_value_get_int (data->value);
+#line 368 "rygel-external-icon-factory.c"
 			}
 			data->result = data->icon;
 			_g_free0 (data->value);

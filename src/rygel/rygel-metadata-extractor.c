@@ -142,14 +142,20 @@ GType gst_stream_type_get_type (void) {
 }
 
 
+#line 2619 "gstreamer-0.10.vapi"
 static void _gst_tag_merge_use_first_gst_tag_merge_func (GValue* dest, GValue* src) {
+#line 148 "rygel-metadata-extractor.c"
 	gst_tag_merge_use_first (dest, src);
 }
 
 
+#line 73 "rygel-metadata-extractor.vala"
 static void rygel_metadata_extractor_register_custom_tag (const char* tag, GType type) {
+#line 73 "rygel-metadata-extractor.vala"
 	g_return_if_fail (tag != NULL);
+#line 74 "rygel-metadata-extractor.vala"
 	gst_tag_register (tag, GST_TAG_FLAG_META, type, tag, "", _gst_tag_merge_use_first_gst_tag_merge_func);
+#line 159 "rygel-metadata-extractor.c"
 }
 
 
@@ -163,39 +169,61 @@ static inline void _dynamic_set_audio_sink7 (GstElement* obj, GstElement* value)
 }
 
 
+#line 188 "rygel-metadata-extractor.vala"
 static void _rygel_metadata_extractor_tag_cb_gst_bus_message (GstBus* _sender, GstMessage* message, gpointer self) {
+#line 175 "rygel-metadata-extractor.c"
 	rygel_metadata_extractor_tag_cb (self, _sender, message);
 }
 
 
+#line 198 "rygel-metadata-extractor.vala"
 static void _rygel_metadata_extractor_state_changed_cb_gst_bus_message (GstBus* _sender, GstMessage* message, gpointer self) {
+#line 182 "rygel-metadata-extractor.c"
 	rygel_metadata_extractor_state_changed_cb (self, _sender, message);
 }
 
 
+#line 221 "rygel-metadata-extractor.vala"
 static void _rygel_metadata_extractor_error_cb_gst_bus_message (GstBus* _sender, GstMessage* message, gpointer self) {
+#line 189 "rygel-metadata-extractor.c"
 	rygel_metadata_extractor_error_cb (self, _sender, message);
 }
 
 
+#line 82 "rygel-metadata-extractor.vala"
 static void rygel_metadata_extractor_renew_playbin (RygelMetadataExtractor* self) {
+#line 196 "rygel-metadata-extractor.c"
 	GstElement* _tmp0_;
 	GstElement* sink;
 	GstElement* _tmp1_;
 	GstBus* bus;
+#line 82 "rygel-metadata-extractor.vala"
 	g_return_if_fail (self != NULL);
+#line 84 "rygel-metadata-extractor.vala"
 	self->priv->playbin = (_tmp0_ = gst_element_factory_create (rygel_metadata_extractor_factory, "tag_reader"), _gst_object_unref0 (self->priv->playbin), _tmp0_);
+#line 88 "rygel-metadata-extractor.vala"
 	sink = gst_element_factory_make ("fakesink", NULL);
+#line 89 "rygel-metadata-extractor.vala"
 	gst_object_ref ((GstObject*) sink);
+#line 90 "rygel-metadata-extractor.vala"
 	_dynamic_set_video_sink6 (self->priv->playbin, sink);
+#line 92 "rygel-metadata-extractor.vala"
 	sink = (_tmp1_ = gst_element_factory_make ("fakesink", NULL), _gst_object_unref0 (sink), _tmp1_);
+#line 93 "rygel-metadata-extractor.vala"
 	gst_object_ref ((GstObject*) sink);
+#line 94 "rygel-metadata-extractor.vala"
 	_dynamic_set_audio_sink7 (self->priv->playbin, sink);
+#line 96 "rygel-metadata-extractor.vala"
 	bus = gst_element_get_bus (self->priv->playbin);
+#line 97 "rygel-metadata-extractor.vala"
 	gst_bus_add_signal_watch (bus);
+#line 98 "rygel-metadata-extractor.vala"
 	g_signal_connect_object (bus, "message::tag", (GCallback) _rygel_metadata_extractor_tag_cb_gst_bus_message, self, 0);
+#line 99 "rygel-metadata-extractor.vala"
 	g_signal_connect_object (bus, "message::state-changed", (GCallback) _rygel_metadata_extractor_state_changed_cb_gst_bus_message, self, 0);
+#line 100 "rygel-metadata-extractor.vala"
 	g_signal_connect_object (bus, "message::error", (GCallback) _rygel_metadata_extractor_error_cb_gst_bus_message, self, 0);
+#line 227 "rygel-metadata-extractor.c"
 	_gst_object_unref0 (sink);
 	_gst_object_unref0 (bus);
 }
@@ -206,58 +234,98 @@ static gpointer _gst_object_ref0 (gpointer self) {
 }
 
 
+#line 103 "rygel-metadata-extractor.vala"
 RygelMetadataExtractor* rygel_metadata_extractor_create (void) {
+#line 240 "rygel-metadata-extractor.c"
 	RygelMetadataExtractor* result;
+#line 104 "rygel-metadata-extractor.vala"
 	if (rygel_metadata_extractor_factory == NULL) {
+#line 244 "rygel-metadata-extractor.c"
 		GstElementFactory* factory;
 		GstElementFactory* _tmp1_;
+#line 105 "rygel-metadata-extractor.vala"
 		g_debug ("rygel-metadata-extractor.vala:105: Checking for gstreamer playbin...");
+#line 106 "rygel-metadata-extractor.vala"
 		factory = _gst_object_ref0 (gst_element_factory_find ("playbin2"));
+#line 107 "rygel-metadata-extractor.vala"
 		if (factory != NULL) {
+#line 108 "rygel-metadata-extractor.vala"
 			g_debug ("rygel-metadata-extractor.vala:108: Using playbin2");
+#line 255 "rygel-metadata-extractor.c"
 		} else {
 			GstElementFactory* _tmp0_;
+#line 110 "rygel-metadata-extractor.vala"
 			g_debug ("rygel-metadata-extractor.vala:110: Could not create Playbin2, trying Playbin");
+#line 111 "rygel-metadata-extractor.vala"
 			factory = (_tmp0_ = _gst_object_ref0 (gst_element_factory_find ("playbin")), _gst_object_unref0 (factory), _tmp0_);
+#line 113 "rygel-metadata-extractor.vala"
 			if (factory != NULL) {
+#line 114 "rygel-metadata-extractor.vala"
 				g_debug ("rygel-metadata-extractor.vala:114: Using playbin");
+#line 266 "rygel-metadata-extractor.c"
 			} else {
+#line 116 "rygel-metadata-extractor.vala"
 				g_critical ("rygel-metadata-extractor.vala:116: %s", "Could not find any playbin. " "Please check your gstreamer setup");
+#line 270 "rygel-metadata-extractor.c"
 				result = NULL;
 				_gst_object_unref0 (factory);
+#line 118 "rygel-metadata-extractor.vala"
 				return result;
+#line 275 "rygel-metadata-extractor.c"
 			}
 		}
+#line 121 "rygel-metadata-extractor.vala"
 		rygel_metadata_extractor_factory = (_tmp1_ = _gst_object_ref0 (factory), _gst_object_unref0 (rygel_metadata_extractor_factory), _tmp1_);
+#line 280 "rygel-metadata-extractor.c"
 		_gst_object_unref0 (factory);
 	}
 	result = rygel_metadata_extractor_new ();
+#line 124 "rygel-metadata-extractor.vala"
 	return result;
+#line 286 "rygel-metadata-extractor.c"
 }
 
 
+#line 127 "rygel-metadata-extractor.vala"
 static RygelMetadataExtractor* rygel_metadata_extractor_construct (GType object_type) {
+#line 292 "rygel-metadata-extractor.c"
 	RygelMetadataExtractor * self;
 	GQueue* _tmp0_;
 	GstTagList* _tmp1_;
+#line 127 "rygel-metadata-extractor.vala"
 	self = (RygelMetadataExtractor*) g_object_new (object_type, NULL);
+#line 128 "rygel-metadata-extractor.vala"
 	rygel_metadata_extractor_register_custom_tag (RYGEL_METADATA_EXTRACTOR_TAG_RYGEL_SIZE, G_TYPE_INT64);
+#line 129 "rygel-metadata-extractor.vala"
 	rygel_metadata_extractor_register_custom_tag (RYGEL_METADATA_EXTRACTOR_TAG_RYGEL_DURATION, G_TYPE_INT64);
+#line 130 "rygel-metadata-extractor.vala"
 	rygel_metadata_extractor_register_custom_tag (RYGEL_METADATA_EXTRACTOR_TAG_RYGEL_MIME, G_TYPE_STRING);
+#line 131 "rygel-metadata-extractor.vala"
 	rygel_metadata_extractor_register_custom_tag (RYGEL_METADATA_EXTRACTOR_TAG_RYGEL_CHANNELS, G_TYPE_INT);
+#line 132 "rygel-metadata-extractor.vala"
 	rygel_metadata_extractor_register_custom_tag (RYGEL_METADATA_EXTRACTOR_TAG_RYGEL_RATE, G_TYPE_INT);
+#line 133 "rygel-metadata-extractor.vala"
 	rygel_metadata_extractor_register_custom_tag (RYGEL_METADATA_EXTRACTOR_TAG_RYGEL_WIDTH, G_TYPE_INT);
+#line 134 "rygel-metadata-extractor.vala"
 	rygel_metadata_extractor_register_custom_tag (RYGEL_METADATA_EXTRACTOR_TAG_RYGEL_HEIGHT, G_TYPE_INT);
+#line 135 "rygel-metadata-extractor.vala"
 	rygel_metadata_extractor_register_custom_tag (RYGEL_METADATA_EXTRACTOR_TAG_RYGEL_DEPTH, G_TYPE_INT);
+#line 136 "rygel-metadata-extractor.vala"
 	rygel_metadata_extractor_register_custom_tag (RYGEL_METADATA_EXTRACTOR_TAG_RYGEL_MTIME, G_TYPE_UINT64);
+#line 138 "rygel-metadata-extractor.vala"
 	self->priv->file_queue = (_tmp0_ = g_queue_new (), _g_queue_free0 (self->priv->file_queue), _tmp0_);
+#line 139 "rygel-metadata-extractor.vala"
 	self->priv->tag_list = (_tmp1_ = gst_tag_list_new (), _gst_tag_list_free0 (self->priv->tag_list), _tmp1_);
+#line 320 "rygel-metadata-extractor.c"
 	return self;
 }
 
 
+#line 127 "rygel-metadata-extractor.vala"
 static RygelMetadataExtractor* rygel_metadata_extractor_new (void) {
+#line 127 "rygel-metadata-extractor.vala"
 	return rygel_metadata_extractor_construct (RYGEL_TYPE_METADATA_EXTRACTOR);
+#line 329 "rygel-metadata-extractor.c"
 }
 
 
@@ -266,34 +334,57 @@ static gpointer _g_object_ref0 (gpointer self) {
 }
 
 
+#line 142 "rygel-metadata-extractor.vala"
 void rygel_metadata_extractor_extract (RygelMetadataExtractor* self, GFile* file) {
+#line 340 "rygel-metadata-extractor.c"
 	gboolean trigger_run;
+#line 142 "rygel-metadata-extractor.vala"
 	g_return_if_fail (self != NULL);
+#line 142 "rygel-metadata-extractor.vala"
 	g_return_if_fail (file != NULL);
+#line 143 "rygel-metadata-extractor.vala"
 	trigger_run = g_queue_get_length (self->priv->file_queue) == 0;
+#line 144 "rygel-metadata-extractor.vala"
 	g_queue_push_tail (self->priv->file_queue, _g_object_ref0 (file));
+#line 145 "rygel-metadata-extractor.vala"
 	if (trigger_run) {
+#line 146 "rygel-metadata-extractor.vala"
 		rygel_metadata_extractor_extract_next (self);
+#line 354 "rygel-metadata-extractor.c"
 	}
 }
 
 
+#line 150 "rygel-metadata-extractor.vala"
 static gboolean rygel_metadata_extractor_on_harvesting_timeout (RygelMetadataExtractor* self) {
+#line 361 "rygel-metadata-extractor.c"
 	gboolean result;
 	char* _tmp0_;
 	GError* _tmp1_;
 	GFile* _tmp2_;
+#line 150 "rygel-metadata-extractor.vala"
 	g_return_val_if_fail (self != NULL, FALSE);
+#line 151 "rygel-metadata-extractor.vala"
 	g_warning ("rygel-metadata-extractor.vala:151: Metadata extractor timed out on %s, restarting", _tmp0_ = g_file_get_uri ((GFile*) g_queue_peek_head (self->priv->file_queue)));
+#line 370 "rygel-metadata-extractor.c"
 	_g_free0 (_tmp0_);
+#line 153 "rygel-metadata-extractor.vala"
 	gst_element_set_state (self->priv->playbin, GST_STATE_NULL);
+#line 155 "rygel-metadata-extractor.vala"
 	g_signal_emit_by_name (self, "error", (GFile*) g_queue_peek_head (self->priv->file_queue), _tmp1_ = g_error_new_literal (G_IO_CHANNEL_ERROR, G_IO_CHANNEL_ERROR_FAILED, "Pipeline stuck while reading file info"));
+#line 376 "rygel-metadata-extractor.c"
 	_g_error_free0 (_tmp1_);
+#line 158 "rygel-metadata-extractor.vala"
 	_tmp2_ = (GFile*) g_queue_pop_head (self->priv->file_queue);
+#line 380 "rygel-metadata-extractor.c"
 	_g_object_unref0 (_tmp2_);
+#line 159 "rygel-metadata-extractor.vala"
 	rygel_metadata_extractor_extract_next (self);
+#line 384 "rygel-metadata-extractor.c"
 	result = FALSE;
+#line 160 "rygel-metadata-extractor.vala"
 	return result;
+#line 388 "rygel-metadata-extractor.c"
 }
 
 
@@ -302,37 +393,59 @@ static inline void _dynamic_set_uri8 (GstElement* obj, char* value) {
 }
 
 
+#line 150 "rygel-metadata-extractor.vala"
 static gboolean _rygel_metadata_extractor_on_harvesting_timeout_gsource_func (gpointer self) {
+#line 399 "rygel-metadata-extractor.c"
 	return rygel_metadata_extractor_on_harvesting_timeout (self);
 }
 
 
+#line 163 "rygel-metadata-extractor.vala"
 static void rygel_metadata_extractor_extract_next (RygelMetadataExtractor* self) {
+#line 406 "rygel-metadata-extractor.c"
 	GError * _inner_error_;
+#line 163 "rygel-metadata-extractor.vala"
 	g_return_if_fail (self != NULL);
+#line 410 "rygel-metadata-extractor.c"
 	_inner_error_ = NULL;
+#line 164 "rygel-metadata-extractor.vala"
 	if (self->priv->timeout_id != 0) {
+#line 165 "rygel-metadata-extractor.vala"
 		g_source_remove (self->priv->timeout_id);
+#line 416 "rygel-metadata-extractor.c"
 	}
+#line 167 "rygel-metadata-extractor.vala"
 	if (g_queue_get_length (self->priv->file_queue) > 0) {
+#line 420 "rygel-metadata-extractor.c"
 		{
 			GFile* item;
 			char* _tmp0_;
 			char* _tmp1_;
+#line 169 "rygel-metadata-extractor.vala"
 			item = _g_object_ref0 ((GFile*) g_queue_peek_head (self->priv->file_queue));
+#line 170 "rygel-metadata-extractor.vala"
 			g_debug ("rygel-metadata-extractor.vala:170: Scheduling file %s for metadata extraction", _tmp0_ = g_file_get_uri (item));
+#line 429 "rygel-metadata-extractor.c"
 			_g_free0 (_tmp0_);
+#line 172 "rygel-metadata-extractor.vala"
 			rygel_metadata_extractor_extract_mime_and_size (self, &_inner_error_);
+#line 433 "rygel-metadata-extractor.c"
 			if (_inner_error_ != NULL) {
 				_g_object_unref0 (item);
 				goto __catch52_g_error;
 				goto __finally52;
 			}
+#line 173 "rygel-metadata-extractor.vala"
 			rygel_metadata_extractor_renew_playbin (self);
+#line 174 "rygel-metadata-extractor.vala"
 			_dynamic_set_uri8 (self->priv->playbin, _tmp1_ = g_file_get_uri (item));
+#line 443 "rygel-metadata-extractor.c"
 			_g_free0 (_tmp1_);
+#line 175 "rygel-metadata-extractor.vala"
 			self->priv->timeout_id = g_timeout_add_seconds_full (G_PRIORITY_DEFAULT, (guint) 5, _rygel_metadata_extractor_on_harvesting_timeout_gsource_func, g_object_ref (self), g_object_unref);
+#line 179 "rygel-metadata-extractor.vala"
 			gst_element_set_state (self->priv->playbin, GST_STATE_PAUSED);
+#line 449 "rygel-metadata-extractor.c"
 			_g_object_unref0 (item);
 		}
 		goto __finally52;
@@ -342,7 +455,9 @@ static void rygel_metadata_extractor_extract_next (RygelMetadataExtractor* self)
 			_error_ = _inner_error_;
 			_inner_error_ = NULL;
 			{
+#line 182 "rygel-metadata-extractor.vala"
 				rygel_metadata_extractor_extract_next (self);
+#line 461 "rygel-metadata-extractor.c"
 				_g_error_free0 (_error_);
 			}
 		}
@@ -356,54 +471,91 @@ static void rygel_metadata_extractor_extract_next (RygelMetadataExtractor* self)
 }
 
 
+#line 188 "rygel-metadata-extractor.vala"
 static void rygel_metadata_extractor_tag_cb (RygelMetadataExtractor* self, GstBus* bus, GstMessage* message) {
+#line 477 "rygel-metadata-extractor.c"
 	GstTagList* new_tag_list;
 	GstTagList* _tmp1_;
 	GstTagList* _tmp0_ = NULL;
 	GstTagList* _tmp2_;
+#line 188 "rygel-metadata-extractor.vala"
 	g_return_if_fail (self != NULL);
+#line 188 "rygel-metadata-extractor.vala"
 	g_return_if_fail (bus != NULL);
+#line 188 "rygel-metadata-extractor.vala"
 	g_return_if_fail (message != NULL);
+#line 488 "rygel-metadata-extractor.c"
 	new_tag_list = NULL;
+#line 192 "rygel-metadata-extractor.vala"
 	gst_message_parse_tag (message, &_tmp0_);
+#line 192 "rygel-metadata-extractor.vala"
 	new_tag_list = (_tmp1_ = _tmp0_, _gst_tag_list_free0 (new_tag_list), _tmp1_);
+#line 193 "rygel-metadata-extractor.vala"
 	self->priv->tag_list = (_tmp2_ = gst_tag_list_merge (new_tag_list, self->priv->tag_list, GST_TAG_MERGE_REPLACE), _gst_tag_list_free0 (self->priv->tag_list), _tmp2_);
+#line 496 "rygel-metadata-extractor.c"
 	_gst_tag_list_free0 (new_tag_list);
 }
 
 
+#line 198 "rygel-metadata-extractor.vala"
 static void rygel_metadata_extractor_state_changed_cb (RygelMetadataExtractor* self, GstBus* bus, GstMessage* message) {
+#line 503 "rygel-metadata-extractor.c"
 	GstState new_state = 0;
 	GstState old_state = 0;
 	gboolean _tmp0_ = FALSE;
+#line 198 "rygel-metadata-extractor.vala"
 	g_return_if_fail (self != NULL);
+#line 198 "rygel-metadata-extractor.vala"
 	g_return_if_fail (bus != NULL);
+#line 198 "rygel-metadata-extractor.vala"
 	g_return_if_fail (message != NULL);
+#line 200 "rygel-metadata-extractor.vala"
 	if (message->src != GST_OBJECT (self->priv->playbin)) {
+#line 201 "rygel-metadata-extractor.vala"
 		return;
+#line 517 "rygel-metadata-extractor.c"
 	}
+#line 206 "rygel-metadata-extractor.vala"
 	gst_message_parse_state_changed (message, &old_state, &new_state, NULL);
+#line 207 "rygel-metadata-extractor.vala"
 	if (new_state == GST_STATE_PAUSED) {
+#line 207 "rygel-metadata-extractor.vala"
 		_tmp0_ = old_state == GST_STATE_READY;
+#line 525 "rygel-metadata-extractor.c"
 	} else {
+#line 207 "rygel-metadata-extractor.vala"
 		_tmp0_ = FALSE;
+#line 529 "rygel-metadata-extractor.c"
 	}
+#line 207 "rygel-metadata-extractor.vala"
 	if (_tmp0_) {
+#line 533 "rygel-metadata-extractor.c"
 		GstTagList* _tmp1_;
 		GFile* _tmp2_;
+#line 208 "rygel-metadata-extractor.vala"
 		rygel_metadata_extractor_extract_duration (self);
+#line 209 "rygel-metadata-extractor.vala"
 		rygel_metadata_extractor_extract_stream_info (self);
+#line 212 "rygel-metadata-extractor.vala"
 		g_signal_emit_by_name (self, "extraction-done", (GFile*) g_queue_peek_head (self->priv->file_queue), self->priv->tag_list);
+#line 213 "rygel-metadata-extractor.vala"
 		gst_element_set_state (self->priv->playbin, GST_STATE_NULL);
+#line 214 "rygel-metadata-extractor.vala"
 		self->priv->tag_list = (_tmp1_ = gst_tag_list_new (), _gst_tag_list_free0 (self->priv->tag_list), _tmp1_);
+#line 215 "rygel-metadata-extractor.vala"
 		_tmp2_ = (GFile*) g_queue_pop_head (self->priv->file_queue);
+#line 548 "rygel-metadata-extractor.c"
 		_g_object_unref0 (_tmp2_);
+#line 216 "rygel-metadata-extractor.vala"
 		rygel_metadata_extractor_extract_next (self);
+#line 552 "rygel-metadata-extractor.c"
 	}
 }
 
 
+#line 221 "rygel-metadata-extractor.vala"
 static void rygel_metadata_extractor_error_cb (RygelMetadataExtractor* self, GstBus* bus, GstMessage* message) {
+#line 559 "rygel-metadata-extractor.c"
 	GError* _error_;
 	char* debug;
 	char* _tmp3_;
@@ -412,24 +564,43 @@ static void rygel_metadata_extractor_error_cb (RygelMetadataExtractor* self, Gst
 	GError* _tmp0_ = NULL;
 	GstTagList* _tmp5_;
 	GFile* _tmp6_;
+#line 221 "rygel-metadata-extractor.vala"
 	g_return_if_fail (self != NULL);
+#line 221 "rygel-metadata-extractor.vala"
 	g_return_if_fail (bus != NULL);
+#line 221 "rygel-metadata-extractor.vala"
 	g_return_if_fail (message != NULL);
+#line 224 "rygel-metadata-extractor.vala"
 	g_return_if_fail (g_queue_get_length (self->priv->file_queue) != 0);
+#line 226 "rygel-metadata-extractor.vala"
 	_error_ = NULL;
+#line 578 "rygel-metadata-extractor.c"
 	debug = NULL;
+#line 229 "rygel-metadata-extractor.vala"
 	(gst_message_parse_error (message, &_tmp0_, &_tmp2_), _error_ = (_tmp1_ = _tmp0_, _g_error_free0 (_error_), _tmp1_));
+#line 229 "rygel-metadata-extractor.vala"
 	debug = (_tmp3_ = _tmp2_, _g_free0 (debug), _tmp3_);
+#line 230 "rygel-metadata-extractor.vala"
 	if (_error_ != NULL) {
+#line 586 "rygel-metadata-extractor.c"
 		char* _tmp4_;
+#line 231 "rygel-metadata-extractor.vala"
 		debug = (_tmp4_ = g_strdup (_error_->message), _g_free0 (debug), _tmp4_);
+#line 590 "rygel-metadata-extractor.c"
 	}
+#line 235 "rygel-metadata-extractor.vala"
 	g_signal_emit_by_name (self, "error", (GFile*) g_queue_peek_head (self->priv->file_queue), _error_);
+#line 238 "rygel-metadata-extractor.vala"
 	gst_element_set_state (self->priv->playbin, GST_STATE_NULL);
+#line 239 "rygel-metadata-extractor.vala"
 	self->priv->tag_list = (_tmp5_ = gst_tag_list_new (), _gst_tag_list_free0 (self->priv->tag_list), _tmp5_);
+#line 240 "rygel-metadata-extractor.vala"
 	_tmp6_ = (GFile*) g_queue_pop_head (self->priv->file_queue);
+#line 600 "rygel-metadata-extractor.c"
 	_g_object_unref0 (_tmp6_);
+#line 241 "rygel-metadata-extractor.vala"
 	rygel_metadata_extractor_extract_next (self);
+#line 604 "rygel-metadata-extractor.c"
 	_g_error_free0 (_error_);
 	_g_free0 (debug);
 }
@@ -440,7 +611,9 @@ static gpointer _g_error_copy0 (gpointer self) {
 }
 
 
+#line 244 "rygel-metadata-extractor.vala"
 static void rygel_metadata_extractor_extract_mime_and_size (RygelMetadataExtractor* self, GError** error) {
+#line 617 "rygel-metadata-extractor.c"
 	GError * _inner_error_;
 	GFile* file;
 	GFileInfo* file_info;
@@ -448,19 +621,27 @@ static void rygel_metadata_extractor_extract_mime_and_size (RygelMetadataExtract
 	const char* mime;
 	gint64 size;
 	guint64 mtime;
+#line 244 "rygel-metadata-extractor.vala"
 	g_return_if_fail (self != NULL);
+#line 627 "rygel-metadata-extractor.c"
 	_inner_error_ = NULL;
+#line 245 "rygel-metadata-extractor.vala"
 	file = _g_object_ref0 ((GFile*) g_queue_peek_head (self->priv->file_queue));
+#line 631 "rygel-metadata-extractor.c"
 	file_info = NULL;
 	{
 		GFileInfo* _tmp0_;
 		GFileInfo* _tmp1_;
+#line 249 "rygel-metadata-extractor.vala"
 		_tmp0_ = g_file_query_info (file, G_FILE_ATTRIBUTE_STANDARD_CONTENT_TYPE "," G_FILE_ATTRIBUTE_STANDARD_SIZE "," G_FILE_ATTRIBUTE_TIME_MODIFIED, G_FILE_QUERY_INFO_NONE, NULL, &_inner_error_);
+#line 638 "rygel-metadata-extractor.c"
 		if (_inner_error_ != NULL) {
 			goto __catch53_g_error;
 			goto __finally53;
 		}
+#line 249 "rygel-metadata-extractor.vala"
 		file_info = (_tmp1_ = _tmp0_, _g_object_unref0 (file_info), _tmp1_);
+#line 645 "rygel-metadata-extractor.c"
 	}
 	goto __finally53;
 	__catch53_g_error:
@@ -470,9 +651,13 @@ static void rygel_metadata_extractor_extract_mime_and_size (RygelMetadataExtract
 		_inner_error_ = NULL;
 		{
 			char* _tmp2_;
+#line 256 "rygel-metadata-extractor.vala"
 			g_warning ("rygel-metadata-extractor.vala:256: Failed to query content type for '%s'\n", _tmp2_ = g_file_get_uri (file));
+#line 657 "rygel-metadata-extractor.c"
 			_g_free0 (_tmp2_);
+#line 260 "rygel-metadata-extractor.vala"
 			g_signal_emit_by_name (self, "error", file, _error_);
+#line 661 "rygel-metadata-extractor.c"
 			_inner_error_ = _g_error_copy0 (_error_);
 			if (_inner_error_ != NULL) {
 				_g_error_free0 (_error_);
@@ -490,27 +675,44 @@ static void rygel_metadata_extractor_extract_mime_and_size (RygelMetadataExtract
 		_g_object_unref0 (file_info);
 		return;
 	}
+#line 265 "rygel-metadata-extractor.vala"
 	content_type = g_file_info_get_content_type (file_info);
+#line 266 "rygel-metadata-extractor.vala"
 	mime = g_content_type_get_mime_type (content_type);
+#line 267 "rygel-metadata-extractor.vala"
 	if (mime != NULL) {
+#line 269 "rygel-metadata-extractor.vala"
 		gst_tag_list_add (self->priv->tag_list, GST_TAG_MERGE_REPLACE, RYGEL_METADATA_EXTRACTOR_TAG_RYGEL_MIME, mime, NULL);
+#line 687 "rygel-metadata-extractor.c"
 	}
+#line 274 "rygel-metadata-extractor.vala"
 	size = g_file_info_get_size (file_info);
+#line 275 "rygel-metadata-extractor.vala"
 	gst_tag_list_add (self->priv->tag_list, GST_TAG_MERGE_REPLACE, RYGEL_METADATA_EXTRACTOR_TAG_RYGEL_SIZE, size, NULL);
+#line 279 "rygel-metadata-extractor.vala"
 	mtime = g_file_info_get_attribute_uint64 (file_info, G_FILE_ATTRIBUTE_TIME_MODIFIED);
+#line 281 "rygel-metadata-extractor.vala"
 	gst_tag_list_add (self->priv->tag_list, GST_TAG_MERGE_REPLACE, RYGEL_METADATA_EXTRACTOR_TAG_RYGEL_MTIME, mtime, NULL);
+#line 697 "rygel-metadata-extractor.c"
 	_g_object_unref0 (file);
 	_g_object_unref0 (file_info);
 }
 
 
+#line 286 "rygel-metadata-extractor.vala"
 static void rygel_metadata_extractor_extract_duration (RygelMetadataExtractor* self) {
+#line 705 "rygel-metadata-extractor.c"
 	gint64 duration = 0LL;
 	GstFormat format;
+#line 286 "rygel-metadata-extractor.vala"
 	g_return_if_fail (self != NULL);
+#line 289 "rygel-metadata-extractor.vala"
 	format = GST_FORMAT_TIME;
+#line 290 "rygel-metadata-extractor.vala"
 	if (gst_element_query_duration (self->priv->playbin, &format, &duration)) {
+#line 291 "rygel-metadata-extractor.vala"
 		gst_tag_list_add (self->priv->tag_list, GST_TAG_MERGE_REPLACE, RYGEL_METADATA_EXTRACTOR_TAG_RYGEL_DURATION, duration, NULL);
+#line 716 "rygel-metadata-extractor.c"
 	}
 }
 
@@ -529,67 +731,117 @@ static inline GstElement* _dynamic_get_audio_sink10 (GstElement* obj) {
 }
 
 
+#line 297 "rygel-metadata-extractor.vala"
 static void rygel_metadata_extractor_extract_stream_info (RygelMetadataExtractor* self) {
+#line 297 "rygel-metadata-extractor.vala"
 	g_return_if_fail (self != NULL);
+#line 298 "rygel-metadata-extractor.vala"
 	rygel_metadata_extractor_extract_av_info (self, gst_element_get_pad (_dynamic_get_video_sink9 (self->priv->playbin), "sink"), GST_STREAM_TYPE_VIDEO);
+#line 300 "rygel-metadata-extractor.vala"
 	rygel_metadata_extractor_extract_av_info (self, gst_element_get_pad (_dynamic_get_audio_sink10 (self->priv->playbin), "sink"), GST_STREAM_TYPE_AUDIO);
+#line 743 "rygel-metadata-extractor.c"
 }
 
 
+#line 304 "rygel-metadata-extractor.vala"
 static void rygel_metadata_extractor_extract_av_info (RygelMetadataExtractor* self, GstPad* pad, GstStreamType type) {
+#line 749 "rygel-metadata-extractor.c"
 	GstCaps* caps;
 	const GstStructure* structure;
+#line 304 "rygel-metadata-extractor.vala"
 	g_return_if_fail (self != NULL);
+#line 304 "rygel-metadata-extractor.vala"
 	g_return_if_fail (pad != NULL);
+#line 305 "rygel-metadata-extractor.vala"
 	if (pad == NULL) {
+#line 306 "rygel-metadata-extractor.vala"
 		return;
+#line 760 "rygel-metadata-extractor.c"
 	}
+#line 309 "rygel-metadata-extractor.vala"
 	caps = gst_pad_get_negotiated_caps (pad);
+#line 310 "rygel-metadata-extractor.vala"
 	if (caps == NULL) {
+#line 766 "rygel-metadata-extractor.c"
 		_gst_caps_unref0 (caps);
+#line 311 "rygel-metadata-extractor.vala"
 		return;
+#line 770 "rygel-metadata-extractor.c"
 	}
+#line 314 "rygel-metadata-extractor.vala"
 	structure = gst_caps_get_structure (caps, (guint) 0);
+#line 315 "rygel-metadata-extractor.vala"
 	if (structure == NULL) {
+#line 776 "rygel-metadata-extractor.c"
 		_gst_caps_unref0 (caps);
+#line 316 "rygel-metadata-extractor.vala"
 		return;
+#line 780 "rygel-metadata-extractor.c"
 	}
+#line 319 "rygel-metadata-extractor.vala"
 	if (type == GST_STREAM_TYPE_AUDIO) {
+#line 320 "rygel-metadata-extractor.vala"
 		rygel_metadata_extractor_extract_audio_info (self, structure);
+#line 786 "rygel-metadata-extractor.c"
 	} else {
+#line 321 "rygel-metadata-extractor.vala"
 		if (type == GST_STREAM_TYPE_VIDEO) {
+#line 322 "rygel-metadata-extractor.vala"
 			rygel_metadata_extractor_extract_video_info (self, structure);
+#line 792 "rygel-metadata-extractor.c"
 		}
 	}
 	_gst_caps_unref0 (caps);
 }
 
 
+#line 326 "rygel-metadata-extractor.vala"
 static void rygel_metadata_extractor_extract_audio_info (RygelMetadataExtractor* self, const GstStructure* structure) {
+#line 326 "rygel-metadata-extractor.vala"
 	g_return_if_fail (self != NULL);
+#line 326 "rygel-metadata-extractor.vala"
 	g_return_if_fail (structure != NULL);
+#line 327 "rygel-metadata-extractor.vala"
 	rygel_metadata_extractor_extract_int_value (self, structure, "channels", RYGEL_METADATA_EXTRACTOR_TAG_RYGEL_CHANNELS);
+#line 328 "rygel-metadata-extractor.vala"
 	rygel_metadata_extractor_extract_int_value (self, structure, "rate", RYGEL_METADATA_EXTRACTOR_TAG_RYGEL_RATE);
+#line 809 "rygel-metadata-extractor.c"
 }
 
 
+#line 331 "rygel-metadata-extractor.vala"
 static void rygel_metadata_extractor_extract_video_info (RygelMetadataExtractor* self, const GstStructure* structure) {
+#line 331 "rygel-metadata-extractor.vala"
 	g_return_if_fail (self != NULL);
+#line 331 "rygel-metadata-extractor.vala"
 	g_return_if_fail (structure != NULL);
+#line 332 "rygel-metadata-extractor.vala"
 	rygel_metadata_extractor_extract_int_value (self, structure, "width", RYGEL_METADATA_EXTRACTOR_TAG_RYGEL_WIDTH);
+#line 333 "rygel-metadata-extractor.vala"
 	rygel_metadata_extractor_extract_int_value (self, structure, "height", RYGEL_METADATA_EXTRACTOR_TAG_RYGEL_HEIGHT);
+#line 334 "rygel-metadata-extractor.vala"
 	rygel_metadata_extractor_extract_int_value (self, structure, "depth", RYGEL_METADATA_EXTRACTOR_TAG_RYGEL_DEPTH);
+#line 825 "rygel-metadata-extractor.c"
 }
 
 
+#line 337 "rygel-metadata-extractor.vala"
 static void rygel_metadata_extractor_extract_int_value (RygelMetadataExtractor* self, const GstStructure* structure, const char* key, const char* tag) {
+#line 831 "rygel-metadata-extractor.c"
 	gint val = 0;
+#line 337 "rygel-metadata-extractor.vala"
 	g_return_if_fail (self != NULL);
+#line 337 "rygel-metadata-extractor.vala"
 	g_return_if_fail (structure != NULL);
+#line 337 "rygel-metadata-extractor.vala"
 	g_return_if_fail (key != NULL);
+#line 337 "rygel-metadata-extractor.vala"
 	g_return_if_fail (tag != NULL);
+#line 342 "rygel-metadata-extractor.vala"
 	if (gst_structure_get_int (structure, key, &val)) {
+#line 343 "rygel-metadata-extractor.vala"
 		gst_tag_list_add (self->priv->tag_list, GST_TAG_MERGE_REPLACE, tag, val, NULL);
+#line 845 "rygel-metadata-extractor.c"
 	}
 }
 

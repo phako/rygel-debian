@@ -148,27 +148,40 @@ static void time_finalize (Time* obj);
 
 
 
+#line 137 "rygel-gst-player.vala"
 static gboolean _rygel_gst_player_bus_handler_gst_bus_func (GstBus* bus, GstMessage* message, gpointer self) {
+#line 154 "rygel-gst-player.c"
 	return rygel_gst_player_bus_handler (self, bus, message);
 }
 
 
+#line 109 "rygel-gst-player.vala"
 static RygelGstPlayer* rygel_gst_player_construct (GType object_type) {
+#line 161 "rygel-gst-player.c"
 	RygelGstPlayer * self;
 	GstElement* _tmp0_;
 	GstBus* bus;
+#line 109 "rygel-gst-player.vala"
 	self = (RygelGstPlayer*) g_object_new (object_type, NULL);
+#line 110 "rygel-gst-player.vala"
 	self->priv->playbin = (_tmp0_ = gst_element_factory_make ("playbin2", NULL), _gst_object_unref0 (self->priv->playbin), _tmp0_);
+#line 111 "rygel-gst-player.vala"
 	g_assert (self->priv->playbin != NULL);
+#line 114 "rygel-gst-player.vala"
 	bus = gst_element_get_bus (self->priv->playbin);
+#line 115 "rygel-gst-player.vala"
 	gst_bus_add_watch_full (bus, G_PRIORITY_DEFAULT, _rygel_gst_player_bus_handler_gst_bus_func, g_object_ref (self), g_object_unref);
+#line 175 "rygel-gst-player.c"
 	_gst_object_unref0 (bus);
 	return self;
 }
 
 
+#line 109 "rygel-gst-player.vala"
 static RygelGstPlayer* rygel_gst_player_new (void) {
+#line 109 "rygel-gst-player.vala"
 	return rygel_gst_player_construct (RYGEL_TYPE_GST_PLAYER);
+#line 185 "rygel-gst-player.c"
 }
 
 
@@ -177,38 +190,65 @@ static gpointer _g_object_ref0 (gpointer self) {
 }
 
 
+#line 118 "rygel-gst-player.vala"
 RygelGstPlayer* rygel_gst_player_get_default (void) {
+#line 196 "rygel-gst-player.c"
 	RygelGstPlayer* result;
+#line 119 "rygel-gst-player.vala"
 	if (rygel_gst_player_player == NULL) {
+#line 200 "rygel-gst-player.c"
 		RygelGstPlayer* _tmp0_;
+#line 120 "rygel-gst-player.vala"
 		rygel_gst_player_player = (_tmp0_ = rygel_gst_player_new (), _g_object_unref0 (rygel_gst_player_player), _tmp0_);
+#line 204 "rygel-gst-player.c"
 	}
 	result = _g_object_ref0 (rygel_gst_player_player);
+#line 123 "rygel-gst-player.vala"
 	return result;
+#line 209 "rygel-gst-player.c"
 }
 
 
+#line 126 "rygel-gst-player.vala"
 gboolean rygel_gst_player_seek (RygelGstPlayer* self, const char* time) {
+#line 215 "rygel-gst-player.c"
 	gboolean result;
+#line 126 "rygel-gst-player.vala"
 	g_return_val_if_fail (self != NULL, FALSE);
+#line 126 "rygel-gst-player.vala"
 	g_return_val_if_fail (time != NULL, FALSE);
+#line 127 "rygel-gst-player.vala"
 	g_debug ("rygel-gst-player.vala:127: Seeking to %s.", time);
+#line 223 "rygel-gst-player.c"
 	result = gst_element_seek (self->priv->playbin, 1.0, GST_FORMAT_TIME, GST_SEEK_FLAG_FLUSH, GST_SEEK_TYPE_SET, (gint64) time_from_string (time), GST_SEEK_TYPE_NONE, (gint64) (-1));
+#line 128 "rygel-gst-player.vala"
 	return result;
+#line 227 "rygel-gst-player.c"
 }
 
 
+#line 137 "rygel-gst-player.vala"
 static gboolean rygel_gst_player_bus_handler (RygelGstPlayer* self, GstBus* bus, GstMessage* message) {
+#line 233 "rygel-gst-player.c"
 	gboolean result;
+#line 137 "rygel-gst-player.vala"
 	g_return_val_if_fail (self != NULL, FALSE);
+#line 137 "rygel-gst-player.vala"
 	g_return_val_if_fail (bus != NULL, FALSE);
+#line 137 "rygel-gst-player.vala"
 	g_return_val_if_fail (message != NULL, FALSE);
+#line 139 "rygel-gst-player.vala"
 	if (message->type == GST_MESSAGE_EOS) {
+#line 140 "rygel-gst-player.vala"
 		g_debug ("rygel-gst-player.vala:140: EOS");
+#line 141 "rygel-gst-player.vala"
 		rygel_gst_player_set_playback_state (self, "STOPPED");
+#line 247 "rygel-gst-player.c"
 	}
 	result = TRUE;
+#line 144 "rygel-gst-player.vala"
 	return result;
+#line 252 "rygel-gst-player.c"
 }
 
 
@@ -216,7 +256,9 @@ const char* rygel_gst_player_get_playback_state (RygelGstPlayer* self) {
 	const char* result;
 	g_return_val_if_fail (self != NULL, NULL);
 	result = self->priv->_playback_state;
+#line 38 "rygel-gst-player.vala"
 	return result;
+#line 262 "rygel-gst-player.c"
 }
 
 
@@ -228,25 +270,39 @@ void rygel_gst_player_set_playback_state (RygelGstPlayer* self, const char* valu
 	static GQuark _tmp2__label1 = 0;
 	static GQuark _tmp2__label2 = 0;
 	g_return_if_fail (self != NULL);
+#line 42 "rygel-gst-player.vala"
 	g_debug ("rygel-gst-player.vala:42: Changing playback state to %s..", value);
+#line 43 "rygel-gst-player.vala"
 	self->priv->_playback_state = (_tmp0_ = g_strdup (value), _g_free0 (self->priv->_playback_state), _tmp0_);
+#line 278 "rygel-gst-player.c"
 	_tmp1_ = self->priv->_playback_state;
 	_tmp2_ = (NULL == _tmp1_) ? 0 : g_quark_from_string (_tmp1_);
 	if (_tmp2_ == ((0 != _tmp2__label0) ? _tmp2__label0 : (_tmp2__label0 = g_quark_from_static_string ("STOPPED"))))
 	do {
+#line 47 "rygel-gst-player.vala"
 		gst_element_set_state (self->priv->playbin, GST_STATE_NULL);
+#line 48 "rygel-gst-player.vala"
 		break;
+#line 287 "rygel-gst-player.c"
 	} while (0); else if (_tmp2_ == ((0 != _tmp2__label1) ? _tmp2__label1 : (_tmp2__label1 = g_quark_from_static_string ("PAUSED_PLAYBACK"))))
 	do {
+#line 50 "rygel-gst-player.vala"
 		gst_element_set_state (self->priv->playbin, GST_STATE_PAUSED);
+#line 51 "rygel-gst-player.vala"
 		break;
+#line 294 "rygel-gst-player.c"
 	} while (0); else if (_tmp2_ == ((0 != _tmp2__label2) ? _tmp2__label2 : (_tmp2__label2 = g_quark_from_static_string ("PLAYING"))))
 	do {
+#line 53 "rygel-gst-player.vala"
 		gst_element_set_state (self->priv->playbin, GST_STATE_PLAYING);
+#line 54 "rygel-gst-player.vala"
 		break;
+#line 301 "rygel-gst-player.c"
 	} while (0); else
 	do {
+#line 56 "rygel-gst-player.vala"
 		break;
+#line 306 "rygel-gst-player.c"
 	} while (0);
 	g_object_notify ((GObject *) self, "playback-state");
 }
@@ -263,7 +319,9 @@ const char* rygel_gst_player_get_uri (RygelGstPlayer* self) {
 	const char* result;
 	g_return_val_if_fail (self != NULL, NULL);
 	result = _dynamic_get_uri0 (self->priv->playbin);
+#line 63 "rygel-gst-player.vala"
 	return result;
+#line 325 "rygel-gst-player.c"
 }
 
 
@@ -274,8 +332,11 @@ static inline void _dynamic_set_uri1 (GstElement* obj, const char* value) {
 
 void rygel_gst_player_set_uri (RygelGstPlayer* self, const char* value) {
 	g_return_if_fail (self != NULL);
+#line 67 "rygel-gst-player.vala"
 	_dynamic_set_uri1 (self->priv->playbin, value);
+#line 68 "rygel-gst-player.vala"
 	g_debug ("rygel-gst-player.vala:68: URI set to %s.", value);
+#line 340 "rygel-gst-player.c"
 	g_object_notify ((GObject *) self, "uri");
 }
 
@@ -291,7 +352,9 @@ double rygel_gst_player_get_volume (RygelGstPlayer* self) {
 	double result;
 	g_return_val_if_fail (self != NULL, 0.0);
 	result = _dynamic_get_volume2 (self->priv->playbin);
+#line 74 "rygel-gst-player.vala"
 	return result;
+#line 358 "rygel-gst-player.c"
 }
 
 
@@ -302,8 +365,11 @@ static inline void _dynamic_set_volume3 (GstElement* obj, double value) {
 
 void rygel_gst_player_set_volume (RygelGstPlayer* self, double value) {
 	g_return_if_fail (self != NULL);
+#line 78 "rygel-gst-player.vala"
 	_dynamic_set_volume3 (self->priv->playbin, value);
+#line 79 "rygel-gst-player.vala"
 	g_debug ("rygel-gst-player.vala:79: volume set to %f.", value);
+#line 373 "rygel-gst-player.c"
 	g_object_notify ((GObject *) self, "volume");
 }
 
@@ -313,13 +379,20 @@ char* rygel_gst_player_get_duration (RygelGstPlayer* self) {
 	GstFormat format;
 	gint64 dur = 0LL;
 	g_return_val_if_fail (self != NULL, NULL);
+#line 85 "rygel-gst-player.vala"
 	format = GST_FORMAT_TIME;
+#line 88 "rygel-gst-player.vala"
 	if (gst_element_query_duration (self->priv->playbin, &format, &dur)) {
+#line 387 "rygel-gst-player.c"
 		result = time_to_string ((GstClockTime) dur);
+#line 89 "rygel-gst-player.vala"
 		return result;
+#line 391 "rygel-gst-player.c"
 	} else {
 		result = g_strdup ("00:00:00");
+#line 91 "rygel-gst-player.vala"
 		return result;
+#line 396 "rygel-gst-player.c"
 	}
 }
 
@@ -329,13 +402,20 @@ char* rygel_gst_player_get_position (RygelGstPlayer* self) {
 	GstFormat format;
 	gint64 pos = 0LL;
 	g_return_val_if_fail (self != NULL, NULL);
+#line 98 "rygel-gst-player.vala"
 	format = GST_FORMAT_TIME;
+#line 101 "rygel-gst-player.vala"
 	if (gst_element_query_position (self->priv->playbin, &format, &pos)) {
+#line 410 "rygel-gst-player.c"
 		result = time_to_string ((GstClockTime) pos);
+#line 102 "rygel-gst-player.vala"
 		return result;
+#line 414 "rygel-gst-player.c"
 	} else {
 		result = g_strdup ("00:00:00");
+#line 104 "rygel-gst-player.vala"
 		return result;
+#line 419 "rygel-gst-player.c"
 	}
 }
 
@@ -425,41 +505,62 @@ static void rygel_gst_player_set_property (GObject * object, guint property_id, 
 }
 
 
+#line 151 "rygel-gst-player.vala"
 GstClockTime time_from_string (const char* str) {
+#line 511 "rygel-gst-player.c"
 	GstClockTime result;
 	guint64 hours = 0ULL;
 	guint64 minutes = 0ULL;
 	guint64 seconds = 0ULL;
+#line 151 "rygel-gst-player.vala"
 	g_return_val_if_fail (str != NULL, 0ULL);
+#line 154 "rygel-gst-player.vala"
 	sscanf (str, "%llu:%2llu:%2llu%*s", &hours, &minutes, &seconds);
+#line 520 "rygel-gst-player.c"
 	result = (GstClockTime) ((((hours * 3600) + (minutes * 60)) + seconds) * GST_SECOND);
+#line 156 "rygel-gst-player.vala"
 	return result;
+#line 524 "rygel-gst-player.c"
 }
 
 
+#line 160 "rygel-gst-player.vala"
 char* time_to_string (GstClockTime time) {
+#line 530 "rygel-gst-player.c"
 	char* result;
 	guint64 hours = 0ULL;
 	guint64 minutes = 0ULL;
 	guint64 seconds = 0ULL;
+#line 163 "rygel-gst-player.vala"
 	hours = (guint64) ((time / GST_SECOND) / 3600);
+#line 164 "rygel-gst-player.vala"
 	seconds = (guint64) ((time / GST_SECOND) % 3600);
+#line 165 "rygel-gst-player.vala"
 	minutes = seconds / 60;
+#line 166 "rygel-gst-player.vala"
 	seconds = seconds % 60;
+#line 543 "rygel-gst-player.c"
 	result = g_strdup_printf ("%llu:%.2llu:%.2llu", hours, minutes, seconds);
+#line 168 "rygel-gst-player.vala"
 	return result;
+#line 547 "rygel-gst-player.c"
 }
 
 
+#line 150 "rygel-gst-player.vala"
 Time* time_construct (GType object_type) {
+#line 553 "rygel-gst-player.c"
 	Time* self;
 	self = (Time*) g_type_create_instance (object_type);
 	return self;
 }
 
 
+#line 150 "rygel-gst-player.vala"
 Time* time_new (void) {
+#line 150 "rygel-gst-player.vala"
 	return time_construct (TYPE_TIME);
+#line 564 "rygel-gst-player.c"
 }
 
 

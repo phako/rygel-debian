@@ -129,37 +129,65 @@ static int _vala_strcmp0 (const char * str1, const char * str2);
 
 
 
+#line 33 "rygel-tracker-video-item.vala"
 RygelTrackerVideoItem* rygel_tracker_video_item_construct (GType object_type, const char* id, const char* path, RygelTrackerSearchContainer* parent, char** metadata, int metadata_length1, GError** error) {
+#line 135 "rygel-tracker-video-item.c"
 	RygelTrackerVideoItem * self;
 	char* _tmp0_;
+#line 33 "rygel-tracker-video-item.vala"
 	g_return_val_if_fail (id != NULL, NULL);
+#line 33 "rygel-tracker-video-item.vala"
 	g_return_val_if_fail (path != NULL, NULL);
+#line 33 "rygel-tracker-video-item.vala"
 	g_return_val_if_fail (parent != NULL, NULL);
+#line 38 "rygel-tracker-video-item.vala"
 	self = (RygelTrackerVideoItem*) rygel_tracker_item_construct (object_type, id, path, parent, RYGEL_MEDIA_ITEM_VIDEO_CLASS, metadata, metadata_length1, error);
+#line 40 "rygel-tracker-video-item.vala"
 	if (_vala_strcmp0 (metadata[RYGEL_TRACKER_ITEM_METADATA_VIDEO_TITLE], "") != 0) {
+#line 41 "rygel-tracker-video-item.vala"
 		rygel_media_object_set_title ((RygelMediaObject*) self, metadata[RYGEL_TRACKER_ITEM_METADATA_VIDEO_TITLE]);
+#line 150 "rygel-tracker-video-item.c"
 	} else {
+#line 44 "rygel-tracker-video-item.vala"
 		rygel_media_object_set_title ((RygelMediaObject*) self, metadata[RYGEL_TRACKER_ITEM_METADATA_FILE_NAME]);
+#line 154 "rygel-tracker-video-item.c"
 	}
+#line 46 "rygel-tracker-video-item.vala"
 	if (_vala_strcmp0 (metadata[RYGEL_TRACKER_ITEM_METADATA_VIDEO_WIDTH], "") != 0) {
+#line 47 "rygel-tracker-video-item.vala"
 		((RygelMediaItem*) self)->width = atoi (metadata[RYGEL_TRACKER_ITEM_METADATA_VIDEO_WIDTH]);
+#line 160 "rygel-tracker-video-item.c"
 	}
+#line 49 "rygel-tracker-video-item.vala"
 	if (_vala_strcmp0 (metadata[RYGEL_TRACKER_ITEM_METADATA_VIDEO_HEIGHT], "") != 0) {
+#line 50 "rygel-tracker-video-item.vala"
 		((RygelMediaItem*) self)->height = atoi (metadata[RYGEL_TRACKER_ITEM_METADATA_VIDEO_HEIGHT]);
+#line 166 "rygel-tracker-video-item.c"
 	}
+#line 52 "rygel-tracker-video-item.vala"
 	if (_vala_strcmp0 (metadata[RYGEL_TRACKER_ITEM_METADATA_VIDEO_DURATION], "") != 0) {
+#line 53 "rygel-tracker-video-item.vala"
 		((RygelMediaItem*) self)->duration = (glong) atoi (metadata[RYGEL_TRACKER_ITEM_METADATA_VIDEO_DURATION]);
+#line 172 "rygel-tracker-video-item.c"
 	}
+#line 55 "rygel-tracker-video-item.vala"
 	if (_vala_strcmp0 (metadata[RYGEL_TRACKER_ITEM_METADATA_VIDEO_DURATION], "") != 0) {
+#line 56 "rygel-tracker-video-item.vala"
 		((RygelMediaItem*) self)->duration = (glong) atoi (metadata[RYGEL_TRACKER_ITEM_METADATA_VIDEO_DURATION]);
+#line 178 "rygel-tracker-video-item.c"
 	}
+#line 58 "rygel-tracker-video-item.vala"
 	((RygelMediaItem*) self)->author = (_tmp0_ = g_strdup (metadata[RYGEL_TRACKER_ITEM_METADATA_AUTHOR]), _g_free0 (((RygelMediaItem*) self)->author), _tmp0_);
+#line 182 "rygel-tracker-video-item.c"
 	return self;
 }
 
 
+#line 33 "rygel-tracker-video-item.vala"
 RygelTrackerVideoItem* rygel_tracker_video_item_new (const char* id, const char* path, RygelTrackerSearchContainer* parent, char** metadata, int metadata_length1, GError** error) {
+#line 33 "rygel-tracker-video-item.vala"
 	return rygel_tracker_video_item_construct (RYGEL_TYPE_TRACKER_VIDEO_ITEM, id, path, parent, metadata, metadata_length1, error);
+#line 191 "rygel-tracker-video-item.c"
 }
 
 

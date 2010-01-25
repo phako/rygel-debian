@@ -83,18 +83,27 @@ static void rygel_icon_info_finalize (RygelIconInfo* obj);
 
 
 
+#line 36 "rygel-icon-info.vala"
 RygelIconInfo* rygel_icon_info_construct (GType object_type, const char* mime_type) {
+#line 89 "rygel-icon-info.c"
 	RygelIconInfo* self;
 	char* _tmp0_;
+#line 36 "rygel-icon-info.vala"
 	g_return_val_if_fail (mime_type != NULL, NULL);
+#line 94 "rygel-icon-info.c"
 	self = (RygelIconInfo*) g_type_create_instance (object_type);
+#line 37 "rygel-icon-info.vala"
 	self->mime_type = (_tmp0_ = g_strdup (mime_type), _g_free0 (self->mime_type), _tmp0_);
+#line 98 "rygel-icon-info.c"
 	return self;
 }
 
 
+#line 36 "rygel-icon-info.vala"
 RygelIconInfo* rygel_icon_info_new (const char* mime_type) {
+#line 36 "rygel-icon-info.vala"
 	return rygel_icon_info_construct (RYGEL_TYPE_ICON_INFO, mime_type);
+#line 107 "rygel-icon-info.c"
 }
 
 

@@ -147,7 +147,9 @@ static gpointer _g_object_ref0 (gpointer self) {
 }
 
 
+#line 36 "rygel-preferences-dialog.vala"
 RygelPreferencesDialog* rygel_preferences_dialog_construct (GType object_type, GError** error) {
+#line 153 "rygel-preferences-dialog.c"
 	GError * _inner_error_;
 	RygelPreferencesDialog * self;
 	RygelUserConfig* _tmp0_;
@@ -160,76 +162,119 @@ RygelPreferencesDialog* rygel_preferences_dialog_construct (GType object_type, G
 	RygelTrackerPrefSection* _tmp7_;
 	RygelMediaExportPrefSection* _tmp8_;
 	_inner_error_ = NULL;
+#line 36 "rygel-preferences-dialog.vala"
 	self = (RygelPreferencesDialog*) g_object_new (object_type, NULL);
+#line 37 "rygel-preferences-dialog.vala"
 	_tmp0_ = rygel_user_config_new (FALSE, &_inner_error_);
+#line 170 "rygel-preferences-dialog.c"
 	if (_inner_error_ != NULL) {
 		g_propagate_error (error, _inner_error_);
 		return NULL;
 	}
+#line 37 "rygel-preferences-dialog.vala"
 	self->priv->config = (_tmp1_ = _tmp0_, _g_object_unref0 (self->priv->config), _tmp1_);
+#line 38 "rygel-preferences-dialog.vala"
 	self->priv->builder = (_tmp2_ = gtk_builder_new (), _g_object_unref0 (self->priv->builder), _tmp2_);
+#line 40 "rygel-preferences-dialog.vala"
 	gtk_builder_add_from_file (self->priv->builder, RYGEL_PREFERENCES_DIALOG_UI_FILE, &_inner_error_);
+#line 181 "rygel-preferences-dialog.c"
 	if (_inner_error_ != NULL) {
 		g_propagate_error (error, _inner_error_);
 		return NULL;
 	}
+#line 42 "rygel-preferences-dialog.vala"
 	self->priv->dialog = (_tmp3_ = _g_object_ref0 (GTK_DIALOG (gtk_builder_get_object (self->priv->builder, RYGEL_PREFERENCES_DIALOG_DIALOG))), _g_object_unref0 (self->priv->dialog), _tmp3_);
+#line 43 "rygel-preferences-dialog.vala"
 	g_assert (self->priv->dialog != NULL);
+#line 45 "rygel-preferences-dialog.vala"
 	self->priv->sections = (_tmp4_ = gee_array_list_new (RYGEL_TYPE_PREFERENCES_SECTION, (GBoxedCopyFunc) g_object_ref, g_object_unref, NULL), _g_object_unref0 (self->priv->sections), _tmp4_);
+#line 46 "rygel-preferences-dialog.vala"
 	_tmp5_ = rygel_general_pref_section_new (self->priv->builder, self->priv->config, &_inner_error_);
+#line 194 "rygel-preferences-dialog.c"
 	if (_inner_error_ != NULL) {
 		g_propagate_error (error, _inner_error_);
 		return NULL;
 	}
+#line 46 "rygel-preferences-dialog.vala"
 	gee_abstract_collection_add ((GeeAbstractCollection*) self->priv->sections, (RygelPreferencesSection*) (_tmp6_ = _tmp5_));
+#line 201 "rygel-preferences-dialog.c"
 	_g_object_unref0 (_tmp6_);
+#line 47 "rygel-preferences-dialog.vala"
 	gee_abstract_collection_add ((GeeAbstractCollection*) self->priv->sections, (RygelPreferencesSection*) (_tmp7_ = rygel_tracker_pref_section_new (self->priv->builder, self->priv->config)));
+#line 205 "rygel-preferences-dialog.c"
 	_g_object_unref0 (_tmp7_);
+#line 48 "rygel-preferences-dialog.vala"
 	gee_abstract_collection_add ((GeeAbstractCollection*) self->priv->sections, (RygelPreferencesSection*) (_tmp8_ = rygel_media_export_pref_section_new (self->priv->builder, self->priv->config)));
+#line 209 "rygel-preferences-dialog.c"
 	_g_object_unref0 (_tmp8_);
 	return self;
 }
 
 
+#line 36 "rygel-preferences-dialog.vala"
 RygelPreferencesDialog* rygel_preferences_dialog_new (GError** error) {
+#line 36 "rygel-preferences-dialog.vala"
 	return rygel_preferences_dialog_construct (RYGEL_TYPE_PREFERENCES_DIALOG, error);
+#line 219 "rygel-preferences-dialog.c"
 }
 
 
+#line 52 "rygel-preferences-dialog.vala"
 void rygel_preferences_dialog_run (RygelPreferencesDialog* self) {
+#line 52 "rygel-preferences-dialog.vala"
 	g_return_if_fail (self != NULL);
+#line 53 "rygel-preferences-dialog.vala"
 	gtk_dialog_run (self->priv->dialog);
+#line 229 "rygel-preferences-dialog.c"
 	{
 		GeeIterator* _section_it;
 		_section_it = gee_abstract_collection_iterator ((GeeAbstractCollection*) self->priv->sections);
+#line 55 "rygel-preferences-dialog.vala"
 		while (TRUE) {
+#line 235 "rygel-preferences-dialog.c"
 			RygelPreferencesSection* section;
+#line 55 "rygel-preferences-dialog.vala"
 			if (!gee_iterator_next (_section_it)) {
+#line 55 "rygel-preferences-dialog.vala"
 				break;
+#line 241 "rygel-preferences-dialog.c"
 			}
+#line 55 "rygel-preferences-dialog.vala"
 			section = (RygelPreferencesSection*) gee_iterator_get (_section_it);
+#line 56 "rygel-preferences-dialog.vala"
 			rygel_preferences_section_save (section);
+#line 247 "rygel-preferences-dialog.c"
 			_g_object_unref0 (section);
 		}
 		_g_object_unref0 (_section_it);
 	}
+#line 59 "rygel-preferences-dialog.vala"
 	rygel_user_config_save (self->priv->config);
+#line 254 "rygel-preferences-dialog.c"
 }
 
 
+#line 62 "rygel-preferences-dialog.vala"
 gint rygel_preferences_dialog_main (char** args, int args_length1) {
+#line 260 "rygel-preferences-dialog.c"
 	gint result;
 	GError * _inner_error_;
 	_inner_error_ = NULL;
+#line 63 "rygel-preferences-dialog.vala"
 	gtk_init (&args_length1, &args);
+#line 266 "rygel-preferences-dialog.c"
 	{
 		RygelPreferencesDialog* dialog;
+#line 66 "rygel-preferences-dialog.vala"
 		dialog = rygel_preferences_dialog_new (&_inner_error_);
+#line 271 "rygel-preferences-dialog.c"
 		if (_inner_error_ != NULL) {
 			goto __catch0_g_error;
 			goto __finally0;
 		}
+#line 68 "rygel-preferences-dialog.vala"
 		rygel_preferences_dialog_run (dialog);
+#line 278 "rygel-preferences-dialog.c"
 		_g_object_unref0 (dialog);
 	}
 	goto __finally0;
@@ -239,7 +284,9 @@ gint rygel_preferences_dialog_main (char** args, int args_length1) {
 		err = _inner_error_;
 		_inner_error_ = NULL;
 		{
+#line 70 "rygel-preferences-dialog.vala"
 			g_error ("rygel-preferences-dialog.vala:70: Failed to create preferences dialog: %s\n", err->message);
+#line 290 "rygel-preferences-dialog.c"
 			_g_error_free0 (err);
 		}
 	}
@@ -250,14 +297,21 @@ gint rygel_preferences_dialog_main (char** args, int args_length1) {
 		return 0;
 	}
 	result = 0;
+#line 73 "rygel-preferences-dialog.vala"
 	return result;
+#line 303 "rygel-preferences-dialog.c"
 }
 
 
+#line 62 "rygel-preferences-dialog.vala"
 int main (int argc, char ** argv) {
+#line 309 "rygel-preferences-dialog.c"
 	g_thread_init (NULL);
+#line 62 "rygel-preferences-dialog.vala"
 	g_type_init ();
+#line 62 "rygel-preferences-dialog.vala"
 	return rygel_preferences_dialog_main (argv, argc);
+#line 315 "rygel-preferences-dialog.c"
 }
 
 

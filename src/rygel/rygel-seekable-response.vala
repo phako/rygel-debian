@@ -42,7 +42,9 @@ internal class Rygel.SeekableResponse : Rygel.HTTPResponse {
                              HTTPSeek?    seek,
                              size_t       file_length,
                              Cancellable? cancellable) {
-        base (server, msg, seek != null, cancellable);
+        var partial = seek != null && seek.length < file_length;
+
+        base (server, msg, partial, cancellable);
 
         this.seek = seek;
         this.total_length = file_length;
@@ -98,6 +100,8 @@ internal class Rygel.SeekableResponse : Rygel.HTTPResponse {
     private async void start_reading () {
         try {
             yield this.read_contents ();
+        } catch (IOError.CANCELLED cancelled_err) {
+            // This is OK
         } catch (Error err) {
             warning ("Failed to read contents from URI: %s: %s\n",
                      this.file.get_uri (),
@@ -125,6 +129,11 @@ internal class Rygel.SeekableResponse : Rygel.HTTPResponse {
         this.msg.wrote_chunk.connect ((msg) => {
                 cb ();
         });
+        if (this.cancellable != null) {
+            this.cancellable.cancelled.connect (() => {
+                cb ();
+            });
+        }
 
         while (bytes_read > 0) {
             this.push_data (this.buffer, bytes_read);

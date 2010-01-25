@@ -92,91 +92,154 @@ static void rygel_gst_change_log_set_property (GObject * object, guint property_
 
 
 
+#line 43 "rygel-gst-changelog.vala"
 RygelGstChangeLog* rygel_gst_change_log_construct (GType object_type, GUPnPService* service, const char* service_ns) {
+#line 98 "rygel-gst-changelog.c"
 	RygelGstChangeLog * self;
 	char* _tmp0_;
 	GString* _tmp1_;
 	GeeHashMap* _tmp2_;
+#line 43 "rygel-gst-changelog.vala"
 	g_return_val_if_fail (service_ns != NULL, NULL);
+#line 43 "rygel-gst-changelog.vala"
 	self = (RygelGstChangeLog*) g_object_new (object_type, NULL);
+#line 44 "rygel-gst-changelog.vala"
 	rygel_gst_change_log_set_service (self, service);
+#line 45 "rygel-gst-changelog.vala"
 	self->priv->service_ns = (_tmp0_ = g_strdup (service_ns), _g_free0 (self->priv->service_ns), _tmp0_);
+#line 46 "rygel-gst-changelog.vala"
 	self->priv->str = (_tmp1_ = g_string_new (""), _g_string_free0 (self->priv->str), _tmp1_);
+#line 47 "rygel-gst-changelog.vala"
 	self->priv->hash = (_tmp2_ = gee_hash_map_new (G_TYPE_STRING, (GBoxedCopyFunc) g_strdup, g_free, G_TYPE_STRING, (GBoxedCopyFunc) g_strdup, g_free, NULL, NULL, NULL), _g_object_unref0 (self->priv->hash), _tmp2_);
+#line 115 "rygel-gst-changelog.c"
 	return self;
 }
 
 
+#line 43 "rygel-gst-changelog.vala"
 RygelGstChangeLog* rygel_gst_change_log_new (GUPnPService* service, const char* service_ns) {
+#line 43 "rygel-gst-changelog.vala"
 	return rygel_gst_change_log_construct (RYGEL_TYPE_GST_CHANGE_LOG, service, service_ns);
+#line 124 "rygel-gst-changelog.c"
 }
 
 
+#line 56 "rygel-gst-changelog.vala"
 static gboolean rygel_gst_change_log_timeout (RygelGstChangeLog* self) {
+#line 130 "rygel-gst-changelog.c"
 	gboolean result;
 	char* _tmp0_;
+#line 56 "rygel-gst-changelog.vala"
 	g_return_val_if_fail (self != NULL, FALSE);
+#line 58 "rygel-gst-changelog.vala"
 	gupnp_service_notify (self->priv->_service, "LastChange", G_TYPE_STRING, _tmp0_ = rygel_gst_change_log_finish (self), NULL);
+#line 137 "rygel-gst-changelog.c"
 	_g_free0 (_tmp0_);
+#line 59 "rygel-gst-changelog.vala"
 	g_debug ("rygel-gst-changelog.vala:59: LastChange sent");
+#line 62 "rygel-gst-changelog.vala"
 	gee_abstract_map_clear ((GeeAbstractMap*) self->priv->hash);
+#line 63 "rygel-gst-changelog.vala"
 	g_string_erase (self->priv->str, (gssize) 0, (gssize) (-1));
+#line 64 "rygel-gst-changelog.vala"
 	self->priv->timeout_id = (guint) 0;
+#line 147 "rygel-gst-changelog.c"
 	result = FALSE;
+#line 66 "rygel-gst-changelog.vala"
 	return result;
+#line 151 "rygel-gst-changelog.c"
 }
 
 
+#line 56 "rygel-gst-changelog.vala"
 static gboolean _rygel_gst_change_log_timeout_gsource_func (gpointer self) {
+#line 157 "rygel-gst-changelog.c"
 	return rygel_gst_change_log_timeout (self);
 }
 
 
+#line 69 "rygel-gst-changelog.vala"
 static void rygel_gst_change_log_ensure_timeout (RygelGstChangeLog* self) {
+#line 164 "rygel-gst-changelog.c"
 	gboolean _tmp0_ = FALSE;
+#line 69 "rygel-gst-changelog.vala"
 	g_return_if_fail (self != NULL);
+#line 71 "rygel-gst-changelog.vala"
 	if (self->priv->_service != NULL) {
+#line 71 "rygel-gst-changelog.vala"
 		_tmp0_ = self->priv->timeout_id == 0;
+#line 172 "rygel-gst-changelog.c"
 	} else {
+#line 71 "rygel-gst-changelog.vala"
 		_tmp0_ = FALSE;
+#line 176 "rygel-gst-changelog.c"
 	}
+#line 71 "rygel-gst-changelog.vala"
 	if (_tmp0_) {
+#line 72 "rygel-gst-changelog.vala"
 		g_debug ("rygel-gst-changelog.vala:72: Setting up timeout for LastChange");
+#line 73 "rygel-gst-changelog.vala"
 		self->priv->timeout_id = g_timeout_add_full (G_PRIORITY_DEFAULT, (guint) 200, _rygel_gst_change_log_timeout_gsource_func, g_object_ref (self), g_object_unref);
+#line 184 "rygel-gst-changelog.c"
 	}
 }
 
 
+#line 77 "rygel-gst-changelog.vala"
 void rygel_gst_change_log_log (RygelGstChangeLog* self, const char* variable, const char* value) {
+#line 191 "rygel-gst-changelog.c"
 	char* _tmp0_;
+#line 77 "rygel-gst-changelog.vala"
 	g_return_if_fail (self != NULL);
+#line 77 "rygel-gst-changelog.vala"
 	g_return_if_fail (variable != NULL);
+#line 77 "rygel-gst-changelog.vala"
 	g_return_if_fail (value != NULL);
+#line 78 "rygel-gst-changelog.vala"
 	g_debug ("rygel-gst-changelog.vala:78: '%s = %s' logged", variable, value);
+#line 79 "rygel-gst-changelog.vala"
 	gee_abstract_map_set ((GeeAbstractMap*) self->priv->hash, variable, _tmp0_ = g_strdup_printf ("<%s val=\"%s\"/>", variable, value));
+#line 203 "rygel-gst-changelog.c"
 	_g_free0 (_tmp0_);
+#line 81 "rygel-gst-changelog.vala"
 	rygel_gst_change_log_ensure_timeout (self);
+#line 207 "rygel-gst-changelog.c"
 }
 
 
+#line 84 "rygel-gst-changelog.vala"
 void rygel_gst_change_log_log_with_channel (RygelGstChangeLog* self, const char* variable, const char* value, const char* channel) {
+#line 213 "rygel-gst-changelog.c"
 	char* _tmp0_;
+#line 84 "rygel-gst-changelog.vala"
 	g_return_if_fail (self != NULL);
+#line 84 "rygel-gst-changelog.vala"
 	g_return_if_fail (variable != NULL);
+#line 84 "rygel-gst-changelog.vala"
 	g_return_if_fail (value != NULL);
+#line 84 "rygel-gst-changelog.vala"
 	g_return_if_fail (channel != NULL);
+#line 87 "rygel-gst-changelog.vala"
 	gee_abstract_map_set ((GeeAbstractMap*) self->priv->hash, variable, _tmp0_ = g_strdup_printf ("<%s val=\"%s\" channel=\"%s\"/>", variable, value, channel));
+#line 225 "rygel-gst-changelog.c"
 	_g_free0 (_tmp0_);
+#line 92 "rygel-gst-changelog.vala"
 	rygel_gst_change_log_ensure_timeout (self);
+#line 229 "rygel-gst-changelog.c"
 }
 
 
+#line 95 "rygel-gst-changelog.vala"
 char* rygel_gst_change_log_finish (RygelGstChangeLog* self) {
+#line 235 "rygel-gst-changelog.c"
 	char* result;
 	char* _tmp1_;
 	char* _tmp0_;
+#line 95 "rygel-gst-changelog.vala"
 	g_return_val_if_fail (self != NULL, NULL);
+#line 96 "rygel-gst-changelog.vala"
 	g_string_append (self->priv->str, _tmp1_ = g_strconcat (_tmp0_ = g_strconcat ("<Event xmlns=\"", self->priv->service_ns, NULL), "\"><InstanceID val=\"0\">", NULL));
+#line 243 "rygel-gst-changelog.c"
 	_g_free0 (_tmp1_);
 	_g_free0 (_tmp0_);
 	{
@@ -184,20 +247,32 @@ char* rygel_gst_change_log_finish (RygelGstChangeLog* self) {
 		GeeIterator* _tmp3_;
 		GeeIterator* _line_it;
 		_line_it = (_tmp3_ = gee_iterable_iterator ((GeeIterable*) (_tmp2_ = gee_map_get_values ((GeeMap*) self->priv->hash))), _g_object_unref0 (_tmp2_), _tmp3_);
+#line 99 "rygel-gst-changelog.vala"
 		while (TRUE) {
+#line 253 "rygel-gst-changelog.c"
 			char* line;
+#line 99 "rygel-gst-changelog.vala"
 			if (!gee_iterator_next (_line_it)) {
+#line 99 "rygel-gst-changelog.vala"
 				break;
+#line 259 "rygel-gst-changelog.c"
 			}
+#line 99 "rygel-gst-changelog.vala"
 			line = (char*) gee_iterator_get (_line_it);
+#line 100 "rygel-gst-changelog.vala"
 			g_string_append (self->priv->str, line);
+#line 265 "rygel-gst-changelog.c"
 			_g_free0 (line);
 		}
 		_g_object_unref0 (_line_it);
 	}
+#line 102 "rygel-gst-changelog.vala"
 	g_string_append (self->priv->str, "</InstanceID></Event>");
+#line 272 "rygel-gst-changelog.c"
 	result = g_strdup (self->priv->str->str);
+#line 104 "rygel-gst-changelog.vala"
 	return result;
+#line 276 "rygel-gst-changelog.c"
 }
 
 
@@ -205,7 +280,9 @@ GUPnPService* rygel_gst_change_log_get_service (RygelGstChangeLog* self) {
 	GUPnPService* result;
 	g_return_val_if_fail (self != NULL, NULL);
 	result = self->priv->_service;
+#line 33 "rygel-gst-changelog.vala"
 	return result;
+#line 286 "rygel-gst-changelog.c"
 }
 
 
@@ -236,8 +313,11 @@ static void rygel_gst_change_log_finalize (GObject* obj) {
 	RygelGstChangeLog * self;
 	self = RYGEL_GST_CHANGE_LOG (obj);
 	{
+#line 51 "rygel-gst-changelog.vala"
 		if (self->priv->timeout_id != 0) {
+#line 52 "rygel-gst-changelog.vala"
 			g_source_remove (self->priv->timeout_id);
+#line 321 "rygel-gst-changelog.c"
 		}
 	}
 	_g_free0 (self->priv->service_ns);

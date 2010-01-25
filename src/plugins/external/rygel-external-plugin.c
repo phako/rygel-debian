@@ -79,25 +79,39 @@ static void rygel_external_plugin_finalize (GObject* obj);
 
 
 
+#line 31 "rygel-external-plugin.vala"
 RygelExternalPlugin* rygel_external_plugin_construct (GType object_type, const char* service_name, const char* title, const char* root_object, RygelIconInfo* icon) {
+#line 85 "rygel-external-plugin.c"
 	RygelExternalPlugin * self;
 	char* _tmp0_;
 	char* _tmp1_;
+#line 31 "rygel-external-plugin.vala"
 	g_return_val_if_fail (service_name != NULL, NULL);
+#line 31 "rygel-external-plugin.vala"
 	g_return_val_if_fail (title != NULL, NULL);
+#line 31 "rygel-external-plugin.vala"
 	g_return_val_if_fail (root_object != NULL, NULL);
+#line 35 "rygel-external-plugin.vala"
 	self = (RygelExternalPlugin*) rygel_plugin_construct_MediaServer (object_type, service_name, title, RYGEL_TYPE_EXTERNAL_CONTENT_DIR);
+#line 39 "rygel-external-plugin.vala"
 	self->service_name = (_tmp0_ = g_strdup (service_name), _g_free0 (self->service_name), _tmp0_);
+#line 40 "rygel-external-plugin.vala"
 	self->root_object = (_tmp1_ = g_strdup (root_object), _g_free0 (self->root_object), _tmp1_);
+#line 41 "rygel-external-plugin.vala"
 	if (icon != NULL) {
+#line 42 "rygel-external-plugin.vala"
 		rygel_plugin_add_icon ((RygelPlugin*) self, icon);
+#line 105 "rygel-external-plugin.c"
 	}
 	return self;
 }
 
 
+#line 31 "rygel-external-plugin.vala"
 RygelExternalPlugin* rygel_external_plugin_new (const char* service_name, const char* title, const char* root_object, RygelIconInfo* icon) {
+#line 31 "rygel-external-plugin.vala"
 	return rygel_external_plugin_construct (RYGEL_TYPE_EXTERNAL_PLUGIN, service_name, title, root_object, icon);
+#line 115 "rygel-external-plugin.c"
 }
 
 

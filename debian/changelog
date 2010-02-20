@@ -1,3 +1,12 @@
+rygel (0.4.10-2) unstable; urgency=low
+
+  * Bump Standards-Version to 3.8.4
+  * Update patch series
+    (+ 0002-enable-rygel-by-default-in-maemo-config-as-well.patch)
+    + 0003-Fix-rygel-desktop-file.patch
+
+ -- Andreas Henriksson <andreas@fatal.se>  Sat, 20 Feb 2010 09:34:38 +0100
+
 rygel (0.4.10-1) unstable; urgency=low
 
   * Add recommends on gstreamer plugin sets base and ugly. (Closes: #565284)

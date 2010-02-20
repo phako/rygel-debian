@@ -14,7 +14,7 @@ Build-Depends: quilt, debhelper (>= 7), autotools-dev,
     libsoup2.4-dev (>= 2.26.0),
     libsqlite3-dev (>= 3.5),
     libgtk2.0-dev (>= 2.16)
-Standards-Version: 3.8.3
+Standards-Version: 3.8.4
 Homepage: http://live.gnome.org/Rygel
 Vcs-Git: git://git.debian.org/git/collab-maint/rygel.git
 Vcs-Browser: http://git.debian.org/?p=collab-maint/rygel.git

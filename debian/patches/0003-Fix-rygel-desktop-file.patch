@@ -1,0 +1,27 @@
+From e5cc36b585728027731d6dea476de2f853abec29 Mon Sep 17 00:00:00 2001
+From: Andreas Henriksson <andreas@fatal.se>
+Date: Sat, 20 Feb 2010 09:26:53 +0100
+Subject: [PATCH 3/3] Fix rygel desktop file.
+
+---
+ data/rygel.desktop.in |    3 ++-
+ 1 files changed, 2 insertions(+), 1 deletions(-)
+
+diff --git a/data/rygel.desktop.in b/data/rygel.desktop.in
+index 3db7646..5d208b3 100644
+--- a/data/rygel.desktop.in
++++ b/data/rygel.desktop.in
+@@ -4,8 +4,9 @@ Name=Rygel
+ Name[en_GB]=Rygel
+ GenericName=UPnP/DLNA Services
+ GenericName[en_GB]=UPnP/DLNA Services
++Comment=UPnP/DLNA Services
+ Categories=
+-Exec=dbus-send --dest=org.freedesktop.DBus /org/freedesktop/DBus org.freedesktop.DBus.StartServiceByName string:org.gnome.Rygel uint32:0
++Exec=dbus-send --type=method_call --dest=org.freedesktop.DBus /org/freedesktop/DBus org.freedesktop.DBus.StartServiceByName string:org.gnome.Rygel1 uint32:0
+ Terminal=false
+ Type=Application
+ NoDisplay=true
+-- 
+1.7.0
+

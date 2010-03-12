@@ -420,31 +420,37 @@ static gboolean rygel_browse_real_run_co (RygelBrowseRunData* data) {
 #line 71 "rygel-browse.vala"
 				rygel_browse_parse_args (data->self, NULL, NULL);
 #line 423 "rygel-browse.c"
-				rygel_browse_fetch_media_object (data->self, rygel_browse_run_ready, data);
 				data->_state_ = 21;
+				rygel_browse_fetch_media_object (data->self, rygel_browse_run_ready, data);
 				return FALSE;
 				case 21:
 				data->media_object = rygel_browse_fetch_media_object_finish (data->self, data->_res_, &data->_inner_error_);
 				if (data->_inner_error_ != NULL) {
 					goto __catch40_g_error;
-					goto __finally40;
+					g_critical ("file %s: line %d: unexpected error: %s (%s, %d)", __FILE__, __LINE__, data->_inner_error_->message, g_quark_to_string (data->_inner_error_->domain), data->_inner_error_->code);
+					g_clear_error (&data->_inner_error_);
+					return FALSE;
 				}
 #line 76 "rygel-browse.vala"
 				if (data->self->priv->fetch_metadata) {
-#line 435 "rygel-browse.c"
+#line 437 "rygel-browse.c"
 					data->_tmp0_ = rygel_browse_handle_metadata_request (data->self, data->media_object, &data->_inner_error_);
 					if (data->_inner_error_ != NULL) {
 						_g_object_unref0 (data->media_object);
 						_g_object_unref0 (data->results);
 						goto __catch40_g_error;
-						goto __finally40;
+						_g_object_unref0 (data->media_object);
+						_g_object_unref0 (data->results);
+						g_critical ("file %s: line %d: unexpected error: %s (%s, %d)", __FILE__, __LINE__, data->_inner_error_->message, g_quark_to_string (data->_inner_error_->domain), data->_inner_error_->code);
+						g_clear_error (&data->_inner_error_);
+						return FALSE;
 					}
 #line 78 "rygel-browse.vala"
 					data->results = (data->_tmp1_ = data->_tmp0_, _g_object_unref0 (data->results), data->_tmp1_);
-#line 445 "rygel-browse.c"
+#line 451 "rygel-browse.c"
 				} else {
-					rygel_browse_handle_children_request (data->self, data->media_object, rygel_browse_run_ready, data);
 					data->_state_ = 22;
+					rygel_browse_handle_children_request (data->self, data->media_object, rygel_browse_run_ready, data);
 					return FALSE;
 					case 22:
 					data->_tmp2_ = rygel_browse_handle_children_request_finish (data->self, data->_res_, &data->_inner_error_);
@@ -452,11 +458,15 @@ static gboolean rygel_browse_real_run_co (RygelBrowseRunData* data) {
 						_g_object_unref0 (data->media_object);
 						_g_object_unref0 (data->results);
 						goto __catch40_g_error;
-						goto __finally40;
+						_g_object_unref0 (data->media_object);
+						_g_object_unref0 (data->results);
+						g_critical ("file %s: line %d: unexpected error: %s (%s, %d)", __FILE__, __LINE__, data->_inner_error_->message, g_quark_to_string (data->_inner_error_->domain), data->_inner_error_->code);
+						g_clear_error (&data->_inner_error_);
+						return FALSE;
 					}
 #line 81 "rygel-browse.vala"
 					data->results = (data->_tmp3_ = data->_tmp2_, _g_object_unref0 (data->results), data->_tmp3_);
-#line 460 "rygel-browse.c"
+#line 470 "rygel-browse.c"
 				}
 				{
 					data->_result_it = gee_iterable_iterator ((GeeIterable*) data->results);
@@ -466,19 +476,25 @@ static gboolean rygel_browse_real_run_co (RygelBrowseRunData* data) {
 						if (!gee_iterator_next (data->_result_it)) {
 #line 84 "rygel-browse.vala"
 							break;
-#line 470 "rygel-browse.c"
+#line 480 "rygel-browse.c"
 						}
 						data->_result_ = (RygelMediaObject*) gee_iterator_get (data->_result_it);
 #line 85 "rygel-browse.vala"
 						rygel_didl_lite_writer_serialize (data->self->priv->didl_writer, data->_result_, &data->_inner_error_);
-#line 475 "rygel-browse.c"
+#line 485 "rygel-browse.c"
 						if (data->_inner_error_ != NULL) {
 							_g_object_unref0 (data->_result_);
 							_g_object_unref0 (data->_result_it);
 							_g_object_unref0 (data->media_object);
 							_g_object_unref0 (data->results);
 							goto __catch40_g_error;
-							goto __finally40;
+							_g_object_unref0 (data->_result_);
+							_g_object_unref0 (data->_result_it);
+							_g_object_unref0 (data->media_object);
+							_g_object_unref0 (data->results);
+							g_critical ("file %s: line %d: unexpected error: %s (%s, %d)", __FILE__, __LINE__, data->_inner_error_->message, g_quark_to_string (data->_inner_error_->domain), data->_inner_error_->code);
+							g_clear_error (&data->_inner_error_);
+							return FALSE;
 						}
 						_g_object_unref0 (data->_result_);
 					}
@@ -486,7 +502,7 @@ static gboolean rygel_browse_real_run_co (RygelBrowseRunData* data) {
 				}
 #line 89 "rygel-browse.vala"
 				rygel_browse_conclude (data->self);
-#line 490 "rygel-browse.c"
+#line 506 "rygel-browse.c"
 				_g_object_unref0 (data->media_object);
 				_g_object_unref0 (data->results);
 			}
@@ -498,7 +514,7 @@ static gboolean rygel_browse_real_run_co (RygelBrowseRunData* data) {
 				{
 #line 91 "rygel-browse.vala"
 					rygel_browse_handle_error (data->self, data->err);
-#line 502 "rygel-browse.c"
+#line 518 "rygel-browse.c"
 					_g_error_free0 (data->err);
 				}
 			}
@@ -568,36 +584,36 @@ static gboolean rygel_browse_parse_args_co (RygelBrowseParseArgsData* data) {
 			if (data->self->browse_flag != NULL) {
 #line 106 "rygel-browse.vala"
 				data->_tmp0_ = _vala_strcmp0 (data->self->browse_flag, "BrowseDirectChildren") == 0;
-#line 572 "rygel-browse.c"
+#line 588 "rygel-browse.c"
 			} else {
 #line 105 "rygel-browse.vala"
 				data->_tmp0_ = FALSE;
-#line 576 "rygel-browse.c"
+#line 592 "rygel-browse.c"
 			}
 #line 105 "rygel-browse.vala"
 			if (data->_tmp0_) {
 #line 107 "rygel-browse.vala"
 				data->self->priv->fetch_metadata = FALSE;
-#line 582 "rygel-browse.c"
+#line 598 "rygel-browse.c"
 			} else {
 #line 108 "rygel-browse.vala"
 				if (data->self->browse_flag != NULL) {
 #line 109 "rygel-browse.vala"
 					data->_tmp1_ = _vala_strcmp0 (data->self->browse_flag, "BrowseMetadata") == 0;
-#line 588 "rygel-browse.c"
+#line 604 "rygel-browse.c"
 				} else {
 #line 108 "rygel-browse.vala"
 					data->_tmp1_ = FALSE;
-#line 592 "rygel-browse.c"
+#line 608 "rygel-browse.c"
 				}
 #line 108 "rygel-browse.vala"
 				if (data->_tmp1_) {
 #line 110 "rygel-browse.vala"
 					data->self->priv->fetch_metadata = TRUE;
-#line 598 "rygel-browse.c"
+#line 614 "rygel-browse.c"
 				} else {
 					data->_inner_error_ = g_error_new_literal (RYGEL_CONTENT_DIRECTORY_ERROR, RYGEL_CONTENT_DIRECTORY_ERROR_INVALID_ARGS, "Invalid Args");
-					if (data->_inner_error_ != NULL) {
+					{
 						g_simple_async_result_set_from_error (data->_async_result, data->_inner_error_);
 						g_error_free (data->_inner_error_);
 						{
@@ -616,13 +632,13 @@ static gboolean rygel_browse_parse_args_co (RygelBrowseParseArgsData* data) {
 			if (data->self->object_id == NULL) {
 #line 118 "rygel-browse.vala"
 				gupnp_service_action_get (data->self->priv->action, "ContainerID", G_TYPE_STRING, &data->self->object_id, NULL);
-#line 620 "rygel-browse.c"
+#line 636 "rygel-browse.c"
 			}
 #line 123 "rygel-browse.vala"
 			if (data->self->object_id == NULL) {
-#line 624 "rygel-browse.c"
+#line 640 "rygel-browse.c"
 				data->_inner_error_ = g_error_new_literal (RYGEL_CONTENT_DIRECTORY_ERROR, RYGEL_CONTENT_DIRECTORY_ERROR_NO_SUCH_OBJECT, "No such object");
-				if (data->_inner_error_ != NULL) {
+				{
 					g_simple_async_result_set_from_error (data->_async_result, data->_inner_error_);
 					g_error_free (data->_inner_error_);
 					{
@@ -697,7 +713,7 @@ static gboolean rygel_browse_fetch_media_object_co (RygelBrowseFetchMediaObjectD
 		{
 #line 130 "rygel-browse.vala"
 			if (_vala_strcmp0 (data->self->object_id, ((RygelMediaObject*) data->self->priv->root_container)->id) == 0) {
-#line 701 "rygel-browse.c"
+#line 717 "rygel-browse.c"
 				data->result = _g_object_ref0 ((RygelMediaObject*) data->self->priv->root_container);
 				{
 					if (data->_state_ == 0) {
@@ -709,8 +725,8 @@ static gboolean rygel_browse_fetch_media_object_co (RygelBrowseFetchMediaObjectD
 					return FALSE;
 				}
 			} else {
-				rygel_media_container_find_object (data->self->priv->root_container, data->self->object_id, rygel_state_machine_get_cancellable ((RygelStateMachine*) data->self), rygel_browse_fetch_media_object_ready, data);
 				data->_state_ = 23;
+				rygel_media_container_find_object (data->self->priv->root_container, data->self->object_id, rygel_state_machine_get_cancellable ((RygelStateMachine*) data->self), rygel_browse_fetch_media_object_ready, data);
 				return FALSE;
 				case 23:
 				data->media_object = rygel_media_container_find_object_finish (data->self->priv->root_container, data->_res_, &data->_inner_error_);
@@ -729,9 +745,9 @@ static gboolean rygel_browse_fetch_media_object_co (RygelBrowseFetchMediaObjectD
 				}
 #line 136 "rygel-browse.vala"
 				if (data->media_object == NULL) {
-#line 733 "rygel-browse.c"
+#line 749 "rygel-browse.c"
 					data->_inner_error_ = g_error_new_literal (RYGEL_CONTENT_DIRECTORY_ERROR, RYGEL_CONTENT_DIRECTORY_ERROR_NO_SUCH_OBJECT, "No such object");
-					if (data->_inner_error_ != NULL) {
+					{
 						g_simple_async_result_set_from_error (data->_async_result, data->_inner_error_);
 						g_error_free (data->_inner_error_);
 						_g_object_unref0 (data->media_object);
@@ -774,7 +790,7 @@ static gboolean rygel_browse_fetch_media_object_co (RygelBrowseFetchMediaObjectD
 
 #line 145 "rygel-browse.vala"
 static GeeList* rygel_browse_handle_metadata_request (RygelBrowse* self, RygelMediaObject* media_object, GError** error) {
-#line 778 "rygel-browse.c"
+#line 794 "rygel-browse.c"
 	GeeList* result;
 	GeeArrayList* results;
 #line 145 "rygel-browse.vala"
@@ -785,11 +801,11 @@ static GeeList* rygel_browse_handle_metadata_request (RygelBrowse* self, RygelMe
 	if (RYGEL_IS_MEDIA_CONTAINER (media_object)) {
 #line 149 "rygel-browse.vala"
 		self->update_id = (guint) RYGEL_MEDIA_CONTAINER (media_object)->update_id;
-#line 789 "rygel-browse.c"
+#line 805 "rygel-browse.c"
 	} else {
 #line 151 "rygel-browse.vala"
 		self->update_id = (guint) G_MAXUINT32;
-#line 793 "rygel-browse.c"
+#line 809 "rygel-browse.c"
 	}
 #line 154 "rygel-browse.vala"
 	self->number_returned = (guint) 1;
@@ -799,11 +815,11 @@ static GeeList* rygel_browse_handle_metadata_request (RygelBrowse* self, RygelMe
 	results = gee_array_list_new (RYGEL_TYPE_MEDIA_OBJECT, (GBoxedCopyFunc) g_object_ref, g_object_unref, NULL);
 #line 158 "rygel-browse.vala"
 	gee_abstract_collection_add ((GeeAbstractCollection*) results, media_object);
-#line 803 "rygel-browse.c"
+#line 819 "rygel-browse.c"
 	result = (GeeList*) results;
 #line 160 "rygel-browse.vala"
 	return result;
-#line 807 "rygel-browse.c"
+#line 823 "rygel-browse.c"
 }
 
 
@@ -856,9 +872,9 @@ static gboolean rygel_browse_handle_children_request_co (RygelBrowseHandleChildr
 		{
 #line 166 "rygel-browse.vala"
 			if (!RYGEL_IS_MEDIA_CONTAINER (data->media_object)) {
-#line 860 "rygel-browse.c"
+#line 876 "rygel-browse.c"
 				data->_inner_error_ = g_error_new_literal (RYGEL_CONTENT_DIRECTORY_ERROR, RYGEL_CONTENT_DIRECTORY_ERROR_NO_SUCH_OBJECT, "No such object");
-				if (data->_inner_error_ != NULL) {
+				{
 					g_simple_async_result_set_from_error (data->_async_result, data->_inner_error_);
 					g_error_free (data->_inner_error_);
 					{
@@ -881,10 +897,10 @@ static gboolean rygel_browse_handle_children_request_co (RygelBrowseHandleChildr
 			if (data->self->requested_count == 0) {
 #line 176 "rygel-browse.vala"
 				data->self->requested_count = data->self->total_matches;
-#line 885 "rygel-browse.c"
+#line 901 "rygel-browse.c"
 			}
-			rygel_media_container_get_children (data->container, data->self->index, data->self->requested_count, rygel_state_machine_get_cancellable ((RygelStateMachine*) data->self), rygel_browse_handle_children_request_ready, data);
 			data->_state_ = 24;
+			rygel_media_container_get_children (data->container, data->self->index, data->self->requested_count, rygel_state_machine_get_cancellable ((RygelStateMachine*) data->self), rygel_browse_handle_children_request_ready, data);
 			return FALSE;
 			case 24:
 			data->children = rygel_media_container_get_children_finish (data->container, data->_res_, &data->_inner_error_);
@@ -904,7 +920,7 @@ static gboolean rygel_browse_handle_children_request_co (RygelBrowseHandleChildr
 			}
 #line 182 "rygel-browse.vala"
 			data->self->number_returned = (guint) gee_collection_get_size ((GeeCollection*) data->children);
-#line 908 "rygel-browse.c"
+#line 924 "rygel-browse.c"
 			data->result = data->children;
 			_g_object_unref0 (data->container);
 			{
@@ -934,7 +950,7 @@ static gboolean rygel_browse_handle_children_request_co (RygelBrowseHandleChildr
 
 #line 187 "rygel-browse.vala"
 static void rygel_browse_conclude (RygelBrowse* self) {
-#line 938 "rygel-browse.c"
+#line 954 "rygel-browse.c"
 	char* didl;
 #line 187 "rygel-browse.vala"
 	g_return_if_fail (self != NULL);
@@ -946,7 +962,7 @@ static void rygel_browse_conclude (RygelBrowse* self) {
 	if (self->update_id == G_MAXUINT32) {
 #line 195 "rygel-browse.vala"
 		self->update_id = (guint) self->priv->system_update_id;
-#line 950 "rygel-browse.c"
+#line 966 "rygel-browse.c"
 	}
 #line 199 "rygel-browse.vala"
 	gupnp_service_action_set (self->priv->action, "Result", G_TYPE_STRING, didl, "NumberReturned", G_TYPE_UINT, self->number_returned, "TotalMatches", G_TYPE_UINT, self->total_matches, "UpdateID", G_TYPE_UINT, self->update_id, NULL);
@@ -954,7 +970,7 @@ static void rygel_browse_conclude (RygelBrowse* self) {
 	gupnp_service_action_return (self->priv->action);
 #line 205 "rygel-browse.vala"
 	g_signal_emit_by_name ((RygelStateMachine*) self, "completed");
-#line 958 "rygel-browse.c"
+#line 974 "rygel-browse.c"
 	_g_free0 (didl);
 }
 
@@ -969,17 +985,17 @@ static void rygel_browse_handle_error (RygelBrowse* self, GError* _error_) {
 		g_warning ("rygel-browse.vala:210: Failed to browse '%s': %s\n", self->object_id, _error_->message);
 #line 213 "rygel-browse.vala"
 		gupnp_service_action_return_error (self->priv->action, (guint) _error_->code, _error_->message);
-#line 973 "rygel-browse.c"
+#line 989 "rygel-browse.c"
 	} else {
 #line 215 "rygel-browse.vala"
 		g_warning ("rygel-browse.vala:215: Failed to browse '%s': %s\n", self->object_id, _error_->message);
 #line 218 "rygel-browse.vala"
 		gupnp_service_action_return_error (self->priv->action, (guint) 701, _error_->message);
-#line 979 "rygel-browse.c"
+#line 995 "rygel-browse.c"
 	}
 #line 221 "rygel-browse.vala"
 	g_signal_emit_by_name ((RygelStateMachine*) self, "completed");
-#line 983 "rygel-browse.c"
+#line 999 "rygel-browse.c"
 }
 
 
@@ -990,7 +1006,7 @@ static GCancellable* rygel_browse_real_get_cancellable (RygelStateMachine* base)
 	result = self->priv->_cancellable;
 #line 56 "rygel-browse.vala"
 	return result;
-#line 994 "rygel-browse.c"
+#line 1010 "rygel-browse.c"
 }
 
 

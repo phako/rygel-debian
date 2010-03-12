@@ -309,6 +309,7 @@ RygelRootDeviceFactory* rygel_root_device_factory_construct (GType object_type, 
 #line 310 "rygel-root-device-factory.c"
 	if (_inner_error_ != NULL) {
 		g_propagate_error (error, _inner_error_);
+		rygel_root_device_factory_unref (self);
 		return NULL;
 	}
 	return self;
@@ -319,13 +320,13 @@ RygelRootDeviceFactory* rygel_root_device_factory_construct (GType object_type, 
 RygelRootDeviceFactory* rygel_root_device_factory_new (GUPnPContext* context, GError** error) {
 #line 43 "rygel-root-device-factory.vala"
 	return rygel_root_device_factory_construct (RYGEL_TYPE_ROOT_DEVICE_FACTORY, context, error);
-#line 323 "rygel-root-device-factory.c"
+#line 324 "rygel-root-device-factory.c"
 }
 
 
 #line 53 "rygel-root-device-factory.vala"
 RygelRootDevice* rygel_root_device_factory_create (RygelRootDeviceFactory* self, RygelPlugin* plugin, GError** error) {
-#line 329 "rygel-root-device-factory.c"
+#line 330 "rygel-root-device-factory.c"
 	RygelRootDevice* result;
 	GError * _inner_error_;
 	char* modified_desc;
@@ -335,7 +336,7 @@ RygelRootDevice* rygel_root_device_factory_create (RygelRootDeviceFactory* self,
 	g_return_val_if_fail (self != NULL, NULL);
 #line 53 "rygel-root-device-factory.vala"
 	g_return_val_if_fail (plugin != NULL, NULL);
-#line 339 "rygel-root-device-factory.c"
+#line 340 "rygel-root-device-factory.c"
 	_inner_error_ = NULL;
 #line 54 "rygel-root-device-factory.vala"
 	modified_desc = g_strconcat (plugin->name, ".xml", NULL);
@@ -343,7 +344,7 @@ RygelRootDevice* rygel_root_device_factory_create (RygelRootDeviceFactory* self,
 	desc_path = g_build_filename (self->priv->desc_dir, modified_desc, NULL);
 #line 59 "rygel-root-device-factory.vala"
 	doc = rygel_root_device_factory_create_desc (self, plugin, desc_path, &_inner_error_);
-#line 347 "rygel-root-device-factory.c"
+#line 348 "rygel-root-device-factory.c"
 	if (_inner_error_ != NULL) {
 		g_propagate_error (error, _inner_error_);
 		_g_free0 (modified_desc);
@@ -356,13 +357,13 @@ RygelRootDevice* rygel_root_device_factory_create (RygelRootDeviceFactory* self,
 	_g_object_unref0 (doc);
 #line 61 "rygel-root-device-factory.vala"
 	return result;
-#line 360 "rygel-root-device-factory.c"
+#line 361 "rygel-root-device-factory.c"
 }
 
 
 #line 68 "rygel-root-device-factory.vala"
 static GUPnPXMLDoc* rygel_root_device_factory_create_desc (RygelRootDeviceFactory* self, RygelPlugin* plugin, const char* desc_path, GError** error) {
-#line 366 "rygel-root-device-factory.c"
+#line 367 "rygel-root-device-factory.c"
 	GUPnPXMLDoc* result;
 	GError * _inner_error_;
 	char* path;
@@ -373,25 +374,25 @@ static GUPnPXMLDoc* rygel_root_device_factory_create_desc (RygelRootDeviceFactor
 	g_return_val_if_fail (plugin != NULL, NULL);
 #line 68 "rygel-root-device-factory.vala"
 	g_return_val_if_fail (desc_path != NULL, NULL);
-#line 377 "rygel-root-device-factory.c"
+#line 378 "rygel-root-device-factory.c"
 	_inner_error_ = NULL;
 	path = NULL;
 #line 72 "rygel-root-device-factory.vala"
 	if (rygel_root_device_factory_check_path_exist (self, desc_path)) {
-#line 382 "rygel-root-device-factory.c"
+#line 383 "rygel-root-device-factory.c"
 		char* _tmp0_;
 #line 73 "rygel-root-device-factory.vala"
 		path = (_tmp0_ = g_strdup (desc_path), _g_free0 (path), _tmp0_);
-#line 386 "rygel-root-device-factory.c"
+#line 387 "rygel-root-device-factory.c"
 	} else {
 		char* _tmp1_;
 #line 76 "rygel-root-device-factory.vala"
 		path = (_tmp1_ = g_strdup (plugin->desc_path), _g_free0 (path), _tmp1_);
-#line 391 "rygel-root-device-factory.c"
+#line 392 "rygel-root-device-factory.c"
 	}
 #line 79 "rygel-root-device-factory.vala"
 	doc = gupnp_xml_doc_new_from_path (path, &_inner_error_);
-#line 395 "rygel-root-device-factory.c"
+#line 396 "rygel-root-device-factory.c"
 	if (_inner_error_ != NULL) {
 		g_propagate_error (error, _inner_error_);
 		_g_free0 (path);
@@ -401,7 +402,7 @@ static GUPnPXMLDoc* rygel_root_device_factory_create_desc (RygelRootDeviceFactor
 	rygel_root_device_factory_prepare_desc_for_plugin (self, doc, plugin);
 #line 84 "rygel-root-device-factory.vala"
 	rygel_root_device_factory_save_modified_desc (self, doc, desc_path, &_inner_error_);
-#line 405 "rygel-root-device-factory.c"
+#line 406 "rygel-root-device-factory.c"
 	if (_inner_error_ != NULL) {
 		g_propagate_error (error, _inner_error_);
 		_g_free0 (path);
@@ -412,13 +413,13 @@ static GUPnPXMLDoc* rygel_root_device_factory_create_desc (RygelRootDeviceFactor
 	_g_free0 (path);
 #line 86 "rygel-root-device-factory.vala"
 	return result;
-#line 416 "rygel-root-device-factory.c"
+#line 417 "rygel-root-device-factory.c"
 }
 
 
 #line 89 "rygel-root-device-factory.vala"
 static void rygel_root_device_factory_prepare_desc_for_plugin (RygelRootDeviceFactory* self, GUPnPXMLDoc* doc, RygelPlugin* plugin) {
-#line 422 "rygel-root-device-factory.c"
+#line 423 "rygel-root-device-factory.c"
 	xmlNode* device_element = NULL;
 #line 89 "rygel-root-device-factory.vala"
 	g_return_if_fail (self != NULL);
@@ -434,7 +435,7 @@ static void rygel_root_device_factory_prepare_desc_for_plugin (RygelRootDeviceFa
 		g_warning ("rygel-root-device-factory.vala:97: Element /root/device not found.");
 #line 99 "rygel-root-device-factory.vala"
 		return;
-#line 438 "rygel-root-device-factory.c"
+#line 439 "rygel-root-device-factory.c"
 	}
 #line 103 "rygel-root-device-factory.vala"
 	rygel_root_device_factory_set_friendly_name_and_udn (self, device_element, plugin->name, plugin->title);
@@ -442,52 +443,57 @@ static void rygel_root_device_factory_prepare_desc_for_plugin (RygelRootDeviceFa
 	rygel_root_device_factory_add_icons_to_desc (self, device_element, plugin);
 #line 111 "rygel-root-device-factory.vala"
 	rygel_root_device_factory_add_services_to_desc (self, device_element, plugin);
-#line 446 "rygel-root-device-factory.c"
+#line 447 "rygel-root-device-factory.c"
 }
 
 
-#line 1027 "glib-2.0.vapi"
+#line 1025 "glib-2.0.vapi"
 static char* string_replace (const char* self, const char* old, const char* replacement) {
-#line 452 "rygel-root-device-factory.c"
+#line 453 "rygel-root-device-factory.c"
 	char* result;
 	GError * _inner_error_;
-#line 1027 "glib-2.0.vapi"
+#line 1025 "glib-2.0.vapi"
 	g_return_val_if_fail (self != NULL, NULL);
-#line 1027 "glib-2.0.vapi"
+#line 1025 "glib-2.0.vapi"
 	g_return_val_if_fail (old != NULL, NULL);
-#line 1027 "glib-2.0.vapi"
+#line 1025 "glib-2.0.vapi"
 	g_return_val_if_fail (replacement != NULL, NULL);
-#line 461 "rygel-root-device-factory.c"
+#line 462 "rygel-root-device-factory.c"
 	_inner_error_ = NULL;
 	{
 		char* _tmp0_;
 		GRegex* _tmp1_;
 		GRegex* regex;
 		char* _tmp2_;
-#line 1029 "glib-2.0.vapi"
+#line 1027 "glib-2.0.vapi"
 		regex = (_tmp1_ = g_regex_new (_tmp0_ = g_regex_escape_string (old, -1), 0, 0, &_inner_error_), _g_free0 (_tmp0_), _tmp1_);
-#line 470 "rygel-root-device-factory.c"
+#line 471 "rygel-root-device-factory.c"
 		if (_inner_error_ != NULL) {
 			if (_inner_error_->domain == G_REGEX_ERROR) {
 				goto __catch58_g_regex_error;
 			}
-			goto __finally58;
+			g_critical ("file %s: line %d: unexpected error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
+			g_clear_error (&_inner_error_);
+			return NULL;
 		}
-#line 1030 "glib-2.0.vapi"
+#line 1028 "glib-2.0.vapi"
 		_tmp2_ = g_regex_replace_literal (regex, self, (gssize) (-1), 0, replacement, 0, &_inner_error_);
-#line 479 "rygel-root-device-factory.c"
+#line 482 "rygel-root-device-factory.c"
 		if (_inner_error_ != NULL) {
 			_g_regex_unref0 (regex);
 			if (_inner_error_->domain == G_REGEX_ERROR) {
 				goto __catch58_g_regex_error;
 			}
-			goto __finally58;
+			_g_regex_unref0 (regex);
+			g_critical ("file %s: line %d: unexpected error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
+			g_clear_error (&_inner_error_);
+			return NULL;
 		}
 		result = _tmp2_;
 		_g_regex_unref0 (regex);
-#line 1030 "glib-2.0.vapi"
+#line 1028 "glib-2.0.vapi"
 		return result;
-#line 491 "rygel-root-device-factory.c"
+#line 497 "rygel-root-device-factory.c"
 	}
 	goto __finally58;
 	__catch58_g_regex_error:
@@ -496,9 +502,9 @@ static char* string_replace (const char* self, const char* old, const char* repl
 		e = _inner_error_;
 		_inner_error_ = NULL;
 		{
-#line 1032 "glib-2.0.vapi"
+#line 1030 "glib-2.0.vapi"
 			g_assert_not_reached ();
-#line 502 "rygel-root-device-factory.c"
+#line 508 "rygel-root-device-factory.c"
 			_g_error_free0 (e);
 		}
 	}
@@ -513,7 +519,7 @@ static char* string_replace (const char* self, const char* old, const char* repl
 
 #line 118 "rygel-root-device-factory.vala"
 static void rygel_root_device_factory_set_friendly_name_and_udn (RygelRootDeviceFactory* self, xmlNode* device_element, const char* plugin_name, const char* plugin_title) {
-#line 517 "rygel-root-device-factory.c"
+#line 523 "rygel-root-device-factory.c"
 	GError * _inner_error_;
 	xmlNode* element;
 	char* title;
@@ -528,7 +534,7 @@ static void rygel_root_device_factory_set_friendly_name_and_udn (RygelRootDevice
 	g_return_if_fail (plugin_name != NULL);
 #line 118 "rygel-root-device-factory.vala"
 	g_return_if_fail (plugin_title != NULL);
-#line 532 "rygel-root-device-factory.c"
+#line 538 "rygel-root-device-factory.c"
 	_inner_error_ = NULL;
 #line 122 "rygel-root-device-factory.vala"
 	element = get_xml_element (device_element, "friendlyName", NULL, NULL);
@@ -538,7 +544,7 @@ static void rygel_root_device_factory_set_friendly_name_and_udn (RygelRootDevice
 		g_warning ("rygel-root-device-factory.vala:126: Element /root/device/friendlyName not found.");
 #line 128 "rygel-root-device-factory.vala"
 		return;
-#line 542 "rygel-root-device-factory.c"
+#line 548 "rygel-root-device-factory.c"
 	}
 	title = NULL;
 	{
@@ -546,14 +552,17 @@ static void rygel_root_device_factory_set_friendly_name_and_udn (RygelRootDevice
 		char* _tmp1_;
 #line 133 "rygel-root-device-factory.vala"
 		_tmp0_ = rygel_configuration_get_title (self->priv->config, plugin_name, &_inner_error_);
-#line 550 "rygel-root-device-factory.c"
+#line 556 "rygel-root-device-factory.c"
 		if (_inner_error_ != NULL) {
 			goto __catch57_g_error;
-			goto __finally57;
+			_g_free0 (title);
+			g_critical ("file %s: line %d: unexpected error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
+			g_clear_error (&_inner_error_);
+			return;
 		}
 #line 133 "rygel-root-device-factory.vala"
 		title = (_tmp1_ = _tmp0_, _g_free0 (title), _tmp1_);
-#line 557 "rygel-root-device-factory.c"
+#line 566 "rygel-root-device-factory.c"
 	}
 	goto __finally57;
 	__catch57_g_error:
@@ -565,7 +574,7 @@ static void rygel_root_device_factory_set_friendly_name_and_udn (RygelRootDevice
 			char* _tmp2_;
 #line 135 "rygel-root-device-factory.vala"
 			title = (_tmp2_ = g_strdup (plugin_title), _g_free0 (title), _tmp2_);
-#line 569 "rygel-root-device-factory.c"
+#line 578 "rygel-root-device-factory.c"
 			_g_error_free0 (err);
 		}
 	}
@@ -590,11 +599,11 @@ static void rygel_root_device_factory_set_friendly_name_and_udn (RygelRootDevice
 	if (element == NULL) {
 #line 147 "rygel-root-device-factory.vala"
 		g_warning ("rygel-root-device-factory.vala:147: Element /root/device/UDN not found.");
-#line 594 "rygel-root-device-factory.c"
+#line 603 "rygel-root-device-factory.c"
 		_g_free0 (title);
 #line 149 "rygel-root-device-factory.vala"
 		return;
-#line 598 "rygel-root-device-factory.c"
+#line 607 "rygel-root-device-factory.c"
 	}
 #line 152 "rygel-root-device-factory.vala"
 	udn = xmlNodeGetContent (element);
@@ -602,21 +611,21 @@ static void rygel_root_device_factory_set_friendly_name_and_udn (RygelRootDevice
 	if (udn == NULL) {
 #line 153 "rygel-root-device-factory.vala"
 		_tmp6_ = TRUE;
-#line 606 "rygel-root-device-factory.c"
+#line 615 "rygel-root-device-factory.c"
 	} else {
 #line 153 "rygel-root-device-factory.vala"
 		_tmp6_ = _vala_strcmp0 (udn, "") == 0;
-#line 610 "rygel-root-device-factory.c"
+#line 619 "rygel-root-device-factory.c"
 	}
 #line 153 "rygel-root-device-factory.vala"
 	if (_tmp6_) {
-#line 614 "rygel-root-device-factory.c"
+#line 623 "rygel-root-device-factory.c"
 		char* _tmp7_;
 #line 154 "rygel-root-device-factory.vala"
 		udn = (_tmp7_ = generate_random_udn (), _g_free0 (udn), _tmp7_);
 #line 156 "rygel-root-device-factory.vala"
 		xmlNodeSetContent (element, udn);
-#line 620 "rygel-root-device-factory.c"
+#line 629 "rygel-root-device-factory.c"
 	}
 	_g_free0 (title);
 	_g_free0 (udn);
@@ -625,7 +634,7 @@ static void rygel_root_device_factory_set_friendly_name_and_udn (RygelRootDevice
 
 #line 160 "rygel-root-device-factory.vala"
 static void rygel_root_device_factory_add_services_to_desc (RygelRootDeviceFactory* self, xmlNode* device_element, RygelPlugin* plugin) {
-#line 629 "rygel-root-device-factory.c"
+#line 638 "rygel-root-device-factory.c"
 	xmlNode* service_list_node;
 #line 160 "rygel-root-device-factory.vala"
 	g_return_if_fail (self != NULL);
@@ -639,23 +648,23 @@ static void rygel_root_device_factory_add_services_to_desc (RygelRootDeviceFacto
 		g_warning ("rygel-root-device-factory.vala:166: Element /root/device/serviceList not found.");
 #line 168 "rygel-root-device-factory.vala"
 		return;
-#line 643 "rygel-root-device-factory.c"
+#line 652 "rygel-root-device-factory.c"
 	}
 #line 172 "rygel-root-device-factory.vala"
 	xmlNodeSetContent (service_list_node, "");
-#line 647 "rygel-root-device-factory.c"
+#line 656 "rygel-root-device-factory.c"
 	{
 		GeeIterator* _resource_info_it;
 		_resource_info_it = gee_abstract_collection_iterator ((GeeAbstractCollection*) plugin->resource_infos);
 #line 174 "rygel-root-device-factory.vala"
 		while (TRUE) {
-#line 653 "rygel-root-device-factory.c"
+#line 662 "rygel-root-device-factory.c"
 			RygelResourceInfo* resource_info;
 #line 174 "rygel-root-device-factory.vala"
 			if (!gee_iterator_next (_resource_info_it)) {
 #line 174 "rygel-root-device-factory.vala"
 				break;
-#line 659 "rygel-root-device-factory.c"
+#line 668 "rygel-root-device-factory.c"
 			}
 #line 174 "rygel-root-device-factory.vala"
 			resource_info = (RygelResourceInfo*) gee_iterator_get (_resource_info_it);
@@ -663,7 +672,7 @@ static void rygel_root_device_factory_add_services_to_desc (RygelRootDeviceFacto
 			if (g_type_is_a (resource_info->type, GUPNP_TYPE_SERVICE)) {
 #line 177 "rygel-root-device-factory.vala"
 				rygel_root_device_factory_add_service_to_desc (self, service_list_node, plugin->name, resource_info);
-#line 667 "rygel-root-device-factory.c"
+#line 676 "rygel-root-device-factory.c"
 			}
 			_rygel_resource_info_unref0 (resource_info);
 		}
@@ -674,7 +683,7 @@ static void rygel_root_device_factory_add_services_to_desc (RygelRootDeviceFacto
 
 #line 184 "rygel-root-device-factory.vala"
 static void rygel_root_device_factory_add_service_to_desc (RygelRootDeviceFactory* self, xmlNode* service_list_node, const char* plugin_name, RygelResourceInfo* resource_info) {
-#line 678 "rygel-root-device-factory.c"
+#line 687 "rygel-root-device-factory.c"
 	xmlNode* service_node;
 	char* url;
 	char* _tmp2_;
@@ -701,26 +710,26 @@ static void rygel_root_device_factory_add_service_to_desc (RygelRootDeviceFactor
 	xmlNewChild (service_node, NULL, "SCPDURL", url);
 #line 197 "rygel-root-device-factory.vala"
 	url = (_tmp2_ = g_strconcat (_tmp1_ = g_strconcat (_tmp0_ = g_strconcat (plugin_name, "/", NULL), g_type_name (resource_info->type), NULL), "/Event", NULL), _g_free0 (url), _tmp2_);
-#line 705 "rygel-root-device-factory.c"
+#line 714 "rygel-root-device-factory.c"
 	_g_free0 (_tmp1_);
 	_g_free0 (_tmp0_);
 #line 198 "rygel-root-device-factory.vala"
 	xmlNewChild (service_node, NULL, "eventSubURL", url);
 #line 200 "rygel-root-device-factory.vala"
 	url = (_tmp5_ = g_strconcat (_tmp4_ = g_strconcat (_tmp3_ = g_strconcat (plugin_name, "/", NULL), g_type_name (resource_info->type), NULL), "/Control", NULL), _g_free0 (url), _tmp5_);
-#line 712 "rygel-root-device-factory.c"
+#line 721 "rygel-root-device-factory.c"
 	_g_free0 (_tmp4_);
 	_g_free0 (_tmp3_);
 #line 201 "rygel-root-device-factory.vala"
 	xmlNewChild (service_node, NULL, "controlURL", url);
-#line 717 "rygel-root-device-factory.c"
+#line 726 "rygel-root-device-factory.c"
 	_g_free0 (url);
 }
 
 
 #line 204 "rygel-root-device-factory.vala"
 static void rygel_root_device_factory_add_icons_to_desc (RygelRootDeviceFactory* self, xmlNode* device_element, RygelPlugin* plugin) {
-#line 724 "rygel-root-device-factory.c"
+#line 733 "rygel-root-device-factory.c"
 	gboolean _tmp0_ = FALSE;
 	xmlNode* icon_list_node;
 #line 204 "rygel-root-device-factory.vala"
@@ -731,11 +740,11 @@ static void rygel_root_device_factory_add_icons_to_desc (RygelRootDeviceFactory*
 	if (plugin->icon_infos == NULL) {
 #line 206 "rygel-root-device-factory.vala"
 		_tmp0_ = TRUE;
-#line 735 "rygel-root-device-factory.c"
+#line 744 "rygel-root-device-factory.c"
 	} else {
 #line 206 "rygel-root-device-factory.vala"
 		_tmp0_ = gee_collection_get_size ((GeeCollection*) plugin->icon_infos) == 0;
-#line 739 "rygel-root-device-factory.c"
+#line 748 "rygel-root-device-factory.c"
 	}
 #line 206 "rygel-root-device-factory.vala"
 	if (_tmp0_) {
@@ -743,7 +752,7 @@ static void rygel_root_device_factory_add_icons_to_desc (RygelRootDeviceFactory*
 		g_debug ("rygel-root-device-factory.vala:207: No icon provided by %s.", plugin->name);
 #line 209 "rygel-root-device-factory.vala"
 		return;
-#line 747 "rygel-root-device-factory.c"
+#line 756 "rygel-root-device-factory.c"
 	}
 #line 212 "rygel-root-device-factory.vala"
 	icon_list_node = get_xml_element (device_element, "iconList", NULL, NULL);
@@ -751,30 +760,30 @@ static void rygel_root_device_factory_add_icons_to_desc (RygelRootDeviceFactory*
 	if (icon_list_node == NULL) {
 #line 216 "rygel-root-device-factory.vala"
 		icon_list_node = xmlNewChild (device_element, NULL, "iconList", NULL);
-#line 755 "rygel-root-device-factory.c"
+#line 764 "rygel-root-device-factory.c"
 	} else {
 #line 219 "rygel-root-device-factory.vala"
 		xmlNodeSetContent (icon_list_node, "");
-#line 759 "rygel-root-device-factory.c"
+#line 768 "rygel-root-device-factory.c"
 	}
 	{
 		GeeIterator* _icon_info_it;
 		_icon_info_it = gee_abstract_collection_iterator ((GeeAbstractCollection*) plugin->icon_infos);
 #line 222 "rygel-root-device-factory.vala"
 		while (TRUE) {
-#line 766 "rygel-root-device-factory.c"
+#line 775 "rygel-root-device-factory.c"
 			RygelIconInfo* icon_info;
 #line 222 "rygel-root-device-factory.vala"
 			if (!gee_iterator_next (_icon_info_it)) {
 #line 222 "rygel-root-device-factory.vala"
 				break;
-#line 772 "rygel-root-device-factory.c"
+#line 781 "rygel-root-device-factory.c"
 			}
 #line 222 "rygel-root-device-factory.vala"
 			icon_info = (RygelIconInfo*) gee_iterator_get (_icon_info_it);
 #line 223 "rygel-root-device-factory.vala"
 			rygel_root_device_factory_add_icon_to_desc (self, icon_list_node, icon_info, plugin);
-#line 778 "rygel-root-device-factory.c"
+#line 787 "rygel-root-device-factory.c"
 			_rygel_icon_info_unref0 (icon_info);
 		}
 		_g_object_unref0 (_icon_info_it);
@@ -784,7 +793,7 @@ static void rygel_root_device_factory_add_icons_to_desc (RygelRootDeviceFactory*
 
 #line 227 "rygel-root-device-factory.vala"
 static void rygel_root_device_factory_add_icon_to_desc (RygelRootDeviceFactory* self, xmlNode* icon_list_node, RygelIconInfo* icon_info, RygelPlugin* plugin) {
-#line 788 "rygel-root-device-factory.c"
+#line 797 "rygel-root-device-factory.c"
 	xmlNode* icon_node;
 	char* width;
 	char* height;
@@ -816,7 +825,7 @@ static void rygel_root_device_factory_add_icon_to_desc (RygelRootDeviceFactory* 
 	uri = g_strdup (icon_info->uri);
 #line 244 "rygel-root-device-factory.vala"
 	if (g_str_has_prefix (uri, "file://")) {
-#line 820 "rygel-root-device-factory.c"
+#line 829 "rygel-root-device-factory.c"
 		char* _tmp6_;
 		char* _tmp5_;
 		char* _tmp4_;
@@ -835,7 +844,7 @@ static void rygel_root_device_factory_add_icon_to_desc (RygelRootDeviceFactory* 
 		gupnp_context_host_path (self->context, local_path, remote_path);
 #line 253 "rygel-root-device-factory.vala"
 		xmlNewChild (icon_node, NULL, "url", remote_path);
-#line 839 "rygel-root-device-factory.c"
+#line 848 "rygel-root-device-factory.c"
 		_g_free0 (remote_path);
 		_g_free0 (local_path);
 	} else {
@@ -844,7 +853,7 @@ static void rygel_root_device_factory_add_icon_to_desc (RygelRootDeviceFactory* 
 		uri = (_tmp8_ = string_replace (uri, "@ADDRESS@", gssdp_client_get_host_ip ((GSSDPClient*) self->context)), _g_free0 (uri), _tmp8_);
 #line 256 "rygel-root-device-factory.vala"
 		xmlNewChild (icon_node, NULL, "url", uri);
-#line 848 "rygel-root-device-factory.c"
+#line 857 "rygel-root-device-factory.c"
 	}
 	_g_free0 (width);
 	_g_free0 (height);
@@ -855,7 +864,7 @@ static void rygel_root_device_factory_add_icon_to_desc (RygelRootDeviceFactory* 
 
 #line 260 "rygel-root-device-factory.vala"
 static void rygel_root_device_factory_save_modified_desc (RygelRootDeviceFactory* self, GUPnPXMLDoc* doc, const char* desc_path, GError** error) {
-#line 859 "rygel-root-device-factory.c"
+#line 868 "rygel-root-device-factory.c"
 	GError * _inner_error_;
 	FILE* f;
 	gint res;
@@ -866,7 +875,7 @@ static void rygel_root_device_factory_save_modified_desc (RygelRootDeviceFactory
 	g_return_if_fail (doc != NULL);
 #line 260 "rygel-root-device-factory.vala"
 	g_return_if_fail (desc_path != NULL);
-#line 870 "rygel-root-device-factory.c"
+#line 879 "rygel-root-device-factory.c"
 	_inner_error_ = NULL;
 #line 262 "rygel-root-device-factory.vala"
 	f = fopen (desc_path, "w+");
@@ -876,29 +885,29 @@ static void rygel_root_device_factory_save_modified_desc (RygelRootDeviceFactory
 	if (f != NULL) {
 #line 266 "rygel-root-device-factory.vala"
 		res = xmlDocDump (f, doc->doc);
-#line 880 "rygel-root-device-factory.c"
+#line 889 "rygel-root-device-factory.c"
 	}
 #line 268 "rygel-root-device-factory.vala"
 	if (f == NULL) {
 #line 268 "rygel-root-device-factory.vala"
 		_tmp0_ = TRUE;
-#line 886 "rygel-root-device-factory.c"
+#line 895 "rygel-root-device-factory.c"
 	} else {
 #line 268 "rygel-root-device-factory.vala"
 		_tmp0_ = res == (-1);
-#line 890 "rygel-root-device-factory.c"
+#line 899 "rygel-root-device-factory.c"
 	}
 #line 268 "rygel-root-device-factory.vala"
 	if (_tmp0_) {
-#line 894 "rygel-root-device-factory.c"
+#line 903 "rygel-root-device-factory.c"
 		char* _tmp1_;
 		char* _tmp2_;
 		char* message;
 #line 269 "rygel-root-device-factory.vala"
 		message = (_tmp2_ = g_strconcat ("Failed to write modified description", _tmp1_ = g_strdup_printf (" to %s.\n", desc_path), NULL), _g_free0 (_tmp1_), _tmp2_);
-#line 900 "rygel-root-device-factory.c"
+#line 909 "rygel-root-device-factory.c"
 		_inner_error_ = g_error_new_literal (G_IO_ERROR, G_IO_ERROR_FAILED, message);
-		if (_inner_error_ != NULL) {
+		{
 			g_propagate_error (error, _inner_error_);
 			_g_free0 (message);
 			_fclose0 (f);
@@ -912,7 +921,7 @@ static void rygel_root_device_factory_save_modified_desc (RygelRootDeviceFactory
 
 #line 276 "rygel-root-device-factory.vala"
 static gboolean rygel_root_device_factory_check_path_exist (RygelRootDeviceFactory* self, const char* path) {
-#line 916 "rygel-root-device-factory.c"
+#line 925 "rygel-root-device-factory.c"
 	gboolean result;
 	GFile* file;
 #line 276 "rygel-root-device-factory.vala"
@@ -921,34 +930,34 @@ static gboolean rygel_root_device_factory_check_path_exist (RygelRootDeviceFacto
 	g_return_val_if_fail (path != NULL, FALSE);
 #line 277 "rygel-root-device-factory.vala"
 	file = g_file_new_for_path (path);
-#line 925 "rygel-root-device-factory.c"
+#line 934 "rygel-root-device-factory.c"
 	result = g_file_query_exists (file, NULL);
 	_g_object_unref0 (file);
 #line 279 "rygel-root-device-factory.vala"
 	return result;
-#line 930 "rygel-root-device-factory.c"
+#line 939 "rygel-root-device-factory.c"
 }
 
 
 #line 282 "rygel-root-device-factory.vala"
 static void rygel_root_device_factory_ensure_dir_exists (RygelRootDeviceFactory* self, const char* dir_path, GError** error) {
-#line 936 "rygel-root-device-factory.c"
+#line 945 "rygel-root-device-factory.c"
 	GError * _inner_error_;
 #line 282 "rygel-root-device-factory.vala"
 	g_return_if_fail (self != NULL);
 #line 282 "rygel-root-device-factory.vala"
 	g_return_if_fail (dir_path != NULL);
-#line 942 "rygel-root-device-factory.c"
+#line 951 "rygel-root-device-factory.c"
 	_inner_error_ = NULL;
 #line 283 "rygel-root-device-factory.vala"
 	if (!rygel_root_device_factory_check_path_exist (self, dir_path)) {
-#line 946 "rygel-root-device-factory.c"
+#line 955 "rygel-root-device-factory.c"
 		GFile* file;
 #line 284 "rygel-root-device-factory.vala"
 		file = g_file_new_for_path (dir_path);
 #line 286 "rygel-root-device-factory.vala"
 		g_file_make_directory (file, NULL, &_inner_error_);
-#line 952 "rygel-root-device-factory.c"
+#line 961 "rygel-root-device-factory.c"
 		if (_inner_error_ != NULL) {
 			g_propagate_error (error, _inner_error_);
 			_g_object_unref0 (file);

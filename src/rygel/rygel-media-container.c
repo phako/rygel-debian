@@ -372,8 +372,8 @@ static gboolean rygel_media_container_real_search_co (RygelMediaContainerSearchD
 		case 0:
 		{
 			data->_result_ = gee_array_list_new (RYGEL_TYPE_MEDIA_OBJECT, (GBoxedCopyFunc) g_object_ref, g_object_unref, NULL);
-			rygel_media_container_get_children (data->self, (guint) 0, data->self->child_count, data->cancellable, rygel_media_container_search_ready, data);
 			data->_state_ = 17;
+			rygel_media_container_get_children (data->self, (guint) 0, data->self->child_count, data->cancellable, rygel_media_container_search_ready, data);
 			return FALSE;
 			case 17:
 			data->children = rygel_media_container_get_children_finish (data->self, data->_res_, &data->_inner_error_);
@@ -483,8 +483,8 @@ static gboolean rygel_media_container_real_search_co (RygelMediaContainerSearchD
 #line 484 "rygel-media-container.c"
 				}
 				data->child_limit = data->_tmp4_;
-				rygel_media_container_search_in_children (data->self, data->expression, data->children, data->child_limit, data->cancellable, rygel_media_container_search_ready, data);
 				data->_state_ = 18;
+				rygel_media_container_search_in_children (data->self, data->expression, data->children, data->child_limit, data->cancellable, rygel_media_container_search_ready, data);
 				return FALSE;
 				case 18:
 				data->child_results = rygel_media_container_search_in_children_finish (data->self, data->_res_, &data->_inner_error_);
@@ -674,8 +674,8 @@ static gboolean rygel_media_container_find_object_co (RygelMediaContainerFindObj
 #line 190 "rygel-media-container.vala"
 			((RygelSearchExpression*) data->expression)->operand2 = (data->_tmp1_ = g_strdup (data->id), _g_free0 (((RygelSearchExpression*) data->expression)->operand2), data->_tmp1_);
 #line 677 "rygel-media-container.c"
-			rygel_media_container_search (data->self, (RygelSearchExpression*) data->expression, (guint) 0, (guint) 1, data->cancellable, rygel_media_container_find_object_ready, data);
 			data->_state_ = 19;
+			rygel_media_container_search (data->self, (RygelSearchExpression*) data->expression, (guint) 0, (guint) 1, data->cancellable, rygel_media_container_find_object_ready, data);
 			return FALSE;
 			case 19:
 			data->results = rygel_media_container_search_finish (data->self, data->_res_, &data->total_matches, &data->_inner_error_);
@@ -806,8 +806,8 @@ static gboolean rygel_media_container_search_in_children_co (RygelMediaContainer
 					if (RYGEL_IS_MEDIA_CONTAINER (data->child)) {
 #line 808 "rygel-media-container.c"
 						data->container = _g_object_ref0 ((data->_tmp0_ = data->child, RYGEL_IS_MEDIA_CONTAINER (data->_tmp0_) ? ((RygelMediaContainer*) data->_tmp0_) : NULL));
-						rygel_media_container_search (data->container, data->expression, (guint) 0, data->limit, data->cancellable, rygel_media_container_search_in_children_ready, data);
 						data->_state_ = 20;
+						rygel_media_container_search (data->container, data->expression, (guint) 0, data->limit, data->cancellable, rygel_media_container_search_in_children_ready, data);
 						return FALSE;
 						case 20:
 						data->child_result = rygel_media_container_search_finish (data->container, data->_res_, &data->tmp, &data->_inner_error_);

@@ -114,16 +114,16 @@ static gpointer _g_object_ref0 (gpointer self) {
 }
 
 
-#line 1027 "glib-2.0.vapi"
+#line 1025 "glib-2.0.vapi"
 static char* string_replace (const char* self, const char* old, const char* replacement) {
 #line 120 "rygel-plugin-pref-section.c"
 	char* result;
 	GError * _inner_error_;
-#line 1027 "glib-2.0.vapi"
+#line 1025 "glib-2.0.vapi"
 	g_return_val_if_fail (self != NULL, NULL);
-#line 1027 "glib-2.0.vapi"
+#line 1025 "glib-2.0.vapi"
 	g_return_val_if_fail (old != NULL, NULL);
-#line 1027 "glib-2.0.vapi"
+#line 1025 "glib-2.0.vapi"
 	g_return_val_if_fail (replacement != NULL, NULL);
 #line 129 "rygel-plugin-pref-section.c"
 	_inner_error_ = NULL;
@@ -132,30 +132,35 @@ static char* string_replace (const char* self, const char* old, const char* repl
 		GRegex* _tmp1_;
 		GRegex* regex;
 		char* _tmp2_;
-#line 1029 "glib-2.0.vapi"
+#line 1027 "glib-2.0.vapi"
 		regex = (_tmp1_ = g_regex_new (_tmp0_ = g_regex_escape_string (old, -1), 0, 0, &_inner_error_), _g_free0 (_tmp0_), _tmp1_);
 #line 138 "rygel-plugin-pref-section.c"
 		if (_inner_error_ != NULL) {
 			if (_inner_error_->domain == G_REGEX_ERROR) {
 				goto __catch10_g_regex_error;
 			}
-			goto __finally10;
+			g_critical ("file %s: line %d: unexpected error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
+			g_clear_error (&_inner_error_);
+			return NULL;
 		}
-#line 1030 "glib-2.0.vapi"
+#line 1028 "glib-2.0.vapi"
 		_tmp2_ = g_regex_replace_literal (regex, self, (gssize) (-1), 0, replacement, 0, &_inner_error_);
-#line 147 "rygel-plugin-pref-section.c"
+#line 149 "rygel-plugin-pref-section.c"
 		if (_inner_error_ != NULL) {
 			_g_regex_unref0 (regex);
 			if (_inner_error_->domain == G_REGEX_ERROR) {
 				goto __catch10_g_regex_error;
 			}
-			goto __finally10;
+			_g_regex_unref0 (regex);
+			g_critical ("file %s: line %d: unexpected error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
+			g_clear_error (&_inner_error_);
+			return NULL;
 		}
 		result = _tmp2_;
 		_g_regex_unref0 (regex);
-#line 1030 "glib-2.0.vapi"
+#line 1028 "glib-2.0.vapi"
 		return result;
-#line 159 "rygel-plugin-pref-section.c"
+#line 164 "rygel-plugin-pref-section.c"
 	}
 	goto __finally10;
 	__catch10_g_regex_error:
@@ -164,9 +169,9 @@ static char* string_replace (const char* self, const char* old, const char* repl
 		e = _inner_error_;
 		_inner_error_ = NULL;
 		{
-#line 1032 "glib-2.0.vapi"
+#line 1030 "glib-2.0.vapi"
 			g_assert_not_reached ();
-#line 170 "rygel-plugin-pref-section.c"
+#line 175 "rygel-plugin-pref-section.c"
 			_g_error_free0 (e);
 		}
 	}
@@ -181,14 +186,14 @@ static char* string_replace (const char* self, const char* old, const char* repl
 
 #line 94 "rygel-plugin-pref-section.vala"
 static void _rygel_plugin_pref_section_on_enabled_check_toggled_gtk_toggle_button_toggled (GtkCheckButton* _sender, gpointer self) {
-#line 185 "rygel-plugin-pref-section.c"
+#line 190 "rygel-plugin-pref-section.c"
 	rygel_plugin_pref_section_on_enabled_check_toggled (self, _sender);
 }
 
 
 #line 36 "rygel-plugin-pref-section.vala"
 RygelPluginPrefSection* rygel_plugin_pref_section_construct (GType object_type, GtkBuilder* builder, RygelUserConfig* config, const char* name) {
-#line 192 "rygel-plugin-pref-section.c"
+#line 197 "rygel-plugin-pref-section.c"
 	GError * _inner_error_;
 	RygelPluginPrefSection * self;
 	GeeArrayList* _tmp0_;
@@ -212,7 +217,7 @@ RygelPluginPrefSection* rygel_plugin_pref_section_construct (GType object_type, 
 	g_return_val_if_fail (config != NULL, NULL);
 #line 36 "rygel-plugin-pref-section.vala"
 	g_return_val_if_fail (name != NULL, NULL);
-#line 216 "rygel-plugin-pref-section.c"
+#line 221 "rygel-plugin-pref-section.c"
 	_inner_error_ = NULL;
 #line 39 "rygel-plugin-pref-section.vala"
 	self = (RygelPluginPrefSection*) rygel_preferences_section_construct (object_type, config, name);
@@ -220,14 +225,14 @@ RygelPluginPrefSection* rygel_plugin_pref_section_construct (GType object_type, 
 	self->widgets = (_tmp0_ = gee_array_list_new (GTK_TYPE_WIDGET, (GBoxedCopyFunc) g_object_ref, g_object_unref, NULL), _g_object_unref0 (self->widgets), _tmp0_);
 #line 43 "rygel-plugin-pref-section.vala"
 	self->priv->enabled_check = (_tmp3_ = _g_object_ref0 (GTK_CHECK_BUTTON (gtk_builder_get_object (builder, _tmp2_ = g_strconcat (_tmp1_ = g_utf8_strdown (name, -1), RYGEL_PLUGIN_PREF_SECTION_ENABLED_CHECK, NULL)))), _g_object_unref0 (self->priv->enabled_check), _tmp3_);
-#line 224 "rygel-plugin-pref-section.c"
+#line 229 "rygel-plugin-pref-section.c"
 	_g_free0 (_tmp2_);
 	_g_free0 (_tmp1_);
 #line 45 "rygel-plugin-pref-section.vala"
 	g_assert (self->priv->enabled_check != NULL);
 #line 46 "rygel-plugin-pref-section.vala"
 	self->priv->title_entry = (_tmp6_ = _g_object_ref0 (GTK_ENTRY (gtk_builder_get_object (builder, _tmp5_ = g_strconcat (_tmp4_ = g_utf8_strdown (name, -1), RYGEL_PLUGIN_PREF_SECTION_TITLE_ENTRY, NULL)))), _g_object_unref0 (self->priv->title_entry), _tmp6_);
-#line 231 "rygel-plugin-pref-section.c"
+#line 236 "rygel-plugin-pref-section.c"
 	_g_free0 (_tmp5_);
 	_g_free0 (_tmp4_);
 #line 48 "rygel-plugin-pref-section.vala"
@@ -238,19 +243,22 @@ RygelPluginPrefSection* rygel_plugin_pref_section_construct (GType object_type, 
 	g_assert (title_label != NULL);
 #line 52 "rygel-plugin-pref-section.vala"
 	gee_abstract_collection_add ((GeeAbstractCollection*) self->widgets, (GtkWidget*) title_label);
-#line 242 "rygel-plugin-pref-section.c"
+#line 247 "rygel-plugin-pref-section.c"
 	{
 		gboolean _tmp10_;
 #line 55 "rygel-plugin-pref-section.vala"
 		_tmp10_ = rygel_configuration_get_enabled ((RygelConfiguration*) config, name, &_inner_error_);
-#line 247 "rygel-plugin-pref-section.c"
+#line 252 "rygel-plugin-pref-section.c"
 		if (_inner_error_ != NULL) {
 			goto __catch8_g_error;
-			goto __finally8;
+			_g_object_unref0 (title_label);
+			g_critical ("file %s: line %d: unexpected error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
+			g_clear_error (&_inner_error_);
+			return NULL;
 		}
 #line 55 "rygel-plugin-pref-section.vala"
 		gtk_toggle_button_set_active ((GtkToggleButton*) self->priv->enabled_check, _tmp10_);
-#line 254 "rygel-plugin-pref-section.c"
+#line 262 "rygel-plugin-pref-section.c"
 	}
 	goto __finally8;
 	__catch8_g_error:
@@ -261,7 +269,7 @@ RygelPluginPrefSection* rygel_plugin_pref_section_construct (GType object_type, 
 		{
 #line 57 "rygel-plugin-pref-section.vala"
 			gtk_toggle_button_set_active ((GtkToggleButton*) self->priv->enabled_check, FALSE);
-#line 265 "rygel-plugin-pref-section.c"
+#line 273 "rygel-plugin-pref-section.c"
 			_g_error_free0 (err);
 		}
 	}
@@ -278,14 +286,18 @@ RygelPluginPrefSection* rygel_plugin_pref_section_construct (GType object_type, 
 		char* _tmp12_;
 #line 62 "rygel-plugin-pref-section.vala"
 		_tmp11_ = rygel_configuration_get_title ((RygelConfiguration*) config, name, &_inner_error_);
-#line 282 "rygel-plugin-pref-section.c"
+#line 290 "rygel-plugin-pref-section.c"
 		if (_inner_error_ != NULL) {
 			goto __catch9_g_error;
-			goto __finally9;
+			_g_object_unref0 (title_label);
+			_g_free0 (title);
+			g_critical ("file %s: line %d: unexpected error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
+			g_clear_error (&_inner_error_);
+			return NULL;
 		}
 #line 62 "rygel-plugin-pref-section.vala"
 		title = (_tmp12_ = _tmp11_, _g_free0 (title), _tmp12_);
-#line 289 "rygel-plugin-pref-section.c"
+#line 301 "rygel-plugin-pref-section.c"
 	}
 	goto __finally9;
 	__catch9_g_error:
@@ -297,7 +309,7 @@ RygelPluginPrefSection* rygel_plugin_pref_section_construct (GType object_type, 
 			char* _tmp13_;
 #line 64 "rygel-plugin-pref-section.vala"
 			title = (_tmp13_ = g_strdup (name), _g_free0 (title), _tmp13_);
-#line 301 "rygel-plugin-pref-section.c"
+#line 313 "rygel-plugin-pref-section.c"
 			_g_error_free0 (err);
 		}
 	}
@@ -319,7 +331,7 @@ RygelPluginPrefSection* rygel_plugin_pref_section_construct (GType object_type, 
 	gtk_entry_set_text (self->priv->title_entry, title);
 #line 72 "rygel-plugin-pref-section.vala"
 	g_signal_connect_object ((GtkToggleButton*) self->priv->enabled_check, "toggled", (GCallback) _rygel_plugin_pref_section_on_enabled_check_toggled_gtk_toggle_button_toggled, self, 0);
-#line 323 "rygel-plugin-pref-section.c"
+#line 335 "rygel-plugin-pref-section.c"
 	_g_object_unref0 (title_label);
 	_g_free0 (title);
 	return self;
@@ -330,13 +342,13 @@ RygelPluginPrefSection* rygel_plugin_pref_section_construct (GType object_type, 
 RygelPluginPrefSection* rygel_plugin_pref_section_new (GtkBuilder* builder, RygelUserConfig* config, const char* name) {
 #line 36 "rygel-plugin-pref-section.vala"
 	return rygel_plugin_pref_section_construct (RYGEL_TYPE_PLUGIN_PREF_SECTION, builder, config, name);
-#line 334 "rygel-plugin-pref-section.c"
+#line 346 "rygel-plugin-pref-section.c"
 }
 
 
 #line 75 "rygel-plugin-pref-section.vala"
 static void rygel_plugin_pref_section_real_save (RygelPreferencesSection* base) {
-#line 340 "rygel-plugin-pref-section.c"
+#line 352 "rygel-plugin-pref-section.c"
 	RygelPluginPrefSection * self;
 	char* title;
 	char* _tmp0_;
@@ -352,7 +364,7 @@ static void rygel_plugin_pref_section_real_save (RygelPreferencesSection* base) 
 	title = (_tmp1_ = string_replace (title, "%h", "@HOSTNAME@"), _g_free0 (title), _tmp1_);
 #line 83 "rygel-plugin-pref-section.vala"
 	rygel_user_config_set_string (((RygelPreferencesSection*) self)->config, ((RygelPreferencesSection*) self)->name, RYGEL_USER_CONFIG_TITLE_KEY, title);
-#line 356 "rygel-plugin-pref-section.c"
+#line 368 "rygel-plugin-pref-section.c"
 	_g_free0 (title);
 }
 
@@ -363,25 +375,25 @@ void rygel_plugin_pref_section_reset_widgets_sensitivity (RygelPluginPrefSection
 	g_return_if_fail (self != NULL);
 #line 87 "rygel-plugin-pref-section.vala"
 	gtk_widget_set_sensitive ((GtkWidget*) self->priv->title_entry, gtk_toggle_button_get_active ((GtkToggleButton*) self->priv->enabled_check));
-#line 367 "rygel-plugin-pref-section.c"
+#line 379 "rygel-plugin-pref-section.c"
 	{
 		GeeIterator* _widget_it;
 		_widget_it = gee_abstract_collection_iterator ((GeeAbstractCollection*) self->widgets);
 #line 89 "rygel-plugin-pref-section.vala"
 		while (TRUE) {
-#line 373 "rygel-plugin-pref-section.c"
+#line 385 "rygel-plugin-pref-section.c"
 			GtkWidget* widget;
 #line 89 "rygel-plugin-pref-section.vala"
 			if (!gee_iterator_next (_widget_it)) {
 #line 89 "rygel-plugin-pref-section.vala"
 				break;
-#line 379 "rygel-plugin-pref-section.c"
+#line 391 "rygel-plugin-pref-section.c"
 			}
 #line 89 "rygel-plugin-pref-section.vala"
 			widget = (GtkWidget*) gee_iterator_get (_widget_it);
 #line 90 "rygel-plugin-pref-section.vala"
 			gtk_widget_set_sensitive (widget, gtk_toggle_button_get_active ((GtkToggleButton*) self->priv->enabled_check));
-#line 385 "rygel-plugin-pref-section.c"
+#line 397 "rygel-plugin-pref-section.c"
 			_g_object_unref0 (widget);
 		}
 		_g_object_unref0 (_widget_it);
@@ -397,7 +409,7 @@ static void rygel_plugin_pref_section_on_enabled_check_toggled (RygelPluginPrefS
 	g_return_if_fail (enabled_check != NULL);
 #line 95 "rygel-plugin-pref-section.vala"
 	rygel_plugin_pref_section_reset_widgets_sensitivity (self);
-#line 401 "rygel-plugin-pref-section.c"
+#line 413 "rygel-plugin-pref-section.c"
 }
 
 

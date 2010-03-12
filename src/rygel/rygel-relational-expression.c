@@ -382,17 +382,17 @@ static gboolean rygel_relational_expression_compare_resource (RygelRelationalExp
 }
 
 
-#line 1023 "glib-2.0.vapi"
+#line 1021 "glib-2.0.vapi"
 static gboolean string_contains (const char* self, const char* needle) {
 #line 388 "rygel-relational-expression.c"
 	gboolean result;
-#line 1023 "glib-2.0.vapi"
+#line 1021 "glib-2.0.vapi"
 	g_return_val_if_fail (self != NULL, FALSE);
-#line 1023 "glib-2.0.vapi"
+#line 1021 "glib-2.0.vapi"
 	g_return_val_if_fail (needle != NULL, FALSE);
 #line 394 "rygel-relational-expression.c"
 	result = strstr (self, needle) != NULL;
-#line 1024 "glib-2.0.vapi"
+#line 1022 "glib-2.0.vapi"
 	return result;
 #line 398 "rygel-relational-expression.c"
 }

@@ -411,70 +411,86 @@ static void rygel_media_db_update_v3_v4 (RygelMediaDB* self) {
 			if (_inner_error_->domain == RYGEL_DATABASE_ERROR) {
 				goto __catch43_rygel_database_error;
 			}
-			goto __finally43;
+			g_critical ("file %s: line %d: unexpected error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
+			g_clear_error (&_inner_error_);
+			return;
 		}
 #line 224 "rygel-media-db.vala"
 		rygel_database_exec (self->priv->db, RYGEL_MEDIA_DB_UPDATE_V3_V4_STRING_1, NULL, 0, NULL, NULL, &_inner_error_);
-#line 419 "rygel-media-db.c"
+#line 421 "rygel-media-db.c"
 		if (_inner_error_ != NULL) {
 			if (_inner_error_->domain == RYGEL_DATABASE_ERROR) {
 				goto __catch43_rygel_database_error;
 			}
-			goto __finally43;
+			g_critical ("file %s: line %d: unexpected error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
+			g_clear_error (&_inner_error_);
+			return;
 		}
 #line 225 "rygel-media-db.vala"
 		rygel_database_exec (self->priv->db, RYGEL_MEDIA_DB_UPDATE_V3_V4_STRING_2, NULL, 0, NULL, NULL, &_inner_error_);
-#line 428 "rygel-media-db.c"
+#line 432 "rygel-media-db.c"
 		if (_inner_error_ != NULL) {
 			if (_inner_error_->domain == RYGEL_DATABASE_ERROR) {
 				goto __catch43_rygel_database_error;
 			}
-			goto __finally43;
+			g_critical ("file %s: line %d: unexpected error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
+			g_clear_error (&_inner_error_);
+			return;
 		}
 #line 226 "rygel-media-db.vala"
 		rygel_database_exec (self->priv->db, RYGEL_MEDIA_DB_UPDATE_V3_V4_STRING_3, NULL, 0, NULL, NULL, &_inner_error_);
-#line 437 "rygel-media-db.c"
+#line 443 "rygel-media-db.c"
 		if (_inner_error_ != NULL) {
 			if (_inner_error_->domain == RYGEL_DATABASE_ERROR) {
 				goto __catch43_rygel_database_error;
 			}
-			goto __finally43;
+			g_critical ("file %s: line %d: unexpected error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
+			g_clear_error (&_inner_error_);
+			return;
 		}
 #line 227 "rygel-media-db.vala"
 		rygel_database_exec (self->priv->db, RYGEL_MEDIA_DB_UPDATE_V3_V4_STRING_4, NULL, 0, NULL, NULL, &_inner_error_);
-#line 446 "rygel-media-db.c"
+#line 454 "rygel-media-db.c"
 		if (_inner_error_ != NULL) {
 			if (_inner_error_->domain == RYGEL_DATABASE_ERROR) {
 				goto __catch43_rygel_database_error;
 			}
-			goto __finally43;
+			g_critical ("file %s: line %d: unexpected error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
+			g_clear_error (&_inner_error_);
+			return;
 		}
 #line 228 "rygel-media-db.vala"
 		rygel_database_exec (self->priv->db, RYGEL_MEDIA_DB_CREATE_TRIGGER_STRING, NULL, 0, NULL, NULL, &_inner_error_);
-#line 455 "rygel-media-db.c"
+#line 465 "rygel-media-db.c"
 		if (_inner_error_ != NULL) {
 			if (_inner_error_->domain == RYGEL_DATABASE_ERROR) {
 				goto __catch43_rygel_database_error;
 			}
-			goto __finally43;
+			g_critical ("file %s: line %d: unexpected error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
+			g_clear_error (&_inner_error_);
+			return;
 		}
 #line 229 "rygel-media-db.vala"
 		rygel_database_exec (self->priv->db, "UPDATE schema_info SET version = '4'", NULL, 0, NULL, NULL, &_inner_error_);
-#line 464 "rygel-media-db.c"
+#line 476 "rygel-media-db.c"
 		if (_inner_error_ != NULL) {
 			if (_inner_error_->domain == RYGEL_DATABASE_ERROR) {
 				goto __catch43_rygel_database_error;
 			}
-			goto __finally43;
+			g_critical ("file %s: line %d: unexpected error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
+			g_clear_error (&_inner_error_);
+			return;
 		}
 #line 230 "rygel-media-db.vala"
 		rygel_database_commit (self->priv->db, &_inner_error_);
-#line 473 "rygel-media-db.c"
+#line 487 "rygel-media-db.c"
 		if (_inner_error_ != NULL) {
 			if (_inner_error_->domain == RYGEL_DATABASE_ERROR) {
 				goto __catch43_rygel_database_error;
 			}
-			goto __finally43;
+			g_critical ("file %s: line %d: unexpected error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
+			g_clear_error (&_inner_error_);
+			return;
 		}
 	}
 	goto __finally43;
@@ -491,7 +507,7 @@ static void rygel_media_db_update_v3_v4 (RygelMediaDB* self) {
 			g_warning ("rygel-media-db.vala:233: Database upgrade failed: %s", err->message);
 #line 234 "rygel-media-db.vala"
 			self->priv->db = (_tmp0_ = NULL, _g_object_unref0 (self->priv->db), _tmp0_);
-#line 495 "rygel-media-db.c"
+#line 511 "rygel-media-db.c"
 			_g_error_free0 (err);
 		}
 	}
@@ -506,151 +522,181 @@ static void rygel_media_db_update_v3_v4 (RygelMediaDB* self) {
 
 #line 238 "rygel-media-db.vala"
 static void rygel_media_db_update_v4_v5 (RygelMediaDB* self) {
-#line 510 "rygel-media-db.c"
+#line 526 "rygel-media-db.c"
 	GError * _inner_error_;
 #line 238 "rygel-media-db.vala"
 	g_return_if_fail (self != NULL);
-#line 514 "rygel-media-db.c"
+#line 530 "rygel-media-db.c"
 	_inner_error_ = NULL;
 	{
 #line 240 "rygel-media-db.vala"
 		rygel_database_begin (self->priv->db, &_inner_error_);
-#line 519 "rygel-media-db.c"
+#line 535 "rygel-media-db.c"
 		if (_inner_error_ != NULL) {
 			if (_inner_error_->domain == RYGEL_DATABASE_ERROR) {
 				goto __catch44_rygel_database_error;
 			}
-			goto __finally44;
+			g_critical ("file %s: line %d: unexpected error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
+			g_clear_error (&_inner_error_);
+			return;
 		}
 #line 241 "rygel-media-db.vala"
 		rygel_database_exec (self->priv->db, "DROP TRIGGER IF EXISTS trgr_delete_children", NULL, 0, NULL, NULL, &_inner_error_);
-#line 528 "rygel-media-db.c"
-		if (_inner_error_ != NULL) {
-			if (_inner_error_->domain == RYGEL_DATABASE_ERROR) {
-				goto __catch44_rygel_database_error;
-			}
-			goto __finally44;
-		}
-#line 242 "rygel-media-db.vala"
-		rygel_database_exec (self->priv->db, RYGEL_MEDIA_DB_CREATE_CLOSURE_TABLE, NULL, 0, NULL, NULL, &_inner_error_);
-#line 537 "rygel-media-db.c"
-		if (_inner_error_ != NULL) {
-			if (_inner_error_->domain == RYGEL_DATABASE_ERROR) {
-				goto __catch44_rygel_database_error;
-			}
-			goto __finally44;
-		}
-#line 244 "rygel-media-db.vala"
-		rygel_database_exec (self->priv->db, "ALTER TABLE Object RENAME TO _Object", NULL, 0, NULL, NULL, &_inner_error_);
 #line 546 "rygel-media-db.c"
 		if (_inner_error_ != NULL) {
 			if (_inner_error_->domain == RYGEL_DATABASE_ERROR) {
 				goto __catch44_rygel_database_error;
 			}
-			goto __finally44;
+			g_critical ("file %s: line %d: unexpected error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
+			g_clear_error (&_inner_error_);
+			return;
+		}
+#line 242 "rygel-media-db.vala"
+		rygel_database_exec (self->priv->db, RYGEL_MEDIA_DB_CREATE_CLOSURE_TABLE, NULL, 0, NULL, NULL, &_inner_error_);
+#line 557 "rygel-media-db.c"
+		if (_inner_error_ != NULL) {
+			if (_inner_error_->domain == RYGEL_DATABASE_ERROR) {
+				goto __catch44_rygel_database_error;
+			}
+			g_critical ("file %s: line %d: unexpected error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
+			g_clear_error (&_inner_error_);
+			return;
+		}
+#line 244 "rygel-media-db.vala"
+		rygel_database_exec (self->priv->db, "ALTER TABLE Object RENAME TO _Object", NULL, 0, NULL, NULL, &_inner_error_);
+#line 568 "rygel-media-db.c"
+		if (_inner_error_ != NULL) {
+			if (_inner_error_->domain == RYGEL_DATABASE_ERROR) {
+				goto __catch44_rygel_database_error;
+			}
+			g_critical ("file %s: line %d: unexpected error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
+			g_clear_error (&_inner_error_);
+			return;
 		}
 #line 245 "rygel-media-db.vala"
 		rygel_database_exec (self->priv->db, "CREATE TABLE Object AS SELECT * FROM _Object", NULL, 0, NULL, NULL, &_inner_error_);
-#line 555 "rygel-media-db.c"
+#line 579 "rygel-media-db.c"
 		if (_inner_error_ != NULL) {
 			if (_inner_error_->domain == RYGEL_DATABASE_ERROR) {
 				goto __catch44_rygel_database_error;
 			}
-			goto __finally44;
+			g_critical ("file %s: line %d: unexpected error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
+			g_clear_error (&_inner_error_);
+			return;
 		}
 #line 246 "rygel-media-db.vala"
 		rygel_database_exec (self->priv->db, "DELETE FROM Object", NULL, 0, NULL, NULL, &_inner_error_);
-#line 564 "rygel-media-db.c"
+#line 590 "rygel-media-db.c"
 		if (_inner_error_ != NULL) {
 			if (_inner_error_->domain == RYGEL_DATABASE_ERROR) {
 				goto __catch44_rygel_database_error;
 			}
-			goto __finally44;
+			g_critical ("file %s: line %d: unexpected error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
+			g_clear_error (&_inner_error_);
+			return;
 		}
 #line 247 "rygel-media-db.vala"
 		rygel_database_exec (self->priv->db, RYGEL_MEDIA_DB_CREATE_CLOSURE_TRIGGER_STRING, NULL, 0, NULL, NULL, &_inner_error_);
-#line 573 "rygel-media-db.c"
+#line 601 "rygel-media-db.c"
 		if (_inner_error_ != NULL) {
 			if (_inner_error_->domain == RYGEL_DATABASE_ERROR) {
 				goto __catch44_rygel_database_error;
 			}
-			goto __finally44;
+			g_critical ("file %s: line %d: unexpected error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
+			g_clear_error (&_inner_error_);
+			return;
 		}
 #line 248 "rygel-media-db.vala"
 		rygel_database_exec (self->priv->db, "INSERT INTO Object SELECT * FROM _Object", NULL, 0, NULL, NULL, &_inner_error_);
-#line 582 "rygel-media-db.c"
+#line 612 "rygel-media-db.c"
 		if (_inner_error_ != NULL) {
 			if (_inner_error_->domain == RYGEL_DATABASE_ERROR) {
 				goto __catch44_rygel_database_error;
 			}
-			goto __finally44;
+			g_critical ("file %s: line %d: unexpected error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
+			g_clear_error (&_inner_error_);
+			return;
 		}
 #line 249 "rygel-media-db.vala"
 		rygel_database_exec (self->priv->db, "DROP TABLE Object", NULL, 0, NULL, NULL, &_inner_error_);
-#line 591 "rygel-media-db.c"
+#line 623 "rygel-media-db.c"
 		if (_inner_error_ != NULL) {
 			if (_inner_error_->domain == RYGEL_DATABASE_ERROR) {
 				goto __catch44_rygel_database_error;
 			}
-			goto __finally44;
+			g_critical ("file %s: line %d: unexpected error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
+			g_clear_error (&_inner_error_);
+			return;
 		}
 #line 250 "rygel-media-db.vala"
 		rygel_database_exec (self->priv->db, "ALTER TABLE _Object RENAME TO Object", NULL, 0, NULL, NULL, &_inner_error_);
-#line 600 "rygel-media-db.c"
+#line 634 "rygel-media-db.c"
 		if (_inner_error_ != NULL) {
 			if (_inner_error_->domain == RYGEL_DATABASE_ERROR) {
 				goto __catch44_rygel_database_error;
 			}
-			goto __finally44;
+			g_critical ("file %s: line %d: unexpected error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
+			g_clear_error (&_inner_error_);
+			return;
 		}
 #line 253 "rygel-media-db.vala"
 		rygel_database_exec (self->priv->db, RYGEL_MEDIA_DB_CREATE_CLOSURE_TRIGGER_STRING, NULL, 0, NULL, NULL, &_inner_error_);
-#line 609 "rygel-media-db.c"
-		if (_inner_error_ != NULL) {
-			if (_inner_error_->domain == RYGEL_DATABASE_ERROR) {
-				goto __catch44_rygel_database_error;
-			}
-			goto __finally44;
-		}
-#line 254 "rygel-media-db.vala"
-		rygel_database_exec (self->priv->db, RYGEL_MEDIA_DB_CREATE_INDICES_STRING, NULL, 0, NULL, NULL, &_inner_error_);
-#line 618 "rygel-media-db.c"
-		if (_inner_error_ != NULL) {
-			if (_inner_error_->domain == RYGEL_DATABASE_ERROR) {
-				goto __catch44_rygel_database_error;
-			}
-			goto __finally44;
-		}
-#line 255 "rygel-media-db.vala"
-		rygel_database_exec (self->priv->db, "UPDATE schema_info SET version = '5'", NULL, 0, NULL, NULL, &_inner_error_);
-#line 627 "rygel-media-db.c"
-		if (_inner_error_ != NULL) {
-			if (_inner_error_->domain == RYGEL_DATABASE_ERROR) {
-				goto __catch44_rygel_database_error;
-			}
-			goto __finally44;
-		}
-#line 256 "rygel-media-db.vala"
-		rygel_database_commit (self->priv->db, &_inner_error_);
-#line 636 "rygel-media-db.c"
-		if (_inner_error_ != NULL) {
-			if (_inner_error_->domain == RYGEL_DATABASE_ERROR) {
-				goto __catch44_rygel_database_error;
-			}
-			goto __finally44;
-		}
-#line 257 "rygel-media-db.vala"
-		rygel_database_exec (self->priv->db, "VACUUM", NULL, 0, NULL, NULL, &_inner_error_);
 #line 645 "rygel-media-db.c"
 		if (_inner_error_ != NULL) {
 			if (_inner_error_->domain == RYGEL_DATABASE_ERROR) {
 				goto __catch44_rygel_database_error;
 			}
-			goto __finally44;
+			g_critical ("file %s: line %d: unexpected error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
+			g_clear_error (&_inner_error_);
+			return;
+		}
+#line 254 "rygel-media-db.vala"
+		rygel_database_exec (self->priv->db, RYGEL_MEDIA_DB_CREATE_INDICES_STRING, NULL, 0, NULL, NULL, &_inner_error_);
+#line 656 "rygel-media-db.c"
+		if (_inner_error_ != NULL) {
+			if (_inner_error_->domain == RYGEL_DATABASE_ERROR) {
+				goto __catch44_rygel_database_error;
+			}
+			g_critical ("file %s: line %d: unexpected error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
+			g_clear_error (&_inner_error_);
+			return;
+		}
+#line 255 "rygel-media-db.vala"
+		rygel_database_exec (self->priv->db, "UPDATE schema_info SET version = '5'", NULL, 0, NULL, NULL, &_inner_error_);
+#line 667 "rygel-media-db.c"
+		if (_inner_error_ != NULL) {
+			if (_inner_error_->domain == RYGEL_DATABASE_ERROR) {
+				goto __catch44_rygel_database_error;
+			}
+			g_critical ("file %s: line %d: unexpected error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
+			g_clear_error (&_inner_error_);
+			return;
+		}
+#line 256 "rygel-media-db.vala"
+		rygel_database_commit (self->priv->db, &_inner_error_);
+#line 678 "rygel-media-db.c"
+		if (_inner_error_ != NULL) {
+			if (_inner_error_->domain == RYGEL_DATABASE_ERROR) {
+				goto __catch44_rygel_database_error;
+			}
+			g_critical ("file %s: line %d: unexpected error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
+			g_clear_error (&_inner_error_);
+			return;
+		}
+#line 257 "rygel-media-db.vala"
+		rygel_database_exec (self->priv->db, "VACUUM", NULL, 0, NULL, NULL, &_inner_error_);
+#line 689 "rygel-media-db.c"
+		if (_inner_error_ != NULL) {
+			if (_inner_error_->domain == RYGEL_DATABASE_ERROR) {
+				goto __catch44_rygel_database_error;
+			}
+			g_critical ("file %s: line %d: unexpected error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
+			g_clear_error (&_inner_error_);
+			return;
 		}
 #line 258 "rygel-media-db.vala"
 		rygel_database_analyze (self->priv->db);
-#line 654 "rygel-media-db.c"
+#line 700 "rygel-media-db.c"
 	}
 	goto __finally44;
 	__catch44_rygel_database_error:
@@ -666,7 +712,7 @@ static void rygel_media_db_update_v4_v5 (RygelMediaDB* self) {
 			g_warning ("rygel-media-db.vala:261: Database upgrade failed: %s", err->message);
 #line 262 "rygel-media-db.vala"
 			self->priv->db = (_tmp0_ = NULL, _g_object_unref0 (self->priv->db), _tmp0_);
-#line 670 "rygel-media-db.c"
+#line 716 "rygel-media-db.c"
 			_g_error_free0 (err);
 		}
 	}
@@ -679,40 +725,54 @@ static void rygel_media_db_update_v4_v5 (RygelMediaDB* self) {
 }
 
 
+#line 273 "rygel-media-db.vala"
 static gboolean _lambda12_ (sqlite3_stmt* stmt, Block3Data* _data3_) {
+#line 731 "rygel-media-db.c"
 	RygelMediaDB * self;
 	gboolean result;
 	self = _data3_->self;
+#line 273 "rygel-media-db.vala"
 	g_return_val_if_fail (stmt != NULL, FALSE);
 #line 274 "rygel-media-db.vala"
 	_data3_->old_version = sqlite3_column_int (stmt, 0);
-#line 690 "rygel-media-db.c"
+#line 739 "rygel-media-db.c"
 	result = FALSE;
 #line 275 "rygel-media-db.vala"
 	return result;
-#line 694 "rygel-media-db.c"
+#line 743 "rygel-media-db.c"
 }
 
 
+#line 273 "rygel-media-db.vala"
 static gboolean __lambda12__rygel_database_row_callback (sqlite3_stmt* stmt, gpointer self) {
+#line 749 "rygel-media-db.c"
 	return _lambda12_ (stmt, self);
 }
 
 
+#line 309 "rygel-media-db.vala"
 static gboolean _lambda13_ (sqlite3_stmt* stmt, Block4Data* _data4_) {
+#line 756 "rygel-media-db.c"
 	Block3Data* _data3_;
 	RygelMediaDB * self;
 	gboolean result;
 	_data3_ = _data4_->_data3_;
 	self = _data3_->self;
+#line 309 "rygel-media-db.vala"
 	g_return_val_if_fail (stmt != NULL, FALSE);
 #line 310 "rygel-media-db.vala"
 	_data4_->rows = sqlite3_column_int (stmt, 0);
-#line 712 "rygel-media-db.c"
+#line 766 "rygel-media-db.c"
+	result = FALSE;
+#line 311 "rygel-media-db.vala"
+	return result;
+#line 770 "rygel-media-db.c"
 }
 
 
+#line 309 "rygel-media-db.vala"
 static gboolean __lambda13__rygel_database_row_callback (sqlite3_stmt* stmt, gpointer self) {
+#line 776 "rygel-media-db.c"
 	return _lambda13_ (stmt, self);
 }
 
@@ -747,7 +807,7 @@ static void block3_data_unref (Block3Data* _data3_) {
 
 #line 266 "rygel-media-db.vala"
 static void rygel_media_db_open_db (RygelMediaDB* self, const char* name) {
-#line 751 "rygel-media-db.c"
+#line 811 "rygel-media-db.c"
 	GError * _inner_error_;
 	Block3Data* _data3_;
 	RygelDatabase* _tmp0_;
@@ -755,25 +815,28 @@ static void rygel_media_db_open_db (RygelMediaDB* self, const char* name) {
 	g_return_if_fail (self != NULL);
 #line 266 "rygel-media-db.vala"
 	g_return_if_fail (name != NULL);
-#line 759 "rygel-media-db.c"
+#line 819 "rygel-media-db.c"
 	_inner_error_ = NULL;
 	_data3_ = g_slice_new0 (Block3Data);
 	_data3_->_ref_count_ = 1;
 	_data3_->self = g_object_ref (self);
 #line 267 "rygel-media-db.vala"
 	self->priv->db = (_tmp0_ = rygel_database_new (name), _g_object_unref0 (self->priv->db), _tmp0_);
-#line 766 "rygel-media-db.c"
+#line 826 "rygel-media-db.c"
 	_data3_->old_version = -1;
 	{
 		gint current_version;
 #line 271 "rygel-media-db.vala"
 		rygel_database_exec (self->priv->db, "SELECT version FROM schema_info", NULL, 0, __lambda12__rygel_database_row_callback, _data3_, &_inner_error_);
-#line 772 "rygel-media-db.c"
+#line 832 "rygel-media-db.c"
 		if (_inner_error_ != NULL) {
 			if (_inner_error_->domain == RYGEL_DATABASE_ERROR) {
 				goto __catch45_rygel_database_error;
 			}
-			goto __finally45;
+			block3_data_unref (_data3_);
+			g_critical ("file %s: line %d: unexpected error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
+			g_clear_error (&_inner_error_);
+			return;
 		}
 #line 277 "rygel-media-db.vala"
 		current_version = atoi (RYGEL_MEDIA_DB_schema_version);
@@ -781,7 +844,7 @@ static void rygel_media_db_open_db (RygelMediaDB* self, const char* name) {
 		if (_data3_->old_version == current_version) {
 #line 279 "rygel-media-db.vala"
 			g_debug ("rygel-media-db.vala:279: Media DB schema has current version");
-#line 785 "rygel-media-db.c"
+#line 848 "rygel-media-db.c"
 		} else {
 #line 281 "rygel-media-db.vala"
 			if (_data3_->old_version < current_version) {
@@ -789,14 +852,14 @@ static void rygel_media_db_open_db (RygelMediaDB* self, const char* name) {
 				g_debug ("rygel-media-db.vala:282: Older schema detected. Upgrading...");
 #line 283 "rygel-media-db.vala"
 				switch (_data3_->old_version) {
-#line 793 "rygel-media-db.c"
+#line 856 "rygel-media-db.c"
 					case 3:
 					{
 #line 285 "rygel-media-db.vala"
 						rygel_media_db_update_v3_v4 (self);
 #line 286 "rygel-media-db.vala"
 						break;
-#line 800 "rygel-media-db.c"
+#line 863 "rygel-media-db.c"
 					}
 					case 4:
 					{
@@ -804,7 +867,7 @@ static void rygel_media_db_open_db (RygelMediaDB* self, const char* name) {
 						rygel_media_db_update_v4_v5 (self);
 #line 289 "rygel-media-db.vala"
 						break;
-#line 808 "rygel-media-db.c"
+#line 871 "rygel-media-db.c"
 					}
 					default:
 					{
@@ -815,7 +878,7 @@ static void rygel_media_db_open_db (RygelMediaDB* self, const char* name) {
 						self->priv->db = (_tmp1_ = NULL, _g_object_unref0 (self->priv->db), _tmp1_);
 #line 293 "rygel-media-db.vala"
 						break;
-#line 819 "rygel-media-db.c"
+#line 882 "rygel-media-db.c"
 					}
 				}
 			} else {
@@ -824,7 +887,7 @@ static void rygel_media_db_open_db (RygelMediaDB* self, const char* name) {
 				g_warning ("The version \"%d\" of the detected database" " is newer than our supported version \"%d\"", _data3_->old_version, current_version);
 #line 299 "rygel-media-db.vala"
 				self->priv->db = (_tmp2_ = NULL, _g_object_unref0 (self->priv->db), _tmp2_);
-#line 828 "rygel-media-db.c"
+#line 891 "rygel-media-db.c"
 			}
 		}
 	}
@@ -837,7 +900,7 @@ static void rygel_media_db_open_db (RygelMediaDB* self, const char* name) {
 		{
 #line 303 "rygel-media-db.vala"
 			g_debug ("rygel-media-db.vala:303: Could not find schema version; checking for empty database...");
-#line 841 "rygel-media-db.c"
+#line 904 "rygel-media-db.c"
 			{
 				Block4Data* _data4_;
 				_data4_ = g_slice_new0 (Block4Data);
@@ -846,44 +909,49 @@ static void rygel_media_db_open_db (RygelMediaDB* self, const char* name) {
 				_data4_->rows = -1;
 #line 306 "rygel-media-db.vala"
 				rygel_database_exec (self->priv->db, "SELECT count(type) FROM sqlite_master " "WHERE rowid=1", NULL, 0, __lambda13__rygel_database_row_callback, _data4_, &_inner_error_);
-#line 850 "rygel-media-db.c"
+#line 913 "rygel-media-db.c"
 				if (_inner_error_ != NULL) {
 					if (_inner_error_->domain == RYGEL_DATABASE_ERROR) {
 						goto __catch46_rygel_database_error;
 					}
-					goto __finally46;
-				}
-#line 312 "rygel-media-db.vala"
-				if (_data4_->rows == 0) {
-#line 313 "rygel-media-db.vala"
-					g_debug ("rygel-media-db.vala:313: Empty database, creating new schema version %s", RYGEL_MEDIA_DB_schema_version);
-#line 315 "rygel-media-db.vala"
-					if (!rygel_media_db_create_schema (self)) {
-#line 863 "rygel-media-db.c"
-						RygelDatabase* _tmp3_;
-#line 316 "rygel-media-db.vala"
-						self->priv->db = (_tmp3_ = NULL, _g_object_unref0 (self->priv->db), _tmp3_);
-#line 867 "rygel-media-db.c"
-						block4_data_unref (_data4_);
-						_g_error_free0 (err);
-						block3_data_unref (_data3_);
-#line 317 "rygel-media-db.vala"
-						return;
-#line 873 "rygel-media-db.c"
-					}
-				} else {
-					RygelDatabase* _tmp4_;
-#line 320 "rygel-media-db.vala"
-					g_warning ("rygel-media-db.vala:320: Incompatible schema... cannot proceed");
-#line 321 "rygel-media-db.vala"
-					self->priv->db = (_tmp4_ = NULL, _g_object_unref0 (self->priv->db), _tmp4_);
-#line 881 "rygel-media-db.c"
 					block4_data_unref (_data4_);
 					_g_error_free0 (err);
 					block3_data_unref (_data3_);
-#line 322 "rygel-media-db.vala"
+					g_critical ("file %s: line %d: unexpected error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
+					g_clear_error (&_inner_error_);
 					return;
-#line 887 "rygel-media-db.c"
+				}
+#line 313 "rygel-media-db.vala"
+				if (_data4_->rows == 0) {
+#line 314 "rygel-media-db.vala"
+					g_debug ("rygel-media-db.vala:314: Empty database, creating new schema version %s", RYGEL_MEDIA_DB_schema_version);
+#line 316 "rygel-media-db.vala"
+					if (!rygel_media_db_create_schema (self)) {
+#line 931 "rygel-media-db.c"
+						RygelDatabase* _tmp3_;
+#line 317 "rygel-media-db.vala"
+						self->priv->db = (_tmp3_ = NULL, _g_object_unref0 (self->priv->db), _tmp3_);
+#line 935 "rygel-media-db.c"
+						block4_data_unref (_data4_);
+						_g_error_free0 (err);
+						block3_data_unref (_data3_);
+#line 318 "rygel-media-db.vala"
+						return;
+#line 941 "rygel-media-db.c"
+					}
+				} else {
+					RygelDatabase* _tmp4_;
+#line 321 "rygel-media-db.vala"
+					g_warning ("rygel-media-db.vala:321: Incompatible schema... cannot proceed");
+#line 322 "rygel-media-db.vala"
+					self->priv->db = (_tmp4_ = NULL, _g_object_unref0 (self->priv->db), _tmp4_);
+#line 949 "rygel-media-db.c"
+					block4_data_unref (_data4_);
+					_g_error_free0 (err);
+					block3_data_unref (_data3_);
+#line 323 "rygel-media-db.vala"
+					return;
+#line 955 "rygel-media-db.c"
 				}
 				block4_data_unref (_data4_);
 			}
@@ -895,18 +963,22 @@ static void rygel_media_db_open_db (RygelMediaDB* self, const char* name) {
 				_inner_error_ = NULL;
 				{
 					RygelDatabase* _tmp5_;
-#line 325 "rygel-media-db.vala"
-					g_warning ("rygel-media-db.vala:325: Something weird going on: %s", err2->message);
 #line 326 "rygel-media-db.vala"
+					g_warning ("rygel-media-db.vala:326: Something weird going on: %s", err2->message);
+#line 327 "rygel-media-db.vala"
 					self->priv->db = (_tmp5_ = NULL, _g_object_unref0 (self->priv->db), _tmp5_);
-#line 903 "rygel-media-db.c"
+#line 971 "rygel-media-db.c"
 					_g_error_free0 (err2);
 				}
 			}
 			__finally46:
 			if (_inner_error_ != NULL) {
 				_g_error_free0 (err);
-				goto __finally45;
+				_g_error_free0 (err);
+				block3_data_unref (_data3_);
+				g_critical ("file %s: line %d: unexpected error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
+				g_clear_error (&_inner_error_);
+				return;
 			}
 			_g_error_free0 (err);
 		}
@@ -927,58 +999,58 @@ static gpointer _g_object_ref0 (gpointer self) {
 }
 
 
-#line 331 "rygel-media-db.vala"
+#line 332 "rygel-media-db.vala"
 static RygelMediaDB* rygel_media_db_construct (GType object_type, const char* name, RygelMediaDBObjectFactory* factory) {
-#line 933 "rygel-media-db.c"
+#line 1005 "rygel-media-db.c"
 	RygelMediaDB * self;
 	RygelMediaDBObjectFactory* _tmp0_;
-#line 331 "rygel-media-db.vala"
-	g_return_val_if_fail (name != NULL, NULL);
-#line 331 "rygel-media-db.vala"
-	g_return_val_if_fail (factory != NULL, NULL);
-#line 331 "rygel-media-db.vala"
-	self = (RygelMediaDB*) g_object_new (object_type, NULL);
 #line 332 "rygel-media-db.vala"
-	rygel_media_db_open_db (self, name);
+	g_return_val_if_fail (name != NULL, NULL);
+#line 332 "rygel-media-db.vala"
+	g_return_val_if_fail (factory != NULL, NULL);
+#line 332 "rygel-media-db.vala"
+	self = (RygelMediaDB*) g_object_new (object_type, NULL);
 #line 333 "rygel-media-db.vala"
+	rygel_media_db_open_db (self, name);
+#line 334 "rygel-media-db.vala"
 	self->priv->factory = (_tmp0_ = _g_object_ref0 (factory), _g_object_unref0 (self->priv->factory), _tmp0_);
-#line 946 "rygel-media-db.c"
+#line 1018 "rygel-media-db.c"
 	return self;
 }
 
 
-#line 331 "rygel-media-db.vala"
+#line 332 "rygel-media-db.vala"
 static RygelMediaDB* rygel_media_db_new (const char* name, RygelMediaDBObjectFactory* factory) {
-#line 331 "rygel-media-db.vala"
+#line 332 "rygel-media-db.vala"
 	return rygel_media_db_construct (RYGEL_TYPE_MEDIA_DB, name, factory);
-#line 955 "rygel-media-db.c"
+#line 1027 "rygel-media-db.c"
 }
 
 
-#line 336 "rygel-media-db.vala"
+#line 337 "rygel-media-db.vala"
 RygelMediaDB* rygel_media_db_create (const char* name, GError** error) {
-#line 961 "rygel-media-db.c"
+#line 1033 "rygel-media-db.c"
 	RygelMediaDB* result;
 	GError * _inner_error_;
 	RygelMediaDBObjectFactory* _tmp0_;
 	RygelMediaDB* _tmp1_;
 	RygelMediaDB* instance;
-#line 336 "rygel-media-db.vala"
-	g_return_val_if_fail (name != NULL, NULL);
-#line 969 "rygel-media-db.c"
-	_inner_error_ = NULL;
 #line 337 "rygel-media-db.vala"
-	instance = (_tmp1_ = rygel_media_db_new (name, _tmp0_ = rygel_media_db_object_factory_new ()), _g_object_unref0 (_tmp0_), _tmp1_);
+	g_return_val_if_fail (name != NULL, NULL);
+#line 1041 "rygel-media-db.c"
+	_inner_error_ = NULL;
 #line 338 "rygel-media-db.vala"
-	if (instance->priv->db != NULL) {
-#line 975 "rygel-media-db.c"
-		result = instance;
+	instance = (_tmp1_ = rygel_media_db_new (name, _tmp0_ = rygel_media_db_object_factory_new ()), _g_object_unref0 (_tmp0_), _tmp1_);
 #line 339 "rygel-media-db.vala"
+	if (instance->priv->db != NULL) {
+#line 1047 "rygel-media-db.c"
+		result = instance;
+#line 340 "rygel-media-db.vala"
 		return result;
-#line 979 "rygel-media-db.c"
+#line 1051 "rygel-media-db.c"
 	}
 	_inner_error_ = g_error_new_literal (RYGEL_MEDIA_DB_ERROR, RYGEL_MEDIA_DB_ERROR_GENERAL_ERROR, "Invalid database");
-	if (_inner_error_ != NULL) {
+	{
 		if (_inner_error_->domain == RYGEL_MEDIA_DB_ERROR) {
 			g_propagate_error (error, _inner_error_);
 			_g_object_unref0 (instance);
@@ -994,30 +1066,30 @@ RygelMediaDB* rygel_media_db_create (const char* name, GError** error) {
 }
 
 
-#line 345 "rygel-media-db.vala"
+#line 346 "rygel-media-db.vala"
 RygelMediaDB* rygel_media_db_create_with_factory (const char* name, RygelMediaDBObjectFactory* factory, GError** error) {
-#line 1000 "rygel-media-db.c"
+#line 1072 "rygel-media-db.c"
 	RygelMediaDB* result;
 	GError * _inner_error_;
 	RygelMediaDB* instance;
-#line 345 "rygel-media-db.vala"
+#line 346 "rygel-media-db.vala"
 	g_return_val_if_fail (name != NULL, NULL);
-#line 345 "rygel-media-db.vala"
+#line 346 "rygel-media-db.vala"
 	g_return_val_if_fail (factory != NULL, NULL);
-#line 1008 "rygel-media-db.c"
+#line 1080 "rygel-media-db.c"
 	_inner_error_ = NULL;
-#line 348 "rygel-media-db.vala"
-	instance = rygel_media_db_new (name, factory);
 #line 349 "rygel-media-db.vala"
-	if (instance->priv->db != NULL) {
-#line 1014 "rygel-media-db.c"
-		result = instance;
+	instance = rygel_media_db_new (name, factory);
 #line 350 "rygel-media-db.vala"
+	if (instance->priv->db != NULL) {
+#line 1086 "rygel-media-db.c"
+		result = instance;
+#line 351 "rygel-media-db.vala"
 		return result;
-#line 1018 "rygel-media-db.c"
+#line 1090 "rygel-media-db.c"
 	}
 	_inner_error_ = g_error_new_literal (RYGEL_MEDIA_DB_ERROR, RYGEL_MEDIA_DB_ERROR_GENERAL_ERROR, "Invalid database");
-	if (_inner_error_ != NULL) {
+	{
 		if (_inner_error_->domain == RYGEL_MEDIA_DB_ERROR) {
 			g_propagate_error (error, _inner_error_);
 			_g_object_unref0 (instance);
@@ -1044,9 +1116,9 @@ static void _vala_GValue_array_free (GValue* array, gint array_length) {
 }
 
 
-#line 368 "rygel-media-db.vala"
+#line 369 "rygel-media-db.vala"
 void rygel_media_db_remove_by_id (RygelMediaDB* self, const char* id, GError** error) {
-#line 1050 "rygel-media-db.c"
+#line 1122 "rygel-media-db.c"
 	GError * _inner_error_;
 	GValue* _tmp2_;
 	gint values_size;
@@ -1054,16 +1126,16 @@ void rygel_media_db_remove_by_id (RygelMediaDB* self, const char* id, GError** e
 	GValue* _tmp1_ = NULL;
 	GValue _tmp0_ = {0};
 	GValue* values;
-#line 368 "rygel-media-db.vala"
+#line 369 "rygel-media-db.vala"
 	g_return_if_fail (self != NULL);
-#line 368 "rygel-media-db.vala"
+#line 369 "rygel-media-db.vala"
 	g_return_if_fail (id != NULL);
-#line 1062 "rygel-media-db.c"
+#line 1134 "rygel-media-db.c"
 	_inner_error_ = NULL;
 	values = (_tmp2_ = (_tmp1_ = g_new0 (GValue, 1), _tmp1_[0] = (g_value_init (&_tmp0_, G_TYPE_STRING), g_value_set_string (&_tmp0_, id), _tmp0_), _tmp1_), values_length1 = 1, values_size = values_length1, _tmp2_);
-#line 370 "rygel-media-db.vala"
+#line 371 "rygel-media-db.vala"
 	rygel_database_exec (self->priv->db, RYGEL_MEDIA_DB_DELETE_BY_ID_STRING, values, values_length1, NULL, NULL, &_inner_error_);
-#line 1067 "rygel-media-db.c"
+#line 1139 "rygel-media-db.c"
 	if (_inner_error_ != NULL) {
 		if (_inner_error_->domain == RYGEL_DATABASE_ERROR) {
 			g_propagate_error (error, _inner_error_);
@@ -1076,26 +1148,26 @@ void rygel_media_db_remove_by_id (RygelMediaDB* self, const char* id, GError** e
 			return;
 		}
 	}
-#line 371 "rygel-media-db.vala"
+#line 372 "rygel-media-db.vala"
 	g_signal_emit_by_name (self, "object-removed", id);
-#line 1082 "rygel-media-db.c"
+#line 1154 "rygel-media-db.c"
 	values = (_vala_GValue_array_free (values, values_length1), NULL);
 }
 
 
-#line 375 "rygel-media-db.vala"
-void rygel_media_db_remove_object (RygelMediaDB* self, RygelMediaObject* obj, GError** error) {
-#line 1089 "rygel-media-db.c"
-	GError * _inner_error_;
-#line 375 "rygel-media-db.vala"
-	g_return_if_fail (self != NULL);
-#line 375 "rygel-media-db.vala"
-	g_return_if_fail (obj != NULL);
-#line 1095 "rygel-media-db.c"
-	_inner_error_ = NULL;
 #line 376 "rygel-media-db.vala"
+void rygel_media_db_remove_object (RygelMediaDB* self, RygelMediaObject* obj, GError** error) {
+#line 1161 "rygel-media-db.c"
+	GError * _inner_error_;
+#line 376 "rygel-media-db.vala"
+	g_return_if_fail (self != NULL);
+#line 376 "rygel-media-db.vala"
+	g_return_if_fail (obj != NULL);
+#line 1167 "rygel-media-db.c"
+	_inner_error_ = NULL;
+#line 377 "rygel-media-db.vala"
 	rygel_media_db_remove_by_id (self, obj->id, &_inner_error_);
-#line 1099 "rygel-media-db.c"
+#line 1171 "rygel-media-db.c"
 	if (_inner_error_ != NULL) {
 		if ((_inner_error_->domain == RYGEL_DATABASE_ERROR) || (_inner_error_->domain == RYGEL_MEDIA_DB_ERROR)) {
 			g_propagate_error (error, _inner_error_);
@@ -1106,20 +1178,20 @@ void rygel_media_db_remove_object (RygelMediaDB* self, RygelMediaObject* obj, GE
 			return;
 		}
 	}
-#line 377 "rygel-media-db.vala"
-	if (RYGEL_IS_MEDIA_ITEM (obj)) {
 #line 378 "rygel-media-db.vala"
-		g_signal_emit_by_name (self, "item-removed", obj->id);
-#line 1114 "rygel-media-db.c"
-	} else {
+	if (RYGEL_IS_MEDIA_ITEM (obj)) {
 #line 379 "rygel-media-db.vala"
-		if (RYGEL_IS_MEDIA_CONTAINER (obj)) {
+		g_signal_emit_by_name (self, "item-removed", obj->id);
+#line 1186 "rygel-media-db.c"
+	} else {
 #line 380 "rygel-media-db.vala"
+		if (RYGEL_IS_MEDIA_CONTAINER (obj)) {
+#line 381 "rygel-media-db.vala"
 			g_signal_emit_by_name (self, "container-removed", obj->id);
-#line 1120 "rygel-media-db.c"
+#line 1192 "rygel-media-db.c"
 		} else {
 			_inner_error_ = g_error_new_literal (RYGEL_MEDIA_DB_ERROR, RYGEL_MEDIA_DB_ERROR_INVALID_TYPE, "Invalid object type");
-			if (_inner_error_ != NULL) {
+			{
 				if ((_inner_error_->domain == RYGEL_DATABASE_ERROR) || (_inner_error_->domain == RYGEL_MEDIA_DB_ERROR)) {
 					g_propagate_error (error, _inner_error_);
 					return;
@@ -1134,38 +1206,38 @@ void rygel_media_db_remove_object (RygelMediaDB* self, RygelMediaObject* obj, GE
 }
 
 
-#line 385 "rygel-media-db.vala"
-void rygel_media_db_save_object (RygelMediaDB* self, RygelMediaObject* obj, GError** error) {
-#line 1140 "rygel-media-db.c"
-	GError * _inner_error_;
-#line 385 "rygel-media-db.vala"
-	g_return_if_fail (self != NULL);
-#line 385 "rygel-media-db.vala"
-	g_return_if_fail (obj != NULL);
-#line 1146 "rygel-media-db.c"
-	_inner_error_ = NULL;
 #line 386 "rygel-media-db.vala"
-	if (RYGEL_IS_MEDIA_ITEM (obj)) {
+void rygel_media_db_save_object (RygelMediaDB* self, RygelMediaObject* obj, GError** error) {
+#line 1212 "rygel-media-db.c"
+	GError * _inner_error_;
+#line 386 "rygel-media-db.vala"
+	g_return_if_fail (self != NULL);
+#line 386 "rygel-media-db.vala"
+	g_return_if_fail (obj != NULL);
+#line 1218 "rygel-media-db.c"
+	_inner_error_ = NULL;
 #line 387 "rygel-media-db.vala"
+	if (RYGEL_IS_MEDIA_ITEM (obj)) {
+#line 388 "rygel-media-db.vala"
 		rygel_media_db_save_item (self, RYGEL_MEDIA_ITEM (obj), &_inner_error_);
-#line 1152 "rygel-media-db.c"
+#line 1224 "rygel-media-db.c"
 		if (_inner_error_ != NULL) {
 			g_propagate_error (error, _inner_error_);
 			return;
 		}
 	} else {
-#line 388 "rygel-media-db.vala"
-		if (RYGEL_IS_MEDIA_CONTAINER (obj)) {
 #line 389 "rygel-media-db.vala"
+		if (RYGEL_IS_MEDIA_CONTAINER (obj)) {
+#line 390 "rygel-media-db.vala"
 			rygel_media_db_save_container (self, RYGEL_MEDIA_CONTAINER (obj), &_inner_error_);
-#line 1162 "rygel-media-db.c"
+#line 1234 "rygel-media-db.c"
 			if (_inner_error_ != NULL) {
 				g_propagate_error (error, _inner_error_);
 				return;
 			}
 		} else {
 			_inner_error_ = g_error_new_literal (RYGEL_MEDIA_DB_ERROR, RYGEL_MEDIA_DB_ERROR_INVALID_TYPE, "Invalid object type");
-			if (_inner_error_ != NULL) {
+			{
 				g_propagate_error (error, _inner_error_);
 				return;
 			}
@@ -1179,38 +1251,31 @@ static gpointer _g_error_copy0 (gpointer self) {
 }
 
 
-#line 395 "rygel-media-db.vala"
+#line 396 "rygel-media-db.vala"
 void rygel_media_db_save_container (RygelMediaDB* self, RygelMediaContainer* container, GError** error) {
-#line 1185 "rygel-media-db.c"
+#line 1257 "rygel-media-db.c"
 	GError * _inner_error_;
-#line 395 "rygel-media-db.vala"
+#line 396 "rygel-media-db.vala"
 	g_return_if_fail (self != NULL);
-#line 395 "rygel-media-db.vala"
+#line 396 "rygel-media-db.vala"
 	g_return_if_fail (container != NULL);
-#line 1191 "rygel-media-db.c"
+#line 1263 "rygel-media-db.c"
 	_inner_error_ = NULL;
 	{
-#line 397 "rygel-media-db.vala"
-		rygel_database_begin (self->priv->db, &_inner_error_);
-#line 1196 "rygel-media-db.c"
-		if (_inner_error_ != NULL) {
-			if (_inner_error_->domain == RYGEL_DATABASE_ERROR) {
-				goto __catch47_rygel_database_error;
-			}
-			goto __finally47;
-		}
 #line 398 "rygel-media-db.vala"
-		rygel_media_db_create_object (self, (RygelMediaObject*) container, &_inner_error_);
-#line 1205 "rygel-media-db.c"
+		rygel_database_begin (self->priv->db, &_inner_error_);
+#line 1268 "rygel-media-db.c"
 		if (_inner_error_ != NULL) {
 			if (_inner_error_->domain == RYGEL_DATABASE_ERROR) {
 				goto __catch47_rygel_database_error;
 			}
-			goto __finally47;
+			g_critical ("file %s: line %d: unexpected error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
+			g_clear_error (&_inner_error_);
+			return;
 		}
 #line 399 "rygel-media-db.vala"
-		rygel_media_db_save_uris (self, (RygelMediaObject*) container, &_inner_error_);
-#line 1214 "rygel-media-db.c"
+		rygel_media_db_create_object (self, (RygelMediaObject*) container, &_inner_error_);
+#line 1279 "rygel-media-db.c"
 		if (_inner_error_ != NULL) {
 			if (_inner_error_->domain == RYGEL_DATABASE_ERROR) {
 				goto __catch47_rygel_database_error;
@@ -1218,8 +1283,8 @@ void rygel_media_db_save_container (RygelMediaDB* self, RygelMediaContainer* con
 			goto __finally47;
 		}
 #line 400 "rygel-media-db.vala"
-		rygel_database_commit (self->priv->db, &_inner_error_);
-#line 1223 "rygel-media-db.c"
+		rygel_media_db_save_uris (self, (RygelMediaObject*) container, &_inner_error_);
+#line 1288 "rygel-media-db.c"
 		if (_inner_error_ != NULL) {
 			if (_inner_error_->domain == RYGEL_DATABASE_ERROR) {
 				goto __catch47_rygel_database_error;
@@ -1227,10 +1292,21 @@ void rygel_media_db_save_container (RygelMediaDB* self, RygelMediaContainer* con
 			goto __finally47;
 		}
 #line 401 "rygel-media-db.vala"
-		g_signal_emit_by_name (self, "object-added", ((RygelMediaObject*) container)->id);
+		rygel_database_commit (self->priv->db, &_inner_error_);
+#line 1297 "rygel-media-db.c"
+		if (_inner_error_ != NULL) {
+			if (_inner_error_->domain == RYGEL_DATABASE_ERROR) {
+				goto __catch47_rygel_database_error;
+			}
+			g_critical ("file %s: line %d: unexpected error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
+			g_clear_error (&_inner_error_);
+			return;
+		}
 #line 402 "rygel-media-db.vala"
+		g_signal_emit_by_name (self, "object-added", ((RygelMediaObject*) container)->id);
+#line 403 "rygel-media-db.vala"
 		g_signal_emit_by_name (self, "container-added", ((RygelMediaObject*) container)->id);
-#line 1234 "rygel-media-db.c"
+#line 1310 "rygel-media-db.c"
 	}
 	goto __finally47;
 	__catch47_rygel_database_error:
@@ -1239,11 +1315,11 @@ void rygel_media_db_save_container (RygelMediaDB* self, RygelMediaContainer* con
 		err = _inner_error_;
 		_inner_error_ = NULL;
 		{
-#line 404 "rygel-media-db.vala"
+#line 405 "rygel-media-db.vala"
 			rygel_database_rollback (self->priv->db);
-#line 1245 "rygel-media-db.c"
+#line 1321 "rygel-media-db.c"
 			_inner_error_ = _g_error_copy0 (err);
-			if (_inner_error_ != NULL) {
+			{
 				_g_error_free0 (err);
 				goto __finally47;
 			}
@@ -1258,38 +1334,31 @@ void rygel_media_db_save_container (RygelMediaDB* self, RygelMediaContainer* con
 }
 
 
-#line 409 "rygel-media-db.vala"
+#line 410 "rygel-media-db.vala"
 void rygel_media_db_save_item (RygelMediaDB* self, RygelMediaItem* item, GError** error) {
-#line 1264 "rygel-media-db.c"
+#line 1340 "rygel-media-db.c"
 	GError * _inner_error_;
-#line 409 "rygel-media-db.vala"
+#line 410 "rygel-media-db.vala"
 	g_return_if_fail (self != NULL);
-#line 409 "rygel-media-db.vala"
+#line 410 "rygel-media-db.vala"
 	g_return_if_fail (item != NULL);
-#line 1270 "rygel-media-db.c"
+#line 1346 "rygel-media-db.c"
 	_inner_error_ = NULL;
 	{
-#line 411 "rygel-media-db.vala"
-		rygel_database_begin (self->priv->db, &_inner_error_);
-#line 1275 "rygel-media-db.c"
-		if (_inner_error_ != NULL) {
-			if (_inner_error_->domain == RYGEL_DATABASE_ERROR) {
-				goto __catch48_rygel_database_error;
-			}
-			goto __finally48;
-		}
 #line 412 "rygel-media-db.vala"
-		rygel_media_db_save_metadata (self, item, RYGEL_MEDIA_DB_INSERT_META_DATA_STRING, &_inner_error_);
-#line 1284 "rygel-media-db.c"
+		rygel_database_begin (self->priv->db, &_inner_error_);
+#line 1351 "rygel-media-db.c"
 		if (_inner_error_ != NULL) {
 			if (_inner_error_->domain == RYGEL_DATABASE_ERROR) {
 				goto __catch48_rygel_database_error;
 			}
-			goto __finally48;
+			g_critical ("file %s: line %d: unexpected error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
+			g_clear_error (&_inner_error_);
+			return;
 		}
 #line 413 "rygel-media-db.vala"
-		rygel_media_db_create_object (self, (RygelMediaObject*) item, &_inner_error_);
-#line 1293 "rygel-media-db.c"
+		rygel_media_db_save_metadata (self, item, RYGEL_MEDIA_DB_INSERT_META_DATA_STRING, &_inner_error_);
+#line 1362 "rygel-media-db.c"
 		if (_inner_error_ != NULL) {
 			if (_inner_error_->domain == RYGEL_DATABASE_ERROR) {
 				goto __catch48_rygel_database_error;
@@ -1297,8 +1366,8 @@ void rygel_media_db_save_item (RygelMediaDB* self, RygelMediaItem* item, GError*
 			goto __finally48;
 		}
 #line 414 "rygel-media-db.vala"
-		rygel_media_db_save_uris (self, (RygelMediaObject*) item, &_inner_error_);
-#line 1302 "rygel-media-db.c"
+		rygel_media_db_create_object (self, (RygelMediaObject*) item, &_inner_error_);
+#line 1371 "rygel-media-db.c"
 		if (_inner_error_ != NULL) {
 			if (_inner_error_->domain == RYGEL_DATABASE_ERROR) {
 				goto __catch48_rygel_database_error;
@@ -1306,8 +1375,8 @@ void rygel_media_db_save_item (RygelMediaDB* self, RygelMediaItem* item, GError*
 			goto __finally48;
 		}
 #line 415 "rygel-media-db.vala"
-		rygel_database_commit (self->priv->db, &_inner_error_);
-#line 1311 "rygel-media-db.c"
+		rygel_media_db_save_uris (self, (RygelMediaObject*) item, &_inner_error_);
+#line 1380 "rygel-media-db.c"
 		if (_inner_error_ != NULL) {
 			if (_inner_error_->domain == RYGEL_DATABASE_ERROR) {
 				goto __catch48_rygel_database_error;
@@ -1315,10 +1384,21 @@ void rygel_media_db_save_item (RygelMediaDB* self, RygelMediaItem* item, GError*
 			goto __finally48;
 		}
 #line 416 "rygel-media-db.vala"
-		g_signal_emit_by_name (self, "object-added", ((RygelMediaObject*) item)->id);
+		rygel_database_commit (self->priv->db, &_inner_error_);
+#line 1389 "rygel-media-db.c"
+		if (_inner_error_ != NULL) {
+			if (_inner_error_->domain == RYGEL_DATABASE_ERROR) {
+				goto __catch48_rygel_database_error;
+			}
+			g_critical ("file %s: line %d: unexpected error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
+			g_clear_error (&_inner_error_);
+			return;
+		}
 #line 417 "rygel-media-db.vala"
+		g_signal_emit_by_name (self, "object-added", ((RygelMediaObject*) item)->id);
+#line 418 "rygel-media-db.vala"
 		g_signal_emit_by_name (self, "item-added", ((RygelMediaObject*) item)->id);
-#line 1322 "rygel-media-db.c"
+#line 1402 "rygel-media-db.c"
 	}
 	goto __finally48;
 	__catch48_rygel_database_error:
@@ -1327,13 +1407,13 @@ void rygel_media_db_save_item (RygelMediaDB* self, RygelMediaItem* item, GError*
 		_error_ = _inner_error_;
 		_inner_error_ = NULL;
 		{
-#line 419 "rygel-media-db.vala"
-			g_warning ("rygel-media-db.vala:419: Failed to add item with id %s: %s", ((RygelMediaObject*) item)->id, _error_->message);
-#line 422 "rygel-media-db.vala"
+#line 420 "rygel-media-db.vala"
+			g_warning ("rygel-media-db.vala:420: Failed to add item with id %s: %s", ((RygelMediaObject*) item)->id, _error_->message);
+#line 423 "rygel-media-db.vala"
 			rygel_database_rollback (self->priv->db);
-#line 1335 "rygel-media-db.c"
+#line 1415 "rygel-media-db.c"
 			_inner_error_ = _g_error_copy0 (_error_);
-			if (_inner_error_ != NULL) {
+			{
 				_g_error_free0 (_error_);
 				goto __finally48;
 			}
@@ -1348,75 +1428,87 @@ void rygel_media_db_save_item (RygelMediaDB* self, RygelMediaItem* item, GError*
 }
 
 
-#line 428 "rygel-media-db.vala"
+#line 429 "rygel-media-db.vala"
 void rygel_media_db_update_object (RygelMediaDB* self, RygelMediaObject* obj, GError** error) {
-#line 1354 "rygel-media-db.c"
+#line 1434 "rygel-media-db.c"
 	GError * _inner_error_;
-#line 428 "rygel-media-db.vala"
+#line 429 "rygel-media-db.vala"
 	g_return_if_fail (self != NULL);
-#line 428 "rygel-media-db.vala"
+#line 429 "rygel-media-db.vala"
 	g_return_if_fail (obj != NULL);
-#line 1360 "rygel-media-db.c"
+#line 1440 "rygel-media-db.c"
 	_inner_error_ = NULL;
 	{
-#line 430 "rygel-media-db.vala"
-		rygel_database_begin (self->priv->db, &_inner_error_);
-#line 1365 "rygel-media-db.c"
-		if (_inner_error_ != NULL) {
-			goto __catch49_g_error;
-			goto __finally49;
-		}
 #line 431 "rygel-media-db.vala"
-		rygel_media_db_remove_uris (self, obj, &_inner_error_);
-#line 1372 "rygel-media-db.c"
+		rygel_database_begin (self->priv->db, &_inner_error_);
+#line 1445 "rygel-media-db.c"
 		if (_inner_error_ != NULL) {
 			goto __catch49_g_error;
-			goto __finally49;
+			g_critical ("file %s: line %d: unexpected error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
+			g_clear_error (&_inner_error_);
+			return;
 		}
 #line 432 "rygel-media-db.vala"
-		if (RYGEL_IS_MEDIA_ITEM (obj)) {
+		rygel_media_db_remove_uris (self, obj, &_inner_error_);
+#line 1454 "rygel-media-db.c"
+		if (_inner_error_ != NULL) {
+			goto __catch49_g_error;
+			g_critical ("file %s: line %d: unexpected error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
+			g_clear_error (&_inner_error_);
+			return;
+		}
 #line 433 "rygel-media-db.vala"
+		if (RYGEL_IS_MEDIA_ITEM (obj)) {
+#line 434 "rygel-media-db.vala"
 			rygel_media_db_save_metadata (self, RYGEL_MEDIA_ITEM (obj), RYGEL_MEDIA_DB_UPDATE_META_DATA_STRING, &_inner_error_);
-#line 1381 "rygel-media-db.c"
+#line 1465 "rygel-media-db.c"
 			if (_inner_error_ != NULL) {
 				goto __catch49_g_error;
-				goto __finally49;
+				g_critical ("file %s: line %d: unexpected error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
+				g_clear_error (&_inner_error_);
+				return;
 			}
 		}
-#line 435 "rygel-media-db.vala"
-		rygel_media_db_update_object_internal (self, obj, &_inner_error_);
-#line 1389 "rygel-media-db.c"
-		if (_inner_error_ != NULL) {
-			goto __catch49_g_error;
-			goto __finally49;
-		}
 #line 436 "rygel-media-db.vala"
-		rygel_media_db_save_uris (self, obj, &_inner_error_);
-#line 1396 "rygel-media-db.c"
+		rygel_media_db_update_object_internal (self, obj, &_inner_error_);
+#line 1475 "rygel-media-db.c"
 		if (_inner_error_ != NULL) {
 			goto __catch49_g_error;
-			goto __finally49;
+			g_critical ("file %s: line %d: unexpected error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
+			g_clear_error (&_inner_error_);
+			return;
 		}
 #line 437 "rygel-media-db.vala"
-		rygel_database_commit (self->priv->db, &_inner_error_);
-#line 1403 "rygel-media-db.c"
+		rygel_media_db_save_uris (self, obj, &_inner_error_);
+#line 1484 "rygel-media-db.c"
 		if (_inner_error_ != NULL) {
 			goto __catch49_g_error;
-			goto __finally49;
+			g_critical ("file %s: line %d: unexpected error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
+			g_clear_error (&_inner_error_);
+			return;
 		}
 #line 438 "rygel-media-db.vala"
-		g_signal_emit_by_name (self, "object-updated", obj->id);
+		rygel_database_commit (self->priv->db, &_inner_error_);
+#line 1493 "rygel-media-db.c"
+		if (_inner_error_ != NULL) {
+			goto __catch49_g_error;
+			g_critical ("file %s: line %d: unexpected error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
+			g_clear_error (&_inner_error_);
+			return;
+		}
 #line 439 "rygel-media-db.vala"
-		if (RYGEL_IS_MEDIA_ITEM (obj)) {
+		g_signal_emit_by_name (self, "object-updated", obj->id);
 #line 440 "rygel-media-db.vala"
-			g_signal_emit_by_name (self, "item-updated", obj->id);
-#line 1414 "rygel-media-db.c"
-		} else {
+		if (RYGEL_IS_MEDIA_ITEM (obj)) {
 #line 441 "rygel-media-db.vala"
-			if (RYGEL_IS_MEDIA_CONTAINER (obj)) {
+			g_signal_emit_by_name (self, "item-updated", obj->id);
+#line 1506 "rygel-media-db.c"
+		} else {
 #line 442 "rygel-media-db.vala"
+			if (RYGEL_IS_MEDIA_CONTAINER (obj)) {
+#line 443 "rygel-media-db.vala"
 				g_signal_emit_by_name (self, "container-updated", obj->id);
-#line 1420 "rygel-media-db.c"
+#line 1512 "rygel-media-db.c"
 			}
 		}
 	}
@@ -1427,13 +1519,13 @@ void rygel_media_db_update_object (RygelMediaDB* self, RygelMediaObject* obj, GE
 		_error_ = _inner_error_;
 		_inner_error_ = NULL;
 		{
-#line 444 "rygel-media-db.vala"
-			g_warning ("rygel-media-db.vala:444: Failed to add item with id %s: %s", obj->id, _error_->message);
-#line 447 "rygel-media-db.vala"
+#line 445 "rygel-media-db.vala"
+			g_warning ("rygel-media-db.vala:445: Failed to add item with id %s: %s", obj->id, _error_->message);
+#line 448 "rygel-media-db.vala"
 			rygel_database_rollback (self->priv->db);
-#line 1435 "rygel-media-db.c"
+#line 1527 "rygel-media-db.c"
 			_inner_error_ = _g_error_copy0 (_error_);
-			if (_inner_error_ != NULL) {
+			{
 				_g_error_free0 (_error_);
 				goto __finally49;
 			}
@@ -1448,9 +1540,9 @@ void rygel_media_db_update_object (RygelMediaDB* self, RygelMediaObject* obj, GE
 }
 
 
-#line 452 "rygel-media-db.vala"
+#line 453 "rygel-media-db.vala"
 static void rygel_media_db_update_object_internal (RygelMediaDB* self, RygelMediaObject* obj, GError** error) {
-#line 1454 "rygel-media-db.c"
+#line 1546 "rygel-media-db.c"
 	GError * _inner_error_;
 	GValue* _tmp4_;
 	gint values_size;
@@ -1460,16 +1552,16 @@ static void rygel_media_db_update_object_internal (RygelMediaDB* self, RygelMedi
 	GValue _tmp1_ = {0};
 	GValue _tmp0_ = {0};
 	GValue* values;
-#line 452 "rygel-media-db.vala"
+#line 453 "rygel-media-db.vala"
 	g_return_if_fail (self != NULL);
-#line 452 "rygel-media-db.vala"
+#line 453 "rygel-media-db.vala"
 	g_return_if_fail (obj != NULL);
-#line 1468 "rygel-media-db.c"
+#line 1560 "rygel-media-db.c"
 	_inner_error_ = NULL;
 	values = (_tmp4_ = (_tmp3_ = g_new0 (GValue, 3), _tmp3_[0] = (g_value_init (&_tmp0_, G_TYPE_STRING), g_value_set_string (&_tmp0_, rygel_media_object_get_title (obj)), _tmp0_), _tmp3_[1] = (g_value_init (&_tmp1_, G_TYPE_INT64), g_value_set_int64 (&_tmp1_, (gint64) obj->modified), _tmp1_), _tmp3_[2] = (g_value_init (&_tmp2_, G_TYPE_STRING), g_value_set_string (&_tmp2_, obj->id), _tmp2_), _tmp3_), values_length1 = 3, values_size = values_length1, _tmp4_);
-#line 454 "rygel-media-db.vala"
+#line 455 "rygel-media-db.vala"
 	rygel_database_exec (self->priv->db, RYGEL_MEDIA_DB_UPDATE_OBJECT_STRING, values, values_length1, NULL, NULL, &_inner_error_);
-#line 1473 "rygel-media-db.c"
+#line 1565 "rygel-media-db.c"
 	if (_inner_error_ != NULL) {
 		g_propagate_error (error, _inner_error_);
 		values = (_vala_GValue_array_free (values, values_length1), NULL);
@@ -1479,9 +1571,9 @@ static void rygel_media_db_update_object_internal (RygelMediaDB* self, RygelMedi
 }
 
 
-#line 457 "rygel-media-db.vala"
+#line 458 "rygel-media-db.vala"
 static void rygel_media_db_remove_uris (RygelMediaDB* self, RygelMediaObject* obj, GError** error) {
-#line 1485 "rygel-media-db.c"
+#line 1577 "rygel-media-db.c"
 	GError * _inner_error_;
 	GValue* _tmp2_;
 	gint values_size;
@@ -1489,16 +1581,16 @@ static void rygel_media_db_remove_uris (RygelMediaDB* self, RygelMediaObject* ob
 	GValue* _tmp1_ = NULL;
 	GValue _tmp0_ = {0};
 	GValue* values;
-#line 457 "rygel-media-db.vala"
+#line 458 "rygel-media-db.vala"
 	g_return_if_fail (self != NULL);
-#line 457 "rygel-media-db.vala"
+#line 458 "rygel-media-db.vala"
 	g_return_if_fail (obj != NULL);
-#line 1497 "rygel-media-db.c"
+#line 1589 "rygel-media-db.c"
 	_inner_error_ = NULL;
 	values = (_tmp2_ = (_tmp1_ = g_new0 (GValue, 1), _tmp1_[0] = (g_value_init (&_tmp0_, G_TYPE_STRING), g_value_set_string (&_tmp0_, obj->id), _tmp0_), _tmp1_), values_length1 = 1, values_size = values_length1, _tmp2_);
-#line 459 "rygel-media-db.vala"
+#line 460 "rygel-media-db.vala"
 	rygel_database_exec (self->priv->db, RYGEL_MEDIA_DB_DELETE_URI_STRING, values, values_length1, NULL, NULL, &_inner_error_);
-#line 1502 "rygel-media-db.c"
+#line 1594 "rygel-media-db.c"
 	if (_inner_error_ != NULL) {
 		g_propagate_error (error, _inner_error_);
 		values = (_vala_GValue_array_free (values, values_length1), NULL);
@@ -1508,9 +1600,9 @@ static void rygel_media_db_remove_uris (RygelMediaDB* self, RygelMediaObject* ob
 }
 
 
-#line 462 "rygel-media-db.vala"
+#line 463 "rygel-media-db.vala"
 static void rygel_media_db_save_metadata (RygelMediaDB* self, RygelMediaItem* item, const char* sql, GError** error) {
-#line 1514 "rygel-media-db.c"
+#line 1606 "rygel-media-db.c"
 	GError * _inner_error_;
 	GValue* _tmp17_;
 	gint values_size;
@@ -1533,18 +1625,18 @@ static void rygel_media_db_save_metadata (RygelMediaDB* self, RygelMediaItem* it
 	GValue _tmp1_ = {0};
 	GValue _tmp0_ = {0};
 	GValue* values;
-#line 462 "rygel-media-db.vala"
+#line 463 "rygel-media-db.vala"
 	g_return_if_fail (self != NULL);
-#line 462 "rygel-media-db.vala"
+#line 463 "rygel-media-db.vala"
 	g_return_if_fail (item != NULL);
-#line 462 "rygel-media-db.vala"
+#line 463 "rygel-media-db.vala"
 	g_return_if_fail (sql != NULL);
-#line 1543 "rygel-media-db.c"
+#line 1635 "rygel-media-db.c"
 	_inner_error_ = NULL;
 	values = (_tmp17_ = (_tmp16_ = g_new0 (GValue, 16), _tmp16_[0] = (g_value_init (&_tmp0_, G_TYPE_LONG), g_value_set_long (&_tmp0_, item->size), _tmp0_), _tmp16_[1] = (g_value_init (&_tmp1_, G_TYPE_STRING), g_value_set_string (&_tmp1_, item->mime_type), _tmp1_), _tmp16_[2] = (g_value_init (&_tmp2_, G_TYPE_INT), g_value_set_int (&_tmp2_, item->width), _tmp2_), _tmp16_[3] = (g_value_init (&_tmp3_, G_TYPE_INT), g_value_set_int (&_tmp3_, item->height), _tmp3_), _tmp16_[4] = (g_value_init (&_tmp4_, G_TYPE_STRING), g_value_set_string (&_tmp4_, ((RygelMediaObject*) item)->upnp_class), _tmp4_), _tmp16_[5] = (g_value_init (&_tmp5_, G_TYPE_STRING), g_value_set_string (&_tmp5_, item->author), _tmp5_), _tmp16_[6] = (g_value_init (&_tmp6_, G_TYPE_STRING), g_value_set_string (&_tmp6_, item->album), _tmp6_), _tmp16_[7] = (g_value_init (&_tmp7_, G_TYPE_STRING), g_value_set_string (&_tmp7_, item->date), _tmp7_), _tmp16_[8] = (g_value_init (&_tmp8_, G_TYPE_INT), g_value_set_int (&_tmp8_, item->bitrate), _tmp8_), _tmp16_[9] = (g_value_init (&_tmp9_, G_TYPE_INT), g_value_set_int (&_tmp9_, item->sample_freq), _tmp9_), _tmp16_[10] = (g_value_init (&_tmp10_, G_TYPE_INT), g_value_set_int (&_tmp10_, item->bits_per_sample), _tmp10_), _tmp16_[11] = (g_value_init (&_tmp11_, G_TYPE_INT), g_value_set_int (&_tmp11_, item->n_audio_channels), _tmp11_), _tmp16_[12] = (g_value_init (&_tmp12_, G_TYPE_INT), g_value_set_int (&_tmp12_, item->track_number), _tmp12_), _tmp16_[13] = (g_value_init (&_tmp13_, G_TYPE_INT), g_value_set_int (&_tmp13_, item->color_depth), _tmp13_), _tmp16_[14] = (g_value_init (&_tmp14_, G_TYPE_LONG), g_value_set_long (&_tmp14_, item->duration), _tmp14_), _tmp16_[15] = (g_value_init (&_tmp15_, G_TYPE_STRING), g_value_set_string (&_tmp15_, ((RygelMediaObject*) item)->id), _tmp15_), _tmp16_), values_length1 = 16, values_size = values_length1, _tmp17_);
-#line 481 "rygel-media-db.vala"
+#line 482 "rygel-media-db.vala"
 	rygel_database_exec (self->priv->db, sql, values, values_length1, NULL, NULL, &_inner_error_);
-#line 1548 "rygel-media-db.c"
+#line 1640 "rygel-media-db.c"
 	if (_inner_error_ != NULL) {
 		g_propagate_error (error, _inner_error_);
 		values = (_vala_GValue_array_free (values, values_length1), NULL);
@@ -1554,9 +1646,9 @@ static void rygel_media_db_save_metadata (RygelMediaDB* self, RygelMediaItem* it
 }
 
 
-#line 484 "rygel-media-db.vala"
+#line 485 "rygel-media-db.vala"
 static void rygel_media_db_create_object (RygelMediaDB* self, RygelMediaObject* item, GError** error) {
-#line 1560 "rygel-media-db.c"
+#line 1652 "rygel-media-db.c"
 	GError * _inner_error_;
 	gint _tmp0_ = 0;
 	GValue _tmp1_ = {0};
@@ -1570,41 +1662,41 @@ static void rygel_media_db_create_object (RygelMediaDB* self, RygelMediaObject* 
 	GValue _tmp7_ = {0};
 	GValue _tmp6_ = {0};
 	GValue* values;
-#line 484 "rygel-media-db.vala"
+#line 485 "rygel-media-db.vala"
 	g_return_if_fail (self != NULL);
-#line 484 "rygel-media-db.vala"
+#line 485 "rygel-media-db.vala"
 	g_return_if_fail (item != NULL);
-#line 1578 "rygel-media-db.c"
+#line 1670 "rygel-media-db.c"
 	_inner_error_ = NULL;
-#line 487 "rygel-media-db.vala"
-	if (RYGEL_IS_MEDIA_ITEM (item)) {
 #line 488 "rygel-media-db.vala"
-		_tmp0_ = (gint) RYGEL_MEDIA_DB_OBJECT_TYPE_ITEM;
-#line 1584 "rygel-media-db.c"
-	} else {
+	if (RYGEL_IS_MEDIA_ITEM (item)) {
 #line 489 "rygel-media-db.vala"
-		_tmp0_ = (gint) RYGEL_MEDIA_DB_OBJECT_TYPE_CONTAINER;
-#line 1588 "rygel-media-db.c"
-	}
+		_tmp0_ = (gint) RYGEL_MEDIA_DB_OBJECT_TYPE_ITEM;
+#line 1676 "rygel-media-db.c"
+	} else {
 #line 490 "rygel-media-db.vala"
+		_tmp0_ = (gint) RYGEL_MEDIA_DB_OBJECT_TYPE_CONTAINER;
+#line 1680 "rygel-media-db.c"
+	}
+#line 491 "rygel-media-db.vala"
 	if (item->parent == NULL) {
-#line 1592 "rygel-media-db.c"
+#line 1684 "rygel-media-db.c"
 		GValue _tmp3_;
 		GValue _tmp2_ = {0};
-#line 490 "rygel-media-db.vala"
+#line 491 "rygel-media-db.vala"
 		_tmp1_ = (_tmp3_ = (rygel_database_null (&_tmp2_), _tmp2_), G_IS_VALUE (&_tmp1_) ? (g_value_unset (&_tmp1_), NULL) : NULL, _tmp3_);
-#line 1597 "rygel-media-db.c"
+#line 1689 "rygel-media-db.c"
 	} else {
 		GValue _tmp5_;
 		GValue _tmp4_ = {0};
-#line 491 "rygel-media-db.vala"
+#line 492 "rygel-media-db.vala"
 		_tmp1_ = (_tmp5_ = (g_value_init (&_tmp4_, G_TYPE_STRING), g_value_set_string (&_tmp4_, ((RygelMediaObject*) item->parent)->id), _tmp4_), G_IS_VALUE (&_tmp1_) ? (g_value_unset (&_tmp1_), NULL) : NULL, _tmp5_);
-#line 1603 "rygel-media-db.c"
+#line 1695 "rygel-media-db.c"
 	}
 	values = (_tmp12_ = (_tmp11_ = g_new0 (GValue, 5), _tmp11_[0] = (g_value_init (&_tmp6_, G_TYPE_STRING), g_value_set_string (&_tmp6_, item->id), _tmp6_), _tmp11_[1] = (g_value_init (&_tmp7_, G_TYPE_STRING), g_value_set_string (&_tmp7_, rygel_media_object_get_title (item)), _tmp7_), _tmp11_[2] = (g_value_init (&_tmp8_, G_TYPE_INT), g_value_set_int (&_tmp8_, _tmp0_), _tmp8_), _tmp11_[3] = G_IS_VALUE (&_tmp1_) ? (g_value_init (&_tmp9_, G_VALUE_TYPE (&_tmp1_)), g_value_copy (&_tmp1_, &_tmp9_), _tmp9_) : _tmp1_, _tmp11_[4] = (g_value_init (&_tmp10_, G_TYPE_INT64), g_value_set_int64 (&_tmp10_, (gint64) item->modified), _tmp10_), _tmp11_), values_length1 = 5, values_size = values_length1, _tmp12_);
-#line 493 "rygel-media-db.vala"
+#line 494 "rygel-media-db.vala"
 	rygel_database_exec (self->priv->db, RYGEL_MEDIA_DB_INSERT_OBJECT_STRING, values, values_length1, NULL, NULL, &_inner_error_);
-#line 1608 "rygel-media-db.c"
+#line 1700 "rygel-media-db.c"
 	if (_inner_error_ != NULL) {
 		g_propagate_error (error, _inner_error_);
 		G_IS_VALUE (&_tmp1_) ? (g_value_unset (&_tmp1_), NULL) : NULL;
@@ -1616,22 +1708,22 @@ static void rygel_media_db_create_object (RygelMediaDB* self, RygelMediaObject* 
 }
 
 
-#line 496 "rygel-media-db.vala"
+#line 497 "rygel-media-db.vala"
 static void rygel_media_db_save_uris (RygelMediaDB* self, RygelMediaObject* obj, GError** error) {
-#line 1622 "rygel-media-db.c"
+#line 1714 "rygel-media-db.c"
 	GError * _inner_error_;
-#line 496 "rygel-media-db.vala"
+#line 497 "rygel-media-db.vala"
 	g_return_if_fail (self != NULL);
-#line 496 "rygel-media-db.vala"
+#line 497 "rygel-media-db.vala"
 	g_return_if_fail (obj != NULL);
-#line 1628 "rygel-media-db.c"
+#line 1720 "rygel-media-db.c"
 	_inner_error_ = NULL;
 	{
 		GeeIterator* _uri_it;
 		_uri_it = gee_abstract_collection_iterator ((GeeAbstractCollection*) obj->uris);
-#line 497 "rygel-media-db.vala"
+#line 498 "rygel-media-db.vala"
 		while (TRUE) {
-#line 1635 "rygel-media-db.c"
+#line 1727 "rygel-media-db.c"
 			char* uri;
 			GValue* _tmp3_;
 			gint values_size;
@@ -1640,19 +1732,19 @@ static void rygel_media_db_save_uris (RygelMediaDB* self, RygelMediaObject* obj,
 			GValue _tmp1_ = {0};
 			GValue _tmp0_ = {0};
 			GValue* values;
-#line 497 "rygel-media-db.vala"
+#line 498 "rygel-media-db.vala"
 			if (!gee_iterator_next (_uri_it)) {
-#line 497 "rygel-media-db.vala"
+#line 498 "rygel-media-db.vala"
 				break;
-#line 1648 "rygel-media-db.c"
+#line 1740 "rygel-media-db.c"
 			}
-#line 497 "rygel-media-db.vala"
+#line 498 "rygel-media-db.vala"
 			uri = (char*) gee_iterator_get (_uri_it);
-#line 1652 "rygel-media-db.c"
+#line 1744 "rygel-media-db.c"
 			values = (_tmp3_ = (_tmp2_ = g_new0 (GValue, 2), _tmp2_[0] = (g_value_init (&_tmp0_, G_TYPE_STRING), g_value_set_string (&_tmp0_, obj->id), _tmp0_), _tmp2_[1] = (g_value_init (&_tmp1_, G_TYPE_STRING), g_value_set_string (&_tmp1_, uri), _tmp1_), _tmp2_), values_length1 = 2, values_size = values_length1, _tmp3_);
-#line 499 "rygel-media-db.vala"
+#line 500 "rygel-media-db.vala"
 			rygel_database_exec (self->priv->db, RYGEL_MEDIA_DB_INSERT_URI_STRING, values, values_length1, NULL, NULL, &_inner_error_);
-#line 1656 "rygel-media-db.c"
+#line 1748 "rygel-media-db.c"
 			if (_inner_error_ != NULL) {
 				g_propagate_error (error, _inner_error_);
 				_g_free0 (uri);
@@ -1668,72 +1760,86 @@ static void rygel_media_db_save_uris (RygelMediaDB* self, RygelMediaObject* obj,
 }
 
 
-#line 511 "rygel-media-db.vala"
+#line 512 "rygel-media-db.vala"
 static gboolean rygel_media_db_create_schema (RygelMediaDB* self) {
-#line 1674 "rygel-media-db.c"
+#line 1766 "rygel-media-db.c"
 	gboolean result;
 	GError * _inner_error_;
-#line 511 "rygel-media-db.vala"
+#line 512 "rygel-media-db.vala"
 	g_return_val_if_fail (self != NULL, FALSE);
-#line 1679 "rygel-media-db.c"
+#line 1771 "rygel-media-db.c"
 	_inner_error_ = NULL;
 	{
-#line 513 "rygel-media-db.vala"
-		rygel_database_begin (self->priv->db, &_inner_error_);
-#line 1684 "rygel-media-db.c"
-		if (_inner_error_ != NULL) {
-			goto __catch50_g_error;
-			goto __finally50;
-		}
 #line 514 "rygel-media-db.vala"
-		rygel_database_exec (self->priv->db, RYGEL_MEDIA_DB_SCHEMA_STRING, NULL, 0, NULL, NULL, &_inner_error_);
-#line 1691 "rygel-media-db.c"
+		rygel_database_begin (self->priv->db, &_inner_error_);
+#line 1776 "rygel-media-db.c"
 		if (_inner_error_ != NULL) {
 			goto __catch50_g_error;
-			goto __finally50;
+			g_critical ("file %s: line %d: unexpected error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
+			g_clear_error (&_inner_error_);
+			return FALSE;
 		}
 #line 515 "rygel-media-db.vala"
-		rygel_database_exec (self->priv->db, RYGEL_MEDIA_DB_CREATE_TRIGGER_STRING, NULL, 0, NULL, NULL, &_inner_error_);
-#line 1698 "rygel-media-db.c"
+		rygel_database_exec (self->priv->db, RYGEL_MEDIA_DB_SCHEMA_STRING, NULL, 0, NULL, NULL, &_inner_error_);
+#line 1785 "rygel-media-db.c"
 		if (_inner_error_ != NULL) {
 			goto __catch50_g_error;
-			goto __finally50;
+			g_critical ("file %s: line %d: unexpected error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
+			g_clear_error (&_inner_error_);
+			return FALSE;
 		}
 #line 516 "rygel-media-db.vala"
-		rygel_database_exec (self->priv->db, RYGEL_MEDIA_DB_CREATE_CLOSURE_TABLE, NULL, 0, NULL, NULL, &_inner_error_);
-#line 1705 "rygel-media-db.c"
+		rygel_database_exec (self->priv->db, RYGEL_MEDIA_DB_CREATE_TRIGGER_STRING, NULL, 0, NULL, NULL, &_inner_error_);
+#line 1794 "rygel-media-db.c"
 		if (_inner_error_ != NULL) {
 			goto __catch50_g_error;
-			goto __finally50;
+			g_critical ("file %s: line %d: unexpected error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
+			g_clear_error (&_inner_error_);
+			return FALSE;
 		}
 #line 517 "rygel-media-db.vala"
-		rygel_database_exec (self->priv->db, RYGEL_MEDIA_DB_CREATE_INDICES_STRING, NULL, 0, NULL, NULL, &_inner_error_);
-#line 1712 "rygel-media-db.c"
+		rygel_database_exec (self->priv->db, RYGEL_MEDIA_DB_CREATE_CLOSURE_TABLE, NULL, 0, NULL, NULL, &_inner_error_);
+#line 1803 "rygel-media-db.c"
 		if (_inner_error_ != NULL) {
 			goto __catch50_g_error;
-			goto __finally50;
+			g_critical ("file %s: line %d: unexpected error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
+			g_clear_error (&_inner_error_);
+			return FALSE;
 		}
 #line 518 "rygel-media-db.vala"
-		rygel_database_exec (self->priv->db, RYGEL_MEDIA_DB_CREATE_CLOSURE_TRIGGER_STRING, NULL, 0, NULL, NULL, &_inner_error_);
-#line 1719 "rygel-media-db.c"
+		rygel_database_exec (self->priv->db, RYGEL_MEDIA_DB_CREATE_INDICES_STRING, NULL, 0, NULL, NULL, &_inner_error_);
+#line 1812 "rygel-media-db.c"
 		if (_inner_error_ != NULL) {
 			goto __catch50_g_error;
-			goto __finally50;
+			g_critical ("file %s: line %d: unexpected error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
+			g_clear_error (&_inner_error_);
+			return FALSE;
 		}
 #line 519 "rygel-media-db.vala"
-		rygel_database_commit (self->priv->db, &_inner_error_);
-#line 1726 "rygel-media-db.c"
+		rygel_database_exec (self->priv->db, RYGEL_MEDIA_DB_CREATE_CLOSURE_TRIGGER_STRING, NULL, 0, NULL, NULL, &_inner_error_);
+#line 1821 "rygel-media-db.c"
 		if (_inner_error_ != NULL) {
 			goto __catch50_g_error;
-			goto __finally50;
+			g_critical ("file %s: line %d: unexpected error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
+			g_clear_error (&_inner_error_);
+			return FALSE;
 		}
 #line 520 "rygel-media-db.vala"
-		rygel_database_analyze (self->priv->db);
-#line 1733 "rygel-media-db.c"
-		result = TRUE;
+		rygel_database_commit (self->priv->db, &_inner_error_);
+#line 1830 "rygel-media-db.c"
+		if (_inner_error_ != NULL) {
+			goto __catch50_g_error;
+			g_critical ("file %s: line %d: unexpected error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
+			g_clear_error (&_inner_error_);
+			return FALSE;
+		}
 #line 521 "rygel-media-db.vala"
+		rygel_database_analyze (self->priv->db);
+#line 1839 "rygel-media-db.c"
+		result = TRUE;
+#line 522 "rygel-media-db.vala"
 		return result;
-#line 1737 "rygel-media-db.c"
+#line 1843 "rygel-media-db.c"
 	}
 	goto __finally50;
 	__catch50_g_error:
@@ -1742,11 +1848,11 @@ static gboolean rygel_media_db_create_schema (RygelMediaDB* self) {
 		err = _inner_error_;
 		_inner_error_ = NULL;
 		{
-#line 523 "rygel-media-db.vala"
-			g_warning ("rygel-media-db.vala:523: Failed to create schema: %s", err->message);
 #line 524 "rygel-media-db.vala"
+			g_warning ("rygel-media-db.vala:524: Failed to create schema: %s", err->message);
+#line 525 "rygel-media-db.vala"
 			rygel_database_rollback (self->priv->db);
-#line 1750 "rygel-media-db.c"
+#line 1856 "rygel-media-db.c"
 			_g_error_free0 (err);
 		}
 	}
@@ -1757,31 +1863,40 @@ static gboolean rygel_media_db_create_schema (RygelMediaDB* self) {
 		return FALSE;
 	}
 	result = FALSE;
-#line 526 "rygel-media-db.vala"
+#line 527 "rygel-media-db.vala"
 	return result;
-#line 1763 "rygel-media-db.c"
+#line 1869 "rygel-media-db.c"
 }
 
 
+#line 535 "rygel-media-db.vala"
 static gboolean _lambda10_ (sqlite3_stmt* stmt, Block5Data* _data5_) {
+#line 1875 "rygel-media-db.c"
 	RygelMediaDB * self;
 	gboolean result;
 	self = _data5_->self;
-	g_return_val_if_fail (stmt != NULL, FALSE);
 #line 535 "rygel-media-db.vala"
-	if (RYGEL_IS_MEDIA_ITEM (_data5_->obj)) {
+	g_return_val_if_fail (stmt != NULL, FALSE);
 #line 536 "rygel-media-db.vala"
+	if (RYGEL_IS_MEDIA_ITEM (_data5_->obj)) {
+#line 537 "rygel-media-db.vala"
 		rygel_media_item_add_uri (RYGEL_MEDIA_ITEM (_data5_->obj), sqlite3_column_text (stmt, 0), NULL);
-#line 1776 "rygel-media-db.c"
+#line 1885 "rygel-media-db.c"
 	} else {
-#line 538 "rygel-media-db.vala"
+#line 539 "rygel-media-db.vala"
 		gee_abstract_collection_add ((GeeAbstractCollection*) _data5_->obj->uris, sqlite3_column_text (stmt, 0));
-#line 1780 "rygel-media-db.c"
+#line 1889 "rygel-media-db.c"
 	}
+	result = TRUE;
+#line 541 "rygel-media-db.vala"
+	return result;
+#line 1894 "rygel-media-db.c"
 }
 
 
+#line 535 "rygel-media-db.vala"
 static gboolean __lambda10__rygel_database_row_callback (sqlite3_stmt* stmt, gpointer self) {
+#line 1900 "rygel-media-db.c"
 	return _lambda10_ (stmt, self);
 }
 
@@ -1801,9 +1916,9 @@ static void block5_data_unref (Block5Data* _data5_) {
 }
 
 
-#line 530 "rygel-media-db.vala"
+#line 531 "rygel-media-db.vala"
 static void rygel_media_db_add_uris (RygelMediaDB* self, RygelMediaObject* obj, GError** error) {
-#line 1807 "rygel-media-db.c"
+#line 1922 "rygel-media-db.c"
 	GError * _inner_error_;
 	Block5Data* _data5_;
 	GValue* _tmp2_;
@@ -1812,20 +1927,20 @@ static void rygel_media_db_add_uris (RygelMediaDB* self, RygelMediaObject* obj, 
 	GValue* _tmp1_ = NULL;
 	GValue _tmp0_ = {0};
 	GValue* values;
-#line 530 "rygel-media-db.vala"
+#line 531 "rygel-media-db.vala"
 	g_return_if_fail (self != NULL);
-#line 530 "rygel-media-db.vala"
+#line 531 "rygel-media-db.vala"
 	g_return_if_fail (obj != NULL);
-#line 1820 "rygel-media-db.c"
+#line 1935 "rygel-media-db.c"
 	_inner_error_ = NULL;
 	_data5_ = g_slice_new0 (Block5Data);
 	_data5_->_ref_count_ = 1;
 	_data5_->self = g_object_ref (self);
 	_data5_->obj = _g_object_ref0 (obj);
 	values = (_tmp2_ = (_tmp1_ = g_new0 (GValue, 1), _tmp1_[0] = (g_value_init (&_tmp0_, G_TYPE_STRING), g_value_set_string (&_tmp0_, _data5_->obj->id), _tmp0_), _tmp1_), values_length1 = 1, values_size = values_length1, _tmp2_);
-#line 532 "rygel-media-db.vala"
+#line 533 "rygel-media-db.vala"
 	rygel_database_exec (self->priv->db, RYGEL_MEDIA_DB_URI_GET_STRING, values, values_length1, __lambda10__rygel_database_row_callback, _data5_, &_inner_error_);
-#line 1829 "rygel-media-db.c"
+#line 1944 "rygel-media-db.c"
 	if (_inner_error_ != NULL) {
 		if (_inner_error_->domain == RYGEL_DATABASE_ERROR) {
 			g_propagate_error (error, _inner_error_);
@@ -1845,65 +1960,68 @@ static void rygel_media_db_add_uris (RygelMediaDB* self, RygelMediaObject* obj, 
 }
 
 
-#line 542 "rygel-media-db.vala"
+#line 545 "rygel-media-db.vala"
 static RygelMediaObject* rygel_media_db_get_object_from_statement (RygelMediaDB* self, RygelMediaContainer* parent, const char* object_id, sqlite3_stmt* statement) {
-#line 1851 "rygel-media-db.c"
+#line 1966 "rygel-media-db.c"
 	RygelMediaObject* result;
 	GError * _inner_error_;
 	RygelMediaObject* obj;
-#line 542 "rygel-media-db.vala"
-	g_return_val_if_fail (self != NULL, NULL);
-#line 542 "rygel-media-db.vala"
-	g_return_val_if_fail (object_id != NULL, NULL);
-#line 542 "rygel-media-db.vala"
-	g_return_val_if_fail (statement != NULL, NULL);
-#line 1861 "rygel-media-db.c"
-	_inner_error_ = NULL;
 #line 545 "rygel-media-db.vala"
+	g_return_val_if_fail (self != NULL, NULL);
+#line 545 "rygel-media-db.vala"
+	g_return_val_if_fail (object_id != NULL, NULL);
+#line 545 "rygel-media-db.vala"
+	g_return_val_if_fail (statement != NULL, NULL);
+#line 1976 "rygel-media-db.c"
+	_inner_error_ = NULL;
+#line 548 "rygel-media-db.vala"
 	obj = NULL;
-#line 546 "rygel-media-db.vala"
+#line 549 "rygel-media-db.vala"
 	switch (sqlite3_column_int (statement, 0)) {
-#line 1867 "rygel-media-db.c"
+#line 1982 "rygel-media-db.c"
 		case 0:
 		{
 			RygelMediaObject* _tmp0_;
-#line 549 "rygel-media-db.vala"
+#line 552 "rygel-media-db.vala"
 			obj = (_tmp0_ = (RygelMediaObject*) rygel_media_db_object_factory_get_container (self->priv->factory, self, object_id, sqlite3_column_text (statement, 1), (guint) 0), _g_object_unref0 (obj), _tmp0_);
-#line 553 "rygel-media-db.vala"
+#line 556 "rygel-media-db.vala"
 			break;
-#line 1875 "rygel-media-db.c"
+#line 1990 "rygel-media-db.c"
 		}
 		case 1:
 		{
 			RygelMediaObject* _tmp1_;
-#line 556 "rygel-media-db.vala"
+#line 559 "rygel-media-db.vala"
 			obj = (_tmp1_ = (RygelMediaObject*) rygel_media_db_object_factory_get_item (self->priv->factory, self, parent, object_id, sqlite3_column_text (statement, 1), sqlite3_column_text (statement, 6)), _g_object_unref0 (obj), _tmp1_);
-#line 561 "rygel-media-db.vala"
+#line 564 "rygel-media-db.vala"
 			rygel_media_db_fill_item (self, statement, RYGEL_MEDIA_ITEM (obj));
-#line 562 "rygel-media-db.vala"
+#line 565 "rygel-media-db.vala"
 			break;
-#line 1886 "rygel-media-db.c"
+#line 2001 "rygel-media-db.c"
 		}
 		default:
 		{
-#line 564 "rygel-media-db.vala"
+#line 567 "rygel-media-db.vala"
 			g_assert_not_reached ();
-#line 1892 "rygel-media-db.c"
+#line 2007 "rygel-media-db.c"
 		}
 	}
 	{
-#line 568 "rygel-media-db.vala"
+#line 571 "rygel-media-db.vala"
 		if (obj != NULL) {
-#line 569 "rygel-media-db.vala"
+#line 572 "rygel-media-db.vala"
 			obj->modified = (guint64) sqlite3_column_int64 (statement, 18);
-#line 570 "rygel-media-db.vala"
+#line 573 "rygel-media-db.vala"
 			rygel_media_db_add_uris (self, obj, &_inner_error_);
-#line 1902 "rygel-media-db.c"
+#line 2017 "rygel-media-db.c"
 			if (_inner_error_ != NULL) {
 				if (_inner_error_->domain == RYGEL_DATABASE_ERROR) {
 					goto __catch51_rygel_database_error;
 				}
-				goto __finally51;
+				_g_object_unref0 (obj);
+				g_critical ("file %s: line %d: unexpected error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
+				g_clear_error (&_inner_error_);
+				return NULL;
 			}
 		}
 	}
@@ -1915,11 +2033,11 @@ static RygelMediaObject* rygel_media_db_get_object_from_statement (RygelMediaDB*
 		_inner_error_ = NULL;
 		{
 			RygelMediaObject* _tmp2_;
-#line 573 "rygel-media-db.vala"
-			g_warning ("rygel-media-db.vala:573: Failed to load uris from database: %s", err->message);
-#line 574 "rygel-media-db.vala"
+#line 576 "rygel-media-db.vala"
+			g_warning ("rygel-media-db.vala:576: Failed to load uris from database: %s", err->message);
+#line 577 "rygel-media-db.vala"
 			obj = (_tmp2_ = NULL, _g_object_unref0 (obj), _tmp2_);
-#line 1923 "rygel-media-db.c"
+#line 2041 "rygel-media-db.c"
 			_g_error_free0 (err);
 		}
 	}
@@ -1931,38 +2049,43 @@ static RygelMediaObject* rygel_media_db_get_object_from_statement (RygelMediaDB*
 		return NULL;
 	}
 	result = obj;
-#line 576 "rygel-media-db.vala"
+#line 579 "rygel-media-db.vala"
 	return result;
-#line 1937 "rygel-media-db.c"
+#line 2055 "rygel-media-db.c"
 }
 
 
+#line 585 "rygel-media-db.vala"
 static gboolean _lambda9_ (sqlite3_stmt* stmt, Block6Data* _data6_) {
+#line 2061 "rygel-media-db.c"
 	RygelMediaDB * self;
 	gboolean result;
 	RygelMediaObject* obj;
 	RygelMediaContainer* _tmp0_;
 	RygelMediaObject* _tmp1_;
 	self = _data6_->self;
+#line 585 "rygel-media-db.vala"
 	g_return_val_if_fail (stmt != NULL, FALSE);
-#line 583 "rygel-media-db.vala"
-	obj = rygel_media_db_get_object_from_statement (self, RYGEL_MEDIA_CONTAINER (_data6_->parent), sqlite3_column_text (stmt, 18), stmt);
 #line 586 "rygel-media-db.vala"
+	obj = rygel_media_db_get_object_from_statement (self, RYGEL_MEDIA_CONTAINER (_data6_->parent), sqlite3_column_text (stmt, 18), stmt);
+#line 589 "rygel-media-db.vala"
 	obj->parent = RYGEL_MEDIA_CONTAINER (_data6_->parent);
-#line 587 "rygel-media-db.vala"
+#line 590 "rygel-media-db.vala"
 	obj->parent_ref = (_tmp0_ = _g_object_ref0 (RYGEL_MEDIA_CONTAINER (_data6_->parent)), _g_object_unref0 (obj->parent_ref), _tmp0_);
-#line 588 "rygel-media-db.vala"
+#line 591 "rygel-media-db.vala"
 	_data6_->parent = (_tmp1_ = _g_object_ref0 (obj), _g_object_unref0 (_data6_->parent), _tmp1_);
-#line 1957 "rygel-media-db.c"
+#line 2078 "rygel-media-db.c"
 	result = TRUE;
 	_g_object_unref0 (obj);
-#line 589 "rygel-media-db.vala"
+#line 592 "rygel-media-db.vala"
 	return result;
-#line 1962 "rygel-media-db.c"
+#line 2083 "rygel-media-db.c"
 }
 
 
+#line 585 "rygel-media-db.vala"
 static gboolean __lambda9__rygel_database_row_callback (sqlite3_stmt* stmt, gpointer self) {
+#line 2089 "rygel-media-db.c"
 	return _lambda9_ (stmt, self);
 }
 
@@ -1982,9 +2105,9 @@ static void block6_data_unref (Block6Data* _data6_) {
 }
 
 
-#line 579 "rygel-media-db.vala"
+#line 582 "rygel-media-db.vala"
 RygelMediaObject* rygel_media_db_get_object (RygelMediaDB* self, const char* object_id, GError** error) {
-#line 1988 "rygel-media-db.c"
+#line 2111 "rygel-media-db.c"
 	RygelMediaObject* result;
 	GError * _inner_error_;
 	Block6Data* _data6_;
@@ -1995,14 +2118,14 @@ RygelMediaObject* rygel_media_db_get_object (RygelMediaDB* self, const char* obj
 	GValue _tmp0_ = {0};
 	GValue* values;
 	RygelDatabaseRowCallback _tmp3_;
-	GDestroyNotify cb_target_destroy_notify;
+	GDestroyNotify cb_target_destroy_notify = NULL;
 	void* cb_target = NULL;
 	RygelDatabaseRowCallback cb;
-#line 579 "rygel-media-db.vala"
+#line 582 "rygel-media-db.vala"
 	g_return_val_if_fail (self != NULL, NULL);
-#line 579 "rygel-media-db.vala"
+#line 582 "rygel-media-db.vala"
 	g_return_val_if_fail (object_id != NULL, NULL);
-#line 2006 "rygel-media-db.c"
+#line 2129 "rygel-media-db.c"
 	_inner_error_ = NULL;
 	_data6_ = g_slice_new0 (Block6Data);
 	_data6_->_ref_count_ = 1;
@@ -2010,9 +2133,9 @@ RygelMediaObject* rygel_media_db_get_object (RygelMediaDB* self, const char* obj
 	values = (_tmp2_ = (_tmp1_ = g_new0 (GValue, 1), _tmp1_[0] = (g_value_init (&_tmp0_, G_TYPE_STRING), g_value_set_string (&_tmp0_, object_id), _tmp0_), _tmp1_), values_length1 = 1, values_size = values_length1, _tmp2_);
 	_data6_->parent = NULL;
 	cb = (_tmp3_ = __lambda9__rygel_database_row_callback, cb_target = block6_data_ref (_data6_), cb_target_destroy_notify = block6_data_unref, _tmp3_);
-#line 592 "rygel-media-db.vala"
+#line 595 "rygel-media-db.vala"
 	rygel_database_exec (self->priv->db, RYGEL_MEDIA_DB_GET_OBJECT_WITH_CLOSURE, values, values_length1, cb, cb_target, &_inner_error_);
-#line 2016 "rygel-media-db.c"
+#line 2139 "rygel-media-db.c"
 	if (_inner_error_ != NULL) {
 		if (_inner_error_->domain == RYGEL_DATABASE_ERROR) {
 			g_propagate_error (error, _inner_error_);
@@ -2042,28 +2165,28 @@ RygelMediaObject* rygel_media_db_get_object (RygelMediaDB* self, const char* obj
 	cb_target = NULL;
 	cb_target_destroy_notify = NULL;
 	block6_data_unref (_data6_);
-#line 593 "rygel-media-db.vala"
+#line 596 "rygel-media-db.vala"
 	return result;
-#line 2048 "rygel-media-db.c"
+#line 2171 "rygel-media-db.c"
 }
 
 
-#line 596 "rygel-media-db.vala"
+#line 599 "rygel-media-db.vala"
 RygelMediaItem* rygel_media_db_get_item (RygelMediaDB* self, const char* item_id, GError** error) {
-#line 2054 "rygel-media-db.c"
+#line 2177 "rygel-media-db.c"
 	RygelMediaItem* result;
 	GError * _inner_error_;
 	RygelMediaObject* obj;
 	gboolean _tmp0_ = FALSE;
-#line 596 "rygel-media-db.vala"
+#line 599 "rygel-media-db.vala"
 	g_return_val_if_fail (self != NULL, NULL);
-#line 596 "rygel-media-db.vala"
+#line 599 "rygel-media-db.vala"
 	g_return_val_if_fail (item_id != NULL, NULL);
-#line 2063 "rygel-media-db.c"
+#line 2186 "rygel-media-db.c"
 	_inner_error_ = NULL;
-#line 597 "rygel-media-db.vala"
+#line 600 "rygel-media-db.vala"
 	obj = rygel_media_db_get_object (self, item_id, &_inner_error_);
-#line 2067 "rygel-media-db.c"
+#line 2190 "rygel-media-db.c"
 	if (_inner_error_ != NULL) {
 		if ((_inner_error_->domain == RYGEL_DATABASE_ERROR) || (_inner_error_->domain == RYGEL_MEDIA_DB_ERROR)) {
 			g_propagate_error (error, _inner_error_);
@@ -2074,21 +2197,21 @@ RygelMediaItem* rygel_media_db_get_item (RygelMediaDB* self, const char* item_id
 			return NULL;
 		}
 	}
-#line 598 "rygel-media-db.vala"
+#line 601 "rygel-media-db.vala"
 	if (obj != NULL) {
-#line 598 "rygel-media-db.vala"
+#line 601 "rygel-media-db.vala"
 		_tmp0_ = !RYGEL_IS_MEDIA_ITEM (obj);
-#line 2082 "rygel-media-db.c"
+#line 2205 "rygel-media-db.c"
 	} else {
-#line 598 "rygel-media-db.vala"
+#line 601 "rygel-media-db.vala"
 		_tmp0_ = FALSE;
-#line 2086 "rygel-media-db.c"
+#line 2209 "rygel-media-db.c"
 	}
-#line 598 "rygel-media-db.vala"
+#line 601 "rygel-media-db.vala"
 	if (_tmp0_) {
-#line 2090 "rygel-media-db.c"
+#line 2213 "rygel-media-db.c"
 		_inner_error_ = g_error_new (RYGEL_MEDIA_DB_ERROR, RYGEL_MEDIA_DB_ERROR_INVALID_TYPE, "Object with id %s is not a" "MediaItem", item_id);
-		if (_inner_error_ != NULL) {
+		{
 			if ((_inner_error_->domain == RYGEL_DATABASE_ERROR) || (_inner_error_->domain == RYGEL_MEDIA_DB_ERROR)) {
 				g_propagate_error (error, _inner_error_);
 				_g_object_unref0 (obj);
@@ -2103,28 +2226,28 @@ RygelMediaItem* rygel_media_db_get_item (RygelMediaDB* self, const char* item_id
 	}
 	result = _g_object_ref0 (RYGEL_MEDIA_ITEM (obj));
 	_g_object_unref0 (obj);
-#line 602 "rygel-media-db.vala"
+#line 605 "rygel-media-db.vala"
 	return result;
-#line 2109 "rygel-media-db.c"
+#line 2232 "rygel-media-db.c"
 }
 
 
-#line 605 "rygel-media-db.vala"
+#line 608 "rygel-media-db.vala"
 RygelMediaContainer* rygel_media_db_get_container (RygelMediaDB* self, const char* container_id, GError** error) {
-#line 2115 "rygel-media-db.c"
+#line 2238 "rygel-media-db.c"
 	RygelMediaContainer* result;
 	GError * _inner_error_;
 	RygelMediaObject* obj;
 	gboolean _tmp0_ = FALSE;
-#line 605 "rygel-media-db.vala"
+#line 608 "rygel-media-db.vala"
 	g_return_val_if_fail (self != NULL, NULL);
-#line 605 "rygel-media-db.vala"
+#line 608 "rygel-media-db.vala"
 	g_return_val_if_fail (container_id != NULL, NULL);
-#line 2124 "rygel-media-db.c"
+#line 2247 "rygel-media-db.c"
 	_inner_error_ = NULL;
-#line 607 "rygel-media-db.vala"
+#line 610 "rygel-media-db.vala"
 	obj = rygel_media_db_get_object (self, container_id, &_inner_error_);
-#line 2128 "rygel-media-db.c"
+#line 2251 "rygel-media-db.c"
 	if (_inner_error_ != NULL) {
 		if ((_inner_error_->domain == RYGEL_DATABASE_ERROR) || (_inner_error_->domain == RYGEL_MEDIA_DB_ERROR)) {
 			g_propagate_error (error, _inner_error_);
@@ -2135,21 +2258,21 @@ RygelMediaContainer* rygel_media_db_get_container (RygelMediaDB* self, const cha
 			return NULL;
 		}
 	}
-#line 608 "rygel-media-db.vala"
+#line 611 "rygel-media-db.vala"
 	if (obj != NULL) {
-#line 608 "rygel-media-db.vala"
+#line 611 "rygel-media-db.vala"
 		_tmp0_ = !RYGEL_IS_MEDIA_CONTAINER (obj);
-#line 2143 "rygel-media-db.c"
+#line 2266 "rygel-media-db.c"
 	} else {
-#line 608 "rygel-media-db.vala"
+#line 611 "rygel-media-db.vala"
 		_tmp0_ = FALSE;
-#line 2147 "rygel-media-db.c"
+#line 2270 "rygel-media-db.c"
 	}
-#line 608 "rygel-media-db.vala"
+#line 611 "rygel-media-db.vala"
 	if (_tmp0_) {
-#line 2151 "rygel-media-db.c"
+#line 2274 "rygel-media-db.c"
 		_inner_error_ = g_error_new (RYGEL_MEDIA_DB_ERROR, RYGEL_MEDIA_DB_ERROR_INVALID_TYPE, "Object with id %s is not a" "MediaContainer", container_id);
-		if (_inner_error_ != NULL) {
+		{
 			if ((_inner_error_->domain == RYGEL_DATABASE_ERROR) || (_inner_error_->domain == RYGEL_MEDIA_DB_ERROR)) {
 				g_propagate_error (error, _inner_error_);
 				_g_object_unref0 (obj);
@@ -2164,73 +2287,78 @@ RygelMediaContainer* rygel_media_db_get_container (RygelMediaDB* self, const cha
 	}
 	result = _g_object_ref0 (RYGEL_MEDIA_CONTAINER (obj));
 	_g_object_unref0 (obj);
-#line 612 "rygel-media-db.vala"
+#line 615 "rygel-media-db.vala"
 	return result;
-#line 2170 "rygel-media-db.c"
+#line 2293 "rygel-media-db.c"
 }
 
 
-#line 616 "rygel-media-db.vala"
+#line 619 "rygel-media-db.vala"
 static void rygel_media_db_fill_item (RygelMediaDB* self, sqlite3_stmt* statement, RygelMediaItem* item) {
-#line 2176 "rygel-media-db.c"
+#line 2299 "rygel-media-db.c"
 	char* _tmp0_;
 	char* _tmp1_;
 	char* _tmp2_;
 	char* _tmp3_;
-#line 616 "rygel-media-db.vala"
-	g_return_if_fail (self != NULL);
-#line 616 "rygel-media-db.vala"
-	g_return_if_fail (statement != NULL);
-#line 616 "rygel-media-db.vala"
-	g_return_if_fail (item != NULL);
-#line 617 "rygel-media-db.vala"
-	item->author = (_tmp0_ = g_strdup (sqlite3_column_text (statement, 7)), _g_free0 (item->author), _tmp0_);
-#line 618 "rygel-media-db.vala"
-	item->album = (_tmp1_ = g_strdup (sqlite3_column_text (statement, 8)), _g_free0 (item->album), _tmp1_);
 #line 619 "rygel-media-db.vala"
-	item->date = (_tmp2_ = g_strdup (sqlite3_column_text (statement, 9)), _g_free0 (item->date), _tmp2_);
+	g_return_if_fail (self != NULL);
+#line 619 "rygel-media-db.vala"
+	g_return_if_fail (statement != NULL);
+#line 619 "rygel-media-db.vala"
+	g_return_if_fail (item != NULL);
 #line 620 "rygel-media-db.vala"
-	item->mime_type = (_tmp3_ = g_strdup (sqlite3_column_text (statement, 3)), _g_free0 (item->mime_type), _tmp3_);
+	item->author = (_tmp0_ = g_strdup (sqlite3_column_text (statement, 7)), _g_free0 (item->author), _tmp0_);
 #line 621 "rygel-media-db.vala"
-	item->duration = (glong) sqlite3_column_int64 (statement, 16);
+	item->album = (_tmp1_ = g_strdup (sqlite3_column_text (statement, 8)), _g_free0 (item->album), _tmp1_);
+#line 622 "rygel-media-db.vala"
+	item->date = (_tmp2_ = g_strdup (sqlite3_column_text (statement, 9)), _g_free0 (item->date), _tmp2_);
 #line 623 "rygel-media-db.vala"
-	item->size = (glong) sqlite3_column_int64 (statement, 2);
+	item->mime_type = (_tmp3_ = g_strdup (sqlite3_column_text (statement, 3)), _g_free0 (item->mime_type), _tmp3_);
 #line 624 "rygel-media-db.vala"
-	item->bitrate = sqlite3_column_int (statement, 10);
+	item->duration = (glong) sqlite3_column_int64 (statement, 16);
 #line 626 "rygel-media-db.vala"
-	item->sample_freq = sqlite3_column_int (statement, 11);
+	item->size = (glong) sqlite3_column_int64 (statement, 2);
 #line 627 "rygel-media-db.vala"
-	item->bits_per_sample = sqlite3_column_int (statement, 12);
-#line 628 "rygel-media-db.vala"
-	item->n_audio_channels = sqlite3_column_int (statement, 13);
+	item->bitrate = sqlite3_column_int (statement, 10);
 #line 629 "rygel-media-db.vala"
-	item->track_number = sqlite3_column_int (statement, 14);
+	item->sample_freq = sqlite3_column_int (statement, 11);
+#line 630 "rygel-media-db.vala"
+	item->bits_per_sample = sqlite3_column_int (statement, 12);
 #line 631 "rygel-media-db.vala"
-	item->width = sqlite3_column_int (statement, 4);
+	item->n_audio_channels = sqlite3_column_int (statement, 13);
 #line 632 "rygel-media-db.vala"
+	item->track_number = sqlite3_column_int (statement, 14);
+#line 634 "rygel-media-db.vala"
+	item->width = sqlite3_column_int (statement, 4);
+#line 635 "rygel-media-db.vala"
 	item->height = sqlite3_column_int (statement, 5);
-#line 633 "rygel-media-db.vala"
+#line 636 "rygel-media-db.vala"
 	item->color_depth = sqlite3_column_int (statement, 15);
-#line 2215 "rygel-media-db.c"
+#line 2338 "rygel-media-db.c"
 }
 
 
+#line 646 "rygel-media-db.vala"
 static gboolean _lambda14_ (sqlite3_stmt* stmt, Block7Data* _data7_) {
+#line 2344 "rygel-media-db.c"
 	RygelMediaDB * self;
 	gboolean result;
 	self = _data7_->self;
+#line 646 "rygel-media-db.vala"
 	g_return_val_if_fail (stmt != NULL, FALSE);
-#line 644 "rygel-media-db.vala"
+#line 647 "rygel-media-db.vala"
 	gee_abstract_collection_add ((GeeAbstractCollection*) _data7_->children, sqlite3_column_text (stmt, 0));
-#line 2226 "rygel-media-db.c"
+#line 2352 "rygel-media-db.c"
 	result = TRUE;
-#line 645 "rygel-media-db.vala"
+#line 648 "rygel-media-db.vala"
 	return result;
-#line 2230 "rygel-media-db.c"
+#line 2356 "rygel-media-db.c"
 }
 
 
+#line 646 "rygel-media-db.vala"
 static gboolean __lambda14__rygel_database_row_callback (sqlite3_stmt* stmt, gpointer self) {
+#line 2362 "rygel-media-db.c"
 	return _lambda14_ (stmt, self);
 }
 
@@ -2250,9 +2378,9 @@ static void block7_data_unref (Block7Data* _data7_) {
 }
 
 
-#line 636 "rygel-media-db.vala"
+#line 639 "rygel-media-db.vala"
 GeeArrayList* rygel_media_db_get_child_ids (RygelMediaDB* self, const char* container_id, GError** error) {
-#line 2256 "rygel-media-db.c"
+#line 2384 "rygel-media-db.c"
 	GeeArrayList* result;
 	GError * _inner_error_;
 	Block7Data* _data7_;
@@ -2262,20 +2390,20 @@ GeeArrayList* rygel_media_db_get_child_ids (RygelMediaDB* self, const char* cont
 	GValue* _tmp1_ = NULL;
 	GValue _tmp0_ = {0};
 	GValue* values;
-#line 636 "rygel-media-db.vala"
+#line 639 "rygel-media-db.vala"
 	g_return_val_if_fail (self != NULL, NULL);
-#line 636 "rygel-media-db.vala"
+#line 639 "rygel-media-db.vala"
 	g_return_val_if_fail (container_id != NULL, NULL);
-#line 2270 "rygel-media-db.c"
+#line 2398 "rygel-media-db.c"
 	_inner_error_ = NULL;
 	_data7_ = g_slice_new0 (Block7Data);
 	_data7_->_ref_count_ = 1;
 	_data7_->self = g_object_ref (self);
 	_data7_->children = gee_array_list_new (G_TYPE_STRING, (GBoxedCopyFunc) g_strdup, g_free, g_str_equal);
 	values = (_tmp2_ = (_tmp1_ = g_new0 (GValue, 1), _tmp1_[0] = (g_value_init (&_tmp0_, G_TYPE_STRING), g_value_set_string (&_tmp0_, container_id), _tmp0_), _tmp1_), values_length1 = 1, values_size = values_length1, _tmp2_);
-#line 641 "rygel-media-db.vala"
+#line 644 "rygel-media-db.vala"
 	rygel_database_exec (self->priv->db, RYGEL_MEDIA_DB_GET_CHILD_ID_STRING, values, values_length1, __lambda14__rygel_database_row_callback, _data7_, &_inner_error_);
-#line 2279 "rygel-media-db.c"
+#line 2407 "rygel-media-db.c"
 	if (_inner_error_ != NULL) {
 		if (_inner_error_->domain == RYGEL_DATABASE_ERROR) {
 			g_propagate_error (error, _inner_error_);
@@ -2293,28 +2421,33 @@ GeeArrayList* rygel_media_db_get_child_ids (RygelMediaDB* self, const char* cont
 	result = _g_object_ref0 (_data7_->children);
 	values = (_vala_GValue_array_free (values, values_length1), NULL);
 	block7_data_unref (_data7_);
-#line 648 "rygel-media-db.vala"
+#line 651 "rygel-media-db.vala"
 	return result;
-#line 2299 "rygel-media-db.c"
+#line 2427 "rygel-media-db.c"
 }
 
 
+#line 660 "rygel-media-db.vala"
 static gboolean _lambda8_ (sqlite3_stmt* stmt, Block8Data* _data8_) {
+#line 2433 "rygel-media-db.c"
 	RygelMediaDB * self;
 	gboolean result;
 	self = _data8_->self;
+#line 660 "rygel-media-db.vala"
 	g_return_val_if_fail (stmt != NULL, FALSE);
-#line 658 "rygel-media-db.vala"
+#line 661 "rygel-media-db.vala"
 	_data8_->count = sqlite3_column_int (stmt, 0);
-#line 2310 "rygel-media-db.c"
+#line 2441 "rygel-media-db.c"
 	result = FALSE;
-#line 659 "rygel-media-db.vala"
+#line 662 "rygel-media-db.vala"
 	return result;
-#line 2314 "rygel-media-db.c"
+#line 2445 "rygel-media-db.c"
 }
 
 
+#line 660 "rygel-media-db.vala"
 static gboolean __lambda8__rygel_database_row_callback (sqlite3_stmt* stmt, gpointer self) {
+#line 2451 "rygel-media-db.c"
 	return _lambda8_ (stmt, self);
 }
 
@@ -2333,9 +2466,9 @@ static void block8_data_unref (Block8Data* _data8_) {
 }
 
 
-#line 651 "rygel-media-db.vala"
+#line 654 "rygel-media-db.vala"
 gint rygel_media_db_get_child_count (RygelMediaDB* self, const char* container_id, GError** error) {
-#line 2339 "rygel-media-db.c"
+#line 2472 "rygel-media-db.c"
 	gint result;
 	GError * _inner_error_;
 	Block8Data* _data8_;
@@ -2345,20 +2478,20 @@ gint rygel_media_db_get_child_count (RygelMediaDB* self, const char* container_i
 	GValue* _tmp1_ = NULL;
 	GValue _tmp0_ = {0};
 	GValue* values;
-#line 651 "rygel-media-db.vala"
+#line 654 "rygel-media-db.vala"
 	g_return_val_if_fail (self != NULL, 0);
-#line 651 "rygel-media-db.vala"
+#line 654 "rygel-media-db.vala"
 	g_return_val_if_fail (container_id != NULL, 0);
-#line 2353 "rygel-media-db.c"
+#line 2486 "rygel-media-db.c"
 	_inner_error_ = NULL;
 	_data8_ = g_slice_new0 (Block8Data);
 	_data8_->_ref_count_ = 1;
 	_data8_->self = g_object_ref (self);
 	_data8_->count = 0;
 	values = (_tmp2_ = (_tmp1_ = g_new0 (GValue, 1), _tmp1_[0] = (g_value_init (&_tmp0_, G_TYPE_STRING), g_value_set_string (&_tmp0_, container_id), _tmp0_), _tmp1_), values_length1 = 1, values_size = values_length1, _tmp2_);
-#line 655 "rygel-media-db.vala"
+#line 658 "rygel-media-db.vala"
 	rygel_database_exec (self->priv->db, RYGEL_MEDIA_DB_CHILDREN_COUNT_STRING, values, values_length1, __lambda8__rygel_database_row_callback, _data8_, &_inner_error_);
-#line 2362 "rygel-media-db.c"
+#line 2495 "rygel-media-db.c"
 	if (_inner_error_ != NULL) {
 		if (_inner_error_->domain == RYGEL_DATABASE_ERROR) {
 			g_propagate_error (error, _inner_error_);
@@ -2376,30 +2509,35 @@ gint rygel_media_db_get_child_count (RygelMediaDB* self, const char* container_i
 	result = _data8_->count;
 	values = (_vala_GValue_array_free (values, values_length1), NULL);
 	block8_data_unref (_data8_);
-#line 662 "rygel-media-db.vala"
+#line 665 "rygel-media-db.vala"
 	return result;
-#line 2382 "rygel-media-db.c"
+#line 2515 "rygel-media-db.c"
 }
 
 
+#line 676 "rygel-media-db.vala"
 static gboolean _lambda15_ (sqlite3_stmt* stmt, Block9Data* _data9_) {
+#line 2521 "rygel-media-db.c"
 	RygelMediaDB * self;
 	gboolean result;
 	self = _data9_->self;
-	g_return_val_if_fail (stmt != NULL, FALSE);
-#line 674 "rygel-media-db.vala"
-	_data9_->exists = sqlite3_column_int (stmt, 0) == 1;
-#line 675 "rygel-media-db.vala"
-	_data9_->tmp_timestamp = sqlite3_column_int64 (stmt, 1);
-#line 2395 "rygel-media-db.c"
-	result = FALSE;
 #line 676 "rygel-media-db.vala"
+	g_return_val_if_fail (stmt != NULL, FALSE);
+#line 677 "rygel-media-db.vala"
+	_data9_->exists = sqlite3_column_int (stmt, 0) == 1;
+#line 678 "rygel-media-db.vala"
+	_data9_->tmp_timestamp = sqlite3_column_int64 (stmt, 1);
+#line 2531 "rygel-media-db.c"
+	result = FALSE;
+#line 679 "rygel-media-db.vala"
 	return result;
-#line 2399 "rygel-media-db.c"
+#line 2535 "rygel-media-db.c"
 }
 
 
+#line 676 "rygel-media-db.vala"
 static gboolean __lambda15__rygel_database_row_callback (sqlite3_stmt* stmt, gpointer self) {
+#line 2541 "rygel-media-db.c"
 	return _lambda15_ (stmt, self);
 }
 
@@ -2418,9 +2556,9 @@ static void block9_data_unref (Block9Data* _data9_) {
 }
 
 
-#line 665 "rygel-media-db.vala"
+#line 668 "rygel-media-db.vala"
 gboolean rygel_media_db_exists (RygelMediaDB* self, const char* object_id, gint64* timestamp, GError** error) {
-#line 2424 "rygel-media-db.c"
+#line 2562 "rygel-media-db.c"
 	gboolean result;
 	GError * _inner_error_;
 	Block9Data* _data9_;
@@ -2430,11 +2568,11 @@ gboolean rygel_media_db_exists (RygelMediaDB* self, const char* object_id, gint6
 	GValue* _tmp1_ = NULL;
 	GValue _tmp0_ = {0};
 	GValue* values;
-#line 665 "rygel-media-db.vala"
+#line 668 "rygel-media-db.vala"
 	g_return_val_if_fail (self != NULL, FALSE);
-#line 665 "rygel-media-db.vala"
+#line 668 "rygel-media-db.vala"
 	g_return_val_if_fail (object_id != NULL, FALSE);
-#line 2438 "rygel-media-db.c"
+#line 2576 "rygel-media-db.c"
 	_inner_error_ = NULL;
 	_data9_ = g_slice_new0 (Block9Data);
 	_data9_->_ref_count_ = 1;
@@ -2442,9 +2580,9 @@ gboolean rygel_media_db_exists (RygelMediaDB* self, const char* object_id, gint6
 	_data9_->exists = FALSE;
 	values = (_tmp2_ = (_tmp1_ = g_new0 (GValue, 1), _tmp1_[0] = (g_value_init (&_tmp0_, G_TYPE_STRING), g_value_set_string (&_tmp0_, object_id), _tmp0_), _tmp1_), values_length1 = 1, values_size = values_length1, _tmp2_);
 	_data9_->tmp_timestamp = (gint64) 0;
-#line 671 "rygel-media-db.vala"
+#line 674 "rygel-media-db.vala"
 	rygel_database_exec (self->priv->db, RYGEL_MEDIA_DB_OBJECT_EXISTS_STRING, values, values_length1, __lambda15__rygel_database_row_callback, _data9_, &_inner_error_);
-#line 2448 "rygel-media-db.c"
+#line 2586 "rygel-media-db.c"
 	if (_inner_error_ != NULL) {
 		if (_inner_error_->domain == RYGEL_DATABASE_ERROR) {
 			g_propagate_error (error, _inner_error_);
@@ -2459,19 +2597,21 @@ gboolean rygel_media_db_exists (RygelMediaDB* self, const char* object_id, gint6
 			return FALSE;
 		}
 	}
-#line 680 "rygel-media-db.vala"
+#line 683 "rygel-media-db.vala"
 	*timestamp = _data9_->tmp_timestamp;
-#line 2465 "rygel-media-db.c"
+#line 2603 "rygel-media-db.c"
 	result = _data9_->exists;
 	values = (_vala_GValue_array_free (values, values_length1), NULL);
 	block9_data_unref (_data9_);
-#line 681 "rygel-media-db.vala"
+#line 684 "rygel-media-db.vala"
 	return result;
-#line 2471 "rygel-media-db.c"
+#line 2609 "rygel-media-db.c"
 }
 
 
+#line 698 "rygel-media-db.vala"
 static gboolean _lambda11_ (sqlite3_stmt* stmt, Block10Data* _data10_) {
+#line 2615 "rygel-media-db.c"
 	RygelMediaDB * self;
 	gboolean result;
 	char* child_id;
@@ -2481,32 +2621,35 @@ static gboolean _lambda11_ (sqlite3_stmt* stmt, Block10Data* _data10_) {
 	RygelMediaContainer* *_tmp3_;
 	RygelMediaObject* _tmp2_;
 	self = _data10_->self;
+#line 698 "rygel-media-db.vala"
 	g_return_val_if_fail (stmt != NULL, FALSE);
-#line 696 "rygel-media-db.vala"
+#line 699 "rygel-media-db.vala"
 	child_id = g_strdup (sqlite3_column_text (stmt, 17));
-#line 697 "rygel-media-db.vala"
-	gee_abstract_collection_add ((GeeAbstractCollection*) _data10_->children, _tmp0_ = rygel_media_db_get_object_from_statement (self, _data10_->parent, child_id, stmt));
-#line 2490 "rygel-media-db.c"
-	_g_object_unref0 (_tmp0_);
 #line 700 "rygel-media-db.vala"
+	gee_abstract_collection_add ((GeeAbstractCollection*) _data10_->children, _tmp0_ = rygel_media_db_get_object_from_statement (self, _data10_->parent, child_id, stmt));
+#line 2631 "rygel-media-db.c"
+	_g_object_unref0 (_tmp0_);
+#line 703 "rygel-media-db.vala"
 	(_tmp1_ = (RygelMediaObject*) gee_abstract_list_get ((GeeAbstractList*) _data10_->children, gee_collection_get_size ((GeeCollection*) _data10_->children) - 1))->parent = _data10_->parent;
-#line 2494 "rygel-media-db.c"
+#line 2635 "rygel-media-db.c"
 	_g_object_unref0 (_tmp1_);
-#line 701 "rygel-media-db.vala"
+#line 704 "rygel-media-db.vala"
 	_tmp3_ = &(_tmp2_ = (RygelMediaObject*) gee_abstract_list_get ((GeeAbstractList*) _data10_->children, gee_collection_get_size ((GeeCollection*) _data10_->children) - 1))->parent_ref;
-#line 701 "rygel-media-db.vala"
+#line 704 "rygel-media-db.vala"
 	(*_tmp3_) = (_tmp4_ = _g_object_ref0 (_data10_->parent), _g_object_unref0 ((*_tmp3_)), _tmp4_);
-#line 2500 "rygel-media-db.c"
+#line 2641 "rygel-media-db.c"
 	_g_object_unref0 (_tmp2_);
 	result = TRUE;
 	_g_free0 (child_id);
-#line 703 "rygel-media-db.vala"
+#line 706 "rygel-media-db.vala"
 	return result;
-#line 2506 "rygel-media-db.c"
+#line 2647 "rygel-media-db.c"
 }
 
 
+#line 698 "rygel-media-db.vala"
 static gboolean __lambda11__rygel_database_row_callback (sqlite3_stmt* stmt, gpointer self) {
+#line 2653 "rygel-media-db.c"
 	return _lambda11_ (stmt, self);
 }
 
@@ -2527,9 +2670,9 @@ static void block10_data_unref (Block10Data* _data10_) {
 }
 
 
-#line 684 "rygel-media-db.vala"
+#line 687 "rygel-media-db.vala"
 GeeArrayList* rygel_media_db_get_children (RygelMediaDB* self, const char* container_id, glong offset, glong max_count, GError** error) {
-#line 2533 "rygel-media-db.c"
+#line 2676 "rygel-media-db.c"
 	GeeArrayList* result;
 	GError * _inner_error_;
 	Block10Data* _data10_;
@@ -2544,36 +2687,36 @@ GeeArrayList* rygel_media_db_get_children (RygelMediaDB* self, const char* conta
 	GValue _tmp2_ = {0};
 	GValue* values;
 	RygelDatabaseRowCallback _tmp7_;
-	GDestroyNotify cb_target_destroy_notify;
+	GDestroyNotify cb_target_destroy_notify = NULL;
 	void* cb_target = NULL;
 	RygelDatabaseRowCallback cb;
-#line 684 "rygel-media-db.vala"
+#line 687 "rygel-media-db.vala"
 	g_return_val_if_fail (self != NULL, NULL);
-#line 684 "rygel-media-db.vala"
+#line 687 "rygel-media-db.vala"
 	g_return_val_if_fail (container_id != NULL, NULL);
-#line 2555 "rygel-media-db.c"
+#line 2698 "rygel-media-db.c"
 	_inner_error_ = NULL;
 	_data10_ = g_slice_new0 (Block10Data);
 	_data10_->_ref_count_ = 1;
 	_data10_->self = g_object_ref (self);
 	_data10_->parent = NULL;
 	_data10_->children = gee_array_list_new (RYGEL_TYPE_MEDIA_OBJECT, (GBoxedCopyFunc) g_object_ref, g_object_unref, NULL);
-#line 690 "rygel-media-db.vala"
+#line 693 "rygel-media-db.vala"
 	_tmp0_ = rygel_media_db_get_object (self, container_id, &_inner_error_);
-#line 2564 "rygel-media-db.c"
+#line 2707 "rygel-media-db.c"
 	if (_inner_error_ != NULL) {
 		g_propagate_error (error, _inner_error_);
 		block10_data_unref (_data10_);
 		return NULL;
 	}
-#line 690 "rygel-media-db.vala"
+#line 693 "rygel-media-db.vala"
 	_data10_->parent = (_tmp1_ = RYGEL_MEDIA_CONTAINER (_tmp0_), _g_object_unref0 (_data10_->parent), _tmp1_);
-#line 2572 "rygel-media-db.c"
+#line 2715 "rygel-media-db.c"
 	values = (_tmp6_ = (_tmp5_ = g_new0 (GValue, 3), _tmp5_[0] = (g_value_init (&_tmp2_, G_TYPE_STRING), g_value_set_string (&_tmp2_, container_id), _tmp2_), _tmp5_[1] = (g_value_init (&_tmp3_, G_TYPE_INT64), g_value_set_int64 (&_tmp3_, (gint64) offset), _tmp3_), _tmp5_[2] = (g_value_init (&_tmp4_, G_TYPE_INT64), g_value_set_int64 (&_tmp4_, (gint64) max_count), _tmp4_), _tmp5_), values_length1 = 3, values_size = values_length1, _tmp6_);
 	cb = (_tmp7_ = __lambda11__rygel_database_row_callback, cb_target = block10_data_ref (_data10_), cb_target_destroy_notify = block10_data_unref, _tmp7_);
-#line 706 "rygel-media-db.vala"
+#line 709 "rygel-media-db.vala"
 	rygel_database_exec (self->priv->db, RYGEL_MEDIA_DB_GET_CHILDREN_STRING, values, values_length1, cb, cb_target, &_inner_error_);
-#line 2577 "rygel-media-db.c"
+#line 2720 "rygel-media-db.c"
 	if (_inner_error_ != NULL) {
 		g_propagate_error (error, _inner_error_);
 		values = (_vala_GValue_array_free (values, values_length1), NULL);
@@ -2591,9 +2734,9 @@ GeeArrayList* rygel_media_db_get_children (RygelMediaDB* self, const char* conta
 	cb_target = NULL;
 	cb_target_destroy_notify = NULL;
 	block10_data_unref (_data10_);
-#line 707 "rygel-media-db.vala"
+#line 710 "rygel-media-db.vala"
 	return result;
-#line 2597 "rygel-media-db.c"
+#line 2740 "rygel-media-db.c"
 }
 
 

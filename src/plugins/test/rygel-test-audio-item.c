@@ -130,12 +130,14 @@ static GstElement* rygel_test_audio_item_real_create_stream_source (RygelMediaIt
 #line 131 "rygel-test-audio-item.c"
 		if (_inner_error_ != NULL) {
 			goto __catch0_g_error;
-			goto __finally0;
+			g_critical ("file %s: line %d: unexpected error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
+			g_clear_error (&_inner_error_);
+			return NULL;
 		}
 		result = _tmp0_;
 #line 47 "rygel-test-audio-item.vala"
 		return result;
-#line 139 "rygel-test-audio-item.c"
+#line 141 "rygel-test-audio-item.c"
 	}
 	goto __finally0;
 	__catch0_g_error:
@@ -146,12 +148,12 @@ static GstElement* rygel_test_audio_item_real_create_stream_source (RygelMediaIt
 		{
 #line 49 "rygel-test-audio-item.vala"
 			g_warning ("rygel-test-audio-item.vala:49: Required plugin missing (%s)", err->message);
-#line 150 "rygel-test-audio-item.c"
+#line 152 "rygel-test-audio-item.c"
 			result = NULL;
 			_g_error_free0 (err);
 #line 50 "rygel-test-audio-item.vala"
 			return result;
-#line 155 "rygel-test-audio-item.c"
+#line 157 "rygel-test-audio-item.c"
 		}
 	}
 	__finally0:

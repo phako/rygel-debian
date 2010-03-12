@@ -144,6 +144,7 @@ RygelDBusService* rygel_dbus_service_construct (GType object_type, RygelMain* ma
 	if (_inner_error_ != NULL) {
 		if (_inner_error_->domain == DBUS_GERROR) {
 			g_propagate_error (error, _inner_error_);
+			g_object_unref (self);
 			return NULL;
 		} else {
 			g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
@@ -155,12 +156,13 @@ RygelDBusService* rygel_dbus_service_construct (GType object_type, RygelMain* ma
 	bus = dbus_g_proxy_new_for_name (conn, "org.freedesktop.DBus", "/org/freedesktop/DBus", "org.freedesktop.DBus");
 #line 41 "rygel-dbus-service.vala"
 	request_name_result = _dynamic_request_name2 (bus, rygel_dbus_service_RYGEL_SERVICE, (guint) 0, &_inner_error_);
-#line 159 "rygel-dbus-service.c"
+#line 160 "rygel-dbus-service.c"
 	if (_inner_error_ != NULL) {
 		if (_inner_error_->domain == DBUS_GERROR) {
 			g_propagate_error (error, _inner_error_);
 			_dbus_g_connection_unref0 (conn);
 			_g_object_unref0 (bus);
+			g_object_unref (self);
 			return NULL;
 		} else {
 			_dbus_g_connection_unref0 (conn);
@@ -174,11 +176,11 @@ RygelDBusService* rygel_dbus_service_construct (GType object_type, RygelMain* ma
 	if (request_name_result != DBUS_REQUEST_NAME_REPLY_PRIMARY_OWNER) {
 #line 45 "rygel-dbus-service.vala"
 		g_warning ("rygel-dbus-service.vala:45: Failed to start D-Bus service, name '%s' already taken", rygel_dbus_service_RYGEL_SERVICE);
-#line 178 "rygel-dbus-service.c"
+#line 180 "rygel-dbus-service.c"
 	} else {
 #line 48 "rygel-dbus-service.vala"
 		_vala_dbus_register_object (dbus_g_connection_get_connection (conn), rygel_dbus_service_RYGEL_PATH, (GObject*) self);
-#line 182 "rygel-dbus-service.c"
+#line 184 "rygel-dbus-service.c"
 	}
 	_dbus_g_connection_unref0 (conn);
 	_g_object_unref0 (bus);
@@ -190,7 +192,7 @@ RygelDBusService* rygel_dbus_service_construct (GType object_type, RygelMain* ma
 RygelDBusService* rygel_dbus_service_new (RygelMain* main, GError** error) {
 #line 31 "rygel-dbus-service.vala"
 	return rygel_dbus_service_construct (RYGEL_TYPE_DBUS_SERVICE, main, error);
-#line 194 "rygel-dbus-service.c"
+#line 196 "rygel-dbus-service.c"
 }
 
 
@@ -200,7 +202,7 @@ void rygel_dbus_service_Shutdown (RygelDBusService* self) {
 	g_return_if_fail (self != NULL);
 #line 53 "rygel-dbus-service.vala"
 	rygel_main_exit (self->priv->main, 0);
-#line 204 "rygel-dbus-service.c"
+#line 206 "rygel-dbus-service.c"
 }
 
 

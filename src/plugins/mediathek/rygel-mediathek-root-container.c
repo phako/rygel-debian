@@ -180,11 +180,15 @@ static RygelMediathekRootContainer* rygel_mediathek_root_container_construct (GT
 #line 181 "rygel-mediathek-root-container.c"
 		if (_inner_error_ != NULL) {
 			goto __catch2_g_error;
-			goto __finally2;
+			_g_object_unref0 (feeds);
+			_g_object_unref0 (config);
+			g_critical ("file %s: line %d: unexpected error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
+			g_clear_error (&_inner_error_);
+			return NULL;
 		}
 #line 54 "rygel-mediathek-root-container.vala"
 		feeds = (_tmp2_ = _tmp1_, _g_object_unref0 (feeds), _tmp2_);
-#line 188 "rygel-mediathek-root-container.c"
+#line 192 "rygel-mediathek-root-container.c"
 	}
 	goto __finally2;
 	__catch2_g_error:
@@ -196,7 +200,7 @@ static RygelMediathekRootContainer* rygel_mediathek_root_container_construct (GT
 			GeeArrayList* _tmp3_;
 #line 56 "rygel-mediathek-root-container.vala"
 			feeds = (_tmp3_ = gee_array_list_new (G_TYPE_INT, NULL, NULL, NULL), _g_object_unref0 (feeds), _tmp3_);
-#line 200 "rygel-mediathek-root-container.c"
+#line 204 "rygel-mediathek-root-container.c"
 			_g_error_free0 (_error_);
 		}
 	}
@@ -214,34 +218,34 @@ static RygelMediathekRootContainer* rygel_mediathek_root_container_construct (GT
 		g_message ("rygel-mediathek-root-container.vala:60: Could not get RSS items from GConf, using defaults");
 #line 61 "rygel-mediathek-root-container.vala"
 		gee_abstract_collection_add ((GeeAbstractCollection*) feeds, GINT_TO_POINTER (508));
-#line 218 "rygel-mediathek-root-container.c"
+#line 222 "rygel-mediathek-root-container.c"
 	}
 	{
 		GeeIterator* _id_it;
 		_id_it = gee_abstract_collection_iterator ((GeeAbstractCollection*) feeds);
 #line 64 "rygel-mediathek-root-container.vala"
 		while (TRUE) {
-#line 225 "rygel-mediathek-root-container.c"
+#line 229 "rygel-mediathek-root-container.c"
 			gint id;
 			RygelMediathekRssContainer* _tmp4_;
 #line 64 "rygel-mediathek-root-container.vala"
 			if (!gee_iterator_next (_id_it)) {
 #line 64 "rygel-mediathek-root-container.vala"
 				break;
-#line 232 "rygel-mediathek-root-container.c"
+#line 236 "rygel-mediathek-root-container.c"
 			}
 #line 64 "rygel-mediathek-root-container.vala"
 			id = GPOINTER_TO_INT (gee_iterator_get (_id_it));
 #line 65 "rygel-mediathek-root-container.vala"
 			rygel_simple_container_add_child ((RygelSimpleContainer*) self, (RygelMediaObject*) (_tmp4_ = rygel_mediathek_rss_container_new ((RygelMediaContainer*) self, (guint) id)));
-#line 238 "rygel-mediathek-root-container.c"
+#line 242 "rygel-mediathek-root-container.c"
 			_g_object_unref0 (_tmp4_);
 		}
 		_g_object_unref0 (_id_it);
 	}
 #line 68 "rygel-mediathek-root-container.vala"
 	g_timeout_add_seconds_full (G_PRIORITY_DEFAULT, (guint) 1800, _rygel_mediathek_root_container_on_schedule_update_gsource_func, g_object_ref (self), g_object_unref);
-#line 245 "rygel-mediathek-root-container.c"
+#line 249 "rygel-mediathek-root-container.c"
 	_g_object_unref0 (feeds);
 	_g_object_unref0 (config);
 	return self;
@@ -252,7 +256,7 @@ static RygelMediathekRootContainer* rygel_mediathek_root_container_construct (GT
 static RygelMediathekRootContainer* rygel_mediathek_root_container_new (void) {
 #line 47 "rygel-mediathek-root-container.vala"
 	return rygel_mediathek_root_container_construct (RYGEL_TYPE_MEDIATHEK_ROOT_CONTAINER);
-#line 256 "rygel-mediathek-root-container.c"
+#line 260 "rygel-mediathek-root-container.c"
 }
 
 

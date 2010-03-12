@@ -357,7 +357,7 @@ void rygel_didl_lite_writer_serialize (RygelDIDLLiteWriter* self, RygelMediaObje
 			}
 		} else {
 			_inner_error_ = g_error_new_literal (RYGEL_DIDL_LITE_WRITER_ERROR, RYGEL_DIDL_LITE_WRITER_ERROR_UNSUPPORTED_OBJECT, "Unable to serialize unsupported object");
-			if (_inner_error_ != NULL) {
+			{
 				g_propagate_error (error, _inner_error_);
 				return;
 			}

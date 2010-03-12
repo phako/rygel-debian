@@ -34,7 +34,7 @@ public class Rygel.MediathekRssContainer : Rygel.SimpleContainer {
                 message("Feed has not changed, nothing to do");
                 break;
             case 200:
-                if (parse_response (msg.response_body.data, 
+                if (parse_response ((string) msg.response_body.data,
                                     (size_t) msg.response_body.length)) {
                     last_modified = new Soup.Date.from_string(
                                             msg.response_headers.get ("Date"));
@@ -56,16 +56,16 @@ public class Rygel.MediathekRssContainer : Rygel.SimpleContainer {
             this.children.clear ();
             this.child_count = 0;
 
-            var ctx = new XPathContext (doc);
+            var ctx = new XPath.Context (doc);
             var xpo = ctx.eval ("/rss/channel/title");
-            if (xpo->type == Xml.XPathObjectType.NODESET &&
+            if (xpo->type == Xml.XPath.ObjectType.NODESET &&
                 xpo->nodesetval->length () > 0) {
                 // just use first title (there should be only one)
                 this.title = xpo->nodesetval->item (0)->get_content ();
             }
 
             xpo = ctx.eval ("/rss/channel/item");
-            if (xpo->type == Xml.XPathObjectType.NODESET) {
+            if (xpo->type == Xml.XPath.ObjectType.NODESET) {
                 for (int i = 0; i < xpo->nodesetval->length (); i++) {
                     Xml.Node* node = xpo->nodesetval->item (i);
                     try {

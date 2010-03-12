@@ -184,14 +184,16 @@ RygelMP3TranscoderBin* rygel_mp3_transcoder_bin_construct (GType object_type, Ry
 #line 185 "rygel-mp3-transcoder-bin.c"
 	if (_inner_error_ != NULL) {
 		g_propagate_error (error, _inner_error_);
+		gst_object_unref (self);
 		return NULL;
 	}
 #line 48 "rygel-mp3-transcoder-bin.vala"
 	_tmp0_ = rygel_mp3_transcoder_create_encoder (transcoder, item, RYGEL_MP3_TRANSCODER_BIN_AUDIO_SRC_PAD, RYGEL_MP3_TRANSCODER_BIN_AUDIO_SINK_PAD, &_inner_error_);
-#line 192 "rygel-mp3-transcoder-bin.c"
+#line 193 "rygel-mp3-transcoder-bin.c"
 	if (_inner_error_ != NULL) {
 		g_propagate_error (error, _inner_error_);
 		_gst_object_unref0 (decodebin);
+		gst_object_unref (self);
 		return NULL;
 	}
 #line 48 "rygel-mp3-transcoder-bin.vala"
@@ -208,7 +210,7 @@ RygelMP3TranscoderBin* rygel_mp3_transcoder_bin_construct (GType object_type, Ry
 	gst_element_add_pad ((GstElement*) self, _gst_object_ref0 ((GstPad*) ghost));
 #line 59 "rygel-mp3-transcoder-bin.vala"
 	g_signal_connect_object (decodebin, "pad-added", (GCallback) _rygel_mp3_transcoder_bin_decodebin_pad_added_gst_element_pad_added, self, 0);
-#line 212 "rygel-mp3-transcoder-bin.c"
+#line 214 "rygel-mp3-transcoder-bin.c"
 	_gst_object_unref0 (decodebin);
 	_gst_object_unref0 (src_pad);
 	_gst_object_unref0 (ghost);
@@ -220,13 +222,13 @@ RygelMP3TranscoderBin* rygel_mp3_transcoder_bin_construct (GType object_type, Ry
 RygelMP3TranscoderBin* rygel_mp3_transcoder_bin_new (RygelMediaItem* item, GstElement* src, RygelMP3Transcoder* transcoder, GError** error) {
 #line 43 "rygel-mp3-transcoder-bin.vala"
 	return rygel_mp3_transcoder_bin_construct (RYGEL_TYPE_MP3_TRANSCODER_BIN, item, src, transcoder, error);
-#line 224 "rygel-mp3-transcoder-bin.c"
+#line 226 "rygel-mp3-transcoder-bin.c"
 }
 
 
 #line 62 "rygel-mp3-transcoder-bin.vala"
 static void rygel_mp3_transcoder_bin_decodebin_pad_added (RygelMP3TranscoderBin* self, GstElement* decodebin, GstPad* new_pad) {
-#line 230 "rygel-mp3-transcoder-bin.c"
+#line 232 "rygel-mp3-transcoder-bin.c"
 	GstPad* enc_pad;
 #line 62 "rygel-mp3-transcoder-bin.vala"
 	g_return_if_fail (self != NULL);
@@ -238,24 +240,24 @@ static void rygel_mp3_transcoder_bin_decodebin_pad_added (RygelMP3TranscoderBin*
 	enc_pad = _gst_object_ref0 (gst_element_get_pad (self->priv->audio_enc, RYGEL_MP3_TRANSCODER_BIN_AUDIO_SINK_PAD));
 #line 64 "rygel-mp3-transcoder-bin.vala"
 	if (!gst_pad_can_link (new_pad, enc_pad)) {
-#line 242 "rygel-mp3-transcoder-bin.c"
+#line 244 "rygel-mp3-transcoder-bin.c"
 		_gst_object_unref0 (enc_pad);
 #line 65 "rygel-mp3-transcoder-bin.vala"
 		return;
-#line 246 "rygel-mp3-transcoder-bin.c"
+#line 248 "rygel-mp3-transcoder-bin.c"
 	}
 #line 68 "rygel-mp3-transcoder-bin.vala"
 	if (gst_pad_link (new_pad, enc_pad) != GST_PAD_LINK_OK) {
-#line 250 "rygel-mp3-transcoder-bin.c"
+#line 252 "rygel-mp3-transcoder-bin.c"
 		GError* _tmp0_;
 #line 69 "rygel-mp3-transcoder-bin.vala"
 		rygel_gst_utils_post_error ((GstElement*) self, _tmp0_ = g_error_new (RYGEL_LIVE_RESPONSE_ERROR, RYGEL_LIVE_RESPONSE_ERROR_LINK, "Failed to link pad %s to %s", gst_object_get_name ((GstObject*) new_pad), gst_object_get_name ((GstObject*) enc_pad)));
-#line 254 "rygel-mp3-transcoder-bin.c"
+#line 256 "rygel-mp3-transcoder-bin.c"
 		_g_error_free0 (_tmp0_);
 		_gst_object_unref0 (enc_pad);
 #line 74 "rygel-mp3-transcoder-bin.vala"
 		return;
-#line 259 "rygel-mp3-transcoder-bin.c"
+#line 261 "rygel-mp3-transcoder-bin.c"
 	}
 	_gst_object_unref0 (enc_pad);
 }

@@ -442,32 +442,39 @@ static gboolean rygel_search_real_run_co (RygelSearchRunData* data) {
 				if (data->_tmp0_) {
 #line 444 "rygel-search.c"
 					data->_inner_error_ = g_error_new_literal (RYGEL_CONTENT_DIRECTORY_ERROR, RYGEL_CONTENT_DIRECTORY_ERROR_NO_SUCH_OBJECT, "No such container");
-					if (data->_inner_error_ != NULL) {
+					{
 						goto __catch41_g_error;
-						goto __finally41;
+						g_critical ("file %s: line %d: unexpected error: %s (%s, %d)", __FILE__, __LINE__, data->_inner_error_->message, g_quark_to_string (data->_inner_error_->domain), data->_inner_error_->code);
+						g_clear_error (&data->_inner_error_);
+						return FALSE;
 					}
 				}
 #line 91 "rygel-search.vala"
 				g_debug ("rygel-search.vala:91: Executing search request: %s", data->self->search_criteria);
-#line 453 "rygel-search.c"
-				rygel_search_fetch_container (data->self, rygel_search_run_ready, data);
+#line 455 "rygel-search.c"
 				data->_state_ = 25;
+				rygel_search_fetch_container (data->self, rygel_search_run_ready, data);
 				return FALSE;
 				case 25:
 				data->container = rygel_search_fetch_container_finish (data->self, data->_res_, &data->_inner_error_);
 				if (data->_inner_error_ != NULL) {
 					goto __catch41_g_error;
-					goto __finally41;
+					g_critical ("file %s: line %d: unexpected error: %s (%s, %d)", __FILE__, __LINE__, data->_inner_error_->message, g_quark_to_string (data->_inner_error_->domain), data->_inner_error_->code);
+					g_clear_error (&data->_inner_error_);
+					return FALSE;
 				}
-				rygel_search_fetch_results (data->self, data->container, rygel_search_run_ready, data);
 				data->_state_ = 26;
+				rygel_search_fetch_results (data->self, data->container, rygel_search_run_ready, data);
 				return FALSE;
 				case 26:
 				data->results = rygel_search_fetch_results_finish (data->self, data->_res_, &data->_inner_error_);
 				if (data->_inner_error_ != NULL) {
 					_g_object_unref0 (data->container);
 					goto __catch41_g_error;
-					goto __finally41;
+					_g_object_unref0 (data->container);
+					g_critical ("file %s: line %d: unexpected error: %s (%s, %d)", __FILE__, __LINE__, data->_inner_error_->message, g_quark_to_string (data->_inner_error_->domain), data->_inner_error_->code);
+					g_clear_error (&data->_inner_error_);
+					return FALSE;
 				}
 				{
 					data->_result_it = gee_iterable_iterator ((GeeIterable*) data->results);
@@ -477,19 +484,25 @@ static gboolean rygel_search_real_run_co (RygelSearchRunData* data) {
 						if (!gee_iterator_next (data->_result_it)) {
 #line 97 "rygel-search.vala"
 							break;
-#line 481 "rygel-search.c"
+#line 488 "rygel-search.c"
 						}
 						data->_result_ = (RygelMediaObject*) gee_iterator_get (data->_result_it);
 #line 98 "rygel-search.vala"
 						rygel_didl_lite_writer_serialize (data->self->priv->didl_writer, data->_result_, &data->_inner_error_);
-#line 486 "rygel-search.c"
+#line 493 "rygel-search.c"
 						if (data->_inner_error_ != NULL) {
 							_g_object_unref0 (data->_result_);
 							_g_object_unref0 (data->_result_it);
 							_g_object_unref0 (data->container);
 							_g_object_unref0 (data->results);
 							goto __catch41_g_error;
-							goto __finally41;
+							_g_object_unref0 (data->_result_);
+							_g_object_unref0 (data->_result_it);
+							_g_object_unref0 (data->container);
+							_g_object_unref0 (data->results);
+							g_critical ("file %s: line %d: unexpected error: %s (%s, %d)", __FILE__, __LINE__, data->_inner_error_->message, g_quark_to_string (data->_inner_error_->domain), data->_inner_error_->code);
+							g_clear_error (&data->_inner_error_);
+							return FALSE;
 						}
 						_g_object_unref0 (data->_result_);
 					}
@@ -497,7 +510,7 @@ static gboolean rygel_search_real_run_co (RygelSearchRunData* data) {
 				}
 #line 101 "rygel-search.vala"
 				rygel_search_conclude (data->self);
-#line 501 "rygel-search.c"
+#line 514 "rygel-search.c"
 				_g_object_unref0 (data->container);
 				_g_object_unref0 (data->results);
 			}
@@ -509,7 +522,7 @@ static gboolean rygel_search_real_run_co (RygelSearchRunData* data) {
 				{
 #line 103 "rygel-search.vala"
 					rygel_search_handle_error (data->self, data->err);
-#line 513 "rygel-search.c"
+#line 526 "rygel-search.c"
 					_g_error_free0 (data->err);
 				}
 			}
@@ -580,7 +593,7 @@ static gboolean rygel_search_fetch_container_co (RygelSearchFetchContainerData* 
 		{
 #line 108 "rygel-search.vala"
 			if (_vala_strcmp0 (data->self->container_id, ((RygelMediaObject*) data->self->priv->root_container)->id) == 0) {
-#line 584 "rygel-search.c"
+#line 597 "rygel-search.c"
 				data->result = _g_object_ref0 (data->self->priv->root_container);
 				{
 					if (data->_state_ == 0) {
@@ -592,8 +605,8 @@ static gboolean rygel_search_fetch_container_co (RygelSearchFetchContainerData* 
 					return FALSE;
 				}
 			}
-			rygel_media_container_find_object (data->self->priv->root_container, data->self->container_id, rygel_state_machine_get_cancellable ((RygelStateMachine*) data->self), rygel_search_fetch_container_ready, data);
 			data->_state_ = 27;
+			rygel_media_container_find_object (data->self->priv->root_container, data->self->container_id, rygel_state_machine_get_cancellable ((RygelStateMachine*) data->self), rygel_search_fetch_container_ready, data);
 			return FALSE;
 			case 27:
 			data->media_object = rygel_media_container_find_object_finish (data->self->priv->root_container, data->_res_, &data->_inner_error_);
@@ -614,17 +627,17 @@ static gboolean rygel_search_fetch_container_co (RygelSearchFetchContainerData* 
 			if (data->media_object == NULL) {
 #line 115 "rygel-search.vala"
 				data->_tmp0_ = TRUE;
-#line 618 "rygel-search.c"
+#line 631 "rygel-search.c"
 			} else {
 #line 115 "rygel-search.vala"
 				data->_tmp0_ = !RYGEL_IS_MEDIA_CONTAINER (data->media_object);
-#line 622 "rygel-search.c"
+#line 635 "rygel-search.c"
 			}
 #line 115 "rygel-search.vala"
 			if (data->_tmp0_) {
-#line 626 "rygel-search.c"
+#line 639 "rygel-search.c"
 				data->_inner_error_ = g_error_new_literal (RYGEL_CONTENT_DIRECTORY_ERROR, RYGEL_CONTENT_DIRECTORY_ERROR_NO_SUCH_OBJECT, "Specified container does not exist.");
-				if (data->_inner_error_ != NULL) {
+				{
 					g_simple_async_result_set_from_error (data->_async_result, data->_inner_error_);
 					g_error_free (data->_inner_error_);
 					_g_object_unref0 (data->media_object);
@@ -719,7 +732,7 @@ static gboolean rygel_search_fetch_results_co (RygelSearchFetchResultsData* data
 		{
 #line 126 "rygel-search.vala"
 			data->self->update_id = (guint) data->container->update_id;
-#line 723 "rygel-search.c"
+#line 736 "rygel-search.c"
 			data->parser = rygel_search_criteria_parser_new (data->self->search_criteria, &data->_inner_error_);
 			if (data->_inner_error_ != NULL) {
 				g_simple_async_result_set_from_error (data->_async_result, data->_inner_error_);
@@ -734,17 +747,17 @@ static gboolean rygel_search_fetch_results_co (RygelSearchFetchResultsData* data
 					return FALSE;
 				}
 			}
-			rygel_state_machine_run ((RygelStateMachine*) data->parser, rygel_search_fetch_results_ready, data);
 			data->_state_ = 28;
+			rygel_state_machine_run ((RygelStateMachine*) data->parser, rygel_search_fetch_results_ready, data);
 			return FALSE;
 			case 28:
 #line 129 "rygel-search.vala"
 			rygel_state_machine_run_finish ((RygelStateMachine*) data->parser, data->_res_);
 #line 131 "rygel-search.vala"
 			if (data->parser->err != NULL) {
-#line 746 "rygel-search.c"
+#line 759 "rygel-search.c"
 				data->_inner_error_ = _g_error_copy0 (data->parser->err);
-				if (data->_inner_error_ != NULL) {
+				{
 					g_simple_async_result_set_from_error (data->_async_result, data->_inner_error_);
 					g_error_free (data->_inner_error_);
 					_g_object_unref0 (data->parser);
@@ -759,8 +772,8 @@ static gboolean rygel_search_fetch_results_co (RygelSearchFetchResultsData* data
 					}
 				}
 			}
-			rygel_media_container_search (data->container, data->parser->expression, data->self->index, data->self->requested_count, rygel_state_machine_get_cancellable ((RygelStateMachine*) data->self), rygel_search_fetch_results_ready, data);
 			data->_state_ = 29;
+			rygel_media_container_search (data->container, data->parser->expression, data->self->index, data->self->requested_count, rygel_state_machine_get_cancellable ((RygelStateMachine*) data->self), rygel_search_fetch_results_ready, data);
 			return FALSE;
 			case 29:
 			data->results = rygel_media_container_search_finish (data->container, data->_res_, &data->self->total_matches, &data->_inner_error_);
@@ -780,9 +793,9 @@ static gboolean rygel_search_fetch_results_co (RygelSearchFetchResultsData* data
 			}
 #line 140 "rygel-search.vala"
 			if (gee_collection_get_size ((GeeCollection*) data->results) == 0) {
-#line 784 "rygel-search.c"
+#line 797 "rygel-search.c"
 				data->_inner_error_ = g_error_new_literal (RYGEL_CONTENT_DIRECTORY_ERROR, RYGEL_CONTENT_DIRECTORY_ERROR_CANT_PROCESS, "No objects found that could satisfy" " the given search criteria.");
-				if (data->_inner_error_ != NULL) {
+				{
 					g_simple_async_result_set_from_error (data->_async_result, data->_inner_error_);
 					g_error_free (data->_inner_error_);
 					_g_object_unref0 (data->parser);
@@ -800,7 +813,7 @@ static gboolean rygel_search_fetch_results_co (RygelSearchFetchResultsData* data
 			}
 #line 146 "rygel-search.vala"
 			data->self->number_returned = (guint) gee_collection_get_size ((GeeCollection*) data->results);
-#line 804 "rygel-search.c"
+#line 817 "rygel-search.c"
 			data->result = data->results;
 			_g_object_unref0 (data->parser);
 			{
@@ -830,7 +843,7 @@ static gboolean rygel_search_fetch_results_co (RygelSearchFetchResultsData* data
 
 #line 151 "rygel-search.vala"
 static void rygel_search_conclude (RygelSearch* self) {
-#line 834 "rygel-search.c"
+#line 847 "rygel-search.c"
 	char* didl;
 #line 151 "rygel-search.vala"
 	g_return_if_fail (self != NULL);
@@ -842,7 +855,7 @@ static void rygel_search_conclude (RygelSearch* self) {
 	if (self->update_id == G_MAXUINT32) {
 #line 159 "rygel-search.vala"
 		self->update_id = (guint) self->priv->system_update_id;
-#line 846 "rygel-search.c"
+#line 859 "rygel-search.c"
 	}
 #line 163 "rygel-search.vala"
 	gupnp_service_action_set (self->priv->action, "Result", G_TYPE_STRING, didl, "NumberReturned", G_TYPE_UINT, self->number_returned, "TotalMatches", G_TYPE_UINT, self->total_matches, "UpdateID", G_TYPE_UINT, self->update_id, NULL);
@@ -850,7 +863,7 @@ static void rygel_search_conclude (RygelSearch* self) {
 	gupnp_service_action_return (self->priv->action);
 #line 169 "rygel-search.vala"
 	g_signal_emit_by_name ((RygelStateMachine*) self, "completed");
-#line 854 "rygel-search.c"
+#line 867 "rygel-search.c"
 	_g_free0 (didl);
 }
 
@@ -865,15 +878,15 @@ static void rygel_search_handle_error (RygelSearch* self, GError* _error_) {
 	if (_error_->domain == RYGEL_CONTENT_DIRECTORY_ERROR) {
 #line 178 "rygel-search.vala"
 		gupnp_service_action_return_error (self->priv->action, (guint) _error_->code, _error_->message);
-#line 869 "rygel-search.c"
+#line 882 "rygel-search.c"
 	} else {
 #line 180 "rygel-search.vala"
 		gupnp_service_action_return_error (self->priv->action, (guint) 701, _error_->message);
-#line 873 "rygel-search.c"
+#line 886 "rygel-search.c"
 	}
 #line 183 "rygel-search.vala"
 	g_signal_emit_by_name ((RygelStateMachine*) self, "completed");
-#line 877 "rygel-search.c"
+#line 890 "rygel-search.c"
 }
 
 
@@ -884,7 +897,7 @@ static GCancellable* rygel_search_real_get_cancellable (RygelStateMachine* base)
 	result = self->priv->_cancellable;
 #line 50 "rygel-search.vala"
 	return result;
-#line 888 "rygel-search.c"
+#line 901 "rygel-search.c"
 }
 
 

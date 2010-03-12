@@ -102,7 +102,7 @@ GstElement* rygel_gst_utils_create_element (const char* factoryname, const char*
 	if (element == NULL) {
 #line 104 "rygel-gst-utils.c"
 		_inner_error_ = g_error_new (RYGEL_LIVE_RESPONSE_ERROR, RYGEL_LIVE_RESPONSE_ERROR_MISSING_PLUGIN, "Required element factory '%s' missing", factoryname);
-		if (_inner_error_ != NULL) {
+		{
 			g_propagate_error (error, _inner_error_);
 			_gst_object_unref0 (element);
 			return NULL;

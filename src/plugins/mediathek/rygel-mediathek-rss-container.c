@@ -57,9 +57,9 @@ typedef struct _RygelMediathekRssContainerPrivate RygelMediathekRssContainerPriv
 
 typedef struct _RygelMediathekVideoItem RygelMediathekVideoItem;
 typedef struct _RygelMediathekVideoItemClass RygelMediathekVideoItemClass;
+#define _xmlXPathFreeContext0(var) ((var == NULL) ? NULL : (var = (xmlXPathFreeContext (var), NULL)))
 #define _g_object_unref0(var) ((var == NULL) ? NULL : (var = (g_object_unref (var), NULL)))
 #define _g_error_free0(var) ((var == NULL) ? NULL : (var = (g_error_free (var), NULL)))
-#define _xmlXPathFreeContext0(var) ((var == NULL) ? NULL : (var = (xmlXPathFreeContext (var), NULL)))
 
 #define RYGEL_TYPE_MEDIATHEK_ROOT_CONTAINER (rygel_mediathek_root_container_get_type ())
 #define RYGEL_MEDIATHEK_ROOT_CONTAINER(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_MEDIATHEK_ROOT_CONTAINER, RygelMediathekRootContainer))
@@ -146,7 +146,7 @@ static void rygel_mediathek_rss_container_on_feed_got (RygelMediathekRssContaine
 		case 200:
 		{
 #line 37 "rygel-mediathek-rss-container.vala"
-			if (rygel_mediathek_rss_container_parse_response (self, msg->response_body->data, (gsize) msg->response_body->length)) {
+			if (rygel_mediathek_rss_container_parse_response (self, (const char*) msg->response_body->data, (gsize) msg->response_body->length)) {
 #line 151 "rygel-mediathek-rss-container.c"
 				SoupDate* _tmp1_;
 #line 39 "rygel-mediathek-rss-container.vala"
@@ -265,13 +265,16 @@ static gboolean rygel_mediathek_rss_container_parse_response (RygelMediathekRssC
 								if (_inner_error_->domain == RYGEL_MEDIATHEK_VIDEO_ITEM_ERROR) {
 									goto __catch3_rygel_mediathek_video_item_error;
 								}
-								goto __finally3;
+								_xmlXPathFreeContext0 (ctx);
+								g_critical ("file %s: line %d: unexpected error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
+								g_clear_error (&_inner_error_);
+								return FALSE;
 							}
 #line 75 "rygel-mediathek-rss-container.vala"
 							rygel_simple_container_add_child ((RygelSimpleContainer*) self, (RygelMediaObject*) item);
 #line 76 "rygel-mediathek-rss-container.vala"
 							ret = TRUE;
-#line 275 "rygel-mediathek-rss-container.c"
+#line 278 "rygel-mediathek-rss-container.c"
 							_g_object_unref0 (item);
 						}
 						goto __finally3;
@@ -283,7 +286,7 @@ static gboolean rygel_mediathek_rss_container_parse_response (RygelMediathekRssC
 							{
 #line 79 "rygel-mediathek-rss-container.vala"
 								g_warning ("rygel-mediathek-rss-container.vala:79: Error creating video item: %s", _error_->message);
-#line 287 "rygel-mediathek-rss-container.c"
+#line 290 "rygel-mediathek-rss-container.c"
 								_g_error_free0 (_error_);
 							}
 						}
@@ -300,23 +303,23 @@ static gboolean rygel_mediathek_rss_container_parse_response (RygelMediathekRssC
 		} else {
 #line 85 "rygel-mediathek-rss-container.vala"
 			g_warning ("rygel-mediathek-rss-container.vala:85: XPath query failed");
-#line 304 "rygel-mediathek-rss-container.c"
+#line 307 "rygel-mediathek-rss-container.c"
 		}
 #line 88 "rygel-mediathek-rss-container.vala"
 		xmlFreeDoc (doc);
 #line 89 "rygel-mediathek-rss-container.vala"
 		rygel_media_container_updated ((RygelMediaContainer*) self);
-#line 310 "rygel-mediathek-rss-container.c"
+#line 313 "rygel-mediathek-rss-container.c"
 		_xmlXPathFreeContext0 (ctx);
 	} else {
 #line 92 "rygel-mediathek-rss-container.vala"
 		g_warning ("rygel-mediathek-rss-container.vala:92: Failed to parse doc");
-#line 315 "rygel-mediathek-rss-container.c"
+#line 318 "rygel-mediathek-rss-container.c"
 	}
 	result = ret;
 #line 95 "rygel-mediathek-rss-container.vala"
 	return result;
-#line 320 "rygel-mediathek-rss-container.c"
+#line 323 "rygel-mediathek-rss-container.c"
 }
 
 
@@ -327,14 +330,14 @@ static gpointer _g_object_ref0 (gpointer self) {
 
 #line 31 "rygel-mediathek-rss-container.vala"
 static void _rygel_mediathek_rss_container_on_feed_got_soup_session_callback (SoupSession* session, SoupMessage* msg, gpointer self) {
-#line 331 "rygel-mediathek-rss-container.c"
+#line 334 "rygel-mediathek-rss-container.c"
 	rygel_mediathek_rss_container_on_feed_got (self, session, msg);
 }
 
 
 #line 98 "rygel-mediathek-rss-container.vala"
 void rygel_mediathek_rss_container_update (RygelMediathekRssContainer* self) {
-#line 338 "rygel-mediathek-rss-container.c"
+#line 341 "rygel-mediathek-rss-container.c"
 	char* _tmp0_;
 	SoupMessage* _tmp1_;
 	SoupMessage* message;
@@ -348,18 +351,18 @@ void rygel_mediathek_rss_container_update (RygelMediathekRssContainer* self) {
 		g_debug ("rygel-mediathek-rss-container.vala:103: Requesting change since %s", soup_date_to_string (self->priv->last_modified, SOUP_DATE_HTTP));
 #line 105 "rygel-mediathek-rss-container.vala"
 		soup_message_headers_append (message->request_headers, "If-Modified-Since", soup_date_to_string (self->priv->last_modified, SOUP_DATE_HTTP));
-#line 352 "rygel-mediathek-rss-container.c"
+#line 355 "rygel-mediathek-rss-container.c"
 	}
 #line 109 "rygel-mediathek-rss-container.vala"
 	soup_session_queue_message ((SoupSession*) RYGEL_MEDIATHEK_ROOT_CONTAINER (((RygelMediaObject*) self)->parent)->session, _g_object_ref0 (message), _rygel_mediathek_rss_container_on_feed_got_soup_session_callback, self);
-#line 356 "rygel-mediathek-rss-container.c"
+#line 359 "rygel-mediathek-rss-container.c"
 	_g_object_unref0 (message);
 }
 
 
 #line 114 "rygel-mediathek-rss-container.vala"
 RygelMediathekRssContainer* rygel_mediathek_rss_container_construct (GType object_type, RygelMediaContainer* parent, guint id) {
-#line 363 "rygel-mediathek-rss-container.c"
+#line 366 "rygel-mediathek-rss-container.c"
 	RygelMediathekRssContainer * self;
 	char* _tmp1_;
 	char* _tmp0_;
@@ -367,14 +370,14 @@ RygelMediathekRssContainer* rygel_mediathek_rss_container_construct (GType objec
 	g_return_val_if_fail (parent != NULL, NULL);
 #line 115 "rygel-mediathek-rss-container.vala"
 	self = (RygelMediathekRssContainer*) rygel_simple_container_construct (object_type, _tmp0_ = g_strdup_printf ("GroupId:%u", id), parent, _tmp1_ = g_strdup_printf ("ZDF Mediathek RSS feed %u", id));
-#line 371 "rygel-mediathek-rss-container.c"
+#line 374 "rygel-mediathek-rss-container.c"
 	_g_free0 (_tmp1_);
 	_g_free0 (_tmp0_);
 #line 119 "rygel-mediathek-rss-container.vala"
 	self->priv->zdf_content_id = id;
 #line 120 "rygel-mediathek-rss-container.vala"
 	rygel_mediathek_rss_container_update (self);
-#line 378 "rygel-mediathek-rss-container.c"
+#line 381 "rygel-mediathek-rss-container.c"
 	return self;
 }
 
@@ -383,7 +386,7 @@ RygelMediathekRssContainer* rygel_mediathek_rss_container_construct (GType objec
 RygelMediathekRssContainer* rygel_mediathek_rss_container_new (RygelMediaContainer* parent, guint id) {
 #line 114 "rygel-mediathek-rss-container.vala"
 	return rygel_mediathek_rss_container_construct (RYGEL_TYPE_MEDIATHEK_RSS_CONTAINER, parent, id);
-#line 387 "rygel-mediathek-rss-container.c"
+#line 390 "rygel-mediathek-rss-container.c"
 }
 
 

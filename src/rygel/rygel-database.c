@@ -229,7 +229,7 @@ gint rygel_database_exec (RygelDatabase* self, const char* sql, GValue* values, 
 	if (_tmp1_) {
 #line 231 "rygel-database.c"
 		_inner_error_ = g_error_new_literal (RYGEL_DATABASE_ERROR, RYGEL_DATABASE_ERROR_SQLITE_ERROR, sqlite3_errmsg (self->priv->db));
-		if (_inner_error_ != NULL) {
+		{
 			if (_inner_error_->domain == RYGEL_DATABASE_ERROR) {
 				g_propagate_error (error, _inner_error_);
 				return 0;
@@ -270,7 +270,7 @@ static sqlite3_stmt* rygel_database_prepare_statement (RygelDatabase* self, cons
 	if (rc != SQLITE_OK) {
 #line 272 "rygel-database.c"
 		_inner_error_ = g_error_new_literal (RYGEL_DATABASE_ERROR, RYGEL_DATABASE_ERROR_SQLITE_ERROR, sqlite3_errmsg (self->priv->db));
-		if (_inner_error_ != NULL) {
+		{
 			if (_inner_error_->domain == RYGEL_DATABASE_ERROR) {
 				g_propagate_error (error, _inner_error_);
 				_sqlite3_finalize0 (statement);
@@ -382,7 +382,7 @@ static sqlite3_stmt* rygel_database_prepare_statement (RygelDatabase* self, cons
 					if (rc != SQLITE_OK) {
 #line 384 "rygel-database.c"
 						_inner_error_ = g_error_new_literal (RYGEL_DATABASE_ERROR, RYGEL_DATABASE_ERROR_SQLITE_ERROR, sqlite3_errmsg (self->priv->db));
-						if (_inner_error_ != NULL) {
+						{
 							if (_inner_error_->domain == RYGEL_DATABASE_ERROR) {
 								g_propagate_error (error, _inner_error_);
 								_sqlite3_finalize0 (statement);
@@ -445,7 +445,7 @@ void rygel_database_begin (RygelDatabase* self, GError** error) {
 	if (sqlite3_exec (self->priv->db, "BEGIN", NULL, NULL, NULL) != SQLITE_OK) {
 #line 447 "rygel-database.c"
 		_inner_error_ = g_error_new_literal (RYGEL_DATABASE_ERROR, RYGEL_DATABASE_ERROR_SQLITE_ERROR, sqlite3_errmsg (self->priv->db));
-		if (_inner_error_ != NULL) {
+		{
 			if (_inner_error_->domain == RYGEL_DATABASE_ERROR) {
 				g_propagate_error (error, _inner_error_);
 				return;
@@ -471,7 +471,7 @@ void rygel_database_commit (RygelDatabase* self, GError** error) {
 	if (sqlite3_exec (self->priv->db, "COMMIT", NULL, NULL, NULL) != SQLITE_OK) {
 #line 473 "rygel-database.c"
 		_inner_error_ = g_error_new_literal (RYGEL_DATABASE_ERROR, RYGEL_DATABASE_ERROR_SQLITE_ERROR, sqlite3_errmsg (self->priv->db));
-		if (_inner_error_ != NULL) {
+		{
 			if (_inner_error_->domain == RYGEL_DATABASE_ERROR) {
 				g_propagate_error (error, _inner_error_);
 				return;

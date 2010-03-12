@@ -234,11 +234,12 @@ RygelLiveResponse* rygel_live_response_construct (GType object_type, SoupServer*
 #line 235 "rygel-live-response.c"
 	if (_inner_error_ != NULL) {
 		g_propagate_error (error, _inner_error_);
+		g_object_unref (self);
 		return NULL;
 	}
 #line 55 "rygel-live-response.vala"
 	self->priv->time_range = (_tmp0_ = _g_object_ref0 (time_range), _g_object_unref0 (self->priv->time_range), _tmp0_);
-#line 242 "rygel-live-response.c"
+#line 243 "rygel-live-response.c"
 	return self;
 }
 
@@ -247,7 +248,7 @@ RygelLiveResponse* rygel_live_response_construct (GType object_type, SoupServer*
 RygelLiveResponse* rygel_live_response_new (SoupServer* server, SoupMessage* msg, const char* name, GstElement* src, RygelHTTPSeek* time_range, GCancellable* cancellable, GError** error) {
 #line 44 "rygel-live-response.vala"
 	return rygel_live_response_construct (RYGEL_TYPE_LIVE_RESPONSE, server, msg, name, src, time_range, cancellable, error);
-#line 251 "rygel-live-response.c"
+#line 252 "rygel-live-response.c"
 }
 
 
@@ -286,7 +287,7 @@ static void rygel_live_response_run_ready (GObject* source_object, GAsyncResult*
 
 #line 58 "rygel-live-response.vala"
 static gboolean _rygel_live_response_real_run_co_gsource_func (gpointer self) {
-#line 290 "rygel-live-response.c"
+#line 291 "rygel-live-response.c"
 	return rygel_live_response_real_run_co (self);
 }
 
@@ -301,25 +302,25 @@ static gboolean rygel_live_response_real_run_co (RygelLiveResponseRunData* data)
 			if (data->self->priv->time_range != NULL) {
 #line 60 "rygel-live-response.vala"
 				data->_tmp0_ = rygel_http_seek_get_start (data->self->priv->time_range) > 0;
-#line 305 "rygel-live-response.c"
+#line 306 "rygel-live-response.c"
 			} else {
 #line 60 "rygel-live-response.vala"
 				data->_tmp0_ = FALSE;
-#line 309 "rygel-live-response.c"
+#line 310 "rygel-live-response.c"
 			}
 #line 60 "rygel-live-response.vala"
 			if (data->_tmp0_) {
 #line 61 "rygel-live-response.vala"
 				gst_element_set_state ((GstElement*) data->self->priv->pipeline, GST_STATE_PAUSED);
-#line 315 "rygel-live-response.c"
+#line 316 "rygel-live-response.c"
 			} else {
 #line 63 "rygel-live-response.vala"
 				gst_element_set_state ((GstElement*) data->self->priv->pipeline, GST_STATE_PLAYING);
-#line 319 "rygel-live-response.c"
+#line 320 "rygel-live-response.c"
 			}
 #line 66 "rygel-live-response.vala"
 			data->self->priv->continuation = (data->_tmp1_ = _rygel_live_response_real_run_co_gsource_func, ((data->self->priv->continuation_target_destroy_notify == NULL) ? NULL : data->self->priv->continuation_target_destroy_notify (data->self->priv->continuation_target), data->self->priv->continuation = NULL, data->self->priv->continuation_target = NULL, data->self->priv->continuation_target_destroy_notify = NULL), data->self->priv->continuation_target = data, data->self->priv->continuation_target_destroy_notify = NULL, data->_tmp1_);
-#line 323 "rygel-live-response.c"
+#line 324 "rygel-live-response.c"
 			data->_state_ = 5;
 			return FALSE;
 			case 5:
@@ -340,7 +341,7 @@ static gboolean rygel_live_response_real_run_co (RygelLiveResponseRunData* data)
 
 #line 71 "rygel-live-response.vala"
 static void rygel_live_response_real_end (RygelHTTPResponse* base, gboolean aborted, guint status) {
-#line 344 "rygel-live-response.c"
+#line 345 "rygel-live-response.c"
 	RygelLiveResponse * self;
 	self = (RygelLiveResponse*) base;
 #line 72 "rygel-live-response.vala"
@@ -351,19 +352,19 @@ static void rygel_live_response_real_end (RygelHTTPResponse* base, gboolean abor
 		g_source_remove (self->priv->idle_id);
 #line 76 "rygel-live-response.vala"
 		self->priv->idle_id = (guint) 0;
-#line 355 "rygel-live-response.c"
+#line 356 "rygel-live-response.c"
 	}
 #line 79 "rygel-live-response.vala"
 	if (!aborted) {
 #line 80 "rygel-live-response.vala"
 		soup_message_body_complete (((RygelHTTPResponse*) self)->msg->response_body);
-#line 361 "rygel-live-response.c"
+#line 362 "rygel-live-response.c"
 	}
 #line 83 "rygel-live-response.vala"
 	RYGEL_HTTP_RESPONSE_CLASS (rygel_live_response_parent_class)->end (RYGEL_HTTP_RESPONSE (self), aborted, status);
 #line 85 "rygel-live-response.vala"
 	self->priv->continuation (self->priv->continuation_target);
-#line 367 "rygel-live-response.c"
+#line 368 "rygel-live-response.c"
 }
 
 
@@ -374,7 +375,7 @@ static inline void _dynamic_set_signal_handoffs0 (GstElement* obj, gboolean valu
 
 #line 217 "rygel-live-response.vala"
 static void _rygel_live_response_on_new_buffer_dynamic_handoff0_ (GstElement* _sender, GstBuffer* buffer, GstPad* pad, gpointer self) {
-#line 378 "rygel-live-response.c"
+#line 379 "rygel-live-response.c"
 	rygel_live_response_on_new_buffer (self, _sender, buffer, pad);
 }
 
@@ -391,21 +392,21 @@ static gpointer _gst_object_ref0 (gpointer self) {
 
 #line 122 "rygel-live-response.vala"
 static void _rygel_live_response_src_pad_added_gst_element_pad_added (GstElement* _sender, GstPad* pad, gpointer self) {
-#line 395 "rygel-live-response.c"
+#line 396 "rygel-live-response.c"
 	rygel_live_response_src_pad_added (self, _sender, pad);
 }
 
 
 #line 230 "rygel-live-response.vala"
 static gboolean _rygel_live_response_bus_handler_gst_bus_func (GstBus* bus, GstMessage* message, gpointer self) {
-#line 402 "rygel-live-response.c"
+#line 403 "rygel-live-response.c"
 	return rygel_live_response_bus_handler (self, bus, message);
 }
 
 
 #line 88 "rygel-live-response.vala"
 static void rygel_live_response_prepare_pipeline (RygelLiveResponse* self, const char* name, GstElement* src, GError** error) {
-#line 409 "rygel-live-response.c"
+#line 410 "rygel-live-response.c"
 	GError * _inner_error_;
 	GstElement* sink;
 	GstPipeline* _tmp0_;
@@ -416,15 +417,15 @@ static void rygel_live_response_prepare_pipeline (RygelLiveResponse* self, const
 	g_return_if_fail (name != NULL);
 #line 88 "rygel-live-response.vala"
 	g_return_if_fail (src != NULL);
-#line 420 "rygel-live-response.c"
+#line 421 "rygel-live-response.c"
 	_inner_error_ = NULL;
 #line 90 "rygel-live-response.vala"
 	sink = gst_element_factory_make ("fakesink", RYGEL_LIVE_RESPONSE_SINK_NAME);
 #line 92 "rygel-live-response.vala"
 	if (sink == NULL) {
-#line 426 "rygel-live-response.c"
+#line 427 "rygel-live-response.c"
 		_inner_error_ = g_error_new_literal (RYGEL_LIVE_RESPONSE_ERROR, RYGEL_LIVE_RESPONSE_ERROR_MISSING_PLUGIN, "Required plugin 'fakesink' missing");
-		if (_inner_error_ != NULL) {
+		{
 			g_propagate_error (error, _inner_error_);
 			_gst_object_unref0 (sink);
 			return;
@@ -444,13 +445,13 @@ static void rygel_live_response_prepare_pipeline (RygelLiveResponse* self, const
 	if (src->numpads == 0) {
 #line 107 "rygel-live-response.vala"
 		g_signal_connect_object (src, "pad-added", (GCallback) _rygel_live_response_src_pad_added_gst_element_pad_added, self, 0);
-#line 448 "rygel-live-response.c"
+#line 449 "rygel-live-response.c"
 	} else {
 #line 110 "rygel-live-response.vala"
 		if (!gst_element_link (src, sink)) {
-#line 452 "rygel-live-response.c"
+#line 453 "rygel-live-response.c"
 			_inner_error_ = g_error_new (RYGEL_LIVE_RESPONSE_ERROR, RYGEL_LIVE_RESPONSE_ERROR_LINK, "Failed to link %s to %s", gst_object_get_name ((GstObject*) src), gst_object_get_name ((GstObject*) sink));
-			if (_inner_error_ != NULL) {
+			{
 				g_propagate_error (error, _inner_error_);
 				_gst_object_unref0 (sink);
 				return;
@@ -461,7 +462,7 @@ static void rygel_live_response_prepare_pipeline (RygelLiveResponse* self, const
 	bus = gst_pipeline_get_bus (self->priv->pipeline);
 #line 119 "rygel-live-response.vala"
 	gst_bus_add_watch_full (bus, G_PRIORITY_DEFAULT, _rygel_live_response_bus_handler_gst_bus_func, g_object_ref (self), g_object_unref);
-#line 465 "rygel-live-response.c"
+#line 466 "rygel-live-response.c"
 	_gst_object_unref0 (sink);
 	_gst_object_unref0 (bus);
 }
@@ -469,7 +470,7 @@ static void rygel_live_response_prepare_pipeline (RygelLiveResponse* self, const
 
 #line 122 "rygel-live-response.vala"
 static void rygel_live_response_src_pad_added (RygelLiveResponse* self, GstElement* src, GstPad* src_pad) {
-#line 473 "rygel-live-response.c"
+#line 474 "rygel-live-response.c"
 	GstCaps* caps;
 	GstElement* sink;
 	GstPad* sink_pad;
@@ -484,13 +485,13 @@ static void rygel_live_response_src_pad_added (RygelLiveResponse* self, GstEleme
 	caps = gst_pad_get_caps (src_pad);
 #line 126 "rygel-live-response.vala"
 	sink = gst_bin_get_by_name ((GstBin*) self->priv->pipeline, RYGEL_LIVE_RESPONSE_SINK_NAME);
-#line 488 "rygel-live-response.c"
+#line 489 "rygel-live-response.c"
 	sink_pad = NULL;
 #line 129 "rygel-live-response.vala"
 	depay = rygel_live_response_get_rtp_depayloader (self, caps);
 #line 130 "rygel-live-response.vala"
 	if (depay != NULL) {
-#line 494 "rygel-live-response.c"
+#line 495 "rygel-live-response.c"
 		GstPad* _tmp0_;
 #line 131 "rygel-live-response.vala"
 		gst_bin_add ((GstBin*) self->priv->pipeline, _gst_object_ref0 (depay));
@@ -500,23 +501,23 @@ static void rygel_live_response_src_pad_added (RygelLiveResponse* self, GstEleme
 			g_critical ("rygel-live-response.vala:133: Failed to link %s to %s", gst_object_get_name ((GstObject*) depay), gst_object_get_name ((GstObject*) sink));
 #line 136 "rygel-live-response.vala"
 			rygel_http_response_end ((RygelHTTPResponse*) self, FALSE, (guint) SOUP_STATUS_NONE);
-#line 504 "rygel-live-response.c"
+#line 505 "rygel-live-response.c"
 			_gst_caps_unref0 (caps);
 			_gst_object_unref0 (sink);
 			_gst_object_unref0 (sink_pad);
 			_gst_object_unref0 (depay);
 #line 137 "rygel-live-response.vala"
 			return;
-#line 511 "rygel-live-response.c"
+#line 512 "rygel-live-response.c"
 		}
 #line 140 "rygel-live-response.vala"
 		sink_pad = (_tmp0_ = _gst_object_ref0 (gst_element_get_compatible_pad (depay, src_pad, caps)), _gst_object_unref0 (sink_pad), _tmp0_);
-#line 515 "rygel-live-response.c"
+#line 516 "rygel-live-response.c"
 	} else {
 		GstPad* _tmp1_;
 #line 142 "rygel-live-response.vala"
 		sink_pad = (_tmp1_ = _gst_object_ref0 (gst_element_get_compatible_pad (sink, src_pad, caps)), _gst_object_unref0 (sink_pad), _tmp1_);
-#line 520 "rygel-live-response.c"
+#line 521 "rygel-live-response.c"
 	}
 #line 145 "rygel-live-response.vala"
 	if (gst_pad_link (src_pad, sink_pad) != GST_PAD_LINK_OK) {
@@ -524,20 +525,20 @@ static void rygel_live_response_src_pad_added (RygelLiveResponse* self, GstEleme
 		g_critical ("rygel-live-response.vala:146: Failed to link pad %s to %s", gst_object_get_name ((GstObject*) src_pad), gst_object_get_name ((GstObject*) sink_pad));
 #line 149 "rygel-live-response.vala"
 		rygel_http_response_end ((RygelHTTPResponse*) self, FALSE, (guint) SOUP_STATUS_NONE);
-#line 528 "rygel-live-response.c"
+#line 529 "rygel-live-response.c"
 		_gst_caps_unref0 (caps);
 		_gst_object_unref0 (sink);
 		_gst_object_unref0 (sink_pad);
 		_gst_object_unref0 (depay);
 #line 150 "rygel-live-response.vala"
 		return;
-#line 535 "rygel-live-response.c"
+#line 536 "rygel-live-response.c"
 	}
 #line 153 "rygel-live-response.vala"
 	if (depay != NULL) {
 #line 154 "rygel-live-response.vala"
 		gst_element_sync_state_with_parent (depay);
-#line 541 "rygel-live-response.c"
+#line 542 "rygel-live-response.c"
 	}
 	_gst_caps_unref0 (caps);
 	_gst_object_unref0 (sink);
@@ -553,7 +554,7 @@ static gpointer _gst_structure_copy0 (gpointer self) {
 
 #line 158 "rygel-live-response.vala"
 static gboolean rygel_live_response_need_rtp_depayloader (RygelLiveResponse* self, GstCaps* caps) {
-#line 557 "rygel-live-response.c"
+#line 558 "rygel-live-response.c"
 	gboolean result;
 	GstStructure* structure;
 #line 158 "rygel-live-response.vala"
@@ -562,18 +563,18 @@ static gboolean rygel_live_response_need_rtp_depayloader (RygelLiveResponse* sel
 	g_return_val_if_fail (caps != NULL, FALSE);
 #line 159 "rygel-live-response.vala"
 	structure = _gst_structure_copy0 (gst_caps_get_structure (caps, (guint) 0));
-#line 566 "rygel-live-response.c"
+#line 567 "rygel-live-response.c"
 	result = _vala_strcmp0 (gst_structure_get_name (structure), "application/x-rtp") == 0;
 	_gst_structure_free0 (structure);
 #line 160 "rygel-live-response.vala"
 	return result;
-#line 571 "rygel-live-response.c"
+#line 572 "rygel-live-response.c"
 }
 
 
 #line 200 "rygel-live-response.vala"
 static gboolean _rygel_live_response_rtp_depay_filter_gst_plugin_feature_filter (GstPluginFeature* feature, gpointer self) {
-#line 577 "rygel-live-response.c"
+#line 578 "rygel-live-response.c"
 	return rygel_live_response_rtp_depay_filter (self, feature);
 }
 
@@ -586,7 +587,7 @@ static void _g_list_free_gst_object_unref (GList* self) {
 
 #line 163 "rygel-live-response.vala"
 static GstElement* rygel_live_response_get_rtp_depayloader (RygelLiveResponse* self, GstCaps* caps) {
-#line 590 "rygel-live-response.c"
+#line 591 "rygel-live-response.c"
 	GstElement* result;
 	GstRegistry* registry;
 	GList* features;
@@ -596,35 +597,35 @@ static GstElement* rygel_live_response_get_rtp_depayloader (RygelLiveResponse* s
 	g_return_val_if_fail (caps != NULL, NULL);
 #line 164 "rygel-live-response.vala"
 	if (!rygel_live_response_need_rtp_depayloader (self, caps)) {
-#line 600 "rygel-live-response.c"
+#line 601 "rygel-live-response.c"
 		result = NULL;
 #line 165 "rygel-live-response.vala"
 		return result;
-#line 604 "rygel-live-response.c"
+#line 605 "rygel-live-response.c"
 	}
 #line 168 "rygel-live-response.vala"
 	registry = gst_registry_get_default ();
 #line 169 "rygel-live-response.vala"
 	features = gst_registry_feature_filter (registry, _rygel_live_response_rtp_depay_filter_gst_plugin_feature_filter, FALSE, self);
-#line 610 "rygel-live-response.c"
+#line 611 "rygel-live-response.c"
 	result = rygel_live_response_get_best_depay (self, features, caps);
 	__g_list_free_gst_object_unref0 (features);
 #line 171 "rygel-live-response.vala"
 	return result;
-#line 615 "rygel-live-response.c"
+#line 616 "rygel-live-response.c"
 }
 
 
 #line 210 "rygel-live-response.vala"
 static gint _rygel_live_response_compare_factories_gcompare_func (void* a, void* b) {
-#line 621 "rygel-live-response.c"
+#line 622 "rygel-live-response.c"
 	return rygel_live_response_compare_factories (a, b);
 }
 
 
 #line 174 "rygel-live-response.vala"
 static GstElement* rygel_live_response_get_best_depay (RygelLiveResponse* self, GList* features, GstCaps* caps) {
-#line 628 "rygel-live-response.c"
+#line 629 "rygel-live-response.c"
 	GstElement* result;
 	GList* relevant_factories;
 	GstElementFactory* factory;
@@ -634,18 +635,18 @@ static GstElement* rygel_live_response_get_best_depay (RygelLiveResponse* self, 
 	g_return_val_if_fail (caps != NULL, NULL);
 #line 176 "rygel-live-response.vala"
 	relevant_factories = NULL;
-#line 638 "rygel-live-response.c"
+#line 639 "rygel-live-response.c"
 	{
 		GList* feature_collection;
 		GList* feature_it;
 #line 179 "rygel-live-response.vala"
 		feature_collection = features;
-#line 644 "rygel-live-response.c"
+#line 645 "rygel-live-response.c"
 		for (feature_it = feature_collection; feature_it != NULL; feature_it = feature_it->next) {
 			GstPluginFeature* feature;
 #line 179 "rygel-live-response.vala"
 			feature = _gst_object_ref0 ((GstPluginFeature*) feature_it->data);
-#line 649 "rygel-live-response.c"
+#line 650 "rygel-live-response.c"
 			{
 				GstElementFactory* factory;
 #line 180 "rygel-live-response.vala"
@@ -654,7 +655,7 @@ static GstElement* rygel_live_response_get_best_depay (RygelLiveResponse* self, 
 				if (gst_element_factory_can_sink_caps (factory, caps)) {
 #line 182 "rygel-live-response.vala"
 					relevant_factories = g_list_append (relevant_factories, _gst_object_ref0 (factory));
-#line 658 "rygel-live-response.c"
+#line 659 "rygel-live-response.c"
 				}
 				_gst_object_unref0 (feature);
 				_gst_object_unref0 (factory);
@@ -663,46 +664,46 @@ static GstElement* rygel_live_response_get_best_depay (RygelLiveResponse* self, 
 	}
 #line 186 "rygel-live-response.vala"
 	if (g_list_length (relevant_factories) == 0) {
-#line 667 "rygel-live-response.c"
+#line 668 "rygel-live-response.c"
 		result = NULL;
 		__g_list_free_gst_object_unref0 (relevant_factories);
 #line 188 "rygel-live-response.vala"
 		return result;
-#line 672 "rygel-live-response.c"
+#line 673 "rygel-live-response.c"
 	}
 #line 192 "rygel-live-response.vala"
 	relevant_factories = g_list_sort (relevant_factories, _rygel_live_response_compare_factories_gcompare_func);
 #line 195 "rygel-live-response.vala"
 	factory = _gst_object_ref0 ((GstElementFactory*) relevant_factories->data);
-#line 678 "rygel-live-response.c"
+#line 679 "rygel-live-response.c"
 	result = gst_element_factory_make (gst_plugin_feature_get_name ((GstPluginFeature*) factory), NULL);
 	__g_list_free_gst_object_unref0 (relevant_factories);
 	_gst_object_unref0 (factory);
 #line 197 "rygel-live-response.vala"
 	return result;
-#line 684 "rygel-live-response.c"
+#line 685 "rygel-live-response.c"
 }
 
 
-#line 1023 "glib-2.0.vapi"
+#line 1021 "glib-2.0.vapi"
 static gboolean string_contains (const char* self, const char* needle) {
-#line 690 "rygel-live-response.c"
+#line 691 "rygel-live-response.c"
 	gboolean result;
-#line 1023 "glib-2.0.vapi"
+#line 1021 "glib-2.0.vapi"
 	g_return_val_if_fail (self != NULL, FALSE);
-#line 1023 "glib-2.0.vapi"
+#line 1021 "glib-2.0.vapi"
 	g_return_val_if_fail (needle != NULL, FALSE);
-#line 696 "rygel-live-response.c"
+#line 697 "rygel-live-response.c"
 	result = strstr (self, needle) != NULL;
-#line 1024 "glib-2.0.vapi"
+#line 1022 "glib-2.0.vapi"
 	return result;
-#line 700 "rygel-live-response.c"
+#line 701 "rygel-live-response.c"
 }
 
 
 #line 200 "rygel-live-response.vala"
 static gboolean rygel_live_response_rtp_depay_filter (RygelLiveResponse* self, GstPluginFeature* feature) {
-#line 706 "rygel-live-response.c"
+#line 707 "rygel-live-response.c"
 	gboolean result;
 	GstElementFactory* factory;
 #line 200 "rygel-live-response.vala"
@@ -711,26 +712,26 @@ static gboolean rygel_live_response_rtp_depay_filter (RygelLiveResponse* self, G
 	g_return_val_if_fail (feature != NULL, FALSE);
 #line 201 "rygel-live-response.vala"
 	if (!g_type_is_a (G_TYPE_FROM_INSTANCE ((GObject*) feature), GST_TYPE_ELEMENT_FACTORY)) {
-#line 715 "rygel-live-response.c"
+#line 716 "rygel-live-response.c"
 		result = FALSE;
 #line 202 "rygel-live-response.vala"
 		return result;
-#line 719 "rygel-live-response.c"
+#line 720 "rygel-live-response.c"
 	}
 #line 205 "rygel-live-response.vala"
 	factory = _gst_object_ref0 (GST_ELEMENT_FACTORY (feature));
-#line 723 "rygel-live-response.c"
+#line 724 "rygel-live-response.c"
 	result = string_contains (gst_element_factory_get_klass (factory), "Depayloader");
 	_gst_object_unref0 (factory);
 #line 207 "rygel-live-response.vala"
 	return result;
-#line 728 "rygel-live-response.c"
+#line 729 "rygel-live-response.c"
 }
 
 
 #line 210 "rygel-live-response.vala"
 static gint rygel_live_response_compare_factories (void* a, void* b) {
-#line 734 "rygel-live-response.c"
+#line 735 "rygel-live-response.c"
 	gint result;
 	GstElementFactory* factory_a;
 	GstElementFactory* factory_b;
@@ -738,17 +739,19 @@ static gint rygel_live_response_compare_factories (void* a, void* b) {
 	factory_a = _gst_object_ref0 (GST_ELEMENT_FACTORY (a));
 #line 212 "rygel-live-response.vala"
 	factory_b = _gst_object_ref0 (GST_ELEMENT_FACTORY (b));
-#line 742 "rygel-live-response.c"
+#line 743 "rygel-live-response.c"
 	result = (gint) (gst_plugin_feature_get_rank ((GstPluginFeature*) factory_b) - gst_plugin_feature_get_rank ((GstPluginFeature*) factory_a));
 	_gst_object_unref0 (factory_a);
 	_gst_object_unref0 (factory_b);
 #line 214 "rygel-live-response.vala"
 	return result;
-#line 748 "rygel-live-response.c"
+#line 749 "rygel-live-response.c"
 }
 
 
+#line 221 "rygel-live-response.vala"
 static gboolean _lambda0_ (Block1Data* _data1_) {
+#line 755 "rygel-live-response.c"
 	RygelLiveResponse * self;
 	gboolean result;
 	self = _data1_->self;
@@ -756,15 +759,17 @@ static gboolean _lambda0_ (Block1Data* _data1_) {
 	rygel_http_response_push_data ((RygelHTTPResponse*) self, _data1_->buffer->data, (gsize) _data1_->buffer->size);
 #line 224 "rygel-live-response.vala"
 	self->priv->idle_id = (guint) 0;
-#line 760 "rygel-live-response.c"
+#line 763 "rygel-live-response.c"
 	result = FALSE;
 #line 226 "rygel-live-response.vala"
 	return result;
-#line 764 "rygel-live-response.c"
+#line 767 "rygel-live-response.c"
 }
 
 
+#line 221 "rygel-live-response.vala"
 static gboolean __lambda0__gsource_func (gpointer self) {
+#line 773 "rygel-live-response.c"
 	return _lambda0_ (self);
 }
 
@@ -791,7 +796,7 @@ static void block1_data_unref (Block1Data* _data1_) {
 
 #line 217 "rygel-live-response.vala"
 static void rygel_live_response_on_new_buffer (RygelLiveResponse* self, GstElement* sink, GstBuffer* buffer, GstPad* pad) {
-#line 795 "rygel-live-response.c"
+#line 800 "rygel-live-response.c"
 	Block1Data* _data1_;
 #line 217 "rygel-live-response.vala"
 	g_return_if_fail (self != NULL);
@@ -801,21 +806,21 @@ static void rygel_live_response_on_new_buffer (RygelLiveResponse* self, GstEleme
 	g_return_if_fail (buffer != NULL);
 #line 217 "rygel-live-response.vala"
 	g_return_if_fail (pad != NULL);
-#line 805 "rygel-live-response.c"
+#line 810 "rygel-live-response.c"
 	_data1_ = g_slice_new0 (Block1Data);
 	_data1_->_ref_count_ = 1;
 	_data1_->self = g_object_ref (self);
 	_data1_->buffer = _gst_buffer_ref0 (buffer);
 #line 220 "rygel-live-response.vala"
 	self->priv->idle_id = g_idle_add_full (G_PRIORITY_HIGH_IDLE, __lambda0__gsource_func, block1_data_ref (_data1_), block1_data_unref);
-#line 812 "rygel-live-response.c"
+#line 817 "rygel-live-response.c"
 	block1_data_unref (_data1_);
 }
 
 
 #line 230 "rygel-live-response.vala"
 static gboolean rygel_live_response_bus_handler (RygelLiveResponse* self, GstBus* bus, GstMessage* message) {
-#line 819 "rygel-live-response.c"
+#line 824 "rygel-live-response.c"
 	gboolean result;
 	gboolean ret;
 #line 230 "rygel-live-response.vala"
@@ -830,33 +835,33 @@ static gboolean rygel_live_response_bus_handler (RygelLiveResponse* self, GstBus
 	if (message->type == GST_MESSAGE_EOS) {
 #line 235 "rygel-live-response.vala"
 		ret = FALSE;
-#line 834 "rygel-live-response.c"
+#line 839 "rygel-live-response.c"
 	} else {
 #line 236 "rygel-live-response.vala"
 		if (message->type == GST_MESSAGE_STATE_CHANGED) {
-#line 838 "rygel-live-response.c"
+#line 843 "rygel-live-response.c"
 			gboolean _tmp0_ = FALSE;
 #line 237 "rygel-live-response.vala"
 			if (message->src != GST_OBJECT (self->priv->pipeline)) {
-#line 842 "rygel-live-response.c"
+#line 847 "rygel-live-response.c"
 				result = TRUE;
 #line 238 "rygel-live-response.vala"
 				return result;
-#line 846 "rygel-live-response.c"
+#line 851 "rygel-live-response.c"
 			}
 #line 241 "rygel-live-response.vala"
 			if (self->priv->time_range != NULL) {
 #line 241 "rygel-live-response.vala"
 				_tmp0_ = rygel_http_seek_get_start (self->priv->time_range) > 0;
-#line 852 "rygel-live-response.c"
+#line 857 "rygel-live-response.c"
 			} else {
 #line 241 "rygel-live-response.vala"
 				_tmp0_ = FALSE;
-#line 856 "rygel-live-response.c"
+#line 861 "rygel-live-response.c"
 			}
 #line 241 "rygel-live-response.vala"
 			if (_tmp0_) {
-#line 860 "rygel-live-response.c"
+#line 865 "rygel-live-response.c"
 				GstState old_state = 0;
 				GstState new_state = 0;
 				gboolean _tmp1_ = FALSE;
@@ -866,11 +871,11 @@ static gboolean rygel_live_response_bus_handler (RygelLiveResponse* self, GstBus
 				if (old_state == GST_STATE_READY) {
 #line 249 "rygel-live-response.vala"
 					_tmp1_ = new_state == GST_STATE_PAUSED;
-#line 870 "rygel-live-response.c"
+#line 875 "rygel-live-response.c"
 				} else {
 #line 249 "rygel-live-response.vala"
 					_tmp1_ = FALSE;
-#line 874 "rygel-live-response.c"
+#line 879 "rygel-live-response.c"
 				}
 #line 249 "rygel-live-response.vala"
 				if (_tmp1_) {
@@ -878,7 +883,7 @@ static gboolean rygel_live_response_bus_handler (RygelLiveResponse* self, GstBus
 					if (rygel_live_response_seek (self)) {
 #line 251 "rygel-live-response.vala"
 						gst_element_set_state ((GstElement*) self->priv->pipeline, GST_STATE_PLAYING);
-#line 882 "rygel-live-response.c"
+#line 887 "rygel-live-response.c"
 					}
 				}
 			}
@@ -889,7 +894,7 @@ static gboolean rygel_live_response_bus_handler (RygelLiveResponse* self, GstBus
 			err_msg = NULL;
 #line 259 "rygel-live-response.vala"
 			if (message->type == GST_MESSAGE_ERROR) {
-#line 893 "rygel-live-response.c"
+#line 898 "rygel-live-response.c"
 				char* _tmp5_;
 				char* _tmp4_ = NULL;
 				GError* _tmp3_;
@@ -902,11 +907,11 @@ static gboolean rygel_live_response_bus_handler (RygelLiveResponse* self, GstBus
 				g_critical ("rygel-live-response.vala:261: Error from pipeline %s:%s", gst_object_get_name ((GstObject*) self->priv->pipeline), err_msg);
 #line 265 "rygel-live-response.vala"
 				ret = FALSE;
-#line 906 "rygel-live-response.c"
+#line 911 "rygel-live-response.c"
 			} else {
 #line 266 "rygel-live-response.vala"
 				if (message->type == GST_MESSAGE_WARNING) {
-#line 910 "rygel-live-response.c"
+#line 915 "rygel-live-response.c"
 					char* _tmp9_;
 					char* _tmp8_ = NULL;
 					GError* _tmp7_;
@@ -917,7 +922,7 @@ static gboolean rygel_live_response_bus_handler (RygelLiveResponse* self, GstBus
 					err_msg = (_tmp9_ = _tmp8_, _g_free0 (err_msg), _tmp9_);
 #line 268 "rygel-live-response.vala"
 					g_warning ("rygel-live-response.vala:268: Warning from pipeline %s:%s", gst_object_get_name ((GstObject*) self->priv->pipeline), err_msg);
-#line 921 "rygel-live-response.c"
+#line 926 "rygel-live-response.c"
 				}
 			}
 			_g_error_free0 (err);
@@ -928,18 +933,18 @@ static gboolean rygel_live_response_bus_handler (RygelLiveResponse* self, GstBus
 	if (!ret) {
 #line 275 "rygel-live-response.vala"
 		rygel_http_response_end ((RygelHTTPResponse*) self, FALSE, (guint) SOUP_STATUS_NONE);
-#line 932 "rygel-live-response.c"
+#line 937 "rygel-live-response.c"
 	}
 	result = ret;
 #line 278 "rygel-live-response.vala"
 	return result;
-#line 937 "rygel-live-response.c"
+#line 942 "rygel-live-response.c"
 }
 
 
 #line 281 "rygel-live-response.vala"
 static gboolean rygel_live_response_seek (RygelLiveResponse* self) {
-#line 943 "rygel-live-response.c"
+#line 948 "rygel-live-response.c"
 	gboolean result;
 	GstSeekType stop_type = 0;
 #line 281 "rygel-live-response.vala"
@@ -948,11 +953,11 @@ static gboolean rygel_live_response_seek (RygelLiveResponse* self) {
 	if (rygel_http_seek_get_stop (self->priv->time_range) > 0) {
 #line 285 "rygel-live-response.vala"
 		stop_type = GST_SEEK_TYPE_SET;
-#line 952 "rygel-live-response.c"
+#line 957 "rygel-live-response.c"
 	} else {
 #line 287 "rygel-live-response.vala"
 		stop_type = GST_SEEK_TYPE_NONE;
-#line 956 "rygel-live-response.c"
+#line 961 "rygel-live-response.c"
 	}
 #line 290 "rygel-live-response.vala"
 	if (!gst_element_seek ((GstElement*) self->priv->pipeline, 1.0, GST_FORMAT_TIME, GST_SEEK_FLAG_FLUSH, GST_SEEK_TYPE_SET, rygel_http_seek_get_start (self->priv->time_range), stop_type, rygel_http_seek_get_stop (self->priv->time_range))) {
@@ -960,16 +965,16 @@ static gboolean rygel_live_response_seek (RygelLiveResponse* self) {
 		g_warning ("rygel-live-response.vala:297: Failed to seek to offset %lld", rygel_http_seek_get_start (self->priv->time_range));
 #line 299 "rygel-live-response.vala"
 		rygel_http_response_end ((RygelHTTPResponse*) self, FALSE, (guint) SOUP_STATUS_REQUESTED_RANGE_NOT_SATISFIABLE);
-#line 964 "rygel-live-response.c"
+#line 969 "rygel-live-response.c"
 		result = FALSE;
 #line 302 "rygel-live-response.vala"
 		return result;
-#line 968 "rygel-live-response.c"
+#line 973 "rygel-live-response.c"
 	}
 	result = TRUE;
 #line 305 "rygel-live-response.vala"
 	return result;
-#line 973 "rygel-live-response.c"
+#line 978 "rygel-live-response.c"
 }
 
 

@@ -229,11 +229,13 @@ void rygel_user_config_set_upnp_enabled (RygelUserConfig* self, gboolean value) 
 #line 230 "rygel-user-config.c"
 		if (_inner_error_ != NULL) {
 			goto __catch0_g_error;
-			goto __finally0;
+			g_critical ("file %s: line %d: unexpected error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
+			g_clear_error (&_inner_error_);
+			return;
 		}
 #line 69 "rygel-user-config.vala"
 		enabled = _tmp0_;
-#line 237 "rygel-user-config.c"
+#line 239 "rygel-user-config.c"
 	}
 	goto __finally0;
 	__catch0_g_error:
@@ -255,14 +257,14 @@ void rygel_user_config_set_upnp_enabled (RygelUserConfig* self, gboolean value) 
 	if (value != enabled) {
 #line 73 "rygel-user-config.vala"
 		rygel_user_config_enable_upnp (self, value);
-#line 259 "rygel-user-config.c"
+#line 261 "rygel-user-config.c"
 	}
 }
 
 
 #line 77 "rygel-user-config.vala"
 static char* rygel_user_config_real_get_interface (RygelConfiguration* base, GError** error) {
-#line 266 "rygel-user-config.c"
+#line 268 "rygel-user-config.c"
 	RygelUserConfig * self;
 	char* result;
 	GError * _inner_error_;
@@ -271,7 +273,7 @@ static char* rygel_user_config_real_get_interface (RygelConfiguration* base, GEr
 	_inner_error_ = NULL;
 #line 78 "rygel-user-config.vala"
 	_tmp0_ = rygel_configuration_get_string ((RygelConfiguration*) self, "general", RYGEL_USER_CONFIG_IFACE_KEY, &_inner_error_);
-#line 275 "rygel-user-config.c"
+#line 277 "rygel-user-config.c"
 	if (_inner_error_ != NULL) {
 		g_propagate_error (error, _inner_error_);
 		return NULL;
@@ -279,7 +281,7 @@ static char* rygel_user_config_real_get_interface (RygelConfiguration* base, GEr
 	result = _tmp0_;
 #line 78 "rygel-user-config.vala"
 	return result;
-#line 283 "rygel-user-config.c"
+#line 285 "rygel-user-config.c"
 }
 
 
@@ -291,13 +293,13 @@ void rygel_user_config_set_interface (RygelUserConfig* self, const char* value) 
 	g_return_if_fail (value != NULL);
 #line 82 "rygel-user-config.vala"
 	rygel_user_config_set_string (self, "general", RYGEL_USER_CONFIG_IFACE_KEY, value);
-#line 295 "rygel-user-config.c"
+#line 297 "rygel-user-config.c"
 }
 
 
 #line 85 "rygel-user-config.vala"
 static gint rygel_user_config_real_get_port (RygelConfiguration* base, GError** error) {
-#line 301 "rygel-user-config.c"
+#line 303 "rygel-user-config.c"
 	RygelUserConfig * self;
 	gint result;
 	GError * _inner_error_;
@@ -306,7 +308,7 @@ static gint rygel_user_config_real_get_port (RygelConfiguration* base, GError** 
 	_inner_error_ = NULL;
 #line 86 "rygel-user-config.vala"
 	_tmp0_ = rygel_configuration_get_int ((RygelConfiguration*) self, "general", RYGEL_USER_CONFIG_PORT_KEY, (gint) 0U, (gint) G_MAXUINT16, &_inner_error_);
-#line 310 "rygel-user-config.c"
+#line 312 "rygel-user-config.c"
 	if (_inner_error_ != NULL) {
 		g_propagate_error (error, _inner_error_);
 		return 0;
@@ -314,7 +316,7 @@ static gint rygel_user_config_real_get_port (RygelConfiguration* base, GError** 
 	result = _tmp0_;
 #line 86 "rygel-user-config.vala"
 	return result;
-#line 318 "rygel-user-config.c"
+#line 320 "rygel-user-config.c"
 }
 
 
@@ -324,13 +326,13 @@ void rygel_user_config_set_port (RygelUserConfig* self, gint value) {
 	g_return_if_fail (self != NULL);
 #line 90 "rygel-user-config.vala"
 	rygel_user_config_set_int (self, "general", RYGEL_USER_CONFIG_PORT_KEY, value);
-#line 328 "rygel-user-config.c"
+#line 330 "rygel-user-config.c"
 }
 
 
 #line 93 "rygel-user-config.vala"
 static gboolean rygel_user_config_real_get_transcoding (RygelConfiguration* base, GError** error) {
-#line 334 "rygel-user-config.c"
+#line 336 "rygel-user-config.c"
 	RygelUserConfig * self;
 	gboolean result;
 	GError * _inner_error_;
@@ -339,7 +341,7 @@ static gboolean rygel_user_config_real_get_transcoding (RygelConfiguration* base
 	_inner_error_ = NULL;
 #line 94 "rygel-user-config.vala"
 	_tmp0_ = rygel_configuration_get_bool ((RygelConfiguration*) self, "general", RYGEL_USER_CONFIG_TRANSCODING_KEY, &_inner_error_);
-#line 343 "rygel-user-config.c"
+#line 345 "rygel-user-config.c"
 	if (_inner_error_ != NULL) {
 		g_propagate_error (error, _inner_error_);
 		return FALSE;
@@ -347,7 +349,7 @@ static gboolean rygel_user_config_real_get_transcoding (RygelConfiguration* base
 	result = _tmp0_;
 #line 94 "rygel-user-config.vala"
 	return result;
-#line 351 "rygel-user-config.c"
+#line 353 "rygel-user-config.c"
 }
 
 
@@ -357,13 +359,13 @@ void rygel_user_config_set_transcoding (RygelUserConfig* self, gboolean value) {
 	g_return_if_fail (self != NULL);
 #line 98 "rygel-user-config.vala"
 	rygel_user_config_set_bool (self, "general", RYGEL_USER_CONFIG_TRANSCODING_KEY, value);
-#line 361 "rygel-user-config.c"
+#line 363 "rygel-user-config.c"
 }
 
 
 #line 101 "rygel-user-config.vala"
 static gboolean rygel_user_config_real_get_mp3_transcoder (RygelConfiguration* base, GError** error) {
-#line 367 "rygel-user-config.c"
+#line 369 "rygel-user-config.c"
 	RygelUserConfig * self;
 	gboolean result;
 	GError * _inner_error_;
@@ -372,7 +374,7 @@ static gboolean rygel_user_config_real_get_mp3_transcoder (RygelConfiguration* b
 	_inner_error_ = NULL;
 #line 102 "rygel-user-config.vala"
 	_tmp0_ = rygel_configuration_get_bool ((RygelConfiguration*) self, "general", RYGEL_USER_CONFIG_MP3_TRANSCODER_KEY, &_inner_error_);
-#line 376 "rygel-user-config.c"
+#line 378 "rygel-user-config.c"
 	if (_inner_error_ != NULL) {
 		g_propagate_error (error, _inner_error_);
 		return FALSE;
@@ -380,7 +382,7 @@ static gboolean rygel_user_config_real_get_mp3_transcoder (RygelConfiguration* b
 	result = _tmp0_;
 #line 102 "rygel-user-config.vala"
 	return result;
-#line 384 "rygel-user-config.c"
+#line 386 "rygel-user-config.c"
 }
 
 
@@ -390,13 +392,13 @@ void rygel_user_config_set_mp3_transcoder (RygelUserConfig* self, gboolean value
 	g_return_if_fail (self != NULL);
 #line 106 "rygel-user-config.vala"
 	rygel_user_config_set_bool (self, "general", RYGEL_USER_CONFIG_MP3_TRANSCODER_KEY, value);
-#line 394 "rygel-user-config.c"
+#line 396 "rygel-user-config.c"
 }
 
 
 #line 109 "rygel-user-config.vala"
 static gboolean rygel_user_config_real_get_mp2ts_transcoder (RygelConfiguration* base, GError** error) {
-#line 400 "rygel-user-config.c"
+#line 402 "rygel-user-config.c"
 	RygelUserConfig * self;
 	gboolean result;
 	GError * _inner_error_;
@@ -405,7 +407,7 @@ static gboolean rygel_user_config_real_get_mp2ts_transcoder (RygelConfiguration*
 	_inner_error_ = NULL;
 #line 110 "rygel-user-config.vala"
 	_tmp0_ = rygel_configuration_get_bool ((RygelConfiguration*) self, "general", RYGEL_USER_CONFIG_MP2TS_TRANSCODER_KEY, &_inner_error_);
-#line 409 "rygel-user-config.c"
+#line 411 "rygel-user-config.c"
 	if (_inner_error_ != NULL) {
 		g_propagate_error (error, _inner_error_);
 		return FALSE;
@@ -413,7 +415,7 @@ static gboolean rygel_user_config_real_get_mp2ts_transcoder (RygelConfiguration*
 	result = _tmp0_;
 #line 110 "rygel-user-config.vala"
 	return result;
-#line 417 "rygel-user-config.c"
+#line 419 "rygel-user-config.c"
 }
 
 
@@ -423,13 +425,13 @@ void rygel_user_config_set_mp2ts_transcoder (RygelUserConfig* self, gboolean val
 	g_return_if_fail (self != NULL);
 #line 114 "rygel-user-config.vala"
 	rygel_user_config_set_bool (self, "general", RYGEL_USER_CONFIG_MP2TS_TRANSCODER_KEY, value);
-#line 427 "rygel-user-config.c"
+#line 429 "rygel-user-config.c"
 }
 
 
 #line 117 "rygel-user-config.vala"
 static gboolean rygel_user_config_real_get_lpcm_transcoder (RygelConfiguration* base, GError** error) {
-#line 433 "rygel-user-config.c"
+#line 435 "rygel-user-config.c"
 	RygelUserConfig * self;
 	gboolean result;
 	GError * _inner_error_;
@@ -438,7 +440,7 @@ static gboolean rygel_user_config_real_get_lpcm_transcoder (RygelConfiguration* 
 	_inner_error_ = NULL;
 #line 118 "rygel-user-config.vala"
 	_tmp0_ = rygel_configuration_get_bool ((RygelConfiguration*) self, "general", RYGEL_USER_CONFIG_LPCM_TRANSCODER_KEY, &_inner_error_);
-#line 442 "rygel-user-config.c"
+#line 444 "rygel-user-config.c"
 	if (_inner_error_ != NULL) {
 		g_propagate_error (error, _inner_error_);
 		return FALSE;
@@ -446,7 +448,7 @@ static gboolean rygel_user_config_real_get_lpcm_transcoder (RygelConfiguration* 
 	result = _tmp0_;
 #line 118 "rygel-user-config.vala"
 	return result;
-#line 450 "rygel-user-config.c"
+#line 452 "rygel-user-config.c"
 }
 
 
@@ -456,13 +458,13 @@ void rygel_user_config_set_lpcm_transcoder (RygelUserConfig* self, gboolean valu
 	g_return_if_fail (self != NULL);
 #line 122 "rygel-user-config.vala"
 	rygel_user_config_set_bool (self, "general", RYGEL_USER_CONFIG_LPCM_TRANSCODER_KEY, value);
-#line 460 "rygel-user-config.c"
+#line 462 "rygel-user-config.c"
 }
 
 
 #line 125 "rygel-user-config.vala"
 static RygelLogLevel rygel_user_config_real_get_log_level (RygelConfiguration* base, GError** error) {
-#line 466 "rygel-user-config.c"
+#line 468 "rygel-user-config.c"
 	RygelUserConfig * self;
 	RygelLogLevel result;
 	GError * _inner_error_;
@@ -471,7 +473,7 @@ static RygelLogLevel rygel_user_config_real_get_log_level (RygelConfiguration* b
 	_inner_error_ = NULL;
 #line 126 "rygel-user-config.vala"
 	_tmp0_ = rygel_configuration_get_int ((RygelConfiguration*) self, "general", RYGEL_USER_CONFIG_LOG_LEVEL_KEY, (gint) RYGEL_LOG_LEVEL_INVALID, (gint) RYGEL_LOG_LEVEL_DEBUG, &_inner_error_);
-#line 475 "rygel-user-config.c"
+#line 477 "rygel-user-config.c"
 	if (_inner_error_ != NULL) {
 		g_propagate_error (error, _inner_error_);
 		return 0;
@@ -479,7 +481,7 @@ static RygelLogLevel rygel_user_config_real_get_log_level (RygelConfiguration* b
 	result = (RygelLogLevel) _tmp0_;
 #line 126 "rygel-user-config.vala"
 	return result;
-#line 483 "rygel-user-config.c"
+#line 485 "rygel-user-config.c"
 }
 
 
@@ -490,36 +492,36 @@ static gpointer _g_object_ref0 (gpointer self) {
 
 #line 132 "rygel-user-config.vala"
 RygelUserConfig* rygel_user_config_get_default (GError** error) {
-#line 494 "rygel-user-config.c"
+#line 496 "rygel-user-config.c"
 	RygelUserConfig* result;
 	GError * _inner_error_;
 	_inner_error_ = NULL;
 #line 133 "rygel-user-config.vala"
 	if (rygel_user_config_config == NULL) {
-#line 500 "rygel-user-config.c"
+#line 502 "rygel-user-config.c"
 		RygelUserConfig* _tmp0_;
 		RygelUserConfig* _tmp1_;
 #line 134 "rygel-user-config.vala"
 		_tmp0_ = rygel_user_config_new (TRUE, &_inner_error_);
-#line 505 "rygel-user-config.c"
+#line 507 "rygel-user-config.c"
 		if (_inner_error_ != NULL) {
 			g_propagate_error (error, _inner_error_);
 			return NULL;
 		}
 #line 134 "rygel-user-config.vala"
 		rygel_user_config_config = (_tmp1_ = _tmp0_, _g_object_unref0 (rygel_user_config_config), _tmp1_);
-#line 512 "rygel-user-config.c"
+#line 514 "rygel-user-config.c"
 	}
 	result = _g_object_ref0 (rygel_user_config_config);
 #line 137 "rygel-user-config.vala"
 	return result;
-#line 517 "rygel-user-config.c"
+#line 519 "rygel-user-config.c"
 }
 
 
 #line 140 "rygel-user-config.vala"
 RygelUserConfig* rygel_user_config_construct (GType object_type, gboolean read_only, GError** error) {
-#line 523 "rygel-user-config.c"
+#line 525 "rygel-user-config.c"
 	GError * _inner_error_;
 	RygelUserConfig * self;
 	GKeyFile* _tmp0_;
@@ -540,13 +542,13 @@ RygelUserConfig* rygel_user_config_construct (GType object_type, gboolean read_o
 	self->priv->read_only = read_only;
 #line 142 "rygel-user-config.vala"
 	self->key_file = (_tmp0_ = g_key_file_new (), _g_key_file_free0 (self->key_file), _tmp0_);
-#line 544 "rygel-user-config.c"
+#line 546 "rygel-user-config.c"
 	dirs = (_tmp1_ = g_new0 (char*, 2 + 1), dirs_length1 = 2, dirs_size = dirs_length1, _tmp1_);
 #line 145 "rygel-user-config.vala"
 	dirs[0] = (_tmp2_ = g_strdup (g_get_user_config_dir ()), _g_free0 (dirs[0]), _tmp2_);
 #line 146 "rygel-user-config.vala"
 	dirs[1] = (_tmp3_ = g_strdup (SYS_CONFIG_DIR), _g_free0 (dirs[1]), _tmp3_);
-#line 550 "rygel-user-config.c"
+#line 552 "rygel-user-config.c"
 	path = NULL;
 #line 149 "rygel-user-config.vala"
 	_tmp5_ = g_key_file_load_from_dirs (self->key_file, RYGEL_USER_CONFIG_CONFIG_FILE, dirs, &_tmp4_, G_KEY_FILE_KEEP_COMMENTS | G_KEY_FILE_KEEP_TRANSLATIONS, &_inner_error_);
@@ -554,34 +556,39 @@ RygelUserConfig* rygel_user_config_construct (GType object_type, gboolean read_o
 	path = (_tmp6_ = _tmp4_, _g_free0 (path), _tmp6_);
 #line 149 "rygel-user-config.vala"
 	_tmp5_;
-#line 558 "rygel-user-config.c"
+#line 560 "rygel-user-config.c"
 	if (_inner_error_ != NULL) {
 		g_propagate_error (error, _inner_error_);
 		dirs = (_vala_array_free (dirs, dirs_length1, (GDestroyNotify) g_free), NULL);
 		_g_free0 (path);
+		g_object_unref (self);
 		return NULL;
 	}
 #line 154 "rygel-user-config.vala"
 	g_debug ("rygel-user-config.vala:154: Loaded user configuration from file '%s'", path);
-#line 567 "rygel-user-config.c"
+#line 570 "rygel-user-config.c"
 	{
 		DBusGConnection* connection;
 		DBusGProxy* _tmp7_;
 		DBusGProxy* _tmp8_;
 #line 157 "rygel-user-config.vala"
 		connection = dbus_g_bus_get (DBUS_BUS_SESSION, &_inner_error_);
-#line 574 "rygel-user-config.c"
+#line 577 "rygel-user-config.c"
 		if (_inner_error_ != NULL) {
 			if (_inner_error_->domain == DBUS_GERROR) {
 				goto __catch1_dbus_gerror;
 			}
-			goto __finally1;
+			dirs = (_vala_array_free (dirs, dirs_length1, (GDestroyNotify) g_free), NULL);
+			_g_free0 (path);
+			g_critical ("file %s: line %d: unexpected error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
+			g_clear_error (&_inner_error_);
+			return NULL;
 		}
 #line 160 "rygel-user-config.vala"
 		self->priv->rygel_obj = (_tmp7_ = dbus_g_proxy_new_for_name (connection, RYGEL_USER_CONFIG_RYGEL_SERVICE, RYGEL_USER_CONFIG_RYGEL_PATH, RYGEL_USER_CONFIG_RYGEL_INTERFACE), _g_object_unref0 (self->priv->rygel_obj), _tmp7_);
 #line 164 "rygel-user-config.vala"
 		self->priv->dbus_obj = (_tmp8_ = dbus_g_proxy_new_for_name (connection, RYGEL_USER_CONFIG_DBUS_SERVICE, RYGEL_USER_CONFIG_DBUS_PATH, RYGEL_USER_CONFIG_DBUS_INTERFACE), _g_object_unref0 (self->priv->dbus_obj), _tmp8_);
-#line 585 "rygel-user-config.c"
+#line 592 "rygel-user-config.c"
 		_dbus_g_connection_unref0 (connection);
 	}
 	goto __finally1;
@@ -593,7 +600,7 @@ RygelUserConfig* rygel_user_config_construct (GType object_type, gboolean read_o
 		{
 #line 168 "rygel-user-config.vala"
 			g_debug ("rygel-user-config.vala:168: Failed to connect to session bus: %s", err->message);
-#line 597 "rygel-user-config.c"
+#line 604 "rygel-user-config.c"
 			_g_error_free0 (err);
 		}
 	}
@@ -602,6 +609,7 @@ RygelUserConfig* rygel_user_config_construct (GType object_type, gboolean read_o
 		g_propagate_error (error, _inner_error_);
 		dirs = (_vala_array_free (dirs, dirs_length1, (GDestroyNotify) g_free), NULL);
 		_g_free0 (path);
+		g_object_unref (self);
 		return NULL;
 	}
 	dirs = (_vala_array_free (dirs, dirs_length1, (GDestroyNotify) g_free), NULL);
@@ -614,20 +622,20 @@ RygelUserConfig* rygel_user_config_construct (GType object_type, gboolean read_o
 RygelUserConfig* rygel_user_config_new (gboolean read_only, GError** error) {
 #line 140 "rygel-user-config.vala"
 	return rygel_user_config_construct (RYGEL_TYPE_USER_CONFIG, read_only, error);
-#line 618 "rygel-user-config.c"
+#line 626 "rygel-user-config.c"
 }
 
 
 #line 172 "rygel-user-config.vala"
 void rygel_user_config_save (RygelUserConfig* self) {
-#line 624 "rygel-user-config.c"
+#line 632 "rygel-user-config.c"
 	GError * _inner_error_;
 	char* path;
 	gsize length = 0UL;
 	char* data;
 #line 172 "rygel-user-config.vala"
 	g_return_if_fail (self != NULL);
-#line 631 "rygel-user-config.c"
+#line 639 "rygel-user-config.c"
 	_inner_error_ = NULL;
 #line 173 "rygel-user-config.vala"
 	g_return_if_fail (!self->priv->read_only);
@@ -635,16 +643,20 @@ void rygel_user_config_save (RygelUserConfig* self) {
 	path = g_build_filename (g_get_user_config_dir (), RYGEL_USER_CONFIG_CONFIG_FILE, NULL);
 #line 180 "rygel-user-config.vala"
 	data = g_key_file_to_data (self->key_file, &length, NULL);
-#line 639 "rygel-user-config.c"
+#line 647 "rygel-user-config.c"
 	{
 #line 183 "rygel-user-config.vala"
 		g_file_set_contents (path, data, (gssize) ((glong) length), &_inner_error_);
-#line 643 "rygel-user-config.c"
+#line 651 "rygel-user-config.c"
 		if (_inner_error_ != NULL) {
 			if (_inner_error_->domain == G_FILE_ERROR) {
 				goto __catch2_g_file_error;
 			}
-			goto __finally2;
+			_g_free0 (path);
+			_g_free0 (data);
+			g_critical ("file %s: line %d: unexpected error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
+			g_clear_error (&_inner_error_);
+			return;
 		}
 	}
 	goto __finally2;
@@ -656,7 +668,7 @@ void rygel_user_config_save (RygelUserConfig* self) {
 		{
 #line 185 "rygel-user-config.vala"
 			g_critical ("rygel-user-config.vala:185: Failed to save configuration data to file '%s': %s", path, err->message);
-#line 660 "rygel-user-config.c"
+#line 672 "rygel-user-config.c"
 			_g_error_free0 (err);
 		}
 	}
@@ -675,7 +687,7 @@ void rygel_user_config_save (RygelUserConfig* self) {
 
 #line 191 "rygel-user-config.vala"
 static gboolean rygel_user_config_real_get_enabled (RygelConfiguration* base, const char* section, GError** error) {
-#line 679 "rygel-user-config.c"
+#line 691 "rygel-user-config.c"
 	RygelUserConfig * self;
 	gboolean result;
 	GError * _inner_error_;
@@ -683,11 +695,11 @@ static gboolean rygel_user_config_real_get_enabled (RygelConfiguration* base, co
 	self = (RygelUserConfig*) base;
 #line 191 "rygel-user-config.vala"
 	g_return_val_if_fail (section != NULL, FALSE);
-#line 687 "rygel-user-config.c"
+#line 699 "rygel-user-config.c"
 	_inner_error_ = NULL;
 #line 192 "rygel-user-config.vala"
 	_tmp0_ = rygel_configuration_get_bool ((RygelConfiguration*) self, section, RYGEL_USER_CONFIG_ENABLED_KEY, &_inner_error_);
-#line 691 "rygel-user-config.c"
+#line 703 "rygel-user-config.c"
 	if (_inner_error_ != NULL) {
 		g_propagate_error (error, _inner_error_);
 		return FALSE;
@@ -695,13 +707,13 @@ static gboolean rygel_user_config_real_get_enabled (RygelConfiguration* base, co
 	result = _tmp0_;
 #line 192 "rygel-user-config.vala"
 	return result;
-#line 699 "rygel-user-config.c"
+#line 711 "rygel-user-config.c"
 }
 
 
 #line 195 "rygel-user-config.vala"
 static char* rygel_user_config_real_get_title (RygelConfiguration* base, const char* section, GError** error) {
-#line 705 "rygel-user-config.c"
+#line 717 "rygel-user-config.c"
 	RygelUserConfig * self;
 	char* result;
 	GError * _inner_error_;
@@ -709,11 +721,11 @@ static char* rygel_user_config_real_get_title (RygelConfiguration* base, const c
 	self = (RygelUserConfig*) base;
 #line 195 "rygel-user-config.vala"
 	g_return_val_if_fail (section != NULL, NULL);
-#line 713 "rygel-user-config.c"
+#line 725 "rygel-user-config.c"
 	_inner_error_ = NULL;
 #line 196 "rygel-user-config.vala"
 	_tmp0_ = rygel_configuration_get_string ((RygelConfiguration*) self, section, RYGEL_USER_CONFIG_TITLE_KEY, &_inner_error_);
-#line 717 "rygel-user-config.c"
+#line 729 "rygel-user-config.c"
 	if (_inner_error_ != NULL) {
 		g_propagate_error (error, _inner_error_);
 		return NULL;
@@ -721,13 +733,13 @@ static char* rygel_user_config_real_get_title (RygelConfiguration* base, const c
 	result = _tmp0_;
 #line 196 "rygel-user-config.vala"
 	return result;
-#line 725 "rygel-user-config.c"
+#line 737 "rygel-user-config.c"
 }
 
 
 #line 199 "rygel-user-config.vala"
 static char* rygel_user_config_real_get_string (RygelConfiguration* base, const char* section, const char* key, GError** error) {
-#line 731 "rygel-user-config.c"
+#line 743 "rygel-user-config.c"
 	RygelUserConfig * self;
 	char* result;
 	GError * _inner_error_;
@@ -738,11 +750,11 @@ static char* rygel_user_config_real_get_string (RygelConfiguration* base, const 
 	g_return_val_if_fail (section != NULL, NULL);
 #line 199 "rygel-user-config.vala"
 	g_return_val_if_fail (key != NULL, NULL);
-#line 742 "rygel-user-config.c"
+#line 754 "rygel-user-config.c"
 	_inner_error_ = NULL;
 #line 201 "rygel-user-config.vala"
 	val = g_key_file_get_string (self->key_file, section, key, &_inner_error_);
-#line 746 "rygel-user-config.c"
+#line 758 "rygel-user-config.c"
 	if (_inner_error_ != NULL) {
 		g_propagate_error (error, _inner_error_);
 		return NULL;
@@ -751,17 +763,17 @@ static char* rygel_user_config_real_get_string (RygelConfiguration* base, const 
 	if (val == NULL) {
 #line 203 "rygel-user-config.vala"
 		_tmp0_ = TRUE;
-#line 755 "rygel-user-config.c"
+#line 767 "rygel-user-config.c"
 	} else {
 #line 203 "rygel-user-config.vala"
 		_tmp0_ = _vala_strcmp0 (val, "") == 0;
-#line 759 "rygel-user-config.c"
+#line 771 "rygel-user-config.c"
 	}
 #line 203 "rygel-user-config.vala"
 	if (_tmp0_) {
-#line 763 "rygel-user-config.c"
+#line 775 "rygel-user-config.c"
 		_inner_error_ = g_error_new (RYGEL_CONFIGURATION_ERROR, RYGEL_CONFIGURATION_ERROR_NO_VALUE_SET, "No value available for '%s'", key);
-		if (_inner_error_ != NULL) {
+		{
 			g_propagate_error (error, _inner_error_);
 			_g_free0 (val);
 			return NULL;
@@ -770,13 +782,13 @@ static char* rygel_user_config_real_get_string (RygelConfiguration* base, const 
 	result = val;
 #line 208 "rygel-user-config.vala"
 	return result;
-#line 774 "rygel-user-config.c"
+#line 786 "rygel-user-config.c"
 }
 
 
 #line 211 "rygel-user-config.vala"
 static GeeArrayList* rygel_user_config_real_get_string_list (RygelConfiguration* base, const char* section, const char* key, GError** error) {
-#line 780 "rygel-user-config.c"
+#line 792 "rygel-user-config.c"
 	RygelUserConfig * self;
 	GeeArrayList* result;
 	GError * _inner_error_;
@@ -791,11 +803,11 @@ static GeeArrayList* rygel_user_config_real_get_string_list (RygelConfiguration*
 	g_return_val_if_fail (section != NULL, NULL);
 #line 211 "rygel-user-config.vala"
 	g_return_val_if_fail (key != NULL, NULL);
-#line 795 "rygel-user-config.c"
+#line 807 "rygel-user-config.c"
 	_inner_error_ = NULL;
 #line 214 "rygel-user-config.vala"
 	str_list = gee_array_list_new (G_TYPE_STRING, (GBoxedCopyFunc) g_strdup, g_free, NULL);
-#line 799 "rygel-user-config.c"
+#line 811 "rygel-user-config.c"
 	strings = (_tmp1_ = g_key_file_get_string_list (self->key_file, section, key, &_tmp0_, &_inner_error_), strings_length1 = _tmp0_, strings_size = strings_length1, _tmp1_);
 	if (_inner_error_ != NULL) {
 		g_propagate_error (error, _inner_error_);
@@ -808,7 +820,7 @@ static GeeArrayList* rygel_user_config_real_get_string_list (RygelConfiguration*
 		int str_it;
 #line 217 "rygel-user-config.vala"
 		str_collection = strings;
-#line 812 "rygel-user-config.c"
+#line 824 "rygel-user-config.c"
 		str_collection_length1 = strings_length1;
 		for (str_it = 0; str_it < strings_length1; str_it = str_it + 1) {
 			char* str;
@@ -816,7 +828,7 @@ static GeeArrayList* rygel_user_config_real_get_string_list (RygelConfiguration*
 			{
 #line 218 "rygel-user-config.vala"
 				gee_abstract_collection_add ((GeeAbstractCollection*) str_list, str);
-#line 820 "rygel-user-config.c"
+#line 832 "rygel-user-config.c"
 				_g_free0 (str);
 			}
 		}
@@ -825,13 +837,13 @@ static GeeArrayList* rygel_user_config_real_get_string_list (RygelConfiguration*
 	strings = (_vala_array_free (strings, strings_length1, (GDestroyNotify) g_free), NULL);
 #line 221 "rygel-user-config.vala"
 	return result;
-#line 829 "rygel-user-config.c"
+#line 841 "rygel-user-config.c"
 }
 
 
 #line 224 "rygel-user-config.vala"
 static gint rygel_user_config_real_get_int (RygelConfiguration* base, const char* section, const char* key, gint min, gint max, GError** error) {
-#line 835 "rygel-user-config.c"
+#line 847 "rygel-user-config.c"
 	RygelUserConfig * self;
 	gint result;
 	GError * _inner_error_;
@@ -843,11 +855,11 @@ static gint rygel_user_config_real_get_int (RygelConfiguration* base, const char
 	g_return_val_if_fail (section != NULL, 0);
 #line 224 "rygel-user-config.vala"
 	g_return_val_if_fail (key != NULL, 0);
-#line 847 "rygel-user-config.c"
+#line 859 "rygel-user-config.c"
 	_inner_error_ = NULL;
 #line 229 "rygel-user-config.vala"
 	val = g_key_file_get_integer (self->key_file, section, key, &_inner_error_);
-#line 851 "rygel-user-config.c"
+#line 863 "rygel-user-config.c"
 	if (_inner_error_ != NULL) {
 		g_propagate_error (error, _inner_error_);
 		return 0;
@@ -856,27 +868,27 @@ static gint rygel_user_config_real_get_int (RygelConfiguration* base, const char
 	if (val == 0) {
 #line 231 "rygel-user-config.vala"
 		_tmp1_ = TRUE;
-#line 860 "rygel-user-config.c"
+#line 872 "rygel-user-config.c"
 	} else {
 #line 231 "rygel-user-config.vala"
 		_tmp1_ = val < min;
-#line 864 "rygel-user-config.c"
+#line 876 "rygel-user-config.c"
 	}
 #line 231 "rygel-user-config.vala"
 	if (_tmp1_) {
 #line 231 "rygel-user-config.vala"
 		_tmp0_ = TRUE;
-#line 870 "rygel-user-config.c"
+#line 882 "rygel-user-config.c"
 	} else {
 #line 231 "rygel-user-config.vala"
 		_tmp0_ = val > max;
-#line 874 "rygel-user-config.c"
+#line 886 "rygel-user-config.c"
 	}
 #line 231 "rygel-user-config.vala"
 	if (_tmp0_) {
-#line 878 "rygel-user-config.c"
+#line 890 "rygel-user-config.c"
 		_inner_error_ = g_error_new (RYGEL_CONFIGURATION_ERROR, RYGEL_CONFIGURATION_ERROR_VALUE_OUT_OF_RANGE, "Value of '%s' out of range", key);
-		if (_inner_error_ != NULL) {
+		{
 			g_propagate_error (error, _inner_error_);
 			return 0;
 		}
@@ -884,13 +896,13 @@ static gint rygel_user_config_real_get_int (RygelConfiguration* base, const char
 	result = val;
 #line 236 "rygel-user-config.vala"
 	return result;
-#line 888 "rygel-user-config.c"
+#line 900 "rygel-user-config.c"
 }
 
 
 #line 239 "rygel-user-config.vala"
 static GeeArrayList* rygel_user_config_real_get_int_list (RygelConfiguration* base, const char* section, const char* key, GError** error) {
-#line 894 "rygel-user-config.c"
+#line 906 "rygel-user-config.c"
 	RygelUserConfig * self;
 	GeeArrayList* result;
 	GError * _inner_error_;
@@ -905,11 +917,11 @@ static GeeArrayList* rygel_user_config_real_get_int_list (RygelConfiguration* ba
 	g_return_val_if_fail (section != NULL, NULL);
 #line 239 "rygel-user-config.vala"
 	g_return_val_if_fail (key != NULL, NULL);
-#line 909 "rygel-user-config.c"
+#line 921 "rygel-user-config.c"
 	_inner_error_ = NULL;
 #line 242 "rygel-user-config.vala"
 	int_list = gee_array_list_new (G_TYPE_INT, NULL, NULL, NULL);
-#line 913 "rygel-user-config.c"
+#line 925 "rygel-user-config.c"
 	ints = (_tmp1_ = g_key_file_get_integer_list (self->key_file, section, key, &_tmp0_, &_inner_error_), ints_length1 = _tmp0_, ints_size = ints_length1, _tmp1_);
 	if (_inner_error_ != NULL) {
 		g_propagate_error (error, _inner_error_);
@@ -922,7 +934,7 @@ static GeeArrayList* rygel_user_config_real_get_int_list (RygelConfiguration* ba
 		int num_it;
 #line 245 "rygel-user-config.vala"
 		num_collection = ints;
-#line 926 "rygel-user-config.c"
+#line 938 "rygel-user-config.c"
 		num_collection_length1 = ints_length1;
 		for (num_it = 0; num_it < ints_length1; num_it = num_it + 1) {
 			gint num;
@@ -930,7 +942,7 @@ static GeeArrayList* rygel_user_config_real_get_int_list (RygelConfiguration* ba
 			{
 #line 246 "rygel-user-config.vala"
 				gee_abstract_collection_add ((GeeAbstractCollection*) int_list, GINT_TO_POINTER (num));
-#line 934 "rygel-user-config.c"
+#line 946 "rygel-user-config.c"
 			}
 		}
 	}
@@ -938,13 +950,13 @@ static GeeArrayList* rygel_user_config_real_get_int_list (RygelConfiguration* ba
 	ints = (g_free (ints), NULL);
 #line 249 "rygel-user-config.vala"
 	return result;
-#line 942 "rygel-user-config.c"
+#line 954 "rygel-user-config.c"
 }
 
 
 #line 252 "rygel-user-config.vala"
 static gboolean rygel_user_config_real_get_bool (RygelConfiguration* base, const char* section, const char* key, GError** error) {
-#line 948 "rygel-user-config.c"
+#line 960 "rygel-user-config.c"
 	RygelUserConfig * self;
 	gboolean result;
 	GError * _inner_error_;
@@ -954,11 +966,11 @@ static gboolean rygel_user_config_real_get_bool (RygelConfiguration* base, const
 	g_return_val_if_fail (section != NULL, FALSE);
 #line 252 "rygel-user-config.vala"
 	g_return_val_if_fail (key != NULL, FALSE);
-#line 958 "rygel-user-config.c"
+#line 970 "rygel-user-config.c"
 	_inner_error_ = NULL;
 #line 255 "rygel-user-config.vala"
 	_tmp0_ = g_key_file_get_boolean (self->key_file, section, key, &_inner_error_);
-#line 962 "rygel-user-config.c"
+#line 974 "rygel-user-config.c"
 	if (_inner_error_ != NULL) {
 		g_propagate_error (error, _inner_error_);
 		return FALSE;
@@ -966,7 +978,7 @@ static gboolean rygel_user_config_real_get_bool (RygelConfiguration* base, const
 	result = _tmp0_;
 #line 255 "rygel-user-config.vala"
 	return result;
-#line 970 "rygel-user-config.c"
+#line 982 "rygel-user-config.c"
 }
 
 
@@ -982,13 +994,13 @@ void rygel_user_config_set_string (RygelUserConfig* self, const char* section, c
 	g_return_if_fail (value != NULL);
 #line 261 "rygel-user-config.vala"
 	g_key_file_set_string (self->key_file, section, key, value);
-#line 986 "rygel-user-config.c"
+#line 998 "rygel-user-config.c"
 }
 
 
 #line 264 "rygel-user-config.vala"
 void rygel_user_config_set_string_list (RygelUserConfig* self, const char* section, const char* key, GeeArrayList* str_list) {
-#line 992 "rygel-user-config.c"
+#line 1004 "rygel-user-config.c"
 	char** _tmp1_;
 	gint strings_size;
 	gint strings_length1;
@@ -1003,36 +1015,36 @@ void rygel_user_config_set_string_list (RygelUserConfig* self, const char* secti
 	g_return_if_fail (key != NULL);
 #line 264 "rygel-user-config.vala"
 	g_return_if_fail (str_list != NULL);
-#line 1007 "rygel-user-config.c"
+#line 1019 "rygel-user-config.c"
 	strings = (_tmp1_ = g_new0 (char*, (_tmp0_ = gee_collection_get_size ((GeeCollection*) str_list)) + 1), strings_length1 = _tmp0_, strings_size = strings_length1, _tmp1_);
 #line 269 "rygel-user-config.vala"
 	i = 0;
-#line 1011 "rygel-user-config.c"
+#line 1023 "rygel-user-config.c"
 	{
 		GeeIterator* _str_it;
 		_str_it = gee_abstract_collection_iterator ((GeeAbstractCollection*) str_list);
 #line 271 "rygel-user-config.vala"
 		while (TRUE) {
-#line 1017 "rygel-user-config.c"
+#line 1029 "rygel-user-config.c"
 			char* str;
 #line 271 "rygel-user-config.vala"
 			if (!gee_iterator_next (_str_it)) {
 #line 271 "rygel-user-config.vala"
 				break;
-#line 1023 "rygel-user-config.c"
+#line 1035 "rygel-user-config.c"
 			}
 #line 271 "rygel-user-config.vala"
 			str = (char*) gee_iterator_get (_str_it);
 #line 272 "rygel-user-config.vala"
 			if (_vala_strcmp0 (str, "") != 0) {
-#line 1029 "rygel-user-config.c"
+#line 1041 "rygel-user-config.c"
 				char* _tmp3_;
 				char* *_tmp2_;
 #line 273 "rygel-user-config.vala"
 				_tmp2_ = &strings[i++];
 #line 273 "rygel-user-config.vala"
 				(*_tmp2_) = (_tmp3_ = g_strdup (str), _g_free0 ((*_tmp2_)), _tmp3_);
-#line 1036 "rygel-user-config.c"
+#line 1048 "rygel-user-config.c"
 			}
 			_g_free0 (str);
 		}
@@ -1040,7 +1052,7 @@ void rygel_user_config_set_string_list (RygelUserConfig* self, const char* secti
 	}
 #line 277 "rygel-user-config.vala"
 	g_key_file_set_string_list (self->key_file, section, key, strings, strings_length1);
-#line 1044 "rygel-user-config.c"
+#line 1056 "rygel-user-config.c"
 	strings = (_vala_array_free (strings, strings_length1, (GDestroyNotify) g_free), NULL);
 }
 
@@ -1055,7 +1067,7 @@ void rygel_user_config_set_int (RygelUserConfig* self, const char* section, cons
 	g_return_if_fail (key != NULL);
 #line 283 "rygel-user-config.vala"
 	g_key_file_set_integer (self->key_file, section, key, value);
-#line 1059 "rygel-user-config.c"
+#line 1071 "rygel-user-config.c"
 }
 
 
@@ -1069,7 +1081,7 @@ void rygel_user_config_set_bool (RygelUserConfig* self, const char* section, con
 	g_return_if_fail (key != NULL);
 #line 289 "rygel-user-config.vala"
 	g_key_file_set_boolean (self->key_file, section, key, value);
-#line 1073 "rygel-user-config.c"
+#line 1085 "rygel-user-config.c"
 }
 
 
@@ -1091,25 +1103,28 @@ static void _dynamic_Shutdown1 (DBusGProxy* self, GError** error) {
 
 #line 292 "rygel-user-config.vala"
 static void rygel_user_config_enable_upnp (RygelUserConfig* self, gboolean enable) {
-#line 1095 "rygel-user-config.c"
+#line 1107 "rygel-user-config.c"
 	GError * _inner_error_;
 	char* dest_dir;
 #line 292 "rygel-user-config.vala"
 	g_return_if_fail (self != NULL);
-#line 1100 "rygel-user-config.c"
+#line 1112 "rygel-user-config.c"
 	_inner_error_ = NULL;
 #line 293 "rygel-user-config.vala"
 	dest_dir = g_build_filename (g_get_user_config_dir (), "autostart", NULL);
-#line 1104 "rygel-user-config.c"
+#line 1116 "rygel-user-config.c"
 	{
 		char* dest_path;
 		GFile* dest;
 #line 296 "rygel-user-config.vala"
 		rygel_user_config_ensure_dir_exists (self, dest_dir, &_inner_error_);
-#line 1110 "rygel-user-config.c"
+#line 1122 "rygel-user-config.c"
 		if (_inner_error_ != NULL) {
 			goto __catch3_g_error;
-			goto __finally3;
+			_g_free0 (dest_dir);
+			g_critical ("file %s: line %d: unexpected error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
+			g_clear_error (&_inner_error_);
+			return;
 		}
 #line 298 "rygel-user-config.vala"
 		dest_path = g_build_filename (dest_dir, "rygel.desktop", NULL);
@@ -1117,28 +1132,33 @@ static void rygel_user_config_enable_upnp (RygelUserConfig* self, gboolean enabl
 		dest = g_file_new_for_path (dest_path);
 #line 301 "rygel-user-config.vala"
 		if (enable) {
-#line 1121 "rygel-user-config.c"
+#line 1136 "rygel-user-config.c"
 			guint32 res = 0U;
 			char* source_path;
 #line 305 "rygel-user-config.vala"
 			if (self->priv->dbus_obj != NULL) {
 #line 306 "rygel-user-config.vala"
 				_dynamic_StartServiceByName0 (self->priv->dbus_obj, RYGEL_USER_CONFIG_RYGEL_SERVICE, (guint32) 0, &res, &_inner_error_);
-#line 1128 "rygel-user-config.c"
+#line 1143 "rygel-user-config.c"
 				if (_inner_error_ != NULL) {
 					_g_free0 (dest_path);
 					_g_object_unref0 (dest);
 					goto __catch3_g_error;
-					goto __finally3;
+					_g_free0 (dest_path);
+					_g_object_unref0 (dest);
+					_g_free0 (dest_dir);
+					g_critical ("file %s: line %d: unexpected error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
+					g_clear_error (&_inner_error_);
+					return;
 				}
 			}
 #line 312 "rygel-user-config.vala"
 			source_path = g_build_filename (DESKTOP_DIR, "rygel.desktop", NULL);
-#line 1138 "rygel-user-config.c"
+#line 1158 "rygel-user-config.c"
 			{
 #line 315 "rygel-user-config.vala"
 				g_file_make_symbolic_link (dest, source_path, NULL, &_inner_error_);
-#line 1142 "rygel-user-config.c"
+#line 1162 "rygel-user-config.c"
 				if (_inner_error_ != NULL) {
 					if (g_error_matches (_inner_error_, G_IO_ERROR, G_IO_ERROR_EXISTS)) {
 						goto __catch4_g_io_error_exists;
@@ -1162,29 +1182,40 @@ static void rygel_user_config_enable_upnp (RygelUserConfig* self, gboolean enabl
 				_g_free0 (dest_path);
 				_g_object_unref0 (dest);
 				goto __catch3_g_error;
-				goto __finally3;
+				_g_free0 (source_path);
+				_g_free0 (dest_path);
+				_g_object_unref0 (dest);
+				_g_free0 (dest_dir);
+				g_critical ("file %s: line %d: unexpected error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
+				g_clear_error (&_inner_error_);
+				return;
 			}
 #line 318 "rygel-user-config.vala"
 			rygel_user_config_set_bool (self, "general", RYGEL_USER_CONFIG_ENABLED_KEY, TRUE);
-#line 1170 "rygel-user-config.c"
+#line 1196 "rygel-user-config.c"
 			_g_free0 (source_path);
 		} else {
 #line 321 "rygel-user-config.vala"
 			if (self->priv->rygel_obj != NULL) {
 #line 322 "rygel-user-config.vala"
 				_dynamic_Shutdown1 (self->priv->rygel_obj, &_inner_error_);
-#line 1177 "rygel-user-config.c"
+#line 1203 "rygel-user-config.c"
 				if (_inner_error_ != NULL) {
 					_g_free0 (dest_path);
 					_g_object_unref0 (dest);
 					goto __catch3_g_error;
-					goto __finally3;
+					_g_free0 (dest_path);
+					_g_object_unref0 (dest);
+					_g_free0 (dest_dir);
+					g_critical ("file %s: line %d: unexpected error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
+					g_clear_error (&_inner_error_);
+					return;
 				}
 			}
 			{
 #line 327 "rygel-user-config.vala"
 				g_file_delete (dest, NULL, &_inner_error_);
-#line 1188 "rygel-user-config.c"
+#line 1219 "rygel-user-config.c"
 				if (_inner_error_ != NULL) {
 					if (g_error_matches (_inner_error_, G_IO_ERROR, G_IO_ERROR_NOT_FOUND)) {
 						goto __catch5_g_io_error_not_found;
@@ -1207,11 +1238,16 @@ static void rygel_user_config_enable_upnp (RygelUserConfig* self, gboolean enabl
 				_g_free0 (dest_path);
 				_g_object_unref0 (dest);
 				goto __catch3_g_error;
-				goto __finally3;
+				_g_free0 (dest_path);
+				_g_object_unref0 (dest);
+				_g_free0 (dest_dir);
+				g_critical ("file %s: line %d: unexpected error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
+				g_clear_error (&_inner_error_);
+				return;
 			}
 #line 330 "rygel-user-config.vala"
 			rygel_user_config_set_bool (self, "general", RYGEL_USER_CONFIG_ENABLED_KEY, FALSE);
-#line 1215 "rygel-user-config.c"
+#line 1251 "rygel-user-config.c"
 		}
 		_g_free0 (dest_path);
 		_g_object_unref0 (dest);
@@ -1229,15 +1265,15 @@ static void rygel_user_config_enable_upnp (RygelUserConfig* self, gboolean enabl
 			if (enable) {
 #line 334 "rygel-user-config.vala"
 				_tmp0_ = "start";
-#line 1233 "rygel-user-config.c"
+#line 1269 "rygel-user-config.c"
 			} else {
 #line 334 "rygel-user-config.vala"
 				_tmp0_ = "stop";
-#line 1237 "rygel-user-config.c"
+#line 1273 "rygel-user-config.c"
 			}
 #line 333 "rygel-user-config.vala"
 			g_warning ("rygel-user-config.vala:333: Failed to %s Rygel service: %s\n", _tmp0_, err->message);
-#line 1241 "rygel-user-config.c"
+#line 1277 "rygel-user-config.c"
 			_g_error_free0 (err);
 		}
 	}
@@ -1254,22 +1290,22 @@ static void rygel_user_config_enable_upnp (RygelUserConfig* self, gboolean enabl
 
 #line 339 "rygel-user-config.vala"
 static void rygel_user_config_ensure_dir_exists (RygelUserConfig* self, const char* dir_path, GError** error) {
-#line 1258 "rygel-user-config.c"
+#line 1294 "rygel-user-config.c"
 	GError * _inner_error_;
 	GFile* dir;
 #line 339 "rygel-user-config.vala"
 	g_return_if_fail (self != NULL);
 #line 339 "rygel-user-config.vala"
 	g_return_if_fail (dir_path != NULL);
-#line 1265 "rygel-user-config.c"
+#line 1301 "rygel-user-config.c"
 	_inner_error_ = NULL;
 #line 340 "rygel-user-config.vala"
 	dir = g_file_new_for_path (dir_path);
-#line 1269 "rygel-user-config.c"
+#line 1305 "rygel-user-config.c"
 	{
 #line 343 "rygel-user-config.vala"
 		g_file_make_directory (dir, NULL, &_inner_error_);
-#line 1273 "rygel-user-config.c"
+#line 1309 "rygel-user-config.c"
 		if (_inner_error_ != NULL) {
 			if (g_error_matches (_inner_error_, G_IO_ERROR, G_IO_ERROR_EXISTS)) {
 				goto __catch6_g_io_error_exists;

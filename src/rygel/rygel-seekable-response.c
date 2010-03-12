@@ -354,18 +354,20 @@ static gboolean rygel_seekable_response_real_run_co (RygelSeekableResponseRunDat
 		case 0:
 		{
 			{
-				g_file_read_async (data->self->priv->file, data->self->priv->priority, rygel_state_machine_get_cancellable ((RygelStateMachine*) data->self), rygel_seekable_response_run_ready, data);
 				data->_state_ = 6;
+				g_file_read_async (data->self->priv->file, data->self->priv->priority, rygel_state_machine_get_cancellable ((RygelStateMachine*) data->self), rygel_seekable_response_run_ready, data);
 				return FALSE;
 				case 6:
 				data->_tmp0_ = g_file_read_finish (data->self->priv->file, data->_res_, &data->_inner_error_);
 				if (data->_inner_error_ != NULL) {
 					goto __catch30_g_error;
-					goto __finally30;
+					g_critical ("file %s: line %d: unexpected error: %s (%s, %d)", __FILE__, __LINE__, data->_inner_error_->message, g_quark_to_string (data->_inner_error_->domain), data->_inner_error_->code);
+					g_clear_error (&data->_inner_error_);
+					return FALSE;
 				}
 #line 65 "rygel-seekable-response.vala"
 				data->self->priv->input_stream = (data->_tmp1_ = data->_tmp0_, _g_object_unref0 (data->self->priv->input_stream), data->_tmp1_);
-#line 369 "rygel-seekable-response.c"
+#line 371 "rygel-seekable-response.c"
 			}
 			goto __finally30;
 			__catch30_g_error:
@@ -375,11 +377,11 @@ static gboolean rygel_seekable_response_real_run_co (RygelSeekableResponseRunDat
 				{
 #line 68 "rygel-seekable-response.vala"
 					g_warning ("rygel-seekable-response.vala:68: Failed to read from URI: %s: %s\n", data->_tmp2_ = g_file_get_uri (data->self->priv->file), data->err->message);
-#line 379 "rygel-seekable-response.c"
+#line 381 "rygel-seekable-response.c"
 					_g_free0 (data->_tmp2_);
 #line 71 "rygel-seekable-response.vala"
 					rygel_http_response_end ((RygelHTTPResponse*) data->self, FALSE, (guint) SOUP_STATUS_NOT_FOUND);
-#line 383 "rygel-seekable-response.c"
+#line 385 "rygel-seekable-response.c"
 					_g_error_free0 (data->err);
 					{
 						if (data->_state_ == 0) {
@@ -399,13 +401,13 @@ static gboolean rygel_seekable_response_real_run_co (RygelSeekableResponseRunDat
 				g_clear_error (&data->_inner_error_);
 				return FALSE;
 			}
-			rygel_seekable_response_perform_seek (data->self, rygel_seekable_response_run_ready, data);
 			data->_state_ = 7;
+			rygel_seekable_response_perform_seek (data->self, rygel_seekable_response_run_ready, data);
 			return FALSE;
 			case 7:
 #line 76 "rygel-seekable-response.vala"
 			rygel_seekable_response_perform_seek_finish (data->self, data->_res_);
-#line 409 "rygel-seekable-response.c"
+#line 411 "rygel-seekable-response.c"
 		}
 		{
 			if (data->_state_ == 0) {
@@ -459,14 +461,16 @@ static gboolean rygel_seekable_response_perform_seek_co (RygelSeekableResponsePe
 		{
 #line 80 "rygel-seekable-response.vala"
 			if (data->self->priv->seek != NULL) {
-#line 463 "rygel-seekable-response.c"
+#line 465 "rygel-seekable-response.c"
 				{
 #line 82 "rygel-seekable-response.vala"
 					G_FILE_INPUT_STREAM_GET_CLASS (data->self->priv->input_stream)->seek (data->self->priv->input_stream, rygel_http_seek_get_start (data->self->priv->seek), G_SEEK_SET, rygel_state_machine_get_cancellable ((RygelStateMachine*) data->self), &data->_inner_error_);
-#line 467 "rygel-seekable-response.c"
+#line 469 "rygel-seekable-response.c"
 					if (data->_inner_error_ != NULL) {
 						goto __catch31_g_error;
-						goto __finally31;
+						g_critical ("file %s: line %d: unexpected error: %s (%s, %d)", __FILE__, __LINE__, data->_inner_error_->message, g_quark_to_string (data->_inner_error_->domain), data->_inner_error_->code);
+						g_clear_error (&data->_inner_error_);
+						return FALSE;
 					}
 				}
 				goto __finally31;
@@ -477,13 +481,13 @@ static gboolean rygel_seekable_response_perform_seek_co (RygelSeekableResponsePe
 					{
 #line 86 "rygel-seekable-response.vala"
 						g_warning ("rygel-seekable-response.vala:86: Failed to seek to %s-%s on URI %s: %s\n", data->_tmp0_ = g_strdup_printf ("%lli", rygel_http_seek_get_start (data->self->priv->seek)), data->_tmp1_ = g_strdup_printf ("%lli", rygel_http_seek_get_stop (data->self->priv->seek)), data->_tmp2_ = g_file_get_uri (data->self->priv->file), data->err->message);
-#line 481 "rygel-seekable-response.c"
+#line 485 "rygel-seekable-response.c"
 						_g_free0 (data->_tmp2_);
 						_g_free0 (data->_tmp1_);
 						_g_free0 (data->_tmp0_);
 #line 91 "rygel-seekable-response.vala"
 						rygel_http_response_end ((RygelHTTPResponse*) data->self, FALSE, (guint) SOUP_STATUS_REQUESTED_RANGE_NOT_SATISFIABLE);
-#line 487 "rygel-seekable-response.c"
+#line 491 "rygel-seekable-response.c"
 						_g_error_free0 (data->err);
 						{
 							if (data->_state_ == 0) {
@@ -504,13 +508,13 @@ static gboolean rygel_seekable_response_perform_seek_co (RygelSeekableResponsePe
 					return FALSE;
 				}
 			}
-			rygel_seekable_response_start_reading (data->self, rygel_seekable_response_perform_seek_ready, data);
 			data->_state_ = 8;
+			rygel_seekable_response_start_reading (data->self, rygel_seekable_response_perform_seek_ready, data);
 			return FALSE;
 			case 8:
 #line 97 "rygel-seekable-response.vala"
 			rygel_seekable_response_start_reading_finish (data->self, data->_res_);
-#line 514 "rygel-seekable-response.c"
+#line 518 "rygel-seekable-response.c"
 		}
 		{
 			if (data->_state_ == 0) {
@@ -563,19 +567,21 @@ static gboolean rygel_seekable_response_start_reading_co (RygelSeekableResponseS
 		case 0:
 		{
 			{
-				rygel_seekable_response_read_contents (data->self, rygel_seekable_response_start_reading_ready, data);
 				data->_state_ = 9;
+				rygel_seekable_response_read_contents (data->self, rygel_seekable_response_start_reading_ready, data);
 				return FALSE;
 				case 9:
 #line 102 "rygel-seekable-response.vala"
 				rygel_seekable_response_read_contents_finish (data->self, data->_res_, &data->_inner_error_);
-#line 573 "rygel-seekable-response.c"
+#line 577 "rygel-seekable-response.c"
 				if (data->_inner_error_ != NULL) {
 					if (g_error_matches (data->_inner_error_, G_IO_ERROR, G_IO_ERROR_CANCELLED)) {
 						goto __catch32_g_io_error_cancelled;
 					}
 					goto __catch32_g_error;
-					goto __finally32;
+					g_critical ("file %s: line %d: unexpected error: %s (%s, %d)", __FILE__, __LINE__, data->_inner_error_->message, g_quark_to_string (data->_inner_error_->domain), data->_inner_error_->code);
+					g_clear_error (&data->_inner_error_);
+					return FALSE;
 				}
 			}
 			goto __finally32;
@@ -595,11 +601,11 @@ static gboolean rygel_seekable_response_start_reading_co (RygelSeekableResponseS
 				{
 #line 106 "rygel-seekable-response.vala"
 					g_warning ("rygel-seekable-response.vala:106: Failed to read contents from URI: %s: %s\n", data->_tmp0_ = g_file_get_uri (data->self->priv->file), data->err->message);
-#line 599 "rygel-seekable-response.c"
+#line 605 "rygel-seekable-response.c"
 					_g_free0 (data->_tmp0_);
 #line 109 "rygel-seekable-response.vala"
 					rygel_http_response_end ((RygelHTTPResponse*) data->self, FALSE, (guint) SOUP_STATUS_NOT_FOUND);
-#line 603 "rygel-seekable-response.c"
+#line 609 "rygel-seekable-response.c"
 					_g_error_free0 (data->err);
 					{
 						if (data->_state_ == 0) {
@@ -619,13 +625,13 @@ static gboolean rygel_seekable_response_start_reading_co (RygelSeekableResponseS
 				g_clear_error (&data->_inner_error_);
 				return FALSE;
 			}
-			rygel_seekable_response_close_stream (data->self, rygel_seekable_response_start_reading_ready, data);
 			data->_state_ = 10;
+			rygel_seekable_response_close_stream (data->self, rygel_seekable_response_start_reading_ready, data);
 			return FALSE;
 			case 10:
 #line 114 "rygel-seekable-response.vala"
 			rygel_seekable_response_close_stream_finish (data->self, data->_res_);
-#line 629 "rygel-seekable-response.c"
+#line 635 "rygel-seekable-response.c"
 		}
 		{
 			if (data->_state_ == 0) {
@@ -642,15 +648,15 @@ static gboolean rygel_seekable_response_start_reading_co (RygelSeekableResponseS
 
 #line 117 "rygel-seekable-response.vala"
 static gsize rygel_seekable_response_bytes_to_read (RygelSeekableResponse* self) {
-#line 646 "rygel-seekable-response.c"
+#line 652 "rygel-seekable-response.c"
 	gsize result;
 #line 117 "rygel-seekable-response.vala"
 	g_return_val_if_fail (self != NULL, 0UL);
-#line 650 "rygel-seekable-response.c"
+#line 656 "rygel-seekable-response.c"
 	result = MIN (self->priv->total_length, RYGEL_SEEKABLE_RESPONSE_BUFFER_LENGTH);
 #line 118 "rygel-seekable-response.vala"
 	return result;
-#line 654 "rygel-seekable-response.c"
+#line 660 "rygel-seekable-response.c"
 }
 
 
@@ -690,36 +696,45 @@ static void rygel_seekable_response_read_contents_ready (GObject* source_object,
 
 #line 122 "rygel-seekable-response.vala"
 static gboolean _rygel_seekable_response_read_contents_co_gsource_func (gpointer self) {
-#line 694 "rygel-seekable-response.c"
+#line 700 "rygel-seekable-response.c"
 	return rygel_seekable_response_read_contents_co (self);
 }
 
 
+#line 129 "rygel-seekable-response.vala"
 static void _lambda1_ (SoupMessage* msg, Block2Data* _data2_) {
+#line 707 "rygel-seekable-response.c"
 	RygelSeekableResponse * self;
 	self = _data2_->self;
+#line 129 "rygel-seekable-response.vala"
 	g_return_if_fail (msg != NULL);
 #line 130 "rygel-seekable-response.vala"
 	_data2_->cb (_data2_->cb_target);
-#line 705 "rygel-seekable-response.c"
+#line 714 "rygel-seekable-response.c"
 }
 
 
+#line 129 "rygel-seekable-response.vala"
 static void __lambda1__soup_message_wrote_chunk (SoupMessage* _sender, gpointer self) {
+#line 720 "rygel-seekable-response.c"
 	_lambda1_ (_sender, self);
 }
 
 
+#line 133 "rygel-seekable-response.vala"
 static void _lambda2_ (Block2Data* _data2_) {
+#line 727 "rygel-seekable-response.c"
 	RygelSeekableResponse * self;
 	self = _data2_->self;
 #line 134 "rygel-seekable-response.vala"
 	_data2_->cb (_data2_->cb_target);
-#line 719 "rygel-seekable-response.c"
+#line 732 "rygel-seekable-response.c"
 }
 
 
+#line 133 "rygel-seekable-response.vala"
 static void __lambda2__g_cancellable_cancelled (GCancellable* _sender, gpointer self) {
+#line 738 "rygel-seekable-response.c"
 	_lambda2_ (self);
 }
 
@@ -751,8 +766,8 @@ static gboolean rygel_seekable_response_read_contents_co (RygelSeekableResponseR
 			data->_data2_ = g_slice_new0 (Block2Data);
 			data->_data2_->_ref_count_ = 1;
 			data->_data2_->self = g_object_ref (data->self);
-			g_input_stream_read_async ((GInputStream*) data->self->priv->input_stream, data->self->priv->buffer, rygel_seekable_response_bytes_to_read (data->self), data->self->priv->priority, rygel_state_machine_get_cancellable ((RygelStateMachine*) data->self), rygel_seekable_response_read_contents_ready, data);
 			data->_state_ = 11;
+			g_input_stream_read_async ((GInputStream*) data->self->priv->input_stream, data->self->priv->buffer, rygel_seekable_response_bytes_to_read (data->self), data->self->priv->priority, rygel_state_machine_get_cancellable ((RygelStateMachine*) data->self), rygel_seekable_response_read_contents_ready, data);
 			return FALSE;
 			case 11:
 			data->bytes_read = g_input_stream_read_finish ((GInputStream*) data->self->priv->input_stream, data->_res_, &data->_inner_error_);
@@ -777,7 +792,7 @@ static gboolean rygel_seekable_response_read_contents_co (RygelSeekableResponseR
 			if (rygel_state_machine_get_cancellable ((RygelStateMachine*) data->self) != NULL) {
 #line 133 "rygel-seekable-response.vala"
 				g_signal_connect_data (rygel_state_machine_get_cancellable ((RygelStateMachine*) data->self), "cancelled", (GCallback) __lambda2__g_cancellable_cancelled, block2_data_ref (data->_data2_), (GClosureNotify) block2_data_unref, 0);
-#line 781 "rygel-seekable-response.c"
+#line 796 "rygel-seekable-response.c"
 			}
 #line 138 "rygel-seekable-response.vala"
 			while (TRUE) {
@@ -785,19 +800,19 @@ static gboolean rygel_seekable_response_read_contents_co (RygelSeekableResponseR
 				if (!(data->bytes_read > 0)) {
 #line 138 "rygel-seekable-response.vala"
 					break;
-#line 789 "rygel-seekable-response.c"
+#line 804 "rygel-seekable-response.c"
 				}
 #line 139 "rygel-seekable-response.vala"
 				rygel_http_response_push_data ((RygelHTTPResponse*) data->self, data->self->priv->buffer, (gsize) data->bytes_read);
 #line 140 "rygel-seekable-response.vala"
 				data->self->priv->total_length = data->self->priv->total_length - ((gsize) data->bytes_read);
-#line 795 "rygel-seekable-response.c"
+#line 810 "rygel-seekable-response.c"
 				data->_state_ = 12;
 				return FALSE;
 				case 12:
 				;
-				g_input_stream_read_async ((GInputStream*) data->self->priv->input_stream, data->self->priv->buffer, rygel_seekable_response_bytes_to_read (data->self), data->self->priv->priority, rygel_state_machine_get_cancellable ((RygelStateMachine*) data->self), rygel_seekable_response_read_contents_ready, data);
 				data->_state_ = 13;
+				g_input_stream_read_async ((GInputStream*) data->self->priv->input_stream, data->self->priv->buffer, rygel_seekable_response_bytes_to_read (data->self), data->self->priv->priority, rygel_state_machine_get_cancellable ((RygelStateMachine*) data->self), rygel_seekable_response_read_contents_ready, data);
 				return FALSE;
 				case 13:
 				data->_tmp1_ = g_input_stream_read_finish ((GInputStream*) data->self->priv->input_stream, data->_res_, &data->_inner_error_);
@@ -817,7 +832,7 @@ static gboolean rygel_seekable_response_read_contents_co (RygelSeekableResponseR
 				}
 #line 146 "rygel-seekable-response.vala"
 				data->bytes_read = data->_tmp1_;
-#line 821 "rygel-seekable-response.c"
+#line 836 "rygel-seekable-response.c"
 			}
 			block2_data_unref (data->_data2_);
 		}
@@ -872,16 +887,18 @@ static gboolean rygel_seekable_response_close_stream_co (RygelSeekableResponseCl
 		case 0:
 		{
 			{
-				g_input_stream_close_async ((GInputStream*) data->self->priv->input_stream, data->self->priv->priority, rygel_state_machine_get_cancellable ((RygelStateMachine*) data->self), rygel_seekable_response_close_stream_ready, data);
 				data->_state_ = 14;
+				g_input_stream_close_async ((GInputStream*) data->self->priv->input_stream, data->self->priv->priority, rygel_state_machine_get_cancellable ((RygelStateMachine*) data->self), rygel_seekable_response_close_stream_ready, data);
 				return FALSE;
 				case 14:
 #line 156 "rygel-seekable-response.vala"
 				g_input_stream_close_finish ((GInputStream*) data->self->priv->input_stream, data->_res_, &data->_inner_error_);
-#line 882 "rygel-seekable-response.c"
+#line 897 "rygel-seekable-response.c"
 				if (data->_inner_error_ != NULL) {
 					goto __catch33_g_error;
-					goto __finally33;
+					g_critical ("file %s: line %d: unexpected error: %s (%s, %d)", __FILE__, __LINE__, data->_inner_error_->message, g_quark_to_string (data->_inner_error_->domain), data->_inner_error_->code);
+					g_clear_error (&data->_inner_error_);
+					return FALSE;
 				}
 			}
 			goto __finally33;
@@ -892,7 +909,7 @@ static gboolean rygel_seekable_response_close_stream_co (RygelSeekableResponseCl
 				{
 #line 159 "rygel-seekable-response.vala"
 					g_warning ("rygel-seekable-response.vala:159: Failed to close stream to URI %s: %s\n", data->_tmp0_ = g_file_get_uri (data->self->priv->file), data->err->message);
-#line 896 "rygel-seekable-response.c"
+#line 913 "rygel-seekable-response.c"
 					_g_free0 (data->_tmp0_);
 					_g_error_free0 (data->err);
 				}
@@ -905,7 +922,7 @@ static gboolean rygel_seekable_response_close_stream_co (RygelSeekableResponseCl
 			}
 #line 164 "rygel-seekable-response.vala"
 			rygel_http_response_end ((RygelHTTPResponse*) data->self, FALSE, (guint) SOUP_STATUS_NONE);
-#line 909 "rygel-seekable-response.c"
+#line 926 "rygel-seekable-response.c"
 		}
 		{
 			if (data->_state_ == 0) {
@@ -922,7 +939,7 @@ static gboolean rygel_seekable_response_close_stream_co (RygelSeekableResponseCl
 
 #line 167 "rygel-seekable-response.vala"
 static gint rygel_seekable_response_get_requested_priority (RygelSeekableResponse* self) {
-#line 926 "rygel-seekable-response.c"
+#line 943 "rygel-seekable-response.c"
 	gint result;
 	char* mode;
 	gboolean _tmp0_ = FALSE;
@@ -934,44 +951,44 @@ static gint rygel_seekable_response_get_requested_priority (RygelSeekableRespons
 	if (mode == NULL) {
 #line 170 "rygel-seekable-response.vala"
 		_tmp0_ = TRUE;
-#line 938 "rygel-seekable-response.c"
+#line 955 "rygel-seekable-response.c"
 	} else {
 #line 170 "rygel-seekable-response.vala"
 		_tmp0_ = _vala_strcmp0 (mode, "Interactive") == 0;
-#line 942 "rygel-seekable-response.c"
+#line 959 "rygel-seekable-response.c"
 	}
 #line 170 "rygel-seekable-response.vala"
 	if (_tmp0_) {
-#line 946 "rygel-seekable-response.c"
+#line 963 "rygel-seekable-response.c"
 		result = G_PRIORITY_DEFAULT;
 		_g_free0 (mode);
 #line 171 "rygel-seekable-response.vala"
 		return result;
-#line 951 "rygel-seekable-response.c"
+#line 968 "rygel-seekable-response.c"
 	} else {
 #line 172 "rygel-seekable-response.vala"
 		if (_vala_strcmp0 (mode, "Streaming") == 0) {
-#line 955 "rygel-seekable-response.c"
+#line 972 "rygel-seekable-response.c"
 			result = G_PRIORITY_HIGH;
 			_g_free0 (mode);
 #line 173 "rygel-seekable-response.vala"
 			return result;
-#line 960 "rygel-seekable-response.c"
+#line 977 "rygel-seekable-response.c"
 		} else {
 #line 174 "rygel-seekable-response.vala"
 			if (_vala_strcmp0 (mode, "Background") == 0) {
-#line 964 "rygel-seekable-response.c"
+#line 981 "rygel-seekable-response.c"
 				result = G_PRIORITY_LOW;
 				_g_free0 (mode);
 #line 175 "rygel-seekable-response.vala"
 				return result;
-#line 969 "rygel-seekable-response.c"
+#line 986 "rygel-seekable-response.c"
 			} else {
 				result = G_PRIORITY_DEFAULT;
 				_g_free0 (mode);
 #line 177 "rygel-seekable-response.vala"
 				return result;
-#line 975 "rygel-seekable-response.c"
+#line 992 "rygel-seekable-response.c"
 			}
 		}
 	}

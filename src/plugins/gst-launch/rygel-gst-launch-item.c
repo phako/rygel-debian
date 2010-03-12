@@ -135,12 +135,14 @@ static GstElement* rygel_gst_launch_item_real_create_stream_source (RygelMediaIt
 #line 136 "rygel-gst-launch-item.c"
 		if (_inner_error_ != NULL) {
 			goto __catch2_g_error;
-			goto __finally2;
+			g_critical ("file %s: line %d: unexpected error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
+			g_clear_error (&_inner_error_);
+			return NULL;
 		}
 		result = _tmp0_;
 #line 49 "rygel-gst-launch-item.vala"
 		return result;
-#line 144 "rygel-gst-launch-item.c"
+#line 146 "rygel-gst-launch-item.c"
 	}
 	goto __finally2;
 	__catch2_g_error:
@@ -151,12 +153,12 @@ static GstElement* rygel_gst_launch_item_real_create_stream_source (RygelMediaIt
 		{
 #line 51 "rygel-gst-launch-item.vala"
 			g_warning ("rygel-gst-launch-item.vala:51: parse launchline failed: %s", err->message);
-#line 155 "rygel-gst-launch-item.c"
+#line 157 "rygel-gst-launch-item.c"
 			result = NULL;
 			_g_error_free0 (err);
 #line 52 "rygel-gst-launch-item.vala"
 			return result;
-#line 160 "rygel-gst-launch-item.c"
+#line 162 "rygel-gst-launch-item.c"
 		}
 	}
 	__finally2:

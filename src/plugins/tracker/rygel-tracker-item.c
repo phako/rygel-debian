@@ -165,11 +165,12 @@ RygelTrackerItem* rygel_tracker_item_construct (GType object_type, const char* i
 #line 166 "rygel-tracker-item.c"
 	if (_inner_error_ != NULL) {
 		g_propagate_error (error, _inner_error_);
+		g_object_unref (self);
 		return NULL;
 	}
 #line 84 "rygel-tracker-item.vala"
 	rygel_media_item_add_uri ((RygelMediaItem*) self, _tmp4_ = _tmp3_, NULL);
-#line 173 "rygel-tracker-item.c"
+#line 174 "rygel-tracker-item.c"
 	_g_free0 (_tmp4_);
 	return self;
 }
@@ -177,7 +178,7 @@ RygelTrackerItem* rygel_tracker_item_construct (GType object_type, const char* i
 
 #line 87 "rygel-tracker-item.vala"
 char** rygel_tracker_item_get_metadata_keys (int* result_length1) {
-#line 181 "rygel-tracker-item.c"
+#line 182 "rygel-tracker-item.c"
 	char** result;
 	char** _tmp0_;
 	gint keys_size;
@@ -251,29 +252,29 @@ char** rygel_tracker_item_get_metadata_keys (int* result_length1) {
 	keys[RYGEL_TRACKER_ITEM_METADATA_VIDEO_WIDTH] = (_tmp21_ = g_strdup ("Video:Width"), _g_free0 (keys[RYGEL_TRACKER_ITEM_METADATA_VIDEO_WIDTH]), _tmp21_);
 #line 116 "rygel-tracker-item.vala"
 	keys[RYGEL_TRACKER_ITEM_METADATA_VIDEO_HEIGHT] = (_tmp22_ = g_strdup ("Video:Height"), _g_free0 (keys[RYGEL_TRACKER_ITEM_METADATA_VIDEO_HEIGHT]), _tmp22_);
-#line 255 "rygel-tracker-item.c"
+#line 256 "rygel-tracker-item.c"
 	result = (_tmp23_ = keys, *result_length1 = keys_length1, _tmp23_);
 #line 118 "rygel-tracker-item.vala"
 	return result;
-#line 259 "rygel-tracker-item.c"
+#line 260 "rygel-tracker-item.c"
 	keys = (_vala_array_free (keys, keys_length1, (GDestroyNotify) g_free), NULL);
 }
 
 
 #line 121 "rygel-tracker-item.vala"
 char* rygel_tracker_item_seconds_to_iso8601 (RygelTrackerItem* self, const char* seconds) {
-#line 266 "rygel-tracker-item.c"
+#line 267 "rygel-tracker-item.c"
 	char* result;
 	char* date;
 #line 121 "rygel-tracker-item.vala"
 	g_return_val_if_fail (self != NULL, NULL);
 #line 121 "rygel-tracker-item.vala"
 	g_return_val_if_fail (seconds != NULL, NULL);
-#line 273 "rygel-tracker-item.c"
+#line 274 "rygel-tracker-item.c"
 	date = NULL;
 #line 124 "rygel-tracker-item.vala"
 	if (_vala_strcmp0 (seconds, "") != 0) {
-#line 277 "rygel-tracker-item.c"
+#line 278 "rygel-tracker-item.c"
 		GTimeVal _tmp0_ = {0};
 		GTimeVal tv;
 		char* _tmp1_;
@@ -285,17 +286,17 @@ char* rygel_tracker_item_seconds_to_iso8601 (RygelTrackerItem* self, const char*
 		tv.tv_usec = (glong) 0;
 #line 130 "rygel-tracker-item.vala"
 		date = (_tmp1_ = g_time_val_to_iso8601 (&tv), _g_free0 (date), _tmp1_);
-#line 289 "rygel-tracker-item.c"
+#line 290 "rygel-tracker-item.c"
 	} else {
 		char* _tmp2_;
 #line 132 "rygel-tracker-item.vala"
 		date = (_tmp2_ = g_strdup (""), _g_free0 (date), _tmp2_);
-#line 294 "rygel-tracker-item.c"
+#line 295 "rygel-tracker-item.c"
 	}
 	result = date;
 #line 135 "rygel-tracker-item.vala"
 	return result;
-#line 299 "rygel-tracker-item.c"
+#line 300 "rygel-tracker-item.c"
 }
 
 

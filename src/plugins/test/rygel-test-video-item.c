@@ -130,12 +130,14 @@ static GstElement* rygel_test_video_item_real_create_stream_source (RygelMediaIt
 #line 131 "rygel-test-video-item.c"
 		if (_inner_error_ != NULL) {
 			goto __catch1_g_error;
-			goto __finally1;
+			g_critical ("file %s: line %d: unexpected error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
+			g_clear_error (&_inner_error_);
+			return NULL;
 		}
 		result = _tmp0_;
 #line 47 "rygel-test-video-item.vala"
 		return result;
-#line 139 "rygel-test-video-item.c"
+#line 141 "rygel-test-video-item.c"
 	}
 	goto __finally1;
 	__catch1_g_error:
@@ -146,12 +148,12 @@ static GstElement* rygel_test_video_item_real_create_stream_source (RygelMediaIt
 		{
 #line 49 "rygel-test-video-item.vala"
 			g_warning ("rygel-test-video-item.vala:49: Required plugin missing (%s)", err->message);
-#line 150 "rygel-test-video-item.c"
+#line 152 "rygel-test-video-item.c"
 			result = NULL;
 			_g_error_free0 (err);
 #line 50 "rygel-test-video-item.vala"
 			return result;
-#line 155 "rygel-test-video-item.c"
+#line 157 "rygel-test-video-item.c"
 		}
 	}
 	__finally1:

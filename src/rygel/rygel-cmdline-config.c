@@ -238,7 +238,7 @@ void rygel_cmdline_config_parse_args (char*** args, int* args_length1, GError** 
 		fprintf (stdout, "%s\n", PACKAGE_STRING);
 #line 240 "rygel-cmdline-config.c"
 		_inner_error_ = g_error_new_literal (RYGEL_CMDLINE_CONFIG_ERROR, RYGEL_CMDLINE_CONFIG_ERROR_VERSION_ONLY, "");
-		if (_inner_error_ != NULL) {
+		{
 			if ((_inner_error_->domain == RYGEL_CMDLINE_CONFIG_ERROR) || (_inner_error_->domain == G_OPTION_ERROR)) {
 				g_propagate_error (error, _inner_error_);
 				_g_free0 (parameter_string);
@@ -267,7 +267,7 @@ static gboolean rygel_cmdline_config_real_get_upnp_enabled (RygelConfiguration* 
 	self = (RygelCmdlineConfig*) base;
 	_inner_error_ = NULL;
 	_inner_error_ = g_error_new_literal (RYGEL_CONFIGURATION_ERROR, RYGEL_CONFIGURATION_ERROR_NO_VALUE_SET, "No value available");
-	if (_inner_error_ != NULL) {
+	{
 		g_propagate_error (error, _inner_error_);
 		return FALSE;
 	}
@@ -286,7 +286,7 @@ static char* rygel_cmdline_config_real_get_interface (RygelConfiguration* base, 
 	if (rygel_cmdline_config_iface == NULL) {
 #line 288 "rygel-cmdline-config.c"
 		_inner_error_ = g_error_new_literal (RYGEL_CONFIGURATION_ERROR, RYGEL_CONFIGURATION_ERROR_NO_VALUE_SET, "No value available");
-		if (_inner_error_ != NULL) {
+		{
 			g_propagate_error (error, _inner_error_);
 			return NULL;
 		}
@@ -310,7 +310,7 @@ static gint rygel_cmdline_config_real_get_port (RygelConfiguration* base, GError
 	if (rygel_cmdline_config_port == (-1)) {
 #line 312 "rygel-cmdline-config.c"
 		_inner_error_ = g_error_new_literal (RYGEL_CONFIGURATION_ERROR, RYGEL_CONFIGURATION_ERROR_NO_VALUE_SET, "No value available");
-		if (_inner_error_ != NULL) {
+		{
 			g_propagate_error (error, _inner_error_);
 			return 0;
 		}
@@ -334,7 +334,7 @@ static gboolean rygel_cmdline_config_real_get_transcoding (RygelConfiguration* b
 	if (!rygel_cmdline_config_no_transcoding) {
 #line 336 "rygel-cmdline-config.c"
 		_inner_error_ = g_error_new_literal (RYGEL_CONFIGURATION_ERROR, RYGEL_CONFIGURATION_ERROR_NO_VALUE_SET, "No value available");
-		if (_inner_error_ != NULL) {
+		{
 			g_propagate_error (error, _inner_error_);
 			return FALSE;
 		}
@@ -359,7 +359,7 @@ static gboolean rygel_cmdline_config_real_get_mp3_transcoder (RygelConfiguration
 	if (!rygel_cmdline_config_no_mp3_trans) {
 #line 361 "rygel-cmdline-config.c"
 		_inner_error_ = g_error_new_literal (RYGEL_CONFIGURATION_ERROR, RYGEL_CONFIGURATION_ERROR_NO_VALUE_SET, "No value available");
-		if (_inner_error_ != NULL) {
+		{
 			g_propagate_error (error, _inner_error_);
 			return FALSE;
 		}
@@ -384,7 +384,7 @@ static gboolean rygel_cmdline_config_real_get_mp2ts_transcoder (RygelConfigurati
 	if (!rygel_cmdline_config_no_mp2ts_trans) {
 #line 386 "rygel-cmdline-config.c"
 		_inner_error_ = g_error_new_literal (RYGEL_CONFIGURATION_ERROR, RYGEL_CONFIGURATION_ERROR_NO_VALUE_SET, "No value available");
-		if (_inner_error_ != NULL) {
+		{
 			g_propagate_error (error, _inner_error_);
 			return FALSE;
 		}
@@ -409,7 +409,7 @@ static gboolean rygel_cmdline_config_real_get_lpcm_transcoder (RygelConfiguratio
 	if (!rygel_cmdline_config_no_lpcm_trans) {
 #line 411 "rygel-cmdline-config.c"
 		_inner_error_ = g_error_new_literal (RYGEL_CONFIGURATION_ERROR, RYGEL_CONFIGURATION_ERROR_NO_VALUE_SET, "No value available");
-		if (_inner_error_ != NULL) {
+		{
 			g_propagate_error (error, _inner_error_);
 			return FALSE;
 		}
@@ -434,7 +434,7 @@ static RygelLogLevel rygel_cmdline_config_real_get_log_level (RygelConfiguration
 	if (rygel_cmdline_config_log_level == RYGEL_LOG_LEVEL_INVALID) {
 #line 436 "rygel-cmdline-config.c"
 		_inner_error_ = g_error_new_literal (RYGEL_CONFIGURATION_ERROR, RYGEL_CONFIGURATION_ERROR_NO_VALUE_SET, "No value available");
-		if (_inner_error_ != NULL) {
+		{
 			g_propagate_error (error, _inner_error_);
 			return 0;
 		}
@@ -496,7 +496,7 @@ static gboolean rygel_cmdline_config_real_get_enabled (RygelConfiguration* base,
 #line 497 "rygel-cmdline-config.c"
 	} else {
 		_inner_error_ = g_error_new_literal (RYGEL_CONFIGURATION_ERROR, RYGEL_CONFIGURATION_ERROR_NO_VALUE_SET, "No value available");
-		if (_inner_error_ != NULL) {
+		{
 			g_propagate_error (error, _inner_error_);
 			return FALSE;
 		}
@@ -586,7 +586,7 @@ static char* rygel_cmdline_config_real_get_title (RygelConfiguration* base, cons
 #line 587 "rygel-cmdline-config.c"
 	} else {
 		_inner_error_ = g_error_new_literal (RYGEL_CONFIGURATION_ERROR, RYGEL_CONFIGURATION_ERROR_NO_VALUE_SET, "No value available");
-		if (_inner_error_ != NULL) {
+		{
 			g_propagate_error (error, _inner_error_);
 			_g_free0 (title);
 			return NULL;
@@ -702,7 +702,7 @@ static char* rygel_cmdline_config_real_get_string (RygelConfiguration* base, con
 #line 703 "rygel-cmdline-config.c"
 	} else {
 		_inner_error_ = g_error_new_literal (RYGEL_CONFIGURATION_ERROR, RYGEL_CONFIGURATION_ERROR_NO_VALUE_SET, "No value available");
-		if (_inner_error_ != NULL) {
+		{
 			g_propagate_error (error, _inner_error_);
 			_g_free0 (value);
 			return NULL;
@@ -841,7 +841,7 @@ static GeeArrayList* rygel_cmdline_config_real_get_string_list (RygelConfigurati
 #line 842 "rygel-cmdline-config.c"
 	} else {
 		_inner_error_ = g_error_new_literal (RYGEL_CONFIGURATION_ERROR, RYGEL_CONFIGURATION_ERROR_NO_VALUE_SET, "No value available");
-		if (_inner_error_ != NULL) {
+		{
 			g_propagate_error (error, _inner_error_);
 			_g_object_unref0 (value);
 			return NULL;
@@ -975,7 +975,7 @@ static gint rygel_cmdline_config_real_get_int (RygelConfiguration* base, const c
 #line 976 "rygel-cmdline-config.c"
 	} else {
 		_inner_error_ = g_error_new_literal (RYGEL_CONFIGURATION_ERROR, RYGEL_CONFIGURATION_ERROR_NO_VALUE_SET, "No value available");
-		if (_inner_error_ != NULL) {
+		{
 			g_propagate_error (error, _inner_error_);
 			return 0;
 		}
@@ -1112,7 +1112,7 @@ static GeeArrayList* rygel_cmdline_config_real_get_int_list (RygelConfiguration*
 #line 1113 "rygel-cmdline-config.c"
 	} else {
 		_inner_error_ = g_error_new_literal (RYGEL_CONFIGURATION_ERROR, RYGEL_CONFIGURATION_ERROR_NO_VALUE_SET, "No value available");
-		if (_inner_error_ != NULL) {
+		{
 			g_propagate_error (error, _inner_error_);
 			_g_object_unref0 (value);
 			return NULL;
@@ -1122,22 +1122,22 @@ static GeeArrayList* rygel_cmdline_config_real_get_int_list (RygelConfiguration*
 }
 
 
-#line 927 "glib-2.0.vapi"
+#line 925 "glib-2.0.vapi"
 static gboolean string_to_bool (const char* self) {
 #line 1128 "rygel-cmdline-config.c"
 	gboolean result;
-#line 927 "glib-2.0.vapi"
+#line 925 "glib-2.0.vapi"
 	g_return_val_if_fail (self != NULL, FALSE);
-#line 928 "glib-2.0.vapi"
+#line 926 "glib-2.0.vapi"
 	if (_vala_strcmp0 (self, "true") == 0) {
 #line 1134 "rygel-cmdline-config.c"
 		result = TRUE;
-#line 929 "glib-2.0.vapi"
+#line 927 "glib-2.0.vapi"
 		return result;
 #line 1138 "rygel-cmdline-config.c"
 	} else {
 		result = FALSE;
-#line 931 "glib-2.0.vapi"
+#line 929 "glib-2.0.vapi"
 		return result;
 #line 1143 "rygel-cmdline-config.c"
 	}
@@ -1253,7 +1253,7 @@ static gboolean rygel_cmdline_config_real_get_bool (RygelConfiguration* base, co
 #line 1254 "rygel-cmdline-config.c"
 	} else {
 		_inner_error_ = g_error_new_literal (RYGEL_CONFIGURATION_ERROR, RYGEL_CONFIGURATION_ERROR_NO_VALUE_SET, "No value available");
-		if (_inner_error_ != NULL) {
+		{
 			g_propagate_error (error, _inner_error_);
 			return FALSE;
 		}

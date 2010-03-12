@@ -165,7 +165,9 @@ RygelTrackerKeywords* rygel_tracker_keywords_construct (GType object_type, const
 			if (_inner_error_->domain == DBUS_GERROR) {
 				goto __catch2_dbus_gerror;
 			}
-			goto __finally2;
+			g_critical ("file %s: line %d: unexpected error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
+			g_clear_error (&_inner_error_);
+			return NULL;
 		}
 	}
 	goto __finally2;
@@ -177,11 +179,11 @@ RygelTrackerKeywords* rygel_tracker_keywords_construct (GType object_type, const
 		{
 #line 48 "rygel-tracker-keywords.vala"
 			g_critical ("rygel-tracker-keywords.vala:48: Failed to create to Session bus: %s\n", _error_->message);
-#line 181 "rygel-tracker-keywords.c"
+#line 183 "rygel-tracker-keywords.c"
 			_g_error_free0 (_error_);
 #line 51 "rygel-tracker-keywords.vala"
 			return self;
-#line 185 "rygel-tracker-keywords.c"
+#line 187 "rygel-tracker-keywords.c"
 		}
 	}
 	__finally2:
@@ -192,7 +194,7 @@ RygelTrackerKeywords* rygel_tracker_keywords_construct (GType object_type, const
 	}
 #line 54 "rygel-tracker-keywords.vala"
 	rygel_tracker_keywords_fetch_keywords (self, NULL, NULL);
-#line 196 "rygel-tracker-keywords.c"
+#line 198 "rygel-tracker-keywords.c"
 	return self;
 }
 
@@ -201,7 +203,7 @@ RygelTrackerKeywords* rygel_tracker_keywords_construct (GType object_type, const
 RygelTrackerKeywords* rygel_tracker_keywords_new (const char* id, RygelMediaContainer* parent) {
 #line 41 "rygel-tracker-keywords.vala"
 	return rygel_tracker_keywords_construct (RYGEL_TYPE_TRACKER_KEYWORDS, id, parent);
-#line 205 "rygel-tracker-keywords.c"
+#line 207 "rygel-tracker-keywords.c"
 }
 
 
@@ -243,8 +245,8 @@ static gboolean rygel_tracker_keywords_fetch_keywords_co (RygelTrackerKeywordsFe
 		case 0:
 		{
 			{
-				rygel_tracker_keywords_iface_get_list (data->self->keywords, RYGEL_TRACKER_KEYWORDS_SERVICE, rygel_tracker_keywords_fetch_keywords_ready, data);
 				data->_state_ = 2;
+				rygel_tracker_keywords_iface_get_list (data->self->keywords, RYGEL_TRACKER_KEYWORDS_SERVICE, rygel_tracker_keywords_fetch_keywords_ready, data);
 				return FALSE;
 				case 2:
 				data->_tmp2_ = (data->_tmp3_ = rygel_tracker_keywords_iface_get_list_finish (data->self->keywords, data->_res_, &data->_tmp0_, &data->_tmp1_, &data->_inner_error_), data->_tmp2__length1 = data->_tmp0_, data->_tmp2__length2 = data->_tmp1_, data->_tmp3_);
@@ -252,11 +254,14 @@ static gboolean rygel_tracker_keywords_fetch_keywords_co (RygelTrackerKeywordsFe
 					if (data->_inner_error_->domain == DBUS_GERROR) {
 						goto __catch3_dbus_gerror;
 					}
-					goto __finally3;
+					data->keywords_list = (_vala_array_free (data->keywords_list, data->keywords_list_length1 * data->keywords_list_length2, (GDestroyNotify) g_free), NULL);
+					g_critical ("file %s: line %d: unexpected error: %s (%s, %d)", __FILE__, __LINE__, data->_inner_error_->message, g_quark_to_string (data->_inner_error_->domain), data->_inner_error_->code);
+					g_clear_error (&data->_inner_error_);
+					return FALSE;
 				}
 #line 64 "rygel-tracker-keywords.vala"
 				data->keywords_list = (data->_tmp4_ = data->_tmp2_, data->keywords_list = (_vala_array_free (data->keywords_list, data->keywords_list_length1 * data->keywords_list_length2, (GDestroyNotify) g_free), NULL), data->keywords_list_length1 = data->_tmp2__length1, data->keywords_list_length2 = data->_tmp2__length2, data->_tmp4_);
-#line 260 "rygel-tracker-keywords.c"
+#line 265 "rygel-tracker-keywords.c"
 			}
 			goto __finally3;
 			__catch3_dbus_gerror:
@@ -266,7 +271,7 @@ static gboolean rygel_tracker_keywords_fetch_keywords_co (RygelTrackerKeywordsFe
 				{
 #line 66 "rygel-tracker-keywords.vala"
 					g_critical ("rygel-tracker-keywords.vala:66: error getting all keywords: %s", data->_error_->message);
-#line 270 "rygel-tracker-keywords.c"
+#line 275 "rygel-tracker-keywords.c"
 					_g_error_free0 (data->_error_);
 					data->keywords_list = (_vala_array_free (data->keywords_list, data->keywords_list_length1 * data->keywords_list_length2, (GDestroyNotify) g_free), NULL);
 					{
@@ -298,7 +303,7 @@ static gboolean rygel_tracker_keywords_fetch_keywords_co (RygelTrackerKeywordsFe
 						if (!data->_tmp5_) {
 #line 72 "rygel-tracker-keywords.vala"
 							data->i++;
-#line 302 "rygel-tracker-keywords.c"
+#line 307 "rygel-tracker-keywords.c"
 						}
 #line 72 "rygel-tracker-keywords.vala"
 						data->_tmp5_ = FALSE;
@@ -306,7 +311,7 @@ static gboolean rygel_tracker_keywords_fetch_keywords_co (RygelTrackerKeywordsFe
 						if (!(data->i < data->keywords_list_length1)) {
 #line 72 "rygel-tracker-keywords.vala"
 							break;
-#line 310 "rygel-tracker-keywords.c"
+#line 315 "rygel-tracker-keywords.c"
 						}
 						data->keyword = g_strdup (data->keywords_list[(data->i * data->keywords_list_length2) + 0]);
 						data->_tmp6_ = NULL;
@@ -314,7 +319,7 @@ static gboolean rygel_tracker_keywords_fetch_keywords_co (RygelTrackerKeywordsFe
 						data->container = rygel_tracker_search_container_new (data->keyword, (RygelMediaContainer*) data->self, data->keyword, RYGEL_TRACKER_KEYWORDS_SERVICE, "", data->keywords, data->keywords_length1);
 #line 84 "rygel-tracker-keywords.vala"
 						rygel_simple_container_add_child ((RygelSimpleContainer*) data->self, (RygelMediaObject*) data->container);
-#line 318 "rygel-tracker-keywords.c"
+#line 323 "rygel-tracker-keywords.c"
 						_g_free0 (data->keyword);
 						data->keywords = (_vala_array_free (data->keywords, data->keywords_length1, (GDestroyNotify) g_free), NULL);
 						_g_object_unref0 (data->container);
@@ -323,7 +328,7 @@ static gboolean rygel_tracker_keywords_fetch_keywords_co (RygelTrackerKeywordsFe
 			}
 #line 87 "rygel-tracker-keywords.vala"
 			rygel_media_container_updated ((RygelMediaContainer*) data->self);
-#line 327 "rygel-tracker-keywords.c"
+#line 332 "rygel-tracker-keywords.c"
 			data->keywords_list = (_vala_array_free (data->keywords_list, data->keywords_list_length1 * data->keywords_list_length2, (GDestroyNotify) g_free), NULL);
 		}
 		{
@@ -341,17 +346,17 @@ static gboolean rygel_tracker_keywords_fetch_keywords_co (RygelTrackerKeywordsFe
 
 #line 90 "rygel-tracker-keywords.vala"
 static void rygel_tracker_keywords_create_proxies (RygelTrackerKeywords* self, GError** error) {
-#line 345 "rygel-tracker-keywords.c"
+#line 350 "rygel-tracker-keywords.c"
 	GError * _inner_error_;
 	DBusGConnection* connection;
 	RygelTrackerKeywordsIface* _tmp0_;
 #line 90 "rygel-tracker-keywords.vala"
 	g_return_if_fail (self != NULL);
-#line 351 "rygel-tracker-keywords.c"
+#line 356 "rygel-tracker-keywords.c"
 	_inner_error_ = NULL;
 #line 91 "rygel-tracker-keywords.vala"
 	connection = dbus_g_bus_get (DBUS_BUS_SESSION, &_inner_error_);
-#line 355 "rygel-tracker-keywords.c"
+#line 360 "rygel-tracker-keywords.c"
 	if (_inner_error_ != NULL) {
 		if (_inner_error_->domain == DBUS_GERROR) {
 			g_propagate_error (error, _inner_error_);
@@ -364,7 +369,7 @@ static void rygel_tracker_keywords_create_proxies (RygelTrackerKeywords* self, G
 	}
 #line 93 "rygel-tracker-keywords.vala"
 	self->keywords = (_tmp0_ = rygel_tracker_keywords_iface_dbus_proxy_new (connection, RYGEL_TRACKER_KEYWORDS_TRACKER_SERVICE, RYGEL_TRACKER_KEYWORDS_KEYWORDS_PATH), _g_object_unref0 (self->keywords), _tmp0_);
-#line 368 "rygel-tracker-keywords.c"
+#line 373 "rygel-tracker-keywords.c"
 	_dbus_g_connection_unref0 (connection);
 }
 

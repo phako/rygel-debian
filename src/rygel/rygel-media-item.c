@@ -395,11 +395,14 @@ void rygel_media_item_add_uri (RygelMediaItem* self, const char* uri, RygelThumb
 #line 396 "rygel-media-item.c"
 				if (_inner_error_ != NULL) {
 					goto __catch38_g_error;
-					goto __finally38;
+					_g_object_unref0 (thumbnailer);
+					g_critical ("file %s: line %d: unexpected error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
+					g_clear_error (&_inner_error_);
+					return;
 				}
 #line 124 "rygel-media-item.vala"
 				gee_abstract_collection_add ((GeeAbstractCollection*) self->thumbnails, thumb);
-#line 403 "rygel-media-item.c"
+#line 406 "rygel-media-item.c"
 				_rygel_icon_info_unref0 (thumb);
 			}
 			goto __finally38;
@@ -432,7 +435,7 @@ static gpointer _g_object_ref0 (gpointer self) {
 
 #line 129 "rygel-media-item.vala"
 gint rygel_media_item_compare_transcoders (RygelMediaItem* self, void* a, void* b) {
-#line 436 "rygel-media-item.c"
+#line 439 "rygel-media-item.c"
 	gint result;
 	RygelTranscoder* transcoder1;
 	RygelTranscoder* transcoder2;
@@ -442,32 +445,32 @@ gint rygel_media_item_compare_transcoders (RygelMediaItem* self, void* a, void* 
 	transcoder1 = _g_object_ref0 (RYGEL_TRANSCODER (a));
 #line 131 "rygel-media-item.vala"
 	transcoder2 = _g_object_ref0 (RYGEL_TRANSCODER (b));
-#line 446 "rygel-media-item.c"
+#line 449 "rygel-media-item.c"
 	result = ((gint) rygel_transcoder_get_distance (transcoder1, self)) - ((gint) rygel_transcoder_get_distance (transcoder2, self));
 	_g_object_unref0 (transcoder1);
 	_g_object_unref0 (transcoder2);
 #line 133 "rygel-media-item.vala"
 	return result;
-#line 452 "rygel-media-item.c"
+#line 455 "rygel-media-item.c"
 }
 
 
 #line 137 "rygel-media-item.vala"
 void rygel_media_item_add_resources (RygelMediaItem* self, GUPnPDIDLLiteItem* didl_item, gboolean allow_internal, GError** error) {
-#line 458 "rygel-media-item.c"
+#line 461 "rygel-media-item.c"
 	GError * _inner_error_;
 #line 137 "rygel-media-item.vala"
 	g_return_if_fail (self != NULL);
 #line 137 "rygel-media-item.vala"
 	g_return_if_fail (didl_item != NULL);
-#line 464 "rygel-media-item.c"
+#line 467 "rygel-media-item.c"
 	_inner_error_ = NULL;
 	{
 		GeeIterator* _uri_it;
 		_uri_it = gee_abstract_collection_iterator ((GeeAbstractCollection*) ((RygelMediaObject*) self)->uris);
 #line 140 "rygel-media-item.vala"
 		while (TRUE) {
-#line 471 "rygel-media-item.c"
+#line 474 "rygel-media-item.c"
 			char* uri;
 			char* protocol;
 			gboolean _tmp0_ = FALSE;
@@ -475,13 +478,13 @@ void rygel_media_item_add_resources (RygelMediaItem* self, GUPnPDIDLLiteItem* di
 			if (!gee_iterator_next (_uri_it)) {
 #line 140 "rygel-media-item.vala"
 				break;
-#line 479 "rygel-media-item.c"
+#line 482 "rygel-media-item.c"
 			}
 #line 140 "rygel-media-item.vala"
 			uri = (char*) gee_iterator_get (_uri_it);
 #line 141 "rygel-media-item.vala"
 			protocol = rygel_media_item_get_protocol_for_uri (self, uri, &_inner_error_);
-#line 485 "rygel-media-item.c"
+#line 488 "rygel-media-item.c"
 			if (_inner_error_ != NULL) {
 				g_propagate_error (error, _inner_error_);
 				_g_free0 (uri);
@@ -492,19 +495,19 @@ void rygel_media_item_add_resources (RygelMediaItem* self, GUPnPDIDLLiteItem* di
 			if (allow_internal) {
 #line 143 "rygel-media-item.vala"
 				_tmp0_ = TRUE;
-#line 496 "rygel-media-item.c"
+#line 499 "rygel-media-item.c"
 			} else {
 #line 143 "rygel-media-item.vala"
 				_tmp0_ = _vala_strcmp0 (protocol, "internal") != 0;
-#line 500 "rygel-media-item.c"
+#line 503 "rygel-media-item.c"
 			}
 #line 143 "rygel-media-item.vala"
 			if (_tmp0_) {
-#line 504 "rygel-media-item.c"
+#line 507 "rygel-media-item.c"
 				GUPnPDIDLLiteResource* _tmp1_;
 #line 144 "rygel-media-item.vala"
 				_tmp1_ = rygel_media_item_add_resource (self, didl_item, uri, protocol, &_inner_error_);
-#line 508 "rygel-media-item.c"
+#line 511 "rygel-media-item.c"
 				if (_inner_error_ != NULL) {
 					g_propagate_error (error, _inner_error_);
 					_g_free0 (uri);
@@ -524,7 +527,7 @@ void rygel_media_item_add_resources (RygelMediaItem* self, GUPnPDIDLLiteItem* di
 		_thumbnail_it = gee_abstract_collection_iterator ((GeeAbstractCollection*) self->thumbnails);
 #line 148 "rygel-media-item.vala"
 		while (TRUE) {
-#line 528 "rygel-media-item.c"
+#line 531 "rygel-media-item.c"
 			RygelThumbnail* thumbnail;
 			char* protocol;
 			gboolean _tmp2_ = FALSE;
@@ -532,13 +535,13 @@ void rygel_media_item_add_resources (RygelMediaItem* self, GUPnPDIDLLiteItem* di
 			if (!gee_iterator_next (_thumbnail_it)) {
 #line 148 "rygel-media-item.vala"
 				break;
-#line 536 "rygel-media-item.c"
+#line 539 "rygel-media-item.c"
 			}
 #line 148 "rygel-media-item.vala"
 			thumbnail = (RygelThumbnail*) gee_iterator_get (_thumbnail_it);
 #line 149 "rygel-media-item.vala"
 			protocol = rygel_media_item_get_protocol_for_uri (self, ((RygelIconInfo*) thumbnail)->uri, &_inner_error_);
-#line 542 "rygel-media-item.c"
+#line 545 "rygel-media-item.c"
 			if (_inner_error_ != NULL) {
 				g_propagate_error (error, _inner_error_);
 				_rygel_icon_info_unref0 (thumbnail);
@@ -549,19 +552,19 @@ void rygel_media_item_add_resources (RygelMediaItem* self, GUPnPDIDLLiteItem* di
 			if (allow_internal) {
 #line 151 "rygel-media-item.vala"
 				_tmp2_ = TRUE;
-#line 553 "rygel-media-item.c"
+#line 556 "rygel-media-item.c"
 			} else {
 #line 151 "rygel-media-item.vala"
 				_tmp2_ = _vala_strcmp0 (protocol, "internal") != 0;
-#line 557 "rygel-media-item.c"
+#line 560 "rygel-media-item.c"
 			}
 #line 151 "rygel-media-item.vala"
 			if (_tmp2_) {
-#line 561 "rygel-media-item.c"
+#line 564 "rygel-media-item.c"
 				GUPnPDIDLLiteResource* _tmp3_;
 #line 152 "rygel-media-item.vala"
 				_tmp3_ = rygel_thumbnail_add_resource (thumbnail, didl_item, protocol);
-#line 565 "rygel-media-item.c"
+#line 568 "rygel-media-item.c"
 				_g_object_unref0 (_tmp3_);
 			}
 			_rygel_icon_info_unref0 (thumbnail);
@@ -574,7 +577,7 @@ void rygel_media_item_add_resources (RygelMediaItem* self, GUPnPDIDLLiteItem* di
 
 #line 157 "rygel-media-item.vala"
 GUPnPDIDLLiteResource* rygel_media_item_add_resource (RygelMediaItem* self, GUPnPDIDLLiteItem* didl_item, const char* uri, const char* protocol, GError** error) {
-#line 578 "rygel-media-item.c"
+#line 581 "rygel-media-item.c"
 	GUPnPDIDLLiteResource* result;
 	GUPnPDIDLLiteResource* res;
 	GUPnPProtocolInfo* _tmp0_;
@@ -590,7 +593,7 @@ GUPnPDIDLLiteResource* rygel_media_item_add_resource (RygelMediaItem* self, GUPn
 	if (uri != NULL) {
 #line 164 "rygel-media-item.vala"
 		gupnp_didl_lite_resource_set_uri (res, uri);
-#line 594 "rygel-media-item.c"
+#line 597 "rygel-media-item.c"
 	}
 #line 167 "rygel-media-item.vala"
 	gupnp_didl_lite_resource_set_size (res, self->size);
@@ -612,18 +615,18 @@ GUPnPDIDLLiteResource* rygel_media_item_add_resource (RygelMediaItem* self, GUPn
 	gupnp_didl_lite_resource_set_color_depth (res, self->color_depth);
 #line 180 "rygel-media-item.vala"
 	gupnp_didl_lite_resource_set_protocol_info (res, _tmp0_ = rygel_media_item_get_protocol_info (self, uri, protocol));
-#line 616 "rygel-media-item.c"
+#line 619 "rygel-media-item.c"
 	_g_object_unref0 (_tmp0_);
 	result = res;
 #line 182 "rygel-media-item.vala"
 	return result;
-#line 621 "rygel-media-item.c"
+#line 624 "rygel-media-item.c"
 }
 
 
 #line 185 "rygel-media-item.vala"
 static GUPnPProtocolInfo* rygel_media_item_get_protocol_info (RygelMediaItem* self, const char* uri, const char* protocol) {
-#line 627 "rygel-media-item.c"
+#line 630 "rygel-media-item.c"
 	GUPnPProtocolInfo* result;
 	GUPnPProtocolInfo* protocol_info;
 #line 185 "rygel-media-item.vala"
@@ -642,11 +645,11 @@ static GUPnPProtocolInfo* rygel_media_item_get_protocol_info (RygelMediaItem* se
 	if (g_str_has_prefix (((RygelMediaObject*) self)->upnp_class, RYGEL_MEDIA_ITEM_IMAGE_CLASS)) {
 #line 194 "rygel-media-item.vala"
 		gupnp_protocol_info_set_dlna_flags (protocol_info, gupnp_protocol_info_get_dlna_flags (protocol_info) | GUPNP_DLNA_FLAGS_INTERACTIVE_TRANSFER_MODE);
-#line 646 "rygel-media-item.c"
+#line 649 "rygel-media-item.c"
 	} else {
 #line 196 "rygel-media-item.vala"
 		gupnp_protocol_info_set_dlna_flags (protocol_info, gupnp_protocol_info_get_dlna_flags (protocol_info) | GUPNP_DLNA_FLAGS_STREAMING_TRANSFER_MODE);
-#line 650 "rygel-media-item.c"
+#line 653 "rygel-media-item.c"
 	}
 #line 199 "rygel-media-item.vala"
 	if (!rygel_media_item_should_stream (self)) {
@@ -654,18 +657,18 @@ static GUPnPProtocolInfo* rygel_media_item_get_protocol_info (RygelMediaItem* se
 		gupnp_protocol_info_set_dlna_operation (protocol_info, GUPNP_DLNA_OPERATION_RANGE);
 #line 201 "rygel-media-item.vala"
 		gupnp_protocol_info_set_dlna_flags (protocol_info, gupnp_protocol_info_get_dlna_flags (protocol_info) | GUPNP_DLNA_FLAGS_BACKGROUND_TRANSFER_MODE);
-#line 658 "rygel-media-item.c"
+#line 661 "rygel-media-item.c"
 	}
 	result = protocol_info;
 #line 204 "rygel-media-item.vala"
 	return result;
-#line 663 "rygel-media-item.c"
+#line 666 "rygel-media-item.c"
 }
 
 
 #line 207 "rygel-media-item.vala"
 static char* rygel_media_item_get_protocol_for_uri (RygelMediaItem* self, const char* uri, GError** error) {
-#line 669 "rygel-media-item.c"
+#line 672 "rygel-media-item.c"
 	char* result;
 	GError * _inner_error_;
 	char* scheme;
@@ -673,15 +676,15 @@ static char* rygel_media_item_get_protocol_for_uri (RygelMediaItem* self, const 
 	g_return_val_if_fail (self != NULL, NULL);
 #line 207 "rygel-media-item.vala"
 	g_return_val_if_fail (uri != NULL, NULL);
-#line 677 "rygel-media-item.c"
+#line 680 "rygel-media-item.c"
 	_inner_error_ = NULL;
 #line 208 "rygel-media-item.vala"
 	scheme = g_uri_parse_scheme (uri);
 #line 209 "rygel-media-item.vala"
 	if (scheme == NULL) {
-#line 683 "rygel-media-item.c"
+#line 686 "rygel-media-item.c"
 		_inner_error_ = g_error_new (RYGEL_MEDIA_ITEM_ERROR, RYGEL_MEDIA_ITEM_ERROR_BAD_URI, "Bad URI: %s", uri);
-		if (_inner_error_ != NULL) {
+		{
 			g_propagate_error (error, _inner_error_);
 			_g_free0 (scheme);
 			return NULL;
@@ -689,38 +692,38 @@ static char* rygel_media_item_get_protocol_for_uri (RygelMediaItem* self, const 
 	}
 #line 213 "rygel-media-item.vala"
 	if (_vala_strcmp0 (scheme, "http") == 0) {
-#line 693 "rygel-media-item.c"
+#line 696 "rygel-media-item.c"
 		result = g_strdup ("http-get");
 		_g_free0 (scheme);
 #line 214 "rygel-media-item.vala"
 		return result;
-#line 698 "rygel-media-item.c"
+#line 701 "rygel-media-item.c"
 	} else {
 #line 215 "rygel-media-item.vala"
 		if (_vala_strcmp0 (scheme, "file") == 0) {
-#line 702 "rygel-media-item.c"
+#line 705 "rygel-media-item.c"
 			result = g_strdup ("internal");
 			_g_free0 (scheme);
 #line 216 "rygel-media-item.vala"
 			return result;
-#line 707 "rygel-media-item.c"
+#line 710 "rygel-media-item.c"
 		} else {
 #line 217 "rygel-media-item.vala"
 			if (_vala_strcmp0 (scheme, "rtsp") == 0) {
-#line 711 "rygel-media-item.c"
+#line 714 "rygel-media-item.c"
 				result = g_strdup ("rtsp-rtp-udp");
 				_g_free0 (scheme);
 #line 219 "rygel-media-item.vala"
 				return result;
-#line 716 "rygel-media-item.c"
+#line 719 "rygel-media-item.c"
 			} else {
 #line 222 "rygel-media-item.vala"
 				g_warning ("rygel-media-item.vala:222: Failed to probe protocol for URI %s. Assuming '%s'", uri, scheme);
-#line 720 "rygel-media-item.c"
+#line 723 "rygel-media-item.c"
 				result = scheme;
 #line 226 "rygel-media-item.vala"
 				return result;
-#line 724 "rygel-media-item.c"
+#line 727 "rygel-media-item.c"
 			}
 		}
 	}

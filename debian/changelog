@@ -1,3 +1,11 @@
+rygel (0.4.12-1) UNRELEASED; urgency=low
+
+  * Add recommends on gstreamer0.10-ffmpeg for transcoding support.
+  * Imported Upstream version 0.4.12
+  * Drop 0003-Fix-rygel-desktop-file.patch: merged upstream.
+
+ -- Andreas Henriksson <andreas@fatal.se>  Fri, 12 Mar 2010 14:03:17 +0100
+
 rygel (0.4.10-2) unstable; urgency=low
 
   * Bump Standards-Version to 3.8.4

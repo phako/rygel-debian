@@ -1,4 +1,4 @@
-rygel (0.4.12-1) UNRELEASED; urgency=low
+rygel (0.4.12-1) unstable; urgency=low
 
   * Add recommends on gstreamer0.10-ffmpeg for transcoding support.
   * Imported Upstream version 0.4.12

@@ -1,7 +1,7 @@
-From 4a2be9d57301c643ed536f22deaaec7086f08bd2 Mon Sep 17 00:00:00 2001
+From c79a3dc727f86a2097175d982e1f7bef64fdc92a Mon Sep 17 00:00:00 2001
 From: Andreas Henriksson <andreas@fatal.se>
 Date: Tue, 19 Jan 2010 10:25:00 +0000
-Subject: [PATCH 2/3] enable rygel by default in maemo config as well.
+Subject: [PATCH 2/2] enable rygel by default in maemo config as well.
 
 ---
  data/rygel-maemo.conf |    2 +-

@@ -1,3 +1,11 @@
+rygel (0.4.12-2) unstable; urgency=low
+
+  * Disable rygel-tracker for now. (Closes: #577206)
+    (Will likely not be re-enabled until rygel 0.6.x,
+     which supports tracker 0.8, is released.)
+
+ -- Andreas Henriksson <andreas@fatal.se>  Sat, 17 Apr 2010 14:05:31 +0200
+
 rygel (0.4.12-1) unstable; urgency=low
 
   * Add recommends on gstreamer0.10-ffmpeg for transcoding support.

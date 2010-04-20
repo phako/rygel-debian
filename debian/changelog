@@ -1,3 +1,11 @@
+rygel (0.5.2-1) experimental; urgency=low
+
+  * Imported Upstream version 0.5.2
+  * Bump build-dependency versions according to configure.ac
+  * Re-enable rygel-tracker.
+
+ -- Andreas Henriksson <andreas@fatal.se>  Tue, 20 Apr 2010 20:18:36 +0200
+
 rygel (0.4.12-2) unstable; urgency=low
 
   * Disable rygel-tracker for now. (Closes: #577206)

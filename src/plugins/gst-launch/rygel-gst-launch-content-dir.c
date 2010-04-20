@@ -83,7 +83,7 @@ RygelGstLaunchContentDir* rygel_gst_launch_content_dir_construct (GType object_t
 static RygelMediaContainer* rygel_gst_launch_content_dir_real_create_root_container (RygelContentDirectory* base) {
 #line 85 "rygel-gst-launch-content-dir.c"
 	RygelGstLaunchContentDir * self;
-	RygelMediaContainer* result;
+	RygelMediaContainer* result = NULL;
 	GUPnPRootDevice* _tmp1_;
 	GUPnPRootDevice* _tmp0_ = NULL;
 	char* _tmp2_;
@@ -130,12 +130,14 @@ static void rygel_gst_launch_content_dir_instance_init (RygelGstLaunchContentDir
 
 
 GType rygel_gst_launch_content_dir_get_type (void) {
-	static GType rygel_gst_launch_content_dir_type_id = 0;
-	if (rygel_gst_launch_content_dir_type_id == 0) {
+	static volatile gsize rygel_gst_launch_content_dir_type_id__volatile = 0;
+	if (g_once_init_enter (&rygel_gst_launch_content_dir_type_id__volatile)) {
 		static const GTypeInfo g_define_type_info = { sizeof (RygelGstLaunchContentDirClass), (GBaseInitFunc) NULL, (GBaseFinalizeFunc) NULL, (GClassInitFunc) rygel_gst_launch_content_dir_class_init, (GClassFinalizeFunc) NULL, NULL, sizeof (RygelGstLaunchContentDir), 0, (GInstanceInitFunc) rygel_gst_launch_content_dir_instance_init, NULL };
+		GType rygel_gst_launch_content_dir_type_id;
 		rygel_gst_launch_content_dir_type_id = g_type_register_static (RYGEL_TYPE_CONTENT_DIRECTORY, "RygelGstLaunchContentDir", &g_define_type_info, 0);
+		g_once_init_leave (&rygel_gst_launch_content_dir_type_id__volatile, rygel_gst_launch_content_dir_type_id);
 	}
-	return rygel_gst_launch_content_dir_type_id;
+	return rygel_gst_launch_content_dir_type_id__volatile;
 }
 
 

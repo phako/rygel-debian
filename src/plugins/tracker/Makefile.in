@@ -37,12 +37,20 @@ host_triplet = @host@
 subdir = src/plugins/tracker
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in \
 	librygel_media_tracker_la_vala.stamp rygel-media-tracker.c \
-	rygel-tracker-image-item.c rygel-tracker-interfaces.c \
-	rygel-tracker-item.c rygel-tracker-keywords.c \
-	rygel-tracker-metadata-values.c rygel-tracker-music-item.c \
+	rygel-tracker-category-all-container.c \
+	rygel-tracker-category-container.c \
+	rygel-tracker-insertion-query.c rygel-tracker-interfaces.c \
+	rygel-tracker-item-creation.c rygel-tracker-item-factory.c \
+	rygel-tracker-metadata-values.c \
+	rygel-tracker-music-item-factory.c rygel-tracker-music.c \
+	rygel-tracker-picture-item-factory.c rygel-tracker-pictures.c \
 	rygel-tracker-plugin-factory.c rygel-tracker-plugin.c \
-	rygel-tracker-root-container.c \
-	rygel-tracker-search-container.c rygel-tracker-video-item.c
+	rygel-tracker-query-triplet.c rygel-tracker-query-triplets.c \
+	rygel-tracker-query.c rygel-tracker-root-container.c \
+	rygel-tracker-search-container.c \
+	rygel-tracker-selection-query.c rygel-tracker-tags.c \
+	rygel-tracker-video-item-factory.c rygel-tracker-videos.c \
+	rygel-tracker-years.c
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/libtool.m4 \
 	$(top_srcdir)/m4/ltoptions.m4 $(top_srcdir)/m4/ltsugar.m4 \
@@ -83,10 +91,18 @@ librygel_media_tracker_la_DEPENDENCIES = $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_librygel_media_tracker_la_OBJECTS = rygel-media-tracker.lo \
 	rygel-tracker-root-container.lo \
-	rygel-tracker-metadata-values.lo rygel-tracker-keywords.lo \
-	rygel-tracker-search-container.lo rygel-tracker-item.lo \
-	rygel-tracker-video-item.lo rygel-tracker-music-item.lo \
-	rygel-tracker-image-item.lo rygel-tracker-plugin.lo \
+	rygel-tracker-category-container.lo rygel-tracker-music.lo \
+	rygel-tracker-videos.lo rygel-tracker-pictures.lo \
+	rygel-tracker-metadata-values.lo rygel-tracker-tags.lo \
+	rygel-tracker-years.lo rygel-tracker-search-container.lo \
+	rygel-tracker-category-all-container.lo rygel-tracker-query.lo \
+	rygel-tracker-selection-query.lo \
+	rygel-tracker-insertion-query.lo \
+	rygel-tracker-query-triplet.lo rygel-tracker-query-triplets.lo \
+	rygel-tracker-item-factory.lo rygel-tracker-item-creation.lo \
+	rygel-tracker-video-item-factory.lo \
+	rygel-tracker-music-item-factory.lo \
+	rygel-tracker-picture-item-factory.lo rygel-tracker-plugin.lo \
 	rygel-tracker-plugin-factory.lo rygel-tracker-interfaces.lo
 librygel_media_tracker_la_OBJECTS =  \
 	$(am_librygel_media_tracker_la_OBJECTS)
@@ -304,13 +320,25 @@ AM_CFLAGS = $(LIBGUPNP_CFLAGS) \
 librygel_media_tracker_la_SOURCES = \
 				    rygel-media-tracker.vala \
 				    rygel-tracker-root-container.vala \
+				    rygel-tracker-category-container.vala \
+				    rygel-tracker-music.vala \
+				    rygel-tracker-videos.vala \
+				    rygel-tracker-pictures.vala \
 				    rygel-tracker-metadata-values.vala \
-				    rygel-tracker-keywords.vala \
+				    rygel-tracker-tags.vala \
+				    rygel-tracker-years.vala \
 				    rygel-tracker-search-container.vala \
-				    rygel-tracker-item.vala \
-				    rygel-tracker-video-item.vala \
-				    rygel-tracker-music-item.vala \
-				    rygel-tracker-image-item.vala \
+				    rygel-tracker-category-all-container.vala \
+				    rygel-tracker-query.vala \
+				    rygel-tracker-selection-query.vala \
+				    rygel-tracker-insertion-query.vala \
+				    rygel-tracker-query-triplet.vala \
+				    rygel-tracker-query-triplets.vala \
+				    rygel-tracker-item-factory.vala \
+				    rygel-tracker-item-creation.vala \
+				    rygel-tracker-video-item-factory.vala \
+				    rygel-tracker-music-item-factory.vala \
+				    rygel-tracker-picture-item-factory.vala \
 				    rygel-tracker-plugin.vala \
 				    rygel-tracker-plugin-factory.vala \
 				    rygel-tracker-interfaces.vala
@@ -404,17 +432,29 @@ distclean-compile:
 	-rm -f *.tab.c
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-media-tracker.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-tracker-image-item.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-tracker-category-all-container.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-tracker-category-container.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-tracker-insertion-query.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-tracker-interfaces.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-tracker-item.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-tracker-keywords.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-tracker-item-creation.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-tracker-item-factory.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-tracker-metadata-values.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-tracker-music-item.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-tracker-music-item-factory.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-tracker-music.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-tracker-picture-item-factory.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-tracker-pictures.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-tracker-plugin-factory.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-tracker-plugin.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-tracker-query-triplet.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-tracker-query-triplets.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-tracker-query.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-tracker-root-container.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-tracker-search-container.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-tracker-video-item.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-tracker-selection-query.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-tracker-tags.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-tracker-video-item-factory.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-tracker-videos.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-tracker-years.Plo@am__quote@
 
 .c.o:
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
@@ -449,12 +489,37 @@ $(srcdir)/rygel-tracker-root-container.c: $(srcdir)/librygel_media_tracker_la_va
 	  rm -f $(srcdir)/librygel_media_tracker_la_vala.stamp; \
 	  $(am__cd) $(srcdir) && $(MAKE) $(AM_MAKEFLAGS) librygel_media_tracker_la_vala.stamp; \
 	fi
+$(srcdir)/rygel-tracker-category-container.c: $(srcdir)/librygel_media_tracker_la_vala.stamp
+	@if test -f $@; then :; else \
+	  rm -f $(srcdir)/librygel_media_tracker_la_vala.stamp; \
+	  $(am__cd) $(srcdir) && $(MAKE) $(AM_MAKEFLAGS) librygel_media_tracker_la_vala.stamp; \
+	fi
+$(srcdir)/rygel-tracker-music.c: $(srcdir)/librygel_media_tracker_la_vala.stamp
+	@if test -f $@; then :; else \
+	  rm -f $(srcdir)/librygel_media_tracker_la_vala.stamp; \
+	  $(am__cd) $(srcdir) && $(MAKE) $(AM_MAKEFLAGS) librygel_media_tracker_la_vala.stamp; \
+	fi
+$(srcdir)/rygel-tracker-videos.c: $(srcdir)/librygel_media_tracker_la_vala.stamp
+	@if test -f $@; then :; else \
+	  rm -f $(srcdir)/librygel_media_tracker_la_vala.stamp; \
+	  $(am__cd) $(srcdir) && $(MAKE) $(AM_MAKEFLAGS) librygel_media_tracker_la_vala.stamp; \
+	fi
+$(srcdir)/rygel-tracker-pictures.c: $(srcdir)/librygel_media_tracker_la_vala.stamp
+	@if test -f $@; then :; else \
+	  rm -f $(srcdir)/librygel_media_tracker_la_vala.stamp; \
+	  $(am__cd) $(srcdir) && $(MAKE) $(AM_MAKEFLAGS) librygel_media_tracker_la_vala.stamp; \
+	fi
 $(srcdir)/rygel-tracker-metadata-values.c: $(srcdir)/librygel_media_tracker_la_vala.stamp
 	@if test -f $@; then :; else \
 	  rm -f $(srcdir)/librygel_media_tracker_la_vala.stamp; \
 	  $(am__cd) $(srcdir) && $(MAKE) $(AM_MAKEFLAGS) librygel_media_tracker_la_vala.stamp; \
 	fi
-$(srcdir)/rygel-tracker-keywords.c: $(srcdir)/librygel_media_tracker_la_vala.stamp
+$(srcdir)/rygel-tracker-tags.c: $(srcdir)/librygel_media_tracker_la_vala.stamp
+	@if test -f $@; then :; else \
+	  rm -f $(srcdir)/librygel_media_tracker_la_vala.stamp; \
+	  $(am__cd) $(srcdir) && $(MAKE) $(AM_MAKEFLAGS) librygel_media_tracker_la_vala.stamp; \
+	fi
+$(srcdir)/rygel-tracker-years.c: $(srcdir)/librygel_media_tracker_la_vala.stamp
 	@if test -f $@; then :; else \
 	  rm -f $(srcdir)/librygel_media_tracker_la_vala.stamp; \
 	  $(am__cd) $(srcdir) && $(MAKE) $(AM_MAKEFLAGS) librygel_media_tracker_la_vala.stamp; \
@@ -464,22 +529,57 @@ $(srcdir)/rygel-tracker-search-container.c: $(srcdir)/librygel_media_tracker_la_
 	  rm -f $(srcdir)/librygel_media_tracker_la_vala.stamp; \
 	  $(am__cd) $(srcdir) && $(MAKE) $(AM_MAKEFLAGS) librygel_media_tracker_la_vala.stamp; \
 	fi
-$(srcdir)/rygel-tracker-item.c: $(srcdir)/librygel_media_tracker_la_vala.stamp
+$(srcdir)/rygel-tracker-category-all-container.c: $(srcdir)/librygel_media_tracker_la_vala.stamp
 	@if test -f $@; then :; else \
 	  rm -f $(srcdir)/librygel_media_tracker_la_vala.stamp; \
 	  $(am__cd) $(srcdir) && $(MAKE) $(AM_MAKEFLAGS) librygel_media_tracker_la_vala.stamp; \
 	fi
-$(srcdir)/rygel-tracker-video-item.c: $(srcdir)/librygel_media_tracker_la_vala.stamp
+$(srcdir)/rygel-tracker-query.c: $(srcdir)/librygel_media_tracker_la_vala.stamp
 	@if test -f $@; then :; else \
 	  rm -f $(srcdir)/librygel_media_tracker_la_vala.stamp; \
 	  $(am__cd) $(srcdir) && $(MAKE) $(AM_MAKEFLAGS) librygel_media_tracker_la_vala.stamp; \
 	fi
-$(srcdir)/rygel-tracker-music-item.c: $(srcdir)/librygel_media_tracker_la_vala.stamp
+$(srcdir)/rygel-tracker-selection-query.c: $(srcdir)/librygel_media_tracker_la_vala.stamp
 	@if test -f $@; then :; else \
 	  rm -f $(srcdir)/librygel_media_tracker_la_vala.stamp; \
 	  $(am__cd) $(srcdir) && $(MAKE) $(AM_MAKEFLAGS) librygel_media_tracker_la_vala.stamp; \
 	fi
-$(srcdir)/rygel-tracker-image-item.c: $(srcdir)/librygel_media_tracker_la_vala.stamp
+$(srcdir)/rygel-tracker-insertion-query.c: $(srcdir)/librygel_media_tracker_la_vala.stamp
+	@if test -f $@; then :; else \
+	  rm -f $(srcdir)/librygel_media_tracker_la_vala.stamp; \
+	  $(am__cd) $(srcdir) && $(MAKE) $(AM_MAKEFLAGS) librygel_media_tracker_la_vala.stamp; \
+	fi
+$(srcdir)/rygel-tracker-query-triplet.c: $(srcdir)/librygel_media_tracker_la_vala.stamp
+	@if test -f $@; then :; else \
+	  rm -f $(srcdir)/librygel_media_tracker_la_vala.stamp; \
+	  $(am__cd) $(srcdir) && $(MAKE) $(AM_MAKEFLAGS) librygel_media_tracker_la_vala.stamp; \
+	fi
+$(srcdir)/rygel-tracker-query-triplets.c: $(srcdir)/librygel_media_tracker_la_vala.stamp
+	@if test -f $@; then :; else \
+	  rm -f $(srcdir)/librygel_media_tracker_la_vala.stamp; \
+	  $(am__cd) $(srcdir) && $(MAKE) $(AM_MAKEFLAGS) librygel_media_tracker_la_vala.stamp; \
+	fi
+$(srcdir)/rygel-tracker-item-factory.c: $(srcdir)/librygel_media_tracker_la_vala.stamp
+	@if test -f $@; then :; else \
+	  rm -f $(srcdir)/librygel_media_tracker_la_vala.stamp; \
+	  $(am__cd) $(srcdir) && $(MAKE) $(AM_MAKEFLAGS) librygel_media_tracker_la_vala.stamp; \
+	fi
+$(srcdir)/rygel-tracker-item-creation.c: $(srcdir)/librygel_media_tracker_la_vala.stamp
+	@if test -f $@; then :; else \
+	  rm -f $(srcdir)/librygel_media_tracker_la_vala.stamp; \
+	  $(am__cd) $(srcdir) && $(MAKE) $(AM_MAKEFLAGS) librygel_media_tracker_la_vala.stamp; \
+	fi
+$(srcdir)/rygel-tracker-video-item-factory.c: $(srcdir)/librygel_media_tracker_la_vala.stamp
+	@if test -f $@; then :; else \
+	  rm -f $(srcdir)/librygel_media_tracker_la_vala.stamp; \
+	  $(am__cd) $(srcdir) && $(MAKE) $(AM_MAKEFLAGS) librygel_media_tracker_la_vala.stamp; \
+	fi
+$(srcdir)/rygel-tracker-music-item-factory.c: $(srcdir)/librygel_media_tracker_la_vala.stamp
+	@if test -f $@; then :; else \
+	  rm -f $(srcdir)/librygel_media_tracker_la_vala.stamp; \
+	  $(am__cd) $(srcdir) && $(MAKE) $(AM_MAKEFLAGS) librygel_media_tracker_la_vala.stamp; \
+	fi
+$(srcdir)/rygel-tracker-picture-item-factory.c: $(srcdir)/librygel_media_tracker_la_vala.stamp
 	@if test -f $@; then :; else \
 	  rm -f $(srcdir)/librygel_media_tracker_la_vala.stamp; \
 	  $(am__cd) $(srcdir) && $(MAKE) $(AM_MAKEFLAGS) librygel_media_tracker_la_vala.stamp; \
@@ -625,17 +725,29 @@ maintainer-clean-generic:
 	@echo "it deletes files that may require special tools to rebuild."
 	-rm -f librygel_media_tracker_la_vala.stamp
 	-rm -f rygel-media-tracker.c
-	-rm -f rygel-tracker-image-item.c
+	-rm -f rygel-tracker-category-all-container.c
+	-rm -f rygel-tracker-category-container.c
+	-rm -f rygel-tracker-insertion-query.c
 	-rm -f rygel-tracker-interfaces.c
-	-rm -f rygel-tracker-item.c
-	-rm -f rygel-tracker-keywords.c
+	-rm -f rygel-tracker-item-creation.c
+	-rm -f rygel-tracker-item-factory.c
 	-rm -f rygel-tracker-metadata-values.c
-	-rm -f rygel-tracker-music-item.c
+	-rm -f rygel-tracker-music-item-factory.c
+	-rm -f rygel-tracker-music.c
+	-rm -f rygel-tracker-picture-item-factory.c
+	-rm -f rygel-tracker-pictures.c
 	-rm -f rygel-tracker-plugin-factory.c
 	-rm -f rygel-tracker-plugin.c
+	-rm -f rygel-tracker-query-triplet.c
+	-rm -f rygel-tracker-query-triplets.c
+	-rm -f rygel-tracker-query.c
 	-rm -f rygel-tracker-root-container.c
 	-rm -f rygel-tracker-search-container.c
-	-rm -f rygel-tracker-video-item.c
+	-rm -f rygel-tracker-selection-query.c
+	-rm -f rygel-tracker-tags.c
+	-rm -f rygel-tracker-video-item-factory.c
+	-rm -f rygel-tracker-videos.c
+	-rm -f rygel-tracker-years.c
 	-test -z "$(MAINTAINERCLEANFILES)" || rm -f $(MAINTAINERCLEANFILES)
 clean: clean-am
 

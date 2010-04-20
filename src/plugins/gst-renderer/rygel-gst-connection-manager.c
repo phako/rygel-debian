@@ -117,12 +117,14 @@ static void rygel_gst_connection_manager_instance_init (RygelGstConnectionManage
 
 
 GType rygel_gst_connection_manager_get_type (void) {
-	static GType rygel_gst_connection_manager_type_id = 0;
-	if (rygel_gst_connection_manager_type_id == 0) {
+	static volatile gsize rygel_gst_connection_manager_type_id__volatile = 0;
+	if (g_once_init_enter (&rygel_gst_connection_manager_type_id__volatile)) {
 		static const GTypeInfo g_define_type_info = { sizeof (RygelGstConnectionManagerClass), (GBaseInitFunc) NULL, (GBaseFinalizeFunc) NULL, (GClassInitFunc) rygel_gst_connection_manager_class_init, (GClassFinalizeFunc) NULL, NULL, sizeof (RygelGstConnectionManager), 0, (GInstanceInitFunc) rygel_gst_connection_manager_instance_init, NULL };
+		GType rygel_gst_connection_manager_type_id;
 		rygel_gst_connection_manager_type_id = g_type_register_static (RYGEL_TYPE_CONNECTION_MANAGER, "RygelGstConnectionManager", &g_define_type_info, 0);
+		g_once_init_leave (&rygel_gst_connection_manager_type_id__volatile, rygel_gst_connection_manager_type_id);
 	}
-	return rygel_gst_connection_manager_type_id;
+	return rygel_gst_connection_manager_type_id__volatile;
 }
 
 

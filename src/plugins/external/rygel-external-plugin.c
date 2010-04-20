@@ -135,12 +135,14 @@ static void rygel_external_plugin_finalize (GObject* obj) {
 
 
 GType rygel_external_plugin_get_type (void) {
-	static GType rygel_external_plugin_type_id = 0;
-	if (rygel_external_plugin_type_id == 0) {
+	static volatile gsize rygel_external_plugin_type_id__volatile = 0;
+	if (g_once_init_enter (&rygel_external_plugin_type_id__volatile)) {
 		static const GTypeInfo g_define_type_info = { sizeof (RygelExternalPluginClass), (GBaseInitFunc) NULL, (GBaseFinalizeFunc) NULL, (GClassInitFunc) rygel_external_plugin_class_init, (GClassFinalizeFunc) NULL, NULL, sizeof (RygelExternalPlugin), 0, (GInstanceInitFunc) rygel_external_plugin_instance_init, NULL };
+		GType rygel_external_plugin_type_id;
 		rygel_external_plugin_type_id = g_type_register_static (RYGEL_TYPE_PLUGIN, "RygelExternalPlugin", &g_define_type_info, 0);
+		g_once_init_leave (&rygel_external_plugin_type_id__volatile, rygel_external_plugin_type_id);
 	}
-	return rygel_external_plugin_type_id;
+	return rygel_external_plugin_type_id__volatile;
 }
 
 

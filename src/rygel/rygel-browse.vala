@@ -52,6 +52,7 @@ internal class Rygel.Browse: GLib.Object, Rygel.StateMachine {
     private uint32 system_update_id;
     private ServiceAction action;
     private Rygel.DIDLLiteWriter didl_writer;
+    private XBoxHacks xbox_hacks;
 
     public Cancellable cancellable { get; set; }
 
@@ -62,8 +63,11 @@ internal class Rygel.Browse: GLib.Object, Rygel.StateMachine {
         this.cancellable = content_dir.cancellable;
         this.action = (owned) action;
 
-        this.didl_writer =
-                new Rygel.DIDLLiteWriter (content_dir.http_server);
+        this.didl_writer = new Rygel.DIDLLiteWriter (content_dir.http_server);
+
+        try {
+            this.xbox_hacks = new XBoxHacks.for_action (this.action);
+        } catch { /* This just means we are not dealing with Xbox, yay! */ }
     }
 
     public async void run () {
@@ -82,6 +86,10 @@ internal class Rygel.Browse: GLib.Object, Rygel.StateMachine {
             }
 
             foreach (var result in results) {
+                if (result is MediaItem && this.xbox_hacks != null) {
+                    this.xbox_hacks.apply (result as MediaItem);
+                }
+
                 this.didl_writer.serialize (result);
             }
 
@@ -118,6 +126,12 @@ internal class Rygel.Browse: GLib.Object, Rygel.StateMachine {
             this.action.get ("ContainerID",
                              typeof (string),
                              out this.object_id);
+            // Map some special browse requests to browse on the root folder
+            if (this.object_id == "15" ||
+                this.object_id == "14" ||
+                this.object_id == "16") {
+                this.object_id = "0";
+            }
         }
 
         if (this.object_id == null) {

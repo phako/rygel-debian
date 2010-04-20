@@ -137,7 +137,7 @@ RygelMediaExportDBusService* rygel_media_export_dbus_service_construct (GType ob
 #line 138 "rygel-media-export-dbus-service.c"
 		if (_inner_error_ != NULL) {
 			if (_inner_error_->domain == DBUS_GERROR) {
-				goto __catch8_dbus_gerror;
+				goto __catch15_dbus_gerror;
 			}
 			g_critical ("file %s: line %d: unexpected error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
 			g_clear_error (&_inner_error_);
@@ -151,20 +151,21 @@ RygelMediaExportDBusService* rygel_media_export_dbus_service_construct (GType ob
 		}
 		_dbus_g_connection_unref0 (conn);
 	}
-	goto __finally8;
-	__catch8_dbus_gerror:
+	goto __finally15;
+	__catch15_dbus_gerror:
 	{
 		GError * err;
 		err = _inner_error_;
 		_inner_error_ = NULL;
 		{
 #line 37 "rygel-media-export-dbus-service.vala"
-			g_warning ("rygel-media-export-dbus-service.vala:37: Failed to attach to DBus session bus: %s", err->message);
+			g_warning ("rygel-media-export-dbus-service.vala:37: Failed to attach to DBus sess" \
+"ion bus: %s", err->message);
 #line 164 "rygel-media-export-dbus-service.c"
 			_g_error_free0 (err);
 		}
 	}
-	__finally8:
+	__finally15:
 	if (_inner_error_ != NULL) {
 		g_propagate_error (error, _inner_error_);
 		g_object_unref (self);
@@ -209,7 +210,7 @@ void rygel_media_export_dbus_service_RemoveUri (RygelMediaExportDBusService* sel
 #line 49 "rygel-media-export-dbus-service.vala"
 char** rygel_media_export_dbus_service_GetUris (RygelMediaExportDBusService* self, int* result_length1) {
 #line 212 "rygel-media-export-dbus-service.c"
-	char** result;
+	char** result = NULL;
 	gint _tmp0_;
 	char** _tmp1_;
 #line 49 "rygel-media-export-dbus-service.vala"
@@ -433,12 +434,14 @@ static void rygel_media_export_dbus_service_finalize (GObject* obj) {
 
 
 GType rygel_media_export_dbus_service_get_type (void) {
-	static GType rygel_media_export_dbus_service_type_id = 0;
-	if (rygel_media_export_dbus_service_type_id == 0) {
+	static volatile gsize rygel_media_export_dbus_service_type_id__volatile = 0;
+	if (g_once_init_enter (&rygel_media_export_dbus_service_type_id__volatile)) {
 		static const GTypeInfo g_define_type_info = { sizeof (RygelMediaExportDBusServiceClass), (GBaseInitFunc) NULL, (GBaseFinalizeFunc) NULL, (GClassInitFunc) rygel_media_export_dbus_service_class_init, (GClassFinalizeFunc) NULL, NULL, sizeof (RygelMediaExportDBusService), 0, (GInstanceInitFunc) rygel_media_export_dbus_service_instance_init, NULL };
+		GType rygel_media_export_dbus_service_type_id;
 		rygel_media_export_dbus_service_type_id = g_type_register_static (G_TYPE_OBJECT, "RygelMediaExportDBusService", &g_define_type_info, 0);
+		g_once_init_leave (&rygel_media_export_dbus_service_type_id__volatile, rygel_media_export_dbus_service_type_id);
 	}
-	return rygel_media_export_dbus_service_type_id;
+	return rygel_media_export_dbus_service_type_id__volatile;
 }
 
 

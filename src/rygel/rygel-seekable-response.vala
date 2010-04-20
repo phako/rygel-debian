@@ -25,7 +25,7 @@
 using GUPnP;
 
 internal class Rygel.SeekableResponse : Rygel.HTTPResponse {
-    private const size_t BUFFER_LENGTH = 4096;
+    private const size_t BUFFER_LENGTH = 65536;
 
     private HTTPSeek seek;
     private File file;
@@ -115,8 +115,7 @@ internal class Rygel.SeekableResponse : Rygel.HTTPResponse {
     }
 
     private size_t bytes_to_read () {
-        return size_t.min (this.total_length,
-                           SeekableResponse.BUFFER_LENGTH);
+        return size_t.min (this.total_length, SeekableResponse.BUFFER_LENGTH);
     }
 
     private async void read_contents () throws Error {

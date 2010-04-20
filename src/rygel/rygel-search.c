@@ -82,6 +82,16 @@ typedef struct _RygelMediaContainerClass RygelMediaContainerClass;
 
 typedef struct _RygelDIDLLiteWriter RygelDIDLLiteWriter;
 typedef struct _RygelDIDLLiteWriterClass RygelDIDLLiteWriterClass;
+
+#define RYGEL_TYPE_XBOX_HACKS (rygel_xbox_hacks_get_type ())
+#define RYGEL_XBOX_HACKS(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_XBOX_HACKS, RygelXBoxHacks))
+#define RYGEL_XBOX_HACKS_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TYPE_XBOX_HACKS, RygelXBoxHacksClass))
+#define RYGEL_IS_XBOX_HACKS(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TYPE_XBOX_HACKS))
+#define RYGEL_IS_XBOX_HACKS_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_TYPE_XBOX_HACKS))
+#define RYGEL_XBOX_HACKS_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_TYPE_XBOX_HACKS, RygelXBoxHacksClass))
+
+typedef struct _RygelXBoxHacks RygelXBoxHacks;
+typedef struct _RygelXBoxHacksClass RygelXBoxHacksClass;
 #define _g_free0(var) (var = (g_free (var), NULL))
 #define _g_object_unref0(var) ((var == NULL) ? NULL : (var = (g_object_unref (var), NULL)))
 
@@ -115,6 +125,16 @@ typedef struct _RygelTranscodeManagerClass RygelTranscodeManagerClass;
 
 typedef struct _RygelHTTPServer RygelHTTPServer;
 typedef struct _RygelHTTPServerClass RygelHTTPServerClass;
+
+#define RYGEL_TYPE_MEDIA_ITEM (rygel_media_item_get_type ())
+#define RYGEL_MEDIA_ITEM(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_MEDIA_ITEM, RygelMediaItem))
+#define RYGEL_MEDIA_ITEM_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TYPE_MEDIA_ITEM, RygelMediaItemClass))
+#define RYGEL_IS_MEDIA_ITEM(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TYPE_MEDIA_ITEM))
+#define RYGEL_IS_MEDIA_ITEM_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_TYPE_MEDIA_ITEM))
+#define RYGEL_MEDIA_ITEM_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_TYPE_MEDIA_ITEM, RygelMediaItemClass))
+
+typedef struct _RygelMediaItem RygelMediaItem;
+typedef struct _RygelMediaItemClass RygelMediaItemClass;
 #define _g_error_free0(var) ((var == NULL) ? NULL : (var = (g_error_free (var), NULL)))
 typedef struct _RygelSearchRunData RygelSearchRunData;
 typedef struct _RygelMediaObjectPrivate RygelMediaObjectPrivate;
@@ -174,6 +194,7 @@ struct _RygelSearchPrivate {
 	guint32 system_update_id;
 	GUPnPServiceAction* action;
 	RygelDIDLLiteWriter* didl_writer;
+	RygelXBoxHacks* xbox_hacks;
 	GCancellable* _cancellable;
 };
 
@@ -191,12 +212,15 @@ struct _RygelContentDirectory {
 struct _RygelContentDirectoryClass {
 	GUPnPServiceClass parent_class;
 	RygelMediaContainer* (*create_root_container) (RygelContentDirectory* self);
-	void (*browse_cb) (RygelContentDirectory* self, RygelContentDirectory* content_dir, GUPnPServiceAction* action);
-	void (*search_cb) (RygelContentDirectory* self, RygelContentDirectory* content_dir, GUPnPServiceAction* action);
 };
 
 typedef enum  {
+	RYGEL_XBOX_HACKS_ERROR_NA
+} RygelXBoxHacksError;
+#define RYGEL_XBOX_HACKS_ERROR rygel_xbox_hacks_error_quark ()
+typedef enum  {
 	RYGEL_CONTENT_DIRECTORY_ERROR_NO_SUCH_OBJECT = 701,
+	RYGEL_CONTENT_DIRECTORY_ERROR_RESTRICTED_PARENT = 713,
 	RYGEL_CONTENT_DIRECTORY_ERROR_CANT_PROCESS = 720,
 	RYGEL_CONTENT_DIRECTORY_ERROR_INVALID_ARGS = 402
 } RygelContentDirectoryError;
@@ -211,6 +235,8 @@ struct _RygelSearchRunData {
 	GeeList* results;
 	GeeIterator* _result_it;
 	RygelMediaObject* _result_;
+	gboolean _tmp1_;
+	RygelMediaObject* _tmp2_;
 	GError * err;
 	GError * _inner_error_;
 };
@@ -223,7 +249,6 @@ struct _RygelMediaObject {
 	guint64 modified;
 	GeeArrayList* uris;
 	RygelMediaContainer* parent;
-	RygelMediaContainer* parent_ref;
 };
 
 struct _RygelMediaObjectClass {
@@ -245,7 +270,7 @@ struct _RygelSearchFetchContainerData {
 struct _RygelMediaContainer {
 	RygelMediaObject parent_instance;
 	RygelMediaContainerPrivate * priv;
-	guint child_count;
+	gint child_count;
 	guint32 update_id;
 };
 
@@ -255,6 +280,8 @@ struct _RygelMediaContainerClass {
 	GeeList* (*get_children_finish) (RygelMediaContainer* self, GAsyncResult* _res_, GError** error);
 	void (*search) (RygelMediaContainer* self, RygelSearchExpression* expression, guint offset, guint max_count, GCancellable* cancellable, GAsyncReadyCallback _callback_, gpointer _user_data_);
 	GeeList* (*search_finish) (RygelMediaContainer* self, GAsyncResult* _res_, guint* total_matches, GError** error);
+	void (*add_item) (RygelMediaContainer* self, RygelMediaItem* item, GCancellable* cancellable, GAsyncReadyCallback _callback_, gpointer _user_data_);
+	void (*add_item_finish) (RygelMediaContainer* self, GAsyncResult* _res_, GError** error);
 };
 
 struct _RygelSearchCriteriaParser {
@@ -290,6 +317,7 @@ GType rygel_search_get_type (void);
 GType rygel_media_object_get_type (void);
 GType rygel_media_container_get_type (void);
 GType rygel_didl_lite_writer_get_type (void);
+GType rygel_xbox_hacks_get_type (void);
 #define RYGEL_SEARCH_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), RYGEL_TYPE_SEARCH, RygelSearchPrivate))
 enum  {
 	RYGEL_SEARCH_DUMMY_PROPERTY,
@@ -301,16 +329,22 @@ GType rygel_http_server_get_type (void);
 void rygel_state_machine_set_cancellable (RygelStateMachine* self, GCancellable* value);
 RygelDIDLLiteWriter* rygel_didl_lite_writer_new (RygelHTTPServer* http_server);
 RygelDIDLLiteWriter* rygel_didl_lite_writer_construct (GType object_type, RygelHTTPServer* http_server);
+GQuark rygel_xbox_hacks_error_quark (void);
+RygelXBoxHacks* rygel_xbox_hacks_new_for_action (GUPnPServiceAction* action, GError** error);
+RygelXBoxHacks* rygel_xbox_hacks_construct_for_action (GType object_type, GUPnPServiceAction* action, GError** error);
 RygelSearch* rygel_search_new (RygelContentDirectory* content_dir, GUPnPServiceAction* action);
 RygelSearch* rygel_search_construct (GType object_type, RygelContentDirectory* content_dir, GUPnPServiceAction* action);
 static void rygel_search_real_run_data_free (gpointer _data);
 static void rygel_search_real_run (RygelStateMachine* base, GAsyncReadyCallback _callback_, gpointer _user_data_);
 static void rygel_search_run_ready (GObject* source_object, GAsyncResult* _res_, gpointer _user_data_);
 GQuark rygel_content_directory_error_quark (void);
+void rygel_xbox_hacks_translate_container_id (RygelXBoxHacks* self, char** container_id);
 static void rygel_search_fetch_container (RygelSearch* self, GAsyncReadyCallback _callback_, gpointer _user_data_);
 static RygelMediaContainer* rygel_search_fetch_container_finish (RygelSearch* self, GAsyncResult* _res_, GError** error);
 static void rygel_search_fetch_results (RygelSearch* self, RygelMediaContainer* container, GAsyncReadyCallback _callback_, gpointer _user_data_);
 static GeeList* rygel_search_fetch_results_finish (RygelSearch* self, GAsyncResult* _res_, GError** error);
+GType rygel_media_item_get_type (void);
+void rygel_xbox_hacks_apply (RygelXBoxHacks* self, RygelMediaItem* item);
 void rygel_didl_lite_writer_serialize (RygelDIDLLiteWriter* self, RygelMediaObject* media_object, GError** error);
 static void rygel_search_conclude (RygelSearch* self);
 static void rygel_search_handle_error (RygelSearch* self, GError* _error_);
@@ -327,6 +361,7 @@ gpointer rygel_search_expression_ref (gpointer instance);
 void rygel_search_expression_unref (gpointer instance);
 GParamSpec* rygel_param_spec_search_expression (const gchar* name, const gchar* nick, const gchar* blurb, GType object_type, GParamFlags flags);
 void rygel_value_set_search_expression (GValue* value, gpointer v_object);
+void rygel_value_take_search_expression (GValue* value, gpointer v_object);
 gpointer rygel_value_get_search_expression (const GValue* value);
 GType rygel_search_expression_get_type (void);
 RygelSearchCriteriaParser* rygel_search_criteria_parser_new (const char* str, GError** error);
@@ -349,45 +384,76 @@ static gpointer _g_object_ref0 (gpointer self) {
 }
 
 
-#line 52 "rygel-search.vala"
+#line 53 "rygel-search.vala"
 RygelSearch* rygel_search_construct (GType object_type, RygelContentDirectory* content_dir, GUPnPServiceAction* action) {
-#line 355 "rygel-search.c"
+#line 390 "rygel-search.c"
+	GError * _inner_error_;
 	RygelSearch * self;
 	RygelMediaContainer* _tmp0_;
 	GUPnPServiceAction* _tmp1_;
 	RygelDIDLLiteWriter* _tmp2_;
-#line 52 "rygel-search.vala"
+#line 53 "rygel-search.vala"
 	g_return_val_if_fail (content_dir != NULL, NULL);
-#line 52 "rygel-search.vala"
+#line 53 "rygel-search.vala"
 	g_return_val_if_fail (action != NULL, NULL);
-#line 52 "rygel-search.vala"
+#line 400 "rygel-search.c"
+	_inner_error_ = NULL;
+#line 53 "rygel-search.vala"
 	self = (RygelSearch*) g_object_new (object_type, NULL);
-#line 54 "rygel-search.vala"
-	self->priv->root_container = (_tmp0_ = _g_object_ref0 (content_dir->root_container), _g_object_unref0 (self->priv->root_container), _tmp0_);
 #line 55 "rygel-search.vala"
-	self->priv->system_update_id = content_dir->system_update_id;
+	self->priv->root_container = (_tmp0_ = _g_object_ref0 (content_dir->root_container), _g_object_unref0 (self->priv->root_container), _tmp0_);
 #line 56 "rygel-search.vala"
-	rygel_state_machine_set_cancellable ((RygelStateMachine*) self, content_dir->cancellable);
+	self->priv->system_update_id = content_dir->system_update_id;
 #line 57 "rygel-search.vala"
+	rygel_state_machine_set_cancellable ((RygelStateMachine*) self, content_dir->cancellable);
+#line 58 "rygel-search.vala"
 	self->priv->action = (_tmp1_ = action, action = NULL, _tmp1_);
-#line 59 "rygel-search.vala"
+#line 60 "rygel-search.vala"
 	self->priv->didl_writer = (_tmp2_ = rygel_didl_lite_writer_new (content_dir->http_server), _g_object_unref0 (self->priv->didl_writer), _tmp2_);
-#line 376 "rygel-search.c"
+#line 414 "rygel-search.c"
+	{
+		RygelXBoxHacks* _tmp3_;
+		RygelXBoxHacks* _tmp4_;
+#line 63 "rygel-search.vala"
+		_tmp3_ = rygel_xbox_hacks_new_for_action (self->priv->action, &_inner_error_);
+#line 420 "rygel-search.c"
+		if (_inner_error_ != NULL) {
+			goto __catch47_g_error;
+		}
+#line 63 "rygel-search.vala"
+		self->priv->xbox_hacks = (_tmp4_ = _tmp3_, _g_object_unref0 (self->priv->xbox_hacks), _tmp4_);
+#line 426 "rygel-search.c"
+	}
+	goto __finally47;
+	__catch47_g_error:
+	{
+		g_clear_error (&_inner_error_);
+		_inner_error_ = NULL;
+		{
+		}
+	}
+	__finally47:
+	if (_inner_error_ != NULL) {
+		g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
+		g_clear_error (&_inner_error_);
+		return NULL;
+	}
 	return self;
 }
 
 
-#line 52 "rygel-search.vala"
+#line 53 "rygel-search.vala"
 RygelSearch* rygel_search_new (RygelContentDirectory* content_dir, GUPnPServiceAction* action) {
-#line 52 "rygel-search.vala"
+#line 53 "rygel-search.vala"
 	return rygel_search_construct (RYGEL_TYPE_SEARCH, content_dir, action);
-#line 385 "rygel-search.c"
+#line 450 "rygel-search.c"
 }
 
 
 static void rygel_search_real_run_data_free (gpointer _data) {
 	RygelSearchRunData* data;
 	data = _data;
+	g_object_unref (data->self);
 	g_slice_free (RygelSearchRunData, data);
 }
 
@@ -399,7 +465,7 @@ static void rygel_search_real_run (RygelStateMachine* base, GAsyncReadyCallback 
 	_data_ = g_slice_new0 (RygelSearchRunData);
 	_data_->_async_result = g_simple_async_result_new (G_OBJECT (self), _callback_, _user_data_, rygel_search_real_run);
 	g_simple_async_result_set_op_res_gpointer (_data_->_async_result, _data_, rygel_search_real_run_data_free);
-	_data_->self = self;
+	_data_->self = g_object_ref (self);
 	rygel_search_real_run_co (_data_);
 }
 
@@ -420,128 +486,138 @@ static void rygel_search_run_ready (GObject* source_object, GAsyncResult* _res_,
 
 static gboolean rygel_search_real_run_co (RygelSearchRunData* data) {
 	switch (data->_state_) {
+		case 0:
+		goto _state_0;
+		case 35:
+		goto _state_35;
+		case 36:
+		goto _state_36;
 		default:
 		g_assert_not_reached ();
-		case 0:
+	}
+	_state_0:
+	{
+#line 69 "rygel-search.vala"
+		gupnp_service_action_get (data->self->priv->action, "ContainerID", G_TYPE_STRING, &data->self->container_id, "SearchCriteria", G_TYPE_STRING, &data->self->search_criteria, "Filter", G_TYPE_STRING, &data->self->filter, "StartingIndex", G_TYPE_UINT, &data->self->index, "RequestedCount", G_TYPE_UINT, &data->self->requested_count, "SortCriteria", G_TYPE_STRING, &data->self->sort_criteria, NULL);
+#line 503 "rygel-search.c"
 		{
-#line 65 "rygel-search.vala"
-			gupnp_service_action_get (data->self->priv->action, "ContainerID", G_TYPE_STRING, &data->self->container_id, "SearchCriteria", G_TYPE_STRING, &data->self->search_criteria, "Filter", G_TYPE_STRING, &data->self->filter, "StartingIndex", G_TYPE_UINT, &data->self->index, "RequestedCount", G_TYPE_UINT, &data->self->requested_count, "SortCriteria", G_TYPE_STRING, &data->self->sort_criteria, NULL);
-#line 430 "rygel-search.c"
-			{
-#line 85 "rygel-search.vala"
-				if (data->self->container_id == NULL) {
-#line 85 "rygel-search.vala"
-					data->_tmp0_ = TRUE;
-#line 436 "rygel-search.c"
-				} else {
-#line 85 "rygel-search.vala"
-					data->_tmp0_ = data->self->search_criteria == NULL;
-#line 440 "rygel-search.c"
-				}
-#line 85 "rygel-search.vala"
-				if (data->_tmp0_) {
-#line 444 "rygel-search.c"
-					data->_inner_error_ = g_error_new_literal (RYGEL_CONTENT_DIRECTORY_ERROR, RYGEL_CONTENT_DIRECTORY_ERROR_NO_SUCH_OBJECT, "No such container");
-					{
-						goto __catch41_g_error;
-						g_critical ("file %s: line %d: unexpected error: %s (%s, %d)", __FILE__, __LINE__, data->_inner_error_->message, g_quark_to_string (data->_inner_error_->domain), data->_inner_error_->code);
-						g_clear_error (&data->_inner_error_);
-						return FALSE;
-					}
-				}
-#line 91 "rygel-search.vala"
-				g_debug ("rygel-search.vala:91: Executing search request: %s", data->self->search_criteria);
-#line 455 "rygel-search.c"
-				data->_state_ = 25;
-				rygel_search_fetch_container (data->self, rygel_search_run_ready, data);
-				return FALSE;
-				case 25:
-				data->container = rygel_search_fetch_container_finish (data->self, data->_res_, &data->_inner_error_);
-				if (data->_inner_error_ != NULL) {
-					goto __catch41_g_error;
-					g_critical ("file %s: line %d: unexpected error: %s (%s, %d)", __FILE__, __LINE__, data->_inner_error_->message, g_quark_to_string (data->_inner_error_->domain), data->_inner_error_->code);
-					g_clear_error (&data->_inner_error_);
-					return FALSE;
-				}
-				data->_state_ = 26;
-				rygel_search_fetch_results (data->self, data->container, rygel_search_run_ready, data);
-				return FALSE;
-				case 26:
-				data->results = rygel_search_fetch_results_finish (data->self, data->_res_, &data->_inner_error_);
-				if (data->_inner_error_ != NULL) {
-					_g_object_unref0 (data->container);
-					goto __catch41_g_error;
-					_g_object_unref0 (data->container);
-					g_critical ("file %s: line %d: unexpected error: %s (%s, %d)", __FILE__, __LINE__, data->_inner_error_->message, g_quark_to_string (data->_inner_error_->domain), data->_inner_error_->code);
-					g_clear_error (&data->_inner_error_);
-					return FALSE;
-				}
+#line 89 "rygel-search.vala"
+			if (data->self->container_id == NULL) {
+#line 89 "rygel-search.vala"
+				data->_tmp0_ = TRUE;
+#line 509 "rygel-search.c"
+			} else {
+#line 89 "rygel-search.vala"
+				data->_tmp0_ = data->self->search_criteria == NULL;
+#line 513 "rygel-search.c"
+			}
+#line 89 "rygel-search.vala"
+			if (data->_tmp0_) {
+#line 517 "rygel-search.c"
+				data->_inner_error_ = g_error_new_literal (RYGEL_CONTENT_DIRECTORY_ERROR, RYGEL_CONTENT_DIRECTORY_ERROR_NO_SUCH_OBJECT, "No such container");
 				{
-					data->_result_it = gee_iterable_iterator ((GeeIterable*) data->results);
+					goto __catch48_g_error;
+				}
+			}
+#line 95 "rygel-search.vala"
+			g_debug ("rygel-search.vala:95: Executing search request: %s", data->self->search_criteria);
 #line 97 "rygel-search.vala"
-					while (TRUE) {
-#line 97 "rygel-search.vala"
-						if (!gee_iterator_next (data->_result_it)) {
-#line 97 "rygel-search.vala"
-							break;
-#line 488 "rygel-search.c"
-						}
-						data->_result_ = (RygelMediaObject*) gee_iterator_get (data->_result_it);
+			if (data->self->priv->xbox_hacks != NULL) {
 #line 98 "rygel-search.vala"
-						rygel_didl_lite_writer_serialize (data->self->priv->didl_writer, data->_result_, &data->_inner_error_);
-#line 493 "rygel-search.c"
-						if (data->_inner_error_ != NULL) {
-							_g_object_unref0 (data->_result_);
-							_g_object_unref0 (data->_result_it);
-							_g_object_unref0 (data->container);
-							_g_object_unref0 (data->results);
-							goto __catch41_g_error;
-							_g_object_unref0 (data->_result_);
-							_g_object_unref0 (data->_result_it);
-							_g_object_unref0 (data->container);
-							_g_object_unref0 (data->results);
-							g_critical ("file %s: line %d: unexpected error: %s (%s, %d)", __FILE__, __LINE__, data->_inner_error_->message, g_quark_to_string (data->_inner_error_->domain), data->_inner_error_->code);
-							g_clear_error (&data->_inner_error_);
-							return FALSE;
-						}
-						_g_object_unref0 (data->_result_);
-					}
-					_g_object_unref0 (data->_result_it);
-				}
-#line 101 "rygel-search.vala"
-				rygel_search_conclude (data->self);
-#line 514 "rygel-search.c"
-				_g_object_unref0 (data->container);
-				_g_object_unref0 (data->results);
+				rygel_xbox_hacks_translate_container_id (data->self->priv->xbox_hacks, &data->self->container_id);
+#line 529 "rygel-search.c"
 			}
-			goto __finally41;
-			__catch41_g_error:
-			{
-				data->err = data->_inner_error_;
-				data->_inner_error_ = NULL;
-				{
-#line 103 "rygel-search.vala"
-					rygel_search_handle_error (data->self, data->err);
-#line 526 "rygel-search.c"
-					_g_error_free0 (data->err);
-				}
-			}
-			__finally41:
+			data->_state_ = 35;
+			rygel_search_fetch_container (data->self, rygel_search_run_ready, data);
+			return FALSE;
+			_state_35:
+			data->container = rygel_search_fetch_container_finish (data->self, data->_res_, &data->_inner_error_);
 			if (data->_inner_error_ != NULL) {
-				g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, data->_inner_error_->message, g_quark_to_string (data->_inner_error_->domain), data->_inner_error_->code);
-				g_clear_error (&data->_inner_error_);
-				return FALSE;
+				goto __catch48_g_error;
+			}
+			data->_state_ = 36;
+			rygel_search_fetch_results (data->self, data->container, rygel_search_run_ready, data);
+			return FALSE;
+			_state_36:
+			data->results = rygel_search_fetch_results_finish (data->self, data->_res_, &data->_inner_error_);
+			if (data->_inner_error_ != NULL) {
+				_g_object_unref0 (data->container);
+				goto __catch48_g_error;
+			}
+			{
+				data->_result_it = gee_iterable_iterator ((GeeIterable*) data->results);
+#line 105 "rygel-search.vala"
+				while (TRUE) {
+#line 105 "rygel-search.vala"
+					if (!gee_iterator_next (data->_result_it)) {
+#line 105 "rygel-search.vala"
+						break;
+#line 556 "rygel-search.c"
+					}
+					data->_result_ = (RygelMediaObject*) gee_iterator_get (data->_result_it);
+#line 106 "rygel-search.vala"
+					if (RYGEL_IS_MEDIA_ITEM (data->_result_)) {
+#line 106 "rygel-search.vala"
+						data->_tmp1_ = data->self->priv->xbox_hacks != NULL;
+#line 563 "rygel-search.c"
+					} else {
+#line 106 "rygel-search.vala"
+						data->_tmp1_ = FALSE;
+#line 567 "rygel-search.c"
+					}
+#line 106 "rygel-search.vala"
+					if (data->_tmp1_) {
+#line 107 "rygel-search.vala"
+						rygel_xbox_hacks_apply (data->self->priv->xbox_hacks, (data->_tmp2_ = data->_result_, RYGEL_IS_MEDIA_ITEM (data->_tmp2_) ? ((RygelMediaItem*) data->_tmp2_) : NULL));
+#line 573 "rygel-search.c"
+					}
+#line 110 "rygel-search.vala"
+					rygel_didl_lite_writer_serialize (data->self->priv->didl_writer, data->_result_, &data->_inner_error_);
+#line 577 "rygel-search.c"
+					if (data->_inner_error_ != NULL) {
+						_g_object_unref0 (data->_result_);
+						_g_object_unref0 (data->_result_it);
+						_g_object_unref0 (data->container);
+						_g_object_unref0 (data->results);
+						goto __catch48_g_error;
+					}
+					_g_object_unref0 (data->_result_);
+				}
+				_g_object_unref0 (data->_result_it);
+			}
+#line 113 "rygel-search.vala"
+			rygel_search_conclude (data->self);
+#line 591 "rygel-search.c"
+			_g_object_unref0 (data->container);
+			_g_object_unref0 (data->results);
+		}
+		goto __finally48;
+		__catch48_g_error:
+		{
+			data->err = data->_inner_error_;
+			data->_inner_error_ = NULL;
+			{
+#line 115 "rygel-search.vala"
+				rygel_search_handle_error (data->self, data->err);
+#line 603 "rygel-search.c"
+				_g_error_free0 (data->err);
 			}
 		}
-		{
-			if (data->_state_ == 0) {
-				g_simple_async_result_complete_in_idle (data->_async_result);
-			} else {
-				g_simple_async_result_complete (data->_async_result);
-			}
-			g_object_unref (data->_async_result);
+		__finally48:
+		if (data->_inner_error_ != NULL) {
+			g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, data->_inner_error_->message, g_quark_to_string (data->_inner_error_->domain), data->_inner_error_->code);
+			g_clear_error (&data->_inner_error_);
 			return FALSE;
 		}
+	}
+	{
+		if (data->_state_ == 0) {
+			g_simple_async_result_complete_in_idle (data->_async_result);
+		} else {
+			g_simple_async_result_complete (data->_async_result);
+		}
+		g_object_unref (data->_async_result);
+		return FALSE;
 	}
 }
 
@@ -550,6 +626,7 @@ static void rygel_search_fetch_container_data_free (gpointer _data) {
 	RygelSearchFetchContainerData* data;
 	data = _data;
 	_g_object_unref0 (data->result);
+	g_object_unref (data->self);
 	g_slice_free (RygelSearchFetchContainerData, data);
 }
 
@@ -559,7 +636,7 @@ static void rygel_search_fetch_container (RygelSearch* self, GAsyncReadyCallback
 	_data_ = g_slice_new0 (RygelSearchFetchContainerData);
 	_data_->_async_result = g_simple_async_result_new (G_OBJECT (self), _callback_, _user_data_, rygel_search_fetch_container);
 	g_simple_async_result_set_op_res_gpointer (_data_->_async_result, _data_, rygel_search_fetch_container_data_free);
-	_data_->self = self;
+	_data_->self = g_object_ref (self);
 	rygel_search_fetch_container_co (_data_);
 }
 
@@ -587,73 +664,19 @@ static void rygel_search_fetch_container_ready (GObject* source_object, GAsyncRe
 
 static gboolean rygel_search_fetch_container_co (RygelSearchFetchContainerData* data) {
 	switch (data->_state_) {
+		case 0:
+		goto _state_0;
+		case 37:
+		goto _state_37;
 		default:
 		g_assert_not_reached ();
-		case 0:
-		{
-#line 108 "rygel-search.vala"
-			if (_vala_strcmp0 (data->self->container_id, ((RygelMediaObject*) data->self->priv->root_container)->id) == 0) {
-#line 597 "rygel-search.c"
-				data->result = _g_object_ref0 (data->self->priv->root_container);
-				{
-					if (data->_state_ == 0) {
-						g_simple_async_result_complete_in_idle (data->_async_result);
-					} else {
-						g_simple_async_result_complete (data->_async_result);
-					}
-					g_object_unref (data->_async_result);
-					return FALSE;
-				}
-			}
-			data->_state_ = 27;
-			rygel_media_container_find_object (data->self->priv->root_container, data->self->container_id, rygel_state_machine_get_cancellable ((RygelStateMachine*) data->self), rygel_search_fetch_container_ready, data);
-			return FALSE;
-			case 27:
-			data->media_object = rygel_media_container_find_object_finish (data->self->priv->root_container, data->_res_, &data->_inner_error_);
-			if (data->_inner_error_ != NULL) {
-				g_simple_async_result_set_from_error (data->_async_result, data->_inner_error_);
-				g_error_free (data->_inner_error_);
-				{
-					if (data->_state_ == 0) {
-						g_simple_async_result_complete_in_idle (data->_async_result);
-					} else {
-						g_simple_async_result_complete (data->_async_result);
-					}
-					g_object_unref (data->_async_result);
-					return FALSE;
-				}
-			}
-#line 115 "rygel-search.vala"
-			if (data->media_object == NULL) {
-#line 115 "rygel-search.vala"
-				data->_tmp0_ = TRUE;
-#line 631 "rygel-search.c"
-			} else {
-#line 115 "rygel-search.vala"
-				data->_tmp0_ = !RYGEL_IS_MEDIA_CONTAINER (data->media_object);
-#line 635 "rygel-search.c"
-			}
-#line 115 "rygel-search.vala"
-			if (data->_tmp0_) {
-#line 639 "rygel-search.c"
-				data->_inner_error_ = g_error_new_literal (RYGEL_CONTENT_DIRECTORY_ERROR, RYGEL_CONTENT_DIRECTORY_ERROR_NO_SUCH_OBJECT, "Specified container does not exist.");
-				{
-					g_simple_async_result_set_from_error (data->_async_result, data->_inner_error_);
-					g_error_free (data->_inner_error_);
-					_g_object_unref0 (data->media_object);
-					{
-						if (data->_state_ == 0) {
-							g_simple_async_result_complete_in_idle (data->_async_result);
-						} else {
-							g_simple_async_result_complete (data->_async_result);
-						}
-						g_object_unref (data->_async_result);
-						return FALSE;
-					}
-				}
-			}
-			data->result = _g_object_ref0 ((data->_tmp1_ = data->media_object, RYGEL_IS_MEDIA_CONTAINER (data->_tmp1_) ? ((RygelMediaContainer*) data->_tmp1_) : NULL));
-			_g_object_unref0 (data->media_object);
+	}
+	_state_0:
+	{
+#line 120 "rygel-search.vala"
+		if (_vala_strcmp0 (data->self->container_id, ((RygelMediaObject*) data->self->priv->root_container)->id) == 0) {
+#line 679 "rygel-search.c"
+			data->result = _g_object_ref0 (data->self->priv->root_container);
 			{
 				if (data->_state_ == 0) {
 					g_simple_async_result_complete_in_idle (data->_async_result);
@@ -663,8 +686,56 @@ static gboolean rygel_search_fetch_container_co (RygelSearchFetchContainerData* 
 				g_object_unref (data->_async_result);
 				return FALSE;
 			}
-			_g_object_unref0 (data->media_object);
 		}
+		data->_state_ = 37;
+		rygel_media_container_find_object (data->self->priv->root_container, data->self->container_id, rygel_state_machine_get_cancellable ((RygelStateMachine*) data->self), rygel_search_fetch_container_ready, data);
+		return FALSE;
+		_state_37:
+		data->media_object = rygel_media_container_find_object_finish (data->self->priv->root_container, data->_res_, &data->_inner_error_);
+		if (data->_inner_error_ != NULL) {
+			g_simple_async_result_set_from_error (data->_async_result, data->_inner_error_);
+			g_error_free (data->_inner_error_);
+			{
+				if (data->_state_ == 0) {
+					g_simple_async_result_complete_in_idle (data->_async_result);
+				} else {
+					g_simple_async_result_complete (data->_async_result);
+				}
+				g_object_unref (data->_async_result);
+				return FALSE;
+			}
+		}
+#line 127 "rygel-search.vala"
+		if (data->media_object == NULL) {
+#line 127 "rygel-search.vala"
+			data->_tmp0_ = TRUE;
+#line 713 "rygel-search.c"
+		} else {
+#line 127 "rygel-search.vala"
+			data->_tmp0_ = !RYGEL_IS_MEDIA_CONTAINER (data->media_object);
+#line 717 "rygel-search.c"
+		}
+#line 127 "rygel-search.vala"
+		if (data->_tmp0_) {
+#line 721 "rygel-search.c"
+			data->_inner_error_ = g_error_new_literal (RYGEL_CONTENT_DIRECTORY_ERROR, RYGEL_CONTENT_DIRECTORY_ERROR_NO_SUCH_OBJECT, "Specified container does not exist.");
+			{
+				g_simple_async_result_set_from_error (data->_async_result, data->_inner_error_);
+				g_error_free (data->_inner_error_);
+				_g_object_unref0 (data->media_object);
+				{
+					if (data->_state_ == 0) {
+						g_simple_async_result_complete_in_idle (data->_async_result);
+					} else {
+						g_simple_async_result_complete (data->_async_result);
+					}
+					g_object_unref (data->_async_result);
+					return FALSE;
+				}
+			}
+		}
+		data->result = _g_object_ref0 ((data->_tmp1_ = data->media_object, RYGEL_IS_MEDIA_CONTAINER (data->_tmp1_) ? ((RygelMediaContainer*) data->_tmp1_) : NULL));
+		_g_object_unref0 (data->media_object);
 		{
 			if (data->_state_ == 0) {
 				g_simple_async_result_complete_in_idle (data->_async_result);
@@ -674,6 +745,16 @@ static gboolean rygel_search_fetch_container_co (RygelSearchFetchContainerData* 
 			g_object_unref (data->_async_result);
 			return FALSE;
 		}
+		_g_object_unref0 (data->media_object);
+	}
+	{
+		if (data->_state_ == 0) {
+			g_simple_async_result_complete_in_idle (data->_async_result);
+		} else {
+			g_simple_async_result_complete (data->_async_result);
+		}
+		g_object_unref (data->_async_result);
+		return FALSE;
 	}
 }
 
@@ -683,6 +764,7 @@ static void rygel_search_fetch_results_data_free (gpointer _data) {
 	data = _data;
 	_g_object_unref0 (data->container);
 	_g_object_unref0 (data->result);
+	g_object_unref (data->self);
 	g_slice_free (RygelSearchFetchResultsData, data);
 }
 
@@ -692,7 +774,7 @@ static void rygel_search_fetch_results (RygelSearch* self, RygelMediaContainer* 
 	_data_ = g_slice_new0 (RygelSearchFetchResultsData);
 	_data_->_async_result = g_simple_async_result_new (G_OBJECT (self), _callback_, _user_data_, rygel_search_fetch_results);
 	g_simple_async_result_set_op_res_gpointer (_data_->_async_result, _data_, rygel_search_fetch_results_data_free);
-	_data_->self = self;
+	_data_->self = g_object_ref (self);
 	_data_->container = _g_object_ref0 (container);
 	rygel_search_fetch_results_co (_data_);
 }
@@ -726,58 +808,45 @@ static gpointer _g_error_copy0 (gpointer self) {
 
 static gboolean rygel_search_fetch_results_co (RygelSearchFetchResultsData* data) {
 	switch (data->_state_) {
+		case 0:
+		goto _state_0;
+		case 38:
+		goto _state_38;
+		case 39:
+		goto _state_39;
 		default:
 		g_assert_not_reached ();
-		case 0:
-		{
-#line 126 "rygel-search.vala"
-			data->self->update_id = (guint) data->container->update_id;
-#line 736 "rygel-search.c"
-			data->parser = rygel_search_criteria_parser_new (data->self->search_criteria, &data->_inner_error_);
-			if (data->_inner_error_ != NULL) {
-				g_simple_async_result_set_from_error (data->_async_result, data->_inner_error_);
-				g_error_free (data->_inner_error_);
-				{
-					if (data->_state_ == 0) {
-						g_simple_async_result_complete_in_idle (data->_async_result);
-					} else {
-						g_simple_async_result_complete (data->_async_result);
-					}
-					g_object_unref (data->_async_result);
-					return FALSE;
+	}
+	_state_0:
+	{
+#line 138 "rygel-search.vala"
+		data->self->update_id = (guint) data->container->update_id;
+#line 825 "rygel-search.c"
+		data->parser = rygel_search_criteria_parser_new (data->self->search_criteria, &data->_inner_error_);
+		if (data->_inner_error_ != NULL) {
+			g_simple_async_result_set_from_error (data->_async_result, data->_inner_error_);
+			g_error_free (data->_inner_error_);
+			{
+				if (data->_state_ == 0) {
+					g_simple_async_result_complete_in_idle (data->_async_result);
+				} else {
+					g_simple_async_result_complete (data->_async_result);
 				}
+				g_object_unref (data->_async_result);
+				return FALSE;
 			}
-			data->_state_ = 28;
-			rygel_state_machine_run ((RygelStateMachine*) data->parser, rygel_search_fetch_results_ready, data);
-			return FALSE;
-			case 28:
-#line 129 "rygel-search.vala"
-			rygel_state_machine_run_finish ((RygelStateMachine*) data->parser, data->_res_);
-#line 131 "rygel-search.vala"
-			if (data->parser->err != NULL) {
-#line 759 "rygel-search.c"
-				data->_inner_error_ = _g_error_copy0 (data->parser->err);
-				{
-					g_simple_async_result_set_from_error (data->_async_result, data->_inner_error_);
-					g_error_free (data->_inner_error_);
-					_g_object_unref0 (data->parser);
-					{
-						if (data->_state_ == 0) {
-							g_simple_async_result_complete_in_idle (data->_async_result);
-						} else {
-							g_simple_async_result_complete (data->_async_result);
-						}
-						g_object_unref (data->_async_result);
-						return FALSE;
-					}
-				}
-			}
-			data->_state_ = 29;
-			rygel_media_container_search (data->container, data->parser->expression, data->self->index, data->self->requested_count, rygel_state_machine_get_cancellable ((RygelStateMachine*) data->self), rygel_search_fetch_results_ready, data);
-			return FALSE;
-			case 29:
-			data->results = rygel_media_container_search_finish (data->container, data->_res_, &data->self->total_matches, &data->_inner_error_);
-			if (data->_inner_error_ != NULL) {
+		}
+		data->_state_ = 38;
+		rygel_state_machine_run ((RygelStateMachine*) data->parser, rygel_search_fetch_results_ready, data);
+		return FALSE;
+		_state_38:
+#line 141 "rygel-search.vala"
+		rygel_state_machine_run_finish ((RygelStateMachine*) data->parser, data->_res_);
+#line 143 "rygel-search.vala"
+		if (data->parser->err != NULL) {
+#line 848 "rygel-search.c"
+			data->_inner_error_ = _g_error_copy0 (data->parser->err);
+			{
 				g_simple_async_result_set_from_error (data->_async_result, data->_inner_error_);
 				g_error_free (data->_inner_error_);
 				_g_object_unref0 (data->parser);
@@ -791,30 +860,15 @@ static gboolean rygel_search_fetch_results_co (RygelSearchFetchResultsData* data
 					return FALSE;
 				}
 			}
-#line 140 "rygel-search.vala"
-			if (gee_collection_get_size ((GeeCollection*) data->results) == 0) {
-#line 797 "rygel-search.c"
-				data->_inner_error_ = g_error_new_literal (RYGEL_CONTENT_DIRECTORY_ERROR, RYGEL_CONTENT_DIRECTORY_ERROR_CANT_PROCESS, "No objects found that could satisfy" " the given search criteria.");
-				{
-					g_simple_async_result_set_from_error (data->_async_result, data->_inner_error_);
-					g_error_free (data->_inner_error_);
-					_g_object_unref0 (data->parser);
-					_g_object_unref0 (data->results);
-					{
-						if (data->_state_ == 0) {
-							g_simple_async_result_complete_in_idle (data->_async_result);
-						} else {
-							g_simple_async_result_complete (data->_async_result);
-						}
-						g_object_unref (data->_async_result);
-						return FALSE;
-					}
-				}
-			}
-#line 146 "rygel-search.vala"
-			data->self->number_returned = (guint) gee_collection_get_size ((GeeCollection*) data->results);
-#line 817 "rygel-search.c"
-			data->result = data->results;
+		}
+		data->_state_ = 39;
+		rygel_media_container_search (data->container, data->parser->expression, data->self->index, data->self->requested_count, rygel_state_machine_get_cancellable ((RygelStateMachine*) data->self), rygel_search_fetch_results_ready, data);
+		return FALSE;
+		_state_39:
+		data->results = rygel_media_container_search_finish (data->container, data->_res_, &data->self->total_matches, &data->_inner_error_);
+		if (data->_inner_error_ != NULL) {
+			g_simple_async_result_set_from_error (data->_async_result, data->_inner_error_);
+			g_error_free (data->_inner_error_);
 			_g_object_unref0 (data->parser);
 			{
 				if (data->_state_ == 0) {
@@ -825,9 +879,32 @@ static gboolean rygel_search_fetch_results_co (RygelSearchFetchResultsData* data
 				g_object_unref (data->_async_result);
 				return FALSE;
 			}
-			_g_object_unref0 (data->parser);
-			_g_object_unref0 (data->results);
 		}
+#line 152 "rygel-search.vala"
+		if (gee_collection_get_size ((GeeCollection*) data->results) == 0) {
+#line 886 "rygel-search.c"
+			data->_inner_error_ = g_error_new_literal (RYGEL_CONTENT_DIRECTORY_ERROR, RYGEL_CONTENT_DIRECTORY_ERROR_CANT_PROCESS, "No objects found that could satisfy" " the given search criteria.");
+			{
+				g_simple_async_result_set_from_error (data->_async_result, data->_inner_error_);
+				g_error_free (data->_inner_error_);
+				_g_object_unref0 (data->parser);
+				_g_object_unref0 (data->results);
+				{
+					if (data->_state_ == 0) {
+						g_simple_async_result_complete_in_idle (data->_async_result);
+					} else {
+						g_simple_async_result_complete (data->_async_result);
+					}
+					g_object_unref (data->_async_result);
+					return FALSE;
+				}
+			}
+		}
+#line 158 "rygel-search.vala"
+		data->self->number_returned = (guint) gee_collection_get_size ((GeeCollection*) data->results);
+#line 906 "rygel-search.c"
+		data->result = data->results;
+		_g_object_unref0 (data->parser);
 		{
 			if (data->_state_ == 0) {
 				g_simple_async_result_complete_in_idle (data->_async_result);
@@ -837,56 +914,67 @@ static gboolean rygel_search_fetch_results_co (RygelSearchFetchResultsData* data
 			g_object_unref (data->_async_result);
 			return FALSE;
 		}
+		_g_object_unref0 (data->parser);
+		_g_object_unref0 (data->results);
+	}
+	{
+		if (data->_state_ == 0) {
+			g_simple_async_result_complete_in_idle (data->_async_result);
+		} else {
+			g_simple_async_result_complete (data->_async_result);
+		}
+		g_object_unref (data->_async_result);
+		return FALSE;
 	}
 }
 
 
-#line 151 "rygel-search.vala"
-static void rygel_search_conclude (RygelSearch* self) {
-#line 847 "rygel-search.c"
-	char* didl;
-#line 151 "rygel-search.vala"
-	g_return_if_fail (self != NULL);
-#line 153 "rygel-search.vala"
-	gupnp_didl_lite_writer_filter ((GUPnPDIDLLiteWriter*) self->priv->didl_writer, self->filter);
-#line 156 "rygel-search.vala"
-	didl = gupnp_didl_lite_writer_get_string ((GUPnPDIDLLiteWriter*) self->priv->didl_writer);
-#line 158 "rygel-search.vala"
-	if (self->update_id == G_MAXUINT32) {
-#line 159 "rygel-search.vala"
-		self->update_id = (guint) self->priv->system_update_id;
-#line 859 "rygel-search.c"
-	}
 #line 163 "rygel-search.vala"
-	gupnp_service_action_set (self->priv->action, "Result", G_TYPE_STRING, didl, "NumberReturned", G_TYPE_UINT, self->number_returned, "TotalMatches", G_TYPE_UINT, self->total_matches, "UpdateID", G_TYPE_UINT, self->update_id, NULL);
+static void rygel_search_conclude (RygelSearch* self) {
+#line 935 "rygel-search.c"
+	char* didl;
+#line 163 "rygel-search.vala"
+	g_return_if_fail (self != NULL);
+#line 165 "rygel-search.vala"
+	gupnp_didl_lite_writer_filter ((GUPnPDIDLLiteWriter*) self->priv->didl_writer, self->filter);
 #line 168 "rygel-search.vala"
+	didl = gupnp_didl_lite_writer_get_string ((GUPnPDIDLLiteWriter*) self->priv->didl_writer);
+#line 170 "rygel-search.vala"
+	if (self->update_id == G_MAXUINT32) {
+#line 171 "rygel-search.vala"
+		self->update_id = (guint) self->priv->system_update_id;
+#line 947 "rygel-search.c"
+	}
+#line 175 "rygel-search.vala"
+	gupnp_service_action_set (self->priv->action, "Result", G_TYPE_STRING, didl, "NumberReturned", G_TYPE_UINT, self->number_returned, "TotalMatches", G_TYPE_UINT, self->total_matches, "UpdateID", G_TYPE_UINT, self->update_id, NULL);
+#line 180 "rygel-search.vala"
 	gupnp_service_action_return (self->priv->action);
-#line 169 "rygel-search.vala"
+#line 181 "rygel-search.vala"
 	g_signal_emit_by_name ((RygelStateMachine*) self, "completed");
-#line 867 "rygel-search.c"
+#line 955 "rygel-search.c"
 	_g_free0 (didl);
 }
 
 
-#line 172 "rygel-search.vala"
+#line 184 "rygel-search.vala"
 static void rygel_search_handle_error (RygelSearch* self, GError* _error_) {
-#line 172 "rygel-search.vala"
+#line 184 "rygel-search.vala"
 	g_return_if_fail (self != NULL);
-#line 173 "rygel-search.vala"
-	g_warning ("rygel-search.vala:173: Failed to search in '%s': %s\n", self->container_id, _error_->message);
-#line 177 "rygel-search.vala"
+#line 185 "rygel-search.vala"
+	g_warning ("rygel-search.vala:185: Failed to search in '%s': %s\n", self->container_id, _error_->message);
+#line 189 "rygel-search.vala"
 	if (_error_->domain == RYGEL_CONTENT_DIRECTORY_ERROR) {
-#line 178 "rygel-search.vala"
+#line 190 "rygel-search.vala"
 		gupnp_service_action_return_error (self->priv->action, (guint) _error_->code, _error_->message);
-#line 882 "rygel-search.c"
+#line 970 "rygel-search.c"
 	} else {
-#line 180 "rygel-search.vala"
+#line 192 "rygel-search.vala"
 		gupnp_service_action_return_error (self->priv->action, (guint) 701, _error_->message);
-#line 886 "rygel-search.c"
+#line 974 "rygel-search.c"
 	}
-#line 183 "rygel-search.vala"
+#line 195 "rygel-search.vala"
 	g_signal_emit_by_name ((RygelStateMachine*) self, "completed");
-#line 890 "rygel-search.c"
+#line 978 "rygel-search.c"
 }
 
 
@@ -895,9 +983,9 @@ static GCancellable* rygel_search_real_get_cancellable (RygelStateMachine* base)
 	RygelSearch* self;
 	self = (RygelSearch*) base;
 	result = self->priv->_cancellable;
-#line 50 "rygel-search.vala"
+#line 51 "rygel-search.vala"
 	return result;
-#line 901 "rygel-search.c"
+#line 989 "rygel-search.c"
 }
 
 
@@ -943,20 +1031,23 @@ static void rygel_search_finalize (GObject* obj) {
 	_g_free0 (self->sort_criteria);
 	_g_object_unref0 (self->priv->root_container);
 	_g_object_unref0 (self->priv->didl_writer);
+	_g_object_unref0 (self->priv->xbox_hacks);
 	_g_object_unref0 (self->priv->_cancellable);
 	G_OBJECT_CLASS (rygel_search_parent_class)->finalize (obj);
 }
 
 
 GType rygel_search_get_type (void) {
-	static GType rygel_search_type_id = 0;
-	if (rygel_search_type_id == 0) {
+	static volatile gsize rygel_search_type_id__volatile = 0;
+	if (g_once_init_enter (&rygel_search_type_id__volatile)) {
 		static const GTypeInfo g_define_type_info = { sizeof (RygelSearchClass), (GBaseInitFunc) NULL, (GBaseFinalizeFunc) NULL, (GClassInitFunc) rygel_search_class_init, (GClassFinalizeFunc) NULL, NULL, sizeof (RygelSearch), 0, (GInstanceInitFunc) rygel_search_instance_init, NULL };
 		static const GInterfaceInfo rygel_state_machine_info = { (GInterfaceInitFunc) rygel_search_rygel_state_machine_interface_init, (GInterfaceFinalizeFunc) NULL, NULL};
+		GType rygel_search_type_id;
 		rygel_search_type_id = g_type_register_static (G_TYPE_OBJECT, "RygelSearch", &g_define_type_info, 0);
 		g_type_add_interface_static (rygel_search_type_id, RYGEL_TYPE_STATE_MACHINE, &rygel_state_machine_info);
+		g_once_init_leave (&rygel_search_type_id__volatile, rygel_search_type_id);
 	}
-	return rygel_search_type_id;
+	return rygel_search_type_id__volatile;
 }
 
 

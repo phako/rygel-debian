@@ -25,12 +25,17 @@
 
 #include <glib.h>
 #include <glib-object.h>
-#include <gio/gio.h>
+#include <libgupnp-av/gupnp-av.h>
 #include <stdlib.h>
 #include <string.h>
-#include <gee.h>
-#include <libgupnp-av/gupnp-av.h>
+#include <gio/gio.h>
 
+
+#define RYGEL_TYPE_SEARCH_CRITERIA_SYMBOL (rygel_search_criteria_symbol_get_type ())
+
+#define RYGEL_TYPE_SEARCH_CRITERIA_TOKEN (rygel_search_criteria_token_get_type ())
+typedef struct _RygelSearchCriteriaToken RygelSearchCriteriaToken;
+#define _g_free0(var) (var = (g_free (var), NULL))
 
 #define RYGEL_TYPE_STATE_MACHINE (rygel_state_machine_get_type ())
 #define RYGEL_STATE_MACHINE(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_STATE_MACHINE, RygelStateMachine))
@@ -60,33 +65,21 @@ typedef struct _RygelSearchCriteriaParserPrivate RygelSearchCriteriaParserPrivat
 
 typedef struct _RygelSearchExpression RygelSearchExpression;
 typedef struct _RygelSearchExpressionClass RygelSearchExpressionClass;
-#define _g_free0(var) (var = (g_free (var), NULL))
 #define _rygel_search_expression_unref0(var) ((var == NULL) ? NULL : (var = (rygel_search_expression_unref (var), NULL)))
 #define _g_error_free0(var) ((var == NULL) ? NULL : (var = (g_error_free (var), NULL)))
 #define _g_object_unref0(var) ((var == NULL) ? NULL : (var = (g_object_unref (var), NULL)))
-
-#define RYGEL_TYPE_OPENNING_BRACE (rygel_openning_brace_get_type ())
-#define RYGEL_OPENNING_BRACE(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_OPENNING_BRACE, RygelOpenningBrace))
-#define RYGEL_OPENNING_BRACE_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TYPE_OPENNING_BRACE, RygelOpenningBraceClass))
-#define RYGEL_IS_OPENNING_BRACE(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TYPE_OPENNING_BRACE))
-#define RYGEL_IS_OPENNING_BRACE_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_TYPE_OPENNING_BRACE))
-#define RYGEL_OPENNING_BRACE_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_TYPE_OPENNING_BRACE, RygelOpenningBraceClass))
-
-typedef struct _RygelOpenningBrace RygelOpenningBrace;
-typedef struct _RygelOpenningBraceClass RygelOpenningBraceClass;
-
-#define RYGEL_TYPE_LOGICAL_OPERATOR (rygel_logical_operator_get_type ())
+#define _g_scanner_destroy0(var) ((var == NULL) ? NULL : (var = (g_scanner_destroy (var), NULL)))
 typedef struct _RygelSearchCriteriaParserRunData RygelSearchCriteriaParserRunData;
 
-#define RYGEL_TYPE_RELATIONAL_EXPRESSION (rygel_relational_expression_get_type ())
-#define RYGEL_RELATIONAL_EXPRESSION(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_RELATIONAL_EXPRESSION, RygelRelationalExpression))
-#define RYGEL_RELATIONAL_EXPRESSION_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TYPE_RELATIONAL_EXPRESSION, RygelRelationalExpressionClass))
-#define RYGEL_IS_RELATIONAL_EXPRESSION(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TYPE_RELATIONAL_EXPRESSION))
-#define RYGEL_IS_RELATIONAL_EXPRESSION_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_TYPE_RELATIONAL_EXPRESSION))
-#define RYGEL_RELATIONAL_EXPRESSION_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_TYPE_RELATIONAL_EXPRESSION, RygelRelationalExpressionClass))
+#define RYGEL_TYPE_LOGICAL_EXPRESSION (rygel_logical_expression_get_type ())
+#define RYGEL_LOGICAL_EXPRESSION(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_LOGICAL_EXPRESSION, RygelLogicalExpression))
+#define RYGEL_LOGICAL_EXPRESSION_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TYPE_LOGICAL_EXPRESSION, RygelLogicalExpressionClass))
+#define RYGEL_IS_LOGICAL_EXPRESSION(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TYPE_LOGICAL_EXPRESSION))
+#define RYGEL_IS_LOGICAL_EXPRESSION_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_TYPE_LOGICAL_EXPRESSION))
+#define RYGEL_LOGICAL_EXPRESSION_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_TYPE_LOGICAL_EXPRESSION, RygelLogicalExpressionClass))
 
-typedef struct _RygelRelationalExpression RygelRelationalExpression;
-typedef struct _RygelRelationalExpressionClass RygelRelationalExpressionClass;
+typedef struct _RygelLogicalExpression RygelLogicalExpression;
+typedef struct _RygelLogicalExpressionClass RygelLogicalExpressionClass;
 typedef struct _RygelSearchExpressionPrivate RygelSearchExpressionPrivate;
 
 #define RYGEL_TYPE_MEDIA_OBJECT (rygel_media_object_get_type ())
@@ -99,16 +92,44 @@ typedef struct _RygelSearchExpressionPrivate RygelSearchExpressionPrivate;
 typedef struct _RygelMediaObject RygelMediaObject;
 typedef struct _RygelMediaObjectClass RygelMediaObjectClass;
 
-#define RYGEL_TYPE_LOGICAL_EXPRESSION (rygel_logical_expression_get_type ())
-#define RYGEL_LOGICAL_EXPRESSION(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_LOGICAL_EXPRESSION, RygelLogicalExpression))
-#define RYGEL_LOGICAL_EXPRESSION_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TYPE_LOGICAL_EXPRESSION, RygelLogicalExpressionClass))
-#define RYGEL_IS_LOGICAL_EXPRESSION(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TYPE_LOGICAL_EXPRESSION))
-#define RYGEL_IS_LOGICAL_EXPRESSION_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_TYPE_LOGICAL_EXPRESSION))
-#define RYGEL_LOGICAL_EXPRESSION_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_TYPE_LOGICAL_EXPRESSION, RygelLogicalExpressionClass))
+#define RYGEL_TYPE_LOGICAL_OPERATOR (rygel_logical_operator_get_type ())
 
-typedef struct _RygelLogicalExpression RygelLogicalExpression;
-typedef struct _RygelLogicalExpressionClass RygelLogicalExpressionClass;
-typedef struct _RygelOpenningBracePrivate RygelOpenningBracePrivate;
+#define RYGEL_TYPE_RELATIONAL_EXPRESSION (rygel_relational_expression_get_type ())
+#define RYGEL_RELATIONAL_EXPRESSION(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_RELATIONAL_EXPRESSION, RygelRelationalExpression))
+#define RYGEL_RELATIONAL_EXPRESSION_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TYPE_RELATIONAL_EXPRESSION, RygelRelationalExpressionClass))
+#define RYGEL_IS_RELATIONAL_EXPRESSION(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TYPE_RELATIONAL_EXPRESSION))
+#define RYGEL_IS_RELATIONAL_EXPRESSION_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_TYPE_RELATIONAL_EXPRESSION))
+#define RYGEL_RELATIONAL_EXPRESSION_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_TYPE_RELATIONAL_EXPRESSION, RygelRelationalExpressionClass))
+
+typedef struct _RygelRelationalExpression RygelRelationalExpression;
+typedef struct _RygelRelationalExpressionClass RygelRelationalExpressionClass;
+
+typedef enum  {
+	RYGEL_SEARCH_CRITERIA_ERROR_SYNTAX_ERROR
+} RygelSearchCriteriaError;
+#define RYGEL_SEARCH_CRITERIA_ERROR rygel_search_criteria_error_quark ()
+typedef enum  {
+	RYGEL_SEARCH_CRITERIA_SYMBOL_EQ = GUPNP_SEARCH_CRITERIA_OP_EQ,
+	RYGEL_SEARCH_CRITERIA_SYMBOL_NEQ,
+	RYGEL_SEARCH_CRITERIA_SYMBOL_LESS,
+	RYGEL_SEARCH_CRITERIA_SYMBOL_LEQ,
+	RYGEL_SEARCH_CRITERIA_SYMBOL_GREATER,
+	RYGEL_SEARCH_CRITERIA_SYMBOL_GEQ,
+	RYGEL_SEARCH_CRITERIA_SYMBOL_CONTAINS,
+	RYGEL_SEARCH_CRITERIA_SYMBOL_DOES_NOT_CONTAIN,
+	RYGEL_SEARCH_CRITERIA_SYMBOL_DERIVED_FROM,
+	RYGEL_SEARCH_CRITERIA_SYMBOL_EXISTS,
+	RYGEL_SEARCH_CRITERIA_SYMBOL_ASTERISK,
+	RYGEL_SEARCH_CRITERIA_SYMBOL_AND,
+	RYGEL_SEARCH_CRITERIA_SYMBOL_OR,
+	RYGEL_SEARCH_CRITERIA_SYMBOL_TRUE,
+	RYGEL_SEARCH_CRITERIA_SYMBOL_FALSE
+} RygelSearchCriteriaSymbol;
+
+struct _RygelSearchCriteriaToken {
+	char* str_symbol;
+	RygelSearchCriteriaSymbol symbol;
+};
 
 struct _RygelStateMachineIface {
 	GTypeInterface parent_iface;
@@ -131,22 +152,18 @@ struct _RygelSearchCriteriaParserClass {
 };
 
 struct _RygelSearchCriteriaParserPrivate {
-	GeeLinkedList* exp_stack;
 	GCancellable* _cancellable;
+	GScanner* scanner;
 };
-
-typedef enum  {
-	RYGEL_LOGICAL_OPERATOR_AND,
-	RYGEL_LOGICAL_OPERATOR_OR
-} RygelLogicalOperator;
 
 struct _RygelSearchCriteriaParserRunData {
 	int _state_;
 	GAsyncResult* _res_;
 	GSimpleAsyncResult* _async_result;
 	RygelSearchCriteriaParser* self;
-	GUPnPSearchCriteriaParser* parser;
-	GError* _tmp0_;
+	RygelSearchExpression* _tmp0_;
+	RygelSearchExpression* _tmp1_;
+	GError* _tmp2_;
 	GError * err;
 	GError * _inner_error_;
 };
@@ -167,26 +184,29 @@ struct _RygelSearchExpressionClass {
 	char* (*to_string) (RygelSearchExpression* self);
 };
 
-struct _RygelOpenningBrace {
-	RygelSearchExpression parent_instance;
-	RygelOpenningBracePrivate * priv;
-};
-
-struct _RygelOpenningBraceClass {
-	RygelSearchExpressionClass parent_class;
-};
+typedef enum  {
+	RYGEL_LOGICAL_OPERATOR_AND,
+	RYGEL_LOGICAL_OPERATOR_OR
+} RygelLogicalOperator;
 
 
 static gpointer rygel_search_criteria_parser_parent_class = NULL;
 static RygelStateMachineIface* rygel_search_criteria_parser_rygel_state_machine_parent_iface = NULL;
-static gpointer rygel_openning_brace_parent_class = NULL;
 
+GQuark rygel_search_criteria_error_quark (void);
+GType rygel_search_criteria_symbol_get_type (void);
+GType rygel_search_criteria_token_get_type (void);
+RygelSearchCriteriaToken* rygel_search_criteria_token_dup (const RygelSearchCriteriaToken* self);
+void rygel_search_criteria_token_free (RygelSearchCriteriaToken* self);
+void rygel_search_criteria_token_copy (const RygelSearchCriteriaToken* self, RygelSearchCriteriaToken* dest);
+void rygel_search_criteria_token_destroy (RygelSearchCriteriaToken* self);
 GType rygel_state_machine_get_type (void);
 GType rygel_search_criteria_parser_get_type (void);
 gpointer rygel_search_expression_ref (gpointer instance);
 void rygel_search_expression_unref (gpointer instance);
 GParamSpec* rygel_param_spec_search_expression (const gchar* name, const gchar* nick, const gchar* blurb, GType object_type, GParamFlags flags);
 void rygel_value_set_search_expression (GValue* value, gpointer v_object);
+void rygel_value_take_search_expression (GValue* value, gpointer v_object);
 gpointer rygel_value_get_search_expression (const GValue* value);
 GType rygel_search_expression_get_type (void);
 #define RYGEL_SEARCH_CRITERIA_PARSER_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), RYGEL_TYPE_SEARCH_CRITERIA_PARSER, RygelSearchCriteriaParserPrivate))
@@ -199,74 +219,142 @@ RygelSearchCriteriaParser* rygel_search_criteria_parser_construct (GType object_
 static void rygel_search_criteria_parser_real_run_data_free (gpointer _data);
 static void rygel_search_criteria_parser_real_run (RygelStateMachine* base, GAsyncReadyCallback _callback_, gpointer _user_data_);
 static void rygel_search_criteria_parser_run_ready (GObject* source_object, GAsyncResult* _res_, gpointer _user_data_);
-static gboolean rygel_search_criteria_parser_on_expression (RygelSearchCriteriaParser* self, GUPnPSearchCriteriaParser* parser, const char* property, GUPnPSearchCriteriaOp op, const char* value, void* err);
-static gboolean _rygel_search_criteria_parser_on_expression_gupnp_search_criteria_parser_expression (GUPnPSearchCriteriaParser* _sender, const char* property, GUPnPSearchCriteriaOp op, const char* value, void* _error_, gpointer self);
-RygelOpenningBrace* rygel_openning_brace_new (void);
-RygelOpenningBrace* rygel_openning_brace_construct (GType object_type);
-GType rygel_openning_brace_get_type (void);
-static void _lambda5_ (RygelSearchCriteriaParser* self);
-static void __lambda5__gupnp_search_criteria_parser_begin_parens (GUPnPSearchCriteriaParser* _sender, gpointer self);
-static void rygel_search_criteria_parser_on_end_parens (RygelSearchCriteriaParser* self, GUPnPSearchCriteriaParser* parser);
-static void _rygel_search_criteria_parser_on_end_parens_gupnp_search_criteria_parser_end_parens (GUPnPSearchCriteriaParser* _sender, gpointer self);
-GType rygel_logical_operator_get_type (void);
-static void rygel_search_criteria_parser_handle_logical_operator (RygelSearchCriteriaParser* self, RygelLogicalOperator lop);
-static void _lambda6_ (RygelSearchCriteriaParser* self);
-static void __lambda6__gupnp_search_criteria_parser_conjunction (GUPnPSearchCriteriaParser* _sender, gpointer self);
-static void _lambda7_ (RygelSearchCriteriaParser* self);
-static void __lambda7__gupnp_search_criteria_parser_disjunction (GUPnPSearchCriteriaParser* _sender, gpointer self);
+static RygelSearchExpression* rygel_search_criteria_parser_parse_or_expression (RygelSearchCriteriaParser* self, GError** error);
 static gboolean rygel_search_criteria_parser_real_run_co (RygelSearchCriteriaParserRunData* data);
+static RygelSearchExpression* rygel_search_criteria_parser_parse_rel_expression (RygelSearchCriteriaParser* self, GError** error);
+static RygelSearchCriteriaSymbol rygel_search_criteria_parser_get_token (RygelSearchCriteriaParser* self);
+RygelLogicalExpression* rygel_logical_expression_new (void);
+RygelLogicalExpression* rygel_logical_expression_construct (GType object_type);
+GType rygel_logical_expression_get_type (void);
+GType rygel_media_object_get_type (void);
+GType rygel_logical_operator_get_type (void);
+static RygelSearchExpression* rygel_search_criteria_parser_parse_and_expression (RygelSearchCriteriaParser* self, GError** error);
 RygelRelationalExpression* rygel_relational_expression_new (void);
 RygelRelationalExpression* rygel_relational_expression_construct (GType object_type);
 GType rygel_relational_expression_get_type (void);
-GType rygel_media_object_get_type (void);
-GType rygel_logical_expression_get_type (void);
-RygelLogicalExpression* rygel_logical_expression_new (void);
-RygelLogicalExpression* rygel_logical_expression_construct (GType object_type);
+static char* rygel_search_criteria_parser_get_context (RygelSearchCriteriaParser* self);
 static void rygel_search_criteria_parser_finalize (GObject* obj);
 GCancellable* rygel_state_machine_get_cancellable (RygelStateMachine* self);
 static void rygel_search_criteria_parser_get_property (GObject * object, guint property_id, GValue * value, GParamSpec * pspec);
 void rygel_state_machine_set_cancellable (RygelStateMachine* self, GCancellable* value);
 static void rygel_search_criteria_parser_set_property (GObject * object, guint property_id, const GValue * value, GParamSpec * pspec);
-enum  {
-	RYGEL_OPENNING_BRACE_DUMMY_PROPERTY
-};
-static gboolean rygel_openning_brace_real_satisfied_by (RygelSearchExpression* base, RygelMediaObject* media_object);
-static char* rygel_openning_brace_real_to_string (RygelSearchExpression* base);
-RygelSearchExpression* rygel_search_expression_construct (GType object_type, GType g_type, GBoxedCopyFunc g_dup_func, GDestroyNotify g_destroy_func, GType h_type, GBoxedCopyFunc h_dup_func, GDestroyNotify h_destroy_func, GType i_type, GBoxedCopyFunc i_dup_func, GDestroyNotify i_destroy_func);
 static int _vala_strcmp0 (const char * str1, const char * str2);
 
+static const RygelSearchCriteriaToken RYGEL_SEARCH_CRITERIA_PARSER_tokens[15] = {{"=", RYGEL_SEARCH_CRITERIA_SYMBOL_EQ}, {"!=", RYGEL_SEARCH_CRITERIA_SYMBOL_NEQ}, {"<", RYGEL_SEARCH_CRITERIA_SYMBOL_LESS}, {"<=", RYGEL_SEARCH_CRITERIA_SYMBOL_LEQ}, {">", RYGEL_SEARCH_CRITERIA_SYMBOL_GREATER}, {">=", RYGEL_SEARCH_CRITERIA_SYMBOL_GEQ}, {"contains", RYGEL_SEARCH_CRITERIA_SYMBOL_CONTAINS}, {"doesNotContain", RYGEL_SEARCH_CRITERIA_SYMBOL_DOES_NOT_CONTAIN}, {"derivedfrom", RYGEL_SEARCH_CRITERIA_SYMBOL_DERIVED_FROM}, {"exists", RYGEL_SEARCH_CRITERIA_SYMBOL_EXISTS}, {"*", RYGEL_SEARCH_CRITERIA_SYMBOL_ASTERISK}, {"and", RYGEL_SEARCH_CRITERIA_SYMBOL_AND}, {"or", RYGEL_SEARCH_CRITERIA_SYMBOL_OR}, {"true", RYGEL_SEARCH_CRITERIA_SYMBOL_TRUE}, {"false", RYGEL_SEARCH_CRITERIA_SYMBOL_FALSE}};
 
 
-#line 39 "rygel-search-criteria-parser.vala"
+GQuark rygel_search_criteria_error_quark (void) {
+	return g_quark_from_static_string ("rygel_search_criteria_error-quark");
+}
+
+
+GType rygel_search_criteria_symbol_get_type (void) {
+	static volatile gsize rygel_search_criteria_symbol_type_id__volatile = 0;
+	if (g_once_init_enter (&rygel_search_criteria_symbol_type_id__volatile)) {
+		static const GEnumValue values[] = {{RYGEL_SEARCH_CRITERIA_SYMBOL_EQ, "RYGEL_SEARCH_CRITERIA_SYMBOL_EQ", "eq"}, {RYGEL_SEARCH_CRITERIA_SYMBOL_NEQ, "RYGEL_SEARCH_CRITERIA_SYMBOL_NEQ", "neq"}, {RYGEL_SEARCH_CRITERIA_SYMBOL_LESS, "RYGEL_SEARCH_CRITERIA_SYMBOL_LESS", "less"}, {RYGEL_SEARCH_CRITERIA_SYMBOL_LEQ, "RYGEL_SEARCH_CRITERIA_SYMBOL_LEQ", "leq"}, {RYGEL_SEARCH_CRITERIA_SYMBOL_GREATER, "RYGEL_SEARCH_CRITERIA_SYMBOL_GREATER", "greater"}, {RYGEL_SEARCH_CRITERIA_SYMBOL_GEQ, "RYGEL_SEARCH_CRITERIA_SYMBOL_GEQ", "geq"}, {RYGEL_SEARCH_CRITERIA_SYMBOL_CONTAINS, "RYGEL_SEARCH_CRITERIA_SYMBOL_CONTAINS", "contains"}, {RYGEL_SEARCH_CRITERIA_SYMBOL_DOES_NOT_CONTAIN, "RYGEL_SEARCH_CRITERIA_SYMBOL_DOES_NOT_CONTAIN", "does-not-contain"}, {RYGEL_SEARCH_CRITERIA_SYMBOL_DERIVED_FROM, "RYGEL_SEARCH_CRITERIA_SYMBOL_DERIVED_FROM", "derived-from"}, {RYGEL_SEARCH_CRITERIA_SYMBOL_EXISTS, "RYGEL_SEARCH_CRITERIA_SYMBOL_EXISTS", "exists"}, {RYGEL_SEARCH_CRITERIA_SYMBOL_ASTERISK, "RYGEL_SEARCH_CRITERIA_SYMBOL_ASTERISK", "asterisk"}, {RYGEL_SEARCH_CRITERIA_SYMBOL_AND, "RYGEL_SEARCH_CRITERIA_SYMBOL_AND", "and"}, {RYGEL_SEARCH_CRITERIA_SYMBOL_OR, "RYGEL_SEARCH_CRITERIA_SYMBOL_OR", "or"}, {RYGEL_SEARCH_CRITERIA_SYMBOL_TRUE, "RYGEL_SEARCH_CRITERIA_SYMBOL_TRUE", "true"}, {RYGEL_SEARCH_CRITERIA_SYMBOL_FALSE, "RYGEL_SEARCH_CRITERIA_SYMBOL_FALSE", "false"}, {0, NULL, NULL}};
+		GType rygel_search_criteria_symbol_type_id;
+		rygel_search_criteria_symbol_type_id = g_enum_register_static ("RygelSearchCriteriaSymbol", values);
+		g_once_init_leave (&rygel_search_criteria_symbol_type_id__volatile, rygel_search_criteria_symbol_type_id);
+	}
+	return rygel_search_criteria_symbol_type_id__volatile;
+}
+
+
+void rygel_search_criteria_token_copy (const RygelSearchCriteriaToken* self, RygelSearchCriteriaToken* dest) {
+	dest->str_symbol = g_strdup (self->str_symbol);
+	dest->symbol = self->symbol;
+}
+
+
+void rygel_search_criteria_token_destroy (RygelSearchCriteriaToken* self) {
+	_g_free0 (self->str_symbol);
+}
+
+
+RygelSearchCriteriaToken* rygel_search_criteria_token_dup (const RygelSearchCriteriaToken* self) {
+	RygelSearchCriteriaToken* dup;
+	dup = g_new0 (RygelSearchCriteriaToken, 1);
+	rygel_search_criteria_token_copy (self, dup);
+	return dup;
+}
+
+
+void rygel_search_criteria_token_free (RygelSearchCriteriaToken* self) {
+	rygel_search_criteria_token_destroy (self);
+	g_free (self);
+}
+
+
+GType rygel_search_criteria_token_get_type (void) {
+	static volatile gsize rygel_search_criteria_token_type_id__volatile = 0;
+	if (g_once_init_enter (&rygel_search_criteria_token_type_id__volatile)) {
+		GType rygel_search_criteria_token_type_id;
+		rygel_search_criteria_token_type_id = g_boxed_type_register_static ("RygelSearchCriteriaToken", (GBoxedCopyFunc) rygel_search_criteria_token_dup, (GBoxedFreeFunc) rygel_search_criteria_token_free);
+		g_once_init_leave (&rygel_search_criteria_token_type_id__volatile, rygel_search_criteria_token_type_id);
+	}
+	return rygel_search_criteria_token_type_id__volatile;
+}
+
+
+#line 98 "rygel-search-criteria-parser.vala"
 RygelSearchCriteriaParser* rygel_search_criteria_parser_construct (GType object_type, const char* str, GError** error) {
-#line 243 "rygel-search-criteria-parser.c"
+#line 302 "rygel-search-criteria-parser.c"
 	RygelSearchCriteriaParser * self;
 	char* _tmp0_;
-	GeeLinkedList* _tmp1_;
-#line 39 "rygel-search-criteria-parser.vala"
+	GScanner* _tmp1_;
+#line 98 "rygel-search-criteria-parser.vala"
 	g_return_val_if_fail (str != NULL, NULL);
-#line 39 "rygel-search-criteria-parser.vala"
+#line 98 "rygel-search-criteria-parser.vala"
 	self = (RygelSearchCriteriaParser*) g_object_new (object_type, NULL);
-#line 40 "rygel-search-criteria-parser.vala"
+#line 99 "rygel-search-criteria-parser.vala"
 	self->str = (_tmp0_ = g_strdup (str), _g_free0 (self->str), _tmp0_);
-#line 41 "rygel-search-criteria-parser.vala"
-	self->priv->exp_stack = (_tmp1_ = gee_linked_list_new (RYGEL_TYPE_SEARCH_EXPRESSION, (GBoxedCopyFunc) rygel_search_expression_ref, rygel_search_expression_unref, NULL), _g_object_unref0 (self->priv->exp_stack), _tmp1_);
-#line 255 "rygel-search-criteria-parser.c"
+#line 100 "rygel-search-criteria-parser.vala"
+	self->priv->scanner = (_tmp1_ = g_scanner_new (NULL), _g_scanner_destroy0 (self->priv->scanner), _tmp1_);
+#line 101 "rygel-search-criteria-parser.vala"
+	(*self->priv->scanner->config).cset_skip_characters = " \t\n\r\012" "\013\014\015";
+#line 103 "rygel-search-criteria-parser.vala"
+	(*self->priv->scanner->config).scan_identifier_1char = TRUE;
+#line 104 "rygel-search-criteria-parser.vala"
+	(*self->priv->scanner->config).cset_identifier_first = G_CSET_a_2_z "_*<>=!@" G_CSET_A_2_Z;
+#line 107 "rygel-search-criteria-parser.vala"
+	(*self->priv->scanner->config).cset_identifier_nth = G_CSET_a_2_z "_" G_CSET_DIGITS "=:@" G_CSET_A_2_Z G_CSET_LATINS G_CSET_LATINC;
+#line 112 "rygel-search-criteria-parser.vala"
+	(*self->priv->scanner->config).symbol_2_token = TRUE;
+#line 324 "rygel-search-criteria-parser.c"
+	{
+		RygelSearchCriteriaToken* token_collection;
+		int token_collection_length1;
+		int token_it;
+#line 114 "rygel-search-criteria-parser.vala"
+		token_collection = RYGEL_SEARCH_CRITERIA_PARSER_tokens;
+#line 331 "rygel-search-criteria-parser.c"
+		token_collection_length1 = G_N_ELEMENTS (RYGEL_SEARCH_CRITERIA_PARSER_tokens);
+		for (token_it = 0; token_it < G_N_ELEMENTS (RYGEL_SEARCH_CRITERIA_PARSER_tokens); token_it = token_it + 1) {
+			RygelSearchCriteriaToken token;
+			token = token_collection[token_it];
+			{
+#line 115 "rygel-search-criteria-parser.vala"
+				g_scanner_scope_add_symbol (self->priv->scanner, (guint) 0, token.str_symbol, GINT_TO_POINTER ((gint) token.symbol));
+#line 339 "rygel-search-criteria-parser.c"
+			}
+		}
+	}
 	return self;
 }
 
 
-#line 39 "rygel-search-criteria-parser.vala"
+#line 98 "rygel-search-criteria-parser.vala"
 RygelSearchCriteriaParser* rygel_search_criteria_parser_new (const char* str, GError** error) {
-#line 39 "rygel-search-criteria-parser.vala"
+#line 98 "rygel-search-criteria-parser.vala"
 	return rygel_search_criteria_parser_construct (RYGEL_TYPE_SEARCH_CRITERIA_PARSER, str, error);
-#line 264 "rygel-search-criteria-parser.c"
+#line 351 "rygel-search-criteria-parser.c"
 }
 
 
 static void rygel_search_criteria_parser_real_run_data_free (gpointer _data) {
 	RygelSearchCriteriaParserRunData* data;
 	data = _data;
+	g_object_unref (data->self);
 	g_slice_free (RygelSearchCriteriaParserRunData, data);
 }
 
@@ -278,7 +366,7 @@ static void rygel_search_criteria_parser_real_run (RygelStateMachine* base, GAsy
 	_data_ = g_slice_new0 (RygelSearchCriteriaParserRunData);
 	_data_->_async_result = g_simple_async_result_new (G_OBJECT (self), _callback_, _user_data_, rygel_search_criteria_parser_real_run);
 	g_simple_async_result_set_op_res_gpointer (_data_->_async_result, _data_, rygel_search_criteria_parser_real_run_data_free);
-	_data_->self = self;
+	_data_->self = g_object_ref (self);
 	rygel_search_criteria_parser_real_run_co (_data_);
 }
 
@@ -297,68 +385,6 @@ static void rygel_search_criteria_parser_run_ready (GObject* source_object, GAsy
 }
 
 
-#line 74 "rygel-search-criteria-parser.vala"
-static gboolean _rygel_search_criteria_parser_on_expression_gupnp_search_criteria_parser_expression (GUPnPSearchCriteriaParser* _sender, const char* property, GUPnPSearchCriteriaOp op, const char* value, void* _error_, gpointer self) {
-#line 303 "rygel-search-criteria-parser.c"
-	return rygel_search_criteria_parser_on_expression (self, _sender, property, op, value, _error_);
-}
-
-
-#line 54 "rygel-search-criteria-parser.vala"
-static void _lambda5_ (RygelSearchCriteriaParser* self) {
-#line 310 "rygel-search-criteria-parser.c"
-	RygelOpenningBrace* _tmp0_;
-#line 55 "rygel-search-criteria-parser.vala"
-	gee_deque_offer_tail ((GeeDeque*) self->priv->exp_stack, (RygelSearchExpression*) (_tmp0_ = rygel_openning_brace_new ()));
-#line 314 "rygel-search-criteria-parser.c"
-	_rygel_search_expression_unref0 (_tmp0_);
-}
-
-
-#line 54 "rygel-search-criteria-parser.vala"
-static void __lambda5__gupnp_search_criteria_parser_begin_parens (GUPnPSearchCriteriaParser* _sender, gpointer self) {
-#line 321 "rygel-search-criteria-parser.c"
-	_lambda5_ (self);
-}
-
-
-#line 153 "rygel-search-criteria-parser.vala"
-static void _rygel_search_criteria_parser_on_end_parens_gupnp_search_criteria_parser_end_parens (GUPnPSearchCriteriaParser* _sender, gpointer self) {
-#line 328 "rygel-search-criteria-parser.c"
-	rygel_search_criteria_parser_on_end_parens (self, _sender);
-}
-
-
-#line 58 "rygel-search-criteria-parser.vala"
-static void _lambda6_ (RygelSearchCriteriaParser* self) {
-#line 59 "rygel-search-criteria-parser.vala"
-	rygel_search_criteria_parser_handle_logical_operator (self, RYGEL_LOGICAL_OPERATOR_AND);
-#line 337 "rygel-search-criteria-parser.c"
-}
-
-
-#line 58 "rygel-search-criteria-parser.vala"
-static void __lambda6__gupnp_search_criteria_parser_conjunction (GUPnPSearchCriteriaParser* _sender, gpointer self) {
-#line 343 "rygel-search-criteria-parser.c"
-	_lambda6_ (self);
-}
-
-
-#line 61 "rygel-search-criteria-parser.vala"
-static void _lambda7_ (RygelSearchCriteriaParser* self) {
-#line 62 "rygel-search-criteria-parser.vala"
-	rygel_search_criteria_parser_handle_logical_operator (self, RYGEL_LOGICAL_OPERATOR_OR);
-#line 352 "rygel-search-criteria-parser.c"
-}
-
-
-#line 61 "rygel-search-criteria-parser.vala"
-static void __lambda7__gupnp_search_criteria_parser_disjunction (GUPnPSearchCriteriaParser* _sender, gpointer self) {
-#line 358 "rygel-search-criteria-parser.c"
-	_lambda7_ (self);
-}
-
-
 static gpointer _g_error_copy0 (gpointer self) {
 	return self ? g_error_copy (self) : NULL;
 }
@@ -366,73 +392,63 @@ static gpointer _g_error_copy0 (gpointer self) {
 
 static gboolean rygel_search_criteria_parser_real_run_co (RygelSearchCriteriaParserRunData* data) {
 	switch (data->_state_) {
+		case 0:
+		goto _state_0;
 		default:
 		g_assert_not_reached ();
-		case 0:
-		{
-#line 46 "rygel-search-criteria-parser.vala"
-			if (_vala_strcmp0 (data->self->str, "*") == 0) {
-#line 48 "rygel-search-criteria-parser.vala"
-				g_signal_emit_by_name ((RygelStateMachine*) data->self, "completed");
-#line 378 "rygel-search-criteria-parser.c"
-			}
-			data->parser = gupnp_search_criteria_parser_new ();
-#line 53 "rygel-search-criteria-parser.vala"
-			g_signal_connect_object (data->parser, "expression", (GCallback) _rygel_search_criteria_parser_on_expression_gupnp_search_criteria_parser_expression, data->self, 0);
-#line 54 "rygel-search-criteria-parser.vala"
-			g_signal_connect_object (data->parser, "begin-parens", (GCallback) __lambda5__gupnp_search_criteria_parser_begin_parens, data->self, 0);
-#line 57 "rygel-search-criteria-parser.vala"
-			g_signal_connect_object (data->parser, "end-parens", (GCallback) _rygel_search_criteria_parser_on_end_parens_gupnp_search_criteria_parser_end_parens, data->self, 0);
-#line 58 "rygel-search-criteria-parser.vala"
-			g_signal_connect_object (data->parser, "conjunction", (GCallback) __lambda6__gupnp_search_criteria_parser_conjunction, data->self, 0);
-#line 61 "rygel-search-criteria-parser.vala"
-			g_signal_connect_object (data->parser, "disjunction", (GCallback) __lambda7__gupnp_search_criteria_parser_disjunction, data->self, 0);
-#line 391 "rygel-search-criteria-parser.c"
-			{
-#line 66 "rygel-search-criteria-parser.vala"
-				gupnp_search_criteria_parser_parse_text (data->parser, data->self->str, &data->_inner_error_);
-#line 395 "rygel-search-criteria-parser.c"
-				if (data->_inner_error_ != NULL) {
-					goto __catch42_g_error;
-					_g_object_unref0 (data->parser);
-					g_critical ("file %s: line %d: unexpected error: %s (%s, %d)", __FILE__, __LINE__, data->_inner_error_->message, g_quark_to_string (data->_inner_error_->domain), data->_inner_error_->code);
-					g_clear_error (&data->_inner_error_);
-					return FALSE;
-				}
-			}
-			goto __finally42;
-			__catch42_g_error:
-			{
-				data->err = data->_inner_error_;
-				data->_inner_error_ = NULL;
-				{
-#line 68 "rygel-search-criteria-parser.vala"
-					data->self->err = (data->_tmp0_ = _g_error_copy0 (data->err), _g_error_free0 (data->self->err), data->_tmp0_);
-#line 412 "rygel-search-criteria-parser.c"
-					_g_error_free0 (data->err);
-				}
-			}
-			__finally42:
-			if (data->_inner_error_ != NULL) {
-				_g_object_unref0 (data->parser);
-				g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, data->_inner_error_->message, g_quark_to_string (data->_inner_error_->domain), data->_inner_error_->code);
-				g_clear_error (&data->_inner_error_);
-				return FALSE;
-			}
-#line 71 "rygel-search-criteria-parser.vala"
+	}
+	_state_0:
+	{
+#line 123 "rygel-search-criteria-parser.vala"
+		if (_vala_strcmp0 (data->self->str, "*") == 0) {
+#line 125 "rygel-search-criteria-parser.vala"
 			g_signal_emit_by_name ((RygelStateMachine*) data->self, "completed");
-#line 425 "rygel-search-criteria-parser.c"
-			_g_object_unref0 (data->parser);
+#line 407 "rygel-search-criteria-parser.c"
 		}
+#line 128 "rygel-search-criteria-parser.vala"
+		g_scanner_input_text (data->self->priv->scanner, data->self->str, (guint) strlen (data->self->str));
+#line 129 "rygel-search-criteria-parser.vala"
+		g_scanner_get_next_token (data->self->priv->scanner);
+#line 413 "rygel-search-criteria-parser.c"
 		{
-			if (data->_state_ == 0) {
-				g_simple_async_result_complete_in_idle (data->_async_result);
-			} else {
-				g_simple_async_result_complete (data->_async_result);
+			data->_tmp0_ = rygel_search_criteria_parser_parse_or_expression (data->self, &data->_inner_error_);
+			if (data->_inner_error_ != NULL) {
+				goto __catch53_g_error;
 			}
-			g_object_unref (data->_async_result);
+#line 131 "rygel-search-criteria-parser.vala"
+			data->self->expression = (data->_tmp1_ = data->_tmp0_, _rygel_search_expression_unref0 (data->self->expression), data->_tmp1_);
+#line 421 "rygel-search-criteria-parser.c"
+		}
+		goto __finally53;
+		__catch53_g_error:
+		{
+			data->err = data->_inner_error_;
+			data->_inner_error_ = NULL;
+			{
+#line 133 "rygel-search-criteria-parser.vala"
+				data->self->err = (data->_tmp2_ = _g_error_copy0 (data->err), _g_error_free0 (data->self->err), data->_tmp2_);
+#line 431 "rygel-search-criteria-parser.c"
+				_g_error_free0 (data->err);
+			}
+		}
+		__finally53:
+		if (data->_inner_error_ != NULL) {
+			g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, data->_inner_error_->message, g_quark_to_string (data->_inner_error_->domain), data->_inner_error_->code);
+			g_clear_error (&data->_inner_error_);
 			return FALSE;
 		}
+#line 135 "rygel-search-criteria-parser.vala"
+		g_signal_emit_by_name ((RygelStateMachine*) data->self, "completed");
+#line 443 "rygel-search-criteria-parser.c"
+	}
+	{
+		if (data->_state_ == 0) {
+			g_simple_async_result_complete_in_idle (data->_async_result);
+		} else {
+			g_simple_async_result_complete (data->_async_result);
+		}
+		g_object_unref (data->_async_result);
+		return FALSE;
 	}
 }
 
@@ -442,250 +458,383 @@ static gpointer _rygel_search_expression_ref0 (gpointer self) {
 }
 
 
-#line 74 "rygel-search-criteria-parser.vala"
-static gboolean rygel_search_criteria_parser_on_expression (RygelSearchCriteriaParser* self, GUPnPSearchCriteriaParser* parser, const char* property, GUPnPSearchCriteriaOp op, const char* value, void* err) {
-#line 448 "rygel-search-criteria-parser.c"
-	gboolean result;
-	RygelRelationalExpression* expression;
-	char* _tmp0_;
-	char* _tmp1_;
-	RygelSearchExpression* stack_top;
-#line 74 "rygel-search-criteria-parser.vala"
-	g_return_val_if_fail (self != NULL, FALSE);
-#line 74 "rygel-search-criteria-parser.vala"
-	g_return_val_if_fail (parser != NULL, FALSE);
-#line 74 "rygel-search-criteria-parser.vala"
-	g_return_val_if_fail (property != NULL, FALSE);
-#line 74 "rygel-search-criteria-parser.vala"
-	g_return_val_if_fail (value != NULL, FALSE);
-#line 80 "rygel-search-criteria-parser.vala"
-	expression = rygel_relational_expression_new ();
-#line 81 "rygel-search-criteria-parser.vala"
-	((RygelSearchExpression*) expression)->op = GINT_TO_POINTER (op);
-#line 82 "rygel-search-criteria-parser.vala"
-	((RygelSearchExpression*) expression)->operand1 = (_tmp0_ = g_strdup (property), _g_free0 (((RygelSearchExpression*) expression)->operand1), _tmp0_);
-#line 83 "rygel-search-criteria-parser.vala"
-	((RygelSearchExpression*) expression)->operand2 = (_tmp1_ = g_strdup (value), _g_free0 (((RygelSearchExpression*) expression)->operand2), _tmp1_);
-#line 86 "rygel-search-criteria-parser.vala"
-	stack_top = (RygelSearchExpression*) gee_deque_peek_tail ((GeeDeque*) self->priv->exp_stack);
-#line 87 "rygel-search-criteria-parser.vala"
-	if (stack_top == NULL) {
-#line 88 "rygel-search-criteria-parser.vala"
-		if (self->expression == NULL) {
-#line 476 "rygel-search-criteria-parser.c"
-			RygelSearchExpression* _tmp2_;
-#line 90 "rygel-search-criteria-parser.vala"
-			self->expression = (_tmp2_ = _rygel_search_expression_ref0 ((RygelSearchExpression*) expression), _rygel_search_expression_unref0 (self->expression), _tmp2_);
-#line 480 "rygel-search-criteria-parser.c"
-		} else {
-#line 91 "rygel-search-criteria-parser.vala"
-			if (RYGEL_IS_LOGICAL_EXPRESSION (self->expression)) {
-#line 484 "rygel-search-criteria-parser.c"
-				RygelSearchExpression* _tmp3_;
-				RygelLogicalExpression* l_expression;
-				gboolean _tmp4_ = FALSE;
-				RygelSearchExpression* _tmp7_;
-#line 93 "rygel-search-criteria-parser.vala"
-				l_expression = _rygel_search_expression_ref0 ((_tmp3_ = self->expression, RYGEL_IS_LOGICAL_EXPRESSION (_tmp3_) ? ((RygelLogicalExpression*) _tmp3_) : NULL));
-#line 94 "rygel-search-criteria-parser.vala"
-				if (((RygelSearchExpression*) ((RygelSearchExpression*) l_expression)->operand2) != NULL) {
-#line 95 "rygel-search-criteria-parser.vala"
-					_tmp4_ = RYGEL_IS_LOGICAL_EXPRESSION ((RygelSearchExpression*) ((RygelSearchExpression*) l_expression)->operand2);
-#line 495 "rygel-search-criteria-parser.c"
-				} else {
-#line 94 "rygel-search-criteria-parser.vala"
-					_tmp4_ = FALSE;
-#line 499 "rygel-search-criteria-parser.c"
-				}
-#line 94 "rygel-search-criteria-parser.vala"
-				if (_tmp4_) {
-#line 503 "rygel-search-criteria-parser.c"
-					RygelLogicalExpression* _tmp6_;
-					RygelSearchExpression* _tmp5_;
-#line 96 "rygel-search-criteria-parser.vala"
-					l_expression = (_tmp6_ = _rygel_search_expression_ref0 ((_tmp5_ = (RygelSearchExpression*) ((RygelSearchExpression*) l_expression)->operand2, RYGEL_IS_LOGICAL_EXPRESSION (_tmp5_) ? ((RygelLogicalExpression*) _tmp5_) : NULL)), _rygel_search_expression_unref0 (l_expression), _tmp6_);
-#line 508 "rygel-search-criteria-parser.c"
-				}
-#line 99 "rygel-search-criteria-parser.vala"
-				((RygelSearchExpression*) l_expression)->operand2 = (_tmp7_ = _rygel_search_expression_ref0 ((RygelSearchExpression*) expression), _rygel_search_expression_unref0 (((RygelSearchExpression*) l_expression)->operand2), _tmp7_);
-#line 512 "rygel-search-criteria-parser.c"
-				_rygel_search_expression_unref0 (l_expression);
-			}
-		}
-	} else {
-#line 101 "rygel-search-criteria-parser.vala"
-		if (RYGEL_IS_OPENNING_BRACE (stack_top)) {
-#line 102 "rygel-search-criteria-parser.vala"
-			gee_deque_offer_tail ((GeeDeque*) self->priv->exp_stack, (RygelSearchExpression*) expression);
-#line 521 "rygel-search-criteria-parser.c"
-		} else {
-#line 103 "rygel-search-criteria-parser.vala"
-			if (RYGEL_IS_LOGICAL_EXPRESSION (stack_top)) {
-#line 525 "rygel-search-criteria-parser.c"
-				RygelSearchExpression* _tmp8_;
-				RygelLogicalExpression* l_expression;
-				RygelSearchExpression* _tmp9_;
-#line 105 "rygel-search-criteria-parser.vala"
-				l_expression = _rygel_search_expression_ref0 ((_tmp8_ = stack_top, RYGEL_IS_LOGICAL_EXPRESSION (_tmp8_) ? ((RygelLogicalExpression*) _tmp8_) : NULL));
-#line 106 "rygel-search-criteria-parser.vala"
-				((RygelSearchExpression*) l_expression)->operand2 = (_tmp9_ = _rygel_search_expression_ref0 ((RygelSearchExpression*) expression), _rygel_search_expression_unref0 (((RygelSearchExpression*) l_expression)->operand2), _tmp9_);
-#line 533 "rygel-search-criteria-parser.c"
-				_rygel_search_expression_unref0 (l_expression);
-			}
-		}
-	}
-	result = TRUE;
-	_rygel_search_expression_unref0 (expression);
-	_rygel_search_expression_unref0 (stack_top);
-#line 109 "rygel-search-criteria-parser.vala"
-	return result;
-#line 543 "rygel-search-criteria-parser.c"
-}
-
-
-#line 112 "rygel-search-criteria-parser.vala"
-static void rygel_search_criteria_parser_handle_logical_operator (RygelSearchCriteriaParser* self, RygelLogicalOperator lop) {
-#line 549 "rygel-search-criteria-parser.c"
-	RygelLogicalExpression* expression;
-	RygelSearchExpression* stack_top;
-#line 112 "rygel-search-criteria-parser.vala"
-	g_return_if_fail (self != NULL);
-#line 113 "rygel-search-criteria-parser.vala"
-	expression = rygel_logical_expression_new ();
-#line 114 "rygel-search-criteria-parser.vala"
-	((RygelSearchExpression*) expression)->op = GINT_TO_POINTER (lop);
-#line 116 "rygel-search-criteria-parser.vala"
-	stack_top = (RygelSearchExpression*) gee_deque_peek_tail ((GeeDeque*) self->priv->exp_stack);
-#line 117 "rygel-search-criteria-parser.vala"
-	if (stack_top != NULL) {
-#line 562 "rygel-search-criteria-parser.c"
-		gboolean _tmp0_ = FALSE;
-#line 118 "rygel-search-criteria-parser.vala"
-		if (lop == RYGEL_LOGICAL_OPERATOR_AND) {
-#line 118 "rygel-search-criteria-parser.vala"
-			_tmp0_ = RYGEL_IS_LOGICAL_EXPRESSION (stack_top);
-#line 568 "rygel-search-criteria-parser.c"
-		} else {
-#line 118 "rygel-search-criteria-parser.vala"
-			_tmp0_ = FALSE;
-#line 572 "rygel-search-criteria-parser.c"
-		}
-#line 118 "rygel-search-criteria-parser.vala"
-		if (_tmp0_) {
-#line 576 "rygel-search-criteria-parser.c"
-			RygelSearchExpression* _tmp1_;
-			RygelLogicalExpression* previous;
-			RygelSearchExpression* _tmp2_;
-			RygelSearchExpression* _tmp3_;
-#line 120 "rygel-search-criteria-parser.vala"
-			previous = _rygel_search_expression_ref0 ((_tmp1_ = stack_top, RYGEL_IS_LOGICAL_EXPRESSION (_tmp1_) ? ((RygelLogicalExpression*) _tmp1_) : NULL));
-#line 122 "rygel-search-criteria-parser.vala"
-			((RygelSearchExpression*) expression)->operand1 = (_tmp2_ = _rygel_search_expression_ref0 ((RygelSearchExpression*) ((RygelSearchExpression*) previous)->operand2), _rygel_search_expression_unref0 (((RygelSearchExpression*) expression)->operand1), _tmp2_);
-#line 123 "rygel-search-criteria-parser.vala"
-			((RygelSearchExpression*) previous)->operand2 = (_tmp3_ = _rygel_search_expression_ref0 ((RygelSearchExpression*) expression), _rygel_search_expression_unref0 (((RygelSearchExpression*) previous)->operand2), _tmp3_);
-#line 587 "rygel-search-criteria-parser.c"
-			_rygel_search_expression_unref0 (previous);
-		} else {
-			RygelSearchExpression* _tmp4_;
-			RygelSearchExpression* _tmp5_;
-			RygelSearchExpression* _tmp6_;
-#line 125 "rygel-search-criteria-parser.vala"
-			_tmp4_ = (RygelSearchExpression*) gee_deque_poll_tail ((GeeDeque*) self->priv->exp_stack);
-#line 595 "rygel-search-criteria-parser.c"
-			_rygel_search_expression_unref0 (_tmp4_);
-#line 126 "rygel-search-criteria-parser.vala"
-			_tmp5_ = (RygelSearchExpression*) gee_deque_poll_tail ((GeeDeque*) self->priv->exp_stack);
-#line 599 "rygel-search-criteria-parser.c"
-			_rygel_search_expression_unref0 (_tmp5_);
-#line 129 "rygel-search-criteria-parser.vala"
-			gee_deque_offer_tail ((GeeDeque*) self->priv->exp_stack, (RygelSearchExpression*) expression);
-#line 132 "rygel-search-criteria-parser.vala"
-			((RygelSearchExpression*) expression)->operand1 = (_tmp6_ = _rygel_search_expression_ref0 (stack_top), _rygel_search_expression_unref0 (((RygelSearchExpression*) expression)->operand1), _tmp6_);
-#line 605 "rygel-search-criteria-parser.c"
-		}
-	} else {
-		gboolean _tmp7_ = FALSE;
-#line 136 "rygel-search-criteria-parser.vala"
-		if (lop == RYGEL_LOGICAL_OPERATOR_AND) {
-#line 137 "rygel-search-criteria-parser.vala"
-			_tmp7_ = RYGEL_IS_LOGICAL_EXPRESSION (self->expression);
-#line 613 "rygel-search-criteria-parser.c"
-		} else {
-#line 136 "rygel-search-criteria-parser.vala"
-			_tmp7_ = FALSE;
-#line 617 "rygel-search-criteria-parser.c"
-		}
-#line 136 "rygel-search-criteria-parser.vala"
-		if (_tmp7_) {
-#line 621 "rygel-search-criteria-parser.c"
-			RygelSearchExpression* _tmp8_;
-			RygelLogicalExpression* previous;
-			RygelSearchExpression* _tmp9_;
-			RygelSearchExpression* _tmp10_;
+#line 138 "rygel-search-criteria-parser.vala"
+static RygelSearchExpression* rygel_search_criteria_parser_parse_and_expression (RygelSearchCriteriaParser* self, GError** error) {
+#line 464 "rygel-search-criteria-parser.c"
+	RygelSearchExpression* result = NULL;
+	GError * _inner_error_;
+	RygelSearchExpression* exp;
+#line 138 "rygel-search-criteria-parser.vala"
+	g_return_val_if_fail (self != NULL, NULL);
+#line 470 "rygel-search-criteria-parser.c"
+	_inner_error_ = NULL;
 #line 139 "rygel-search-criteria-parser.vala"
-			previous = _rygel_search_expression_ref0 ((_tmp8_ = self->expression, RYGEL_IS_LOGICAL_EXPRESSION (_tmp8_) ? ((RygelLogicalExpression*) _tmp8_) : NULL));
-#line 141 "rygel-search-criteria-parser.vala"
-			((RygelSearchExpression*) expression)->operand1 = (_tmp9_ = _rygel_search_expression_ref0 ((RygelSearchExpression*) ((RygelSearchExpression*) previous)->operand2), _rygel_search_expression_unref0 (((RygelSearchExpression*) expression)->operand1), _tmp9_);
-#line 142 "rygel-search-criteria-parser.vala"
-			((RygelSearchExpression*) previous)->operand2 = (_tmp10_ = _rygel_search_expression_ref0 ((RygelSearchExpression*) expression), _rygel_search_expression_unref0 (((RygelSearchExpression*) previous)->operand2), _tmp10_);
-#line 632 "rygel-search-criteria-parser.c"
-			_rygel_search_expression_unref0 (previous);
-		} else {
-			RygelSearchExpression* _tmp11_;
-			RygelSearchExpression* _tmp12_;
-#line 147 "rygel-search-criteria-parser.vala"
-			((RygelSearchExpression*) expression)->operand1 = (_tmp11_ = _rygel_search_expression_ref0 (self->expression), _rygel_search_expression_unref0 (((RygelSearchExpression*) expression)->operand1), _tmp11_);
-#line 148 "rygel-search-criteria-parser.vala"
-			self->expression = (_tmp12_ = _rygel_search_expression_ref0 ((RygelSearchExpression*) expression), _rygel_search_expression_unref0 (self->expression), _tmp12_);
-#line 641 "rygel-search-criteria-parser.c"
-		}
+	exp = rygel_search_criteria_parser_parse_rel_expression (self, &_inner_error_);
+#line 474 "rygel-search-criteria-parser.c"
+	if (_inner_error_ != NULL) {
+		g_propagate_error (error, _inner_error_);
+		return NULL;
 	}
-	_rygel_search_expression_unref0 (expression);
-	_rygel_search_expression_unref0 (stack_top);
+#line 140 "rygel-search-criteria-parser.vala"
+	while (TRUE) {
+#line 481 "rygel-search-criteria-parser.c"
+		RygelLogicalExpression* exp2;
+		RygelSearchExpression* _tmp0_;
+		RygelSearchExpression* _tmp1_;
+		RygelSearchExpression* _tmp2_;
+		RygelSearchExpression* _tmp3_;
+#line 140 "rygel-search-criteria-parser.vala"
+		if (!(rygel_search_criteria_parser_get_token (self) == RYGEL_SEARCH_CRITERIA_SYMBOL_AND)) {
+#line 140 "rygel-search-criteria-parser.vala"
+			break;
+#line 491 "rygel-search-criteria-parser.c"
+		}
+#line 141 "rygel-search-criteria-parser.vala"
+		g_scanner_get_next_token (self->priv->scanner);
+#line 142 "rygel-search-criteria-parser.vala"
+		exp2 = rygel_logical_expression_new ();
+#line 143 "rygel-search-criteria-parser.vala"
+		((RygelSearchExpression*) exp2)->operand1 = (_tmp0_ = _rygel_search_expression_ref0 (exp), _rygel_search_expression_unref0 (((RygelSearchExpression*) exp2)->operand1), _tmp0_);
+#line 144 "rygel-search-criteria-parser.vala"
+		((RygelSearchExpression*) exp2)->op = GINT_TO_POINTER (RYGEL_LOGICAL_OPERATOR_AND);
+#line 145 "rygel-search-criteria-parser.vala"
+		_tmp1_ = rygel_search_criteria_parser_parse_rel_expression (self, &_inner_error_);
+#line 503 "rygel-search-criteria-parser.c"
+		if (_inner_error_ != NULL) {
+			g_propagate_error (error, _inner_error_);
+			_rygel_search_expression_unref0 (exp2);
+			_rygel_search_expression_unref0 (exp);
+			return NULL;
+		}
+#line 145 "rygel-search-criteria-parser.vala"
+		((RygelSearchExpression*) exp2)->operand2 = (_tmp2_ = _tmp1_, _rygel_search_expression_unref0 (((RygelSearchExpression*) exp2)->operand2), _tmp2_);
+#line 146 "rygel-search-criteria-parser.vala"
+		exp = (_tmp3_ = _rygel_search_expression_ref0 ((RygelSearchExpression*) exp2), _rygel_search_expression_unref0 (exp), _tmp3_);
+#line 514 "rygel-search-criteria-parser.c"
+		_rygel_search_expression_unref0 (exp2);
+	}
+	result = exp;
+#line 149 "rygel-search-criteria-parser.vala"
+	return result;
+#line 520 "rygel-search-criteria-parser.c"
 }
 
 
+#line 152 "rygel-search-criteria-parser.vala"
+static RygelSearchExpression* rygel_search_criteria_parser_parse_rel_expression (RygelSearchCriteriaParser* self, GError** error) {
+#line 526 "rygel-search-criteria-parser.c"
+	RygelSearchExpression* result = NULL;
+	GError * _inner_error_;
+	RygelRelationalExpression* exp;
+#line 152 "rygel-search-criteria-parser.vala"
+	g_return_val_if_fail (self != NULL, NULL);
+#line 532 "rygel-search-criteria-parser.c"
+	_inner_error_ = NULL;
 #line 153 "rygel-search-criteria-parser.vala"
-static void rygel_search_criteria_parser_on_end_parens (RygelSearchCriteriaParser* self, GUPnPSearchCriteriaParser* parser) {
-#line 651 "rygel-search-criteria-parser.c"
-	RygelSearchExpression* inner_exp;
-	RygelSearchExpression* _tmp0_;
-	RygelLogicalExpression* outer_exp;
-#line 153 "rygel-search-criteria-parser.vala"
-	g_return_if_fail (self != NULL);
-#line 153 "rygel-search-criteria-parser.vala"
-	g_return_if_fail (parser != NULL);
+	exp = rygel_relational_expression_new ();
+#line 154 "rygel-search-criteria-parser.vala"
+	if (self->priv->scanner->token == G_TOKEN_IDENTIFIER) {
+#line 538 "rygel-search-criteria-parser.c"
+		char* _tmp0_;
+		gboolean _tmp1_ = FALSE;
+		gboolean _tmp2_ = FALSE;
+		gboolean _tmp3_ = FALSE;
+		gboolean _tmp4_ = FALSE;
+		gboolean _tmp5_ = FALSE;
+		gboolean _tmp6_ = FALSE;
+		gboolean _tmp7_ = FALSE;
+		gboolean _tmp8_ = FALSE;
+#line 155 "rygel-search-criteria-parser.vala"
+		((RygelSearchExpression*) exp)->operand1 = (_tmp0_ = g_strdup (self->priv->scanner->value.v_identifier), _g_free0 (((RygelSearchExpression*) exp)->operand1), _tmp0_);
 #line 156 "rygel-search-criteria-parser.vala"
-	inner_exp = (RygelSearchExpression*) gee_deque_poll_tail ((GeeDeque*) self->priv->exp_stack);
-#line 157 "rygel-search-criteria-parser.vala"
-	outer_exp = (_tmp0_ = (RygelSearchExpression*) gee_deque_peek_tail ((GeeDeque*) self->priv->exp_stack), RYGEL_IS_LOGICAL_EXPRESSION (_tmp0_) ? ((RygelLogicalExpression*) _tmp0_) : NULL);
+		g_scanner_get_next_token (self->priv->scanner);
 #line 158 "rygel-search-criteria-parser.vala"
-	if (outer_exp == NULL) {
-#line 160 "rygel-search-criteria-parser.vala"
-		if (self->expression != NULL) {
-#line 667 "rygel-search-criteria-parser.c"
-			RygelLogicalExpression* _tmp2_;
-			RygelSearchExpression* _tmp1_;
-#line 161 "rygel-search-criteria-parser.vala"
-			outer_exp = (_tmp2_ = _rygel_search_expression_ref0 ((_tmp1_ = self->expression, RYGEL_IS_LOGICAL_EXPRESSION (_tmp1_) ? ((RygelLogicalExpression*) _tmp1_) : NULL)), _rygel_search_expression_unref0 (outer_exp), _tmp2_);
-#line 672 "rygel-search-criteria-parser.c"
+		if (rygel_search_criteria_parser_get_token (self) == RYGEL_SEARCH_CRITERIA_SYMBOL_EQ) {
+#line 158 "rygel-search-criteria-parser.vala"
+			_tmp8_ = TRUE;
+#line 556 "rygel-search-criteria-parser.c"
 		} else {
-			RygelSearchExpression* _tmp3_;
+#line 159 "rygel-search-criteria-parser.vala"
+			_tmp8_ = rygel_search_criteria_parser_get_token (self) == RYGEL_SEARCH_CRITERIA_SYMBOL_NEQ;
+#line 560 "rygel-search-criteria-parser.c"
+		}
+#line 158 "rygel-search-criteria-parser.vala"
+		if (_tmp8_) {
+#line 158 "rygel-search-criteria-parser.vala"
+			_tmp7_ = TRUE;
+#line 566 "rygel-search-criteria-parser.c"
+		} else {
+#line 160 "rygel-search-criteria-parser.vala"
+			_tmp7_ = rygel_search_criteria_parser_get_token (self) == RYGEL_SEARCH_CRITERIA_SYMBOL_LESS;
+#line 570 "rygel-search-criteria-parser.c"
+		}
+#line 158 "rygel-search-criteria-parser.vala"
+		if (_tmp7_) {
+#line 158 "rygel-search-criteria-parser.vala"
+			_tmp6_ = TRUE;
+#line 576 "rygel-search-criteria-parser.c"
+		} else {
+#line 161 "rygel-search-criteria-parser.vala"
+			_tmp6_ = rygel_search_criteria_parser_get_token (self) == RYGEL_SEARCH_CRITERIA_SYMBOL_LEQ;
+#line 580 "rygel-search-criteria-parser.c"
+		}
+#line 158 "rygel-search-criteria-parser.vala"
+		if (_tmp6_) {
+#line 158 "rygel-search-criteria-parser.vala"
+			_tmp5_ = TRUE;
+#line 586 "rygel-search-criteria-parser.c"
+		} else {
+#line 162 "rygel-search-criteria-parser.vala"
+			_tmp5_ = rygel_search_criteria_parser_get_token (self) == RYGEL_SEARCH_CRITERIA_SYMBOL_GREATER;
+#line 590 "rygel-search-criteria-parser.c"
+		}
+#line 158 "rygel-search-criteria-parser.vala"
+		if (_tmp5_) {
+#line 158 "rygel-search-criteria-parser.vala"
+			_tmp4_ = TRUE;
+#line 596 "rygel-search-criteria-parser.c"
+		} else {
 #line 163 "rygel-search-criteria-parser.vala"
-			self->expression = (_tmp3_ = _rygel_search_expression_ref0 (inner_exp), _rygel_search_expression_unref0 (self->expression), _tmp3_);
-#line 677 "rygel-search-criteria-parser.c"
+			_tmp4_ = rygel_search_criteria_parser_get_token (self) == RYGEL_SEARCH_CRITERIA_SYMBOL_GEQ;
+#line 600 "rygel-search-criteria-parser.c"
+		}
+#line 158 "rygel-search-criteria-parser.vala"
+		if (_tmp4_) {
+#line 158 "rygel-search-criteria-parser.vala"
+			_tmp3_ = TRUE;
+#line 606 "rygel-search-criteria-parser.c"
+		} else {
+#line 164 "rygel-search-criteria-parser.vala"
+			_tmp3_ = rygel_search_criteria_parser_get_token (self) == RYGEL_SEARCH_CRITERIA_SYMBOL_CONTAINS;
+#line 610 "rygel-search-criteria-parser.c"
+		}
+#line 158 "rygel-search-criteria-parser.vala"
+		if (_tmp3_) {
+#line 158 "rygel-search-criteria-parser.vala"
+			_tmp2_ = TRUE;
+#line 616 "rygel-search-criteria-parser.c"
+		} else {
+#line 165 "rygel-search-criteria-parser.vala"
+			_tmp2_ = rygel_search_criteria_parser_get_token (self) == RYGEL_SEARCH_CRITERIA_SYMBOL_DOES_NOT_CONTAIN;
+#line 620 "rygel-search-criteria-parser.c"
+		}
+#line 158 "rygel-search-criteria-parser.vala"
+		if (_tmp2_) {
+#line 158 "rygel-search-criteria-parser.vala"
+			_tmp1_ = TRUE;
+#line 626 "rygel-search-criteria-parser.c"
+		} else {
+#line 166 "rygel-search-criteria-parser.vala"
+			_tmp1_ = rygel_search_criteria_parser_get_token (self) == RYGEL_SEARCH_CRITERIA_SYMBOL_DERIVED_FROM;
+#line 630 "rygel-search-criteria-parser.c"
+		}
+#line 158 "rygel-search-criteria-parser.vala"
+		if (_tmp1_) {
+#line 167 "rygel-search-criteria-parser.vala"
+			((RygelSearchExpression*) exp)->op = GINT_TO_POINTER ((GUPnPSearchCriteriaOp) self->priv->scanner->token);
+#line 168 "rygel-search-criteria-parser.vala"
+			g_scanner_get_next_token (self->priv->scanner);
+#line 169 "rygel-search-criteria-parser.vala"
+			if (self->priv->scanner->token == G_TOKEN_STRING) {
+#line 640 "rygel-search-criteria-parser.c"
+				char* _tmp9_;
+#line 170 "rygel-search-criteria-parser.vala"
+				((RygelSearchExpression*) exp)->operand2 = (_tmp9_ = g_strdup (self->priv->scanner->value.v_string), _g_free0 (((RygelSearchExpression*) exp)->operand2), _tmp9_);
+#line 171 "rygel-search-criteria-parser.vala"
+				g_scanner_get_next_token (self->priv->scanner);
+#line 646 "rygel-search-criteria-parser.c"
+				result = (RygelSearchExpression*) exp;
+#line 173 "rygel-search-criteria-parser.vala"
+				return result;
+#line 650 "rygel-search-criteria-parser.c"
+			} else {
+				char* _tmp12_;
+				char* _tmp11_;
+				char* _tmp10_;
+				GError* _tmp13_;
+				_inner_error_ = (_tmp13_ = g_error_new_literal (RYGEL_SEARCH_CRITERIA_ERROR, RYGEL_SEARCH_CRITERIA_ERROR_SYNTAX_ERROR, _tmp12_ = g_strconcat (_tmp11_ = g_strconcat (_tmp10_ = rygel_search_criteria_parser_get_context (self), ": expected ", NULL), "\"STRING\"", NULL)), _g_free0 (_tmp12_), _g_free0 (_tmp11_), _g_free0 (_tmp10_), _tmp13_);
+				{
+					g_propagate_error (error, _inner_error_);
+					_rygel_search_expression_unref0 (exp);
+					return NULL;
+				}
+			}
+		} else {
+#line 179 "rygel-search-criteria-parser.vala"
+			if (rygel_search_criteria_parser_get_token (self) == RYGEL_SEARCH_CRITERIA_SYMBOL_EXISTS) {
+#line 180 "rygel-search-criteria-parser.vala"
+				((RygelSearchExpression*) exp)->op = GINT_TO_POINTER ((GUPnPSearchCriteriaOp) self->priv->scanner->token);
+#line 181 "rygel-search-criteria-parser.vala"
+				g_scanner_get_next_token (self->priv->scanner);
+#line 182 "rygel-search-criteria-parser.vala"
+				if (rygel_search_criteria_parser_get_token (self) == RYGEL_SEARCH_CRITERIA_SYMBOL_TRUE) {
+#line 672 "rygel-search-criteria-parser.c"
+					char* _tmp14_;
+#line 183 "rygel-search-criteria-parser.vala"
+					((RygelSearchExpression*) exp)->operand2 = (_tmp14_ = g_strdup ("true"), _g_free0 (((RygelSearchExpression*) exp)->operand2), _tmp14_);
+#line 184 "rygel-search-criteria-parser.vala"
+					g_scanner_get_next_token (self->priv->scanner);
+#line 678 "rygel-search-criteria-parser.c"
+					result = (RygelSearchExpression*) exp;
+#line 186 "rygel-search-criteria-parser.vala"
+					return result;
+#line 682 "rygel-search-criteria-parser.c"
+				} else {
+#line 187 "rygel-search-criteria-parser.vala"
+					if (rygel_search_criteria_parser_get_token (self) == RYGEL_SEARCH_CRITERIA_SYMBOL_FALSE) {
+#line 686 "rygel-search-criteria-parser.c"
+						char* _tmp15_;
+#line 188 "rygel-search-criteria-parser.vala"
+						((RygelSearchExpression*) exp)->operand2 = (_tmp15_ = g_strdup ("false"), _g_free0 (((RygelSearchExpression*) exp)->operand2), _tmp15_);
+#line 189 "rygel-search-criteria-parser.vala"
+						g_scanner_get_next_token (self->priv->scanner);
+#line 692 "rygel-search-criteria-parser.c"
+						result = (RygelSearchExpression*) exp;
+#line 191 "rygel-search-criteria-parser.vala"
+						return result;
+#line 696 "rygel-search-criteria-parser.c"
+					} else {
+						char* _tmp19_;
+						char* _tmp18_;
+						char* _tmp17_;
+						char* _tmp16_;
+						GError* _tmp20_;
+						_inner_error_ = (_tmp20_ = g_error_new_literal (RYGEL_SEARCH_CRITERIA_ERROR, RYGEL_SEARCH_CRITERIA_ERROR_SYNTAX_ERROR, _tmp19_ = g_strconcat (_tmp18_ = g_strconcat (_tmp17_ = g_strconcat (_tmp16_ = rygel_search_criteria_parser_get_context (self), ": expected ", NULL), "\"true\"|\"", NULL), "false\"", NULL)), _g_free0 (_tmp19_), _g_free0 (_tmp18_), _g_free0 (_tmp17_), _g_free0 (_tmp16_), _tmp20_);
+						{
+							g_propagate_error (error, _inner_error_);
+							_rygel_search_expression_unref0 (exp);
+							return NULL;
+						}
+					}
+				}
+			} else {
+				char* _tmp23_;
+				char* _tmp22_;
+				char* _tmp21_;
+				GError* _tmp24_;
+				_inner_error_ = (_tmp24_ = g_error_new_literal (RYGEL_SEARCH_CRITERIA_ERROR, RYGEL_SEARCH_CRITERIA_ERROR_SYNTAX_ERROR, _tmp23_ = g_strconcat (_tmp22_ = g_strconcat (_tmp21_ = rygel_search_criteria_parser_get_context (self), ": expected ", NULL), "operator", NULL)), _g_free0 (_tmp23_), _g_free0 (_tmp22_), _g_free0 (_tmp21_), _tmp24_);
+				{
+					g_propagate_error (error, _inner_error_);
+					_rygel_search_expression_unref0 (exp);
+					return NULL;
+				}
+			}
+		}
+	} else {
+#line 203 "rygel-search-criteria-parser.vala"
+		if (self->priv->scanner->token == G_TOKEN_LEFT_PAREN) {
+#line 727 "rygel-search-criteria-parser.c"
+			RygelSearchExpression* exp2;
+#line 204 "rygel-search-criteria-parser.vala"
+			g_scanner_get_next_token (self->priv->scanner);
+#line 205 "rygel-search-criteria-parser.vala"
+			exp2 = rygel_search_criteria_parser_parse_or_expression (self, &_inner_error_);
+#line 733 "rygel-search-criteria-parser.c"
+			if (_inner_error_ != NULL) {
+				g_propagate_error (error, _inner_error_);
+				_rygel_search_expression_unref0 (exp);
+				return NULL;
+			}
+#line 206 "rygel-search-criteria-parser.vala"
+			if (self->priv->scanner->token != G_TOKEN_RIGHT_PAREN) {
+#line 741 "rygel-search-criteria-parser.c"
+				char* _tmp26_;
+				char* _tmp25_;
+				GError* _tmp27_;
+				_inner_error_ = (_tmp27_ = g_error_new_literal (RYGEL_SEARCH_CRITERIA_ERROR, RYGEL_SEARCH_CRITERIA_ERROR_SYNTAX_ERROR, _tmp26_ = g_strconcat (_tmp25_ = rygel_search_criteria_parser_get_context (self), ": expected ')'", NULL)), _g_free0 (_tmp26_), _g_free0 (_tmp25_), _tmp27_);
+				{
+					g_propagate_error (error, _inner_error_);
+					_rygel_search_expression_unref0 (exp2);
+					_rygel_search_expression_unref0 (exp);
+					return NULL;
+				}
+			} else {
+#line 210 "rygel-search-criteria-parser.vala"
+				g_scanner_get_next_token (self->priv->scanner);
+#line 755 "rygel-search-criteria-parser.c"
+				result = exp2;
+				_rygel_search_expression_unref0 (exp);
+#line 212 "rygel-search-criteria-parser.vala"
+				return result;
+#line 760 "rygel-search-criteria-parser.c"
+			}
+			_rygel_search_expression_unref0 (exp2);
+		} else {
+			char* _tmp30_;
+			char* _tmp29_;
+			char* _tmp28_;
+			GError* _tmp31_;
+			_inner_error_ = (_tmp31_ = g_error_new_literal (RYGEL_SEARCH_CRITERIA_ERROR, RYGEL_SEARCH_CRITERIA_ERROR_SYNTAX_ERROR, _tmp30_ = g_strconcat (_tmp29_ = g_strconcat (_tmp28_ = rygel_search_criteria_parser_get_context (self), ": expected ", NULL), "identifier or '('", NULL)), _g_free0 (_tmp30_), _g_free0 (_tmp29_), _g_free0 (_tmp28_), _tmp31_);
+			{
+				g_propagate_error (error, _inner_error_);
+				_rygel_search_expression_unref0 (exp);
+				return NULL;
+			}
 		}
 	}
-#line 167 "rygel-search-criteria-parser.vala"
-	if (outer_exp != NULL) {
-#line 682 "rygel-search-criteria-parser.c"
-		RygelSearchExpression* _tmp4_;
-#line 170 "rygel-search-criteria-parser.vala"
-		((RygelSearchExpression*) outer_exp)->operand2 = (_tmp4_ = _rygel_search_expression_ref0 (inner_exp), _rygel_search_expression_unref0 (((RygelSearchExpression*) outer_exp)->operand2), _tmp4_);
-#line 686 "rygel-search-criteria-parser.c"
+	_rygel_search_expression_unref0 (exp);
+}
+
+
+#line 222 "rygel-search-criteria-parser.vala"
+static RygelSearchExpression* rygel_search_criteria_parser_parse_or_expression (RygelSearchCriteriaParser* self, GError** error) {
+#line 782 "rygel-search-criteria-parser.c"
+	RygelSearchExpression* result = NULL;
+	GError * _inner_error_;
+	RygelSearchExpression* exp;
+#line 222 "rygel-search-criteria-parser.vala"
+	g_return_val_if_fail (self != NULL, NULL);
+#line 788 "rygel-search-criteria-parser.c"
+	_inner_error_ = NULL;
+#line 223 "rygel-search-criteria-parser.vala"
+	exp = rygel_search_criteria_parser_parse_and_expression (self, &_inner_error_);
+#line 792 "rygel-search-criteria-parser.c"
+	if (_inner_error_ != NULL) {
+		g_propagate_error (error, _inner_error_);
+		return NULL;
 	}
-	_rygel_search_expression_unref0 (inner_exp);
-	_rygel_search_expression_unref0 (outer_exp);
+#line 224 "rygel-search-criteria-parser.vala"
+	while (TRUE) {
+#line 799 "rygel-search-criteria-parser.c"
+		RygelLogicalExpression* exp2;
+		RygelSearchExpression* _tmp0_;
+		RygelSearchExpression* _tmp1_;
+		RygelSearchExpression* _tmp2_;
+		RygelSearchExpression* _tmp3_;
+#line 224 "rygel-search-criteria-parser.vala"
+		if (!(rygel_search_criteria_parser_get_token (self) == RYGEL_SEARCH_CRITERIA_SYMBOL_OR)) {
+#line 224 "rygel-search-criteria-parser.vala"
+			break;
+#line 809 "rygel-search-criteria-parser.c"
+		}
+#line 225 "rygel-search-criteria-parser.vala"
+		g_scanner_get_next_token (self->priv->scanner);
+#line 226 "rygel-search-criteria-parser.vala"
+		exp2 = rygel_logical_expression_new ();
+#line 227 "rygel-search-criteria-parser.vala"
+		((RygelSearchExpression*) exp2)->operand1 = (_tmp0_ = _rygel_search_expression_ref0 (exp), _rygel_search_expression_unref0 (((RygelSearchExpression*) exp2)->operand1), _tmp0_);
+#line 228 "rygel-search-criteria-parser.vala"
+		((RygelSearchExpression*) exp2)->op = GINT_TO_POINTER (RYGEL_LOGICAL_OPERATOR_OR);
+#line 229 "rygel-search-criteria-parser.vala"
+		_tmp1_ = rygel_search_criteria_parser_parse_and_expression (self, &_inner_error_);
+#line 821 "rygel-search-criteria-parser.c"
+		if (_inner_error_ != NULL) {
+			g_propagate_error (error, _inner_error_);
+			_rygel_search_expression_unref0 (exp2);
+			_rygel_search_expression_unref0 (exp);
+			return NULL;
+		}
+#line 229 "rygel-search-criteria-parser.vala"
+		((RygelSearchExpression*) exp2)->operand2 = (_tmp2_ = _tmp1_, _rygel_search_expression_unref0 (((RygelSearchExpression*) exp2)->operand2), _tmp2_);
+#line 230 "rygel-search-criteria-parser.vala"
+		exp = (_tmp3_ = _rygel_search_expression_ref0 ((RygelSearchExpression*) exp2), _rygel_search_expression_unref0 (exp), _tmp3_);
+#line 832 "rygel-search-criteria-parser.c"
+		_rygel_search_expression_unref0 (exp2);
+	}
+	result = exp;
+#line 233 "rygel-search-criteria-parser.vala"
+	return result;
+#line 838 "rygel-search-criteria-parser.c"
 }
 
 
@@ -694,9 +843,9 @@ static GCancellable* rygel_search_criteria_parser_real_get_cancellable (RygelSta
 	RygelSearchCriteriaParser* self;
 	self = (RygelSearchCriteriaParser*) base;
 	result = self->priv->_cancellable;
-#line 37 "rygel-search-criteria-parser.vala"
+#line 63 "rygel-search-criteria-parser.vala"
 	return result;
-#line 700 "rygel-search-criteria-parser.c"
+#line 849 "rygel-search-criteria-parser.c"
 }
 
 
@@ -711,6 +860,30 @@ static void rygel_search_criteria_parser_real_set_cancellable (RygelStateMachine
 	self = (RygelSearchCriteriaParser*) base;
 	self->priv->_cancellable = (_tmp0_ = _g_object_ref0 (value), _g_object_unref0 (self->priv->_cancellable), _tmp0_);
 	g_object_notify ((GObject *) self, "cancellable");
+}
+
+
+static RygelSearchCriteriaSymbol rygel_search_criteria_parser_get_token (RygelSearchCriteriaParser* self) {
+	RygelSearchCriteriaSymbol result;
+	g_return_val_if_fail (self != NULL, 0);
+	result = (RygelSearchCriteriaSymbol) self->priv->scanner->token;
+#line 67 "rygel-search-criteria-parser.vala"
+	return result;
+#line 873 "rygel-search-criteria-parser.c"
+}
+
+
+static char* rygel_search_criteria_parser_get_context (RygelSearchCriteriaParser* self) {
+	char* result;
+	char* _tmp2_;
+	char* _tmp1_;
+	char* _tmp0_;
+	char* _tmp3_;
+	g_return_val_if_fail (self != NULL, NULL);
+	result = (_tmp3_ = g_strconcat (_tmp1_ = g_strconcat (_tmp0_ = g_strdup_printf ("%u", self->priv->scanner->line), ".", NULL), _tmp2_ = g_strdup_printf ("%u", self->priv->scanner->position), NULL), _g_free0 (_tmp2_), _g_free0 (_tmp1_), _g_free0 (_tmp0_), _tmp3_);
+#line 73 "rygel-search-criteria-parser.vala"
+	return result;
+#line 887 "rygel-search-criteria-parser.c"
 }
 
 
@@ -744,21 +917,23 @@ static void rygel_search_criteria_parser_finalize (GObject* obj) {
 	_g_free0 (self->str);
 	_rygel_search_expression_unref0 (self->expression);
 	_g_error_free0 (self->err);
-	_g_object_unref0 (self->priv->exp_stack);
 	_g_object_unref0 (self->priv->_cancellable);
+	_g_scanner_destroy0 (self->priv->scanner);
 	G_OBJECT_CLASS (rygel_search_criteria_parser_parent_class)->finalize (obj);
 }
 
 
 GType rygel_search_criteria_parser_get_type (void) {
-	static GType rygel_search_criteria_parser_type_id = 0;
-	if (rygel_search_criteria_parser_type_id == 0) {
+	static volatile gsize rygel_search_criteria_parser_type_id__volatile = 0;
+	if (g_once_init_enter (&rygel_search_criteria_parser_type_id__volatile)) {
 		static const GTypeInfo g_define_type_info = { sizeof (RygelSearchCriteriaParserClass), (GBaseInitFunc) NULL, (GBaseFinalizeFunc) NULL, (GClassInitFunc) rygel_search_criteria_parser_class_init, (GClassFinalizeFunc) NULL, NULL, sizeof (RygelSearchCriteriaParser), 0, (GInstanceInitFunc) rygel_search_criteria_parser_instance_init, NULL };
 		static const GInterfaceInfo rygel_state_machine_info = { (GInterfaceInitFunc) rygel_search_criteria_parser_rygel_state_machine_interface_init, (GInterfaceFinalizeFunc) NULL, NULL};
+		GType rygel_search_criteria_parser_type_id;
 		rygel_search_criteria_parser_type_id = g_type_register_static (G_TYPE_OBJECT, "RygelSearchCriteriaParser", &g_define_type_info, 0);
 		g_type_add_interface_static (rygel_search_criteria_parser_type_id, RYGEL_TYPE_STATE_MACHINE, &rygel_state_machine_info);
+		g_once_init_leave (&rygel_search_criteria_parser_type_id__volatile, rygel_search_criteria_parser_type_id);
 	}
-	return rygel_search_criteria_parser_type_id;
+	return rygel_search_criteria_parser_type_id__volatile;
 }
 
 
@@ -787,70 +962,6 @@ static void rygel_search_criteria_parser_set_property (GObject * object, guint p
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
 		break;
 	}
-}
-
-
-#line 181 "rygel-search-criteria-parser.vala"
-static gboolean rygel_openning_brace_real_satisfied_by (RygelSearchExpression* base, RygelMediaObject* media_object) {
-#line 796 "rygel-search-criteria-parser.c"
-	RygelOpenningBrace * self;
-	self = (RygelOpenningBrace*) base;
-#line 181 "rygel-search-criteria-parser.vala"
-	g_return_val_if_fail (media_object != NULL, FALSE);
-#line 182 "rygel-search-criteria-parser.vala"
-	g_assert_not_reached ();
-#line 803 "rygel-search-criteria-parser.c"
-}
-
-
-#line 185 "rygel-search-criteria-parser.vala"
-static char* rygel_openning_brace_real_to_string (RygelSearchExpression* base) {
-#line 809 "rygel-search-criteria-parser.c"
-	RygelOpenningBrace * self;
-	self = (RygelOpenningBrace*) base;
-#line 186 "rygel-search-criteria-parser.vala"
-	g_assert_not_reached ();
-#line 814 "rygel-search-criteria-parser.c"
-}
-
-
-#line 178 "rygel-search-criteria-parser.vala"
-RygelOpenningBrace* rygel_openning_brace_construct (GType object_type) {
-#line 820 "rygel-search-criteria-parser.c"
-	RygelOpenningBrace* self;
-#line 178 "rygel-search-criteria-parser.vala"
-	self = (RygelOpenningBrace*) rygel_search_expression_construct (object_type, G_TYPE_POINTER, NULL, NULL, G_TYPE_POINTER, NULL, NULL, G_TYPE_POINTER, NULL, NULL);
-#line 824 "rygel-search-criteria-parser.c"
-	return self;
-}
-
-
-#line 178 "rygel-search-criteria-parser.vala"
-RygelOpenningBrace* rygel_openning_brace_new (void) {
-#line 178 "rygel-search-criteria-parser.vala"
-	return rygel_openning_brace_construct (RYGEL_TYPE_OPENNING_BRACE);
-#line 833 "rygel-search-criteria-parser.c"
-}
-
-
-static void rygel_openning_brace_class_init (RygelOpenningBraceClass * klass) {
-	rygel_openning_brace_parent_class = g_type_class_peek_parent (klass);
-	RYGEL_SEARCH_EXPRESSION_CLASS (klass)->satisfied_by = rygel_openning_brace_real_satisfied_by;
-	RYGEL_SEARCH_EXPRESSION_CLASS (klass)->to_string = rygel_openning_brace_real_to_string;
-}
-
-
-static void rygel_openning_brace_instance_init (RygelOpenningBrace * self) {
-}
-
-
-GType rygel_openning_brace_get_type (void) {
-	static GType rygel_openning_brace_type_id = 0;
-	if (rygel_openning_brace_type_id == 0) {
-		static const GTypeInfo g_define_type_info = { sizeof (RygelOpenningBraceClass), (GBaseInitFunc) NULL, (GBaseFinalizeFunc) NULL, (GClassInitFunc) rygel_openning_brace_class_init, (GClassFinalizeFunc) NULL, NULL, sizeof (RygelOpenningBrace), 0, (GInstanceInitFunc) rygel_openning_brace_instance_init, NULL };
-		rygel_openning_brace_type_id = g_type_register_static (RYGEL_TYPE_SEARCH_EXPRESSION, "RygelOpenningBrace", &g_define_type_info, 0);
-	}
-	return rygel_openning_brace_type_id;
 }
 
 

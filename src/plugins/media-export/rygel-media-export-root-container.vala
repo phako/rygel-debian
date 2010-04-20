@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2009 Jens Georg <mail@jensge.org>.
+ * Copyright (C) 2009,2010 Jens Georg <mail@jensge.org>.
  *
  * This file is part of Rygel.
  *
@@ -19,31 +19,7 @@
  */
 
 using Gee;
-
-internal class Rygel.MediaExportDynamicContainer : Rygel.MediaDBContainer {
-    public const string ID = "DynamicContainerId";
-
-    public MediaExportDynamicContainer (MediaDB        media_db,
-                                        MediaContainer parent) {
-        base (media_db, ID, "Dynamic");
-        this.parent = parent;
-    }
-
-    public Gee.List<string> get_uris () {
-        var result = new ArrayList<string> ();
-
-        try {
-            var children = this.media_db.get_children (this.id, -1, -1);
-            if (children != null) {
-                foreach (var child in children) {
-                    result.add_all (child.uris);
-                }
-            }
-        } catch (Error err) {}
-
-        return result;
-    }
-}
+using GUPnP;
 
 /**
  * Represents the root container.
@@ -54,6 +30,7 @@ public class Rygel.MediaExportRootContainer : Rygel.MediaDBContainer {
     private MediaExportRecursiveFileMonitor monitor;
     private MediaExportDBusService service;
     private MediaExportDynamicContainer dynamic_elements;
+    private Gee.List<MediaExportHarvester> harvester_trash;
 
     private static MediaContainer instance = null;
 
@@ -71,17 +48,15 @@ public class Rygel.MediaExportRootContainer : Rygel.MediaDBContainer {
         // either an error occured or the gconf key is not set
         if (uris.size == 0) {
             debug("Nothing configured, using XDG special directories");
-            var uri = Environment.get_user_special_dir (UserDirectory.MUSIC);
-            if (uri != null)
-                uris.add (uri);
-
-            uri = Environment.get_user_special_dir (UserDirectory.PICTURES);
-            if (uri != null)
-                uris.add (uri);
-
-            uri = Environment.get_user_special_dir (UserDirectory.VIDEOS);
-            if (uri != null)
-                uris.add (uri);
+            UserDirectory[] xdg_directories = { UserDirectory.MUSIC,
+                                                UserDirectory.PICTURES,
+                                                UserDirectory.VIDEOS };
+            foreach (var directory in xdg_directories) {
+                var uri = Environment.get_user_special_dir (directory);
+                if (uri != null) {
+                    uris.add (uri);
+                }
+            }
         }
 
         var dbus_uris = this.dynamic_elements.get_uris ();
@@ -95,10 +70,9 @@ public class Rygel.MediaExportRootContainer : Rygel.MediaDBContainer {
     public static MediaContainer get_instance() {
         if (MediaExportRootContainer.instance == null) {
             try {
-                var db = MediaDB.create ("media-export");
                 MediaExportRootContainer.instance =
-                                             new MediaExportRootContainer (db);
-            } catch (MediaDBError err) {
+                                             new MediaExportRootContainer ();
+            } catch (Error error) {
                 warning("Failed to create instance of database");
                 MediaExportRootContainer.instance = new NullContainer ();
             }
@@ -119,35 +93,206 @@ public class Rygel.MediaExportRootContainer : Rygel.MediaDBContainer {
 
         try {
             this.media_db.remove_by_id (id);
-        } catch (Error e) {
-            warning ("Failed to remove uri: %s", e.message);
+        } catch (Error error) {
+            warning ("Failed to remove uri: %s", error.message);
         }
     }
 
-    public string[] get_dynamic_uris () {
-        string[] result = new string[0];
-        var dynamic_uris = this.dynamic_elements.get_uris ();
+    private MediaExportQueryContainer? search_to_virtual_container (
+                                       RelationalExpression expression) {
+        if (expression.operand1 == "upnp:class" &&
+            expression.op == SearchCriteriaOp.EQ) {
+            switch (expression.operand2) {
+                case "object.container.album.musicAlbum":
+                    string id = "virtual-container:upnp:album,?";
+                    MediaExportQueryContainer.register_id (ref id);
 
-        // copy by hand, to_array does not work due to
-        // vala bug 568972
-        foreach (string uri in dynamic_uris) {
-            result += uri;
+                    return new MediaExportQueryContainer (this.media_db,
+                                                          id,
+                                                          "Albums");
+
+                case "object.container.person.musicArtist":
+                    string id = "virtual-container:dc:creator,?,upnp:album,?";
+                    MediaExportQueryContainer.register_id (ref id);
+
+                    return new MediaExportQueryContainer (this.media_db,
+                                                          id,
+                                                          "Artists");
+                default:
+                    return null;
+            }
         }
 
-        return result;
+        return null;
+    }
+
+    /**
+     * Check if the passed search expression is a simple find_object
+     * operation.
+     * (@id = id)
+     *
+     * @param search_expression expression to test
+     * @param id containts id of container on successful return
+     * @return true if expression was a find object
+     */
+    private bool is_find_object (SearchExpression search_expression,
+                                 out string       id) {
+        if (!(search_expression is RelationalExpression)) {
+            return false;
+        }
+
+        var expression = search_expression as RelationalExpression;
+        id = expression.operand2;
+
+        return (expression.operand1 == "@id" &&
+                expression.op == SearchCriteriaOp.EQ);
+    }
+
+    /**
+     * Check if a passed search expression is a simple search in a virtual
+     * container.
+     *
+     * @param expression the expression to check
+     * @param new_id contains the id of the virtual container constructed from
+     *               the search
+     * @param upnp_class contains the class of the container the search was
+     *                   looking in
+     * @return true if it was a search in virtual container, false otherwise.
+     * @note This works single level only. Enough to satisfy Xbox music
+     *       browsing, but may need refinement
+     */
+    private bool is_search_in_virtual_container (
+                                        SearchExpression   expression,
+                                        out MediaContainer container) {
+        RelationalExpression virtual_expression = null;
+        MediaExportQueryContainer query_container;
+
+        if (!(expression is LogicalExpression)) {
+            return false;
+        }
+
+        var logical_expression = expression as LogicalExpression;
+
+        if (!(logical_expression.operand1 is RelationalExpression &&
+            logical_expression.operand2 is RelationalExpression &&
+            logical_expression.op == LogicalOperator.AND)) {
+
+            return false;
+        }
+
+        var left_expression = logical_expression.operand1 as RelationalExpression;
+        var right_expression = logical_expression.operand2 as RelationalExpression;
+
+        query_container = search_to_virtual_container (left_expression);
+        if (query_container == null) {
+            query_container = search_to_virtual_container (right_expression);
+            if (query_container != null) {
+                virtual_expression = left_expression;
+            } else {
+                return false;
+            }
+        } else {
+            virtual_expression = right_expression;
+        }
+
+        var last_argument = query_container.plaintext_id.replace (
+                                        MediaExportQueryContainer.PREFIX,
+                                        "");
+
+        var escaped_detail = Uri.escape_string (virtual_expression.operand2,
+                                                "",
+                                                true);
+        var new_id = "%s%s,%s,%s".printf (MediaExportQueryContainer.PREFIX,
+                                          virtual_expression.operand1,
+                                          escaped_detail,
+                                          last_argument);
+
+        MediaExportQueryContainer.register_id (ref new_id);
+        container = new MediaExportQueryContainer (this.media_db, new_id);
+
+        return true;
+    }
+
+    public override async Gee.List<MediaObject>? search (
+                                        SearchExpression expression,
+                                        uint             offset,
+                                        uint             max_count,
+                                        out uint         total_matches,
+                                        Cancellable?     cancellable)
+                                        throws GLib.Error {
+        Gee.List<MediaObject> list;
+        MediaContainer query_container = null;
+        string id;
+        string upnp_class = null;
+
+        if (is_find_object (expression, out id) &&
+            id.has_prefix (MediaExportQueryContainer.PREFIX)) {
+            query_container = new MediaExportQueryContainer (this.media_db,
+                                                             id);
+            query_container.parent = this;
+
+            list = new ArrayList<MediaObject> ();
+            list.add (query_container);
+            total_matches = list.size;
+
+            return list;
+        }
+
+        if (expression is RelationalExpression) {
+            var relational_expression = expression as RelationalExpression;
+
+            query_container = search_to_virtual_container (
+                                        relational_expression);
+            upnp_class = relational_expression.operand2;
+        } else if (is_search_in_virtual_container (expression,
+                                                   out query_container)) {
+            // do nothing. query_container is filled then
+        }
+
+        if (query_container != null) {
+            list = yield query_container.get_children (offset,
+                                                       max_count,
+                                                       cancellable);
+            total_matches = list.size;
+
+            if (upnp_class != null) {
+                foreach (var object in list) {
+                    object.upnp_class = upnp_class;
+                }
+            }
+
+            return list;
+        } else {
+            return yield base.search (expression,
+                                      offset,
+                                      max_count,
+                                      out total_matches,
+                                      cancellable);
+        }
+    }
+
+
+    public string[] get_dynamic_uris () {
+        var dynamic_uris = this.dynamic_elements.get_uris ();
+
+        return dynamic_uris.to_array ();
     }
 
 
     /**
      * Create a new root container.
      */
-    private MediaExportRootContainer (MediaDB db) {
+    private MediaExportRootContainer () throws Error {
+        var object_factory = new MediaExportObjectFactory ();
+        var db = new MediaDB.with_factory ("media-export", object_factory);
+
         base (db, "0", "MediaExportRoot");
 
         this.extractor = MetadataExtractor.create ();
 
-        this.harvester = new HashMap<File,MediaExportHarvester> (file_hash,
-                                                                 file_equal);
+        this.harvester = new HashMap<File, MediaExportHarvester> (file_hash,
+                                                                  file_equal);
+        this.harvester_trash = new ArrayList<MediaExportHarvester> ();
 
         this.monitor = new MediaExportRecursiveFileMonitor (null);
         this.monitor.changed.connect (this.on_file_changed);
@@ -163,21 +308,19 @@ public class Rygel.MediaExportRootContainer : Rygel.MediaDBContainer {
         try {
             int64 timestamp;
             if (!this.media_db.exists ("0", out timestamp)) {
-                media_db.save_object (this);
+                media_db.save_container (this);
             }
 
             if (!this.media_db.exists ("DynamicContainerId", out timestamp)) {
-                media_db.save_object (this.dynamic_elements);
+                media_db.save_container (this.dynamic_elements);
             }
-        } catch (Error error) {
-            // do nothing
-        }
+        } catch (Error error) { } // do nothing
 
         ArrayList<string> ids;
         try {
             ids = media_db.get_child_ids ("0");
         } catch (DatabaseError e) {
-            ids = new ArrayList<string>();
+            ids = new ArrayList<string> ();
         }
 
         var uris = get_uris ();
@@ -191,46 +334,88 @@ public class Rygel.MediaExportRootContainer : Rygel.MediaDBContainer {
             }
         }
 
-        foreach (var id in ids) {
-            if (id == MediaExportDynamicContainer.ID)
-                continue;
+        try {
+            var config = MetaConfig.get_default ();
+            var virtual_containers = config.get_string_list (
+                                        "MediaExport",
+                                        "virtual-folders");
+            foreach (var container in virtual_containers) {
+                var info = container.split ("=");
+                var id = MediaExportQueryContainer.PREFIX + info[1];
+                if (!MediaExportQueryContainer.validate_virtual_id (id)) {
+                    warning ("%s is not a valid virtual id", id);
 
-            debug ("Id %s no longer in config, deleting...",
-                   id);
+                    continue;
+                }
+                MediaExportQueryContainer.register_id (ref id);
+
+                var virtual_container = new MediaExportQueryContainer (
+                                        this.media_db,
+                                        id,
+                                        info[0]);
+                virtual_container.parent = this;
+                try {
+                    this.media_db.save_container (virtual_container);
+                } catch (Error error) { } // do nothing
+
+                ids.remove (id);
+            }
+        } catch (Error error) {
+            warning ("Got error while trying to find virtual folders: %s",
+                     error.message);
+        }
+
+        foreach (var id in ids) {
+            if (id == MediaExportDynamicContainer.ID) {
+                continue;
+            }
+
+            debug ("Id %s no longer in config, deleting...", id);
             try {
                 this.media_db.remove_by_id (id);
-            } catch (DatabaseError e) {
-                warning ("Failed to remove entry: %s", e.message);
+            } catch (DatabaseError error) {
+                warning ("Failed to remove entry: %s", error.message);
             }
         }
 
         this.updated ();
     }
 
-    private void on_file_harvested (File file) {
+    private void on_file_harvested (MediaExportHarvester harvester,
+                                    File                 file) {
+        message ("'%s' harvested", file.get_uri ());
+
         this.harvester.remove (file);
+    }
+
+    private void on_remove_cancelled_harvester (MediaExportHarvester harvester,
+                                                File                 file) {
+        this.harvester_trash.remove (harvester);
     }
 
     private void harvest (File file, MediaContainer parent = this) {
         if (this.extractor == null) {
             warning ("No Metadata extractor available. Will not crawl");
+
             return;
         }
 
-        if (this.extractor != null &&
-            !this.harvester.contains (file)) {
-            var harvester = new MediaExportHarvester (parent,
-                                                      this.media_db,
-                                                      this.extractor,
-                                                      this.monitor);
-            harvester.harvested.connect (this.on_file_harvested);
-            this.harvester[file] = harvester;
-            harvester.harvest (file);
-        } else {
-            warning ("%s already scheduled for harvesting. Check config " +
-                     "for duplicates.",
-                     file.get_uri ());
+        if (this.harvester.contains (file)) {
+            debug ("Already harvesting; cancelling");
+            var harvester = this.harvester[file];
+            harvester.harvested.disconnect (this.on_file_harvested);
+            harvester.cancellable.cancel ();
+            harvester.harvested.connect (this.on_remove_cancelled_harvester);
+            this.harvester_trash.add (harvester);
         }
+
+        var harvester = new MediaExportHarvester (parent,
+                                                  this.media_db,
+                                                  this.extractor,
+                                                  this.monitor);
+        harvester.harvested.connect (this.on_file_harvested);
+        this.harvester[file] = harvester;
+        harvester.harvest (file);
     }
 
     private void on_file_changed (File             file,
@@ -239,31 +424,44 @@ public class Rygel.MediaExportRootContainer : Rygel.MediaDBContainer {
         switch (event) {
             case FileMonitorEvent.CREATED:
             case FileMonitorEvent.CHANGES_DONE_HINT:
+                debug ("Trying to harvest %s because of %d", file.get_uri (),
+                        event);
                 var parent = file.get_parent ();
                 var id = Checksum.compute_for_string (ChecksumType.MD5,
                                                       parent.get_uri ());
-                var parent_container = this.media_db.get_object (id);
-                if (parent_container != null) {
-                    this.harvest (file, (MediaContainer)parent_container);
-                } else {
-                    assert_not_reached ();
+                try {
+                    var parent_container = this.media_db.get_object (id)
+                                           as MediaContainer;
+                    assert (parent_container != null);
+
+                    this.harvest (file, parent_container);
+                } catch (Rygel.DatabaseError error) {
+                    warning ("Error while getting parent container for " +
+                             "filesystem event: %s",
+                             error.message);
                 }
                 break;
             case FileMonitorEvent.DELETED:
                 var id = Checksum.compute_for_string (ChecksumType.MD5,
                                                       file.get_uri ());
 
-                // the full object is fetched instead of simply calling exists
-                // because we need the parent to signalize the change
-                var obj = this.media_db.get_object (id);
+                try {
+                    // the full object is fetched instead of simply calling
+                    // exists because we need the parent to signalize the
+                    // change
+                    var obj = this.media_db.get_object (id);
 
-                // it may be that files removed are files that are not
-                // in the database, because they're not media files
-                if (obj != null) {
-                    this.media_db.remove_object (obj);
-                    if (obj.parent != null) {
-                        obj.parent.updated ();
+                    // it may be that files removed are files that are not
+                    // in the database, because they're not media files
+                    if (obj != null) {
+                        this.media_db.remove_object (obj);
+                        if (obj.parent != null) {
+                            obj.parent.updated ();
+                        }
                     }
+                } catch (Error error) {
+                    warning ("Error removing object from database: %s",
+                             error.message);
                 }
                 break;
             default:

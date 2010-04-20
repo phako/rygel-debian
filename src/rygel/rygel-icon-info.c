@@ -72,6 +72,7 @@ gpointer rygel_icon_info_ref (gpointer instance);
 void rygel_icon_info_unref (gpointer instance);
 GParamSpec* rygel_param_spec_icon_info (const gchar* name, const gchar* nick, const gchar* blurb, GType object_type, GParamFlags flags);
 void rygel_value_set_icon_info (GValue* value, gpointer v_object);
+void rygel_value_take_icon_info (GValue* value, gpointer v_object);
 gpointer rygel_value_get_icon_info (const GValue* value);
 GType rygel_icon_info_get_type (void);
 enum  {
@@ -85,16 +86,16 @@ static void rygel_icon_info_finalize (RygelIconInfo* obj);
 
 #line 36 "rygel-icon-info.vala"
 RygelIconInfo* rygel_icon_info_construct (GType object_type, const char* mime_type) {
-#line 89 "rygel-icon-info.c"
+#line 90 "rygel-icon-info.c"
 	RygelIconInfo* self;
 	char* _tmp0_;
 #line 36 "rygel-icon-info.vala"
 	g_return_val_if_fail (mime_type != NULL, NULL);
-#line 94 "rygel-icon-info.c"
+#line 95 "rygel-icon-info.c"
 	self = (RygelIconInfo*) g_type_create_instance (object_type);
 #line 37 "rygel-icon-info.vala"
 	self->mime_type = (_tmp0_ = g_strdup (mime_type), _g_free0 (self->mime_type), _tmp0_);
-#line 98 "rygel-icon-info.c"
+#line 99 "rygel-icon-info.c"
 	return self;
 }
 
@@ -103,7 +104,7 @@ RygelIconInfo* rygel_icon_info_construct (GType object_type, const char* mime_ty
 RygelIconInfo* rygel_icon_info_new (const char* mime_type) {
 #line 36 "rygel-icon-info.vala"
 	return rygel_icon_info_construct (RYGEL_TYPE_ICON_INFO, mime_type);
-#line 107 "rygel-icon-info.c"
+#line 108 "rygel-icon-info.c"
 }
 
 
@@ -200,6 +201,23 @@ void rygel_value_set_icon_info (GValue* value, gpointer v_object) {
 }
 
 
+void rygel_value_take_icon_info (GValue* value, gpointer v_object) {
+	RygelIconInfo* old;
+	g_return_if_fail (G_TYPE_CHECK_VALUE_TYPE (value, RYGEL_TYPE_ICON_INFO));
+	old = value->data[0].v_pointer;
+	if (v_object) {
+		g_return_if_fail (G_TYPE_CHECK_INSTANCE_TYPE (v_object, RYGEL_TYPE_ICON_INFO));
+		g_return_if_fail (g_value_type_compatible (G_TYPE_FROM_INSTANCE (v_object), G_VALUE_TYPE (value)));
+		value->data[0].v_pointer = v_object;
+	} else {
+		value->data[0].v_pointer = NULL;
+	}
+	if (old) {
+		rygel_icon_info_unref (old);
+	}
+}
+
+
 static void rygel_icon_info_class_init (RygelIconInfoClass * klass) {
 	rygel_icon_info_parent_class = g_type_class_peek_parent (klass);
 	RYGEL_ICON_INFO_CLASS (klass)->finalize = rygel_icon_info_finalize;
@@ -224,14 +242,16 @@ static void rygel_icon_info_finalize (RygelIconInfo* obj) {
 
 
 GType rygel_icon_info_get_type (void) {
-	static GType rygel_icon_info_type_id = 0;
-	if (rygel_icon_info_type_id == 0) {
+	static volatile gsize rygel_icon_info_type_id__volatile = 0;
+	if (g_once_init_enter (&rygel_icon_info_type_id__volatile)) {
 		static const GTypeValueTable g_define_type_value_table = { rygel_value_icon_info_init, rygel_value_icon_info_free_value, rygel_value_icon_info_copy_value, rygel_value_icon_info_peek_pointer, "p", rygel_value_icon_info_collect_value, "p", rygel_value_icon_info_lcopy_value };
 		static const GTypeInfo g_define_type_info = { sizeof (RygelIconInfoClass), (GBaseInitFunc) NULL, (GBaseFinalizeFunc) NULL, (GClassInitFunc) rygel_icon_info_class_init, (GClassFinalizeFunc) NULL, NULL, sizeof (RygelIconInfo), 0, (GInstanceInitFunc) rygel_icon_info_instance_init, &g_define_type_value_table };
 		static const GTypeFundamentalInfo g_define_type_fundamental_info = { (G_TYPE_FLAG_CLASSED | G_TYPE_FLAG_INSTANTIATABLE | G_TYPE_FLAG_DERIVABLE | G_TYPE_FLAG_DEEP_DERIVABLE) };
+		GType rygel_icon_info_type_id;
 		rygel_icon_info_type_id = g_type_register_fundamental (g_type_fundamental_next (), "RygelIconInfo", &g_define_type_info, &g_define_type_fundamental_info, 0);
+		g_once_init_leave (&rygel_icon_info_type_id__volatile, rygel_icon_info_type_id);
 	}
-	return rygel_icon_info_type_id;
+	return rygel_icon_info_type_id__volatile;
 }
 
 

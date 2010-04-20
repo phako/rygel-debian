@@ -33,30 +33,28 @@ public class Rygel.TrackerRootContainer : Rygel.SimpleContainer {
     public TrackerRootContainer (string title) {
         base.root (title);
 
-        this.add_child (new TrackerSearchContainer (
-                                        "16",
-                                        this,
-                                        "Pictures",
-                                        TrackerImageItem.SERVICE));
-        this.add_child (new TrackerSearchContainer (
-                                        "14",
-                                        this,
-                                        "Music",
-                                        TrackerMusicItem.SERVICE));
-        this.add_child (new TrackerSearchContainer (
-                                        "15",
-                                        this,
-                                        "Videos",
-                                        TrackerVideoItem.SERVICE));
-        this.add_child (new TrackerMetadataValues ("Audio:Artist",
-                                                   "17",
-                                                   this,
-                                                   "Artists"));
-        this.add_child (new TrackerMetadataValues ("Audio:Album",
-                                                   "18",
-                                                   this,
-                                                   "Albums"));
-        this.add_child (new TrackerKeywords ("19", this));
+        if (this.get_bool_config_without_error ("share-music")) {
+            this.add_child (new TrackerMusic ("Music", this, "Music"));
+        }
+
+        if (this.get_bool_config_without_error ("share-videos")) {
+            this.add_child (new TrackerVideos ("Videos", this, "Videos"));
+        }
+
+        if (this.get_bool_config_without_error ("share-pictures")) {
+            this.add_child (new TrackerPictures ("Pictures", this, "Pictures"));
+        }
+    }
+
+    private bool get_bool_config_without_error (string key) {
+        var value = true;
+        var config = MetaConfig.get_default ();
+
+        try {
+            value = config.get_bool ("Tracker", key);
+        } catch (GLib.Error error) {}
+
+        return value;
     }
 }
 

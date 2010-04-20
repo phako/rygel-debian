@@ -88,11 +88,12 @@ static void rygel_mediathek_root_container_finalize (GObject* obj);
 #line 30 "rygel-mediathek-root-container.vala"
 static gboolean rygel_mediathek_root_container_on_schedule_update (RygelMediathekRootContainer* self) {
 #line 91 "rygel-mediathek-root-container.c"
-	gboolean result;
+	gboolean result = FALSE;
 #line 30 "rygel-mediathek-root-container.vala"
 	g_return_val_if_fail (self != NULL, FALSE);
 #line 31 "rygel-mediathek-root-container.vala"
-	g_message ("rygel-mediathek-root-container.vala:31: Scheduling update for all feeds....");
+	g_message ("rygel-mediathek-root-container.vala:31: Scheduling update for all feed" \
+"s....");
 #line 97 "rygel-mediathek-root-container.c"
 	{
 		GeeIterator* _container_it;
@@ -131,7 +132,7 @@ static gpointer _g_object_ref0 (gpointer self) {
 #line 39 "rygel-mediathek-root-container.vala"
 RygelMediathekRootContainer* rygel_mediathek_root_container_get_instance (void) {
 #line 134 "rygel-mediathek-root-container.c"
-	RygelMediathekRootContainer* result;
+	RygelMediathekRootContainer* result = NULL;
 #line 40 "rygel-mediathek-root-container.vala"
 	if (rygel_mediathek_root_container_instance == NULL) {
 #line 138 "rygel-mediathek-root-container.c"
@@ -180,15 +181,10 @@ static RygelMediathekRootContainer* rygel_mediathek_root_container_construct (GT
 #line 181 "rygel-mediathek-root-container.c"
 		if (_inner_error_ != NULL) {
 			goto __catch2_g_error;
-			_g_object_unref0 (feeds);
-			_g_object_unref0 (config);
-			g_critical ("file %s: line %d: unexpected error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
-			g_clear_error (&_inner_error_);
-			return NULL;
 		}
 #line 54 "rygel-mediathek-root-container.vala"
 		feeds = (_tmp2_ = _tmp1_, _g_object_unref0 (feeds), _tmp2_);
-#line 192 "rygel-mediathek-root-container.c"
+#line 187 "rygel-mediathek-root-container.c"
 	}
 	goto __finally2;
 	__catch2_g_error:
@@ -200,7 +196,7 @@ static RygelMediathekRootContainer* rygel_mediathek_root_container_construct (GT
 			GeeArrayList* _tmp3_;
 #line 56 "rygel-mediathek-root-container.vala"
 			feeds = (_tmp3_ = gee_array_list_new (G_TYPE_INT, NULL, NULL, NULL), _g_object_unref0 (feeds), _tmp3_);
-#line 204 "rygel-mediathek-root-container.c"
+#line 199 "rygel-mediathek-root-container.c"
 			_g_error_free0 (_error_);
 		}
 	}
@@ -215,37 +211,38 @@ static RygelMediathekRootContainer* rygel_mediathek_root_container_construct (GT
 #line 59 "rygel-mediathek-root-container.vala"
 	if (gee_collection_get_size ((GeeCollection*) feeds) == 0) {
 #line 60 "rygel-mediathek-root-container.vala"
-		g_message ("rygel-mediathek-root-container.vala:60: Could not get RSS items from GConf, using defaults");
+		g_message ("rygel-mediathek-root-container.vala:60: Could not get RSS items from G" \
+"Conf, using defaults");
 #line 61 "rygel-mediathek-root-container.vala"
 		gee_abstract_collection_add ((GeeAbstractCollection*) feeds, GINT_TO_POINTER (508));
-#line 222 "rygel-mediathek-root-container.c"
+#line 217 "rygel-mediathek-root-container.c"
 	}
 	{
 		GeeIterator* _id_it;
 		_id_it = gee_abstract_collection_iterator ((GeeAbstractCollection*) feeds);
 #line 64 "rygel-mediathek-root-container.vala"
 		while (TRUE) {
-#line 229 "rygel-mediathek-root-container.c"
+#line 224 "rygel-mediathek-root-container.c"
 			gint id;
 			RygelMediathekRssContainer* _tmp4_;
 #line 64 "rygel-mediathek-root-container.vala"
 			if (!gee_iterator_next (_id_it)) {
 #line 64 "rygel-mediathek-root-container.vala"
 				break;
-#line 236 "rygel-mediathek-root-container.c"
+#line 231 "rygel-mediathek-root-container.c"
 			}
 #line 64 "rygel-mediathek-root-container.vala"
 			id = GPOINTER_TO_INT (gee_iterator_get (_id_it));
 #line 65 "rygel-mediathek-root-container.vala"
 			rygel_simple_container_add_child ((RygelSimpleContainer*) self, (RygelMediaObject*) (_tmp4_ = rygel_mediathek_rss_container_new ((RygelMediaContainer*) self, (guint) id)));
-#line 242 "rygel-mediathek-root-container.c"
+#line 237 "rygel-mediathek-root-container.c"
 			_g_object_unref0 (_tmp4_);
 		}
 		_g_object_unref0 (_id_it);
 	}
 #line 68 "rygel-mediathek-root-container.vala"
 	g_timeout_add_seconds_full (G_PRIORITY_DEFAULT, (guint) 1800, _rygel_mediathek_root_container_on_schedule_update_gsource_func, g_object_ref (self), g_object_unref);
-#line 249 "rygel-mediathek-root-container.c"
+#line 244 "rygel-mediathek-root-container.c"
 	_g_object_unref0 (feeds);
 	_g_object_unref0 (config);
 	return self;
@@ -256,7 +253,7 @@ static RygelMediathekRootContainer* rygel_mediathek_root_container_construct (GT
 static RygelMediathekRootContainer* rygel_mediathek_root_container_new (void) {
 #line 47 "rygel-mediathek-root-container.vala"
 	return rygel_mediathek_root_container_construct (RYGEL_TYPE_MEDIATHEK_ROOT_CONTAINER);
-#line 260 "rygel-mediathek-root-container.c"
+#line 255 "rygel-mediathek-root-container.c"
 }
 
 
@@ -279,12 +276,14 @@ static void rygel_mediathek_root_container_finalize (GObject* obj) {
 
 
 GType rygel_mediathek_root_container_get_type (void) {
-	static GType rygel_mediathek_root_container_type_id = 0;
-	if (rygel_mediathek_root_container_type_id == 0) {
+	static volatile gsize rygel_mediathek_root_container_type_id__volatile = 0;
+	if (g_once_init_enter (&rygel_mediathek_root_container_type_id__volatile)) {
 		static const GTypeInfo g_define_type_info = { sizeof (RygelMediathekRootContainerClass), (GBaseInitFunc) NULL, (GBaseFinalizeFunc) NULL, (GClassInitFunc) rygel_mediathek_root_container_class_init, (GClassFinalizeFunc) NULL, NULL, sizeof (RygelMediathekRootContainer), 0, (GInstanceInitFunc) rygel_mediathek_root_container_instance_init, NULL };
+		GType rygel_mediathek_root_container_type_id;
 		rygel_mediathek_root_container_type_id = g_type_register_static (RYGEL_TYPE_SIMPLE_CONTAINER, "RygelMediathekRootContainer", &g_define_type_info, 0);
+		g_once_init_leave (&rygel_mediathek_root_container_type_id__volatile, rygel_mediathek_root_container_type_id);
 	}
-	return rygel_mediathek_root_container_type_id;
+	return rygel_mediathek_root_container_type_id__volatile;
 }
 
 

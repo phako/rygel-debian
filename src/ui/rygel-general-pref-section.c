@@ -213,17 +213,14 @@ RygelGeneralPrefSection* rygel_general_pref_section_construct (GType object_type
 #line 214 "rygel-general-pref-section.c"
 		if (_inner_error_ != NULL) {
 			goto __catch1_g_error;
-			g_critical ("file %s: line %d: unexpected error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
-			g_clear_error (&_inner_error_);
-			return NULL;
 		}
 #line 71 "rygel-general-pref-section.vala"
 		gtk_combo_box_append_text ((GtkComboBox*) self->priv->iface_entry, _tmp9_ = _tmp8_);
-#line 223 "rygel-general-pref-section.c"
+#line 220 "rygel-general-pref-section.c"
 		_g_free0 (_tmp9_);
 #line 72 "rygel-general-pref-section.vala"
 		gtk_combo_box_set_active ((GtkComboBox*) self->priv->iface_entry, 0);
-#line 227 "rygel-general-pref-section.c"
+#line 224 "rygel-general-pref-section.c"
 	}
 	goto __finally1;
 	__catch1_g_error:
@@ -245,16 +242,13 @@ RygelGeneralPrefSection* rygel_general_pref_section_construct (GType object_type
 		gint _tmp10_;
 #line 78 "rygel-general-pref-section.vala"
 		_tmp10_ = rygel_configuration_get_port ((RygelConfiguration*) config, &_inner_error_);
-#line 249 "rygel-general-pref-section.c"
+#line 246 "rygel-general-pref-section.c"
 		if (_inner_error_ != NULL) {
 			goto __catch2_g_error;
-			g_critical ("file %s: line %d: unexpected error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
-			g_clear_error (&_inner_error_);
-			return NULL;
 		}
 #line 78 "rygel-general-pref-section.vala"
 		gtk_spin_button_set_value (self->priv->port_spin, (double) _tmp10_);
-#line 258 "rygel-general-pref-section.c"
+#line 252 "rygel-general-pref-section.c"
 	}
 	goto __finally2;
 	__catch2_g_error:
@@ -276,16 +270,13 @@ RygelGeneralPrefSection* rygel_general_pref_section_construct (GType object_type
 		gboolean _tmp11_;
 #line 81 "rygel-general-pref-section.vala"
 		_tmp11_ = rygel_configuration_get_upnp_enabled ((RygelConfiguration*) ((RygelPreferencesSection*) self)->config, &_inner_error_);
-#line 280 "rygel-general-pref-section.c"
+#line 274 "rygel-general-pref-section.c"
 		if (_inner_error_ != NULL) {
 			goto __catch3_g_error;
-			g_critical ("file %s: line %d: unexpected error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
-			g_clear_error (&_inner_error_);
-			return NULL;
 		}
 #line 81 "rygel-general-pref-section.vala"
 		gtk_toggle_button_set_active ((GtkToggleButton*) self->priv->upnp_check, _tmp11_);
-#line 289 "rygel-general-pref-section.c"
+#line 280 "rygel-general-pref-section.c"
 	}
 	goto __finally3;
 	__catch3_g_error:
@@ -307,16 +298,13 @@ RygelGeneralPrefSection* rygel_general_pref_section_construct (GType object_type
 		gboolean _tmp12_;
 #line 84 "rygel-general-pref-section.vala"
 		_tmp12_ = rygel_configuration_get_transcoding ((RygelConfiguration*) ((RygelPreferencesSection*) self)->config, &_inner_error_);
-#line 311 "rygel-general-pref-section.c"
+#line 302 "rygel-general-pref-section.c"
 		if (_inner_error_ != NULL) {
 			goto __catch4_g_error;
-			g_critical ("file %s: line %d: unexpected error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
-			g_clear_error (&_inner_error_);
-			return NULL;
 		}
 #line 84 "rygel-general-pref-section.vala"
 		gtk_toggle_button_set_active ((GtkToggleButton*) self->priv->trans_check, _tmp12_);
-#line 320 "rygel-general-pref-section.c"
+#line 308 "rygel-general-pref-section.c"
 	}
 	goto __finally4;
 	__catch4_g_error:
@@ -338,16 +326,13 @@ RygelGeneralPrefSection* rygel_general_pref_section_construct (GType object_type
 		gboolean _tmp13_;
 #line 87 "rygel-general-pref-section.vala"
 		_tmp13_ = rygel_configuration_get_mp3_transcoder ((RygelConfiguration*) ((RygelPreferencesSection*) self)->config, &_inner_error_);
-#line 342 "rygel-general-pref-section.c"
+#line 330 "rygel-general-pref-section.c"
 		if (_inner_error_ != NULL) {
 			goto __catch5_g_error;
-			g_critical ("file %s: line %d: unexpected error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
-			g_clear_error (&_inner_error_);
-			return NULL;
 		}
 #line 87 "rygel-general-pref-section.vala"
 		gtk_toggle_button_set_active ((GtkToggleButton*) self->priv->mp3_check, _tmp13_);
-#line 351 "rygel-general-pref-section.c"
+#line 336 "rygel-general-pref-section.c"
 	}
 	goto __finally5;
 	__catch5_g_error:
@@ -369,16 +354,13 @@ RygelGeneralPrefSection* rygel_general_pref_section_construct (GType object_type
 		gboolean _tmp14_;
 #line 90 "rygel-general-pref-section.vala"
 		_tmp14_ = rygel_configuration_get_mp2ts_transcoder ((RygelConfiguration*) ((RygelPreferencesSection*) self)->config, &_inner_error_);
-#line 373 "rygel-general-pref-section.c"
+#line 358 "rygel-general-pref-section.c"
 		if (_inner_error_ != NULL) {
 			goto __catch6_g_error;
-			g_critical ("file %s: line %d: unexpected error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
-			g_clear_error (&_inner_error_);
-			return NULL;
 		}
 #line 90 "rygel-general-pref-section.vala"
 		gtk_toggle_button_set_active ((GtkToggleButton*) self->priv->mp2ts_check, _tmp14_);
-#line 382 "rygel-general-pref-section.c"
+#line 364 "rygel-general-pref-section.c"
 	}
 	goto __finally6;
 	__catch6_g_error:
@@ -400,16 +382,13 @@ RygelGeneralPrefSection* rygel_general_pref_section_construct (GType object_type
 		gboolean _tmp15_;
 #line 93 "rygel-general-pref-section.vala"
 		_tmp15_ = rygel_configuration_get_lpcm_transcoder ((RygelConfiguration*) ((RygelPreferencesSection*) self)->config, &_inner_error_);
-#line 404 "rygel-general-pref-section.c"
+#line 386 "rygel-general-pref-section.c"
 		if (_inner_error_ != NULL) {
 			goto __catch7_g_error;
-			g_critical ("file %s: line %d: unexpected error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
-			g_clear_error (&_inner_error_);
-			return NULL;
 		}
 #line 93 "rygel-general-pref-section.vala"
 		gtk_toggle_button_set_active ((GtkToggleButton*) self->priv->lpcm_check, _tmp15_);
-#line 413 "rygel-general-pref-section.c"
+#line 392 "rygel-general-pref-section.c"
 	}
 	goto __finally7;
 	__catch7_g_error:
@@ -435,7 +414,7 @@ RygelGeneralPrefSection* rygel_general_pref_section_construct (GType object_type
 	g_signal_connect_object (self->priv->context_manager, "context-unavailable", (GCallback) _rygel_general_pref_section_on_context_unavailable_gupnp_context_manager_context_unavailable, self, 0);
 #line 104 "rygel-general-pref-section.vala"
 	rygel_general_pref_section_on_trans_check_toggled (self, self->priv->trans_check);
-#line 439 "rygel-general-pref-section.c"
+#line 418 "rygel-general-pref-section.c"
 	return self;
 }
 
@@ -444,13 +423,13 @@ RygelGeneralPrefSection* rygel_general_pref_section_construct (GType object_type
 RygelGeneralPrefSection* rygel_general_pref_section_new (GtkBuilder* builder, RygelUserConfig* config, GError** error) {
 #line 47 "rygel-general-pref-section.vala"
 	return rygel_general_pref_section_construct (RYGEL_TYPE_GENERAL_PREF_SECTION, builder, config, error);
-#line 448 "rygel-general-pref-section.c"
+#line 427 "rygel-general-pref-section.c"
 }
 
 
 #line 107 "rygel-general-pref-section.vala"
 static void rygel_general_pref_section_real_save (RygelPreferencesSection* base) {
-#line 454 "rygel-general-pref-section.c"
+#line 433 "rygel-general-pref-section.c"
 	RygelGeneralPrefSection * self;
 	self = (RygelGeneralPrefSection*) base;
 #line 108 "rygel-general-pref-section.vala"
@@ -467,7 +446,7 @@ static void rygel_general_pref_section_real_save (RygelPreferencesSection* base)
 	rygel_user_config_set_mp2ts_transcoder (((RygelPreferencesSection*) self)->config, gtk_toggle_button_get_active ((GtkToggleButton*) self->priv->mp2ts_check));
 #line 115 "rygel-general-pref-section.vala"
 	rygel_user_config_set_lpcm_transcoder (((RygelPreferencesSection*) self)->config, gtk_toggle_button_get_active ((GtkToggleButton*) self->priv->lpcm_check));
-#line 471 "rygel-general-pref-section.c"
+#line 450 "rygel-general-pref-section.c"
 }
 
 
@@ -479,13 +458,13 @@ static void rygel_general_pref_section_on_trans_check_toggled (RygelGeneralPrefS
 	g_return_if_fail (trans_check != NULL);
 #line 119 "rygel-general-pref-section.vala"
 	gtk_widget_set_sensitive ((GtkWidget*) self->priv->mp3_check, (gtk_widget_set_sensitive ((GtkWidget*) self->priv->mp2ts_check, (gtk_widget_set_sensitive ((GtkWidget*) self->priv->lpcm_check, gtk_toggle_button_get_active ((GtkToggleButton*) trans_check)), gtk_widget_get_sensitive ((GtkWidget*) self->priv->lpcm_check))), gtk_widget_get_sensitive ((GtkWidget*) self->priv->mp2ts_check)));
-#line 483 "rygel-general-pref-section.c"
+#line 462 "rygel-general-pref-section.c"
 }
 
 
 #line 124 "rygel-general-pref-section.vala"
 static void rygel_general_pref_section_on_context_available (RygelGeneralPrefSection* self, GUPnPContextManager* manager, GUPnPContext* context) {
-#line 489 "rygel-general-pref-section.c"
+#line 468 "rygel-general-pref-section.c"
 	GtkTreeIter iter = {0};
 #line 124 "rygel-general-pref-section.vala"
 	g_return_if_fail (self != NULL);
@@ -497,14 +476,14 @@ static void rygel_general_pref_section_on_context_available (RygelGeneralPrefSec
 	if (!rygel_general_pref_section_find_interface (self, gssdp_client_get_interface ((GSSDPClient*) context), &iter)) {
 #line 129 "rygel-general-pref-section.vala"
 		gtk_combo_box_append_text ((GtkComboBox*) self->priv->iface_entry, gssdp_client_get_interface ((GSSDPClient*) context));
-#line 501 "rygel-general-pref-section.c"
+#line 480 "rygel-general-pref-section.c"
 	}
 }
 
 
 #line 133 "rygel-general-pref-section.vala"
 static void rygel_general_pref_section_on_context_unavailable (RygelGeneralPrefSection* self, GUPnPContextManager* manager, GUPnPContext* context) {
-#line 508 "rygel-general-pref-section.c"
+#line 487 "rygel-general-pref-section.c"
 	GtkTreeIter iter = {0};
 #line 133 "rygel-general-pref-section.vala"
 	g_return_if_fail (self != NULL);
@@ -514,14 +493,14 @@ static void rygel_general_pref_section_on_context_unavailable (RygelGeneralPrefS
 	g_return_if_fail (context != NULL);
 #line 137 "rygel-general-pref-section.vala"
 	if (rygel_general_pref_section_find_interface (self, gssdp_client_get_interface ((GSSDPClient*) context), &iter)) {
-#line 518 "rygel-general-pref-section.c"
+#line 497 "rygel-general-pref-section.c"
 		GtkTreeModel* _tmp0_;
 		GtkListStore* list_store;
 #line 138 "rygel-general-pref-section.vala"
 		list_store = _g_object_ref0 ((_tmp0_ = gtk_combo_box_get_model ((GtkComboBox*) self->priv->iface_entry), GTK_IS_LIST_STORE (_tmp0_) ? ((GtkListStore*) _tmp0_) : NULL));
 #line 139 "rygel-general-pref-section.vala"
 		gtk_list_store_remove (list_store, &iter);
-#line 525 "rygel-general-pref-section.c"
+#line 504 "rygel-general-pref-section.c"
 		_g_object_unref0 (list_store);
 	}
 }
@@ -529,8 +508,8 @@ static void rygel_general_pref_section_on_context_unavailable (RygelGeneralPrefS
 
 #line 143 "rygel-general-pref-section.vala"
 static gboolean rygel_general_pref_section_find_interface (RygelGeneralPrefSection* self, const char* iface, GtkTreeIter* iter) {
-#line 533 "rygel-general-pref-section.c"
-	gboolean result;
+#line 512 "rygel-general-pref-section.c"
+	gboolean result = FALSE;
 	GtkTreeModel* model;
 	gboolean more;
 #line 143 "rygel-general-pref-section.vala"
@@ -547,7 +526,7 @@ static gboolean rygel_general_pref_section_find_interface (RygelGeneralPrefSecti
 		if (!more) {
 #line 146 "rygel-general-pref-section.vala"
 			break;
-#line 551 "rygel-general-pref-section.c"
+#line 530 "rygel-general-pref-section.c"
 		}
 #line 147 "rygel-general-pref-section.vala"
 		gtk_tree_model_get (model, iter, 0, &((RygelPreferencesSection*) self)->name, -1, -1);
@@ -555,17 +534,17 @@ static gboolean rygel_general_pref_section_find_interface (RygelGeneralPrefSecti
 		if (_vala_strcmp0 (((RygelPreferencesSection*) self)->name, iface) == 0) {
 #line 150 "rygel-general-pref-section.vala"
 			break;
-#line 559 "rygel-general-pref-section.c"
+#line 538 "rygel-general-pref-section.c"
 		}
 #line 153 "rygel-general-pref-section.vala"
 		more = gtk_tree_model_iter_next (model, iter);
-#line 563 "rygel-general-pref-section.c"
+#line 542 "rygel-general-pref-section.c"
 	}
 	result = more;
 	_g_object_unref0 (model);
 #line 156 "rygel-general-pref-section.vala"
 	return result;
-#line 569 "rygel-general-pref-section.c"
+#line 548 "rygel-general-pref-section.c"
 }
 
 
@@ -598,12 +577,14 @@ static void rygel_general_pref_section_finalize (GObject* obj) {
 
 
 GType rygel_general_pref_section_get_type (void) {
-	static GType rygel_general_pref_section_type_id = 0;
-	if (rygel_general_pref_section_type_id == 0) {
+	static volatile gsize rygel_general_pref_section_type_id__volatile = 0;
+	if (g_once_init_enter (&rygel_general_pref_section_type_id__volatile)) {
 		static const GTypeInfo g_define_type_info = { sizeof (RygelGeneralPrefSectionClass), (GBaseInitFunc) NULL, (GBaseFinalizeFunc) NULL, (GClassInitFunc) rygel_general_pref_section_class_init, (GClassFinalizeFunc) NULL, NULL, sizeof (RygelGeneralPrefSection), 0, (GInstanceInitFunc) rygel_general_pref_section_instance_init, NULL };
+		GType rygel_general_pref_section_type_id;
 		rygel_general_pref_section_type_id = g_type_register_static (RYGEL_TYPE_PREFERENCES_SECTION, "RygelGeneralPrefSection", &g_define_type_info, 0);
+		g_once_init_leave (&rygel_general_pref_section_type_id__volatile, rygel_general_pref_section_type_id);
 	}
-	return rygel_general_pref_section_type_id;
+	return rygel_general_pref_section_type_id__volatile;
 }
 
 

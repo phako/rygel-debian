@@ -31,6 +31,7 @@ namespace Rygel {
 		public const string DESCRIPTION_PATH;
 		public const string UPNP_ID;
 		public const string UPNP_TYPE;
+		public const string UPNP_TYPE_V1;
 		public ContentDirectory ();
 		public override void constructed ();
 		public virtual Rygel.MediaContainer? create_root_container ();
@@ -69,32 +70,36 @@ namespace Rygel {
 	}
 	[CCode (cheader_filename = "rygel.h")]
 	public abstract class MediaContainer : Rygel.MediaObject {
-		public uint child_count;
+		public int child_count;
 		public uint32 update_id;
-		public MediaContainer (string id, Rygel.MediaContainer? parent, string title, uint child_count);
+		public MediaContainer (string id, Rygel.MediaContainer? parent, string title, int child_count);
+		public virtual async void add_item (Rygel.MediaItem item, GLib.Cancellable? cancellable) throws GLib.Error;
 		public abstract async Gee.List<Rygel.MediaObject>? get_children (uint offset, uint max_count, GLib.Cancellable? cancellable) throws GLib.Error;
-		public MediaContainer.root (string title, uint child_count);
+		public MediaContainer.root (string title, int child_count);
 		public virtual async Gee.List<Rygel.MediaObject>? search (Rygel.SearchExpression expression, uint offset, uint max_count, out uint total_matches, GLib.Cancellable? cancellable) throws GLib.Error;
 		public void updated ();
 		public signal void container_updated (Rygel.MediaContainer container);
 	}
 	[CCode (cheader_filename = "rygel.h")]
 	public class MediaDB : GLib.Object {
-		public static Rygel.MediaDB? create (string name) throws Rygel.MediaDBError;
-		public static Rygel.MediaDB? create_with_factory (string name, Rygel.MediaDBObjectFactory factory) throws Rygel.MediaDBError;
+		public MediaDB (string name) throws GLib.Error;
 		public bool exists (string object_id, out int64 timestamp) throws Rygel.DatabaseError;
 		public int get_child_count (string container_id) throws Rygel.DatabaseError;
 		public Gee.ArrayList<string> get_child_ids (string container_id) throws Rygel.DatabaseError;
 		public Gee.ArrayList<Rygel.MediaObject> get_children (string container_id, long offset, long max_count) throws GLib.Error;
 		public Rygel.MediaContainer? get_container (string container_id) throws Rygel.DatabaseError, Rygel.MediaDBError;
 		public Rygel.MediaItem? get_item (string item_id) throws Rygel.DatabaseError, Rygel.MediaDBError;
+		public Gee.List<string> get_meta_data_column_by_filter (string column, string filter, GLib.ValueArray args, long offset, long max_count) throws GLib.Error;
 		public Rygel.MediaObject? get_object (string object_id) throws Rygel.DatabaseError;
+		public Gee.List<string> get_object_attribute_by_search_expression (string attribute, Rygel.SearchExpression? expression, long offset, long max_count) throws GLib.Error;
+		public Gee.ArrayList<Rygel.MediaObject> get_objects_by_filter (string filter, GLib.ValueArray args, string container_id, long offset, long max_count) throws GLib.Error;
+		public Gee.List<Rygel.MediaObject> get_objects_by_search_expression (Rygel.SearchExpression? expression, string container_id, uint offset, uint max_count) throws GLib.Error;
 		public void remove_by_id (string id) throws Rygel.DatabaseError;
-		public void remove_object (Rygel.MediaObject obj) throws Rygel.DatabaseError, Rygel.MediaDBError;
+		public void remove_object (Rygel.MediaObject object) throws Rygel.DatabaseError, Rygel.MediaDBError;
 		public void save_container (Rygel.MediaContainer container) throws GLib.Error;
 		public void save_item (Rygel.MediaItem item) throws GLib.Error;
-		public void save_object (Rygel.MediaObject obj) throws GLib.Error;
-		public void update_object (Rygel.MediaObject obj) throws GLib.Error;
+		public void update_object (Rygel.MediaObject object) throws GLib.Error;
+		public MediaDB.with_factory (string name, Rygel.MediaDBObjectFactory factory) throws GLib.Error;
 		public signal void container_added (string container_id);
 		public signal void container_removed (string container_id);
 		public signal void container_updated (string container_id);
@@ -110,6 +115,7 @@ namespace Rygel {
 		protected Rygel.MediaDB media_db;
 		public MediaDBContainer (Rygel.MediaDB media_db, string id, string title);
 		public override async Gee.List<Rygel.MediaObject>? get_children (uint offset, uint max_count, GLib.Cancellable? cancellable) throws GLib.Error;
+		public override async Gee.List<Rygel.MediaObject>? search (Rygel.SearchExpression expression, uint offset, uint max_count, out uint total_matches, GLib.Cancellable? cancellable) throws GLib.Error;
 	}
 	[CCode (cheader_filename = "rygel.h")]
 	public class MediaDBObjectFactory : GLib.Object {
@@ -134,12 +140,14 @@ namespace Rygel {
 		public int pixel_width;
 		public int sample_freq;
 		public long size;
+		public Gee.ArrayList<Rygel.Subtitle> subtitles;
 		public Gee.ArrayList<Rygel.Thumbnail> thumbnails;
 		public int track_number;
 		public int width;
 		public const string AUDIO_CLASS;
 		public const string IMAGE_CLASS;
 		public const string MUSIC_CLASS;
+		public const string PHOTO_CLASS;
 		public const string VIDEO_CLASS;
 		public MediaItem (string id, Rygel.MediaContainer parent, string title, string upnp_class);
 		public void add_uri (string uri, Rygel.Thumbnail? thumbnail);
@@ -151,11 +159,20 @@ namespace Rygel {
 		public string id;
 		public uint64 modified;
 		public weak Rygel.MediaContainer parent;
-		public Rygel.MediaContainer parent_ref;
 		public string upnp_class;
 		public Gee.ArrayList<string> uris;
 		public MediaObject ();
+		public async GLib.File? get_writable (GLib.Cancellable? cancellable) throws GLib.Error;
+		public Rygel.MediaContainer parent_ref { get; set; }
 		public string title { get; set; }
+	}
+	[CCode (cheader_filename = "rygel.h")]
+	public class MediaReceiverRegistrar : GUPnP.Service {
+		public const string DESCRIPTION_PATH;
+		public const string UPNP_ID;
+		public const string UPNP_TYPE;
+		public MediaReceiverRegistrar ();
+		public override void constructed ();
 	}
 	[CCode (cheader_filename = "rygel.h")]
 	public class MetaConfig : GLib.Object, Rygel.Configuration {
@@ -219,12 +236,6 @@ namespace Rygel {
 	public class RootDevice : GUPnP.RootDevice {
 		public RootDevice (GUPnP.Context context, Rygel.Plugin plugin, GUPnP.XMLDoc description_doc, string description_path, string description_dir);
 	}
-	[CCode (ref_function = "rygel_root_device_factory_ref", unref_function = "rygel_root_device_factory_unref", cheader_filename = "rygel.h")]
-	public class RootDeviceFactory {
-		public GUPnP.Context context;
-		public RootDeviceFactory (GUPnP.Context context) throws GLib.Error;
-		public Rygel.RootDevice create (Rygel.Plugin plugin) throws GLib.Error;
-	}
 	[CCode (ref_function = "rygel_search_expression_ref", unref_function = "rygel_search_expression_unref", cheader_filename = "rygel.h")]
 	public abstract class SearchExpression<G,H,I> {
 		public G op;
@@ -239,6 +250,7 @@ namespace Rygel {
 		public Gee.ArrayList<Rygel.MediaObject> children;
 		public SimpleContainer (string id, Rygel.MediaContainer? parent, string title);
 		public void add_child (Rygel.MediaObject child);
+		public void clear ();
 		public override async Gee.List<Rygel.MediaObject>? get_children (uint offset, uint max_count, GLib.Cancellable? cancellable) throws GLib.Error;
 		public void remove_child (Rygel.MediaObject child);
 		public SimpleContainer.root (string title);
@@ -247,6 +259,14 @@ namespace Rygel {
 	public class SourceConnectionManager : Rygel.ConnectionManager {
 		public SourceConnectionManager ();
 		public override void constructed ();
+	}
+	[CCode (ref_function = "rygel_subtitle_ref", unref_function = "rygel_subtitle_unref", cheader_filename = "rygel.h")]
+	public class Subtitle {
+		public string caption_type;
+		public string mime_type;
+		public long size;
+		public string uri;
+		public Subtitle (string mime_type = "text/plain", string caption_type = "srt");
 	}
 	[CCode (cheader_filename = "rygel.h")]
 	public class Thumbnail : Rygel.IconInfo {
@@ -266,6 +286,7 @@ namespace Rygel {
 		protected const string PORT_KEY;
 		protected const string TITLE_KEY;
 		protected const string TRANSCODING_KEY;
+		protected const string WMV_TRANSCODER_KEY;
 		public UserConfig (bool read_only = true) throws GLib.Error;
 		public static Rygel.UserConfig get_default () throws GLib.Error;
 		public void save ();
@@ -280,6 +301,7 @@ namespace Rygel {
 		public void set_string_list (string section, string key, Gee.ArrayList<string> str_list);
 		public void set_transcoding (bool value);
 		public void set_upnp_enabled (bool value);
+		public void set_wmv_transcoder (bool value);
 	}
 	[CCode (cheader_filename = "rygel.h")]
 	public interface Configuration : GLib.Object {
@@ -298,6 +320,7 @@ namespace Rygel {
 		public abstract string get_title (string section) throws GLib.Error;
 		public abstract bool get_transcoding () throws GLib.Error;
 		public abstract bool get_upnp_enabled () throws GLib.Error;
+		public abstract bool get_wmv_transcoder () throws GLib.Error;
 	}
 	[CCode (cheader_filename = "rygel.h")]
 	public interface StateMachine : GLib.Object {
@@ -337,11 +360,13 @@ namespace Rygel {
 	[CCode (cprefix = "RYGEL_CONTENT_DIRECTORY_ERROR_", cheader_filename = "rygel.h")]
 	public errordomain ContentDirectoryError {
 		NO_SUCH_OBJECT,
+		RESTRICTED_PARENT,
 		CANT_PROCESS,
 		INVALID_ARGS,
 	}
 	[CCode (cprefix = "RYGEL_DATABASE_ERROR_", cheader_filename = "rygel.h")]
 	public errordomain DatabaseError {
+		IO_ERROR,
 		SQLITE_ERROR,
 	}
 	[CCode (cprefix = "RYGEL_MEDIA_DB_ERROR_", cheader_filename = "rygel.h")]
@@ -349,6 +374,7 @@ namespace Rygel {
 		SQLITE_ERROR,
 		GENERAL_ERROR,
 		INVALID_TYPE,
+		UNSUPPORTED,
 	}
 }
 [CCode (cprefix = "ROOT_DEVICE_FACTORY_ERROR_", cheader_filename = "rygel.h")]

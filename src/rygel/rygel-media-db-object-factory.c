@@ -129,7 +129,7 @@ RygelMediaDBObjectFactory* rygel_media_db_object_factory_construct (GType object
 #line 43 "rygel-media-db-object-factory.vala"
 static RygelMediaContainer* rygel_media_db_object_factory_real_get_container (RygelMediaDBObjectFactory* self, RygelMediaDB* media_db, const char* id, const char* title, guint child_count) {
 #line 132 "rygel-media-db-object-factory.c"
-	RygelMediaContainer* result;
+	RygelMediaContainer* result = NULL;
 #line 43 "rygel-media-db-object-factory.vala"
 	g_return_val_if_fail (self != NULL, NULL);
 #line 43 "rygel-media-db-object-factory.vala"
@@ -157,7 +157,7 @@ RygelMediaContainer* rygel_media_db_object_factory_get_container (RygelMediaDBOb
 #line 58 "rygel-media-db-object-factory.vala"
 static RygelMediaItem* rygel_media_db_object_factory_real_get_item (RygelMediaDBObjectFactory* self, RygelMediaDB* media_db, RygelMediaContainer* parent, const char* id, const char* title, const char* upnp_class) {
 #line 160 "rygel-media-db-object-factory.c"
-	RygelMediaItem* result;
+	RygelMediaItem* result = NULL;
 #line 58 "rygel-media-db-object-factory.vala"
 	g_return_val_if_fail (self != NULL, NULL);
 #line 58 "rygel-media-db-object-factory.vala"
@@ -217,12 +217,14 @@ static void rygel_media_db_object_factory_instance_init (RygelMediaDBObjectFacto
 
 
 GType rygel_media_db_object_factory_get_type (void) {
-	static GType rygel_media_db_object_factory_type_id = 0;
-	if (rygel_media_db_object_factory_type_id == 0) {
+	static volatile gsize rygel_media_db_object_factory_type_id__volatile = 0;
+	if (g_once_init_enter (&rygel_media_db_object_factory_type_id__volatile)) {
 		static const GTypeInfo g_define_type_info = { sizeof (RygelMediaDBObjectFactoryClass), (GBaseInitFunc) NULL, (GBaseFinalizeFunc) NULL, (GClassInitFunc) rygel_media_db_object_factory_class_init, (GClassFinalizeFunc) NULL, NULL, sizeof (RygelMediaDBObjectFactory), 0, (GInstanceInitFunc) rygel_media_db_object_factory_instance_init, NULL };
+		GType rygel_media_db_object_factory_type_id;
 		rygel_media_db_object_factory_type_id = g_type_register_static (G_TYPE_OBJECT, "RygelMediaDBObjectFactory", &g_define_type_info, 0);
+		g_once_init_leave (&rygel_media_db_object_factory_type_id__volatile, rygel_media_db_object_factory_type_id);
 	}
-	return rygel_media_db_object_factory_type_id;
+	return rygel_media_db_object_factory_type_id__volatile;
 }
 
 

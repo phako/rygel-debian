@@ -64,11 +64,11 @@ internal abstract class Rygel.Transcoder : GLib.Object {
             return null;
         }
 
-        string protocol;
+        var protocol = manager.get_protocol ();
         var uri = manager.create_uri_for_item (item,
                                                -1,
-                                               this.dlna_profile,
-                                               out protocol);
+                                               -1,
+                                               this.dlna_profile);
         var res = item.add_resource (didl_item, uri, protocol);
         res.size = -1;
 
@@ -76,7 +76,9 @@ internal abstract class Rygel.Transcoder : GLib.Object {
         protocol_info.mime_type = this.mime_type;
         protocol_info.dlna_profile = this.dlna_profile;
         protocol_info.dlna_conversion = DLNAConversion.TRANSCODED;
-        protocol_info.dlna_flags = DLNAFlags.STREAMING_TRANSFER_MODE;
+        protocol_info.dlna_flags = DLNAFlags.STREAMING_TRANSFER_MODE |
+                                   DLNAFlags.SENDER_PACED |
+                                   DLNAFlags.DLNA_V15;
         protocol_info.dlna_operation = DLNAOperation.TIMESEEK;
 
         return res;

@@ -83,6 +83,16 @@ typedef struct _RygelIconInfoClass RygelIconInfoClass;
 
 typedef struct _RygelThumbnail RygelThumbnail;
 typedef struct _RygelThumbnailClass RygelThumbnailClass;
+
+#define RYGEL_TYPE_SUBTITLE (rygel_subtitle_get_type ())
+#define RYGEL_SUBTITLE(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_SUBTITLE, RygelSubtitle))
+#define RYGEL_SUBTITLE_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TYPE_SUBTITLE, RygelSubtitleClass))
+#define RYGEL_IS_SUBTITLE(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TYPE_SUBTITLE))
+#define RYGEL_IS_SUBTITLE_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_TYPE_SUBTITLE))
+#define RYGEL_SUBTITLE_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_TYPE_SUBTITLE, RygelSubtitleClass))
+
+typedef struct _RygelSubtitle RygelSubtitle;
+typedef struct _RygelSubtitleClass RygelSubtitleClass;
 #define _g_free0(var) (var = (g_free (var), NULL))
 #define _g_object_unref0(var) ((var == NULL) ? NULL : (var = (g_object_unref (var), NULL)))
 #define _gst_object_unref0(var) ((var == NULL) ? NULL : (var = (gst_object_unref (var), NULL)))
@@ -99,6 +109,17 @@ typedef struct _RygelThumbnailerClass RygelThumbnailerClass;
 #define _rygel_icon_info_unref0(var) ((var == NULL) ? NULL : (var = (rygel_icon_info_unref (var), NULL)))
 #define _g_error_free0(var) ((var == NULL) ? NULL : (var = (g_error_free (var), NULL)))
 
+#define RYGEL_TYPE_SUBTITLE_MANAGER (rygel_subtitle_manager_get_type ())
+#define RYGEL_SUBTITLE_MANAGER(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_SUBTITLE_MANAGER, RygelSubtitleManager))
+#define RYGEL_SUBTITLE_MANAGER_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TYPE_SUBTITLE_MANAGER, RygelSubtitleManagerClass))
+#define RYGEL_IS_SUBTITLE_MANAGER(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TYPE_SUBTITLE_MANAGER))
+#define RYGEL_IS_SUBTITLE_MANAGER_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_TYPE_SUBTITLE_MANAGER))
+#define RYGEL_SUBTITLE_MANAGER_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_TYPE_SUBTITLE_MANAGER, RygelSubtitleManagerClass))
+
+typedef struct _RygelSubtitleManager RygelSubtitleManager;
+typedef struct _RygelSubtitleManagerClass RygelSubtitleManagerClass;
+#define _rygel_subtitle_unref0(var) ((var == NULL) ? NULL : (var = (rygel_subtitle_unref (var), NULL)))
+
 #define RYGEL_TYPE_TRANSCODER (rygel_transcoder_get_type ())
 #define RYGEL_TRANSCODER(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_TRANSCODER, RygelTranscoder))
 #define RYGEL_TRANSCODER_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TYPE_TRANSCODER, RygelTranscoderClass))
@@ -108,6 +129,7 @@ typedef struct _RygelThumbnailerClass RygelThumbnailerClass;
 
 typedef struct _RygelTranscoder RygelTranscoder;
 typedef struct _RygelTranscoderClass RygelTranscoderClass;
+typedef struct _RygelSubtitlePrivate RygelSubtitlePrivate;
 typedef struct _RygelIconInfoPrivate RygelIconInfoPrivate;
 
 typedef enum  {
@@ -122,7 +144,6 @@ struct _RygelMediaObject {
 	guint64 modified;
 	GeeArrayList* uris;
 	RygelMediaContainer* parent;
-	RygelMediaContainer* parent_ref;
 };
 
 struct _RygelMediaObjectClass {
@@ -150,12 +171,29 @@ struct _RygelMediaItem {
 	gint pixel_height;
 	gint color_depth;
 	GeeArrayList* thumbnails;
+	GeeArrayList* subtitles;
+	gboolean place_holder;
 };
 
 struct _RygelMediaItemClass {
 	RygelMediaObjectClass parent_class;
 	GstElement* (*create_stream_source) (RygelMediaItem* self);
 	gboolean (*should_stream) (RygelMediaItem* self);
+};
+
+struct _RygelSubtitle {
+	GTypeInstance parent_instance;
+	volatile int ref_count;
+	RygelSubtitlePrivate * priv;
+	char* uri;
+	char* mime_type;
+	char* caption_type;
+	glong size;
+};
+
+struct _RygelSubtitleClass {
+	GTypeClass parent_class;
+	void (*finalize) (RygelSubtitle *self);
 };
 
 struct _RygelIconInfo {
@@ -186,13 +224,22 @@ gpointer rygel_icon_info_ref (gpointer instance);
 void rygel_icon_info_unref (gpointer instance);
 GParamSpec* rygel_param_spec_icon_info (const gchar* name, const gchar* nick, const gchar* blurb, GType object_type, GParamFlags flags);
 void rygel_value_set_icon_info (GValue* value, gpointer v_object);
+void rygel_value_take_icon_info (GValue* value, gpointer v_object);
 gpointer rygel_value_get_icon_info (const GValue* value);
 GType rygel_icon_info_get_type (void);
 GType rygel_thumbnail_get_type (void);
+gpointer rygel_subtitle_ref (gpointer instance);
+void rygel_subtitle_unref (gpointer instance);
+GParamSpec* rygel_param_spec_subtitle (const gchar* name, const gchar* nick, const gchar* blurb, GType object_type, GParamFlags flags);
+void rygel_value_set_subtitle (GValue* value, gpointer v_object);
+void rygel_value_take_subtitle (GValue* value, gpointer v_object);
+gpointer rygel_value_get_subtitle (const GValue* value);
+GType rygel_subtitle_get_type (void);
 enum  {
 	RYGEL_MEDIA_ITEM_DUMMY_PROPERTY
 };
 #define RYGEL_MEDIA_ITEM_IMAGE_CLASS "object.item.imageItem"
+#define RYGEL_MEDIA_ITEM_PHOTO_CLASS "object.item.imageItem.photo"
 #define RYGEL_MEDIA_ITEM_VIDEO_CLASS "object.item.videoItem"
 #define RYGEL_MEDIA_ITEM_AUDIO_CLASS "object.item.audioItem"
 #define RYGEL_MEDIA_ITEM_MUSIC_CLASS "object.item.audioItem.musicTrack"
@@ -208,12 +255,16 @@ static gboolean rygel_media_item_real_should_stream (RygelMediaItem* self);
 GType rygel_thumbnailer_get_type (void);
 RygelThumbnailer* rygel_thumbnailer_get_default (void);
 RygelThumbnail* rygel_thumbnailer_get_thumbnail (RygelThumbnailer* self, const char* uri, GError** error);
+GType rygel_subtitle_manager_get_type (void);
+RygelSubtitleManager* rygel_subtitle_manager_get_default (void);
+RygelSubtitle* rygel_subtitle_manager_get_subtitle (RygelSubtitleManager* self, const char* uri, GError** error);
 void rygel_media_item_add_uri (RygelMediaItem* self, const char* uri, RygelThumbnail* thumbnail);
 GType rygel_transcoder_get_type (void);
 guint rygel_transcoder_get_distance (RygelTranscoder* self, RygelMediaItem* item);
 gint rygel_media_item_compare_transcoders (RygelMediaItem* self, void* a, void* b);
 static char* rygel_media_item_get_protocol_for_uri (RygelMediaItem* self, const char* uri, GError** error);
-GUPnPDIDLLiteResource* rygel_media_item_add_resource (RygelMediaItem* self, GUPnPDIDLLiteItem* didl_item, const char* uri, const char* protocol, GError** error);
+void rygel_subtitle_add_didl_node (RygelSubtitle* self, GUPnPDIDLLiteItem* didl_item);
+GUPnPDIDLLiteResource* rygel_media_item_add_resource (RygelMediaItem* self, GUPnPDIDLLiteItem* didl_item, const char* uri, const char* protocol, const char* import_uri, GError** error);
 GUPnPDIDLLiteResource* rygel_thumbnail_add_resource (RygelThumbnail* self, GUPnPDIDLLiteItem* didl_item, const char* protocol);
 void rygel_media_item_add_resources (RygelMediaItem* self, GUPnPDIDLLiteItem* didl_item, gboolean allow_internal, GError** error);
 static GUPnPProtocolInfo* rygel_media_item_get_protocol_info (RygelMediaItem* self, const char* uri, const char* protocol);
@@ -227,43 +278,46 @@ GQuark rygel_media_item_error_quark (void) {
 }
 
 
-#line 67 "rygel-media-item.vala"
+#line 71 "rygel-media-item.vala"
 RygelMediaItem* rygel_media_item_construct (GType object_type, const char* id, RygelMediaContainer* parent, const char* title, const char* upnp_class) {
-#line 233 "rygel-media-item.c"
+#line 284 "rygel-media-item.c"
 	RygelMediaItem * self;
 	char* _tmp0_;
 	char* _tmp1_;
 	GeeArrayList* _tmp2_;
-#line 67 "rygel-media-item.vala"
-	g_return_val_if_fail (id != NULL, NULL);
-#line 67 "rygel-media-item.vala"
-	g_return_val_if_fail (parent != NULL, NULL);
-#line 67 "rygel-media-item.vala"
-	g_return_val_if_fail (title != NULL, NULL);
-#line 67 "rygel-media-item.vala"
-	g_return_val_if_fail (upnp_class != NULL, NULL);
-#line 67 "rygel-media-item.vala"
-	self = (RygelMediaItem*) rygel_media_object_construct (object_type);
+	GeeArrayList* _tmp3_;
 #line 71 "rygel-media-item.vala"
+	g_return_val_if_fail (id != NULL, NULL);
+#line 71 "rygel-media-item.vala"
+	g_return_val_if_fail (parent != NULL, NULL);
+#line 71 "rygel-media-item.vala"
+	g_return_val_if_fail (title != NULL, NULL);
+#line 71 "rygel-media-item.vala"
+	g_return_val_if_fail (upnp_class != NULL, NULL);
+#line 71 "rygel-media-item.vala"
+	self = (RygelMediaItem*) rygel_media_object_construct (object_type);
+#line 75 "rygel-media-item.vala"
 	((RygelMediaObject*) self)->id = (_tmp0_ = g_strdup (id), _g_free0 (((RygelMediaObject*) self)->id), _tmp0_);
-#line 72 "rygel-media-item.vala"
-	((RygelMediaObject*) self)->parent = parent;
-#line 73 "rygel-media-item.vala"
-	rygel_media_object_set_title ((RygelMediaObject*) self, title);
-#line 74 "rygel-media-item.vala"
-	((RygelMediaObject*) self)->upnp_class = (_tmp1_ = g_strdup (upnp_class), _g_free0 (((RygelMediaObject*) self)->upnp_class), _tmp1_);
 #line 76 "rygel-media-item.vala"
+	((RygelMediaObject*) self)->parent = parent;
+#line 77 "rygel-media-item.vala"
+	rygel_media_object_set_title ((RygelMediaObject*) self, title);
+#line 78 "rygel-media-item.vala"
+	((RygelMediaObject*) self)->upnp_class = (_tmp1_ = g_strdup (upnp_class), _g_free0 (((RygelMediaObject*) self)->upnp_class), _tmp1_);
+#line 80 "rygel-media-item.vala"
 	self->thumbnails = (_tmp2_ = gee_array_list_new (RYGEL_TYPE_THUMBNAIL, (GBoxedCopyFunc) rygel_icon_info_ref, rygel_icon_info_unref, NULL), _g_object_unref0 (self->thumbnails), _tmp2_);
-#line 258 "rygel-media-item.c"
+#line 81 "rygel-media-item.vala"
+	self->subtitles = (_tmp3_ = gee_array_list_new (RYGEL_TYPE_SUBTITLE, (GBoxedCopyFunc) rygel_subtitle_ref, rygel_subtitle_unref, NULL), _g_object_unref0 (self->subtitles), _tmp3_);
+#line 312 "rygel-media-item.c"
 	return self;
 }
 
 
-#line 67 "rygel-media-item.vala"
+#line 71 "rygel-media-item.vala"
 RygelMediaItem* rygel_media_item_new (const char* id, RygelMediaContainer* parent, const char* title, const char* upnp_class) {
-#line 67 "rygel-media-item.vala"
+#line 71 "rygel-media-item.vala"
 	return rygel_media_item_construct (RYGEL_TYPE_MEDIA_ITEM, id, parent, title, upnp_class);
-#line 267 "rygel-media-item.c"
+#line 321 "rygel-media-item.c"
 }
 
 
@@ -272,141 +326,137 @@ static inline void _dynamic_set_tcp_timeout1 (GstElement* obj, gint64 value) {
 }
 
 
-#line 81 "rygel-media-item.vala"
+#line 86 "rygel-media-item.vala"
 static GstElement* rygel_media_item_real_create_stream_source (RygelMediaItem* self) {
-#line 278 "rygel-media-item.c"
-	GstElement* result;
+#line 332 "rygel-media-item.c"
+	GstElement* result = NULL;
 	GstElement* src;
 	gboolean _tmp2_ = FALSE;
-#line 81 "rygel-media-item.vala"
+#line 86 "rygel-media-item.vala"
 	g_return_val_if_fail (self != NULL, NULL);
-#line 82 "rygel-media-item.vala"
+#line 87 "rygel-media-item.vala"
 	src = NULL;
-#line 84 "rygel-media-item.vala"
+#line 89 "rygel-media-item.vala"
 	if (gee_collection_get_size ((GeeCollection*) ((RygelMediaObject*) self)->uris) != 0) {
-#line 288 "rygel-media-item.c"
+#line 342 "rygel-media-item.c"
 		GstElement* _tmp1_;
 		char* _tmp0_;
-#line 85 "rygel-media-item.vala"
+#line 90 "rygel-media-item.vala"
 		src = (_tmp1_ = gst_element_make_from_uri (GST_URI_SRC, _tmp0_ = (char*) gee_abstract_list_get ((GeeAbstractList*) ((RygelMediaObject*) self)->uris, 0), NULL), _gst_object_unref0 (src), _tmp1_);
-#line 293 "rygel-media-item.c"
+#line 347 "rygel-media-item.c"
 		_g_free0 (_tmp0_);
 	}
-#line 88 "rygel-media-item.vala"
+#line 93 "rygel-media-item.vala"
 	if (src != NULL) {
-#line 88 "rygel-media-item.vala"
+#line 93 "rygel-media-item.vala"
 		_tmp2_ = _vala_strcmp0 (g_type_name (G_TYPE_FROM_INSTANCE ((GObject*) src)), "GstRTSPSrc") == 0;
-#line 300 "rygel-media-item.c"
+#line 354 "rygel-media-item.c"
 	} else {
-#line 88 "rygel-media-item.vala"
+#line 93 "rygel-media-item.vala"
 		_tmp2_ = FALSE;
-#line 304 "rygel-media-item.c"
+#line 358 "rygel-media-item.c"
 	}
-#line 88 "rygel-media-item.vala"
+#line 93 "rygel-media-item.vala"
 	if (_tmp2_) {
-#line 91 "rygel-media-item.vala"
+#line 96 "rygel-media-item.vala"
 		_dynamic_set_tcp_timeout1 (src, (gint64) 60000000);
-#line 310 "rygel-media-item.c"
+#line 364 "rygel-media-item.c"
 	}
 	result = src;
-#line 94 "rygel-media-item.vala"
+#line 99 "rygel-media-item.vala"
 	return result;
-#line 315 "rygel-media-item.c"
+#line 369 "rygel-media-item.c"
 }
 
 
-#line 81 "rygel-media-item.vala"
+#line 86 "rygel-media-item.vala"
 GstElement* rygel_media_item_create_stream_source (RygelMediaItem* self) {
-#line 81 "rygel-media-item.vala"
+#line 86 "rygel-media-item.vala"
 	return RYGEL_MEDIA_ITEM_GET_CLASS (self)->create_stream_source (self);
-#line 323 "rygel-media-item.c"
+#line 377 "rygel-media-item.c"
 }
 
 
-#line 100 "rygel-media-item.vala"
+#line 105 "rygel-media-item.vala"
 static gboolean rygel_media_item_real_should_stream (RygelMediaItem* self) {
-#line 329 "rygel-media-item.c"
-	gboolean result;
-#line 100 "rygel-media-item.vala"
+#line 383 "rygel-media-item.c"
+	gboolean result = FALSE;
+#line 105 "rygel-media-item.vala"
 	g_return_val_if_fail (self != NULL, FALSE);
-#line 333 "rygel-media-item.c"
+#line 387 "rygel-media-item.c"
 	result = self->size <= 0;
-#line 102 "rygel-media-item.vala"
+#line 107 "rygel-media-item.vala"
 	return result;
-#line 337 "rygel-media-item.c"
+#line 391 "rygel-media-item.c"
 }
 
 
-#line 100 "rygel-media-item.vala"
+#line 105 "rygel-media-item.vala"
 gboolean rygel_media_item_should_stream (RygelMediaItem* self) {
-#line 100 "rygel-media-item.vala"
+#line 105 "rygel-media-item.vala"
 	return RYGEL_MEDIA_ITEM_GET_CLASS (self)->should_stream (self);
-#line 345 "rygel-media-item.c"
+#line 399 "rygel-media-item.c"
 }
 
 
-#line 107 "rygel-media-item.vala"
-void rygel_media_item_add_uri (RygelMediaItem* self, const char* uri, RygelThumbnail* thumbnail) {
-#line 351 "rygel-media-item.c"
-	GError * _inner_error_;
-#line 107 "rygel-media-item.vala"
-	g_return_if_fail (self != NULL);
-#line 107 "rygel-media-item.vala"
-	g_return_if_fail (uri != NULL);
-#line 357 "rygel-media-item.c"
-	_inner_error_ = NULL;
-#line 109 "rygel-media-item.vala"
-	gee_abstract_collection_add ((GeeAbstractCollection*) ((RygelMediaObject*) self)->uris, uri);
-#line 111 "rygel-media-item.vala"
-	if (thumbnail != NULL) {
 #line 112 "rygel-media-item.vala"
+void rygel_media_item_add_uri (RygelMediaItem* self, const char* uri, RygelThumbnail* thumbnail) {
+#line 405 "rygel-media-item.c"
+	GError * _inner_error_;
+#line 112 "rygel-media-item.vala"
+	g_return_if_fail (self != NULL);
+#line 112 "rygel-media-item.vala"
+	g_return_if_fail (uri != NULL);
+#line 411 "rygel-media-item.c"
+	_inner_error_ = NULL;
+#line 114 "rygel-media-item.vala"
+	gee_abstract_collection_add ((GeeAbstractCollection*) ((RygelMediaObject*) self)->uris, uri);
+#line 116 "rygel-media-item.vala"
+	if (thumbnail != NULL) {
+#line 117 "rygel-media-item.vala"
 		gee_abstract_collection_add ((GeeAbstractCollection*) self->thumbnails, thumbnail);
-#line 365 "rygel-media-item.c"
+#line 419 "rygel-media-item.c"
 	} else {
 		gboolean _tmp0_ = FALSE;
-#line 113 "rygel-media-item.vala"
-		if (g_str_has_prefix (((RygelMediaObject*) self)->upnp_class, RYGEL_MEDIA_ITEM_IMAGE_CLASS)) {
-#line 113 "rygel-media-item.vala"
-			_tmp0_ = TRUE;
-#line 372 "rygel-media-item.c"
-		} else {
-#line 114 "rygel-media-item.vala"
-			_tmp0_ = g_str_has_prefix (((RygelMediaObject*) self)->upnp_class, RYGEL_MEDIA_ITEM_VIDEO_CLASS);
-#line 376 "rygel-media-item.c"
-		}
-#line 113 "rygel-media-item.vala"
-		if (_tmp0_) {
-#line 380 "rygel-media-item.c"
-			RygelThumbnailer* thumbnailer;
-#line 116 "rygel-media-item.vala"
-			thumbnailer = rygel_thumbnailer_get_default ();
 #line 118 "rygel-media-item.vala"
-			if (thumbnailer == NULL) {
-#line 386 "rygel-media-item.c"
-				_g_object_unref0 (thumbnailer);
+		if (g_str_has_prefix (((RygelMediaObject*) self)->upnp_class, RYGEL_MEDIA_ITEM_IMAGE_CLASS)) {
+#line 118 "rygel-media-item.vala"
+			_tmp0_ = TRUE;
+#line 426 "rygel-media-item.c"
+		} else {
 #line 119 "rygel-media-item.vala"
+			_tmp0_ = g_str_has_prefix (((RygelMediaObject*) self)->upnp_class, RYGEL_MEDIA_ITEM_VIDEO_CLASS);
+#line 430 "rygel-media-item.c"
+		}
+#line 118 "rygel-media-item.vala"
+		if (_tmp0_) {
+#line 434 "rygel-media-item.c"
+			RygelThumbnailer* thumbnailer;
+#line 121 "rygel-media-item.vala"
+			thumbnailer = rygel_thumbnailer_get_default ();
+#line 123 "rygel-media-item.vala"
+			if (thumbnailer == NULL) {
+#line 440 "rygel-media-item.c"
+				_g_object_unref0 (thumbnailer);
+#line 124 "rygel-media-item.vala"
 				return;
-#line 390 "rygel-media-item.c"
+#line 444 "rygel-media-item.c"
 			}
 			{
 				RygelThumbnail* thumb;
-#line 123 "rygel-media-item.vala"
+#line 128 "rygel-media-item.vala"
 				thumb = rygel_thumbnailer_get_thumbnail (thumbnailer, uri, &_inner_error_);
-#line 396 "rygel-media-item.c"
+#line 450 "rygel-media-item.c"
 				if (_inner_error_ != NULL) {
-					goto __catch38_g_error;
-					_g_object_unref0 (thumbnailer);
-					g_critical ("file %s: line %d: unexpected error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
-					g_clear_error (&_inner_error_);
-					return;
+					goto __catch42_g_error;
 				}
-#line 124 "rygel-media-item.vala"
+#line 129 "rygel-media-item.vala"
 				gee_abstract_collection_add ((GeeAbstractCollection*) self->thumbnails, thumb);
-#line 406 "rygel-media-item.c"
+#line 456 "rygel-media-item.c"
 				_rygel_icon_info_unref0 (thumb);
 			}
-			goto __finally38;
-			__catch38_g_error:
+			goto __finally42;
+			__catch42_g_error:
 			{
 				GError * err;
 				err = _inner_error_;
@@ -415,7 +465,7 @@ void rygel_media_item_add_uri (RygelMediaItem* self, const char* uri, RygelThumb
 					_g_error_free0 (err);
 				}
 			}
-			__finally38:
+			__finally42:
 			if (_inner_error_ != NULL) {
 				_g_object_unref0 (thumbnailer);
 				g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
@@ -425,6 +475,52 @@ void rygel_media_item_add_uri (RygelMediaItem* self, const char* uri, RygelThumb
 			_g_object_unref0 (thumbnailer);
 		}
 	}
+#line 133 "rygel-media-item.vala"
+	if (g_str_has_prefix (((RygelMediaObject*) self)->upnp_class, RYGEL_MEDIA_ITEM_VIDEO_CLASS)) {
+#line 481 "rygel-media-item.c"
+		RygelSubtitleManager* subtitle_manager;
+#line 134 "rygel-media-item.vala"
+		subtitle_manager = rygel_subtitle_manager_get_default ();
+#line 136 "rygel-media-item.vala"
+		if (subtitle_manager == NULL) {
+#line 487 "rygel-media-item.c"
+			_g_object_unref0 (subtitle_manager);
+#line 137 "rygel-media-item.vala"
+			return;
+#line 491 "rygel-media-item.c"
+		}
+		{
+			RygelSubtitle* subtitle;
+#line 141 "rygel-media-item.vala"
+			subtitle = rygel_subtitle_manager_get_subtitle (subtitle_manager, uri, &_inner_error_);
+#line 497 "rygel-media-item.c"
+			if (_inner_error_ != NULL) {
+				goto __catch43_g_error;
+			}
+#line 142 "rygel-media-item.vala"
+			gee_abstract_collection_add ((GeeAbstractCollection*) self->subtitles, subtitle);
+#line 503 "rygel-media-item.c"
+			_rygel_subtitle_unref0 (subtitle);
+		}
+		goto __finally43;
+		__catch43_g_error:
+		{
+			GError * err;
+			err = _inner_error_;
+			_inner_error_ = NULL;
+			{
+				_g_error_free0 (err);
+			}
+		}
+		__finally43:
+		if (_inner_error_ != NULL) {
+			_g_object_unref0 (subtitle_manager);
+			g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
+			g_clear_error (&_inner_error_);
+			return;
+		}
+		_g_object_unref0 (subtitle_manager);
+	}
 }
 
 
@@ -433,81 +529,129 @@ static gpointer _g_object_ref0 (gpointer self) {
 }
 
 
-#line 129 "rygel-media-item.vala"
+#line 147 "rygel-media-item.vala"
 gint rygel_media_item_compare_transcoders (RygelMediaItem* self, void* a, void* b) {
-#line 439 "rygel-media-item.c"
-	gint result;
+#line 535 "rygel-media-item.c"
+	gint result = 0;
 	RygelTranscoder* transcoder1;
 	RygelTranscoder* transcoder2;
-#line 129 "rygel-media-item.vala"
+#line 147 "rygel-media-item.vala"
 	g_return_val_if_fail (self != NULL, 0);
-#line 130 "rygel-media-item.vala"
+#line 148 "rygel-media-item.vala"
 	transcoder1 = _g_object_ref0 (RYGEL_TRANSCODER (a));
-#line 131 "rygel-media-item.vala"
+#line 149 "rygel-media-item.vala"
 	transcoder2 = _g_object_ref0 (RYGEL_TRANSCODER (b));
-#line 449 "rygel-media-item.c"
+#line 545 "rygel-media-item.c"
 	result = ((gint) rygel_transcoder_get_distance (transcoder1, self)) - ((gint) rygel_transcoder_get_distance (transcoder2, self));
 	_g_object_unref0 (transcoder1);
 	_g_object_unref0 (transcoder2);
-#line 133 "rygel-media-item.vala"
+#line 151 "rygel-media-item.vala"
 	return result;
-#line 455 "rygel-media-item.c"
+#line 551 "rygel-media-item.c"
 }
 
 
-#line 137 "rygel-media-item.vala"
+#line 155 "rygel-media-item.vala"
 void rygel_media_item_add_resources (RygelMediaItem* self, GUPnPDIDLLiteItem* didl_item, gboolean allow_internal, GError** error) {
-#line 461 "rygel-media-item.c"
+#line 557 "rygel-media-item.c"
 	GError * _inner_error_;
-#line 137 "rygel-media-item.vala"
+#line 155 "rygel-media-item.vala"
 	g_return_if_fail (self != NULL);
-#line 137 "rygel-media-item.vala"
+#line 155 "rygel-media-item.vala"
 	g_return_if_fail (didl_item != NULL);
-#line 467 "rygel-media-item.c"
+#line 563 "rygel-media-item.c"
 	_inner_error_ = NULL;
+	{
+		GeeIterator* _subtitle_it;
+		_subtitle_it = gee_abstract_collection_iterator ((GeeAbstractCollection*) self->subtitles);
+#line 158 "rygel-media-item.vala"
+		while (TRUE) {
+#line 570 "rygel-media-item.c"
+			RygelSubtitle* subtitle;
+			char* protocol;
+			gboolean _tmp0_ = FALSE;
+#line 158 "rygel-media-item.vala"
+			if (!gee_iterator_next (_subtitle_it)) {
+#line 158 "rygel-media-item.vala"
+				break;
+#line 578 "rygel-media-item.c"
+			}
+#line 158 "rygel-media-item.vala"
+			subtitle = (RygelSubtitle*) gee_iterator_get (_subtitle_it);
+#line 159 "rygel-media-item.vala"
+			protocol = rygel_media_item_get_protocol_for_uri (self, subtitle->uri, &_inner_error_);
+#line 584 "rygel-media-item.c"
+			if (_inner_error_ != NULL) {
+				g_propagate_error (error, _inner_error_);
+				_rygel_subtitle_unref0 (subtitle);
+				_g_object_unref0 (_subtitle_it);
+				return;
+			}
+#line 161 "rygel-media-item.vala"
+			if (allow_internal) {
+#line 161 "rygel-media-item.vala"
+				_tmp0_ = TRUE;
+#line 595 "rygel-media-item.c"
+			} else {
+#line 161 "rygel-media-item.vala"
+				_tmp0_ = _vala_strcmp0 (protocol, "internal") != 0;
+#line 599 "rygel-media-item.c"
+			}
+#line 161 "rygel-media-item.vala"
+			if (_tmp0_) {
+#line 162 "rygel-media-item.vala"
+				rygel_subtitle_add_didl_node (subtitle, didl_item);
+#line 605 "rygel-media-item.c"
+			}
+			_rygel_subtitle_unref0 (subtitle);
+			_g_free0 (protocol);
+		}
+		_g_object_unref0 (_subtitle_it);
+	}
 	{
 		GeeIterator* _uri_it;
 		_uri_it = gee_abstract_collection_iterator ((GeeAbstractCollection*) ((RygelMediaObject*) self)->uris);
-#line 140 "rygel-media-item.vala"
+#line 166 "rygel-media-item.vala"
 		while (TRUE) {
-#line 474 "rygel-media-item.c"
+#line 617 "rygel-media-item.c"
 			char* uri;
 			char* protocol;
-			gboolean _tmp0_ = FALSE;
-#line 140 "rygel-media-item.vala"
+			gboolean _tmp1_ = FALSE;
+#line 166 "rygel-media-item.vala"
 			if (!gee_iterator_next (_uri_it)) {
-#line 140 "rygel-media-item.vala"
+#line 166 "rygel-media-item.vala"
 				break;
-#line 482 "rygel-media-item.c"
+#line 625 "rygel-media-item.c"
 			}
-#line 140 "rygel-media-item.vala"
+#line 166 "rygel-media-item.vala"
 			uri = (char*) gee_iterator_get (_uri_it);
-#line 141 "rygel-media-item.vala"
+#line 167 "rygel-media-item.vala"
 			protocol = rygel_media_item_get_protocol_for_uri (self, uri, &_inner_error_);
-#line 488 "rygel-media-item.c"
+#line 631 "rygel-media-item.c"
 			if (_inner_error_ != NULL) {
 				g_propagate_error (error, _inner_error_);
 				_g_free0 (uri);
 				_g_object_unref0 (_uri_it);
 				return;
 			}
-#line 143 "rygel-media-item.vala"
+#line 169 "rygel-media-item.vala"
 			if (allow_internal) {
-#line 143 "rygel-media-item.vala"
-				_tmp0_ = TRUE;
-#line 499 "rygel-media-item.c"
+#line 169 "rygel-media-item.vala"
+				_tmp1_ = TRUE;
+#line 642 "rygel-media-item.c"
 			} else {
-#line 143 "rygel-media-item.vala"
-				_tmp0_ = _vala_strcmp0 (protocol, "internal") != 0;
-#line 503 "rygel-media-item.c"
+#line 169 "rygel-media-item.vala"
+				_tmp1_ = _vala_strcmp0 (protocol, "internal") != 0;
+#line 646 "rygel-media-item.c"
 			}
-#line 143 "rygel-media-item.vala"
-			if (_tmp0_) {
-#line 507 "rygel-media-item.c"
-				GUPnPDIDLLiteResource* _tmp1_;
-#line 144 "rygel-media-item.vala"
-				_tmp1_ = rygel_media_item_add_resource (self, didl_item, uri, protocol, &_inner_error_);
-#line 511 "rygel-media-item.c"
+#line 169 "rygel-media-item.vala"
+			if (_tmp1_) {
+#line 650 "rygel-media-item.c"
+				GUPnPDIDLLiteResource* _tmp2_;
+#line 170 "rygel-media-item.vala"
+				_tmp2_ = rygel_media_item_add_resource (self, didl_item, uri, protocol, NULL, &_inner_error_);
+#line 654 "rygel-media-item.c"
+				_g_object_unref0 (_tmp2_);
 				if (_inner_error_ != NULL) {
 					g_propagate_error (error, _inner_error_);
 					_g_free0 (uri);
@@ -515,7 +659,6 @@ void rygel_media_item_add_resources (RygelMediaItem* self, GUPnPDIDLLiteItem* di
 					_g_object_unref0 (_uri_it);
 					return;
 				}
-				_g_object_unref0 (_tmp1_);
 			}
 			_g_free0 (uri);
 			_g_free0 (protocol);
@@ -525,47 +668,47 @@ void rygel_media_item_add_resources (RygelMediaItem* self, GUPnPDIDLLiteItem* di
 	{
 		GeeIterator* _thumbnail_it;
 		_thumbnail_it = gee_abstract_collection_iterator ((GeeAbstractCollection*) self->thumbnails);
-#line 148 "rygel-media-item.vala"
+#line 174 "rygel-media-item.vala"
 		while (TRUE) {
-#line 531 "rygel-media-item.c"
+#line 674 "rygel-media-item.c"
 			RygelThumbnail* thumbnail;
 			char* protocol;
-			gboolean _tmp2_ = FALSE;
-#line 148 "rygel-media-item.vala"
+			gboolean _tmp3_ = FALSE;
+#line 174 "rygel-media-item.vala"
 			if (!gee_iterator_next (_thumbnail_it)) {
-#line 148 "rygel-media-item.vala"
+#line 174 "rygel-media-item.vala"
 				break;
-#line 539 "rygel-media-item.c"
+#line 682 "rygel-media-item.c"
 			}
-#line 148 "rygel-media-item.vala"
+#line 174 "rygel-media-item.vala"
 			thumbnail = (RygelThumbnail*) gee_iterator_get (_thumbnail_it);
-#line 149 "rygel-media-item.vala"
+#line 175 "rygel-media-item.vala"
 			protocol = rygel_media_item_get_protocol_for_uri (self, ((RygelIconInfo*) thumbnail)->uri, &_inner_error_);
-#line 545 "rygel-media-item.c"
+#line 688 "rygel-media-item.c"
 			if (_inner_error_ != NULL) {
 				g_propagate_error (error, _inner_error_);
 				_rygel_icon_info_unref0 (thumbnail);
 				_g_object_unref0 (_thumbnail_it);
 				return;
 			}
-#line 151 "rygel-media-item.vala"
+#line 177 "rygel-media-item.vala"
 			if (allow_internal) {
-#line 151 "rygel-media-item.vala"
-				_tmp2_ = TRUE;
-#line 556 "rygel-media-item.c"
+#line 177 "rygel-media-item.vala"
+				_tmp3_ = TRUE;
+#line 699 "rygel-media-item.c"
 			} else {
-#line 151 "rygel-media-item.vala"
-				_tmp2_ = _vala_strcmp0 (protocol, "internal") != 0;
-#line 560 "rygel-media-item.c"
+#line 177 "rygel-media-item.vala"
+				_tmp3_ = _vala_strcmp0 (protocol, "internal") != 0;
+#line 703 "rygel-media-item.c"
 			}
-#line 151 "rygel-media-item.vala"
-			if (_tmp2_) {
-#line 564 "rygel-media-item.c"
-				GUPnPDIDLLiteResource* _tmp3_;
-#line 152 "rygel-media-item.vala"
-				_tmp3_ = rygel_thumbnail_add_resource (thumbnail, didl_item, protocol);
-#line 568 "rygel-media-item.c"
-				_g_object_unref0 (_tmp3_);
+#line 177 "rygel-media-item.vala"
+			if (_tmp3_) {
+#line 707 "rygel-media-item.c"
+				GUPnPDIDLLiteResource* _tmp4_;
+#line 178 "rygel-media-item.vala"
+				_tmp4_ = rygel_thumbnail_add_resource (thumbnail, didl_item, protocol);
+#line 711 "rygel-media-item.c"
+				_g_object_unref0 (_tmp4_);
 			}
 			_rygel_icon_info_unref0 (thumbnail);
 			_g_free0 (protocol);
@@ -575,114 +718,126 @@ void rygel_media_item_add_resources (RygelMediaItem* self, GUPnPDIDLLiteItem* di
 }
 
 
-#line 157 "rygel-media-item.vala"
-GUPnPDIDLLiteResource* rygel_media_item_add_resource (RygelMediaItem* self, GUPnPDIDLLiteItem* didl_item, const char* uri, const char* protocol, GError** error) {
-#line 581 "rygel-media-item.c"
-	GUPnPDIDLLiteResource* result;
+#line 183 "rygel-media-item.vala"
+GUPnPDIDLLiteResource* rygel_media_item_add_resource (RygelMediaItem* self, GUPnPDIDLLiteItem* didl_item, const char* uri, const char* protocol, const char* import_uri, GError** error) {
+#line 724 "rygel-media-item.c"
+	GUPnPDIDLLiteResource* result = NULL;
 	GUPnPDIDLLiteResource* res;
 	GUPnPProtocolInfo* _tmp0_;
-#line 157 "rygel-media-item.vala"
+#line 183 "rygel-media-item.vala"
 	g_return_val_if_fail (self != NULL, NULL);
-#line 157 "rygel-media-item.vala"
+#line 183 "rygel-media-item.vala"
 	g_return_val_if_fail (didl_item != NULL, NULL);
-#line 157 "rygel-media-item.vala"
+#line 183 "rygel-media-item.vala"
 	g_return_val_if_fail (protocol != NULL, NULL);
-#line 161 "rygel-media-item.vala"
+#line 188 "rygel-media-item.vala"
 	res = gupnp_didl_lite_object_add_resource ((GUPnPDIDLLiteObject*) didl_item);
-#line 163 "rygel-media-item.vala"
+#line 190 "rygel-media-item.vala"
 	if (uri != NULL) {
-#line 164 "rygel-media-item.vala"
+#line 191 "rygel-media-item.vala"
 		gupnp_didl_lite_resource_set_uri (res, uri);
-#line 597 "rygel-media-item.c"
+#line 740 "rygel-media-item.c"
 	}
-#line 167 "rygel-media-item.vala"
+#line 194 "rygel-media-item.vala"
+	if (import_uri != NULL) {
+#line 195 "rygel-media-item.vala"
+		gupnp_didl_lite_resource_set_import_uri (res, import_uri);
+#line 746 "rygel-media-item.c"
+	}
+#line 198 "rygel-media-item.vala"
 	gupnp_didl_lite_resource_set_size (res, self->size);
-#line 168 "rygel-media-item.vala"
+#line 199 "rygel-media-item.vala"
 	gupnp_didl_lite_resource_set_duration (res, self->duration);
-#line 169 "rygel-media-item.vala"
+#line 200 "rygel-media-item.vala"
 	gupnp_didl_lite_resource_set_bitrate (res, self->bitrate);
-#line 171 "rygel-media-item.vala"
+#line 202 "rygel-media-item.vala"
 	gupnp_didl_lite_resource_set_sample_freq (res, self->sample_freq);
-#line 172 "rygel-media-item.vala"
+#line 203 "rygel-media-item.vala"
 	gupnp_didl_lite_resource_set_bits_per_sample (res, self->bits_per_sample);
-#line 173 "rygel-media-item.vala"
+#line 204 "rygel-media-item.vala"
 	gupnp_didl_lite_resource_set_audio_channels (res, self->n_audio_channels);
-#line 175 "rygel-media-item.vala"
+#line 206 "rygel-media-item.vala"
 	gupnp_didl_lite_resource_set_width (res, self->width);
-#line 176 "rygel-media-item.vala"
+#line 207 "rygel-media-item.vala"
 	gupnp_didl_lite_resource_set_height (res, self->height);
-#line 177 "rygel-media-item.vala"
+#line 208 "rygel-media-item.vala"
 	gupnp_didl_lite_resource_set_color_depth (res, self->color_depth);
-#line 180 "rygel-media-item.vala"
+#line 211 "rygel-media-item.vala"
 	gupnp_didl_lite_resource_set_protocol_info (res, _tmp0_ = rygel_media_item_get_protocol_info (self, uri, protocol));
-#line 619 "rygel-media-item.c"
+#line 768 "rygel-media-item.c"
 	_g_object_unref0 (_tmp0_);
 	result = res;
-#line 182 "rygel-media-item.vala"
+#line 213 "rygel-media-item.vala"
 	return result;
-#line 624 "rygel-media-item.c"
+#line 773 "rygel-media-item.c"
 }
 
 
-#line 185 "rygel-media-item.vala"
+#line 216 "rygel-media-item.vala"
 static GUPnPProtocolInfo* rygel_media_item_get_protocol_info (RygelMediaItem* self, const char* uri, const char* protocol) {
-#line 630 "rygel-media-item.c"
-	GUPnPProtocolInfo* result;
+#line 779 "rygel-media-item.c"
+	GUPnPProtocolInfo* result = NULL;
 	GUPnPProtocolInfo* protocol_info;
-#line 185 "rygel-media-item.vala"
+#line 216 "rygel-media-item.vala"
 	g_return_val_if_fail (self != NULL, NULL);
-#line 185 "rygel-media-item.vala"
+#line 216 "rygel-media-item.vala"
 	g_return_val_if_fail (protocol != NULL, NULL);
-#line 187 "rygel-media-item.vala"
+#line 218 "rygel-media-item.vala"
 	protocol_info = gupnp_protocol_info_new ();
-#line 189 "rygel-media-item.vala"
+#line 220 "rygel-media-item.vala"
 	gupnp_protocol_info_set_mime_type (protocol_info, self->mime_type);
-#line 190 "rygel-media-item.vala"
+#line 221 "rygel-media-item.vala"
 	gupnp_protocol_info_set_dlna_profile (protocol_info, self->dlna_profile);
-#line 191 "rygel-media-item.vala"
+#line 222 "rygel-media-item.vala"
 	gupnp_protocol_info_set_protocol (protocol_info, protocol);
-#line 193 "rygel-media-item.vala"
+#line 223 "rygel-media-item.vala"
+	gupnp_protocol_info_set_dlna_flags (protocol_info, GUPNP_DLNA_FLAGS_DLNA_V15);
+#line 225 "rygel-media-item.vala"
 	if (g_str_has_prefix (((RygelMediaObject*) self)->upnp_class, RYGEL_MEDIA_ITEM_IMAGE_CLASS)) {
-#line 194 "rygel-media-item.vala"
+#line 226 "rygel-media-item.vala"
 		gupnp_protocol_info_set_dlna_flags (protocol_info, gupnp_protocol_info_get_dlna_flags (protocol_info) | GUPNP_DLNA_FLAGS_INTERACTIVE_TRANSFER_MODE);
-#line 649 "rygel-media-item.c"
+#line 800 "rygel-media-item.c"
 	} else {
-#line 196 "rygel-media-item.vala"
+#line 228 "rygel-media-item.vala"
 		gupnp_protocol_info_set_dlna_flags (protocol_info, gupnp_protocol_info_get_dlna_flags (protocol_info) | GUPNP_DLNA_FLAGS_STREAMING_TRANSFER_MODE);
-#line 653 "rygel-media-item.c"
+#line 804 "rygel-media-item.c"
 	}
-#line 199 "rygel-media-item.vala"
+#line 231 "rygel-media-item.vala"
 	if (!rygel_media_item_should_stream (self)) {
-#line 200 "rygel-media-item.vala"
+#line 232 "rygel-media-item.vala"
 		gupnp_protocol_info_set_dlna_operation (protocol_info, GUPNP_DLNA_OPERATION_RANGE);
-#line 201 "rygel-media-item.vala"
-		gupnp_protocol_info_set_dlna_flags (protocol_info, gupnp_protocol_info_get_dlna_flags (protocol_info) | GUPNP_DLNA_FLAGS_BACKGROUND_TRANSFER_MODE);
-#line 661 "rygel-media-item.c"
+#line 233 "rygel-media-item.vala"
+		gupnp_protocol_info_set_dlna_flags (protocol_info, gupnp_protocol_info_get_dlna_flags (protocol_info) | (GUPNP_DLNA_FLAGS_BACKGROUND_TRANSFER_MODE | GUPNP_DLNA_FLAGS_CONNECTION_STALL));
+#line 812 "rygel-media-item.c"
+	} else {
+#line 236 "rygel-media-item.vala"
+		gupnp_protocol_info_set_dlna_flags (protocol_info, gupnp_protocol_info_get_dlna_flags (protocol_info) | GUPNP_DLNA_FLAGS_SENDER_PACED);
+#line 816 "rygel-media-item.c"
 	}
 	result = protocol_info;
-#line 204 "rygel-media-item.vala"
+#line 239 "rygel-media-item.vala"
 	return result;
-#line 666 "rygel-media-item.c"
+#line 821 "rygel-media-item.c"
 }
 
 
-#line 207 "rygel-media-item.vala"
+#line 242 "rygel-media-item.vala"
 static char* rygel_media_item_get_protocol_for_uri (RygelMediaItem* self, const char* uri, GError** error) {
-#line 672 "rygel-media-item.c"
-	char* result;
+#line 827 "rygel-media-item.c"
+	char* result = NULL;
 	GError * _inner_error_;
 	char* scheme;
-#line 207 "rygel-media-item.vala"
+#line 242 "rygel-media-item.vala"
 	g_return_val_if_fail (self != NULL, NULL);
-#line 207 "rygel-media-item.vala"
+#line 242 "rygel-media-item.vala"
 	g_return_val_if_fail (uri != NULL, NULL);
-#line 680 "rygel-media-item.c"
+#line 835 "rygel-media-item.c"
 	_inner_error_ = NULL;
-#line 208 "rygel-media-item.vala"
+#line 243 "rygel-media-item.vala"
 	scheme = g_uri_parse_scheme (uri);
-#line 209 "rygel-media-item.vala"
+#line 244 "rygel-media-item.vala"
 	if (scheme == NULL) {
-#line 686 "rygel-media-item.c"
+#line 841 "rygel-media-item.c"
 		_inner_error_ = g_error_new (RYGEL_MEDIA_ITEM_ERROR, RYGEL_MEDIA_ITEM_ERROR_BAD_URI, "Bad URI: %s", uri);
 		{
 			g_propagate_error (error, _inner_error_);
@@ -690,40 +845,41 @@ static char* rygel_media_item_get_protocol_for_uri (RygelMediaItem* self, const 
 			return NULL;
 		}
 	}
-#line 213 "rygel-media-item.vala"
+#line 248 "rygel-media-item.vala"
 	if (_vala_strcmp0 (scheme, "http") == 0) {
-#line 696 "rygel-media-item.c"
+#line 851 "rygel-media-item.c"
 		result = g_strdup ("http-get");
 		_g_free0 (scheme);
-#line 214 "rygel-media-item.vala"
+#line 249 "rygel-media-item.vala"
 		return result;
-#line 701 "rygel-media-item.c"
+#line 856 "rygel-media-item.c"
 	} else {
-#line 215 "rygel-media-item.vala"
+#line 250 "rygel-media-item.vala"
 		if (_vala_strcmp0 (scheme, "file") == 0) {
-#line 705 "rygel-media-item.c"
+#line 860 "rygel-media-item.c"
 			result = g_strdup ("internal");
 			_g_free0 (scheme);
-#line 216 "rygel-media-item.vala"
+#line 251 "rygel-media-item.vala"
 			return result;
-#line 710 "rygel-media-item.c"
+#line 865 "rygel-media-item.c"
 		} else {
-#line 217 "rygel-media-item.vala"
+#line 252 "rygel-media-item.vala"
 			if (_vala_strcmp0 (scheme, "rtsp") == 0) {
-#line 714 "rygel-media-item.c"
+#line 869 "rygel-media-item.c"
 				result = g_strdup ("rtsp-rtp-udp");
 				_g_free0 (scheme);
-#line 219 "rygel-media-item.vala"
+#line 254 "rygel-media-item.vala"
 				return result;
-#line 719 "rygel-media-item.c"
+#line 874 "rygel-media-item.c"
 			} else {
-#line 222 "rygel-media-item.vala"
-				g_warning ("rygel-media-item.vala:222: Failed to probe protocol for URI %s. Assuming '%s'", uri, scheme);
-#line 723 "rygel-media-item.c"
+#line 257 "rygel-media-item.vala"
+				g_warning ("rygel-media-item.vala:257: Failed to probe protocol for URI %s. Assumi" \
+"ng '%s'", uri, scheme);
+#line 878 "rygel-media-item.c"
 				result = scheme;
-#line 226 "rygel-media-item.vala"
+#line 261 "rygel-media-item.vala"
 				return result;
-#line 727 "rygel-media-item.c"
+#line 882 "rygel-media-item.c"
 			}
 		}
 	}
@@ -752,6 +908,7 @@ static void rygel_media_item_instance_init (RygelMediaItem * self) {
 	self->pixel_width = -1;
 	self->pixel_height = -1;
 	self->color_depth = -1;
+	self->place_holder = FALSE;
 }
 
 
@@ -764,17 +921,20 @@ static void rygel_media_item_finalize (GObject* obj) {
 	_g_free0 (self->mime_type);
 	_g_free0 (self->dlna_profile);
 	_g_object_unref0 (self->thumbnails);
+	_g_object_unref0 (self->subtitles);
 	G_OBJECT_CLASS (rygel_media_item_parent_class)->finalize (obj);
 }
 
 
 GType rygel_media_item_get_type (void) {
-	static GType rygel_media_item_type_id = 0;
-	if (rygel_media_item_type_id == 0) {
+	static volatile gsize rygel_media_item_type_id__volatile = 0;
+	if (g_once_init_enter (&rygel_media_item_type_id__volatile)) {
 		static const GTypeInfo g_define_type_info = { sizeof (RygelMediaItemClass), (GBaseInitFunc) NULL, (GBaseFinalizeFunc) NULL, (GClassInitFunc) rygel_media_item_class_init, (GClassFinalizeFunc) NULL, NULL, sizeof (RygelMediaItem), 0, (GInstanceInitFunc) rygel_media_item_instance_init, NULL };
+		GType rygel_media_item_type_id;
 		rygel_media_item_type_id = g_type_register_static (RYGEL_TYPE_MEDIA_OBJECT, "RygelMediaItem", &g_define_type_info, 0);
+		g_once_init_leave (&rygel_media_item_type_id__volatile, rygel_media_item_type_id);
 	}
-	return rygel_media_item_type_id;
+	return rygel_media_item_type_id__volatile;
 }
 
 

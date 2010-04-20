@@ -99,7 +99,7 @@ struct _RygelExternalThumbnailFactoryCreateData {
 	GValue* _tmp1_;
 	char** uris;
 	char** _tmp2_;
-	gint uris_size;
+	gint _uris_size_;
 	gint uris_length1;
 	gboolean _tmp3_;
 	char* _tmp4_;
@@ -125,6 +125,7 @@ gpointer rygel_external_thumbnail_factory_ref (gpointer instance);
 void rygel_external_thumbnail_factory_unref (gpointer instance);
 GParamSpec* rygel_param_spec_external_thumbnail_factory (const gchar* name, const gchar* nick, const gchar* blurb, GType object_type, GParamFlags flags);
 void rygel_value_set_external_thumbnail_factory (GValue* value, gpointer v_object);
+void rygel_value_take_external_thumbnail_factory (GValue* value, gpointer v_object);
 gpointer rygel_value_get_external_thumbnail_factory (const GValue* value);
 GType rygel_external_thumbnail_factory_get_type (void);
 enum  {
@@ -152,6 +153,7 @@ static void rygel_external_thumbnail_factory_create_data_free (gpointer _data) {
 	_g_free0 (data->object_path);
 	_g_free0 (data->host_ip);
 	_rygel_icon_info_unref0 (data->result);
+	rygel_external_thumbnail_factory_unref (data->self);
 	g_slice_free (RygelExternalThumbnailFactoryCreateData, data);
 }
 
@@ -159,9 +161,9 @@ static void rygel_external_thumbnail_factory_create_data_free (gpointer _data) {
 void rygel_external_thumbnail_factory_create (RygelExternalThumbnailFactory* self, const char* service_name, const char* object_path, const char* host_ip, GAsyncReadyCallback _callback_, gpointer _user_data_) {
 	RygelExternalThumbnailFactoryCreateData* _data_;
 	_data_ = g_slice_new0 (RygelExternalThumbnailFactoryCreateData);
-	_data_->_async_result = g_simple_async_result_new (NULL, _callback_, _user_data_, rygel_external_thumbnail_factory_create);
+	_data_->_async_result = g_simple_async_result_new (g_object_newv (G_TYPE_OBJECT, 0, NULL), _callback_, _user_data_, rygel_external_thumbnail_factory_create);
 	g_simple_async_result_set_op_res_gpointer (_data_->_async_result, _data_, rygel_external_thumbnail_factory_create_data_free);
-	_data_->self = self;
+	_data_->self = rygel_external_thumbnail_factory_ref (self);
 	_data_->service_name = g_strdup (service_name);
 	_data_->object_path = g_strdup (object_path);
 	_data_->host_ip = g_strdup (host_ip);
@@ -200,27 +202,27 @@ static gpointer __g_value_dup0 (gpointer self) {
 }
 
 
-#line 1025 "glib-2.0.vapi"
+#line 1052 "glib-2.0.vapi"
 static char* string_replace (const char* self, const char* old, const char* replacement) {
-#line 206 "rygel-external-thumbnail-factory.c"
-	char* result;
+#line 208 "rygel-external-thumbnail-factory.c"
+	char* result = NULL;
 	GError * _inner_error_;
-#line 1025 "glib-2.0.vapi"
+#line 1052 "glib-2.0.vapi"
 	g_return_val_if_fail (self != NULL, NULL);
-#line 1025 "glib-2.0.vapi"
+#line 1052 "glib-2.0.vapi"
 	g_return_val_if_fail (old != NULL, NULL);
-#line 1025 "glib-2.0.vapi"
+#line 1052 "glib-2.0.vapi"
 	g_return_val_if_fail (replacement != NULL, NULL);
-#line 215 "rygel-external-thumbnail-factory.c"
+#line 217 "rygel-external-thumbnail-factory.c"
 	_inner_error_ = NULL;
 	{
 		char* _tmp0_;
 		GRegex* _tmp1_;
 		GRegex* regex;
 		char* _tmp2_;
-#line 1027 "glib-2.0.vapi"
+#line 1054 "glib-2.0.vapi"
 		regex = (_tmp1_ = g_regex_new (_tmp0_ = g_regex_escape_string (old, -1), 0, 0, &_inner_error_), _g_free0 (_tmp0_), _tmp1_);
-#line 224 "rygel-external-thumbnail-factory.c"
+#line 226 "rygel-external-thumbnail-factory.c"
 		if (_inner_error_ != NULL) {
 			if (_inner_error_->domain == G_REGEX_ERROR) {
 				goto __catch4_g_regex_error;
@@ -229,9 +231,9 @@ static char* string_replace (const char* self, const char* old, const char* repl
 			g_clear_error (&_inner_error_);
 			return NULL;
 		}
-#line 1028 "glib-2.0.vapi"
+#line 1055 "glib-2.0.vapi"
 		_tmp2_ = g_regex_replace_literal (regex, self, (gssize) (-1), 0, replacement, 0, &_inner_error_);
-#line 235 "rygel-external-thumbnail-factory.c"
+#line 237 "rygel-external-thumbnail-factory.c"
 		if (_inner_error_ != NULL) {
 			_g_regex_unref0 (regex);
 			if (_inner_error_->domain == G_REGEX_ERROR) {
@@ -244,9 +246,9 @@ static char* string_replace (const char* self, const char* old, const char* repl
 		}
 		result = _tmp2_;
 		_g_regex_unref0 (regex);
-#line 1028 "glib-2.0.vapi"
+#line 1055 "glib-2.0.vapi"
 		return result;
-#line 250 "rygel-external-thumbnail-factory.c"
+#line 252 "rygel-external-thumbnail-factory.c"
 	}
 	goto __finally4;
 	__catch4_g_regex_error:
@@ -255,9 +257,9 @@ static char* string_replace (const char* self, const char* old, const char* repl
 		e = _inner_error_;
 		_inner_error_ = NULL;
 		{
-#line 1030 "glib-2.0.vapi"
+#line 1057 "glib-2.0.vapi"
 			g_assert_not_reached ();
-#line 261 "rygel-external-thumbnail-factory.c"
+#line 263 "rygel-external-thumbnail-factory.c"
 			_g_error_free0 (e);
 		}
 	}
@@ -272,114 +274,19 @@ static char* string_replace (const char* self, const char* old, const char* repl
 
 static gboolean rygel_external_thumbnail_factory_create_co (RygelExternalThumbnailFactoryCreateData* data) {
 	switch (data->_state_) {
+		case 0:
+		goto _state_0;
+		case 10:
+		goto _state_10;
 		default:
 		g_assert_not_reached ();
-		case 0:
-		{
-			data->connection = dbus_g_bus_get (DBUS_BUS_SESSION, &data->_inner_error_);
-			if (data->_inner_error_ != NULL) {
-				g_simple_async_result_set_from_error (data->_async_result, data->_inner_error_);
-				g_error_free (data->_inner_error_);
-				{
-					if (data->_state_ == 0) {
-						g_simple_async_result_complete_in_idle (data->_async_result);
-					} else {
-						g_simple_async_result_complete (data->_async_result);
-					}
-					g_object_unref (data->_async_result);
-					return FALSE;
-				}
-			}
-			data->props = free_desktop_properties_dbus_proxy_new (data->connection, data->service_name, data->object_path);
-			data->_state_ = 10;
-			free_desktop_properties_get_all (data->props, rygel_external_thumbnail_factory_ITEM_IFACE, rygel_external_thumbnail_factory_create_ready, data);
-			return FALSE;
-			case 10:
-			data->item_props = free_desktop_properties_get_all_finish (data->props, data->_res_, &data->_inner_error_);
-			if (data->_inner_error_ != NULL) {
-				g_simple_async_result_set_from_error (data->_async_result, data->_inner_error_);
-				g_error_free (data->_inner_error_);
-				_dbus_g_connection_unref0 (data->connection);
-				_g_object_unref0 (data->props);
-				{
-					if (data->_state_ == 0) {
-						g_simple_async_result_complete_in_idle (data->_async_result);
-					} else {
-						g_simple_async_result_complete (data->_async_result);
-					}
-					g_object_unref (data->_async_result);
-					return FALSE;
-				}
-			}
-			data->thumbnail = rygel_thumbnail_new ("image/jpeg", "JPEG_TN");
-			data->value = __g_value_dup0 ((GValue*) g_hash_table_lookup (data->item_props, "MIMEType"));
-#line 49 "rygel-external-thumbnail-factory.vala"
-			((RygelIconInfo*) data->thumbnail)->mime_type = (data->_tmp0_ = g_strdup (g_value_get_string (data->value)), _g_free0 (((RygelIconInfo*) data->thumbnail)->mime_type), data->_tmp0_);
-#line 51 "rygel-external-thumbnail-factory.vala"
-			data->value = (data->_tmp1_ = __g_value_dup0 ((GValue*) g_hash_table_lookup (data->item_props, "URLs")), _g_free0 (data->value), data->_tmp1_);
-#line 321 "rygel-external-thumbnail-factory.c"
-			data->uris = (data->_tmp2_ = (char**) g_value_get_boxed (data->value), data->uris_length1 = -1, data->uris_size = data->uris_length1, data->_tmp2_);
-#line 53 "rygel-external-thumbnail-factory.vala"
-			if (data->uris != NULL) {
-#line 53 "rygel-external-thumbnail-factory.vala"
-				data->_tmp3_ = data->uris[0] != NULL;
-#line 327 "rygel-external-thumbnail-factory.c"
-			} else {
-#line 53 "rygel-external-thumbnail-factory.vala"
-				data->_tmp3_ = FALSE;
-#line 331 "rygel-external-thumbnail-factory.c"
-			}
-#line 53 "rygel-external-thumbnail-factory.vala"
-			if (data->_tmp3_) {
-#line 54 "rygel-external-thumbnail-factory.vala"
-				((RygelIconInfo*) data->thumbnail)->uri = (data->_tmp4_ = string_replace (data->uris[0], "@ADDRESS@", data->host_ip), _g_free0 (((RygelIconInfo*) data->thumbnail)->uri), data->_tmp4_);
-#line 337 "rygel-external-thumbnail-factory.c"
-			}
-#line 57 "rygel-external-thumbnail-factory.vala"
-			data->value = (data->_tmp5_ = __g_value_dup0 ((GValue*) g_hash_table_lookup (data->item_props, "DLNAProfile")), _g_free0 (data->value), data->_tmp5_);
-#line 58 "rygel-external-thumbnail-factory.vala"
-			if (data->value != NULL) {
-#line 59 "rygel-external-thumbnail-factory.vala"
-				data->thumbnail->dlna_profile = (data->_tmp6_ = g_strdup (g_value_get_string (data->value)), _g_free0 (data->thumbnail->dlna_profile), data->_tmp6_);
-#line 345 "rygel-external-thumbnail-factory.c"
-			}
-#line 62 "rygel-external-thumbnail-factory.vala"
-			data->value = (data->_tmp7_ = __g_value_dup0 ((GValue*) g_hash_table_lookup (data->item_props, "Size")), _g_free0 (data->value), data->_tmp7_);
-#line 63 "rygel-external-thumbnail-factory.vala"
-			if (data->value != NULL) {
-#line 64 "rygel-external-thumbnail-factory.vala"
-				((RygelIconInfo*) data->thumbnail)->size = (glong) g_value_get_int (data->value);
-#line 353 "rygel-external-thumbnail-factory.c"
-			}
-#line 67 "rygel-external-thumbnail-factory.vala"
-			data->value = (data->_tmp8_ = __g_value_dup0 ((GValue*) g_hash_table_lookup (data->item_props, "Width")), _g_free0 (data->value), data->_tmp8_);
-#line 68 "rygel-external-thumbnail-factory.vala"
-			if (data->value != NULL) {
-#line 69 "rygel-external-thumbnail-factory.vala"
-				((RygelIconInfo*) data->thumbnail)->width = g_value_get_int (data->value);
-#line 361 "rygel-external-thumbnail-factory.c"
-			}
-#line 72 "rygel-external-thumbnail-factory.vala"
-			data->value = (data->_tmp9_ = __g_value_dup0 ((GValue*) g_hash_table_lookup (data->item_props, "Height")), _g_free0 (data->value), data->_tmp9_);
-#line 73 "rygel-external-thumbnail-factory.vala"
-			if (data->value != NULL) {
-#line 74 "rygel-external-thumbnail-factory.vala"
-				((RygelIconInfo*) data->thumbnail)->height = g_value_get_int (data->value);
-#line 369 "rygel-external-thumbnail-factory.c"
-			}
-#line 77 "rygel-external-thumbnail-factory.vala"
-			data->value = (data->_tmp10_ = __g_value_dup0 ((GValue*) g_hash_table_lookup (data->item_props, "ColorDepth")), _g_free0 (data->value), data->_tmp10_);
-#line 78 "rygel-external-thumbnail-factory.vala"
-			if (data->value != NULL) {
-#line 79 "rygel-external-thumbnail-factory.vala"
-				((RygelIconInfo*) data->thumbnail)->depth = g_value_get_int (data->value);
-#line 377 "rygel-external-thumbnail-factory.c"
-			}
-			data->result = data->thumbnail;
-			_dbus_g_connection_unref0 (data->connection);
-			_g_object_unref0 (data->props);
-			_g_hash_table_unref0 (data->item_props);
-			_g_free0 (data->value);
+	}
+	_state_0:
+	{
+		data->connection = dbus_g_bus_get (DBUS_BUS_SESSION, &data->_inner_error_);
+		if (data->_inner_error_ != NULL) {
+			g_simple_async_result_set_from_error (data->_async_result, data->_inner_error_);
+			g_error_free (data->_inner_error_);
 			{
 				if (data->_state_ == 0) {
 					g_simple_async_result_complete_in_idle (data->_async_result);
@@ -389,12 +296,97 @@ static gboolean rygel_external_thumbnail_factory_create_co (RygelExternalThumbna
 				g_object_unref (data->_async_result);
 				return FALSE;
 			}
+		}
+		data->props = free_desktop_properties_dbus_proxy_new (data->connection, data->service_name, data->object_path);
+		data->_state_ = 10;
+		free_desktop_properties_get_all (data->props, rygel_external_thumbnail_factory_ITEM_IFACE, rygel_external_thumbnail_factory_create_ready, data);
+		return FALSE;
+		_state_10:
+		data->item_props = free_desktop_properties_get_all_finish (data->props, data->_res_, &data->_inner_error_);
+		if (data->_inner_error_ != NULL) {
+			g_simple_async_result_set_from_error (data->_async_result, data->_inner_error_);
+			g_error_free (data->_inner_error_);
 			_dbus_g_connection_unref0 (data->connection);
 			_g_object_unref0 (data->props);
-			_g_hash_table_unref0 (data->item_props);
-			_rygel_icon_info_unref0 (data->thumbnail);
-			_g_free0 (data->value);
+			{
+				if (data->_state_ == 0) {
+					g_simple_async_result_complete_in_idle (data->_async_result);
+				} else {
+					g_simple_async_result_complete (data->_async_result);
+				}
+				g_object_unref (data->_async_result);
+				return FALSE;
+			}
 		}
+		data->thumbnail = rygel_thumbnail_new ("image/jpeg", "JPEG_TN");
+		data->value = __g_value_dup0 ((GValue*) g_hash_table_lookup (data->item_props, "MIMEType"));
+#line 49 "rygel-external-thumbnail-factory.vala"
+		((RygelIconInfo*) data->thumbnail)->mime_type = (data->_tmp0_ = g_strdup (g_value_get_string (data->value)), _g_free0 (((RygelIconInfo*) data->thumbnail)->mime_type), data->_tmp0_);
+#line 51 "rygel-external-thumbnail-factory.vala"
+		data->value = (data->_tmp1_ = __g_value_dup0 ((GValue*) g_hash_table_lookup (data->item_props, "URLs")), _g_free0 (data->value), data->_tmp1_);
+#line 328 "rygel-external-thumbnail-factory.c"
+		data->uris = (data->_tmp2_ = (char**) g_value_get_boxed (data->value), data->uris_length1 = -1, data->_uris_size_ = data->uris_length1, data->_tmp2_);
+#line 53 "rygel-external-thumbnail-factory.vala"
+		if (data->uris != NULL) {
+#line 53 "rygel-external-thumbnail-factory.vala"
+			data->_tmp3_ = data->uris[0] != NULL;
+#line 334 "rygel-external-thumbnail-factory.c"
+		} else {
+#line 53 "rygel-external-thumbnail-factory.vala"
+			data->_tmp3_ = FALSE;
+#line 338 "rygel-external-thumbnail-factory.c"
+		}
+#line 53 "rygel-external-thumbnail-factory.vala"
+		if (data->_tmp3_) {
+#line 54 "rygel-external-thumbnail-factory.vala"
+			((RygelIconInfo*) data->thumbnail)->uri = (data->_tmp4_ = string_replace (data->uris[0], "@ADDRESS@", data->host_ip), _g_free0 (((RygelIconInfo*) data->thumbnail)->uri), data->_tmp4_);
+#line 344 "rygel-external-thumbnail-factory.c"
+		}
+#line 57 "rygel-external-thumbnail-factory.vala"
+		data->value = (data->_tmp5_ = __g_value_dup0 ((GValue*) g_hash_table_lookup (data->item_props, "DLNAProfile")), _g_free0 (data->value), data->_tmp5_);
+#line 58 "rygel-external-thumbnail-factory.vala"
+		if (data->value != NULL) {
+#line 59 "rygel-external-thumbnail-factory.vala"
+			data->thumbnail->dlna_profile = (data->_tmp6_ = g_strdup (g_value_get_string (data->value)), _g_free0 (data->thumbnail->dlna_profile), data->_tmp6_);
+#line 352 "rygel-external-thumbnail-factory.c"
+		}
+#line 62 "rygel-external-thumbnail-factory.vala"
+		data->value = (data->_tmp7_ = __g_value_dup0 ((GValue*) g_hash_table_lookup (data->item_props, "Size")), _g_free0 (data->value), data->_tmp7_);
+#line 63 "rygel-external-thumbnail-factory.vala"
+		if (data->value != NULL) {
+#line 64 "rygel-external-thumbnail-factory.vala"
+			((RygelIconInfo*) data->thumbnail)->size = (glong) g_value_get_int (data->value);
+#line 360 "rygel-external-thumbnail-factory.c"
+		}
+#line 67 "rygel-external-thumbnail-factory.vala"
+		data->value = (data->_tmp8_ = __g_value_dup0 ((GValue*) g_hash_table_lookup (data->item_props, "Width")), _g_free0 (data->value), data->_tmp8_);
+#line 68 "rygel-external-thumbnail-factory.vala"
+		if (data->value != NULL) {
+#line 69 "rygel-external-thumbnail-factory.vala"
+			((RygelIconInfo*) data->thumbnail)->width = g_value_get_int (data->value);
+#line 368 "rygel-external-thumbnail-factory.c"
+		}
+#line 72 "rygel-external-thumbnail-factory.vala"
+		data->value = (data->_tmp9_ = __g_value_dup0 ((GValue*) g_hash_table_lookup (data->item_props, "Height")), _g_free0 (data->value), data->_tmp9_);
+#line 73 "rygel-external-thumbnail-factory.vala"
+		if (data->value != NULL) {
+#line 74 "rygel-external-thumbnail-factory.vala"
+			((RygelIconInfo*) data->thumbnail)->height = g_value_get_int (data->value);
+#line 376 "rygel-external-thumbnail-factory.c"
+		}
+#line 77 "rygel-external-thumbnail-factory.vala"
+		data->value = (data->_tmp10_ = __g_value_dup0 ((GValue*) g_hash_table_lookup (data->item_props, "ColorDepth")), _g_free0 (data->value), data->_tmp10_);
+#line 78 "rygel-external-thumbnail-factory.vala"
+		if (data->value != NULL) {
+#line 79 "rygel-external-thumbnail-factory.vala"
+			((RygelIconInfo*) data->thumbnail)->depth = g_value_get_int (data->value);
+#line 384 "rygel-external-thumbnail-factory.c"
+		}
+		data->result = data->thumbnail;
+		_dbus_g_connection_unref0 (data->connection);
+		_g_object_unref0 (data->props);
+		_g_hash_table_unref0 (data->item_props);
+		_g_free0 (data->value);
 		{
 			if (data->_state_ == 0) {
 				g_simple_async_result_complete_in_idle (data->_async_result);
@@ -404,13 +396,27 @@ static gboolean rygel_external_thumbnail_factory_create_co (RygelExternalThumbna
 			g_object_unref (data->_async_result);
 			return FALSE;
 		}
+		_dbus_g_connection_unref0 (data->connection);
+		_g_object_unref0 (data->props);
+		_g_hash_table_unref0 (data->item_props);
+		_rygel_icon_info_unref0 (data->thumbnail);
+		_g_free0 (data->value);
+	}
+	{
+		if (data->_state_ == 0) {
+			g_simple_async_result_complete_in_idle (data->_async_result);
+		} else {
+			g_simple_async_result_complete (data->_async_result);
+		}
+		g_object_unref (data->_async_result);
+		return FALSE;
 	}
 }
 
 
 #line 31 "rygel-external-thumbnail-factory.vala"
 RygelExternalThumbnailFactory* rygel_external_thumbnail_factory_construct (GType object_type) {
-#line 414 "rygel-external-thumbnail-factory.c"
+#line 420 "rygel-external-thumbnail-factory.c"
 	RygelExternalThumbnailFactory* self;
 	self = (RygelExternalThumbnailFactory*) g_type_create_instance (object_type);
 	return self;
@@ -421,7 +427,7 @@ RygelExternalThumbnailFactory* rygel_external_thumbnail_factory_construct (GType
 RygelExternalThumbnailFactory* rygel_external_thumbnail_factory_new (void) {
 #line 31 "rygel-external-thumbnail-factory.vala"
 	return rygel_external_thumbnail_factory_construct (RYGEL_TYPE_EXTERNAL_THUMBNAIL_FACTORY);
-#line 425 "rygel-external-thumbnail-factory.c"
+#line 431 "rygel-external-thumbnail-factory.c"
 }
 
 
@@ -518,6 +524,23 @@ void rygel_value_set_external_thumbnail_factory (GValue* value, gpointer v_objec
 }
 
 
+void rygel_value_take_external_thumbnail_factory (GValue* value, gpointer v_object) {
+	RygelExternalThumbnailFactory* old;
+	g_return_if_fail (G_TYPE_CHECK_VALUE_TYPE (value, RYGEL_TYPE_EXTERNAL_THUMBNAIL_FACTORY));
+	old = value->data[0].v_pointer;
+	if (v_object) {
+		g_return_if_fail (G_TYPE_CHECK_INSTANCE_TYPE (v_object, RYGEL_TYPE_EXTERNAL_THUMBNAIL_FACTORY));
+		g_return_if_fail (g_value_type_compatible (G_TYPE_FROM_INSTANCE (v_object), G_VALUE_TYPE (value)));
+		value->data[0].v_pointer = v_object;
+	} else {
+		value->data[0].v_pointer = NULL;
+	}
+	if (old) {
+		rygel_external_thumbnail_factory_unref (old);
+	}
+}
+
+
 static void rygel_external_thumbnail_factory_class_init (RygelExternalThumbnailFactoryClass * klass) {
 	rygel_external_thumbnail_factory_parent_class = g_type_class_peek_parent (klass);
 	RYGEL_EXTERNAL_THUMBNAIL_FACTORY_CLASS (klass)->finalize = rygel_external_thumbnail_factory_finalize;
@@ -537,14 +560,16 @@ static void rygel_external_thumbnail_factory_finalize (RygelExternalThumbnailFac
 
 
 GType rygel_external_thumbnail_factory_get_type (void) {
-	static GType rygel_external_thumbnail_factory_type_id = 0;
-	if (rygel_external_thumbnail_factory_type_id == 0) {
+	static volatile gsize rygel_external_thumbnail_factory_type_id__volatile = 0;
+	if (g_once_init_enter (&rygel_external_thumbnail_factory_type_id__volatile)) {
 		static const GTypeValueTable g_define_type_value_table = { rygel_value_external_thumbnail_factory_init, rygel_value_external_thumbnail_factory_free_value, rygel_value_external_thumbnail_factory_copy_value, rygel_value_external_thumbnail_factory_peek_pointer, "p", rygel_value_external_thumbnail_factory_collect_value, "p", rygel_value_external_thumbnail_factory_lcopy_value };
 		static const GTypeInfo g_define_type_info = { sizeof (RygelExternalThumbnailFactoryClass), (GBaseInitFunc) NULL, (GBaseFinalizeFunc) NULL, (GClassInitFunc) rygel_external_thumbnail_factory_class_init, (GClassFinalizeFunc) NULL, NULL, sizeof (RygelExternalThumbnailFactory), 0, (GInstanceInitFunc) rygel_external_thumbnail_factory_instance_init, &g_define_type_value_table };
 		static const GTypeFundamentalInfo g_define_type_fundamental_info = { (G_TYPE_FLAG_CLASSED | G_TYPE_FLAG_INSTANTIATABLE | G_TYPE_FLAG_DERIVABLE | G_TYPE_FLAG_DEEP_DERIVABLE) };
+		GType rygel_external_thumbnail_factory_type_id;
 		rygel_external_thumbnail_factory_type_id = g_type_register_fundamental (g_type_fundamental_next (), "RygelExternalThumbnailFactory", &g_define_type_info, &g_define_type_fundamental_info, 0);
+		g_once_init_leave (&rygel_external_thumbnail_factory_type_id__volatile, rygel_external_thumbnail_factory_type_id);
 	}
-	return rygel_external_thumbnail_factory_type_id;
+	return rygel_external_thumbnail_factory_type_id__volatile;
 }
 
 

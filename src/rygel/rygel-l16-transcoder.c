@@ -130,6 +130,16 @@ typedef struct _RygelIconInfoClass RygelIconInfoClass;
 
 typedef struct _RygelThumbnail RygelThumbnail;
 typedef struct _RygelThumbnailClass RygelThumbnailClass;
+
+#define RYGEL_TYPE_SUBTITLE (rygel_subtitle_get_type ())
+#define RYGEL_SUBTITLE(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_SUBTITLE, RygelSubtitle))
+#define RYGEL_SUBTITLE_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TYPE_SUBTITLE, RygelSubtitleClass))
+#define RYGEL_IS_SUBTITLE(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TYPE_SUBTITLE))
+#define RYGEL_IS_SUBTITLE_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_TYPE_SUBTITLE))
+#define RYGEL_SUBTITLE_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_TYPE_SUBTITLE, RygelSubtitleClass))
+
+typedef struct _RygelSubtitle RygelSubtitle;
+typedef struct _RygelSubtitleClass RygelSubtitleClass;
 #define _gst_object_unref0(var) ((var == NULL) ? NULL : (var = (gst_object_unref (var), NULL)))
 #define _gst_caps_unref0(var) ((var == NULL) ? NULL : (var = (gst_caps_unref (var), NULL)))
 
@@ -171,7 +181,6 @@ struct _RygelMediaObject {
 	guint64 modified;
 	GeeArrayList* uris;
 	RygelMediaContainer* parent;
-	RygelMediaContainer* parent_ref;
 };
 
 struct _RygelMediaObjectClass {
@@ -199,6 +208,8 @@ struct _RygelMediaItem {
 	gint pixel_height;
 	gint color_depth;
 	GeeArrayList* thumbnails;
+	GeeArrayList* subtitles;
+	gboolean place_holder;
 };
 
 struct _RygelMediaItemClass {
@@ -245,9 +256,17 @@ gpointer rygel_icon_info_ref (gpointer instance);
 void rygel_icon_info_unref (gpointer instance);
 GParamSpec* rygel_param_spec_icon_info (const gchar* name, const gchar* nick, const gchar* blurb, GType object_type, GParamFlags flags);
 void rygel_value_set_icon_info (GValue* value, gpointer v_object);
+void rygel_value_take_icon_info (GValue* value, gpointer v_object);
 gpointer rygel_value_get_icon_info (const GValue* value);
 GType rygel_icon_info_get_type (void);
 GType rygel_thumbnail_get_type (void);
+gpointer rygel_subtitle_ref (gpointer instance);
+void rygel_subtitle_unref (gpointer instance);
+GParamSpec* rygel_param_spec_subtitle (const gchar* name, const gchar* nick, const gchar* blurb, GType object_type, GParamFlags flags);
+void rygel_value_set_subtitle (GValue* value, gpointer v_object);
+void rygel_value_take_subtitle (GValue* value, gpointer v_object);
+gpointer rygel_value_get_subtitle (const GValue* value);
+GType rygel_subtitle_get_type (void);
 static guint rygel_l16_transcoder_real_get_distance (RygelTranscoder* base, RygelMediaItem* item);
 GstElement* rygel_gst_utils_create_element (const char* factoryname, const char* name, GError** error);
 static inline void _dynamic_set_caps5 (GstElement* obj, GstCaps* value);
@@ -256,20 +275,21 @@ static void rygel_l16_transcoder_finalize (GObject* obj);
 
 
 
-
 GType endianness_get_type (void) {
-	static GType endianness_type_id = 0;
-	if (G_UNLIKELY (endianness_type_id == 0)) {
+	static volatile gsize endianness_type_id__volatile = 0;
+	if (g_once_init_enter (&endianness_type_id__volatile)) {
 		static const GEnumValue values[] = {{ENDIANNESS_LITTLE, "ENDIANNESS_LITTLE", "little"}, {ENDIANNESS_BIG, "ENDIANNESS_BIG", "big"}, {0, NULL, NULL}};
+		GType endianness_type_id;
 		endianness_type_id = g_enum_register_static ("Endianness", values);
+		g_once_init_leave (&endianness_type_id__volatile, endianness_type_id);
 	}
-	return endianness_type_id;
+	return endianness_type_id__volatile;
 }
 
 
 #line 50 "rygel-l16-transcoder.vala"
 RygelL16Transcoder* rygel_l16_transcoder_construct (GType object_type, Endianness endianness) {
-#line 273 "rygel-l16-transcoder.c"
+#line 293 "rygel-l16-transcoder.c"
 	RygelL16Transcoder * self;
 	char* _tmp6_;
 	char* _tmp5_;
@@ -286,7 +306,7 @@ RygelL16Transcoder* rygel_l16_transcoder_construct (GType object_type, Endiannes
 	self = (RygelL16Transcoder*) rygel_transcoder_construct (object_type, mime_type, "LPCM", RYGEL_MEDIA_ITEM_AUDIO_CLASS);
 #line 57 "rygel-l16-transcoder.vala"
 	self->priv->endianness = endianness;
-#line 290 "rygel-l16-transcoder.c"
+#line 310 "rygel-l16-transcoder.c"
 	_g_free0 (mime_type);
 	return self;
 }
@@ -296,15 +316,15 @@ RygelL16Transcoder* rygel_l16_transcoder_construct (GType object_type, Endiannes
 RygelL16Transcoder* rygel_l16_transcoder_new (Endianness endianness) {
 #line 50 "rygel-l16-transcoder.vala"
 	return rygel_l16_transcoder_construct (RYGEL_TYPE_L16_TRANSCODER, endianness);
-#line 300 "rygel-l16-transcoder.c"
+#line 320 "rygel-l16-transcoder.c"
 }
 
 
 #line 60 "rygel-l16-transcoder.vala"
 static GstElement* rygel_l16_transcoder_real_create_source (RygelTranscoder* base, RygelMediaItem* item, GstElement* src, GError** error) {
-#line 306 "rygel-l16-transcoder.c"
+#line 326 "rygel-l16-transcoder.c"
 	RygelL16Transcoder * self;
-	GstElement* result;
+	GstElement* result = NULL;
 	GError * _inner_error_;
 	RygelL16TranscoderBin* _tmp0_;
 	self = (RygelL16Transcoder*) base;
@@ -312,11 +332,11 @@ static GstElement* rygel_l16_transcoder_real_create_source (RygelTranscoder* bas
 	g_return_val_if_fail (item != NULL, NULL);
 #line 60 "rygel-l16-transcoder.vala"
 	g_return_val_if_fail (src != NULL, NULL);
-#line 316 "rygel-l16-transcoder.c"
+#line 336 "rygel-l16-transcoder.c"
 	_inner_error_ = NULL;
 #line 63 "rygel-l16-transcoder.vala"
 	_tmp0_ = rygel_l16_transcoder_bin_new (item, src, self, &_inner_error_);
-#line 320 "rygel-l16-transcoder.c"
+#line 340 "rygel-l16-transcoder.c"
 	if (_inner_error_ != NULL) {
 		g_propagate_error (error, _inner_error_);
 		return NULL;
@@ -324,15 +344,15 @@ static GstElement* rygel_l16_transcoder_real_create_source (RygelTranscoder* bas
 	result = (GstElement*) _tmp0_;
 #line 63 "rygel-l16-transcoder.vala"
 	return result;
-#line 328 "rygel-l16-transcoder.c"
+#line 348 "rygel-l16-transcoder.c"
 }
 
 
 #line 66 "rygel-l16-transcoder.vala"
 static GUPnPDIDLLiteResource* rygel_l16_transcoder_real_add_resource (RygelTranscoder* base, GUPnPDIDLLiteItem* didl_item, RygelMediaItem* item, RygelTranscodeManager* manager, GError** error) {
-#line 334 "rygel-l16-transcoder.c"
+#line 354 "rygel-l16-transcoder.c"
 	RygelL16Transcoder * self;
-	GUPnPDIDLLiteResource* result;
+	GUPnPDIDLLiteResource* result = NULL;
 	GError * _inner_error_;
 	GUPnPDIDLLiteResource* resource;
 	self = (RygelL16Transcoder*) base;
@@ -342,23 +362,23 @@ static GUPnPDIDLLiteResource* rygel_l16_transcoder_real_add_resource (RygelTrans
 	g_return_val_if_fail (item != NULL, NULL);
 #line 66 "rygel-l16-transcoder.vala"
 	g_return_val_if_fail (manager != NULL, NULL);
-#line 346 "rygel-l16-transcoder.c"
+#line 366 "rygel-l16-transcoder.c"
 	_inner_error_ = NULL;
 #line 70 "rygel-l16-transcoder.vala"
 	resource = RYGEL_TRANSCODER_CLASS (rygel_l16_transcoder_parent_class)->add_resource (RYGEL_TRANSCODER (self), didl_item, item, manager, &_inner_error_);
-#line 350 "rygel-l16-transcoder.c"
+#line 370 "rygel-l16-transcoder.c"
 	if (_inner_error_ != NULL) {
 		g_propagate_error (error, _inner_error_);
 		return NULL;
 	}
 #line 71 "rygel-l16-transcoder.vala"
 	if (resource == NULL) {
-#line 357 "rygel-l16-transcoder.c"
+#line 377 "rygel-l16-transcoder.c"
 		result = NULL;
 		_g_object_unref0 (resource);
 #line 72 "rygel-l16-transcoder.vala"
 		return result;
-#line 362 "rygel-l16-transcoder.c"
+#line 382 "rygel-l16-transcoder.c"
 	}
 #line 74 "rygel-l16-transcoder.vala"
 	gupnp_didl_lite_resource_set_sample_freq (resource, RYGEL_L16_TRANSCODER_FREQUENCY);
@@ -368,30 +388,30 @@ static GUPnPDIDLLiteResource* rygel_l16_transcoder_real_add_resource (RygelTrans
 	gupnp_didl_lite_resource_set_bits_per_sample (resource, RYGEL_L16_TRANSCODER_WIDTH);
 #line 78 "rygel-l16-transcoder.vala"
 	gupnp_didl_lite_resource_set_bitrate (resource, ((RYGEL_L16_TRANSCODER_FREQUENCY * RYGEL_L16_TRANSCODER_CHANNELS) * RYGEL_L16_TRANSCODER_WIDTH) / 8);
-#line 372 "rygel-l16-transcoder.c"
+#line 392 "rygel-l16-transcoder.c"
 	result = resource;
 #line 82 "rygel-l16-transcoder.vala"
 	return result;
-#line 376 "rygel-l16-transcoder.c"
+#line 396 "rygel-l16-transcoder.c"
 }
 
 
 #line 85 "rygel-l16-transcoder.vala"
 static guint rygel_l16_transcoder_real_get_distance (RygelTranscoder* base, RygelMediaItem* item) {
-#line 382 "rygel-l16-transcoder.c"
+#line 402 "rygel-l16-transcoder.c"
 	RygelL16Transcoder * self;
-	guint result;
+	guint result = 0U;
 	guint distance = 0U;
 	self = (RygelL16Transcoder*) base;
 #line 85 "rygel-l16-transcoder.vala"
 	g_return_val_if_fail (item != NULL, 0U);
 #line 86 "rygel-l16-transcoder.vala"
 	if (g_str_has_prefix (((RygelMediaObject*) item)->upnp_class, RYGEL_MEDIA_ITEM_IMAGE_CLASS)) {
-#line 391 "rygel-l16-transcoder.c"
+#line 411 "rygel-l16-transcoder.c"
 		result = G_MAXUINT;
 #line 87 "rygel-l16-transcoder.vala"
 		return result;
-#line 395 "rygel-l16-transcoder.c"
+#line 415 "rygel-l16-transcoder.c"
 	}
 #line 92 "rygel-l16-transcoder.vala"
 	if (g_str_has_prefix (((RygelMediaObject*) item)->upnp_class, RYGEL_MEDIA_ITEM_AUDIO_CLASS)) {
@@ -401,29 +421,29 @@ static guint rygel_l16_transcoder_real_get_distance (RygelTranscoder* base, Ryge
 		if (item->sample_freq > 0) {
 #line 96 "rygel-l16-transcoder.vala"
 			distance = distance + ((guint) abs (item->sample_freq - RYGEL_L16_TRANSCODER_FREQUENCY));
-#line 405 "rygel-l16-transcoder.c"
+#line 425 "rygel-l16-transcoder.c"
 		}
 #line 99 "rygel-l16-transcoder.vala"
 		if (item->n_audio_channels > 0) {
 #line 100 "rygel-l16-transcoder.vala"
 			distance = distance + ((guint) abs (item->n_audio_channels - RYGEL_L16_TRANSCODER_CHANNELS));
-#line 411 "rygel-l16-transcoder.c"
+#line 431 "rygel-l16-transcoder.c"
 		}
 #line 103 "rygel-l16-transcoder.vala"
 		if (item->bits_per_sample > 0) {
 #line 104 "rygel-l16-transcoder.vala"
 			distance = distance + ((guint) abs (item->bits_per_sample - RYGEL_L16_TRANSCODER_WIDTH));
-#line 417 "rygel-l16-transcoder.c"
+#line 437 "rygel-l16-transcoder.c"
 		}
 	} else {
 #line 107 "rygel-l16-transcoder.vala"
 		distance = G_MAXUINT / 2;
-#line 422 "rygel-l16-transcoder.c"
+#line 442 "rygel-l16-transcoder.c"
 	}
 	result = distance;
 #line 110 "rygel-l16-transcoder.vala"
 	return result;
-#line 427 "rygel-l16-transcoder.c"
+#line 447 "rygel-l16-transcoder.c"
 }
 
 
@@ -439,8 +459,8 @@ static inline void _dynamic_set_caps5 (GstElement* obj, GstCaps* value) {
 
 #line 113 "rygel-l16-transcoder.vala"
 GstElement* rygel_l16_transcoder_create_encoder (RygelL16Transcoder* self, RygelMediaItem* item, const char* src_pad_name, const char* sink_pad_name, GError** error) {
-#line 443 "rygel-l16-transcoder.c"
-	GstElement* result;
+#line 463 "rygel-l16-transcoder.c"
+	GstElement* result = NULL;
 	GError * _inner_error_;
 	GstElement* convert1;
 	GstElement* resample;
@@ -457,18 +477,18 @@ GstElement* rygel_l16_transcoder_create_encoder (RygelL16Transcoder* self, Rygel
 	g_return_val_if_fail (self != NULL, NULL);
 #line 113 "rygel-l16-transcoder.vala"
 	g_return_val_if_fail (item != NULL, NULL);
-#line 461 "rygel-l16-transcoder.c"
+#line 481 "rygel-l16-transcoder.c"
 	_inner_error_ = NULL;
 #line 117 "rygel-l16-transcoder.vala"
 	convert1 = rygel_gst_utils_create_element (RYGEL_L16_TRANSCODER_AUDIO_CONVERT, NULL, &_inner_error_);
-#line 465 "rygel-l16-transcoder.c"
+#line 485 "rygel-l16-transcoder.c"
 	if (_inner_error_ != NULL) {
 		g_propagate_error (error, _inner_error_);
 		return NULL;
 	}
 #line 119 "rygel-l16-transcoder.vala"
 	resample = rygel_gst_utils_create_element (RYGEL_L16_TRANSCODER_AUDIO_RESAMPLE, RYGEL_L16_TRANSCODER_AUDIO_RESAMPLE, &_inner_error_);
-#line 472 "rygel-l16-transcoder.c"
+#line 492 "rygel-l16-transcoder.c"
 	if (_inner_error_ != NULL) {
 		g_propagate_error (error, _inner_error_);
 		_gst_object_unref0 (convert1);
@@ -476,7 +496,7 @@ GstElement* rygel_l16_transcoder_create_encoder (RygelL16Transcoder* self, Rygel
 	}
 #line 121 "rygel-l16-transcoder.vala"
 	audiorate = rygel_gst_utils_create_element (RYGEL_L16_TRANSCODER_AUDIO_RATE, NULL, &_inner_error_);
-#line 480 "rygel-l16-transcoder.c"
+#line 500 "rygel-l16-transcoder.c"
 	if (_inner_error_ != NULL) {
 		g_propagate_error (error, _inner_error_);
 		_gst_object_unref0 (convert1);
@@ -485,7 +505,7 @@ GstElement* rygel_l16_transcoder_create_encoder (RygelL16Transcoder* self, Rygel
 	}
 #line 122 "rygel-l16-transcoder.vala"
 	convert2 = rygel_gst_utils_create_element (RYGEL_L16_TRANSCODER_AUDIO_CONVERT, NULL, &_inner_error_);
-#line 489 "rygel-l16-transcoder.c"
+#line 509 "rygel-l16-transcoder.c"
 	if (_inner_error_ != NULL) {
 		g_propagate_error (error, _inner_error_);
 		_gst_object_unref0 (convert1);
@@ -495,7 +515,7 @@ GstElement* rygel_l16_transcoder_create_encoder (RygelL16Transcoder* self, Rygel
 	}
 #line 124 "rygel-l16-transcoder.vala"
 	capsfilter = rygel_gst_utils_create_element (RYGEL_L16_TRANSCODER_CAPS_FILTER, RYGEL_L16_TRANSCODER_CAPS_FILTER, &_inner_error_);
-#line 499 "rygel-l16-transcoder.c"
+#line 519 "rygel-l16-transcoder.c"
 	if (_inner_error_ != NULL) {
 		g_propagate_error (error, _inner_error_);
 		_gst_object_unref0 (convert1);
@@ -510,7 +530,7 @@ GstElement* rygel_l16_transcoder_create_encoder (RygelL16Transcoder* self, Rygel
 	gst_bin_add_many (bin, _gst_object_ref0 (convert1), _gst_object_ref0 (resample), _gst_object_ref0 (audiorate), _gst_object_ref0 (convert2), _gst_object_ref0 (capsfilter), NULL);
 #line 130 "rygel-l16-transcoder.vala"
 	_dynamic_set_caps5 (capsfilter, _tmp0_ = gst_caps_new_simple ("audio/x-raw-int", "channels", G_TYPE_INT, RYGEL_L16_TRANSCODER_CHANNELS, "rate", G_TYPE_INT, RYGEL_L16_TRANSCODER_FREQUENCY, "width", G_TYPE_INT, RYGEL_L16_TRANSCODER_WIDTH, "depth", G_TYPE_INT, RYGEL_L16_TRANSCODER_DEPTH, "signed", G_TYPE_BOOLEAN, RYGEL_L16_TRANSCODER_SIGNED, "endianness", G_TYPE_INT, self->priv->endianness, NULL));
-#line 514 "rygel-l16-transcoder.c"
+#line 534 "rygel-l16-transcoder.c"
 	_gst_caps_unref0 (_tmp0_);
 #line 140 "rygel-l16-transcoder.vala"
 	gst_element_link_many (convert1, resample, audiorate, convert2, capsfilter, NULL);
@@ -526,7 +546,7 @@ GstElement* rygel_l16_transcoder_create_encoder (RygelL16Transcoder* self, Rygel
 	ghost = (_tmp2_ = (GstGhostPad*) gst_ghost_pad_new (src_pad_name, pad), _gst_object_unref0 (ghost), _tmp2_);
 #line 148 "rygel-l16-transcoder.vala"
 	gst_element_add_pad ((GstElement*) bin, _gst_object_ref0 ((GstPad*) ghost));
-#line 530 "rygel-l16-transcoder.c"
+#line 550 "rygel-l16-transcoder.c"
 	result = (GstElement*) bin;
 	_gst_object_unref0 (convert1);
 	_gst_object_unref0 (resample);
@@ -537,7 +557,7 @@ GstElement* rygel_l16_transcoder_create_encoder (RygelL16Transcoder* self, Rygel
 	_gst_object_unref0 (ghost);
 #line 150 "rygel-l16-transcoder.vala"
 	return result;
-#line 541 "rygel-l16-transcoder.c"
+#line 561 "rygel-l16-transcoder.c"
 }
 
 
@@ -564,12 +584,14 @@ static void rygel_l16_transcoder_finalize (GObject* obj) {
 
 
 GType rygel_l16_transcoder_get_type (void) {
-	static GType rygel_l16_transcoder_type_id = 0;
-	if (rygel_l16_transcoder_type_id == 0) {
+	static volatile gsize rygel_l16_transcoder_type_id__volatile = 0;
+	if (g_once_init_enter (&rygel_l16_transcoder_type_id__volatile)) {
 		static const GTypeInfo g_define_type_info = { sizeof (RygelL16TranscoderClass), (GBaseInitFunc) NULL, (GBaseFinalizeFunc) NULL, (GClassInitFunc) rygel_l16_transcoder_class_init, (GClassFinalizeFunc) NULL, NULL, sizeof (RygelL16Transcoder), 0, (GInstanceInitFunc) rygel_l16_transcoder_instance_init, NULL };
+		GType rygel_l16_transcoder_type_id;
 		rygel_l16_transcoder_type_id = g_type_register_static (RYGEL_TYPE_TRANSCODER, "RygelL16Transcoder", &g_define_type_info, 0);
+		g_once_init_leave (&rygel_l16_transcoder_type_id__volatile, rygel_l16_transcoder_type_id);
 	}
-	return rygel_l16_transcoder_type_id;
+	return rygel_l16_transcoder_type_id__volatile;
 }
 
 

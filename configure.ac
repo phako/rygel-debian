@@ -1,7 +1,7 @@
 AC_PREREQ(2.53)
 AC_INIT([rygel],
 	m4_esyscmd([GNOME_TAG_PATTERN=RYGEL build-aux/git-version-gen .tarball-version]),
-	[http://live.gnome.org/Rygel])
+	[http://bugzilla.gnome.org/enter_bug.cgi?product=Rygel])
 AC_CONFIG_AUX_DIR([build-aux])
 
 # require automake-1.11 for vala support
@@ -20,10 +20,10 @@ AC_STDC_HEADERS
 AC_PROG_LIBTOOL
 AC_FUNC_MMAP
 
-VALA_REQUIRED=0.7.10
-GUPNP_REQUIRED=0.13
-GUPNP_AV_REQUIRED=0.5.2
-GUPNP_VALA_REQUIRED=0.6.2
+VALA_REQUIRED=0.8.0
+GUPNP_REQUIRED=0.13.3
+GUPNP_AV_REQUIRED=0.5.5
+GUPNP_VALA_REQUIRED=0.6.5
 DBUS_GLIB_REQUIRED=0.74
 GSTREAMER_REQUIRED=0.10.23
 GIO_REQUIRED=2.16
@@ -273,6 +273,7 @@ src/plugins/test/Makefile
 data/Makefile
 data/xml/Makefile
 rygel-1.0.pc
+tests/Makefile
 ])
 
 echo "

@@ -19,6 +19,7 @@
  * along with this program; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
+using GUPnP;
 
 public class Rygel.MediaDBContainer : MediaContainer {
     protected MediaDB media_db;
@@ -63,6 +64,27 @@ public class Rygel.MediaDBContainer : MediaContainer {
 
         return children;
     }
+
+    public override async Gee.List<MediaObject>? search (
+                                        SearchExpression expression,
+                                        uint             offset,
+                                        uint             max_count,
+                                        out uint         total_matches,
+                                        Cancellable?     cancellable)
+                                        throws GLib.Error {
+        var max_objects = max_count;
+        if (max_objects == 0) {
+            max_objects = -1;
+        }
+
+        var children = this.media_db.get_objects_by_search_expression (
+                                                                expression,
+                                                                this.id,
+                                                                offset,
+                                                                max_objects);
+
+        total_matches = children.size;
+
+        return children;
+    }
 }
-
-

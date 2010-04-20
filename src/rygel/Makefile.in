@@ -45,16 +45,19 @@ DIST_COMMON = $(librygelinc_HEADERS) $(srcdir)/Makefile.am \
 	rygel-connection-manager.c rygel-content-directory.c \
 	rygel-database.c rygel-dbus-service.c rygel-didl-lite-writer.c \
 	rygel-gst-utils.c rygel-http-byte-seek.c \
-	rygel-http-identity-handler.c rygel-http-request-handler.c \
-	rygel-http-request.c rygel-http-response.c rygel-http-seek.c \
-	rygel-http-server.c rygel-http-time-seek.c \
+	rygel-http-get-handler.c rygel-http-get.c \
+	rygel-http-identity-handler.c rygel-http-item-uri.c \
+	rygel-http-post.c rygel-http-request.c rygel-http-response.c \
+	rygel-http-seek.c rygel-http-server.c rygel-http-time-seek.c \
 	rygel-http-transcode-handler.c rygel-icon-info.c \
+	rygel-import-resource.c rygel-item-creator.c \
 	rygel-l16-transcoder-bin.c rygel-l16-transcoder.c \
 	rygel-live-response.c rygel-log-handler.c \
 	rygel-logical-expression.c rygel-main.c \
 	rygel-media-container.c rygel-media-db-container.c \
 	rygel-media-db-object-factory.c rygel-media-db.c \
-	rygel-media-item.c rygel-media-object.c rygel-meta-config.c \
+	rygel-media-item.c rygel-media-object.c \
+	rygel-media-receiver-registrar.c rygel-meta-config.c \
 	rygel-metadata-extractor.c rygel-mp2ts-transcoder-bin.c \
 	rygel-mp2ts-transcoder.c rygel-mp3-transcoder-bin.c \
 	rygel-mp3-transcoder.c rygel-plugin-loader.c rygel-plugin.c \
@@ -63,9 +66,13 @@ DIST_COMMON = $(librygelinc_HEADERS) $(srcdir)/Makefile.am \
 	rygel-search-criteria-parser.c rygel-search-expression.c \
 	rygel-search.c rygel-seekable-response.c \
 	rygel-simple-container.c rygel-source-connection-manager.c \
-	rygel-state-machine.c rygel-thumbnail.c rygel-thumbnailer.c \
+	rygel-state-machine.c rygel-subtitle-manager.c \
+	rygel-subtitle.c rygel-thumbnail.c rygel-thumbnailer.c \
 	rygel-transcode-manager.c rygel-transcoder.c \
-	rygel-user-config.c rygel.h rygel_vala.stamp
+	rygel-user-config.c rygel-wma-transcoder-bin.c \
+	rygel-wma-transcoder.c rygel-wmv-transcoder-bin.c \
+	rygel-wmv-transcoder.c rygel-xbox-hacks.c rygel.h \
+	rygel_vala.stamp
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/libtool.m4 \
 	$(top_srcdir)/m4/ltoptions.m4 $(top_srcdir)/m4/ltsugar.m4 \
@@ -103,7 +110,8 @@ am__objects_1 = rygel-configuration.$(OBJEXT) \
 	rygel-source-connection-manager.$(OBJEXT) \
 	rygel-transcode-manager.$(OBJEXT) rygel-http-server.$(OBJEXT) \
 	rygel-state-machine.$(OBJEXT) rygel-http-request.$(OBJEXT) \
-	rygel-http-request-handler.$(OBJEXT) \
+	rygel-http-get-handler.$(OBJEXT) rygel-http-get.$(OBJEXT) \
+	rygel-http-post.$(OBJEXT) \
 	rygel-http-identity-handler.$(OBJEXT) \
 	rygel-http-transcode-handler.$(OBJEXT) \
 	rygel-http-seek.$(OBJEXT) rygel-http-byte-seek.$(OBJEXT) \
@@ -115,8 +123,10 @@ am__objects_1 = rygel-configuration.$(OBJEXT) \
 	rygel-media-object.$(OBJEXT) rygel-media-container.$(OBJEXT) \
 	rygel-simple-container.$(OBJEXT) rygel-media-item.$(OBJEXT) \
 	rygel-thumbnail.$(OBJEXT) rygel-thumbnailer.$(OBJEXT) \
+	rygel-subtitle.$(OBJEXT) rygel-subtitle-manager.$(OBJEXT) \
 	rygel-browse.$(OBJEXT) rygel-search.$(OBJEXT) \
-	rygel-search-expression.$(OBJEXT) \
+	rygel-xbox-hacks.$(OBJEXT) rygel-import-resource.$(OBJEXT) \
+	rygel-item-creator.$(OBJEXT) rygel-search-expression.$(OBJEXT) \
 	rygel-relational-expression.$(OBJEXT) \
 	rygel-logical-expression.$(OBJEXT) \
 	rygel-search-criteria-parser.$(OBJEXT) \
@@ -125,13 +135,18 @@ am__objects_1 = rygel-configuration.$(OBJEXT) \
 	rygel-mp3-transcoder.$(OBJEXT) rygel-l16-transcoder.$(OBJEXT) \
 	rygel-mp2ts-transcoder-bin.$(OBJEXT) \
 	rygel-mp3-transcoder-bin.$(OBJEXT) \
-	rygel-l16-transcoder-bin.$(OBJEXT) rygel-gst-utils.$(OBJEXT) \
+	rygel-l16-transcoder-bin.$(OBJEXT) \
+	rygel-wma-transcoder.$(OBJEXT) \
+	rygel-wma-transcoder-bin.$(OBJEXT) \
+	rygel-wmv-transcoder.$(OBJEXT) \
+	rygel-wmv-transcoder-bin.$(OBJEXT) rygel-gst-utils.$(OBJEXT) \
 	rygel-media-db.$(OBJEXT) rygel-metadata-extractor.$(OBJEXT) \
 	rygel-media-db-container.$(OBJEXT) \
 	rygel-media-db-object-factory.$(OBJEXT) \
+	rygel-media-receiver-registrar.$(OBJEXT) \
 	rygel-log-handler.$(OBJEXT)
-am_rygel_OBJECTS = $(am__objects_1) rygel-dbus-service.$(OBJEXT) \
-	rygel-root-device.$(OBJEXT) \
+am_rygel_OBJECTS = $(am__objects_1) rygel-http-item-uri.$(OBJEXT) \
+	rygel-dbus-service.$(OBJEXT) rygel-root-device.$(OBJEXT) \
 	rygel-root-device-factory.$(OBJEXT) rygel-database.$(OBJEXT) \
 	rygel-main.$(OBJEXT)
 rygel_OBJECTS = $(am_rygel_OBJECTS)
@@ -388,6 +403,7 @@ BUILT_SOURCES = rygel-1.0.vapi \
 		rygel.h
 
 rygel_SOURCES = $(VAPI_SOURCE_FILES) \
+		rygel-http-item-uri.vala \
 		rygel-dbus-service.vala \
 		rygel-root-device.vala \
 		rygel-root-device-factory.vala \
@@ -405,7 +421,9 @@ VAPI_SOURCE_FILES = rygel-configuration.vala \
 		    rygel-http-server.vala \
 		    rygel-state-machine.vala \
 		    rygel-http-request.vala \
-		    rygel-http-request-handler.vala \
+		    rygel-http-get-handler.vala \
+		    rygel-http-get.vala \
+		    rygel-http-post.vala \
 		    rygel-http-identity-handler.vala \
 		    rygel-http-transcode-handler.vala \
 		    rygel-http-seek.vala \
@@ -424,8 +442,13 @@ VAPI_SOURCE_FILES = rygel-configuration.vala \
 		    rygel-media-item.vala \
 		    rygel-thumbnail.vala \
 		    rygel-thumbnailer.vala \
+		    rygel-subtitle.vala \
+		    rygel-subtitle-manager.vala \
 		    rygel-browse.vala \
 		    rygel-search.vala \
+			rygel-xbox-hacks.vala \
+		    rygel-import-resource.vala \
+		    rygel-item-creator.vala \
 		    rygel-search-expression.vala \
 		    rygel-relational-expression.vala \
 		    rygel-logical-expression.vala \
@@ -438,11 +461,16 @@ VAPI_SOURCE_FILES = rygel-configuration.vala \
 		    rygel-mp2ts-transcoder-bin.vala \
 		    rygel-mp3-transcoder-bin.vala \
 		    rygel-l16-transcoder-bin.vala \
+		    rygel-wma-transcoder.vala \
+		    rygel-wma-transcoder-bin.vala \
+		    rygel-wmv-transcoder.vala \
+		    rygel-wmv-transcoder-bin.vala \
 		    rygel-gst-utils.vala \
 		    rygel-media-db.vala \
 		    rygel-metadata-extractor.vala \
 		    rygel-media-db-container.vala \
 		    rygel-media-db-object-factory.vala \
+		    rygel-media-receiver-registrar.vala \
 		    rygel-log-handler.vala
 
 rygel_VALAFLAGS = \
@@ -585,8 +613,11 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-didl-lite-writer.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-gst-utils.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-http-byte-seek.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-http-get-handler.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-http-get.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-http-identity-handler.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-http-request-handler.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-http-item-uri.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-http-post.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-http-request.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-http-response.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-http-seek.Po@am__quote@
@@ -594,6 +625,8 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-http-time-seek.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-http-transcode-handler.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-icon-info.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-import-resource.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-item-creator.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-l16-transcoder-bin.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-l16-transcoder.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-live-response.Po@am__quote@
@@ -606,6 +639,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-media-db.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-media-item.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-media-object.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-media-receiver-registrar.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-meta-config.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-metadata-extractor.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-mp2ts-transcoder-bin.Po@am__quote@
@@ -625,11 +659,18 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-simple-container.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-source-connection-manager.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-state-machine.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-subtitle-manager.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-subtitle.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-thumbnail.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-thumbnailer.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-transcode-manager.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-transcoder.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-user-config.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-wma-transcoder-bin.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-wma-transcoder.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-wmv-transcoder-bin.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-wmv-transcoder.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-xbox-hacks.Po@am__quote@
 
 .c.o:
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
@@ -709,7 +750,17 @@ $(srcdir)/rygel-http-request.c: $(srcdir)/rygel_vala.stamp
 	  rm -f $(srcdir)/rygel_vala.stamp; \
 	  $(am__cd) $(srcdir) && $(MAKE) $(AM_MAKEFLAGS) rygel_vala.stamp; \
 	fi
-$(srcdir)/rygel-http-request-handler.c: $(srcdir)/rygel_vala.stamp
+$(srcdir)/rygel-http-get-handler.c: $(srcdir)/rygel_vala.stamp
+	@if test -f $@; then :; else \
+	  rm -f $(srcdir)/rygel_vala.stamp; \
+	  $(am__cd) $(srcdir) && $(MAKE) $(AM_MAKEFLAGS) rygel_vala.stamp; \
+	fi
+$(srcdir)/rygel-http-get.c: $(srcdir)/rygel_vala.stamp
+	@if test -f $@; then :; else \
+	  rm -f $(srcdir)/rygel_vala.stamp; \
+	  $(am__cd) $(srcdir) && $(MAKE) $(AM_MAKEFLAGS) rygel_vala.stamp; \
+	fi
+$(srcdir)/rygel-http-post.c: $(srcdir)/rygel_vala.stamp
 	@if test -f $@; then :; else \
 	  rm -f $(srcdir)/rygel_vala.stamp; \
 	  $(am__cd) $(srcdir) && $(MAKE) $(AM_MAKEFLAGS) rygel_vala.stamp; \
@@ -804,12 +855,37 @@ $(srcdir)/rygel-thumbnailer.c: $(srcdir)/rygel_vala.stamp
 	  rm -f $(srcdir)/rygel_vala.stamp; \
 	  $(am__cd) $(srcdir) && $(MAKE) $(AM_MAKEFLAGS) rygel_vala.stamp; \
 	fi
+$(srcdir)/rygel-subtitle.c: $(srcdir)/rygel_vala.stamp
+	@if test -f $@; then :; else \
+	  rm -f $(srcdir)/rygel_vala.stamp; \
+	  $(am__cd) $(srcdir) && $(MAKE) $(AM_MAKEFLAGS) rygel_vala.stamp; \
+	fi
+$(srcdir)/rygel-subtitle-manager.c: $(srcdir)/rygel_vala.stamp
+	@if test -f $@; then :; else \
+	  rm -f $(srcdir)/rygel_vala.stamp; \
+	  $(am__cd) $(srcdir) && $(MAKE) $(AM_MAKEFLAGS) rygel_vala.stamp; \
+	fi
 $(srcdir)/rygel-browse.c: $(srcdir)/rygel_vala.stamp
 	@if test -f $@; then :; else \
 	  rm -f $(srcdir)/rygel_vala.stamp; \
 	  $(am__cd) $(srcdir) && $(MAKE) $(AM_MAKEFLAGS) rygel_vala.stamp; \
 	fi
 $(srcdir)/rygel-search.c: $(srcdir)/rygel_vala.stamp
+	@if test -f $@; then :; else \
+	  rm -f $(srcdir)/rygel_vala.stamp; \
+	  $(am__cd) $(srcdir) && $(MAKE) $(AM_MAKEFLAGS) rygel_vala.stamp; \
+	fi
+$(srcdir)/rygel-xbox-hacks.c: $(srcdir)/rygel_vala.stamp
+	@if test -f $@; then :; else \
+	  rm -f $(srcdir)/rygel_vala.stamp; \
+	  $(am__cd) $(srcdir) && $(MAKE) $(AM_MAKEFLAGS) rygel_vala.stamp; \
+	fi
+$(srcdir)/rygel-import-resource.c: $(srcdir)/rygel_vala.stamp
+	@if test -f $@; then :; else \
+	  rm -f $(srcdir)/rygel_vala.stamp; \
+	  $(am__cd) $(srcdir) && $(MAKE) $(AM_MAKEFLAGS) rygel_vala.stamp; \
+	fi
+$(srcdir)/rygel-item-creator.c: $(srcdir)/rygel_vala.stamp
 	@if test -f $@; then :; else \
 	  rm -f $(srcdir)/rygel_vala.stamp; \
 	  $(am__cd) $(srcdir) && $(MAKE) $(AM_MAKEFLAGS) rygel_vala.stamp; \
@@ -874,6 +950,26 @@ $(srcdir)/rygel-l16-transcoder-bin.c: $(srcdir)/rygel_vala.stamp
 	  rm -f $(srcdir)/rygel_vala.stamp; \
 	  $(am__cd) $(srcdir) && $(MAKE) $(AM_MAKEFLAGS) rygel_vala.stamp; \
 	fi
+$(srcdir)/rygel-wma-transcoder.c: $(srcdir)/rygel_vala.stamp
+	@if test -f $@; then :; else \
+	  rm -f $(srcdir)/rygel_vala.stamp; \
+	  $(am__cd) $(srcdir) && $(MAKE) $(AM_MAKEFLAGS) rygel_vala.stamp; \
+	fi
+$(srcdir)/rygel-wma-transcoder-bin.c: $(srcdir)/rygel_vala.stamp
+	@if test -f $@; then :; else \
+	  rm -f $(srcdir)/rygel_vala.stamp; \
+	  $(am__cd) $(srcdir) && $(MAKE) $(AM_MAKEFLAGS) rygel_vala.stamp; \
+	fi
+$(srcdir)/rygel-wmv-transcoder.c: $(srcdir)/rygel_vala.stamp
+	@if test -f $@; then :; else \
+	  rm -f $(srcdir)/rygel_vala.stamp; \
+	  $(am__cd) $(srcdir) && $(MAKE) $(AM_MAKEFLAGS) rygel_vala.stamp; \
+	fi
+$(srcdir)/rygel-wmv-transcoder-bin.c: $(srcdir)/rygel_vala.stamp
+	@if test -f $@; then :; else \
+	  rm -f $(srcdir)/rygel_vala.stamp; \
+	  $(am__cd) $(srcdir) && $(MAKE) $(AM_MAKEFLAGS) rygel_vala.stamp; \
+	fi
 $(srcdir)/rygel-gst-utils.c: $(srcdir)/rygel_vala.stamp
 	@if test -f $@; then :; else \
 	  rm -f $(srcdir)/rygel_vala.stamp; \
@@ -899,7 +995,17 @@ $(srcdir)/rygel-media-db-object-factory.c: $(srcdir)/rygel_vala.stamp
 	  rm -f $(srcdir)/rygel_vala.stamp; \
 	  $(am__cd) $(srcdir) && $(MAKE) $(AM_MAKEFLAGS) rygel_vala.stamp; \
 	fi
+$(srcdir)/rygel-media-receiver-registrar.c: $(srcdir)/rygel_vala.stamp
+	@if test -f $@; then :; else \
+	  rm -f $(srcdir)/rygel_vala.stamp; \
+	  $(am__cd) $(srcdir) && $(MAKE) $(AM_MAKEFLAGS) rygel_vala.stamp; \
+	fi
 $(srcdir)/rygel-log-handler.c: $(srcdir)/rygel_vala.stamp
+	@if test -f $@; then :; else \
+	  rm -f $(srcdir)/rygel_vala.stamp; \
+	  $(am__cd) $(srcdir) && $(MAKE) $(AM_MAKEFLAGS) rygel_vala.stamp; \
+	fi
+$(srcdir)/rygel-http-item-uri.c: $(srcdir)/rygel_vala.stamp
 	@if test -f $@; then :; else \
 	  rm -f $(srcdir)/rygel_vala.stamp; \
 	  $(am__cd) $(srcdir) && $(MAKE) $(AM_MAKEFLAGS) rygel_vala.stamp; \
@@ -1114,8 +1220,11 @@ maintainer-clean-generic:
 	-rm -f rygel-didl-lite-writer.c
 	-rm -f rygel-gst-utils.c
 	-rm -f rygel-http-byte-seek.c
+	-rm -f rygel-http-get-handler.c
+	-rm -f rygel-http-get.c
 	-rm -f rygel-http-identity-handler.c
-	-rm -f rygel-http-request-handler.c
+	-rm -f rygel-http-item-uri.c
+	-rm -f rygel-http-post.c
 	-rm -f rygel-http-request.c
 	-rm -f rygel-http-response.c
 	-rm -f rygel-http-seek.c
@@ -1123,6 +1232,8 @@ maintainer-clean-generic:
 	-rm -f rygel-http-time-seek.c
 	-rm -f rygel-http-transcode-handler.c
 	-rm -f rygel-icon-info.c
+	-rm -f rygel-import-resource.c
+	-rm -f rygel-item-creator.c
 	-rm -f rygel-l16-transcoder-bin.c
 	-rm -f rygel-l16-transcoder.c
 	-rm -f rygel-live-response.c
@@ -1135,6 +1246,7 @@ maintainer-clean-generic:
 	-rm -f rygel-media-db.c
 	-rm -f rygel-media-item.c
 	-rm -f rygel-media-object.c
+	-rm -f rygel-media-receiver-registrar.c
 	-rm -f rygel-meta-config.c
 	-rm -f rygel-metadata-extractor.c
 	-rm -f rygel-mp2ts-transcoder-bin.c
@@ -1154,11 +1266,18 @@ maintainer-clean-generic:
 	-rm -f rygel-simple-container.c
 	-rm -f rygel-source-connection-manager.c
 	-rm -f rygel-state-machine.c
+	-rm -f rygel-subtitle-manager.c
+	-rm -f rygel-subtitle.c
 	-rm -f rygel-thumbnail.c
 	-rm -f rygel-thumbnailer.c
 	-rm -f rygel-transcode-manager.c
 	-rm -f rygel-transcoder.c
 	-rm -f rygel-user-config.c
+	-rm -f rygel-wma-transcoder-bin.c
+	-rm -f rygel-wma-transcoder.c
+	-rm -f rygel-wmv-transcoder-bin.c
+	-rm -f rygel-wmv-transcoder.c
+	-rm -f rygel-xbox-hacks.c
 	-rm -f rygel.h
 	-rm -f rygel_vala.stamp
 	-test -z "$(BUILT_SOURCES)" || rm -f $(BUILT_SOURCES)

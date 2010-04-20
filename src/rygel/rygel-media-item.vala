@@ -33,6 +33,7 @@ private errordomain Rygel.MediaItemError {
  */
 public class Rygel.MediaItem : MediaObject {
     public static const string IMAGE_CLASS = "object.item.imageItem";
+    public static const string PHOTO_CLASS = "object.item.imageItem.photo";
     public static const string VIDEO_CLASS = "object.item.videoItem";
     public static const string AUDIO_CLASS = "object.item.audioItem";
     public static const string MUSIC_CLASS = "object.item.audioItem.musicTrack";
@@ -63,6 +64,9 @@ public class Rygel.MediaItem : MediaObject {
     public int color_depth = -1;
 
     public ArrayList<Thumbnail> thumbnails;
+    public ArrayList<Subtitle> subtitles;
+
+    internal bool place_holder = false;
 
     public MediaItem (string         id,
                       MediaContainer parent,
@@ -74,6 +78,7 @@ public class Rygel.MediaItem : MediaObject {
         this.upnp_class = upnp_class;
 
         this.thumbnails = new ArrayList<Thumbnail> ();
+        this.subtitles = new ArrayList<Subtitle> ();
     }
 
     // Live media items need to provide a nice working implementation of this
@@ -124,6 +129,19 @@ public class Rygel.MediaItem : MediaObject {
                 this.thumbnails.add (thumb);
             } catch (Error err) {}
         }
+
+        if (this.upnp_class.has_prefix (MediaItem.VIDEO_CLASS)) {
+            var subtitle_manager = SubtitleManager.get_default ();
+
+            if (subtitle_manager == null) {
+                return;
+            }
+
+            try {
+                var subtitle = subtitle_manager.get_subtitle (uri);
+                this.subtitles.add (subtitle);
+            } catch (Error err) {}
+        }
     }
 
     internal int compare_transcoders (void *a, void *b) {
@@ -137,6 +155,14 @@ public class Rygel.MediaItem : MediaObject {
     internal void add_resources (DIDLLiteItem didl_item,
                                  bool         allow_internal)
                                  throws Error {
+        foreach (var subtitle in this.subtitles) {
+            var protocol = this.get_protocol_for_uri (subtitle.uri);
+
+            if (allow_internal || protocol != "internal") {
+                subtitle.add_didl_node (didl_item);
+            }
+        }
+
         foreach (var uri in this.uris) {
             var protocol = this.get_protocol_for_uri (uri);
 
@@ -156,12 +182,17 @@ public class Rygel.MediaItem : MediaObject {
 
     internal DIDLLiteResource add_resource (DIDLLiteItem didl_item,
                                             string?      uri,
-                                            string       protocol)
+                                            string       protocol,
+                                            string?      import_uri = null)
                                             throws Error {
         var res = didl_item.add_resource ();
 
         if (uri != null) {
             res.uri = uri;
+        }
+
+        if (import_uri != null) {
+            res.import_uri = import_uri;
         }
 
         res.size = this.size;
@@ -189,6 +220,7 @@ public class Rygel.MediaItem : MediaObject {
         protocol_info.mime_type = this.mime_type;
         protocol_info.dlna_profile = this.dlna_profile;
         protocol_info.protocol = protocol;
+        protocol_info.dlna_flags = DLNAFlags.DLNA_V15;
 
         if (this.upnp_class.has_prefix (MediaItem.IMAGE_CLASS)) {
             protocol_info.dlna_flags |= DLNAFlags.INTERACTIVE_TRANSFER_MODE;
@@ -198,7 +230,10 @@ public class Rygel.MediaItem : MediaObject {
 
         if (!this.should_stream ()) {
             protocol_info.dlna_operation = DLNAOperation.RANGE;
-            protocol_info.dlna_flags |= DLNAFlags.BACKGROUND_TRANSFER_MODE;
+            protocol_info.dlna_flags |= DLNAFlags.BACKGROUND_TRANSFER_MODE |
+                                        DLNAFlags.CONNECTION_STALL;
+        } else {
+            protocol_info.dlna_flags |= DLNAFlags.SENDER_PACED;
         }
 
         return protocol_info;

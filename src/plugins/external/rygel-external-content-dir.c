@@ -113,7 +113,7 @@ static gpointer _g_object_ref0 (gpointer self) {
 static RygelMediaContainer* rygel_external_content_dir_real_create_root_container (RygelContentDirectory* base) {
 #line 115 "rygel-external-content-dir.c"
 	RygelExternalContentDir * self;
-	RygelMediaContainer* result;
+	RygelMediaContainer* result = NULL;
 	GUPnPRootDevice* _tmp1_;
 	GUPnPRootDevice* _tmp0_ = NULL;
 	RygelExternalPlugin* _tmp2_;
@@ -160,12 +160,14 @@ static void rygel_external_content_dir_instance_init (RygelExternalContentDir * 
 
 
 GType rygel_external_content_dir_get_type (void) {
-	static GType rygel_external_content_dir_type_id = 0;
-	if (rygel_external_content_dir_type_id == 0) {
+	static volatile gsize rygel_external_content_dir_type_id__volatile = 0;
+	if (g_once_init_enter (&rygel_external_content_dir_type_id__volatile)) {
 		static const GTypeInfo g_define_type_info = { sizeof (RygelExternalContentDirClass), (GBaseInitFunc) NULL, (GBaseFinalizeFunc) NULL, (GClassInitFunc) rygel_external_content_dir_class_init, (GClassFinalizeFunc) NULL, NULL, sizeof (RygelExternalContentDir), 0, (GInstanceInitFunc) rygel_external_content_dir_instance_init, NULL };
+		GType rygel_external_content_dir_type_id;
 		rygel_external_content_dir_type_id = g_type_register_static (RYGEL_TYPE_CONTENT_DIRECTORY, "RygelExternalContentDir", &g_define_type_info, 0);
+		g_once_init_leave (&rygel_external_content_dir_type_id__volatile, rygel_external_content_dir_type_id);
 	}
-	return rygel_external_content_dir_type_id;
+	return rygel_external_content_dir_type_id__volatile;
 }
 
 

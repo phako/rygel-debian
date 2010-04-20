@@ -37,13 +37,13 @@ public abstract class Rygel.MediaContainer : MediaObject {
      */
     public signal void container_updated (MediaContainer container);
 
-    public uint child_count;
+    public int child_count;
     public uint32 update_id;
 
     public MediaContainer (string          id,
                            MediaContainer? parent,
                            string          title,
-                           uint            child_count) {
+                           int             child_count) {
         this.id = id;
         this.parent = parent;
         this.title = title;
@@ -55,7 +55,7 @@ public abstract class Rygel.MediaContainer : MediaObject {
     }
 
     public MediaContainer.root (string title,
-                                uint   child_count) {
+                                int    child_count) {
         this ("0", null, title, child_count);
     }
 
@@ -156,6 +156,38 @@ public abstract class Rygel.MediaContainer : MediaObject {
 
             return result;
         }
+    }
+
+    /**
+     * Add a new item directly under this container.
+     *
+     * @param didl_item The item to add to this container.
+     *
+     * return nothing.
+     *
+     * This implementation is very basic: It only creates the file under the
+     * first writable URI it can find for this container & sets the ID of the
+     * item to that of the URI of the newly created item. If your subclass
+     * doesn't ID the items by their original URIs, you definitely want to
+     * override this method.
+     */
+    public async virtual void add_item (MediaItem    item,
+                                        Cancellable? cancellable)
+                                        throws Error {
+        var dir = yield this.get_writable (cancellable);
+        if (dir == null) {
+           throw new ContentDirectoryError.RESTRICTED_PARENT (
+                                        "Object creation in %s no allowed",
+                                        this.id);
+        }
+
+        var file = dir.get_child_for_display_name (item.title);
+        yield file.create_async (FileCreateFlags.NONE,
+                                 Priority.DEFAULT,
+                                 cancellable);
+        var uri = file.get_uri ();
+        item.id = uri;
+        item.uris.add (uri);
     }
 
     /**

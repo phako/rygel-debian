@@ -30,6 +30,7 @@ using Gee;
  */
 public errordomain Rygel.ContentDirectoryError {
     NO_SUCH_OBJECT = 701,
+    RESTRICTED_PARENT = 713,
     CANT_PROCESS = 720,
     INVALID_ARGS = 402
 }
@@ -43,6 +44,8 @@ public class Rygel.ContentDirectory: Service {
     public const string UPNP_ID = "urn:upnp-org:serviceId:ContentDirectory";
     public const string UPNP_TYPE =
                     "urn:schemas-upnp-org:service:ContentDirectory:2";
+    public const string UPNP_TYPE_V1 =
+                    "urn:schemas-upnp-org:service:ContentDirectory:1";
     public const string DESCRIPTION_PATH = "xml/ContentDirectory.xml";
     private const string SEARCH_CAPS = "@id,@parentID,@refID," +
                                        "upnp:class,dc:title,dc:creator," +
@@ -55,6 +58,8 @@ public class Rygel.ContentDirectory: Service {
 
     public MediaContainer root_container;
     private ArrayList<MediaContainer> updated_containers;
+
+    private ArrayList<ImportResource> active_imports;
 
     private bool clear_updated_containers;
     private uint update_notify_id;
@@ -83,6 +88,7 @@ public class Rygel.ContentDirectory: Service {
         }
 
         this.updated_containers =  new ArrayList<MediaContainer> ();
+        this.active_imports = new ArrayList<ImportResource> ();
 
         this.root_container.container_updated += on_container_updated;
 
@@ -97,6 +103,14 @@ public class Rygel.ContentDirectory: Service {
 
         this.action_invoked["Browse"] += this.browse_cb;
         this.action_invoked["Search"] += this.search_cb;
+        this.action_invoked["CreateObject"] += this.create_object_cb;
+        this.action_invoked["ImportResource"] += this.import_resource_cb;
+        this.action_invoked["GetTransferProgress"] +=
+                                        this.get_transfer_progress_cb;
+        this.action_invoked["StopTransferResource"] +=
+                                        this.stop_transfer_resource_cb;
+
+        this.query_variable["TransferIDs"] += this.query_transfer_ids;
 
         /* Connect SystemUpdateID related signals */
         this.action_invoked["GetSystemUpdateID"] +=
@@ -130,19 +144,84 @@ public class Rygel.ContentDirectory: Service {
     }
 
     /* Browse action implementation */
-    private virtual void browse_cb (ContentDirectory    content_dir,
-                                    owned ServiceAction action) {
+    private void browse_cb (ContentDirectory    content_dir,
+                            owned ServiceAction action) {
         Browse browse = new Browse (this, action);
 
         browse.run.begin ();
     }
 
     /* Search action implementation */
-    private virtual void search_cb (ContentDirectory    content_dir,
-                                    owned ServiceAction action) {
+    private void search_cb (ContentDirectory    content_dir,
+                            owned ServiceAction action) {
         var search = new Search (this, action);
 
         search.run.begin ();
+    }
+
+    /* CreateObject action implementation */
+    private void create_object_cb (ContentDirectory    content_dir,
+                                   owned ServiceAction action) {
+        var creator = new ItemCreator (this, action);
+
+        creator.run.begin ();
+    }
+
+    /* ImportResource action implementation */
+    private void import_resource_cb (ContentDirectory    content_dir,
+                                     owned ServiceAction action) {
+        var import = new ImportResource (this, action);
+
+        import.completed += this.on_import_completed;
+        this.active_imports.add (import);
+
+        import.run.begin ();
+
+        this.notify ("TransferIDs",
+                        typeof (string),
+                        this.create_transfer_ids ());
+    }
+
+    /* Query TransferIDs */
+    private void query_transfer_ids (ContentDirectory content_dir,
+                                     string           variable,
+                                     ref GLib.Value   value) {
+        value.init (typeof (string));
+        value.set_string (this.create_transfer_ids ());
+    }
+
+    /* GetTransferProgress action implementation */
+    private void get_transfer_progress_cb (ContentDirectory    content_dir,
+                                           owned ServiceAction action) {
+        var import = find_import_for_action (action);
+        if (import != null) {
+            action.set ("TransferStatus",
+                            typeof (string),
+                            import.status_as_string,
+                        "TransferLength",
+                            typeof (int64),
+                            import.bytes_copied,
+                        "TransferTotal",
+                            typeof (int64),
+                            import.bytes_total);
+
+            action.return ();
+        } else {
+            action.return_error (717, "No such file transfer");
+        }
+    }
+
+    /* StopTransferResource action implementation */
+    private void stop_transfer_resource_cb (ContentDirectory    content_dir,
+                                            owned ServiceAction action) {
+        var import = find_import_for_action (action);
+        if (import != null) {
+            import.cancellable.cancel ();
+
+            action.return ();
+        } else {
+            action.return_error (717, "No such file transfer");
+        }
     }
 
     /* GetSystemUpdateID action implementation */
@@ -281,6 +360,55 @@ public class Rygel.ContentDirectory: Service {
         this.update_notify_id = 0;
 
         return false;
+    }
+
+    private string create_transfer_ids () {
+        var ids = "";
+
+        foreach (var import in this.active_imports) {
+            if (import.status != TransferStatus.COMPLETED) {
+                if (ids != "") {
+                    ids += ",";
+                }
+
+                ids += import.transfer_id.to_string ();
+            }
+        }
+
+        return ids;
+    }
+
+    private void on_import_completed (ImportResource import) {
+        this.notify ("TransferIDs",
+                        typeof (string),
+                        this.create_transfer_ids ());
+
+        // According to CDS specs (v3 section 2.4.17), we must not immediately
+        // remove the import from out memory
+        Timeout.add_seconds (30, () => {
+                this.active_imports.remove (import);
+
+                return false;
+        });
+    }
+
+    private ImportResource? find_import_for_action (ServiceAction action) {
+        ImportResource ret = null;
+        uint32 transfer_id;
+
+        action.get ("TransferID",
+                        typeof (uint32),
+                        out transfer_id);
+
+        foreach (var import in this.active_imports) {
+            if (import.transfer_id == transfer_id) {
+                ret = import;
+
+                break;
+            }
+        }
+
+        return ret;
     }
 }
 

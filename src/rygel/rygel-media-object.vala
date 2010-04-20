@@ -41,7 +41,17 @@ public abstract class Rygel.MediaObject : GLib.Object {
     // You must set 'parent' if you set 'parent_ref' but the opposite is not
     // mandatory.
     public unowned MediaContainer parent;
-    public MediaContainer parent_ref;
+    private MediaContainer _parent_ref;
+    public MediaContainer parent_ref {
+        get {
+            return this._parent_ref;
+        }
+
+        set {
+            this.parent = value;
+            this._parent_ref = value;
+        }
+    }
 
     private string _title;
     public string title {
@@ -61,5 +71,27 @@ public abstract class Rygel.MediaObject : GLib.Object {
 
     construct {
         uris = new ArrayList<string> ();
+    }
+
+    /**
+     * Fetches a File object for any writable URI available for this object.
+     *
+     * @param cancellable A GLib.Cancellable
+     */
+    public async File? get_writable (Cancellable? cancellable) throws Error {
+        foreach (var uri in this.uris) {
+            var file = File.new_for_uri (uri);
+
+            var info = yield file.query_info_async (
+                                        FILE_ATTRIBUTE_ACCESS_CAN_WRITE,
+                                        FileQueryInfoFlags.NONE,
+                                        Priority.DEFAULT,
+                                        cancellable);
+            if (info.get_attribute_boolean (FILE_ATTRIBUTE_ACCESS_CAN_WRITE)) {
+                return file;
+            }
+        }
+
+        return null;
     }
 }

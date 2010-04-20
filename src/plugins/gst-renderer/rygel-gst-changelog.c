@@ -127,7 +127,7 @@ RygelGstChangeLog* rygel_gst_change_log_new (GUPnPService* service, const char* 
 #line 56 "rygel-gst-changelog.vala"
 static gboolean rygel_gst_change_log_timeout (RygelGstChangeLog* self) {
 #line 130 "rygel-gst-changelog.c"
-	gboolean result;
+	gboolean result = FALSE;
 	char* _tmp0_;
 #line 56 "rygel-gst-changelog.vala"
 	g_return_val_if_fail (self != NULL, FALSE);
@@ -232,7 +232,7 @@ void rygel_gst_change_log_log_with_channel (RygelGstChangeLog* self, const char*
 #line 95 "rygel-gst-changelog.vala"
 char* rygel_gst_change_log_finish (RygelGstChangeLog* self) {
 #line 235 "rygel-gst-changelog.c"
-	char* result;
+	char* result = NULL;
 	char* _tmp1_;
 	char* _tmp0_;
 #line 95 "rygel-gst-changelog.vala"
@@ -328,12 +328,14 @@ static void rygel_gst_change_log_finalize (GObject* obj) {
 
 
 GType rygel_gst_change_log_get_type (void) {
-	static GType rygel_gst_change_log_type_id = 0;
-	if (rygel_gst_change_log_type_id == 0) {
+	static volatile gsize rygel_gst_change_log_type_id__volatile = 0;
+	if (g_once_init_enter (&rygel_gst_change_log_type_id__volatile)) {
 		static const GTypeInfo g_define_type_info = { sizeof (RygelGstChangeLogClass), (GBaseInitFunc) NULL, (GBaseFinalizeFunc) NULL, (GClassInitFunc) rygel_gst_change_log_class_init, (GClassFinalizeFunc) NULL, NULL, sizeof (RygelGstChangeLog), 0, (GInstanceInitFunc) rygel_gst_change_log_instance_init, NULL };
+		GType rygel_gst_change_log_type_id;
 		rygel_gst_change_log_type_id = g_type_register_static (G_TYPE_OBJECT, "RygelGstChangeLog", &g_define_type_info, 0);
+		g_once_init_leave (&rygel_gst_change_log_type_id__volatile, rygel_gst_change_log_type_id);
 	}
-	return rygel_gst_change_log_type_id;
+	return rygel_gst_change_log_type_id__volatile;
 }
 
 

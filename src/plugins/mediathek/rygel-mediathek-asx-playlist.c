@@ -121,7 +121,7 @@ static glong string_get_length (const char* self) {
 	glong result;
 	g_return_val_if_fail (self != NULL, 0L);
 	result = g_utf8_strlen (self, -1);
-#line 1035 "glib-2.0.vapi"
+#line 1062 "glib-2.0.vapi"
 	return result;
 #line 127 "rygel-mediathek-asx-playlist.c"
 }
@@ -317,12 +317,14 @@ static void rygel_mediathek_asx_playlist_finalize (GObject* obj) {
 
 
 GType rygel_mediathek_asx_playlist_get_type (void) {
-	static GType rygel_mediathek_asx_playlist_type_id = 0;
-	if (rygel_mediathek_asx_playlist_type_id == 0) {
+	static volatile gsize rygel_mediathek_asx_playlist_type_id__volatile = 0;
+	if (g_once_init_enter (&rygel_mediathek_asx_playlist_type_id__volatile)) {
 		static const GTypeInfo g_define_type_info = { sizeof (RygelMediathekAsxPlaylistClass), (GBaseInitFunc) NULL, (GBaseFinalizeFunc) NULL, (GClassInitFunc) rygel_mediathek_asx_playlist_class_init, (GClassFinalizeFunc) NULL, NULL, sizeof (RygelMediathekAsxPlaylist), 0, (GInstanceInitFunc) rygel_mediathek_asx_playlist_instance_init, NULL };
+		GType rygel_mediathek_asx_playlist_type_id;
 		rygel_mediathek_asx_playlist_type_id = g_type_register_static (G_TYPE_OBJECT, "RygelMediathekAsxPlaylist", &g_define_type_info, 0);
+		g_once_init_leave (&rygel_mediathek_asx_playlist_type_id__volatile, rygel_mediathek_asx_playlist_type_id);
 	}
-	return rygel_mediathek_asx_playlist_type_id;
+	return rygel_mediathek_asx_playlist_type_id__volatile;
 }
 
 

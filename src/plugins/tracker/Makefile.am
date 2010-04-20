@@ -12,13 +12,25 @@ AM_CFLAGS = $(LIBGUPNP_CFLAGS) \
 librygel_media_tracker_la_SOURCES = \
 				    rygel-media-tracker.vala \
 				    rygel-tracker-root-container.vala \
+				    rygel-tracker-category-container.vala \
+				    rygel-tracker-music.vala \
+				    rygel-tracker-videos.vala \
+				    rygel-tracker-pictures.vala \
 				    rygel-tracker-metadata-values.vala \
-				    rygel-tracker-keywords.vala \
+				    rygel-tracker-tags.vala \
+				    rygel-tracker-years.vala \
 				    rygel-tracker-search-container.vala \
-				    rygel-tracker-item.vala \
-				    rygel-tracker-video-item.vala \
-				    rygel-tracker-music-item.vala \
-				    rygel-tracker-image-item.vala \
+				    rygel-tracker-category-all-container.vala \
+				    rygel-tracker-query.vala \
+				    rygel-tracker-selection-query.vala \
+				    rygel-tracker-insertion-query.vala \
+				    rygel-tracker-query-triplet.vala \
+				    rygel-tracker-query-triplets.vala \
+				    rygel-tracker-item-factory.vala \
+				    rygel-tracker-item-creation.vala \
+				    rygel-tracker-video-item-factory.vala \
+				    rygel-tracker-music-item-factory.vala \
+				    rygel-tracker-picture-item-factory.vala \
 				    rygel-tracker-plugin.vala \
 				    rygel-tracker-plugin-factory.vala \
 				    rygel-tracker-interfaces.vala

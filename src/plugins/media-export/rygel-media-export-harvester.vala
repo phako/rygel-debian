@@ -21,38 +21,6 @@
 using GLib;
 using Gee;
 
-internal class Rygel.DummyContainer : NullContainer {
-    public File file;
-    public ArrayList<string> seen_children;
-
-    public DummyContainer (File file, MediaContainer parent) {
-        var id = Checksum.compute_for_string (ChecksumType.MD5,
-                                              file.get_uri ());
-        this.id = id;
-        this.parent = parent;
-        this.title = file.get_basename ();
-        this.child_count = 0;
-        this.parent_ref = parent;
-        this.file = file;
-        this.uris.add (file.get_uri ());
-        this.seen_children = new ArrayList<string> (str_equal);
-    }
-
-    public void seen (string id) {
-        seen_children.add (id);
-    }
-}
-
-internal class Rygel.FileQueueEntry  {
-    public File file;
-    public bool update;
-
-    public FileQueueEntry (File file, bool update) {
-        this.file = file;
-        this.update = update;
-    }
-}
-
 public class Rygel.MediaExportHarvester : GLib.Object {
     private MetadataExtractor extractor;
     private MediaDB media_db;
@@ -61,6 +29,7 @@ public class Rygel.MediaExportHarvester : GLib.Object {
     private File origin;
     private MediaContainer parent;
     private MediaExportRecursiveFileMonitor monitor;
+    public Cancellable cancellable;
 
     public MediaExportHarvester (MediaContainer parent,
                                  MediaDB media_db,
@@ -75,6 +44,7 @@ public class Rygel.MediaExportHarvester : GLib.Object {
         this.containers = new GLib.Queue<MediaContainer> ();
         this.origin = null;
         this.monitor = monitor;
+        this.cancellable = new Cancellable ();
     }
 
     private bool push_if_changed_or_unknown (File       file,
@@ -103,7 +73,7 @@ public class Rygel.MediaExportHarvester : GLib.Object {
     }
 
     private bool process_children (GLib.List<FileInfo>? list) {
-        if (list == null)
+        if (list == null || this.cancellable.is_cancelled())
             return false;
 
         foreach (var info in list) {
@@ -125,7 +95,7 @@ public class Rygel.MediaExportHarvester : GLib.Object {
                     int64 timestamp;
                     if (!this.media_db.exists (container.id,
                                                out timestamp)) {
-                        this.media_db.save_object (container);
+                        this.media_db.save_container (container);
                     }
                 } catch (Error err) {
                     warning ("Failed to update database: %s",
@@ -149,17 +119,17 @@ public class Rygel.MediaExportHarvester : GLib.Object {
                                           FILE_ATTRIBUTE_TIME_MODIFIED,
                                           FileQueryInfoFlags.NONE,
                                           Priority.DEFAULT,
-                                          null);
+                                          this.cancellable);
 
 
             GLib.List<FileInfo> list = null;
             do {
                 list = yield enumerator.next_files_async (10,
                                                           Priority.DEFAULT,
-                                                          null);
+                                                          this.cancellable);
             } while (process_children (list));
 
-            yield enumerator.close_async (Priority.DEFAULT, null);
+            yield enumerator.close_async (Priority.DEFAULT, this.cancellable);
         } catch (Error err) {
             warning ("failed to enumerate directory: %s",
                      err.message);
@@ -191,6 +161,11 @@ public class Rygel.MediaExportHarvester : GLib.Object {
     }
 
     private bool on_idle () {
+        if (this.cancellable.is_cancelled ()) {
+
+            return false;
+        }
+
         if (this.files.get_length () > 0) {
             var candidate = this.files.peek_head ().file;
             this.extractor.extract (candidate);
@@ -227,13 +202,14 @@ public class Rygel.MediaExportHarvester : GLib.Object {
      */
     public async void harvest (File file) {
         try {
+            this.cancellable.reset ();
             var info = yield file.query_info_async (
                                           FILE_ATTRIBUTE_STANDARD_NAME + "," +
                                           FILE_ATTRIBUTE_STANDARD_TYPE + "," +
                                           FILE_ATTRIBUTE_TIME_MODIFIED,
                                           FileQueryInfoFlags.NONE,
                                           Priority.DEFAULT,
-                                          null);
+                                          this.cancellable);
 
             if (info.get_file_type () == FileType.DIRECTORY) {
                 this.origin = file;
@@ -243,7 +219,7 @@ public class Rygel.MediaExportHarvester : GLib.Object {
 
                 int64 timestamp;
                 if (!this.media_db.exists (container.id, out timestamp)) {
-                    this.media_db.save_object (container);
+                    this.media_db.save_container (container);
                 }
 
                 Idle.add (this.on_idle);
@@ -253,6 +229,10 @@ public class Rygel.MediaExportHarvester : GLib.Object {
                     Idle.add (this.on_idle);
                     this.origin = file;
                     this.containers.push_tail (this.parent);
+                } else {
+                    debug ("File %s does not need harvesting",
+                           file.get_uri ());
+                    harvested (file);
                 }
             }
 
@@ -265,6 +245,10 @@ public class Rygel.MediaExportHarvester : GLib.Object {
     }
 
     private void on_extracted_cb (File file, Gst.TagList tag_list) {
+        if (this.cancellable.is_cancelled ()) {
+            harvested (this.origin);
+        }
+
         var entry = this.files.peek_head ();
         if (entry == null) {
             // this event may be triggered by another instance
@@ -282,7 +266,7 @@ public class Rygel.MediaExportHarvester : GLib.Object {
                     if (entry.update) {
                         this.media_db.update_object (item);
                     } else {
-                        this.media_db.save_object (item);
+                        this.media_db.save_item (item);
                     }
                 } catch (Error error) {
                     // Ignore it for now

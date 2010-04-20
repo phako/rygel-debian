@@ -22,15 +22,16 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-using GUPnP;
-using Gee;
 using Gst;
 
 /**
  * Represents Test video item.
  */
 public class Rygel.TestVideoItem : Rygel.TestItem {
-    const string TEST_MIMETYPE = "video/mpeg";
+    private const string TEST_MIMETYPE = "video/mpeg";
+    private const string PIPELINE = "videotestsrc is-live=1 ! " +
+                                    "ffenc_mpeg2video ! " +
+                                    "mpegtsmux";
 
     public TestVideoItem (string         id,
                           MediaContainer parent,
@@ -44,10 +45,11 @@ public class Rygel.TestVideoItem : Rygel.TestItem {
 
     public override Element? create_stream_source () {
         try {
-          return Gst.parse_bin_from_description ("videotestsrc is-live=1 ! ffenc_mpeg2video ! mpegtsmux", true);
+            return parse_bin_from_description (PIPELINE, true);
         } catch (Error err) {
-          warning ("Required plugin missing (%s)", err.message);
-          return null;
+            warning ("Required plugin missing (%s)", err.message);
+
+            return null;
         }
     }
 }

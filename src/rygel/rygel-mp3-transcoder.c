@@ -130,6 +130,16 @@ typedef struct _RygelIconInfoClass RygelIconInfoClass;
 typedef struct _RygelThumbnail RygelThumbnail;
 typedef struct _RygelThumbnailClass RygelThumbnailClass;
 
+#define RYGEL_TYPE_SUBTITLE (rygel_subtitle_get_type ())
+#define RYGEL_SUBTITLE(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_SUBTITLE, RygelSubtitle))
+#define RYGEL_SUBTITLE_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TYPE_SUBTITLE, RygelSubtitleClass))
+#define RYGEL_IS_SUBTITLE(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TYPE_SUBTITLE))
+#define RYGEL_IS_SUBTITLE_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_TYPE_SUBTITLE))
+#define RYGEL_SUBTITLE_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_TYPE_SUBTITLE, RygelSubtitleClass))
+
+typedef struct _RygelSubtitle RygelSubtitle;
+typedef struct _RygelSubtitleClass RygelSubtitleClass;
+
 #define TYPE_ENDIANNESS (endianness_get_type ())
 
 #define RYGEL_TYPE_L16_TRANSCODER (rygel_l16_transcoder_get_type ())
@@ -181,7 +191,6 @@ struct _RygelMediaObject {
 	guint64 modified;
 	GeeArrayList* uris;
 	RygelMediaContainer* parent;
-	RygelMediaContainer* parent_ref;
 };
 
 struct _RygelMediaObjectClass {
@@ -209,6 +218,8 @@ struct _RygelMediaItem {
 	gint pixel_height;
 	gint color_depth;
 	GeeArrayList* thumbnails;
+	GeeArrayList* subtitles;
+	gboolean place_holder;
 };
 
 struct _RygelMediaItemClass {
@@ -254,9 +265,17 @@ gpointer rygel_icon_info_ref (gpointer instance);
 void rygel_icon_info_unref (gpointer instance);
 GParamSpec* rygel_param_spec_icon_info (const gchar* name, const gchar* nick, const gchar* blurb, GType object_type, GParamFlags flags);
 void rygel_value_set_icon_info (GValue* value, gpointer v_object);
+void rygel_value_take_icon_info (GValue* value, gpointer v_object);
 gpointer rygel_value_get_icon_info (const GValue* value);
 GType rygel_icon_info_get_type (void);
 GType rygel_thumbnail_get_type (void);
+gpointer rygel_subtitle_ref (gpointer instance);
+void rygel_subtitle_unref (gpointer instance);
+GParamSpec* rygel_param_spec_subtitle (const gchar* name, const gchar* nick, const gchar* blurb, GType object_type, GParamFlags flags);
+void rygel_value_set_subtitle (GValue* value, gpointer v_object);
+void rygel_value_take_subtitle (GValue* value, gpointer v_object);
+gpointer rygel_value_get_subtitle (const GValue* value);
+GType rygel_subtitle_get_type (void);
 static guint rygel_mp3_transcoder_real_get_distance (RygelTranscoder* base, RygelMediaItem* item);
 GType endianness_get_type (void);
 RygelL16Transcoder* rygel_l16_transcoder_new (Endianness endianness);
@@ -269,18 +288,18 @@ static inline void _dynamic_set_bitrate4 (GstElement* obj, gint value);
 GstElement* rygel_mp3_transcoder_create_encoder (RygelMP3Transcoder* self, RygelMediaItem* item, const char* src_pad_name, const char* sink_pad_name, GError** error);
 static void rygel_mp3_transcoder_finalize (GObject* obj);
 
-static const char* RYGEL_MP3_TRANSCODER_AUDIO_ENCODER[] = {NULL, "twolame", "lame"};
+static const char* RYGEL_MP3_TRANSCODER_AUDIO_ENCODER[3] = {NULL, "twolame", "lame"};
 
 
 #line 41 "rygel-mp3-transcoder.vala"
 RygelMP3Transcoder* rygel_mp3_transcoder_construct (GType object_type, RygelMP3Layer layer) {
-#line 278 "rygel-mp3-transcoder.c"
+#line 297 "rygel-mp3-transcoder.c"
 	RygelMP3Transcoder * self;
 #line 42 "rygel-mp3-transcoder.vala"
 	self = (RygelMP3Transcoder*) rygel_transcoder_construct (object_type, "audio/mpeg", "MP3", RYGEL_MEDIA_ITEM_AUDIO_CLASS);
 #line 44 "rygel-mp3-transcoder.vala"
 	self->priv->layer = layer;
-#line 284 "rygel-mp3-transcoder.c"
+#line 303 "rygel-mp3-transcoder.c"
 	return self;
 }
 
@@ -289,15 +308,15 @@ RygelMP3Transcoder* rygel_mp3_transcoder_construct (GType object_type, RygelMP3L
 RygelMP3Transcoder* rygel_mp3_transcoder_new (RygelMP3Layer layer) {
 #line 41 "rygel-mp3-transcoder.vala"
 	return rygel_mp3_transcoder_construct (RYGEL_TYPE_MP3_TRANSCODER, layer);
-#line 293 "rygel-mp3-transcoder.c"
+#line 312 "rygel-mp3-transcoder.c"
 }
 
 
 #line 47 "rygel-mp3-transcoder.vala"
 static GstElement* rygel_mp3_transcoder_real_create_source (RygelTranscoder* base, RygelMediaItem* item, GstElement* src, GError** error) {
-#line 299 "rygel-mp3-transcoder.c"
+#line 318 "rygel-mp3-transcoder.c"
 	RygelMP3Transcoder * self;
-	GstElement* result;
+	GstElement* result = NULL;
 	GError * _inner_error_;
 	RygelMP3TranscoderBin* _tmp0_;
 	self = (RygelMP3Transcoder*) base;
@@ -305,11 +324,11 @@ static GstElement* rygel_mp3_transcoder_real_create_source (RygelTranscoder* bas
 	g_return_val_if_fail (item != NULL, NULL);
 #line 47 "rygel-mp3-transcoder.vala"
 	g_return_val_if_fail (src != NULL, NULL);
-#line 309 "rygel-mp3-transcoder.c"
+#line 328 "rygel-mp3-transcoder.c"
 	_inner_error_ = NULL;
 #line 50 "rygel-mp3-transcoder.vala"
 	_tmp0_ = rygel_mp3_transcoder_bin_new (item, src, self, &_inner_error_);
-#line 313 "rygel-mp3-transcoder.c"
+#line 332 "rygel-mp3-transcoder.c"
 	if (_inner_error_ != NULL) {
 		g_propagate_error (error, _inner_error_);
 		return NULL;
@@ -317,15 +336,15 @@ static GstElement* rygel_mp3_transcoder_real_create_source (RygelTranscoder* bas
 	result = (GstElement*) _tmp0_;
 #line 50 "rygel-mp3-transcoder.vala"
 	return result;
-#line 321 "rygel-mp3-transcoder.c"
+#line 340 "rygel-mp3-transcoder.c"
 }
 
 
 #line 53 "rygel-mp3-transcoder.vala"
 static GUPnPDIDLLiteResource* rygel_mp3_transcoder_real_add_resource (RygelTranscoder* base, GUPnPDIDLLiteItem* didl_item, RygelMediaItem* item, RygelTranscodeManager* manager, GError** error) {
-#line 327 "rygel-mp3-transcoder.c"
+#line 346 "rygel-mp3-transcoder.c"
 	RygelMP3Transcoder * self;
-	GUPnPDIDLLiteResource* result;
+	GUPnPDIDLLiteResource* result = NULL;
 	GError * _inner_error_;
 	GUPnPDIDLLiteResource* resource;
 	self = (RygelMP3Transcoder*) base;
@@ -335,50 +354,50 @@ static GUPnPDIDLLiteResource* rygel_mp3_transcoder_real_add_resource (RygelTrans
 	g_return_val_if_fail (item != NULL, NULL);
 #line 53 "rygel-mp3-transcoder.vala"
 	g_return_val_if_fail (manager != NULL, NULL);
-#line 339 "rygel-mp3-transcoder.c"
+#line 358 "rygel-mp3-transcoder.c"
 	_inner_error_ = NULL;
 #line 57 "rygel-mp3-transcoder.vala"
 	resource = RYGEL_TRANSCODER_CLASS (rygel_mp3_transcoder_parent_class)->add_resource (RYGEL_TRANSCODER (self), didl_item, item, manager, &_inner_error_);
-#line 343 "rygel-mp3-transcoder.c"
+#line 362 "rygel-mp3-transcoder.c"
 	if (_inner_error_ != NULL) {
 		g_propagate_error (error, _inner_error_);
 		return NULL;
 	}
 #line 58 "rygel-mp3-transcoder.vala"
 	if (resource == NULL) {
-#line 350 "rygel-mp3-transcoder.c"
+#line 369 "rygel-mp3-transcoder.c"
 		result = NULL;
 		_g_object_unref0 (resource);
 #line 59 "rygel-mp3-transcoder.vala"
 		return result;
-#line 355 "rygel-mp3-transcoder.c"
+#line 374 "rygel-mp3-transcoder.c"
 	}
 #line 62 "rygel-mp3-transcoder.vala"
 	gupnp_didl_lite_resource_set_bitrate (resource, (RYGEL_MP3_TRANSCODER_BITRATE * 1000) / 8);
-#line 359 "rygel-mp3-transcoder.c"
+#line 378 "rygel-mp3-transcoder.c"
 	result = resource;
 #line 64 "rygel-mp3-transcoder.vala"
 	return result;
-#line 363 "rygel-mp3-transcoder.c"
+#line 382 "rygel-mp3-transcoder.c"
 }
 
 
 #line 67 "rygel-mp3-transcoder.vala"
 static guint rygel_mp3_transcoder_real_get_distance (RygelTranscoder* base, RygelMediaItem* item) {
-#line 369 "rygel-mp3-transcoder.c"
+#line 388 "rygel-mp3-transcoder.c"
 	RygelMP3Transcoder * self;
-	guint result;
+	guint result = 0U;
 	guint distance = 0U;
 	self = (RygelMP3Transcoder*) base;
 #line 67 "rygel-mp3-transcoder.vala"
 	g_return_val_if_fail (item != NULL, 0U);
 #line 68 "rygel-mp3-transcoder.vala"
 	if (g_str_has_prefix (((RygelMediaObject*) item)->upnp_class, RYGEL_MEDIA_ITEM_IMAGE_CLASS)) {
-#line 378 "rygel-mp3-transcoder.c"
+#line 397 "rygel-mp3-transcoder.c"
 		result = G_MAXUINT;
 #line 69 "rygel-mp3-transcoder.vala"
 		return result;
-#line 382 "rygel-mp3-transcoder.c"
+#line 401 "rygel-mp3-transcoder.c"
 	}
 #line 74 "rygel-mp3-transcoder.vala"
 	if (g_str_has_prefix (((RygelMediaObject*) item)->upnp_class, RYGEL_MEDIA_ITEM_AUDIO_CLASS)) {
@@ -388,17 +407,17 @@ static guint rygel_mp3_transcoder_real_get_distance (RygelTranscoder* base, Ryge
 		if (item->bitrate > 0) {
 #line 78 "rygel-mp3-transcoder.vala"
 			distance = distance + ((guint) abs (item->bitrate - RYGEL_MP3_TRANSCODER_BITRATE));
-#line 392 "rygel-mp3-transcoder.c"
+#line 411 "rygel-mp3-transcoder.c"
 		}
 	} else {
 #line 81 "rygel-mp3-transcoder.vala"
 		distance = G_MAXUINT / 2;
-#line 397 "rygel-mp3-transcoder.c"
+#line 416 "rygel-mp3-transcoder.c"
 	}
 	result = distance;
 #line 84 "rygel-mp3-transcoder.vala"
 	return result;
-#line 402 "rygel-mp3-transcoder.c"
+#line 421 "rygel-mp3-transcoder.c"
 }
 
 
@@ -419,8 +438,8 @@ static gpointer _gst_object_ref0 (gpointer self) {
 
 #line 87 "rygel-mp3-transcoder.vala"
 GstElement* rygel_mp3_transcoder_create_encoder (RygelMP3Transcoder* self, RygelMediaItem* item, const char* src_pad_name, const char* sink_pad_name, GError** error) {
-#line 423 "rygel-mp3-transcoder.c"
-	GstElement* result;
+#line 442 "rygel-mp3-transcoder.c"
+	GstElement* result = NULL;
 	GError * _inner_error_;
 	RygelL16Transcoder* l16_transcoder;
 	GstElement* convert;
@@ -435,13 +454,13 @@ GstElement* rygel_mp3_transcoder_create_encoder (RygelMP3Transcoder* self, Rygel
 	g_return_val_if_fail (self != NULL, NULL);
 #line 87 "rygel-mp3-transcoder.vala"
 	g_return_val_if_fail (item != NULL, NULL);
-#line 439 "rygel-mp3-transcoder.c"
+#line 458 "rygel-mp3-transcoder.c"
 	_inner_error_ = NULL;
 #line 91 "rygel-mp3-transcoder.vala"
 	l16_transcoder = rygel_l16_transcoder_new (ENDIANNESS_LITTLE);
 #line 92 "rygel-mp3-transcoder.vala"
 	convert = rygel_l16_transcoder_create_encoder (l16_transcoder, item, NULL, RYGEL_MP3_TRANSCODER_CONVERT_SINK_PAD, &_inner_error_);
-#line 445 "rygel-mp3-transcoder.c"
+#line 464 "rygel-mp3-transcoder.c"
 	if (_inner_error_ != NULL) {
 		g_propagate_error (error, _inner_error_);
 		_g_object_unref0 (l16_transcoder);
@@ -449,7 +468,7 @@ GstElement* rygel_mp3_transcoder_create_encoder (RygelMP3Transcoder* self, Rygel
 	}
 #line 96 "rygel-mp3-transcoder.vala"
 	encoder = rygel_gst_utils_create_element (RYGEL_MP3_TRANSCODER_AUDIO_ENCODER[self->priv->layer], RYGEL_MP3_TRANSCODER_AUDIO_ENCODER[self->priv->layer], &_inner_error_);
-#line 453 "rygel-mp3-transcoder.c"
+#line 472 "rygel-mp3-transcoder.c"
 	if (_inner_error_ != NULL) {
 		g_propagate_error (error, _inner_error_);
 		_g_object_unref0 (l16_transcoder);
@@ -458,7 +477,7 @@ GstElement* rygel_mp3_transcoder_create_encoder (RygelMP3Transcoder* self, Rygel
 	}
 #line 99 "rygel-mp3-transcoder.vala"
 	parser = rygel_gst_utils_create_element (RYGEL_MP3_TRANSCODER_AUDIO_PARSER, RYGEL_MP3_TRANSCODER_AUDIO_PARSER, &_inner_error_);
-#line 462 "rygel-mp3-transcoder.c"
+#line 481 "rygel-mp3-transcoder.c"
 	if (_inner_error_ != NULL) {
 		g_propagate_error (error, _inner_error_);
 		_g_object_unref0 (l16_transcoder);
@@ -470,7 +489,7 @@ GstElement* rygel_mp3_transcoder_create_encoder (RygelMP3Transcoder* self, Rygel
 	if (self->priv->layer == RYGEL_MP3_LAYER_THREE) {
 #line 104 "rygel-mp3-transcoder.vala"
 		_dynamic_set_quality3 (encoder, 0);
-#line 474 "rygel-mp3-transcoder.c"
+#line 493 "rygel-mp3-transcoder.c"
 	}
 #line 107 "rygel-mp3-transcoder.vala"
 	_dynamic_set_bitrate4 (encoder, RYGEL_MP3_TRANSCODER_BITRATE);
@@ -492,7 +511,7 @@ GstElement* rygel_mp3_transcoder_create_encoder (RygelMP3Transcoder* self, Rygel
 	ghost = (_tmp1_ = (GstGhostPad*) gst_ghost_pad_new (src_pad_name, pad), _gst_object_unref0 (ghost), _tmp1_);
 #line 120 "rygel-mp3-transcoder.vala"
 	gst_element_add_pad ((GstElement*) bin, _gst_object_ref0 ((GstPad*) ghost));
-#line 496 "rygel-mp3-transcoder.c"
+#line 515 "rygel-mp3-transcoder.c"
 	result = (GstElement*) bin;
 	_g_object_unref0 (l16_transcoder);
 	_gst_object_unref0 (convert);
@@ -502,7 +521,7 @@ GstElement* rygel_mp3_transcoder_create_encoder (RygelMP3Transcoder* self, Rygel
 	_gst_object_unref0 (ghost);
 #line 122 "rygel-mp3-transcoder.vala"
 	return result;
-#line 506 "rygel-mp3-transcoder.c"
+#line 525 "rygel-mp3-transcoder.c"
 }
 
 
@@ -529,12 +548,14 @@ static void rygel_mp3_transcoder_finalize (GObject* obj) {
 
 
 GType rygel_mp3_transcoder_get_type (void) {
-	static GType rygel_mp3_transcoder_type_id = 0;
-	if (rygel_mp3_transcoder_type_id == 0) {
+	static volatile gsize rygel_mp3_transcoder_type_id__volatile = 0;
+	if (g_once_init_enter (&rygel_mp3_transcoder_type_id__volatile)) {
 		static const GTypeInfo g_define_type_info = { sizeof (RygelMP3TranscoderClass), (GBaseInitFunc) NULL, (GBaseFinalizeFunc) NULL, (GClassInitFunc) rygel_mp3_transcoder_class_init, (GClassFinalizeFunc) NULL, NULL, sizeof (RygelMP3Transcoder), 0, (GInstanceInitFunc) rygel_mp3_transcoder_instance_init, NULL };
+		GType rygel_mp3_transcoder_type_id;
 		rygel_mp3_transcoder_type_id = g_type_register_static (RYGEL_TYPE_TRANSCODER, "RygelMP3Transcoder", &g_define_type_info, 0);
+		g_once_init_leave (&rygel_mp3_transcoder_type_id__volatile, rygel_mp3_transcoder_type_id);
 	}
-	return rygel_mp3_transcoder_type_id;
+	return rygel_mp3_transcoder_type_id__volatile;
 }
 
 

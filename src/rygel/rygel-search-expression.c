@@ -91,6 +91,7 @@ gpointer rygel_search_expression_ref (gpointer instance);
 void rygel_search_expression_unref (gpointer instance);
 GParamSpec* rygel_param_spec_search_expression (const gchar* name, const gchar* nick, const gchar* blurb, GType object_type, GParamFlags flags);
 void rygel_value_set_search_expression (GValue* value, gpointer v_object);
+void rygel_value_take_search_expression (GValue* value, gpointer v_object);
 gpointer rygel_value_get_search_expression (const GValue* value);
 GType rygel_search_expression_get_type (void);
 GType rygel_media_object_get_type (void);
@@ -109,7 +110,7 @@ static void rygel_search_expression_finalize (RygelSearchExpression* obj);
 
 #line 32 "rygel-search-expression.vala"
 static gboolean rygel_search_expression_real_satisfied_by (RygelSearchExpression* self, RygelMediaObject* media_object) {
-#line 113 "rygel-search-expression.c"
+#line 114 "rygel-search-expression.c"
 	g_return_val_if_fail (self != NULL, FALSE);
 	g_critical ("Type `%s' does not implement abstract method `rygel_search_expression_satisfied_by'", g_type_name (G_TYPE_FROM_INSTANCE (self)));
 	return FALSE;
@@ -120,13 +121,13 @@ static gboolean rygel_search_expression_real_satisfied_by (RygelSearchExpression
 gboolean rygel_search_expression_satisfied_by (RygelSearchExpression* self, RygelMediaObject* media_object) {
 #line 32 "rygel-search-expression.vala"
 	return RYGEL_SEARCH_EXPRESSION_GET_CLASS (self)->satisfied_by (self, media_object);
-#line 124 "rygel-search-expression.c"
+#line 125 "rygel-search-expression.c"
 }
 
 
 #line 34 "rygel-search-expression.vala"
 static char* rygel_search_expression_real_to_string (RygelSearchExpression* self) {
-#line 130 "rygel-search-expression.c"
+#line 131 "rygel-search-expression.c"
 	g_return_val_if_fail (self != NULL, NULL);
 	g_critical ("Type `%s' does not implement abstract method `rygel_search_expression_to_string'", g_type_name (G_TYPE_FROM_INSTANCE (self)));
 	return NULL;
@@ -137,13 +138,13 @@ static char* rygel_search_expression_real_to_string (RygelSearchExpression* self
 char* rygel_search_expression_to_string (RygelSearchExpression* self) {
 #line 34 "rygel-search-expression.vala"
 	return RYGEL_SEARCH_EXPRESSION_GET_CLASS (self)->to_string (self);
-#line 141 "rygel-search-expression.c"
+#line 142 "rygel-search-expression.c"
 }
 
 
 #line 26 "rygel-search-expression.vala"
 RygelSearchExpression* rygel_search_expression_construct (GType object_type, GType g_type, GBoxedCopyFunc g_dup_func, GDestroyNotify g_destroy_func, GType h_type, GBoxedCopyFunc h_dup_func, GDestroyNotify h_destroy_func, GType i_type, GBoxedCopyFunc i_dup_func, GDestroyNotify i_destroy_func) {
-#line 147 "rygel-search-expression.c"
+#line 148 "rygel-search-expression.c"
 	RygelSearchExpression* self;
 	self = (RygelSearchExpression*) g_type_create_instance (object_type);
 	self->priv->g_type = g_type;
@@ -252,6 +253,23 @@ void rygel_value_set_search_expression (GValue* value, gpointer v_object) {
 }
 
 
+void rygel_value_take_search_expression (GValue* value, gpointer v_object) {
+	RygelSearchExpression* old;
+	g_return_if_fail (G_TYPE_CHECK_VALUE_TYPE (value, RYGEL_TYPE_SEARCH_EXPRESSION));
+	old = value->data[0].v_pointer;
+	if (v_object) {
+		g_return_if_fail (G_TYPE_CHECK_INSTANCE_TYPE (v_object, RYGEL_TYPE_SEARCH_EXPRESSION));
+		g_return_if_fail (g_value_type_compatible (G_TYPE_FROM_INSTANCE (v_object), G_VALUE_TYPE (value)));
+		value->data[0].v_pointer = v_object;
+	} else {
+		value->data[0].v_pointer = NULL;
+	}
+	if (old) {
+		rygel_search_expression_unref (old);
+	}
+}
+
+
 static void rygel_search_expression_class_init (RygelSearchExpressionClass * klass) {
 	rygel_search_expression_parent_class = g_type_class_peek_parent (klass);
 	RYGEL_SEARCH_EXPRESSION_CLASS (klass)->finalize = rygel_search_expression_finalize;
@@ -277,14 +295,16 @@ static void rygel_search_expression_finalize (RygelSearchExpression* obj) {
 
 
 GType rygel_search_expression_get_type (void) {
-	static GType rygel_search_expression_type_id = 0;
-	if (rygel_search_expression_type_id == 0) {
+	static volatile gsize rygel_search_expression_type_id__volatile = 0;
+	if (g_once_init_enter (&rygel_search_expression_type_id__volatile)) {
 		static const GTypeValueTable g_define_type_value_table = { rygel_value_search_expression_init, rygel_value_search_expression_free_value, rygel_value_search_expression_copy_value, rygel_value_search_expression_peek_pointer, "p", rygel_value_search_expression_collect_value, "p", rygel_value_search_expression_lcopy_value };
 		static const GTypeInfo g_define_type_info = { sizeof (RygelSearchExpressionClass), (GBaseInitFunc) NULL, (GBaseFinalizeFunc) NULL, (GClassInitFunc) rygel_search_expression_class_init, (GClassFinalizeFunc) NULL, NULL, sizeof (RygelSearchExpression), 0, (GInstanceInitFunc) rygel_search_expression_instance_init, &g_define_type_value_table };
 		static const GTypeFundamentalInfo g_define_type_fundamental_info = { (G_TYPE_FLAG_CLASSED | G_TYPE_FLAG_INSTANTIATABLE | G_TYPE_FLAG_DERIVABLE | G_TYPE_FLAG_DEEP_DERIVABLE) };
+		GType rygel_search_expression_type_id;
 		rygel_search_expression_type_id = g_type_register_fundamental (g_type_fundamental_next (), "RygelSearchExpression", &g_define_type_info, &g_define_type_fundamental_info, G_TYPE_FLAG_ABSTRACT);
+		g_once_init_leave (&rygel_search_expression_type_id__volatile, rygel_search_expression_type_id);
 	}
-	return rygel_search_expression_type_id;
+	return rygel_search_expression_type_id__volatile;
 }
 
 

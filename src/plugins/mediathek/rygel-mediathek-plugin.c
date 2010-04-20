@@ -94,7 +94,7 @@ void module_init (RygelPluginLoader* loader) {
 static RygelMediaContainer* rygel_mediathek_content_dir_real_create_root_container (RygelContentDirectory* base) {
 #line 96 "rygel-mediathek-plugin.c"
 	RygelMediathekContentDir * self;
-	RygelMediaContainer* result;
+	RygelMediaContainer* result = NULL;
 	self = (RygelMediathekContentDir*) base;
 	result = (RygelMediaContainer*) rygel_mediathek_root_container_get_instance ();
 #line 36 "rygel-mediathek-plugin.vala"
@@ -133,12 +133,14 @@ static void rygel_mediathek_content_dir_instance_init (RygelMediathekContentDir 
 
 
 GType rygel_mediathek_content_dir_get_type (void) {
-	static GType rygel_mediathek_content_dir_type_id = 0;
-	if (rygel_mediathek_content_dir_type_id == 0) {
+	static volatile gsize rygel_mediathek_content_dir_type_id__volatile = 0;
+	if (g_once_init_enter (&rygel_mediathek_content_dir_type_id__volatile)) {
 		static const GTypeInfo g_define_type_info = { sizeof (RygelMediathekContentDirClass), (GBaseInitFunc) NULL, (GBaseFinalizeFunc) NULL, (GClassInitFunc) rygel_mediathek_content_dir_class_init, (GClassFinalizeFunc) NULL, NULL, sizeof (RygelMediathekContentDir), 0, (GInstanceInitFunc) rygel_mediathek_content_dir_instance_init, NULL };
+		GType rygel_mediathek_content_dir_type_id;
 		rygel_mediathek_content_dir_type_id = g_type_register_static (RYGEL_TYPE_CONTENT_DIRECTORY, "RygelMediathekContentDir", &g_define_type_info, 0);
+		g_once_init_leave (&rygel_mediathek_content_dir_type_id__volatile, rygel_mediathek_content_dir_type_id);
 	}
-	return rygel_mediathek_content_dir_type_id;
+	return rygel_mediathek_content_dir_type_id__volatile;
 }
 
 

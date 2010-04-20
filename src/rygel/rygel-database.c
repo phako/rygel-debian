@@ -28,6 +28,7 @@
 #include <sqlite3.h>
 #include <stdlib.h>
 #include <string.h>
+#include <gio/gio.h>
 
 
 #define RYGEL_TYPE_DATABASE (rygel_database_get_type ())
@@ -45,6 +46,7 @@ typedef struct _RygelDatabasePrivate RygelDatabasePrivate;
 #define _sqlite3_finalize0(var) ((var == NULL) ? NULL : (var = (sqlite3_finalize (var), NULL)))
 
 typedef enum  {
+	RYGEL_DATABASE_ERROR_IO_ERROR,
 	RYGEL_DATABASE_ERROR_SQLITE_ERROR
 } RygelDatabaseError;
 #define RYGEL_DATABASE_ERROR rygel_database_error_quark ()
@@ -71,10 +73,10 @@ GType rygel_database_get_type (void);
 enum  {
 	RYGEL_DATABASE_DUMMY_PROPERTY
 };
-RygelDatabase* rygel_database_new (const char* name);
-RygelDatabase* rygel_database_construct (GType object_type, const char* name);
+RygelDatabase* rygel_database_new (const char* name, GError** error);
+RygelDatabase* rygel_database_construct (GType object_type, const char* name, GError** error);
 static sqlite3_stmt* rygel_database_prepare_statement (RygelDatabase* self, const char* sql, GValue* values, int values_length1, GError** error);
-gint rygel_database_exec (RygelDatabase* self, const char* sql, GValue* values, int values_length1, RygelDatabaseRowCallback callback, void* callback_target, GError** error);
+gint rygel_database_exec (RygelDatabase* self, const char* sql, GValue* values, int values_length1, RygelDatabaseRowCallback callback, void* callback_target, GCancellable* cancellable, GError** error);
 void rygel_database_analyze (RygelDatabase* self);
 void rygel_database_null (GValue* result);
 void rygel_database_begin (RygelDatabase* self, GError** error);
@@ -89,9 +91,10 @@ GQuark rygel_database_error_quark (void) {
 }
 
 
-#line 34 "rygel-database.vala"
-RygelDatabase* rygel_database_construct (GType object_type, const char* name) {
-#line 95 "rygel-database.c"
+#line 52 "rygel-database.vala"
+RygelDatabase* rygel_database_construct (GType object_type, const char* name, GError** error) {
+#line 97 "rygel-database.c"
+	GError * _inner_error_;
 	RygelDatabase * self;
 	char* dirname;
 	char* _tmp0_;
@@ -101,88 +104,117 @@ RygelDatabase* rygel_database_construct (GType object_type, const char* name) {
 	gint _tmp3_;
 	sqlite3* _tmp2_ = NULL;
 	gint rc;
-#line 34 "rygel-database.vala"
+#line 52 "rygel-database.vala"
 	g_return_val_if_fail (name != NULL, NULL);
-#line 34 "rygel-database.vala"
+#line 110 "rygel-database.c"
+	_inner_error_ = NULL;
+#line 52 "rygel-database.vala"
 	self = (RygelDatabase*) g_object_new (object_type, NULL);
-#line 35 "rygel-database.vala"
+#line 53 "rygel-database.vala"
 	dirname = g_build_filename (g_get_user_cache_dir (), "rygel", NULL);
-#line 37 "rygel-database.vala"
+#line 55 "rygel-database.vala"
 	g_mkdir_with_parents (dirname, 0750);
-#line 38 "rygel-database.vala"
+#line 56 "rygel-database.vala"
 	db_file = (_tmp1_ = g_build_filename (dirname, _tmp0_ = g_strdup_printf ("%s.db", name), NULL), _g_free0 (_tmp0_), _tmp1_);
-#line 39 "rygel-database.vala"
-	g_debug ("rygel-database.vala:39: Using database file %s", db_file);
-#line 40 "rygel-database.vala"
+#line 57 "rygel-database.vala"
+	g_debug ("rygel-database.vala:57: Using database file %s", db_file);
+#line 58 "rygel-database.vala"
 	rc = (_tmp3_ = sqlite3_open (db_file, &_tmp2_), self->priv->db = (_tmp4_ = _tmp2_, _sqlite3_close0 (self->priv->db), _tmp4_), _tmp3_);
-#line 41 "rygel-database.vala"
+#line 59 "rygel-database.vala"
 	if (rc != SQLITE_OK) {
-#line 42 "rygel-database.vala"
-		g_warning ("rygel-database.vala:42: Failed to open database: %d, %s", rc, sqlite3_errmsg (self->priv->db));
-#line 123 "rygel-database.c"
-		_g_free0 (dirname);
-		_g_free0 (db_file);
-#line 45 "rygel-database.vala"
-		return self;
-#line 128 "rygel-database.c"
+#line 126 "rygel-database.c"
+		char* msg;
+#line 60 "rygel-database.vala"
+		msg = g_strdup_printf ("Failed to open database: %d, %s", rc, sqlite3_errmsg (self->priv->db));
+#line 130 "rygel-database.c"
+		_inner_error_ = g_error_new_literal (RYGEL_DATABASE_ERROR, RYGEL_DATABASE_ERROR_IO_ERROR, msg);
+		{
+			if (_inner_error_->domain == RYGEL_DATABASE_ERROR) {
+				g_propagate_error (error, _inner_error_);
+				_g_free0 (msg);
+				_g_free0 (dirname);
+				_g_free0 (db_file);
+				g_object_unref (self);
+				return NULL;
+			} else {
+				_g_free0 (msg);
+				_g_free0 (dirname);
+				_g_free0 (db_file);
+				g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
+				g_clear_error (&_inner_error_);
+				return NULL;
+			}
+		}
+		_g_free0 (msg);
 	}
-#line 47 "rygel-database.vala"
+#line 67 "rygel-database.vala"
 	sqlite3_exec (self->priv->db, "PRAGMA cache_size = 32768", NULL, NULL, NULL);
-#line 48 "rygel-database.vala"
+#line 68 "rygel-database.vala"
 	sqlite3_exec (self->priv->db, "PRAGMA synchronous = OFF", NULL, NULL, NULL);
-#line 49 "rygel-database.vala"
+#line 69 "rygel-database.vala"
 	sqlite3_exec (self->priv->db, "PRAGMA temp_store = MEMORY", NULL, NULL, NULL);
-#line 50 "rygel-database.vala"
+#line 70 "rygel-database.vala"
 	sqlite3_exec (self->priv->db, "PRAGMA count_changes = OFF", NULL, NULL, NULL);
-#line 138 "rygel-database.c"
+#line 159 "rygel-database.c"
 	_g_free0 (dirname);
 	_g_free0 (db_file);
 	return self;
 }
 
 
-#line 34 "rygel-database.vala"
-RygelDatabase* rygel_database_new (const char* name) {
-#line 34 "rygel-database.vala"
-	return rygel_database_construct (RYGEL_TYPE_DATABASE, name);
-#line 149 "rygel-database.c"
+#line 52 "rygel-database.vala"
+RygelDatabase* rygel_database_new (const char* name, GError** error) {
+#line 52 "rygel-database.vala"
+	return rygel_database_construct (RYGEL_TYPE_DATABASE, name, error);
+#line 170 "rygel-database.c"
 }
 
 
-#line 53 "rygel-database.vala"
-gint rygel_database_exec (RygelDatabase* self, const char* sql, GValue* values, int values_length1, RygelDatabaseRowCallback callback, void* callback_target, GError** error) {
-#line 155 "rygel-database.c"
-	gint result;
+#line 87 "rygel-database.vala"
+gint rygel_database_exec (RygelDatabase* self, const char* sql, GValue* values, int values_length1, RygelDatabaseRowCallback callback, void* callback_target, GCancellable* cancellable, GError** error) {
+#line 176 "rygel-database.c"
+	gint result = 0;
 	GError * _inner_error_;
 	gint rc = 0;
 	gboolean _tmp0_ = FALSE;
 	gboolean _tmp1_ = FALSE;
-#line 53 "rygel-database.vala"
+	gboolean _tmp3_ = FALSE;
+#line 87 "rygel-database.vala"
 	g_return_val_if_fail (self != NULL, 0);
-#line 53 "rygel-database.vala"
+#line 87 "rygel-database.vala"
 	g_return_val_if_fail (sql != NULL, 0);
-#line 165 "rygel-database.c"
+#line 187 "rygel-database.c"
 	_inner_error_ = NULL;
-#line 61 "rygel-database.vala"
+#line 96 "rygel-database.vala"
 	if (values == NULL) {
-#line 61 "rygel-database.vala"
-		_tmp0_ = callback == NULL;
-#line 171 "rygel-database.c"
+#line 96 "rygel-database.vala"
+		_tmp1_ = callback == NULL;
+#line 193 "rygel-database.c"
 	} else {
-#line 61 "rygel-database.vala"
-		_tmp0_ = FALSE;
-#line 175 "rygel-database.c"
+#line 96 "rygel-database.vala"
+		_tmp1_ = FALSE;
+#line 197 "rygel-database.c"
 	}
-#line 61 "rygel-database.vala"
+#line 96 "rygel-database.vala"
+	if (_tmp1_) {
+#line 96 "rygel-database.vala"
+		_tmp0_ = cancellable == NULL;
+#line 203 "rygel-database.c"
+	} else {
+#line 96 "rygel-database.vala"
+		_tmp0_ = FALSE;
+#line 207 "rygel-database.c"
+	}
+#line 96 "rygel-database.vala"
 	if (_tmp0_) {
-#line 62 "rygel-database.vala"
+#line 97 "rygel-database.vala"
 		rc = sqlite3_exec (self->priv->db, sql, NULL, NULL, NULL);
-#line 181 "rygel-database.c"
+#line 213 "rygel-database.c"
 	} else {
 		sqlite3_stmt* statement;
-#line 64 "rygel-database.vala"
+#line 99 "rygel-database.vala"
 		statement = rygel_database_prepare_statement (self, sql, values, values_length1, &_inner_error_);
-#line 186 "rygel-database.c"
+#line 218 "rygel-database.c"
 		if (_inner_error_ != NULL) {
 			if (_inner_error_->domain == RYGEL_DATABASE_ERROR) {
 				g_propagate_error (error, _inner_error_);
@@ -193,41 +225,59 @@ gint rygel_database_exec (RygelDatabase* self, const char* sql, GValue* values, 
 				return 0;
 			}
 		}
-#line 65 "rygel-database.vala"
+#line 100 "rygel-database.vala"
 		while (TRUE) {
-#line 65 "rygel-database.vala"
+#line 231 "rygel-database.c"
+			gboolean _tmp2_ = FALSE;
+#line 100 "rygel-database.vala"
 			if (!((rc = sqlite3_step (statement)) == SQLITE_ROW)) {
-#line 65 "rygel-database.vala"
+#line 100 "rygel-database.vala"
 				break;
-#line 203 "rygel-database.c"
+#line 237 "rygel-database.c"
 			}
-#line 66 "rygel-database.vala"
+#line 101 "rygel-database.vala"
+			if (cancellable != NULL) {
+#line 101 "rygel-database.vala"
+				_tmp2_ = g_cancellable_is_cancelled (cancellable);
+#line 243 "rygel-database.c"
+			} else {
+#line 101 "rygel-database.vala"
+				_tmp2_ = FALSE;
+#line 247 "rygel-database.c"
+			}
+#line 101 "rygel-database.vala"
+			if (_tmp2_) {
+#line 102 "rygel-database.vala"
+				break;
+#line 253 "rygel-database.c"
+			}
+#line 105 "rygel-database.vala"
 			if (callback != NULL) {
-#line 67 "rygel-database.vala"
+#line 106 "rygel-database.vala"
 				if (!callback (statement, callback_target)) {
-#line 68 "rygel-database.vala"
+#line 107 "rygel-database.vala"
 					rc = SQLITE_DONE;
-#line 69 "rygel-database.vala"
+#line 109 "rygel-database.vala"
 					break;
-#line 213 "rygel-database.c"
+#line 263 "rygel-database.c"
 				}
 			}
 		}
 		_sqlite3_finalize0 (statement);
 	}
-#line 75 "rygel-database.vala"
+#line 115 "rygel-database.vala"
 	if (rc != SQLITE_DONE) {
-#line 75 "rygel-database.vala"
-		_tmp1_ = rc != SQLITE_OK;
-#line 223 "rygel-database.c"
+#line 115 "rygel-database.vala"
+		_tmp3_ = rc != SQLITE_OK;
+#line 273 "rygel-database.c"
 	} else {
-#line 75 "rygel-database.vala"
-		_tmp1_ = FALSE;
-#line 227 "rygel-database.c"
+#line 115 "rygel-database.vala"
+		_tmp3_ = FALSE;
+#line 277 "rygel-database.c"
 	}
-#line 75 "rygel-database.vala"
-	if (_tmp1_) {
-#line 231 "rygel-database.c"
+#line 115 "rygel-database.vala"
+	if (_tmp3_) {
+#line 281 "rygel-database.c"
 		_inner_error_ = g_error_new_literal (RYGEL_DATABASE_ERROR, RYGEL_DATABASE_ERROR_SQLITE_ERROR, sqlite3_errmsg (self->priv->db));
 		{
 			if (_inner_error_->domain == RYGEL_DATABASE_ERROR) {
@@ -241,34 +291,34 @@ gint rygel_database_exec (RygelDatabase* self, const char* sql, GValue* values, 
 		}
 	}
 	result = rc;
-#line 82 "rygel-database.vala"
+#line 122 "rygel-database.vala"
 	return result;
-#line 247 "rygel-database.c"
+#line 297 "rygel-database.c"
 }
 
 
-#line 85 "rygel-database.vala"
+#line 139 "rygel-database.vala"
 static sqlite3_stmt* rygel_database_prepare_statement (RygelDatabase* self, const char* sql, GValue* values, int values_length1, GError** error) {
-#line 253 "rygel-database.c"
-	sqlite3_stmt* result;
+#line 303 "rygel-database.c"
+	sqlite3_stmt* result = NULL;
 	GError * _inner_error_;
 	sqlite3_stmt* statement;
 	sqlite3_stmt* _tmp2_;
 	gint _tmp1_;
 	sqlite3_stmt* _tmp0_ = NULL;
 	gint rc;
-#line 85 "rygel-database.vala"
+#line 139 "rygel-database.vala"
 	g_return_val_if_fail (self != NULL, NULL);
-#line 85 "rygel-database.vala"
+#line 139 "rygel-database.vala"
 	g_return_val_if_fail (sql != NULL, NULL);
-#line 265 "rygel-database.c"
+#line 315 "rygel-database.c"
 	_inner_error_ = NULL;
 	statement = NULL;
-#line 88 "rygel-database.vala"
+#line 143 "rygel-database.vala"
 	rc = (_tmp1_ = sqlite3_prepare_v2 (self->priv->db, sql, -1, &_tmp0_, NULL), statement = (_tmp2_ = _tmp0_, _sqlite3_finalize0 (statement), _tmp2_), _tmp1_);
-#line 89 "rygel-database.vala"
+#line 144 "rygel-database.vala"
 	if (rc != SQLITE_OK) {
-#line 272 "rygel-database.c"
+#line 322 "rygel-database.c"
 		_inner_error_ = g_error_new_literal (RYGEL_DATABASE_ERROR, RYGEL_DATABASE_ERROR_SQLITE_ERROR, sqlite3_errmsg (self->priv->db));
 		{
 			if (_inner_error_->domain == RYGEL_DATABASE_ERROR) {
@@ -283,104 +333,104 @@ static sqlite3_stmt* rygel_database_prepare_statement (RygelDatabase* self, cons
 			}
 		}
 	}
-#line 92 "rygel-database.vala"
+#line 147 "rygel-database.vala"
 	if (values != NULL) {
-#line 289 "rygel-database.c"
+#line 339 "rygel-database.c"
 		{
 			gint i;
-#line 93 "rygel-database.vala"
+#line 148 "rygel-database.vala"
 			i = 0;
-#line 294 "rygel-database.c"
+#line 344 "rygel-database.c"
 			{
 				gboolean _tmp3_;
-#line 93 "rygel-database.vala"
+#line 148 "rygel-database.vala"
 				_tmp3_ = TRUE;
-#line 93 "rygel-database.vala"
+#line 148 "rygel-database.vala"
 				while (TRUE) {
-#line 301 "rygel-database.c"
+#line 351 "rygel-database.c"
 					GValue _tmp4_;
-#line 93 "rygel-database.vala"
+#line 148 "rygel-database.vala"
 					if (!_tmp3_) {
-#line 93 "rygel-database.vala"
+#line 148 "rygel-database.vala"
 						i++;
-#line 307 "rygel-database.c"
+#line 357 "rygel-database.c"
 					}
-#line 93 "rygel-database.vala"
+#line 148 "rygel-database.vala"
 					_tmp3_ = FALSE;
-#line 93 "rygel-database.vala"
+#line 148 "rygel-database.vala"
 					if (!(i < values_length1)) {
-#line 93 "rygel-database.vala"
+#line 148 "rygel-database.vala"
 						break;
-#line 315 "rygel-database.c"
+#line 365 "rygel-database.c"
 					}
-#line 94 "rygel-database.vala"
+#line 149 "rygel-database.vala"
 					if (G_VALUE_HOLDS ((_tmp4_ = values[i], &_tmp4_), G_TYPE_INT)) {
-#line 319 "rygel-database.c"
+#line 369 "rygel-database.c"
 						GValue _tmp5_;
-#line 95 "rygel-database.vala"
+#line 150 "rygel-database.vala"
 						rc = sqlite3_bind_int (statement, i + 1, g_value_get_int ((_tmp5_ = values[i], &_tmp5_)));
-#line 323 "rygel-database.c"
+#line 373 "rygel-database.c"
 					} else {
 						GValue _tmp6_;
-#line 96 "rygel-database.vala"
+#line 151 "rygel-database.vala"
 						if (G_VALUE_HOLDS ((_tmp6_ = values[i], &_tmp6_), G_TYPE_INT64)) {
-#line 328 "rygel-database.c"
+#line 378 "rygel-database.c"
 							GValue _tmp7_;
-#line 97 "rygel-database.vala"
+#line 152 "rygel-database.vala"
 							rc = sqlite3_bind_int64 (statement, i + 1, g_value_get_int64 ((_tmp7_ = values[i], &_tmp7_)));
-#line 332 "rygel-database.c"
+#line 382 "rygel-database.c"
 						} else {
 							GValue _tmp8_;
-#line 98 "rygel-database.vala"
+#line 153 "rygel-database.vala"
 							if (G_VALUE_HOLDS ((_tmp8_ = values[i], &_tmp8_), G_TYPE_LONG)) {
-#line 337 "rygel-database.c"
+#line 387 "rygel-database.c"
 								GValue _tmp9_;
-#line 99 "rygel-database.vala"
+#line 154 "rygel-database.vala"
 								rc = sqlite3_bind_int64 (statement, i + 1, (gint64) g_value_get_long ((_tmp9_ = values[i], &_tmp9_)));
-#line 341 "rygel-database.c"
+#line 391 "rygel-database.c"
 							} else {
 								GValue _tmp10_;
-#line 100 "rygel-database.vala"
+#line 155 "rygel-database.vala"
 								if (G_VALUE_HOLDS ((_tmp10_ = values[i], &_tmp10_), G_TYPE_STRING)) {
-#line 346 "rygel-database.c"
+#line 396 "rygel-database.c"
 									GValue _tmp11_;
-#line 101 "rygel-database.vala"
+#line 156 "rygel-database.vala"
 									rc = sqlite3_bind_text (statement, i + 1, g_strdup (g_value_get_string ((_tmp11_ = values[i], &_tmp11_))), -1, g_free);
-#line 350 "rygel-database.c"
+#line 400 "rygel-database.c"
 								} else {
 									GValue _tmp12_;
-#line 102 "rygel-database.vala"
+#line 157 "rygel-database.vala"
 									if (G_VALUE_HOLDS ((_tmp12_ = values[i], &_tmp12_), G_TYPE_POINTER)) {
-#line 355 "rygel-database.c"
+#line 405 "rygel-database.c"
 										GValue _tmp13_;
-#line 103 "rygel-database.vala"
+#line 158 "rygel-database.vala"
 										if (g_value_peek_pointer ((_tmp13_ = values[i], &_tmp13_)) == NULL) {
-#line 104 "rygel-database.vala"
+#line 159 "rygel-database.vala"
 											rc = sqlite3_bind_null (statement, i + 1);
-#line 361 "rygel-database.c"
+#line 411 "rygel-database.c"
 										} else {
-#line 106 "rygel-database.vala"
+#line 161 "rygel-database.vala"
 											g_assert_not_reached ();
-#line 365 "rygel-database.c"
+#line 415 "rygel-database.c"
 										}
 									} else {
 										GValue _tmp14_;
 										GType t;
-#line 109 "rygel-database.vala"
+#line 164 "rygel-database.vala"
 										t = G_VALUE_TYPE ((_tmp14_ = values[i], &_tmp14_));
-#line 110 "rygel-database.vala"
-										g_warning ("rygel-database.vala:110: Unsupported type %s", g_type_name (t));
-#line 111 "rygel-database.vala"
+#line 165 "rygel-database.vala"
+										g_warning ("rygel-database.vala:165: Unsupported type %s", g_type_name (t));
+#line 166 "rygel-database.vala"
 										g_assert_not_reached ();
-#line 376 "rygel-database.c"
+#line 426 "rygel-database.c"
 									}
 								}
 							}
 						}
 					}
-#line 113 "rygel-database.vala"
+#line 168 "rygel-database.vala"
 					if (rc != SQLITE_OK) {
-#line 384 "rygel-database.c"
+#line 434 "rygel-database.c"
 						_inner_error_ = g_error_new_literal (RYGEL_DATABASE_ERROR, RYGEL_DATABASE_ERROR_SQLITE_ERROR, sqlite3_errmsg (self->priv->db));
 						{
 							if (_inner_error_->domain == RYGEL_DATABASE_ERROR) {
@@ -400,50 +450,48 @@ static sqlite3_stmt* rygel_database_prepare_statement (RygelDatabase* self, cons
 		}
 	}
 	result = statement;
-#line 119 "rygel-database.vala"
+#line 174 "rygel-database.vala"
 	return result;
-#line 406 "rygel-database.c"
+#line 456 "rygel-database.c"
 }
 
 
-#line 122 "rygel-database.vala"
+#line 180 "rygel-database.vala"
 void rygel_database_analyze (RygelDatabase* self) {
-#line 122 "rygel-database.vala"
+#line 180 "rygel-database.vala"
 	g_return_if_fail (self != NULL);
-#line 123 "rygel-database.vala"
+#line 181 "rygel-database.vala"
 	sqlite3_exec (self->priv->db, "ANALYZE", NULL, NULL, NULL);
-#line 416 "rygel-database.c"
+#line 466 "rygel-database.c"
 }
 
 
-#line 126 "rygel-database.vala"
+#line 188 "rygel-database.vala"
 void rygel_database_null (GValue* result) {
-#line 422 "rygel-database.c"
-	GValue _tmp0_ = {0};
-	GValue v;
-#line 127 "rygel-database.vala"
-	v = (g_value_init (&_tmp0_, G_TYPE_POINTER), _tmp0_);
-#line 128 "rygel-database.vala"
+#line 472 "rygel-database.c"
+	GValue v = {0};
+	g_value_init (&v, G_TYPE_POINTER);
+#line 190 "rygel-database.vala"
 	g_value_set_pointer (&v, NULL);
-#line 429 "rygel-database.c"
+#line 477 "rygel-database.c"
 	*result = v;
-#line 129 "rygel-database.vala"
+#line 192 "rygel-database.vala"
 	return;
-#line 433 "rygel-database.c"
+#line 481 "rygel-database.c"
 }
 
 
-#line 132 "rygel-database.vala"
+#line 198 "rygel-database.vala"
 void rygel_database_begin (RygelDatabase* self, GError** error) {
-#line 439 "rygel-database.c"
+#line 487 "rygel-database.c"
 	GError * _inner_error_;
-#line 132 "rygel-database.vala"
+#line 198 "rygel-database.vala"
 	g_return_if_fail (self != NULL);
-#line 443 "rygel-database.c"
+#line 491 "rygel-database.c"
 	_inner_error_ = NULL;
-#line 133 "rygel-database.vala"
+#line 199 "rygel-database.vala"
 	if (sqlite3_exec (self->priv->db, "BEGIN", NULL, NULL, NULL) != SQLITE_OK) {
-#line 447 "rygel-database.c"
+#line 495 "rygel-database.c"
 		_inner_error_ = g_error_new_literal (RYGEL_DATABASE_ERROR, RYGEL_DATABASE_ERROR_SQLITE_ERROR, sqlite3_errmsg (self->priv->db));
 		{
 			if (_inner_error_->domain == RYGEL_DATABASE_ERROR) {
@@ -459,17 +507,17 @@ void rygel_database_begin (RygelDatabase* self, GError** error) {
 }
 
 
-#line 138 "rygel-database.vala"
+#line 207 "rygel-database.vala"
 void rygel_database_commit (RygelDatabase* self, GError** error) {
-#line 465 "rygel-database.c"
+#line 513 "rygel-database.c"
 	GError * _inner_error_;
-#line 138 "rygel-database.vala"
+#line 207 "rygel-database.vala"
 	g_return_if_fail (self != NULL);
-#line 469 "rygel-database.c"
+#line 517 "rygel-database.c"
 	_inner_error_ = NULL;
-#line 139 "rygel-database.vala"
+#line 208 "rygel-database.vala"
 	if (sqlite3_exec (self->priv->db, "COMMIT", NULL, NULL, NULL) != SQLITE_OK) {
-#line 473 "rygel-database.c"
+#line 521 "rygel-database.c"
 		_inner_error_ = g_error_new_literal (RYGEL_DATABASE_ERROR, RYGEL_DATABASE_ERROR_SQLITE_ERROR, sqlite3_errmsg (self->priv->db));
 		{
 			if (_inner_error_->domain == RYGEL_DATABASE_ERROR) {
@@ -485,15 +533,15 @@ void rygel_database_commit (RygelDatabase* self, GError** error) {
 }
 
 
-#line 144 "rygel-database.vala"
+#line 216 "rygel-database.vala"
 void rygel_database_rollback (RygelDatabase* self) {
-#line 144 "rygel-database.vala"
+#line 216 "rygel-database.vala"
 	g_return_if_fail (self != NULL);
-#line 145 "rygel-database.vala"
+#line 217 "rygel-database.vala"
 	if (sqlite3_exec (self->priv->db, "ROLLBACK", NULL, NULL, NULL) != SQLITE_OK) {
-#line 146 "rygel-database.vala"
-		g_critical ("rygel-database.vala:146: Failed to rollback transaction: %s", sqlite3_errmsg (self->priv->db));
-#line 497 "rygel-database.c"
+#line 218 "rygel-database.vala"
+		g_critical ("rygel-database.vala:218: Failed to rollback transaction: %s", sqlite3_errmsg (self->priv->db));
+#line 545 "rygel-database.c"
 	}
 }
 
@@ -519,12 +567,14 @@ static void rygel_database_finalize (GObject* obj) {
 
 
 GType rygel_database_get_type (void) {
-	static GType rygel_database_type_id = 0;
-	if (rygel_database_type_id == 0) {
+	static volatile gsize rygel_database_type_id__volatile = 0;
+	if (g_once_init_enter (&rygel_database_type_id__volatile)) {
 		static const GTypeInfo g_define_type_info = { sizeof (RygelDatabaseClass), (GBaseInitFunc) NULL, (GBaseFinalizeFunc) NULL, (GClassInitFunc) rygel_database_class_init, (GClassFinalizeFunc) NULL, NULL, sizeof (RygelDatabase), 0, (GInstanceInitFunc) rygel_database_instance_init, NULL };
+		GType rygel_database_type_id;
 		rygel_database_type_id = g_type_register_static (G_TYPE_OBJECT, "RygelDatabase", &g_define_type_info, 0);
+		g_once_init_leave (&rygel_database_type_id__volatile, rygel_database_type_id);
 	}
-	return rygel_database_type_id;
+	return rygel_database_type_id__volatile;
 }
 
 

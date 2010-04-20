@@ -260,7 +260,7 @@ void rygel_preferences_dialog_run (RygelPreferencesDialog* self) {
 #line 62 "rygel-preferences-dialog.vala"
 gint rygel_preferences_dialog_main (char** args, int args_length1) {
 #line 263 "rygel-preferences-dialog.c"
-	gint result;
+	gint result = 0;
 	GError * _inner_error_;
 	_inner_error_ = NULL;
 #line 63 "rygel-preferences-dialog.vala"
@@ -273,13 +273,10 @@ gint rygel_preferences_dialog_main (char** args, int args_length1) {
 #line 274 "rygel-preferences-dialog.c"
 		if (_inner_error_ != NULL) {
 			goto __catch0_g_error;
-			g_critical ("file %s: line %d: unexpected error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
-			g_clear_error (&_inner_error_);
-			return 0;
 		}
 #line 68 "rygel-preferences-dialog.vala"
 		rygel_preferences_dialog_run (dialog);
-#line 283 "rygel-preferences-dialog.c"
+#line 280 "rygel-preferences-dialog.c"
 		_g_object_unref0 (dialog);
 	}
 	goto __finally0;
@@ -290,8 +287,9 @@ gint rygel_preferences_dialog_main (char** args, int args_length1) {
 		_inner_error_ = NULL;
 		{
 #line 70 "rygel-preferences-dialog.vala"
-			g_error ("rygel-preferences-dialog.vala:70: Failed to create preferences dialog: %s\n", err->message);
-#line 295 "rygel-preferences-dialog.c"
+			g_error ("rygel-preferences-dialog.vala:70: Failed to create preferences dialog:" \
+" %s\n", err->message);
+#line 292 "rygel-preferences-dialog.c"
 			_g_error_free0 (err);
 		}
 	}
@@ -304,19 +302,19 @@ gint rygel_preferences_dialog_main (char** args, int args_length1) {
 	result = 0;
 #line 73 "rygel-preferences-dialog.vala"
 	return result;
-#line 308 "rygel-preferences-dialog.c"
+#line 305 "rygel-preferences-dialog.c"
 }
 
 
 #line 62 "rygel-preferences-dialog.vala"
 int main (int argc, char ** argv) {
-#line 314 "rygel-preferences-dialog.c"
+#line 311 "rygel-preferences-dialog.c"
 	g_thread_init (NULL);
 #line 62 "rygel-preferences-dialog.vala"
 	g_type_init ();
 #line 62 "rygel-preferences-dialog.vala"
 	return rygel_preferences_dialog_main (argv, argc);
-#line 320 "rygel-preferences-dialog.c"
+#line 317 "rygel-preferences-dialog.c"
 }
 
 
@@ -344,12 +342,14 @@ static void rygel_preferences_dialog_finalize (GObject* obj) {
 
 
 GType rygel_preferences_dialog_get_type (void) {
-	static GType rygel_preferences_dialog_type_id = 0;
-	if (rygel_preferences_dialog_type_id == 0) {
+	static volatile gsize rygel_preferences_dialog_type_id__volatile = 0;
+	if (g_once_init_enter (&rygel_preferences_dialog_type_id__volatile)) {
 		static const GTypeInfo g_define_type_info = { sizeof (RygelPreferencesDialogClass), (GBaseInitFunc) NULL, (GBaseFinalizeFunc) NULL, (GClassInitFunc) rygel_preferences_dialog_class_init, (GClassFinalizeFunc) NULL, NULL, sizeof (RygelPreferencesDialog), 0, (GInstanceInitFunc) rygel_preferences_dialog_instance_init, NULL };
+		GType rygel_preferences_dialog_type_id;
 		rygel_preferences_dialog_type_id = g_type_register_static (G_TYPE_OBJECT, "RygelPreferencesDialog", &g_define_type_info, 0);
+		g_once_init_leave (&rygel_preferences_dialog_type_id__volatile, rygel_preferences_dialog_type_id);
 	}
-	return rygel_preferences_dialog_type_id;
+	return rygel_preferences_dialog_type_id__volatile;
 }
 
 

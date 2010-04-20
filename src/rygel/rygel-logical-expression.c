@@ -102,6 +102,7 @@ gpointer rygel_search_expression_ref (gpointer instance);
 void rygel_search_expression_unref (gpointer instance);
 GParamSpec* rygel_param_spec_search_expression (const gchar* name, const gchar* nick, const gchar* blurb, GType object_type, GParamFlags flags);
 void rygel_value_set_search_expression (GValue* value, gpointer v_object);
+void rygel_value_take_search_expression (GValue* value, gpointer v_object);
 gpointer rygel_value_get_search_expression (const GValue* value);
 GType rygel_search_expression_get_type (void);
 GType rygel_media_object_get_type (void);
@@ -119,28 +120,29 @@ RygelLogicalExpression* rygel_logical_expression_construct (GType object_type);
 
 
 
-
 GType rygel_logical_operator_get_type (void) {
-	static GType rygel_logical_operator_type_id = 0;
-	if (G_UNLIKELY (rygel_logical_operator_type_id == 0)) {
+	static volatile gsize rygel_logical_operator_type_id__volatile = 0;
+	if (g_once_init_enter (&rygel_logical_operator_type_id__volatile)) {
 		static const GEnumValue values[] = {{RYGEL_LOGICAL_OPERATOR_AND, "RYGEL_LOGICAL_OPERATOR_AND", "and"}, {RYGEL_LOGICAL_OPERATOR_OR, "RYGEL_LOGICAL_OPERATOR_OR", "or"}, {0, NULL, NULL}};
+		GType rygel_logical_operator_type_id;
 		rygel_logical_operator_type_id = g_enum_register_static ("RygelLogicalOperator", values);
+		g_once_init_leave (&rygel_logical_operator_type_id__volatile, rygel_logical_operator_type_id);
 	}
-	return rygel_logical_operator_type_id;
+	return rygel_logical_operator_type_id__volatile;
 }
 
 
 #line 34 "rygel-logical-expression.vala"
 static gboolean rygel_logical_expression_real_satisfied_by (RygelSearchExpression* base, RygelMediaObject* media_object) {
-#line 136 "rygel-logical-expression.c"
+#line 138 "rygel-logical-expression.c"
 	RygelLogicalExpression * self;
-	gboolean result;
+	gboolean result = FALSE;
 	self = (RygelLogicalExpression*) base;
 #line 34 "rygel-logical-expression.vala"
 	g_return_val_if_fail (media_object != NULL, FALSE);
 #line 35 "rygel-logical-expression.vala"
 	switch (GPOINTER_TO_INT (((RygelSearchExpression*) self)->op)) {
-#line 144 "rygel-logical-expression.c"
+#line 146 "rygel-logical-expression.c"
 		case RYGEL_LOGICAL_OPERATOR_AND:
 		{
 			gboolean _tmp0_ = FALSE;
@@ -148,16 +150,16 @@ static gboolean rygel_logical_expression_real_satisfied_by (RygelSearchExpressio
 			if (rygel_search_expression_satisfied_by ((RygelSearchExpression*) ((RygelSearchExpression*) self)->operand1, media_object)) {
 #line 38 "rygel-logical-expression.vala"
 				_tmp0_ = rygel_search_expression_satisfied_by ((RygelSearchExpression*) ((RygelSearchExpression*) self)->operand2, media_object);
-#line 152 "rygel-logical-expression.c"
+#line 154 "rygel-logical-expression.c"
 			} else {
 #line 37 "rygel-logical-expression.vala"
 				_tmp0_ = FALSE;
-#line 156 "rygel-logical-expression.c"
+#line 158 "rygel-logical-expression.c"
 			}
 			result = _tmp0_;
 #line 37 "rygel-logical-expression.vala"
 			return result;
-#line 161 "rygel-logical-expression.c"
+#line 163 "rygel-logical-expression.c"
 		}
 		case RYGEL_LOGICAL_OPERATOR_OR:
 		{
@@ -166,23 +168,23 @@ static gboolean rygel_logical_expression_real_satisfied_by (RygelSearchExpressio
 			if (rygel_search_expression_satisfied_by ((RygelSearchExpression*) ((RygelSearchExpression*) self)->operand1, media_object)) {
 #line 40 "rygel-logical-expression.vala"
 				_tmp1_ = TRUE;
-#line 170 "rygel-logical-expression.c"
+#line 172 "rygel-logical-expression.c"
 			} else {
 #line 41 "rygel-logical-expression.vala"
 				_tmp1_ = rygel_search_expression_satisfied_by ((RygelSearchExpression*) ((RygelSearchExpression*) self)->operand2, media_object);
-#line 174 "rygel-logical-expression.c"
+#line 176 "rygel-logical-expression.c"
 			}
 			result = _tmp1_;
 #line 40 "rygel-logical-expression.vala"
 			return result;
-#line 179 "rygel-logical-expression.c"
+#line 181 "rygel-logical-expression.c"
 		}
 		default:
 		{
 			result = FALSE;
 #line 43 "rygel-logical-expression.vala"
 			return result;
-#line 186 "rygel-logical-expression.c"
+#line 188 "rygel-logical-expression.c"
 		}
 	}
 }
@@ -190,9 +192,9 @@ static gboolean rygel_logical_expression_real_satisfied_by (RygelSearchExpressio
 
 #line 47 "rygel-logical-expression.vala"
 static char* rygel_logical_expression_real_to_string (RygelSearchExpression* base) {
-#line 194 "rygel-logical-expression.c"
+#line 196 "rygel-logical-expression.c"
 	RygelLogicalExpression * self;
-	char* result;
+	char* result = NULL;
 	char* _tmp0_;
 	char* operand1;
 	char* _tmp3_;
@@ -201,37 +203,37 @@ static char* rygel_logical_expression_real_to_string (RygelSearchExpression* bas
 	_tmp0_ = NULL;
 #line 48 "rygel-logical-expression.vala"
 	if (((RygelSearchExpression*) ((RygelSearchExpression*) self)->operand1) != NULL) {
-#line 205 "rygel-logical-expression.c"
+#line 207 "rygel-logical-expression.c"
 		char* _tmp1_;
 #line 49 "rygel-logical-expression.vala"
 		_tmp0_ = (_tmp1_ = rygel_search_expression_to_string ((RygelSearchExpression*) ((RygelSearchExpression*) self)->operand1), _g_free0 (_tmp0_), _tmp1_);
-#line 209 "rygel-logical-expression.c"
+#line 211 "rygel-logical-expression.c"
 	} else {
 		char* _tmp2_;
 #line 50 "rygel-logical-expression.vala"
 		_tmp0_ = (_tmp2_ = g_strdup ("none"), _g_free0 (_tmp0_), _tmp2_);
-#line 214 "rygel-logical-expression.c"
+#line 216 "rygel-logical-expression.c"
 	}
 #line 48 "rygel-logical-expression.vala"
 	operand1 = g_strdup (_tmp0_);
-#line 218 "rygel-logical-expression.c"
+#line 220 "rygel-logical-expression.c"
 	_tmp3_ = NULL;
 #line 51 "rygel-logical-expression.vala"
 	if (((RygelSearchExpression*) ((RygelSearchExpression*) self)->operand2) != NULL) {
-#line 222 "rygel-logical-expression.c"
+#line 224 "rygel-logical-expression.c"
 		char* _tmp4_;
 #line 52 "rygel-logical-expression.vala"
 		_tmp3_ = (_tmp4_ = rygel_search_expression_to_string ((RygelSearchExpression*) ((RygelSearchExpression*) self)->operand2), _g_free0 (_tmp3_), _tmp4_);
-#line 226 "rygel-logical-expression.c"
+#line 228 "rygel-logical-expression.c"
 	} else {
 		char* _tmp5_;
 #line 53 "rygel-logical-expression.vala"
 		_tmp3_ = (_tmp5_ = g_strdup ("none"), _g_free0 (_tmp3_), _tmp5_);
-#line 231 "rygel-logical-expression.c"
+#line 233 "rygel-logical-expression.c"
 	}
 #line 51 "rygel-logical-expression.vala"
 	operand2 = g_strdup (_tmp3_);
-#line 235 "rygel-logical-expression.c"
+#line 237 "rygel-logical-expression.c"
 	result = g_strdup_printf ("(%s %d %s)", operand1, (gint) GPOINTER_TO_INT (((RygelSearchExpression*) self)->op), operand2);
 	_g_free0 (_tmp0_);
 	_g_free0 (operand1);
@@ -239,17 +241,17 @@ static char* rygel_logical_expression_real_to_string (RygelSearchExpression* bas
 	_g_free0 (operand2);
 #line 54 "rygel-logical-expression.vala"
 	return result;
-#line 243 "rygel-logical-expression.c"
+#line 245 "rygel-logical-expression.c"
 }
 
 
 #line 30 "rygel-logical-expression.vala"
 RygelLogicalExpression* rygel_logical_expression_construct (GType object_type) {
-#line 249 "rygel-logical-expression.c"
+#line 251 "rygel-logical-expression.c"
 	RygelLogicalExpression* self;
 #line 30 "rygel-logical-expression.vala"
 	self = (RygelLogicalExpression*) rygel_search_expression_construct (object_type, RYGEL_TYPE_LOGICAL_OPERATOR, NULL, NULL, RYGEL_TYPE_SEARCH_EXPRESSION, (GBoxedCopyFunc) rygel_search_expression_ref, rygel_search_expression_unref, RYGEL_TYPE_SEARCH_EXPRESSION, (GBoxedCopyFunc) rygel_search_expression_ref, rygel_search_expression_unref);
-#line 253 "rygel-logical-expression.c"
+#line 255 "rygel-logical-expression.c"
 	return self;
 }
 
@@ -258,7 +260,7 @@ RygelLogicalExpression* rygel_logical_expression_construct (GType object_type) {
 RygelLogicalExpression* rygel_logical_expression_new (void) {
 #line 30 "rygel-logical-expression.vala"
 	return rygel_logical_expression_construct (RYGEL_TYPE_LOGICAL_EXPRESSION);
-#line 262 "rygel-logical-expression.c"
+#line 264 "rygel-logical-expression.c"
 }
 
 
@@ -274,12 +276,14 @@ static void rygel_logical_expression_instance_init (RygelLogicalExpression * sel
 
 
 GType rygel_logical_expression_get_type (void) {
-	static GType rygel_logical_expression_type_id = 0;
-	if (rygel_logical_expression_type_id == 0) {
+	static volatile gsize rygel_logical_expression_type_id__volatile = 0;
+	if (g_once_init_enter (&rygel_logical_expression_type_id__volatile)) {
 		static const GTypeInfo g_define_type_info = { sizeof (RygelLogicalExpressionClass), (GBaseInitFunc) NULL, (GBaseFinalizeFunc) NULL, (GClassInitFunc) rygel_logical_expression_class_init, (GClassFinalizeFunc) NULL, NULL, sizeof (RygelLogicalExpression), 0, (GInstanceInitFunc) rygel_logical_expression_instance_init, NULL };
+		GType rygel_logical_expression_type_id;
 		rygel_logical_expression_type_id = g_type_register_static (RYGEL_TYPE_SEARCH_EXPRESSION, "RygelLogicalExpression", &g_define_type_info, 0);
+		g_once_init_leave (&rygel_logical_expression_type_id__volatile, rygel_logical_expression_type_id);
 	}
-	return rygel_logical_expression_type_id;
+	return rygel_logical_expression_type_id__volatile;
 }
 
 

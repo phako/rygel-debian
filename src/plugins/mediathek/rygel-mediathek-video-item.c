@@ -128,7 +128,7 @@ static RygelMediathekVideoItem* rygel_mediathek_video_item_construct (GType obje
 #line 129 "rygel-mediathek-video-item.c"
 	_g_free0 (_tmp0_);
 #line 37 "rygel-mediathek-video-item.vala"
-	((RygelMediaItem*) self)->mime_type = (_tmp1_ = g_strdup ("video/x-ms-asf"), _g_free0 (((RygelMediaItem*) self)->mime_type), _tmp1_);
+	((RygelMediaItem*) self)->mime_type = (_tmp1_ = g_strdup ("video/x-ms-wmv"), _g_free0 (((RygelMediaItem*) self)->mime_type), _tmp1_);
 #line 38 "rygel-mediathek-video-item.vala"
 	((RygelMediaItem*) self)->author = (_tmp2_ = g_strdup ("ZDF - Zweites Deutsches Fernsehen"), _g_free0 (((RygelMediaItem*) self)->author), _tmp2_);
 #line 135 "rygel-mediathek-video-item.c"
@@ -147,7 +147,7 @@ static RygelMediathekVideoItem* rygel_mediathek_video_item_new (RygelMediaContai
 #line 41 "rygel-mediathek-video-item.vala"
 static gboolean rygel_mediathek_video_item_namespace_ok (xmlNode* node) {
 #line 150 "rygel-mediathek-video-item.c"
-	gboolean result;
+	gboolean result = FALSE;
 	gboolean _tmp0_ = FALSE;
 #line 42 "rygel-mediathek-video-item.vala"
 	if (node->ns != NULL) {
@@ -169,7 +169,7 @@ static gboolean rygel_mediathek_video_item_namespace_ok (xmlNode* node) {
 #line 45 "rygel-mediathek-video-item.vala"
 RygelMediathekAsxPlaylist* rygel_mediathek_video_item_handle_content (xmlNode* group, GError** error) {
 #line 172 "rygel-mediathek-video-item.c"
-	RygelMediathekAsxPlaylist* result;
+	RygelMediathekAsxPlaylist* result = NULL;
 	GError * _inner_error_;
 	RygelMediathekAsxPlaylist* asx;
 	_inner_error_ = NULL;
@@ -279,7 +279,7 @@ RygelMediathekAsxPlaylist* rygel_mediathek_video_item_handle_content (xmlNode* g
 #line 75 "rygel-mediathek-video-item.vala"
 RygelMediathekVideoItem* rygel_mediathek_video_item_create_from_xml (RygelMediaContainer* parent, xmlNode* item, GError** error) {
 #line 282 "rygel-mediathek-video-item.c"
-	RygelMediathekVideoItem* result;
+	RygelMediathekVideoItem* result = NULL;
 	GError * _inner_error_;
 	char* title;
 	RygelMediathekVideoItem* video_item;
@@ -329,108 +329,117 @@ RygelMediathekVideoItem* rygel_mediathek_video_item_create_from_xml (RygelMediaC
 				_tmp5_ = item_child->name;
 				_tmp6_ = (NULL == _tmp5_) ? 0 : g_quark_from_string (_tmp5_);
 				if (_tmp6_ == ((0 != _tmp6__label0) ? _tmp6__label0 : (_tmp6__label0 = g_quark_from_static_string ("title"))))
-				do {
-					char* _tmp1_;
+				switch (0) {
+					default:
+					{
+						char* _tmp1_;
 #line 89 "rygel-mediathek-video-item.vala"
-					title = (_tmp1_ = xmlNodeGetContent (item_child), _g_free0 (title), _tmp1_);
+						title = (_tmp1_ = xmlNodeGetContent (item_child), _g_free0 (title), _tmp1_);
 #line 90 "rygel-mediathek-video-item.vala"
-					break;
-#line 339 "rygel-mediathek-video-item.c"
-				} while (0); else if (_tmp6_ == ((0 != _tmp6__label1) ? _tmp6__label1 : (_tmp6__label1 = g_quark_from_static_string ("group"))))
-				do {
+						break;
+#line 341 "rygel-mediathek-video-item.c"
+					}
+				} else if (_tmp6_ == ((0 != _tmp6__label1) ? _tmp6__label1 : (_tmp6__label1 = g_quark_from_static_string ("group"))))
+				switch (0) {
+					default:
+					{
 #line 92 "rygel-mediathek-video-item.vala"
-					if (rygel_mediathek_video_item_namespace_ok (item_child)) {
-#line 344 "rygel-mediathek-video-item.c"
-						{
-							xmlNode* group;
-#line 93 "rygel-mediathek-video-item.vala"
-							group = item_child->children;
+						if (rygel_mediathek_video_item_namespace_ok (item_child)) {
 #line 349 "rygel-mediathek-video-item.c"
 							{
-								gboolean _tmp2_;
+								xmlNode* group;
 #line 93 "rygel-mediathek-video-item.vala"
-								_tmp2_ = TRUE;
+								group = item_child->children;
+#line 354 "rygel-mediathek-video-item.c"
+								{
+									gboolean _tmp2_;
 #line 93 "rygel-mediathek-video-item.vala"
-								while (TRUE) {
+									_tmp2_ = TRUE;
 #line 93 "rygel-mediathek-video-item.vala"
-									if (!_tmp2_) {
+									while (TRUE) {
+#line 93 "rygel-mediathek-video-item.vala"
+										if (!_tmp2_) {
 #line 95 "rygel-mediathek-video-item.vala"
-										group = group->next;
-#line 360 "rygel-mediathek-video-item.c"
-									}
-#line 93 "rygel-mediathek-video-item.vala"
-									_tmp2_ = FALSE;
-#line 94 "rygel-mediathek-video-item.vala"
-									if (!(group != NULL)) {
-#line 94 "rygel-mediathek-video-item.vala"
-										break;
-#line 368 "rygel-mediathek-video-item.c"
-									}
-#line 96 "rygel-mediathek-video-item.vala"
-									if (_vala_strcmp0 (group->name, "content") == 0) {
-#line 372 "rygel-mediathek-video-item.c"
-										RygelMediathekAsxPlaylist* _tmp3_;
-										RygelMediathekAsxPlaylist* _tmp4_;
-#line 97 "rygel-mediathek-video-item.vala"
-										_tmp3_ = rygel_mediathek_video_item_handle_content (group, &_inner_error_);
-#line 377 "rygel-mediathek-video-item.c"
-										if (_inner_error_ != NULL) {
-											if (_inner_error_->domain == RYGEL_MEDIATHEK_VIDEO_ITEM_ERROR) {
-												g_propagate_error (error, _inner_error_);
-												_g_free0 (title);
-												_g_object_unref0 (video_item);
-												_g_object_unref0 (asx);
-												return NULL;
-											} else {
-												_g_free0 (title);
-												_g_object_unref0 (video_item);
-												_g_object_unref0 (asx);
-												g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
-												g_clear_error (&_inner_error_);
-												return NULL;
-											}
+											group = group->next;
+#line 365 "rygel-mediathek-video-item.c"
 										}
+#line 93 "rygel-mediathek-video-item.vala"
+										_tmp2_ = FALSE;
+#line 94 "rygel-mediathek-video-item.vala"
+										if (!(group != NULL)) {
+#line 94 "rygel-mediathek-video-item.vala"
+											break;
+#line 373 "rygel-mediathek-video-item.c"
+										}
+#line 96 "rygel-mediathek-video-item.vala"
+										if (_vala_strcmp0 (group->name, "content") == 0) {
+#line 377 "rygel-mediathek-video-item.c"
+											RygelMediathekAsxPlaylist* _tmp3_;
+											RygelMediathekAsxPlaylist* _tmp4_;
 #line 97 "rygel-mediathek-video-item.vala"
-										asx = (_tmp4_ = _tmp3_, _g_object_unref0 (asx), _tmp4_);
-#line 396 "rygel-mediathek-video-item.c"
+											_tmp3_ = rygel_mediathek_video_item_handle_content (group, &_inner_error_);
+#line 382 "rygel-mediathek-video-item.c"
+											if (_inner_error_ != NULL) {
+												if (_inner_error_->domain == RYGEL_MEDIATHEK_VIDEO_ITEM_ERROR) {
+													g_propagate_error (error, _inner_error_);
+													_g_free0 (title);
+													_g_object_unref0 (video_item);
+													_g_object_unref0 (asx);
+													return NULL;
+												} else {
+													_g_free0 (title);
+													_g_object_unref0 (video_item);
+													_g_object_unref0 (asx);
+													g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
+													g_clear_error (&_inner_error_);
+													return NULL;
+												}
+											}
+#line 97 "rygel-mediathek-video-item.vala"
+											asx = (_tmp4_ = _tmp3_, _g_object_unref0 (asx), _tmp4_);
+#line 401 "rygel-mediathek-video-item.c"
+										}
 									}
 								}
 							}
-						}
-					} else {
-						_inner_error_ = g_error_new_literal (RYGEL_MEDIATHEK_VIDEO_ITEM_ERROR, RYGEL_MEDIATHEK_VIDEO_ITEM_ERROR_XML_PARSE_ERROR, "invalid or no namespace on group node");
-						{
-							if (_inner_error_->domain == RYGEL_MEDIATHEK_VIDEO_ITEM_ERROR) {
-								g_propagate_error (error, _inner_error_);
-								_g_free0 (title);
-								_g_object_unref0 (video_item);
-								_g_object_unref0 (asx);
-								return NULL;
-							} else {
-								_g_free0 (title);
-								_g_object_unref0 (video_item);
-								_g_object_unref0 (asx);
-								g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
-								g_clear_error (&_inner_error_);
-								return NULL;
+						} else {
+							_inner_error_ = g_error_new_literal (RYGEL_MEDIATHEK_VIDEO_ITEM_ERROR, RYGEL_MEDIATHEK_VIDEO_ITEM_ERROR_XML_PARSE_ERROR, "invalid or no namespace on group node");
+							{
+								if (_inner_error_->domain == RYGEL_MEDIATHEK_VIDEO_ITEM_ERROR) {
+									g_propagate_error (error, _inner_error_);
+									_g_free0 (title);
+									_g_object_unref0 (video_item);
+									_g_object_unref0 (asx);
+									return NULL;
+								} else {
+									_g_free0 (title);
+									_g_object_unref0 (video_item);
+									_g_object_unref0 (asx);
+									g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
+									g_clear_error (&_inner_error_);
+									return NULL;
+								}
 							}
 						}
-					}
 #line 105 "rygel-mediathek-video-item.vala"
-					break;
-#line 422 "rygel-mediathek-video-item.c"
-				} while (0); else
-				do {
-#line 107 "rygel-mediathek-video-item.vala"
-					break;
+						break;
 #line 427 "rygel-mediathek-video-item.c"
-				} while (0);
+					}
+				} else
+				switch (0) {
+					default:
+					{
+#line 107 "rygel-mediathek-video-item.vala"
+						break;
+#line 435 "rygel-mediathek-video-item.c"
+					}
+				}
 			}
 		}
 	}
 #line 111 "rygel-mediathek-video-item.vala"
 	if (title == NULL) {
-#line 434 "rygel-mediathek-video-item.c"
+#line 443 "rygel-mediathek-video-item.c"
 		_inner_error_ = g_error_new_literal (RYGEL_MEDIATHEK_VIDEO_ITEM_ERROR, RYGEL_MEDIATHEK_VIDEO_ITEM_ERROR_XML_PARSE_ERROR, "Could not find title");
 		{
 			if (_inner_error_->domain == RYGEL_MEDIATHEK_VIDEO_ITEM_ERROR) {
@@ -451,7 +460,7 @@ RygelMediathekVideoItem* rygel_mediathek_video_item_create_from_xml (RygelMediaC
 	}
 #line 117 "rygel-mediathek-video-item.vala"
 	if (asx == NULL) {
-#line 455 "rygel-mediathek-video-item.c"
+#line 464 "rygel-mediathek-video-item.c"
 		_inner_error_ = g_error_new_literal (RYGEL_MEDIATHEK_VIDEO_ITEM_ERROR, RYGEL_MEDIATHEK_VIDEO_ITEM_ERROR_XML_PARSE_ERROR, "Could not find uris");
 		{
 			if (_inner_error_->domain == RYGEL_MEDIATHEK_VIDEO_ITEM_ERROR) {
@@ -472,25 +481,25 @@ RygelMediathekVideoItem* rygel_mediathek_video_item_create_from_xml (RygelMediaC
 	}
 #line 122 "rygel-mediathek-video-item.vala"
 	video_item = (_tmp7_ = rygel_mediathek_video_item_new (parent, title), _g_object_unref0 (video_item), _tmp7_);
-#line 476 "rygel-mediathek-video-item.c"
+#line 485 "rygel-mediathek-video-item.c"
 	{
 		GeeIterator* _uri_it;
 		_uri_it = gee_abstract_collection_iterator ((GeeAbstractCollection*) asx->uris);
 #line 123 "rygel-mediathek-video-item.vala"
 		while (TRUE) {
-#line 482 "rygel-mediathek-video-item.c"
+#line 491 "rygel-mediathek-video-item.c"
 			char* uri;
 #line 123 "rygel-mediathek-video-item.vala"
 			if (!gee_iterator_next (_uri_it)) {
 #line 123 "rygel-mediathek-video-item.vala"
 				break;
-#line 488 "rygel-mediathek-video-item.c"
+#line 497 "rygel-mediathek-video-item.c"
 			}
 #line 123 "rygel-mediathek-video-item.vala"
 			uri = (char*) gee_iterator_get (_uri_it);
 #line 124 "rygel-mediathek-video-item.vala"
 			rygel_media_item_add_uri ((RygelMediaItem*) video_item, uri, NULL);
-#line 494 "rygel-mediathek-video-item.c"
+#line 503 "rygel-mediathek-video-item.c"
 			_g_free0 (uri);
 		}
 		_g_object_unref0 (_uri_it);
@@ -500,7 +509,7 @@ RygelMediathekVideoItem* rygel_mediathek_video_item_create_from_xml (RygelMediaC
 	_g_object_unref0 (asx);
 #line 127 "rygel-mediathek-video-item.vala"
 	return result;
-#line 504 "rygel-mediathek-video-item.c"
+#line 513 "rygel-mediathek-video-item.c"
 }
 
 
@@ -514,12 +523,14 @@ static void rygel_mediathek_video_item_instance_init (RygelMediathekVideoItem * 
 
 
 GType rygel_mediathek_video_item_get_type (void) {
-	static GType rygel_mediathek_video_item_type_id = 0;
-	if (rygel_mediathek_video_item_type_id == 0) {
+	static volatile gsize rygel_mediathek_video_item_type_id__volatile = 0;
+	if (g_once_init_enter (&rygel_mediathek_video_item_type_id__volatile)) {
 		static const GTypeInfo g_define_type_info = { sizeof (RygelMediathekVideoItemClass), (GBaseInitFunc) NULL, (GBaseFinalizeFunc) NULL, (GClassInitFunc) rygel_mediathek_video_item_class_init, (GClassFinalizeFunc) NULL, NULL, sizeof (RygelMediathekVideoItem), 0, (GInstanceInitFunc) rygel_mediathek_video_item_instance_init, NULL };
+		GType rygel_mediathek_video_item_type_id;
 		rygel_mediathek_video_item_type_id = g_type_register_static (RYGEL_TYPE_MEDIA_ITEM, "RygelMediathekVideoItem", &g_define_type_info, 0);
+		g_once_init_leave (&rygel_mediathek_video_item_type_id__volatile, rygel_mediathek_video_item_type_id);
 	}
-	return rygel_mediathek_video_item_type_id;
+	return rygel_mediathek_video_item_type_id__volatile;
 }
 
 

@@ -65,6 +65,16 @@ typedef struct _RygelMediaContainerPrivate RygelMediaContainerPrivate;
 typedef struct _RygelSearchExpression RygelSearchExpression;
 typedef struct _RygelSearchExpressionClass RygelSearchExpressionClass;
 
+#define RYGEL_TYPE_MEDIA_ITEM (rygel_media_item_get_type ())
+#define RYGEL_MEDIA_ITEM(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_MEDIA_ITEM, RygelMediaItem))
+#define RYGEL_MEDIA_ITEM_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TYPE_MEDIA_ITEM, RygelMediaItemClass))
+#define RYGEL_IS_MEDIA_ITEM(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TYPE_MEDIA_ITEM))
+#define RYGEL_IS_MEDIA_ITEM_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_TYPE_MEDIA_ITEM))
+#define RYGEL_MEDIA_ITEM_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_TYPE_MEDIA_ITEM, RygelMediaItemClass))
+
+typedef struct _RygelMediaItem RygelMediaItem;
+typedef struct _RygelMediaItemClass RygelMediaItemClass;
+
 #define RYGEL_TYPE_SIMPLE_CONTAINER (rygel_simple_container_get_type ())
 #define RYGEL_SIMPLE_CONTAINER(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_SIMPLE_CONTAINER, RygelSimpleContainer))
 #define RYGEL_SIMPLE_CONTAINER_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TYPE_SIMPLE_CONTAINER, RygelSimpleContainerClass))
@@ -86,7 +96,6 @@ struct _RygelMediaObject {
 	guint64 modified;
 	GeeArrayList* uris;
 	RygelMediaContainer* parent;
-	RygelMediaContainer* parent_ref;
 };
 
 struct _RygelMediaObjectClass {
@@ -96,7 +105,7 @@ struct _RygelMediaObjectClass {
 struct _RygelMediaContainer {
 	RygelMediaObject parent_instance;
 	RygelMediaContainerPrivate * priv;
-	guint child_count;
+	gint child_count;
 	guint32 update_id;
 };
 
@@ -106,6 +115,8 @@ struct _RygelMediaContainerClass {
 	GeeList* (*get_children_finish) (RygelMediaContainer* self, GAsyncResult* _res_, GError** error);
 	void (*search) (RygelMediaContainer* self, RygelSearchExpression* expression, guint offset, guint max_count, GCancellable* cancellable, GAsyncReadyCallback _callback_, gpointer _user_data_);
 	GeeList* (*search_finish) (RygelMediaContainer* self, GAsyncResult* _res_, guint* total_matches, GError** error);
+	void (*add_item) (RygelMediaContainer* self, RygelMediaItem* item, GCancellable* cancellable, GAsyncReadyCallback _callback_, gpointer _user_data_);
+	void (*add_item_finish) (RygelMediaContainer* self, GAsyncResult* _res_, GError** error);
 };
 
 struct _RygelSimpleContainer {
@@ -139,19 +150,22 @@ gpointer rygel_search_expression_ref (gpointer instance);
 void rygel_search_expression_unref (gpointer instance);
 GParamSpec* rygel_param_spec_search_expression (const gchar* name, const gchar* nick, const gchar* blurb, GType object_type, GParamFlags flags);
 void rygel_value_set_search_expression (GValue* value, gpointer v_object);
+void rygel_value_take_search_expression (GValue* value, gpointer v_object);
 gpointer rygel_value_get_search_expression (const GValue* value);
 GType rygel_search_expression_get_type (void);
+GType rygel_media_item_get_type (void);
 GType rygel_simple_container_get_type (void);
 enum  {
 	RYGEL_SIMPLE_CONTAINER_DUMMY_PROPERTY
 };
-RygelMediaContainer* rygel_media_container_construct (GType object_type, const char* id, RygelMediaContainer* parent, const char* title, guint child_count);
+RygelMediaContainer* rygel_media_container_construct (GType object_type, const char* id, RygelMediaContainer* parent, const char* title, gint child_count);
 RygelSimpleContainer* rygel_simple_container_new (const char* id, RygelMediaContainer* parent, const char* title);
 RygelSimpleContainer* rygel_simple_container_construct (GType object_type, const char* id, RygelMediaContainer* parent, const char* title);
 RygelSimpleContainer* rygel_simple_container_new_root (const char* title);
 RygelSimpleContainer* rygel_simple_container_construct_root (GType object_type, const char* title);
 void rygel_simple_container_add_child (RygelSimpleContainer* self, RygelMediaObject* child);
 void rygel_simple_container_remove_child (RygelSimpleContainer* self, RygelMediaObject* child);
+void rygel_simple_container_clear (RygelSimpleContainer* self);
 static void rygel_simple_container_real_get_children_data_free (gpointer _data);
 static void rygel_simple_container_real_get_children (RygelMediaContainer* base, guint offset, guint max_count, GCancellable* cancellable, GAsyncReadyCallback _callback_, gpointer _user_data_);
 static void rygel_simple_container_get_children_ready (GObject* source_object, GAsyncResult* _res_, gpointer _user_data_);
@@ -162,7 +176,7 @@ static void rygel_simple_container_finalize (GObject* obj);
 
 #line 35 "rygel-simple-container.vala"
 RygelSimpleContainer* rygel_simple_container_construct (GType object_type, const char* id, RygelMediaContainer* parent, const char* title) {
-#line 166 "rygel-simple-container.c"
+#line 180 "rygel-simple-container.c"
 	RygelSimpleContainer * self;
 	GeeArrayList* _tmp0_;
 #line 35 "rygel-simple-container.vala"
@@ -170,10 +184,10 @@ RygelSimpleContainer* rygel_simple_container_construct (GType object_type, const
 #line 35 "rygel-simple-container.vala"
 	g_return_val_if_fail (title != NULL, NULL);
 #line 38 "rygel-simple-container.vala"
-	self = (RygelSimpleContainer*) rygel_media_container_construct (object_type, id, parent, title, (guint) 0);
+	self = (RygelSimpleContainer*) rygel_media_container_construct (object_type, id, parent, title, 0);
 #line 40 "rygel-simple-container.vala"
 	self->children = (_tmp0_ = gee_array_list_new (RYGEL_TYPE_MEDIA_OBJECT, (GBoxedCopyFunc) g_object_ref, g_object_unref, NULL), _g_object_unref0 (self->children), _tmp0_);
-#line 177 "rygel-simple-container.c"
+#line 191 "rygel-simple-container.c"
 	return self;
 }
 
@@ -182,19 +196,19 @@ RygelSimpleContainer* rygel_simple_container_construct (GType object_type, const
 RygelSimpleContainer* rygel_simple_container_new (const char* id, RygelMediaContainer* parent, const char* title) {
 #line 35 "rygel-simple-container.vala"
 	return rygel_simple_container_construct (RYGEL_TYPE_SIMPLE_CONTAINER, id, parent, title);
-#line 186 "rygel-simple-container.c"
+#line 200 "rygel-simple-container.c"
 }
 
 
 #line 43 "rygel-simple-container.vala"
 RygelSimpleContainer* rygel_simple_container_construct_root (GType object_type, const char* title) {
-#line 192 "rygel-simple-container.c"
+#line 206 "rygel-simple-container.c"
 	RygelSimpleContainer * self;
 #line 43 "rygel-simple-container.vala"
 	g_return_val_if_fail (title != NULL, NULL);
 #line 44 "rygel-simple-container.vala"
 	self = (RygelSimpleContainer*) rygel_simple_container_construct (object_type, "0", NULL, title);
-#line 198 "rygel-simple-container.c"
+#line 212 "rygel-simple-container.c"
 	return self;
 }
 
@@ -203,7 +217,7 @@ RygelSimpleContainer* rygel_simple_container_construct_root (GType object_type, 
 RygelSimpleContainer* rygel_simple_container_new_root (const char* title) {
 #line 43 "rygel-simple-container.vala"
 	return rygel_simple_container_construct_root (RYGEL_TYPE_SIMPLE_CONTAINER, title);
-#line 207 "rygel-simple-container.c"
+#line 221 "rygel-simple-container.c"
 }
 
 
@@ -217,7 +231,7 @@ void rygel_simple_container_add_child (RygelSimpleContainer* self, RygelMediaObj
 	gee_abstract_collection_add ((GeeAbstractCollection*) self->children, child);
 #line 50 "rygel-simple-container.vala"
 	((RygelMediaContainer*) self)->child_count++;
-#line 221 "rygel-simple-container.c"
+#line 235 "rygel-simple-container.c"
 }
 
 
@@ -231,7 +245,19 @@ void rygel_simple_container_remove_child (RygelSimpleContainer* self, RygelMedia
 	gee_abstract_collection_remove ((GeeAbstractCollection*) self->children, child);
 #line 56 "rygel-simple-container.vala"
 	((RygelMediaContainer*) self)->child_count--;
-#line 235 "rygel-simple-container.c"
+#line 249 "rygel-simple-container.c"
+}
+
+
+#line 59 "rygel-simple-container.vala"
+void rygel_simple_container_clear (RygelSimpleContainer* self) {
+#line 59 "rygel-simple-container.vala"
+	g_return_if_fail (self != NULL);
+#line 60 "rygel-simple-container.vala"
+	gee_abstract_collection_clear ((GeeAbstractCollection*) self->children);
+#line 62 "rygel-simple-container.vala"
+	((RygelMediaContainer*) self)->child_count = 0;
+#line 261 "rygel-simple-container.c"
 }
 
 
@@ -240,6 +266,7 @@ static void rygel_simple_container_real_get_children_data_free (gpointer _data) 
 	data = _data;
 	_g_object_unref0 (data->cancellable);
 	_g_object_unref0 (data->result);
+	g_object_unref (data->self);
 	g_slice_free (RygelSimpleContainerGetChildrenData, data);
 }
 
@@ -256,7 +283,7 @@ static void rygel_simple_container_real_get_children (RygelMediaContainer* base,
 	_data_ = g_slice_new0 (RygelSimpleContainerGetChildrenData);
 	_data_->_async_result = g_simple_async_result_new (G_OBJECT (self), _callback_, _user_data_, rygel_simple_container_real_get_children);
 	g_simple_async_result_set_op_res_gpointer (_data_->_async_result, _data_, rygel_simple_container_real_get_children_data_free);
-	_data_->self = self;
+	_data_->self = g_object_ref (self);
 	_data_->offset = offset;
 	_data_->max_count = max_count;
 	_data_->cancellable = _g_object_ref0 (cancellable);
@@ -287,25 +314,18 @@ static void rygel_simple_container_get_children_ready (GObject* source_object, G
 
 static gboolean rygel_simple_container_real_get_children_co (RygelSimpleContainerGetChildrenData* data) {
 	switch (data->_state_) {
+		case 0:
+		goto _state_0;
 		default:
 		g_assert_not_reached ();
-		case 0:
-		{
-			data->stop = data->offset + data->max_count;
-#line 65 "rygel-simple-container.vala"
-			data->stop = CLAMP (data->stop, (guint) 0, ((RygelMediaContainer*) data->self)->child_count);
-#line 298 "rygel-simple-container.c"
-			data->result = gee_abstract_list_slice ((GeeAbstractList*) data->self->children, (gint) data->offset, (gint) data->stop);
-			{
-				if (data->_state_ == 0) {
-					g_simple_async_result_complete_in_idle (data->_async_result);
-				} else {
-					g_simple_async_result_complete (data->_async_result);
-				}
-				g_object_unref (data->_async_result);
-				return FALSE;
-			}
-		}
+	}
+	_state_0:
+	{
+		data->stop = data->offset + data->max_count;
+#line 71 "rygel-simple-container.vala"
+		data->stop = CLAMP (data->stop, (guint) 0, (guint) ((RygelMediaContainer*) data->self)->child_count);
+#line 328 "rygel-simple-container.c"
+		data->result = gee_abstract_list_slice ((GeeAbstractList*) data->self->children, (gint) data->offset, (gint) data->stop);
 		{
 			if (data->_state_ == 0) {
 				g_simple_async_result_complete_in_idle (data->_async_result);
@@ -315,6 +335,15 @@ static gboolean rygel_simple_container_real_get_children_co (RygelSimpleContaine
 			g_object_unref (data->_async_result);
 			return FALSE;
 		}
+	}
+	{
+		if (data->_state_ == 0) {
+			g_simple_async_result_complete_in_idle (data->_async_result);
+		} else {
+			g_simple_async_result_complete (data->_async_result);
+		}
+		g_object_unref (data->_async_result);
+		return FALSE;
 	}
 }
 
@@ -340,12 +369,14 @@ static void rygel_simple_container_finalize (GObject* obj) {
 
 
 GType rygel_simple_container_get_type (void) {
-	static GType rygel_simple_container_type_id = 0;
-	if (rygel_simple_container_type_id == 0) {
+	static volatile gsize rygel_simple_container_type_id__volatile = 0;
+	if (g_once_init_enter (&rygel_simple_container_type_id__volatile)) {
 		static const GTypeInfo g_define_type_info = { sizeof (RygelSimpleContainerClass), (GBaseInitFunc) NULL, (GBaseFinalizeFunc) NULL, (GClassInitFunc) rygel_simple_container_class_init, (GClassFinalizeFunc) NULL, NULL, sizeof (RygelSimpleContainer), 0, (GInstanceInitFunc) rygel_simple_container_instance_init, NULL };
+		GType rygel_simple_container_type_id;
 		rygel_simple_container_type_id = g_type_register_static (RYGEL_TYPE_MEDIA_CONTAINER, "RygelSimpleContainer", &g_define_type_info, 0);
+		g_once_init_leave (&rygel_simple_container_type_id__volatile, rygel_simple_container_type_id);
 	}
-	return rygel_simple_container_type_id;
+	return rygel_simple_container_type_id__volatile;
 }
 
 

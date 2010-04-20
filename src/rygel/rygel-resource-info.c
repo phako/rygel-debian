@@ -70,6 +70,7 @@ gpointer rygel_resource_info_ref (gpointer instance);
 void rygel_resource_info_unref (gpointer instance);
 GParamSpec* rygel_param_spec_resource_info (const gchar* name, const gchar* nick, const gchar* blurb, GType object_type, GParamFlags flags);
 void rygel_value_set_resource_info (GValue* value, gpointer v_object);
+void rygel_value_take_resource_info (GValue* value, gpointer v_object);
 gpointer rygel_value_get_resource_info (const GValue* value);
 GType rygel_resource_info_get_type (void);
 enum  {
@@ -83,7 +84,7 @@ static void rygel_resource_info_finalize (RygelResourceInfo* obj);
 
 #line 39 "rygel-resource-info.vala"
 RygelResourceInfo* rygel_resource_info_construct (GType object_type, const char* upnp_id, const char* upnp_type, const char* description_path, GType type) {
-#line 87 "rygel-resource-info.c"
+#line 88 "rygel-resource-info.c"
 	RygelResourceInfo* self;
 	char* _tmp0_;
 	char* _tmp1_;
@@ -94,7 +95,7 @@ RygelResourceInfo* rygel_resource_info_construct (GType object_type, const char*
 	g_return_val_if_fail (upnp_type != NULL, NULL);
 #line 39 "rygel-resource-info.vala"
 	g_return_val_if_fail (description_path != NULL, NULL);
-#line 98 "rygel-resource-info.c"
+#line 99 "rygel-resource-info.c"
 	self = (RygelResourceInfo*) g_type_create_instance (object_type);
 #line 43 "rygel-resource-info.vala"
 	self->upnp_type = (_tmp0_ = g_strdup (upnp_type), _g_free0 (self->upnp_type), _tmp0_);
@@ -104,7 +105,7 @@ RygelResourceInfo* rygel_resource_info_construct (GType object_type, const char*
 	self->description_path = (_tmp2_ = g_strdup (description_path), _g_free0 (self->description_path), _tmp2_);
 #line 46 "rygel-resource-info.vala"
 	self->type = type;
-#line 108 "rygel-resource-info.c"
+#line 109 "rygel-resource-info.c"
 	return self;
 }
 
@@ -113,7 +114,7 @@ RygelResourceInfo* rygel_resource_info_construct (GType object_type, const char*
 RygelResourceInfo* rygel_resource_info_new (const char* upnp_id, const char* upnp_type, const char* description_path, GType type) {
 #line 39 "rygel-resource-info.vala"
 	return rygel_resource_info_construct (RYGEL_TYPE_RESOURCE_INFO, upnp_id, upnp_type, description_path, type);
-#line 117 "rygel-resource-info.c"
+#line 118 "rygel-resource-info.c"
 }
 
 
@@ -210,6 +211,23 @@ void rygel_value_set_resource_info (GValue* value, gpointer v_object) {
 }
 
 
+void rygel_value_take_resource_info (GValue* value, gpointer v_object) {
+	RygelResourceInfo* old;
+	g_return_if_fail (G_TYPE_CHECK_VALUE_TYPE (value, RYGEL_TYPE_RESOURCE_INFO));
+	old = value->data[0].v_pointer;
+	if (v_object) {
+		g_return_if_fail (G_TYPE_CHECK_INSTANCE_TYPE (v_object, RYGEL_TYPE_RESOURCE_INFO));
+		g_return_if_fail (g_value_type_compatible (G_TYPE_FROM_INSTANCE (v_object), G_VALUE_TYPE (value)));
+		value->data[0].v_pointer = v_object;
+	} else {
+		value->data[0].v_pointer = NULL;
+	}
+	if (old) {
+		rygel_resource_info_unref (old);
+	}
+}
+
+
 static void rygel_resource_info_class_init (RygelResourceInfoClass * klass) {
 	rygel_resource_info_parent_class = g_type_class_peek_parent (klass);
 	RYGEL_RESOURCE_INFO_CLASS (klass)->finalize = rygel_resource_info_finalize;
@@ -231,14 +249,16 @@ static void rygel_resource_info_finalize (RygelResourceInfo* obj) {
 
 
 GType rygel_resource_info_get_type (void) {
-	static GType rygel_resource_info_type_id = 0;
-	if (rygel_resource_info_type_id == 0) {
+	static volatile gsize rygel_resource_info_type_id__volatile = 0;
+	if (g_once_init_enter (&rygel_resource_info_type_id__volatile)) {
 		static const GTypeValueTable g_define_type_value_table = { rygel_value_resource_info_init, rygel_value_resource_info_free_value, rygel_value_resource_info_copy_value, rygel_value_resource_info_peek_pointer, "p", rygel_value_resource_info_collect_value, "p", rygel_value_resource_info_lcopy_value };
 		static const GTypeInfo g_define_type_info = { sizeof (RygelResourceInfoClass), (GBaseInitFunc) NULL, (GBaseFinalizeFunc) NULL, (GClassInitFunc) rygel_resource_info_class_init, (GClassFinalizeFunc) NULL, NULL, sizeof (RygelResourceInfo), 0, (GInstanceInitFunc) rygel_resource_info_instance_init, &g_define_type_value_table };
 		static const GTypeFundamentalInfo g_define_type_fundamental_info = { (G_TYPE_FLAG_CLASSED | G_TYPE_FLAG_INSTANTIATABLE | G_TYPE_FLAG_DERIVABLE | G_TYPE_FLAG_DEEP_DERIVABLE) };
+		GType rygel_resource_info_type_id;
 		rygel_resource_info_type_id = g_type_register_fundamental (g_type_fundamental_next (), "RygelResourceInfo", &g_define_type_info, &g_define_type_fundamental_info, 0);
+		g_once_init_leave (&rygel_resource_info_type_id__volatile, rygel_resource_info_type_id);
 	}
-	return rygel_resource_info_type_id;
+	return rygel_resource_info_type_id__volatile;
 }
 
 

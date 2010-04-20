@@ -134,12 +134,14 @@ static void rygel_preferences_section_finalize (GObject* obj) {
 
 
 GType rygel_preferences_section_get_type (void) {
-	static GType rygel_preferences_section_type_id = 0;
-	if (rygel_preferences_section_type_id == 0) {
+	static volatile gsize rygel_preferences_section_type_id__volatile = 0;
+	if (g_once_init_enter (&rygel_preferences_section_type_id__volatile)) {
 		static const GTypeInfo g_define_type_info = { sizeof (RygelPreferencesSectionClass), (GBaseInitFunc) NULL, (GBaseFinalizeFunc) NULL, (GClassInitFunc) rygel_preferences_section_class_init, (GClassFinalizeFunc) NULL, NULL, sizeof (RygelPreferencesSection), 0, (GInstanceInitFunc) rygel_preferences_section_instance_init, NULL };
+		GType rygel_preferences_section_type_id;
 		rygel_preferences_section_type_id = g_type_register_static (G_TYPE_OBJECT, "RygelPreferencesSection", &g_define_type_info, G_TYPE_FLAG_ABSTRACT);
+		g_once_init_leave (&rygel_preferences_section_type_id__volatile, rygel_preferences_section_type_id);
 	}
-	return rygel_preferences_section_type_id;
+	return rygel_preferences_section_type_id__volatile;
 }
 
 

@@ -142,12 +142,14 @@ static void rygel_test_root_container_instance_init (RygelTestRootContainer * se
 
 
 GType rygel_test_root_container_get_type (void) {
-	static GType rygel_test_root_container_type_id = 0;
-	if (rygel_test_root_container_type_id == 0) {
+	static volatile gsize rygel_test_root_container_type_id__volatile = 0;
+	if (g_once_init_enter (&rygel_test_root_container_type_id__volatile)) {
 		static const GTypeInfo g_define_type_info = { sizeof (RygelTestRootContainerClass), (GBaseInitFunc) NULL, (GBaseFinalizeFunc) NULL, (GClassInitFunc) rygel_test_root_container_class_init, (GClassFinalizeFunc) NULL, NULL, sizeof (RygelTestRootContainer), 0, (GInstanceInitFunc) rygel_test_root_container_instance_init, NULL };
+		GType rygel_test_root_container_type_id;
 		rygel_test_root_container_type_id = g_type_register_static (RYGEL_TYPE_SIMPLE_CONTAINER, "RygelTestRootContainer", &g_define_type_info, 0);
+		g_once_init_leave (&rygel_test_root_container_type_id__volatile, rygel_test_root_container_type_id);
 	}
-	return rygel_test_root_container_type_id;
+	return rygel_test_root_container_type_id__volatile;
 }
 
 

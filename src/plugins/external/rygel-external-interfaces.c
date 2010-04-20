@@ -405,6 +405,10 @@ static void rygel_external_media_item_dbus_proxy_rygel_external_media_item__inte
 static void rygel_external_media_item_dbus_proxy_get_property (GObject * object, guint property_id, GValue * value, GParamSpec * pspec);
 static void rygel_external_media_item_dbus_proxy_set_property (GObject * object, guint property_id, const GValue * value, GParamSpec * pspec);
 GType free_desktop_dbus_object_get_type (void);
+void free_desktop_dbus_object_list_names (FreeDesktopDBusObject* self, GAsyncReadyCallback _callback_, gpointer _user_data_);
+char** free_desktop_dbus_object_list_names_finish (FreeDesktopDBusObject* self, GAsyncResult* _res_, int* result_length1, GError** error);
+void free_desktop_dbus_object_list_activatable_names (FreeDesktopDBusObject* self, GAsyncReadyCallback _callback_, gpointer _user_data_);
+char** free_desktop_dbus_object_list_activatable_names_finish (FreeDesktopDBusObject* self, GAsyncResult* _res_, int* result_length1, GError** error);
 void free_desktop_dbus_object_dbus_register_object (DBusConnection* connection, const char* path, void* object);
 void _free_desktop_dbus_object_dbus_unregister (DBusConnection* connection, void* _user_data_);
 DBusHandlerResult free_desktop_dbus_object_dbus_message (DBusConnection* connection, DBusMessage* message, void* object);
@@ -432,6 +436,8 @@ static void free_desktop_dbus_object_dbus_proxy_free_desktop_dbus_object__interf
 static void free_desktop_dbus_object_dbus_proxy_get_property (GObject * object, guint property_id, GValue * value, GParamSpec * pspec);
 static void free_desktop_dbus_object_dbus_proxy_set_property (GObject * object, guint property_id, const GValue * value, GParamSpec * pspec);
 GType free_desktop_properties_get_type (void);
+void free_desktop_properties_get_all (FreeDesktopProperties* self, const char* iface, GAsyncReadyCallback _callback_, gpointer _user_data_);
+GHashTable* free_desktop_properties_get_all_finish (FreeDesktopProperties* self, GAsyncResult* _res_, GError** error);
 void free_desktop_properties_dbus_register_object (DBusConnection* connection, const char* path, void* object);
 void _free_desktop_properties_dbus_unregister (DBusConnection* connection, void* _user_data_);
 DBusHandlerResult free_desktop_properties_dbus_message (DBusConnection* connection, DBusMessage* message, void* object);
@@ -719,7 +725,7 @@ static void rygel_external_media_object_base_init (RygelExternalMediaObjectIface
 	static gboolean initialized = FALSE;
 	if (!initialized) {
 		initialized = TRUE;
-		g_object_interface_install_property (iface, g_param_spec_string ("parent", "parent", "parent", DBUS_TYPE_G_OBJECT_PATH, G_PARAM_STATIC_NAME | G_PARAM_STATIC_NICK | G_PARAM_STATIC_BLURB | G_PARAM_READABLE | G_PARAM_WRITABLE));
+		g_object_interface_install_property (iface, g_param_spec_string ("parent", "parent", "parent", NULL, G_PARAM_STATIC_NAME | G_PARAM_STATIC_NICK | G_PARAM_STATIC_BLURB | G_PARAM_READABLE | G_PARAM_WRITABLE));
 		g_object_interface_install_property (iface, g_param_spec_string ("display-name", "display-name", "display-name", NULL, G_PARAM_STATIC_NAME | G_PARAM_STATIC_NICK | G_PARAM_STATIC_BLURB | G_PARAM_READABLE | G_PARAM_WRITABLE));
 		g_type_set_qdata (RYGEL_TYPE_EXTERNAL_MEDIA_OBJECT, g_quark_from_static_string ("DBusObjectVTable"), (void*) (&_rygel_external_media_object_dbus_vtable));
 	}
@@ -727,14 +733,16 @@ static void rygel_external_media_object_base_init (RygelExternalMediaObjectIface
 
 
 GType rygel_external_media_object_get_type (void) {
-	static GType rygel_external_media_object_type_id = 0;
-	if (rygel_external_media_object_type_id == 0) {
+	static volatile gsize rygel_external_media_object_type_id__volatile = 0;
+	if (g_once_init_enter (&rygel_external_media_object_type_id__volatile)) {
 		static const GTypeInfo g_define_type_info = { sizeof (RygelExternalMediaObjectIface), (GBaseInitFunc) rygel_external_media_object_base_init, (GBaseFinalizeFunc) NULL, (GClassInitFunc) NULL, (GClassFinalizeFunc) NULL, NULL, 0, 0, (GInstanceInitFunc) NULL, NULL };
+		GType rygel_external_media_object_type_id;
 		rygel_external_media_object_type_id = g_type_register_static (G_TYPE_INTERFACE, "RygelExternalMediaObject", &g_define_type_info, 0);
 		g_type_interface_add_prerequisite (rygel_external_media_object_type_id, DBUS_TYPE_G_PROXY);
 		g_type_set_qdata (rygel_external_media_object_type_id, g_quark_from_string ("ValaDBusInterfaceProxyType"), &rygel_external_media_object_dbus_proxy_get_type);
+		g_once_init_leave (&rygel_external_media_object_type_id__volatile, rygel_external_media_object_type_id);
 	}
-	return rygel_external_media_object_type_id;
+	return rygel_external_media_object_type_id__volatile;
 }
 
 
@@ -798,6 +806,7 @@ static void rygel_external_media_object_dbus_proxy_init (RygelExternalMediaObjec
 
 
 static char* rygel_external_media_object_dbus_proxy_get_parent (RygelExternalMediaObject* self) {
+	DBusError _dbus_error;
 	DBusGConnection *_connection;
 	DBusMessage *_message, *_reply;
 	DBusMessageIter _iter, _subiter;
@@ -815,11 +824,27 @@ static char* rygel_external_media_object_dbus_proxy_get_parent (RygelExternalMed
 	_tmp12_ = "Parent";
 	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp12_);
 	g_object_get (self, "connection", &_connection, NULL);
-	_reply = dbus_connection_send_with_reply_and_block (dbus_g_connection_get_connection (_connection), _message, -1, NULL);
+	dbus_error_init (&_dbus_error);
+	_reply = dbus_connection_send_with_reply_and_block (dbus_g_connection_get_connection (_connection), _message, -1, &_dbus_error);
 	dbus_g_connection_unref (_connection);
 	dbus_message_unref (_message);
+	if (dbus_error_is_set (&_dbus_error)) {
+		g_critical ("file %s: line %d: uncaught error: %s (%s)", __FILE__, __LINE__, _dbus_error.message, _dbus_error.name);
+		dbus_error_free (&_dbus_error);
+		return NULL;
+	}
+	if (strcmp (dbus_message_get_signature (_reply), "v")) {
+		g_critical ("file %s: line %d: Invalid signature, expected \"%s\", got \"%s\"", __FILE__, __LINE__, "v", dbus_message_get_signature (_reply));
+		dbus_message_unref (_reply);
+		return NULL;
+	}
 	dbus_message_iter_init (_reply, &_iter);
 	dbus_message_iter_recurse (&_iter, &_subiter);
+	if (strcmp (dbus_message_iter_get_signature (&_subiter), "o")) {
+		g_critical ("file %s: line %d: Invalid signature, expected \"%s\", got \"%s\"", __FILE__, __LINE__, "o", dbus_message_iter_get_signature (&_subiter));
+		dbus_message_unref (_reply);
+		return NULL;
+	}
 	dbus_message_iter_get_basic (&_subiter, &_tmp13_);
 	dbus_message_iter_next (&_subiter);
 	_result = g_strdup (_tmp13_);
@@ -829,6 +854,7 @@ static char* rygel_external_media_object_dbus_proxy_get_parent (RygelExternalMed
 
 
 static void rygel_external_media_object_dbus_proxy_set_parent (RygelExternalMediaObject* self, const char* value) {
+	DBusError _dbus_error;
 	DBusGConnection *_connection;
 	DBusMessage *_message, *_reply;
 	DBusMessageIter _iter, _subiter;
@@ -849,15 +875,27 @@ static void rygel_external_media_object_dbus_proxy_set_parent (RygelExternalMedi
 	dbus_message_iter_append_basic (&_subiter, DBUS_TYPE_OBJECT_PATH, &_tmp16_);
 	dbus_message_iter_close_container (&_iter, &_subiter);
 	g_object_get (self, "connection", &_connection, NULL);
-	_reply = dbus_connection_send_with_reply_and_block (dbus_g_connection_get_connection (_connection), _message, -1, NULL);
+	dbus_error_init (&_dbus_error);
+	_reply = dbus_connection_send_with_reply_and_block (dbus_g_connection_get_connection (_connection), _message, -1, &_dbus_error);
 	dbus_g_connection_unref (_connection);
 	dbus_message_unref (_message);
+	if (dbus_error_is_set (&_dbus_error)) {
+		g_critical ("file %s: line %d: uncaught error: %s (%s)", __FILE__, __LINE__, _dbus_error.message, _dbus_error.name);
+		dbus_error_free (&_dbus_error);
+		return;
+	}
+	if (strcmp (dbus_message_get_signature (_reply), "")) {
+		g_critical ("file %s: line %d: Invalid signature, expected \"%s\", got \"%s\"", __FILE__, __LINE__, "", dbus_message_get_signature (_reply));
+		dbus_message_unref (_reply);
+		return;
+	}
 	dbus_message_iter_init (_reply, &_iter);
 	dbus_message_unref (_reply);
 }
 
 
 static char* rygel_external_media_object_dbus_proxy_get_display_name (RygelExternalMediaObject* self) {
+	DBusError _dbus_error;
 	DBusGConnection *_connection;
 	DBusMessage *_message, *_reply;
 	DBusMessageIter _iter, _subiter;
@@ -875,11 +913,27 @@ static char* rygel_external_media_object_dbus_proxy_get_display_name (RygelExter
 	_tmp18_ = "DisplayName";
 	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp18_);
 	g_object_get (self, "connection", &_connection, NULL);
-	_reply = dbus_connection_send_with_reply_and_block (dbus_g_connection_get_connection (_connection), _message, -1, NULL);
+	dbus_error_init (&_dbus_error);
+	_reply = dbus_connection_send_with_reply_and_block (dbus_g_connection_get_connection (_connection), _message, -1, &_dbus_error);
 	dbus_g_connection_unref (_connection);
 	dbus_message_unref (_message);
+	if (dbus_error_is_set (&_dbus_error)) {
+		g_critical ("file %s: line %d: uncaught error: %s (%s)", __FILE__, __LINE__, _dbus_error.message, _dbus_error.name);
+		dbus_error_free (&_dbus_error);
+		return NULL;
+	}
+	if (strcmp (dbus_message_get_signature (_reply), "v")) {
+		g_critical ("file %s: line %d: Invalid signature, expected \"%s\", got \"%s\"", __FILE__, __LINE__, "v", dbus_message_get_signature (_reply));
+		dbus_message_unref (_reply);
+		return NULL;
+	}
 	dbus_message_iter_init (_reply, &_iter);
 	dbus_message_iter_recurse (&_iter, &_subiter);
+	if (strcmp (dbus_message_iter_get_signature (&_subiter), "s")) {
+		g_critical ("file %s: line %d: Invalid signature, expected \"%s\", got \"%s\"", __FILE__, __LINE__, "s", dbus_message_iter_get_signature (&_subiter));
+		dbus_message_unref (_reply);
+		return NULL;
+	}
 	dbus_message_iter_get_basic (&_subiter, &_tmp19_);
 	dbus_message_iter_next (&_subiter);
 	_result = g_strdup (_tmp19_);
@@ -889,6 +943,7 @@ static char* rygel_external_media_object_dbus_proxy_get_display_name (RygelExter
 
 
 static void rygel_external_media_object_dbus_proxy_set_display_name (RygelExternalMediaObject* self, const char* value) {
+	DBusError _dbus_error;
 	DBusGConnection *_connection;
 	DBusMessage *_message, *_reply;
 	DBusMessageIter _iter, _subiter;
@@ -909,9 +964,20 @@ static void rygel_external_media_object_dbus_proxy_set_display_name (RygelExtern
 	dbus_message_iter_append_basic (&_subiter, DBUS_TYPE_STRING, &_tmp22_);
 	dbus_message_iter_close_container (&_iter, &_subiter);
 	g_object_get (self, "connection", &_connection, NULL);
-	_reply = dbus_connection_send_with_reply_and_block (dbus_g_connection_get_connection (_connection), _message, -1, NULL);
+	dbus_error_init (&_dbus_error);
+	_reply = dbus_connection_send_with_reply_and_block (dbus_g_connection_get_connection (_connection), _message, -1, &_dbus_error);
 	dbus_g_connection_unref (_connection);
 	dbus_message_unref (_message);
+	if (dbus_error_is_set (&_dbus_error)) {
+		g_critical ("file %s: line %d: uncaught error: %s (%s)", __FILE__, __LINE__, _dbus_error.message, _dbus_error.name);
+		dbus_error_free (&_dbus_error);
+		return;
+	}
+	if (strcmp (dbus_message_get_signature (_reply), "")) {
+		g_critical ("file %s: line %d: Invalid signature, expected \"%s\", got \"%s\"", __FILE__, __LINE__, "", dbus_message_get_signature (_reply));
+		dbus_message_unref (_reply);
+		return;
+	}
 	dbus_message_iter_init (_reply, &_iter);
 	dbus_message_unref (_reply);
 }
@@ -1397,7 +1463,7 @@ static void rygel_external_media_container_base_init (RygelExternalMediaContaine
 		initialized = TRUE;
 		g_object_interface_install_property (iface, g_param_spec_uint ("item-count", "item-count", "item-count", 0, G_MAXUINT, 0U, G_PARAM_STATIC_NAME | G_PARAM_STATIC_NICK | G_PARAM_STATIC_BLURB | G_PARAM_READABLE | G_PARAM_WRITABLE));
 		g_object_interface_install_property (iface, g_param_spec_uint ("container-count", "container-count", "container-count", 0, G_MAXUINT, 0U, G_PARAM_STATIC_NAME | G_PARAM_STATIC_NICK | G_PARAM_STATIC_BLURB | G_PARAM_READABLE | G_PARAM_WRITABLE));
-		g_object_interface_install_property (iface, g_param_spec_string ("icon", "icon", "icon", DBUS_TYPE_G_OBJECT_PATH, G_PARAM_STATIC_NAME | G_PARAM_STATIC_NICK | G_PARAM_STATIC_BLURB | G_PARAM_READABLE | G_PARAM_WRITABLE));
+		g_object_interface_install_property (iface, g_param_spec_string ("icon", "icon", "icon", NULL, G_PARAM_STATIC_NAME | G_PARAM_STATIC_NICK | G_PARAM_STATIC_BLURB | G_PARAM_READABLE | G_PARAM_WRITABLE));
 		g_signal_new ("updated", RYGEL_TYPE_EXTERNAL_MEDIA_CONTAINER, G_SIGNAL_RUN_LAST, 0, NULL, NULL, g_cclosure_marshal_VOID__VOID, G_TYPE_NONE, 0);
 		g_type_set_qdata (RYGEL_TYPE_EXTERNAL_MEDIA_CONTAINER, g_quark_from_static_string ("DBusObjectVTable"), (void*) (&_rygel_external_media_container_dbus_vtable));
 	}
@@ -1405,15 +1471,17 @@ static void rygel_external_media_container_base_init (RygelExternalMediaContaine
 
 
 GType rygel_external_media_container_get_type (void) {
-	static GType rygel_external_media_container_type_id = 0;
-	if (rygel_external_media_container_type_id == 0) {
+	static volatile gsize rygel_external_media_container_type_id__volatile = 0;
+	if (g_once_init_enter (&rygel_external_media_container_type_id__volatile)) {
 		static const GTypeInfo g_define_type_info = { sizeof (RygelExternalMediaContainerIface), (GBaseInitFunc) rygel_external_media_container_base_init, (GBaseFinalizeFunc) NULL, (GClassInitFunc) NULL, (GClassFinalizeFunc) NULL, NULL, 0, 0, (GInstanceInitFunc) NULL, NULL };
+		GType rygel_external_media_container_type_id;
 		rygel_external_media_container_type_id = g_type_register_static (G_TYPE_INTERFACE, "RygelExternalMediaContainer", &g_define_type_info, 0);
 		g_type_interface_add_prerequisite (rygel_external_media_container_type_id, DBUS_TYPE_G_PROXY);
 		g_type_interface_add_prerequisite (rygel_external_media_container_type_id, RYGEL_TYPE_EXTERNAL_MEDIA_OBJECT);
 		g_type_set_qdata (rygel_external_media_container_type_id, g_quark_from_string ("ValaDBusInterfaceProxyType"), &rygel_external_media_container_dbus_proxy_get_type);
+		g_once_init_leave (&rygel_external_media_container_type_id__volatile, rygel_external_media_container_type_id);
 	}
-	return rygel_external_media_container_type_id;
+	return rygel_external_media_container_type_id__volatile;
 }
 
 
@@ -1494,6 +1562,7 @@ static void rygel_external_media_container_dbus_proxy_init (RygelExternalMediaCo
 
 
 static char* rygel_external_media_container_dbus_proxy_get_parent (RygelExternalMediaObject* self) {
+	DBusError _dbus_error;
 	DBusGConnection *_connection;
 	DBusMessage *_message, *_reply;
 	DBusMessageIter _iter, _subiter;
@@ -1511,11 +1580,27 @@ static char* rygel_external_media_container_dbus_proxy_get_parent (RygelExternal
 	_tmp60_ = "Parent";
 	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp60_);
 	g_object_get (self, "connection", &_connection, NULL);
-	_reply = dbus_connection_send_with_reply_and_block (dbus_g_connection_get_connection (_connection), _message, -1, NULL);
+	dbus_error_init (&_dbus_error);
+	_reply = dbus_connection_send_with_reply_and_block (dbus_g_connection_get_connection (_connection), _message, -1, &_dbus_error);
 	dbus_g_connection_unref (_connection);
 	dbus_message_unref (_message);
+	if (dbus_error_is_set (&_dbus_error)) {
+		g_critical ("file %s: line %d: uncaught error: %s (%s)", __FILE__, __LINE__, _dbus_error.message, _dbus_error.name);
+		dbus_error_free (&_dbus_error);
+		return NULL;
+	}
+	if (strcmp (dbus_message_get_signature (_reply), "v")) {
+		g_critical ("file %s: line %d: Invalid signature, expected \"%s\", got \"%s\"", __FILE__, __LINE__, "v", dbus_message_get_signature (_reply));
+		dbus_message_unref (_reply);
+		return NULL;
+	}
 	dbus_message_iter_init (_reply, &_iter);
 	dbus_message_iter_recurse (&_iter, &_subiter);
+	if (strcmp (dbus_message_iter_get_signature (&_subiter), "o")) {
+		g_critical ("file %s: line %d: Invalid signature, expected \"%s\", got \"%s\"", __FILE__, __LINE__, "o", dbus_message_iter_get_signature (&_subiter));
+		dbus_message_unref (_reply);
+		return NULL;
+	}
 	dbus_message_iter_get_basic (&_subiter, &_tmp61_);
 	dbus_message_iter_next (&_subiter);
 	_result = g_strdup (_tmp61_);
@@ -1525,6 +1610,7 @@ static char* rygel_external_media_container_dbus_proxy_get_parent (RygelExternal
 
 
 static void rygel_external_media_container_dbus_proxy_set_parent (RygelExternalMediaObject* self, const char* value) {
+	DBusError _dbus_error;
 	DBusGConnection *_connection;
 	DBusMessage *_message, *_reply;
 	DBusMessageIter _iter, _subiter;
@@ -1545,15 +1631,27 @@ static void rygel_external_media_container_dbus_proxy_set_parent (RygelExternalM
 	dbus_message_iter_append_basic (&_subiter, DBUS_TYPE_OBJECT_PATH, &_tmp64_);
 	dbus_message_iter_close_container (&_iter, &_subiter);
 	g_object_get (self, "connection", &_connection, NULL);
-	_reply = dbus_connection_send_with_reply_and_block (dbus_g_connection_get_connection (_connection), _message, -1, NULL);
+	dbus_error_init (&_dbus_error);
+	_reply = dbus_connection_send_with_reply_and_block (dbus_g_connection_get_connection (_connection), _message, -1, &_dbus_error);
 	dbus_g_connection_unref (_connection);
 	dbus_message_unref (_message);
+	if (dbus_error_is_set (&_dbus_error)) {
+		g_critical ("file %s: line %d: uncaught error: %s (%s)", __FILE__, __LINE__, _dbus_error.message, _dbus_error.name);
+		dbus_error_free (&_dbus_error);
+		return;
+	}
+	if (strcmp (dbus_message_get_signature (_reply), "")) {
+		g_critical ("file %s: line %d: Invalid signature, expected \"%s\", got \"%s\"", __FILE__, __LINE__, "", dbus_message_get_signature (_reply));
+		dbus_message_unref (_reply);
+		return;
+	}
 	dbus_message_iter_init (_reply, &_iter);
 	dbus_message_unref (_reply);
 }
 
 
 static char* rygel_external_media_container_dbus_proxy_get_display_name (RygelExternalMediaObject* self) {
+	DBusError _dbus_error;
 	DBusGConnection *_connection;
 	DBusMessage *_message, *_reply;
 	DBusMessageIter _iter, _subiter;
@@ -1571,11 +1669,27 @@ static char* rygel_external_media_container_dbus_proxy_get_display_name (RygelEx
 	_tmp66_ = "DisplayName";
 	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp66_);
 	g_object_get (self, "connection", &_connection, NULL);
-	_reply = dbus_connection_send_with_reply_and_block (dbus_g_connection_get_connection (_connection), _message, -1, NULL);
+	dbus_error_init (&_dbus_error);
+	_reply = dbus_connection_send_with_reply_and_block (dbus_g_connection_get_connection (_connection), _message, -1, &_dbus_error);
 	dbus_g_connection_unref (_connection);
 	dbus_message_unref (_message);
+	if (dbus_error_is_set (&_dbus_error)) {
+		g_critical ("file %s: line %d: uncaught error: %s (%s)", __FILE__, __LINE__, _dbus_error.message, _dbus_error.name);
+		dbus_error_free (&_dbus_error);
+		return NULL;
+	}
+	if (strcmp (dbus_message_get_signature (_reply), "v")) {
+		g_critical ("file %s: line %d: Invalid signature, expected \"%s\", got \"%s\"", __FILE__, __LINE__, "v", dbus_message_get_signature (_reply));
+		dbus_message_unref (_reply);
+		return NULL;
+	}
 	dbus_message_iter_init (_reply, &_iter);
 	dbus_message_iter_recurse (&_iter, &_subiter);
+	if (strcmp (dbus_message_iter_get_signature (&_subiter), "s")) {
+		g_critical ("file %s: line %d: Invalid signature, expected \"%s\", got \"%s\"", __FILE__, __LINE__, "s", dbus_message_iter_get_signature (&_subiter));
+		dbus_message_unref (_reply);
+		return NULL;
+	}
 	dbus_message_iter_get_basic (&_subiter, &_tmp67_);
 	dbus_message_iter_next (&_subiter);
 	_result = g_strdup (_tmp67_);
@@ -1585,6 +1699,7 @@ static char* rygel_external_media_container_dbus_proxy_get_display_name (RygelEx
 
 
 static void rygel_external_media_container_dbus_proxy_set_display_name (RygelExternalMediaObject* self, const char* value) {
+	DBusError _dbus_error;
 	DBusGConnection *_connection;
 	DBusMessage *_message, *_reply;
 	DBusMessageIter _iter, _subiter;
@@ -1605,9 +1720,20 @@ static void rygel_external_media_container_dbus_proxy_set_display_name (RygelExt
 	dbus_message_iter_append_basic (&_subiter, DBUS_TYPE_STRING, &_tmp70_);
 	dbus_message_iter_close_container (&_iter, &_subiter);
 	g_object_get (self, "connection", &_connection, NULL);
-	_reply = dbus_connection_send_with_reply_and_block (dbus_g_connection_get_connection (_connection), _message, -1, NULL);
+	dbus_error_init (&_dbus_error);
+	_reply = dbus_connection_send_with_reply_and_block (dbus_g_connection_get_connection (_connection), _message, -1, &_dbus_error);
 	dbus_g_connection_unref (_connection);
 	dbus_message_unref (_message);
+	if (dbus_error_is_set (&_dbus_error)) {
+		g_critical ("file %s: line %d: uncaught error: %s (%s)", __FILE__, __LINE__, _dbus_error.message, _dbus_error.name);
+		dbus_error_free (&_dbus_error);
+		return;
+	}
+	if (strcmp (dbus_message_get_signature (_reply), "")) {
+		g_critical ("file %s: line %d: Invalid signature, expected \"%s\", got \"%s\"", __FILE__, __LINE__, "", dbus_message_get_signature (_reply));
+		dbus_message_unref (_reply);
+		return;
+	}
 	dbus_message_iter_init (_reply, &_iter);
 	dbus_message_unref (_reply);
 }
@@ -1622,6 +1748,7 @@ static void rygel_external_media_container_dbus_proxy_rygel_external_media_objec
 
 
 static char** rygel_external_media_container_dbus_proxy_get_items (RygelExternalMediaContainer* self, int* result_length1) {
+	DBusError _dbus_error;
 	DBusGConnection *_connection;
 	DBusMessage *_message, *_reply;
 	DBusMessageIter _iter, _subiter;
@@ -1644,11 +1771,27 @@ static char** rygel_external_media_container_dbus_proxy_get_items (RygelExternal
 	_tmp72_ = "Items";
 	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp72_);
 	g_object_get (self, "connection", &_connection, NULL);
-	_reply = dbus_connection_send_with_reply_and_block (dbus_g_connection_get_connection (_connection), _message, -1, NULL);
+	dbus_error_init (&_dbus_error);
+	_reply = dbus_connection_send_with_reply_and_block (dbus_g_connection_get_connection (_connection), _message, -1, &_dbus_error);
 	dbus_g_connection_unref (_connection);
 	dbus_message_unref (_message);
+	if (dbus_error_is_set (&_dbus_error)) {
+		g_critical ("file %s: line %d: uncaught error: %s (%s)", __FILE__, __LINE__, _dbus_error.message, _dbus_error.name);
+		dbus_error_free (&_dbus_error);
+		return NULL;
+	}
+	if (strcmp (dbus_message_get_signature (_reply), "v")) {
+		g_critical ("file %s: line %d: Invalid signature, expected \"%s\", got \"%s\"", __FILE__, __LINE__, "v", dbus_message_get_signature (_reply));
+		dbus_message_unref (_reply);
+		return NULL;
+	}
 	dbus_message_iter_init (_reply, &_iter);
 	dbus_message_iter_recurse (&_iter, &_subiter);
+	if (strcmp (dbus_message_iter_get_signature (&_subiter), "ao")) {
+		g_critical ("file %s: line %d: Invalid signature, expected \"%s\", got \"%s\"", __FILE__, __LINE__, "ao", dbus_message_iter_get_signature (&_subiter));
+		dbus_message_unref (_reply);
+		return NULL;
+	}
 	_result_length1 = 0;
 	_tmp73_ = g_new (char*, 5);
 	_tmp73__length = 0;
@@ -1676,6 +1819,7 @@ static char** rygel_external_media_container_dbus_proxy_get_items (RygelExternal
 
 
 static void rygel_external_media_container_dbus_proxy_set_items (RygelExternalMediaContainer* self, char** value, int value_length1) {
+	DBusError _dbus_error;
 	DBusGConnection *_connection;
 	DBusMessage *_message, *_reply;
 	DBusMessageIter _iter, _subiter;
@@ -1705,15 +1849,27 @@ static void rygel_external_media_container_dbus_proxy_set_items (RygelExternalMe
 	dbus_message_iter_close_container (&_subiter, &_tmp79_);
 	dbus_message_iter_close_container (&_iter, &_subiter);
 	g_object_get (self, "connection", &_connection, NULL);
-	_reply = dbus_connection_send_with_reply_and_block (dbus_g_connection_get_connection (_connection), _message, -1, NULL);
+	dbus_error_init (&_dbus_error);
+	_reply = dbus_connection_send_with_reply_and_block (dbus_g_connection_get_connection (_connection), _message, -1, &_dbus_error);
 	dbus_g_connection_unref (_connection);
 	dbus_message_unref (_message);
+	if (dbus_error_is_set (&_dbus_error)) {
+		g_critical ("file %s: line %d: uncaught error: %s (%s)", __FILE__, __LINE__, _dbus_error.message, _dbus_error.name);
+		dbus_error_free (&_dbus_error);
+		return;
+	}
+	if (strcmp (dbus_message_get_signature (_reply), "")) {
+		g_critical ("file %s: line %d: Invalid signature, expected \"%s\", got \"%s\"", __FILE__, __LINE__, "", dbus_message_get_signature (_reply));
+		dbus_message_unref (_reply);
+		return;
+	}
 	dbus_message_iter_init (_reply, &_iter);
 	dbus_message_unref (_reply);
 }
 
 
 static char** rygel_external_media_container_dbus_proxy_get_containers (RygelExternalMediaContainer* self, int* result_length1) {
+	DBusError _dbus_error;
 	DBusGConnection *_connection;
 	DBusMessage *_message, *_reply;
 	DBusMessageIter _iter, _subiter;
@@ -1736,11 +1892,27 @@ static char** rygel_external_media_container_dbus_proxy_get_containers (RygelExt
 	_tmp83_ = "Containers";
 	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp83_);
 	g_object_get (self, "connection", &_connection, NULL);
-	_reply = dbus_connection_send_with_reply_and_block (dbus_g_connection_get_connection (_connection), _message, -1, NULL);
+	dbus_error_init (&_dbus_error);
+	_reply = dbus_connection_send_with_reply_and_block (dbus_g_connection_get_connection (_connection), _message, -1, &_dbus_error);
 	dbus_g_connection_unref (_connection);
 	dbus_message_unref (_message);
+	if (dbus_error_is_set (&_dbus_error)) {
+		g_critical ("file %s: line %d: uncaught error: %s (%s)", __FILE__, __LINE__, _dbus_error.message, _dbus_error.name);
+		dbus_error_free (&_dbus_error);
+		return NULL;
+	}
+	if (strcmp (dbus_message_get_signature (_reply), "v")) {
+		g_critical ("file %s: line %d: Invalid signature, expected \"%s\", got \"%s\"", __FILE__, __LINE__, "v", dbus_message_get_signature (_reply));
+		dbus_message_unref (_reply);
+		return NULL;
+	}
 	dbus_message_iter_init (_reply, &_iter);
 	dbus_message_iter_recurse (&_iter, &_subiter);
+	if (strcmp (dbus_message_iter_get_signature (&_subiter), "ao")) {
+		g_critical ("file %s: line %d: Invalid signature, expected \"%s\", got \"%s\"", __FILE__, __LINE__, "ao", dbus_message_iter_get_signature (&_subiter));
+		dbus_message_unref (_reply);
+		return NULL;
+	}
 	_result_length1 = 0;
 	_tmp84_ = g_new (char*, 5);
 	_tmp84__length = 0;
@@ -1768,6 +1940,7 @@ static char** rygel_external_media_container_dbus_proxy_get_containers (RygelExt
 
 
 static void rygel_external_media_container_dbus_proxy_set_containers (RygelExternalMediaContainer* self, char** value, int value_length1) {
+	DBusError _dbus_error;
 	DBusGConnection *_connection;
 	DBusMessage *_message, *_reply;
 	DBusMessageIter _iter, _subiter;
@@ -1797,15 +1970,27 @@ static void rygel_external_media_container_dbus_proxy_set_containers (RygelExter
 	dbus_message_iter_close_container (&_subiter, &_tmp90_);
 	dbus_message_iter_close_container (&_iter, &_subiter);
 	g_object_get (self, "connection", &_connection, NULL);
-	_reply = dbus_connection_send_with_reply_and_block (dbus_g_connection_get_connection (_connection), _message, -1, NULL);
+	dbus_error_init (&_dbus_error);
+	_reply = dbus_connection_send_with_reply_and_block (dbus_g_connection_get_connection (_connection), _message, -1, &_dbus_error);
 	dbus_g_connection_unref (_connection);
 	dbus_message_unref (_message);
+	if (dbus_error_is_set (&_dbus_error)) {
+		g_critical ("file %s: line %d: uncaught error: %s (%s)", __FILE__, __LINE__, _dbus_error.message, _dbus_error.name);
+		dbus_error_free (&_dbus_error);
+		return;
+	}
+	if (strcmp (dbus_message_get_signature (_reply), "")) {
+		g_critical ("file %s: line %d: Invalid signature, expected \"%s\", got \"%s\"", __FILE__, __LINE__, "", dbus_message_get_signature (_reply));
+		dbus_message_unref (_reply);
+		return;
+	}
 	dbus_message_iter_init (_reply, &_iter);
 	dbus_message_unref (_reply);
 }
 
 
 static guint rygel_external_media_container_dbus_proxy_get_item_count (RygelExternalMediaContainer* self) {
+	DBusError _dbus_error;
 	DBusGConnection *_connection;
 	DBusMessage *_message, *_reply;
 	DBusMessageIter _iter, _subiter;
@@ -1823,11 +2008,27 @@ static guint rygel_external_media_container_dbus_proxy_get_item_count (RygelExte
 	_tmp94_ = "ItemCount";
 	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp94_);
 	g_object_get (self, "connection", &_connection, NULL);
-	_reply = dbus_connection_send_with_reply_and_block (dbus_g_connection_get_connection (_connection), _message, -1, NULL);
+	dbus_error_init (&_dbus_error);
+	_reply = dbus_connection_send_with_reply_and_block (dbus_g_connection_get_connection (_connection), _message, -1, &_dbus_error);
 	dbus_g_connection_unref (_connection);
 	dbus_message_unref (_message);
+	if (dbus_error_is_set (&_dbus_error)) {
+		g_critical ("file %s: line %d: uncaught error: %s (%s)", __FILE__, __LINE__, _dbus_error.message, _dbus_error.name);
+		dbus_error_free (&_dbus_error);
+		return 0U;
+	}
+	if (strcmp (dbus_message_get_signature (_reply), "v")) {
+		g_critical ("file %s: line %d: Invalid signature, expected \"%s\", got \"%s\"", __FILE__, __LINE__, "v", dbus_message_get_signature (_reply));
+		dbus_message_unref (_reply);
+		return 0U;
+	}
 	dbus_message_iter_init (_reply, &_iter);
 	dbus_message_iter_recurse (&_iter, &_subiter);
+	if (strcmp (dbus_message_iter_get_signature (&_subiter), "u")) {
+		g_critical ("file %s: line %d: Invalid signature, expected \"%s\", got \"%s\"", __FILE__, __LINE__, "u", dbus_message_iter_get_signature (&_subiter));
+		dbus_message_unref (_reply);
+		return 0U;
+	}
 	dbus_message_iter_get_basic (&_subiter, &_tmp95_);
 	dbus_message_iter_next (&_subiter);
 	_result = _tmp95_;
@@ -1837,6 +2038,7 @@ static guint rygel_external_media_container_dbus_proxy_get_item_count (RygelExte
 
 
 static void rygel_external_media_container_dbus_proxy_set_item_count (RygelExternalMediaContainer* self, guint value) {
+	DBusError _dbus_error;
 	DBusGConnection *_connection;
 	DBusMessage *_message, *_reply;
 	DBusMessageIter _iter, _subiter;
@@ -1857,15 +2059,27 @@ static void rygel_external_media_container_dbus_proxy_set_item_count (RygelExter
 	dbus_message_iter_append_basic (&_subiter, DBUS_TYPE_UINT32, &_tmp98_);
 	dbus_message_iter_close_container (&_iter, &_subiter);
 	g_object_get (self, "connection", &_connection, NULL);
-	_reply = dbus_connection_send_with_reply_and_block (dbus_g_connection_get_connection (_connection), _message, -1, NULL);
+	dbus_error_init (&_dbus_error);
+	_reply = dbus_connection_send_with_reply_and_block (dbus_g_connection_get_connection (_connection), _message, -1, &_dbus_error);
 	dbus_g_connection_unref (_connection);
 	dbus_message_unref (_message);
+	if (dbus_error_is_set (&_dbus_error)) {
+		g_critical ("file %s: line %d: uncaught error: %s (%s)", __FILE__, __LINE__, _dbus_error.message, _dbus_error.name);
+		dbus_error_free (&_dbus_error);
+		return;
+	}
+	if (strcmp (dbus_message_get_signature (_reply), "")) {
+		g_critical ("file %s: line %d: Invalid signature, expected \"%s\", got \"%s\"", __FILE__, __LINE__, "", dbus_message_get_signature (_reply));
+		dbus_message_unref (_reply);
+		return;
+	}
 	dbus_message_iter_init (_reply, &_iter);
 	dbus_message_unref (_reply);
 }
 
 
 static guint rygel_external_media_container_dbus_proxy_get_container_count (RygelExternalMediaContainer* self) {
+	DBusError _dbus_error;
 	DBusGConnection *_connection;
 	DBusMessage *_message, *_reply;
 	DBusMessageIter _iter, _subiter;
@@ -1883,11 +2097,27 @@ static guint rygel_external_media_container_dbus_proxy_get_container_count (Ryge
 	_tmp100_ = "ContainerCount";
 	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp100_);
 	g_object_get (self, "connection", &_connection, NULL);
-	_reply = dbus_connection_send_with_reply_and_block (dbus_g_connection_get_connection (_connection), _message, -1, NULL);
+	dbus_error_init (&_dbus_error);
+	_reply = dbus_connection_send_with_reply_and_block (dbus_g_connection_get_connection (_connection), _message, -1, &_dbus_error);
 	dbus_g_connection_unref (_connection);
 	dbus_message_unref (_message);
+	if (dbus_error_is_set (&_dbus_error)) {
+		g_critical ("file %s: line %d: uncaught error: %s (%s)", __FILE__, __LINE__, _dbus_error.message, _dbus_error.name);
+		dbus_error_free (&_dbus_error);
+		return 0U;
+	}
+	if (strcmp (dbus_message_get_signature (_reply), "v")) {
+		g_critical ("file %s: line %d: Invalid signature, expected \"%s\", got \"%s\"", __FILE__, __LINE__, "v", dbus_message_get_signature (_reply));
+		dbus_message_unref (_reply);
+		return 0U;
+	}
 	dbus_message_iter_init (_reply, &_iter);
 	dbus_message_iter_recurse (&_iter, &_subiter);
+	if (strcmp (dbus_message_iter_get_signature (&_subiter), "u")) {
+		g_critical ("file %s: line %d: Invalid signature, expected \"%s\", got \"%s\"", __FILE__, __LINE__, "u", dbus_message_iter_get_signature (&_subiter));
+		dbus_message_unref (_reply);
+		return 0U;
+	}
 	dbus_message_iter_get_basic (&_subiter, &_tmp101_);
 	dbus_message_iter_next (&_subiter);
 	_result = _tmp101_;
@@ -1897,6 +2127,7 @@ static guint rygel_external_media_container_dbus_proxy_get_container_count (Ryge
 
 
 static void rygel_external_media_container_dbus_proxy_set_container_count (RygelExternalMediaContainer* self, guint value) {
+	DBusError _dbus_error;
 	DBusGConnection *_connection;
 	DBusMessage *_message, *_reply;
 	DBusMessageIter _iter, _subiter;
@@ -1917,15 +2148,27 @@ static void rygel_external_media_container_dbus_proxy_set_container_count (Rygel
 	dbus_message_iter_append_basic (&_subiter, DBUS_TYPE_UINT32, &_tmp104_);
 	dbus_message_iter_close_container (&_iter, &_subiter);
 	g_object_get (self, "connection", &_connection, NULL);
-	_reply = dbus_connection_send_with_reply_and_block (dbus_g_connection_get_connection (_connection), _message, -1, NULL);
+	dbus_error_init (&_dbus_error);
+	_reply = dbus_connection_send_with_reply_and_block (dbus_g_connection_get_connection (_connection), _message, -1, &_dbus_error);
 	dbus_g_connection_unref (_connection);
 	dbus_message_unref (_message);
+	if (dbus_error_is_set (&_dbus_error)) {
+		g_critical ("file %s: line %d: uncaught error: %s (%s)", __FILE__, __LINE__, _dbus_error.message, _dbus_error.name);
+		dbus_error_free (&_dbus_error);
+		return;
+	}
+	if (strcmp (dbus_message_get_signature (_reply), "")) {
+		g_critical ("file %s: line %d: Invalid signature, expected \"%s\", got \"%s\"", __FILE__, __LINE__, "", dbus_message_get_signature (_reply));
+		dbus_message_unref (_reply);
+		return;
+	}
 	dbus_message_iter_init (_reply, &_iter);
 	dbus_message_unref (_reply);
 }
 
 
 static char* rygel_external_media_container_dbus_proxy_get_icon (RygelExternalMediaContainer* self) {
+	DBusError _dbus_error;
 	DBusGConnection *_connection;
 	DBusMessage *_message, *_reply;
 	DBusMessageIter _iter, _subiter;
@@ -1943,11 +2186,27 @@ static char* rygel_external_media_container_dbus_proxy_get_icon (RygelExternalMe
 	_tmp106_ = "Icon";
 	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp106_);
 	g_object_get (self, "connection", &_connection, NULL);
-	_reply = dbus_connection_send_with_reply_and_block (dbus_g_connection_get_connection (_connection), _message, -1, NULL);
+	dbus_error_init (&_dbus_error);
+	_reply = dbus_connection_send_with_reply_and_block (dbus_g_connection_get_connection (_connection), _message, -1, &_dbus_error);
 	dbus_g_connection_unref (_connection);
 	dbus_message_unref (_message);
+	if (dbus_error_is_set (&_dbus_error)) {
+		g_critical ("file %s: line %d: uncaught error: %s (%s)", __FILE__, __LINE__, _dbus_error.message, _dbus_error.name);
+		dbus_error_free (&_dbus_error);
+		return NULL;
+	}
+	if (strcmp (dbus_message_get_signature (_reply), "v")) {
+		g_critical ("file %s: line %d: Invalid signature, expected \"%s\", got \"%s\"", __FILE__, __LINE__, "v", dbus_message_get_signature (_reply));
+		dbus_message_unref (_reply);
+		return NULL;
+	}
 	dbus_message_iter_init (_reply, &_iter);
 	dbus_message_iter_recurse (&_iter, &_subiter);
+	if (strcmp (dbus_message_iter_get_signature (&_subiter), "o")) {
+		g_critical ("file %s: line %d: Invalid signature, expected \"%s\", got \"%s\"", __FILE__, __LINE__, "o", dbus_message_iter_get_signature (&_subiter));
+		dbus_message_unref (_reply);
+		return NULL;
+	}
 	dbus_message_iter_get_basic (&_subiter, &_tmp107_);
 	dbus_message_iter_next (&_subiter);
 	_result = g_strdup (_tmp107_);
@@ -1957,6 +2216,7 @@ static char* rygel_external_media_container_dbus_proxy_get_icon (RygelExternalMe
 
 
 static void rygel_external_media_container_dbus_proxy_set_icon (RygelExternalMediaContainer* self, const char* value) {
+	DBusError _dbus_error;
 	DBusGConnection *_connection;
 	DBusMessage *_message, *_reply;
 	DBusMessageIter _iter, _subiter;
@@ -1977,9 +2237,20 @@ static void rygel_external_media_container_dbus_proxy_set_icon (RygelExternalMed
 	dbus_message_iter_append_basic (&_subiter, DBUS_TYPE_OBJECT_PATH, &_tmp110_);
 	dbus_message_iter_close_container (&_iter, &_subiter);
 	g_object_get (self, "connection", &_connection, NULL);
-	_reply = dbus_connection_send_with_reply_and_block (dbus_g_connection_get_connection (_connection), _message, -1, NULL);
+	dbus_error_init (&_dbus_error);
+	_reply = dbus_connection_send_with_reply_and_block (dbus_g_connection_get_connection (_connection), _message, -1, &_dbus_error);
 	dbus_g_connection_unref (_connection);
 	dbus_message_unref (_message);
+	if (dbus_error_is_set (&_dbus_error)) {
+		g_critical ("file %s: line %d: uncaught error: %s (%s)", __FILE__, __LINE__, _dbus_error.message, _dbus_error.name);
+		dbus_error_free (&_dbus_error);
+		return;
+	}
+	if (strcmp (dbus_message_get_signature (_reply), "")) {
+		g_critical ("file %s: line %d: Invalid signature, expected \"%s\", got \"%s\"", __FILE__, __LINE__, "", dbus_message_get_signature (_reply));
+		dbus_message_unref (_reply);
+		return;
+	}
 	dbus_message_iter_init (_reply, &_iter);
 	dbus_message_unref (_reply);
 }
@@ -2945,23 +3216,25 @@ static void rygel_external_media_item_base_init (RygelExternalMediaItemIface * i
 		g_object_interface_install_property (iface, g_param_spec_int ("width", "width", "width", G_MININT, G_MAXINT, 0, G_PARAM_STATIC_NAME | G_PARAM_STATIC_NICK | G_PARAM_STATIC_BLURB | G_PARAM_READABLE | G_PARAM_WRITABLE));
 		g_object_interface_install_property (iface, g_param_spec_int ("height", "height", "height", G_MININT, G_MAXINT, 0, G_PARAM_STATIC_NAME | G_PARAM_STATIC_NICK | G_PARAM_STATIC_BLURB | G_PARAM_READABLE | G_PARAM_WRITABLE));
 		g_object_interface_install_property (iface, g_param_spec_int ("color-depth", "color-depth", "color-depth", G_MININT, G_MAXINT, 0, G_PARAM_STATIC_NAME | G_PARAM_STATIC_NICK | G_PARAM_STATIC_BLURB | G_PARAM_READABLE | G_PARAM_WRITABLE));
-		g_object_interface_install_property (iface, g_param_spec_string ("thumbnail", "thumbnail", "thumbnail", DBUS_TYPE_G_OBJECT_PATH, G_PARAM_STATIC_NAME | G_PARAM_STATIC_NICK | G_PARAM_STATIC_BLURB | G_PARAM_READABLE | G_PARAM_WRITABLE));
-		g_object_interface_install_property (iface, g_param_spec_string ("album-art", "album-art", "album-art", DBUS_TYPE_G_OBJECT_PATH, G_PARAM_STATIC_NAME | G_PARAM_STATIC_NICK | G_PARAM_STATIC_BLURB | G_PARAM_READABLE | G_PARAM_WRITABLE));
+		g_object_interface_install_property (iface, g_param_spec_string ("thumbnail", "thumbnail", "thumbnail", NULL, G_PARAM_STATIC_NAME | G_PARAM_STATIC_NICK | G_PARAM_STATIC_BLURB | G_PARAM_READABLE | G_PARAM_WRITABLE));
+		g_object_interface_install_property (iface, g_param_spec_string ("album-art", "album-art", "album-art", NULL, G_PARAM_STATIC_NAME | G_PARAM_STATIC_NICK | G_PARAM_STATIC_BLURB | G_PARAM_READABLE | G_PARAM_WRITABLE));
 		g_type_set_qdata (RYGEL_TYPE_EXTERNAL_MEDIA_ITEM, g_quark_from_static_string ("DBusObjectVTable"), (void*) (&_rygel_external_media_item_dbus_vtable));
 	}
 }
 
 
 GType rygel_external_media_item_get_type (void) {
-	static GType rygel_external_media_item_type_id = 0;
-	if (rygel_external_media_item_type_id == 0) {
+	static volatile gsize rygel_external_media_item_type_id__volatile = 0;
+	if (g_once_init_enter (&rygel_external_media_item_type_id__volatile)) {
 		static const GTypeInfo g_define_type_info = { sizeof (RygelExternalMediaItemIface), (GBaseInitFunc) rygel_external_media_item_base_init, (GBaseFinalizeFunc) NULL, (GClassInitFunc) NULL, (GClassFinalizeFunc) NULL, NULL, 0, 0, (GInstanceInitFunc) NULL, NULL };
+		GType rygel_external_media_item_type_id;
 		rygel_external_media_item_type_id = g_type_register_static (G_TYPE_INTERFACE, "RygelExternalMediaItem", &g_define_type_info, 0);
 		g_type_interface_add_prerequisite (rygel_external_media_item_type_id, DBUS_TYPE_G_PROXY);
 		g_type_interface_add_prerequisite (rygel_external_media_item_type_id, RYGEL_TYPE_EXTERNAL_MEDIA_OBJECT);
 		g_type_set_qdata (rygel_external_media_item_type_id, g_quark_from_string ("ValaDBusInterfaceProxyType"), &rygel_external_media_item_dbus_proxy_get_type);
+		g_once_init_leave (&rygel_external_media_item_type_id__volatile, rygel_external_media_item_type_id);
 	}
-	return rygel_external_media_item_type_id;
+	return rygel_external_media_item_type_id__volatile;
 }
 
 
@@ -3042,6 +3315,7 @@ static void rygel_external_media_item_dbus_proxy_init (RygelExternalMediaItemDBu
 
 
 static char* rygel_external_media_item_dbus_proxy_get_parent (RygelExternalMediaObject* self) {
+	DBusError _dbus_error;
 	DBusGConnection *_connection;
 	DBusMessage *_message, *_reply;
 	DBusMessageIter _iter, _subiter;
@@ -3059,11 +3333,27 @@ static char* rygel_external_media_item_dbus_proxy_get_parent (RygelExternalMedia
 	_tmp179_ = "Parent";
 	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp179_);
 	g_object_get (self, "connection", &_connection, NULL);
-	_reply = dbus_connection_send_with_reply_and_block (dbus_g_connection_get_connection (_connection), _message, -1, NULL);
+	dbus_error_init (&_dbus_error);
+	_reply = dbus_connection_send_with_reply_and_block (dbus_g_connection_get_connection (_connection), _message, -1, &_dbus_error);
 	dbus_g_connection_unref (_connection);
 	dbus_message_unref (_message);
+	if (dbus_error_is_set (&_dbus_error)) {
+		g_critical ("file %s: line %d: uncaught error: %s (%s)", __FILE__, __LINE__, _dbus_error.message, _dbus_error.name);
+		dbus_error_free (&_dbus_error);
+		return NULL;
+	}
+	if (strcmp (dbus_message_get_signature (_reply), "v")) {
+		g_critical ("file %s: line %d: Invalid signature, expected \"%s\", got \"%s\"", __FILE__, __LINE__, "v", dbus_message_get_signature (_reply));
+		dbus_message_unref (_reply);
+		return NULL;
+	}
 	dbus_message_iter_init (_reply, &_iter);
 	dbus_message_iter_recurse (&_iter, &_subiter);
+	if (strcmp (dbus_message_iter_get_signature (&_subiter), "o")) {
+		g_critical ("file %s: line %d: Invalid signature, expected \"%s\", got \"%s\"", __FILE__, __LINE__, "o", dbus_message_iter_get_signature (&_subiter));
+		dbus_message_unref (_reply);
+		return NULL;
+	}
 	dbus_message_iter_get_basic (&_subiter, &_tmp180_);
 	dbus_message_iter_next (&_subiter);
 	_result = g_strdup (_tmp180_);
@@ -3073,6 +3363,7 @@ static char* rygel_external_media_item_dbus_proxy_get_parent (RygelExternalMedia
 
 
 static void rygel_external_media_item_dbus_proxy_set_parent (RygelExternalMediaObject* self, const char* value) {
+	DBusError _dbus_error;
 	DBusGConnection *_connection;
 	DBusMessage *_message, *_reply;
 	DBusMessageIter _iter, _subiter;
@@ -3093,15 +3384,27 @@ static void rygel_external_media_item_dbus_proxy_set_parent (RygelExternalMediaO
 	dbus_message_iter_append_basic (&_subiter, DBUS_TYPE_OBJECT_PATH, &_tmp183_);
 	dbus_message_iter_close_container (&_iter, &_subiter);
 	g_object_get (self, "connection", &_connection, NULL);
-	_reply = dbus_connection_send_with_reply_and_block (dbus_g_connection_get_connection (_connection), _message, -1, NULL);
+	dbus_error_init (&_dbus_error);
+	_reply = dbus_connection_send_with_reply_and_block (dbus_g_connection_get_connection (_connection), _message, -1, &_dbus_error);
 	dbus_g_connection_unref (_connection);
 	dbus_message_unref (_message);
+	if (dbus_error_is_set (&_dbus_error)) {
+		g_critical ("file %s: line %d: uncaught error: %s (%s)", __FILE__, __LINE__, _dbus_error.message, _dbus_error.name);
+		dbus_error_free (&_dbus_error);
+		return;
+	}
+	if (strcmp (dbus_message_get_signature (_reply), "")) {
+		g_critical ("file %s: line %d: Invalid signature, expected \"%s\", got \"%s\"", __FILE__, __LINE__, "", dbus_message_get_signature (_reply));
+		dbus_message_unref (_reply);
+		return;
+	}
 	dbus_message_iter_init (_reply, &_iter);
 	dbus_message_unref (_reply);
 }
 
 
 static char* rygel_external_media_item_dbus_proxy_get_display_name (RygelExternalMediaObject* self) {
+	DBusError _dbus_error;
 	DBusGConnection *_connection;
 	DBusMessage *_message, *_reply;
 	DBusMessageIter _iter, _subiter;
@@ -3119,11 +3422,27 @@ static char* rygel_external_media_item_dbus_proxy_get_display_name (RygelExterna
 	_tmp185_ = "DisplayName";
 	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp185_);
 	g_object_get (self, "connection", &_connection, NULL);
-	_reply = dbus_connection_send_with_reply_and_block (dbus_g_connection_get_connection (_connection), _message, -1, NULL);
+	dbus_error_init (&_dbus_error);
+	_reply = dbus_connection_send_with_reply_and_block (dbus_g_connection_get_connection (_connection), _message, -1, &_dbus_error);
 	dbus_g_connection_unref (_connection);
 	dbus_message_unref (_message);
+	if (dbus_error_is_set (&_dbus_error)) {
+		g_critical ("file %s: line %d: uncaught error: %s (%s)", __FILE__, __LINE__, _dbus_error.message, _dbus_error.name);
+		dbus_error_free (&_dbus_error);
+		return NULL;
+	}
+	if (strcmp (dbus_message_get_signature (_reply), "v")) {
+		g_critical ("file %s: line %d: Invalid signature, expected \"%s\", got \"%s\"", __FILE__, __LINE__, "v", dbus_message_get_signature (_reply));
+		dbus_message_unref (_reply);
+		return NULL;
+	}
 	dbus_message_iter_init (_reply, &_iter);
 	dbus_message_iter_recurse (&_iter, &_subiter);
+	if (strcmp (dbus_message_iter_get_signature (&_subiter), "s")) {
+		g_critical ("file %s: line %d: Invalid signature, expected \"%s\", got \"%s\"", __FILE__, __LINE__, "s", dbus_message_iter_get_signature (&_subiter));
+		dbus_message_unref (_reply);
+		return NULL;
+	}
 	dbus_message_iter_get_basic (&_subiter, &_tmp186_);
 	dbus_message_iter_next (&_subiter);
 	_result = g_strdup (_tmp186_);
@@ -3133,6 +3452,7 @@ static char* rygel_external_media_item_dbus_proxy_get_display_name (RygelExterna
 
 
 static void rygel_external_media_item_dbus_proxy_set_display_name (RygelExternalMediaObject* self, const char* value) {
+	DBusError _dbus_error;
 	DBusGConnection *_connection;
 	DBusMessage *_message, *_reply;
 	DBusMessageIter _iter, _subiter;
@@ -3153,9 +3473,20 @@ static void rygel_external_media_item_dbus_proxy_set_display_name (RygelExternal
 	dbus_message_iter_append_basic (&_subiter, DBUS_TYPE_STRING, &_tmp189_);
 	dbus_message_iter_close_container (&_iter, &_subiter);
 	g_object_get (self, "connection", &_connection, NULL);
-	_reply = dbus_connection_send_with_reply_and_block (dbus_g_connection_get_connection (_connection), _message, -1, NULL);
+	dbus_error_init (&_dbus_error);
+	_reply = dbus_connection_send_with_reply_and_block (dbus_g_connection_get_connection (_connection), _message, -1, &_dbus_error);
 	dbus_g_connection_unref (_connection);
 	dbus_message_unref (_message);
+	if (dbus_error_is_set (&_dbus_error)) {
+		g_critical ("file %s: line %d: uncaught error: %s (%s)", __FILE__, __LINE__, _dbus_error.message, _dbus_error.name);
+		dbus_error_free (&_dbus_error);
+		return;
+	}
+	if (strcmp (dbus_message_get_signature (_reply), "")) {
+		g_critical ("file %s: line %d: Invalid signature, expected \"%s\", got \"%s\"", __FILE__, __LINE__, "", dbus_message_get_signature (_reply));
+		dbus_message_unref (_reply);
+		return;
+	}
 	dbus_message_iter_init (_reply, &_iter);
 	dbus_message_unref (_reply);
 }
@@ -3170,6 +3501,7 @@ static void rygel_external_media_item_dbus_proxy_rygel_external_media_object__in
 
 
 static char** rygel_external_media_item_dbus_proxy_get_urls (RygelExternalMediaItem* self, int* result_length1) {
+	DBusError _dbus_error;
 	DBusGConnection *_connection;
 	DBusMessage *_message, *_reply;
 	DBusMessageIter _iter, _subiter;
@@ -3192,11 +3524,27 @@ static char** rygel_external_media_item_dbus_proxy_get_urls (RygelExternalMediaI
 	_tmp191_ = "URLs";
 	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp191_);
 	g_object_get (self, "connection", &_connection, NULL);
-	_reply = dbus_connection_send_with_reply_and_block (dbus_g_connection_get_connection (_connection), _message, -1, NULL);
+	dbus_error_init (&_dbus_error);
+	_reply = dbus_connection_send_with_reply_and_block (dbus_g_connection_get_connection (_connection), _message, -1, &_dbus_error);
 	dbus_g_connection_unref (_connection);
 	dbus_message_unref (_message);
+	if (dbus_error_is_set (&_dbus_error)) {
+		g_critical ("file %s: line %d: uncaught error: %s (%s)", __FILE__, __LINE__, _dbus_error.message, _dbus_error.name);
+		dbus_error_free (&_dbus_error);
+		return NULL;
+	}
+	if (strcmp (dbus_message_get_signature (_reply), "v")) {
+		g_critical ("file %s: line %d: Invalid signature, expected \"%s\", got \"%s\"", __FILE__, __LINE__, "v", dbus_message_get_signature (_reply));
+		dbus_message_unref (_reply);
+		return NULL;
+	}
 	dbus_message_iter_init (_reply, &_iter);
 	dbus_message_iter_recurse (&_iter, &_subiter);
+	if (strcmp (dbus_message_iter_get_signature (&_subiter), "as")) {
+		g_critical ("file %s: line %d: Invalid signature, expected \"%s\", got \"%s\"", __FILE__, __LINE__, "as", dbus_message_iter_get_signature (&_subiter));
+		dbus_message_unref (_reply);
+		return NULL;
+	}
 	_result_length1 = 0;
 	_tmp192_ = g_new (char*, 5);
 	_tmp192__length = 0;
@@ -3224,6 +3572,7 @@ static char** rygel_external_media_item_dbus_proxy_get_urls (RygelExternalMediaI
 
 
 static void rygel_external_media_item_dbus_proxy_set_urls (RygelExternalMediaItem* self, char** value, int value_length1) {
+	DBusError _dbus_error;
 	DBusGConnection *_connection;
 	DBusMessage *_message, *_reply;
 	DBusMessageIter _iter, _subiter;
@@ -3253,15 +3602,27 @@ static void rygel_external_media_item_dbus_proxy_set_urls (RygelExternalMediaIte
 	dbus_message_iter_close_container (&_subiter, &_tmp198_);
 	dbus_message_iter_close_container (&_iter, &_subiter);
 	g_object_get (self, "connection", &_connection, NULL);
-	_reply = dbus_connection_send_with_reply_and_block (dbus_g_connection_get_connection (_connection), _message, -1, NULL);
+	dbus_error_init (&_dbus_error);
+	_reply = dbus_connection_send_with_reply_and_block (dbus_g_connection_get_connection (_connection), _message, -1, &_dbus_error);
 	dbus_g_connection_unref (_connection);
 	dbus_message_unref (_message);
+	if (dbus_error_is_set (&_dbus_error)) {
+		g_critical ("file %s: line %d: uncaught error: %s (%s)", __FILE__, __LINE__, _dbus_error.message, _dbus_error.name);
+		dbus_error_free (&_dbus_error);
+		return;
+	}
+	if (strcmp (dbus_message_get_signature (_reply), "")) {
+		g_critical ("file %s: line %d: Invalid signature, expected \"%s\", got \"%s\"", __FILE__, __LINE__, "", dbus_message_get_signature (_reply));
+		dbus_message_unref (_reply);
+		return;
+	}
 	dbus_message_iter_init (_reply, &_iter);
 	dbus_message_unref (_reply);
 }
 
 
 static char* rygel_external_media_item_dbus_proxy_get_mime_type (RygelExternalMediaItem* self) {
+	DBusError _dbus_error;
 	DBusGConnection *_connection;
 	DBusMessage *_message, *_reply;
 	DBusMessageIter _iter, _subiter;
@@ -3279,11 +3640,27 @@ static char* rygel_external_media_item_dbus_proxy_get_mime_type (RygelExternalMe
 	_tmp202_ = "MimeType";
 	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp202_);
 	g_object_get (self, "connection", &_connection, NULL);
-	_reply = dbus_connection_send_with_reply_and_block (dbus_g_connection_get_connection (_connection), _message, -1, NULL);
+	dbus_error_init (&_dbus_error);
+	_reply = dbus_connection_send_with_reply_and_block (dbus_g_connection_get_connection (_connection), _message, -1, &_dbus_error);
 	dbus_g_connection_unref (_connection);
 	dbus_message_unref (_message);
+	if (dbus_error_is_set (&_dbus_error)) {
+		g_critical ("file %s: line %d: uncaught error: %s (%s)", __FILE__, __LINE__, _dbus_error.message, _dbus_error.name);
+		dbus_error_free (&_dbus_error);
+		return NULL;
+	}
+	if (strcmp (dbus_message_get_signature (_reply), "v")) {
+		g_critical ("file %s: line %d: Invalid signature, expected \"%s\", got \"%s\"", __FILE__, __LINE__, "v", dbus_message_get_signature (_reply));
+		dbus_message_unref (_reply);
+		return NULL;
+	}
 	dbus_message_iter_init (_reply, &_iter);
 	dbus_message_iter_recurse (&_iter, &_subiter);
+	if (strcmp (dbus_message_iter_get_signature (&_subiter), "s")) {
+		g_critical ("file %s: line %d: Invalid signature, expected \"%s\", got \"%s\"", __FILE__, __LINE__, "s", dbus_message_iter_get_signature (&_subiter));
+		dbus_message_unref (_reply);
+		return NULL;
+	}
 	dbus_message_iter_get_basic (&_subiter, &_tmp203_);
 	dbus_message_iter_next (&_subiter);
 	_result = g_strdup (_tmp203_);
@@ -3293,6 +3670,7 @@ static char* rygel_external_media_item_dbus_proxy_get_mime_type (RygelExternalMe
 
 
 static void rygel_external_media_item_dbus_proxy_set_mime_type (RygelExternalMediaItem* self, const char* value) {
+	DBusError _dbus_error;
 	DBusGConnection *_connection;
 	DBusMessage *_message, *_reply;
 	DBusMessageIter _iter, _subiter;
@@ -3313,15 +3691,27 @@ static void rygel_external_media_item_dbus_proxy_set_mime_type (RygelExternalMed
 	dbus_message_iter_append_basic (&_subiter, DBUS_TYPE_STRING, &_tmp206_);
 	dbus_message_iter_close_container (&_iter, &_subiter);
 	g_object_get (self, "connection", &_connection, NULL);
-	_reply = dbus_connection_send_with_reply_and_block (dbus_g_connection_get_connection (_connection), _message, -1, NULL);
+	dbus_error_init (&_dbus_error);
+	_reply = dbus_connection_send_with_reply_and_block (dbus_g_connection_get_connection (_connection), _message, -1, &_dbus_error);
 	dbus_g_connection_unref (_connection);
 	dbus_message_unref (_message);
+	if (dbus_error_is_set (&_dbus_error)) {
+		g_critical ("file %s: line %d: uncaught error: %s (%s)", __FILE__, __LINE__, _dbus_error.message, _dbus_error.name);
+		dbus_error_free (&_dbus_error);
+		return;
+	}
+	if (strcmp (dbus_message_get_signature (_reply), "")) {
+		g_critical ("file %s: line %d: Invalid signature, expected \"%s\", got \"%s\"", __FILE__, __LINE__, "", dbus_message_get_signature (_reply));
+		dbus_message_unref (_reply);
+		return;
+	}
 	dbus_message_iter_init (_reply, &_iter);
 	dbus_message_unref (_reply);
 }
 
 
 static char* rygel_external_media_item_dbus_proxy_get_media_type (RygelExternalMediaItem* self) {
+	DBusError _dbus_error;
 	DBusGConnection *_connection;
 	DBusMessage *_message, *_reply;
 	DBusMessageIter _iter, _subiter;
@@ -3339,11 +3729,27 @@ static char* rygel_external_media_item_dbus_proxy_get_media_type (RygelExternalM
 	_tmp208_ = "Type";
 	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp208_);
 	g_object_get (self, "connection", &_connection, NULL);
-	_reply = dbus_connection_send_with_reply_and_block (dbus_g_connection_get_connection (_connection), _message, -1, NULL);
+	dbus_error_init (&_dbus_error);
+	_reply = dbus_connection_send_with_reply_and_block (dbus_g_connection_get_connection (_connection), _message, -1, &_dbus_error);
 	dbus_g_connection_unref (_connection);
 	dbus_message_unref (_message);
+	if (dbus_error_is_set (&_dbus_error)) {
+		g_critical ("file %s: line %d: uncaught error: %s (%s)", __FILE__, __LINE__, _dbus_error.message, _dbus_error.name);
+		dbus_error_free (&_dbus_error);
+		return NULL;
+	}
+	if (strcmp (dbus_message_get_signature (_reply), "v")) {
+		g_critical ("file %s: line %d: Invalid signature, expected \"%s\", got \"%s\"", __FILE__, __LINE__, "v", dbus_message_get_signature (_reply));
+		dbus_message_unref (_reply);
+		return NULL;
+	}
 	dbus_message_iter_init (_reply, &_iter);
 	dbus_message_iter_recurse (&_iter, &_subiter);
+	if (strcmp (dbus_message_iter_get_signature (&_subiter), "s")) {
+		g_critical ("file %s: line %d: Invalid signature, expected \"%s\", got \"%s\"", __FILE__, __LINE__, "s", dbus_message_iter_get_signature (&_subiter));
+		dbus_message_unref (_reply);
+		return NULL;
+	}
 	dbus_message_iter_get_basic (&_subiter, &_tmp209_);
 	dbus_message_iter_next (&_subiter);
 	_result = g_strdup (_tmp209_);
@@ -3353,6 +3759,7 @@ static char* rygel_external_media_item_dbus_proxy_get_media_type (RygelExternalM
 
 
 static void rygel_external_media_item_dbus_proxy_set_media_type (RygelExternalMediaItem* self, const char* value) {
+	DBusError _dbus_error;
 	DBusGConnection *_connection;
 	DBusMessage *_message, *_reply;
 	DBusMessageIter _iter, _subiter;
@@ -3373,15 +3780,27 @@ static void rygel_external_media_item_dbus_proxy_set_media_type (RygelExternalMe
 	dbus_message_iter_append_basic (&_subiter, DBUS_TYPE_STRING, &_tmp212_);
 	dbus_message_iter_close_container (&_iter, &_subiter);
 	g_object_get (self, "connection", &_connection, NULL);
-	_reply = dbus_connection_send_with_reply_and_block (dbus_g_connection_get_connection (_connection), _message, -1, NULL);
+	dbus_error_init (&_dbus_error);
+	_reply = dbus_connection_send_with_reply_and_block (dbus_g_connection_get_connection (_connection), _message, -1, &_dbus_error);
 	dbus_g_connection_unref (_connection);
 	dbus_message_unref (_message);
+	if (dbus_error_is_set (&_dbus_error)) {
+		g_critical ("file %s: line %d: uncaught error: %s (%s)", __FILE__, __LINE__, _dbus_error.message, _dbus_error.name);
+		dbus_error_free (&_dbus_error);
+		return;
+	}
+	if (strcmp (dbus_message_get_signature (_reply), "")) {
+		g_critical ("file %s: line %d: Invalid signature, expected \"%s\", got \"%s\"", __FILE__, __LINE__, "", dbus_message_get_signature (_reply));
+		dbus_message_unref (_reply);
+		return;
+	}
 	dbus_message_iter_init (_reply, &_iter);
 	dbus_message_unref (_reply);
 }
 
 
 static gint rygel_external_media_item_dbus_proxy_get_size (RygelExternalMediaItem* self) {
+	DBusError _dbus_error;
 	DBusGConnection *_connection;
 	DBusMessage *_message, *_reply;
 	DBusMessageIter _iter, _subiter;
@@ -3399,11 +3818,27 @@ static gint rygel_external_media_item_dbus_proxy_get_size (RygelExternalMediaIte
 	_tmp214_ = "Size";
 	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp214_);
 	g_object_get (self, "connection", &_connection, NULL);
-	_reply = dbus_connection_send_with_reply_and_block (dbus_g_connection_get_connection (_connection), _message, -1, NULL);
+	dbus_error_init (&_dbus_error);
+	_reply = dbus_connection_send_with_reply_and_block (dbus_g_connection_get_connection (_connection), _message, -1, &_dbus_error);
 	dbus_g_connection_unref (_connection);
 	dbus_message_unref (_message);
+	if (dbus_error_is_set (&_dbus_error)) {
+		g_critical ("file %s: line %d: uncaught error: %s (%s)", __FILE__, __LINE__, _dbus_error.message, _dbus_error.name);
+		dbus_error_free (&_dbus_error);
+		return 0;
+	}
+	if (strcmp (dbus_message_get_signature (_reply), "v")) {
+		g_critical ("file %s: line %d: Invalid signature, expected \"%s\", got \"%s\"", __FILE__, __LINE__, "v", dbus_message_get_signature (_reply));
+		dbus_message_unref (_reply);
+		return 0;
+	}
 	dbus_message_iter_init (_reply, &_iter);
 	dbus_message_iter_recurse (&_iter, &_subiter);
+	if (strcmp (dbus_message_iter_get_signature (&_subiter), "i")) {
+		g_critical ("file %s: line %d: Invalid signature, expected \"%s\", got \"%s\"", __FILE__, __LINE__, "i", dbus_message_iter_get_signature (&_subiter));
+		dbus_message_unref (_reply);
+		return 0;
+	}
 	dbus_message_iter_get_basic (&_subiter, &_tmp215_);
 	dbus_message_iter_next (&_subiter);
 	_result = _tmp215_;
@@ -3413,6 +3848,7 @@ static gint rygel_external_media_item_dbus_proxy_get_size (RygelExternalMediaIte
 
 
 static void rygel_external_media_item_dbus_proxy_set_size (RygelExternalMediaItem* self, gint value) {
+	DBusError _dbus_error;
 	DBusGConnection *_connection;
 	DBusMessage *_message, *_reply;
 	DBusMessageIter _iter, _subiter;
@@ -3433,15 +3869,27 @@ static void rygel_external_media_item_dbus_proxy_set_size (RygelExternalMediaIte
 	dbus_message_iter_append_basic (&_subiter, DBUS_TYPE_INT32, &_tmp218_);
 	dbus_message_iter_close_container (&_iter, &_subiter);
 	g_object_get (self, "connection", &_connection, NULL);
-	_reply = dbus_connection_send_with_reply_and_block (dbus_g_connection_get_connection (_connection), _message, -1, NULL);
+	dbus_error_init (&_dbus_error);
+	_reply = dbus_connection_send_with_reply_and_block (dbus_g_connection_get_connection (_connection), _message, -1, &_dbus_error);
 	dbus_g_connection_unref (_connection);
 	dbus_message_unref (_message);
+	if (dbus_error_is_set (&_dbus_error)) {
+		g_critical ("file %s: line %d: uncaught error: %s (%s)", __FILE__, __LINE__, _dbus_error.message, _dbus_error.name);
+		dbus_error_free (&_dbus_error);
+		return;
+	}
+	if (strcmp (dbus_message_get_signature (_reply), "")) {
+		g_critical ("file %s: line %d: Invalid signature, expected \"%s\", got \"%s\"", __FILE__, __LINE__, "", dbus_message_get_signature (_reply));
+		dbus_message_unref (_reply);
+		return;
+	}
 	dbus_message_iter_init (_reply, &_iter);
 	dbus_message_unref (_reply);
 }
 
 
 static char* rygel_external_media_item_dbus_proxy_get_artist (RygelExternalMediaItem* self) {
+	DBusError _dbus_error;
 	DBusGConnection *_connection;
 	DBusMessage *_message, *_reply;
 	DBusMessageIter _iter, _subiter;
@@ -3459,11 +3907,27 @@ static char* rygel_external_media_item_dbus_proxy_get_artist (RygelExternalMedia
 	_tmp220_ = "Artist";
 	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp220_);
 	g_object_get (self, "connection", &_connection, NULL);
-	_reply = dbus_connection_send_with_reply_and_block (dbus_g_connection_get_connection (_connection), _message, -1, NULL);
+	dbus_error_init (&_dbus_error);
+	_reply = dbus_connection_send_with_reply_and_block (dbus_g_connection_get_connection (_connection), _message, -1, &_dbus_error);
 	dbus_g_connection_unref (_connection);
 	dbus_message_unref (_message);
+	if (dbus_error_is_set (&_dbus_error)) {
+		g_critical ("file %s: line %d: uncaught error: %s (%s)", __FILE__, __LINE__, _dbus_error.message, _dbus_error.name);
+		dbus_error_free (&_dbus_error);
+		return NULL;
+	}
+	if (strcmp (dbus_message_get_signature (_reply), "v")) {
+		g_critical ("file %s: line %d: Invalid signature, expected \"%s\", got \"%s\"", __FILE__, __LINE__, "v", dbus_message_get_signature (_reply));
+		dbus_message_unref (_reply);
+		return NULL;
+	}
 	dbus_message_iter_init (_reply, &_iter);
 	dbus_message_iter_recurse (&_iter, &_subiter);
+	if (strcmp (dbus_message_iter_get_signature (&_subiter), "s")) {
+		g_critical ("file %s: line %d: Invalid signature, expected \"%s\", got \"%s\"", __FILE__, __LINE__, "s", dbus_message_iter_get_signature (&_subiter));
+		dbus_message_unref (_reply);
+		return NULL;
+	}
 	dbus_message_iter_get_basic (&_subiter, &_tmp221_);
 	dbus_message_iter_next (&_subiter);
 	_result = g_strdup (_tmp221_);
@@ -3473,6 +3937,7 @@ static char* rygel_external_media_item_dbus_proxy_get_artist (RygelExternalMedia
 
 
 static void rygel_external_media_item_dbus_proxy_set_artist (RygelExternalMediaItem* self, const char* value) {
+	DBusError _dbus_error;
 	DBusGConnection *_connection;
 	DBusMessage *_message, *_reply;
 	DBusMessageIter _iter, _subiter;
@@ -3493,15 +3958,27 @@ static void rygel_external_media_item_dbus_proxy_set_artist (RygelExternalMediaI
 	dbus_message_iter_append_basic (&_subiter, DBUS_TYPE_STRING, &_tmp224_);
 	dbus_message_iter_close_container (&_iter, &_subiter);
 	g_object_get (self, "connection", &_connection, NULL);
-	_reply = dbus_connection_send_with_reply_and_block (dbus_g_connection_get_connection (_connection), _message, -1, NULL);
+	dbus_error_init (&_dbus_error);
+	_reply = dbus_connection_send_with_reply_and_block (dbus_g_connection_get_connection (_connection), _message, -1, &_dbus_error);
 	dbus_g_connection_unref (_connection);
 	dbus_message_unref (_message);
+	if (dbus_error_is_set (&_dbus_error)) {
+		g_critical ("file %s: line %d: uncaught error: %s (%s)", __FILE__, __LINE__, _dbus_error.message, _dbus_error.name);
+		dbus_error_free (&_dbus_error);
+		return;
+	}
+	if (strcmp (dbus_message_get_signature (_reply), "")) {
+		g_critical ("file %s: line %d: Invalid signature, expected \"%s\", got \"%s\"", __FILE__, __LINE__, "", dbus_message_get_signature (_reply));
+		dbus_message_unref (_reply);
+		return;
+	}
 	dbus_message_iter_init (_reply, &_iter);
 	dbus_message_unref (_reply);
 }
 
 
 static char* rygel_external_media_item_dbus_proxy_get_album (RygelExternalMediaItem* self) {
+	DBusError _dbus_error;
 	DBusGConnection *_connection;
 	DBusMessage *_message, *_reply;
 	DBusMessageIter _iter, _subiter;
@@ -3519,11 +3996,27 @@ static char* rygel_external_media_item_dbus_proxy_get_album (RygelExternalMediaI
 	_tmp226_ = "Album";
 	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp226_);
 	g_object_get (self, "connection", &_connection, NULL);
-	_reply = dbus_connection_send_with_reply_and_block (dbus_g_connection_get_connection (_connection), _message, -1, NULL);
+	dbus_error_init (&_dbus_error);
+	_reply = dbus_connection_send_with_reply_and_block (dbus_g_connection_get_connection (_connection), _message, -1, &_dbus_error);
 	dbus_g_connection_unref (_connection);
 	dbus_message_unref (_message);
+	if (dbus_error_is_set (&_dbus_error)) {
+		g_critical ("file %s: line %d: uncaught error: %s (%s)", __FILE__, __LINE__, _dbus_error.message, _dbus_error.name);
+		dbus_error_free (&_dbus_error);
+		return NULL;
+	}
+	if (strcmp (dbus_message_get_signature (_reply), "v")) {
+		g_critical ("file %s: line %d: Invalid signature, expected \"%s\", got \"%s\"", __FILE__, __LINE__, "v", dbus_message_get_signature (_reply));
+		dbus_message_unref (_reply);
+		return NULL;
+	}
 	dbus_message_iter_init (_reply, &_iter);
 	dbus_message_iter_recurse (&_iter, &_subiter);
+	if (strcmp (dbus_message_iter_get_signature (&_subiter), "s")) {
+		g_critical ("file %s: line %d: Invalid signature, expected \"%s\", got \"%s\"", __FILE__, __LINE__, "s", dbus_message_iter_get_signature (&_subiter));
+		dbus_message_unref (_reply);
+		return NULL;
+	}
 	dbus_message_iter_get_basic (&_subiter, &_tmp227_);
 	dbus_message_iter_next (&_subiter);
 	_result = g_strdup (_tmp227_);
@@ -3533,6 +4026,7 @@ static char* rygel_external_media_item_dbus_proxy_get_album (RygelExternalMediaI
 
 
 static void rygel_external_media_item_dbus_proxy_set_album (RygelExternalMediaItem* self, const char* value) {
+	DBusError _dbus_error;
 	DBusGConnection *_connection;
 	DBusMessage *_message, *_reply;
 	DBusMessageIter _iter, _subiter;
@@ -3553,15 +4047,27 @@ static void rygel_external_media_item_dbus_proxy_set_album (RygelExternalMediaIt
 	dbus_message_iter_append_basic (&_subiter, DBUS_TYPE_STRING, &_tmp230_);
 	dbus_message_iter_close_container (&_iter, &_subiter);
 	g_object_get (self, "connection", &_connection, NULL);
-	_reply = dbus_connection_send_with_reply_and_block (dbus_g_connection_get_connection (_connection), _message, -1, NULL);
+	dbus_error_init (&_dbus_error);
+	_reply = dbus_connection_send_with_reply_and_block (dbus_g_connection_get_connection (_connection), _message, -1, &_dbus_error);
 	dbus_g_connection_unref (_connection);
 	dbus_message_unref (_message);
+	if (dbus_error_is_set (&_dbus_error)) {
+		g_critical ("file %s: line %d: uncaught error: %s (%s)", __FILE__, __LINE__, _dbus_error.message, _dbus_error.name);
+		dbus_error_free (&_dbus_error);
+		return;
+	}
+	if (strcmp (dbus_message_get_signature (_reply), "")) {
+		g_critical ("file %s: line %d: Invalid signature, expected \"%s\", got \"%s\"", __FILE__, __LINE__, "", dbus_message_get_signature (_reply));
+		dbus_message_unref (_reply);
+		return;
+	}
 	dbus_message_iter_init (_reply, &_iter);
 	dbus_message_unref (_reply);
 }
 
 
 static char* rygel_external_media_item_dbus_proxy_get_date (RygelExternalMediaItem* self) {
+	DBusError _dbus_error;
 	DBusGConnection *_connection;
 	DBusMessage *_message, *_reply;
 	DBusMessageIter _iter, _subiter;
@@ -3579,11 +4085,27 @@ static char* rygel_external_media_item_dbus_proxy_get_date (RygelExternalMediaIt
 	_tmp232_ = "Date";
 	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp232_);
 	g_object_get (self, "connection", &_connection, NULL);
-	_reply = dbus_connection_send_with_reply_and_block (dbus_g_connection_get_connection (_connection), _message, -1, NULL);
+	dbus_error_init (&_dbus_error);
+	_reply = dbus_connection_send_with_reply_and_block (dbus_g_connection_get_connection (_connection), _message, -1, &_dbus_error);
 	dbus_g_connection_unref (_connection);
 	dbus_message_unref (_message);
+	if (dbus_error_is_set (&_dbus_error)) {
+		g_critical ("file %s: line %d: uncaught error: %s (%s)", __FILE__, __LINE__, _dbus_error.message, _dbus_error.name);
+		dbus_error_free (&_dbus_error);
+		return NULL;
+	}
+	if (strcmp (dbus_message_get_signature (_reply), "v")) {
+		g_critical ("file %s: line %d: Invalid signature, expected \"%s\", got \"%s\"", __FILE__, __LINE__, "v", dbus_message_get_signature (_reply));
+		dbus_message_unref (_reply);
+		return NULL;
+	}
 	dbus_message_iter_init (_reply, &_iter);
 	dbus_message_iter_recurse (&_iter, &_subiter);
+	if (strcmp (dbus_message_iter_get_signature (&_subiter), "s")) {
+		g_critical ("file %s: line %d: Invalid signature, expected \"%s\", got \"%s\"", __FILE__, __LINE__, "s", dbus_message_iter_get_signature (&_subiter));
+		dbus_message_unref (_reply);
+		return NULL;
+	}
 	dbus_message_iter_get_basic (&_subiter, &_tmp233_);
 	dbus_message_iter_next (&_subiter);
 	_result = g_strdup (_tmp233_);
@@ -3593,6 +4115,7 @@ static char* rygel_external_media_item_dbus_proxy_get_date (RygelExternalMediaIt
 
 
 static void rygel_external_media_item_dbus_proxy_set_date (RygelExternalMediaItem* self, const char* value) {
+	DBusError _dbus_error;
 	DBusGConnection *_connection;
 	DBusMessage *_message, *_reply;
 	DBusMessageIter _iter, _subiter;
@@ -3613,15 +4136,27 @@ static void rygel_external_media_item_dbus_proxy_set_date (RygelExternalMediaIte
 	dbus_message_iter_append_basic (&_subiter, DBUS_TYPE_STRING, &_tmp236_);
 	dbus_message_iter_close_container (&_iter, &_subiter);
 	g_object_get (self, "connection", &_connection, NULL);
-	_reply = dbus_connection_send_with_reply_and_block (dbus_g_connection_get_connection (_connection), _message, -1, NULL);
+	dbus_error_init (&_dbus_error);
+	_reply = dbus_connection_send_with_reply_and_block (dbus_g_connection_get_connection (_connection), _message, -1, &_dbus_error);
 	dbus_g_connection_unref (_connection);
 	dbus_message_unref (_message);
+	if (dbus_error_is_set (&_dbus_error)) {
+		g_critical ("file %s: line %d: uncaught error: %s (%s)", __FILE__, __LINE__, _dbus_error.message, _dbus_error.name);
+		dbus_error_free (&_dbus_error);
+		return;
+	}
+	if (strcmp (dbus_message_get_signature (_reply), "")) {
+		g_critical ("file %s: line %d: Invalid signature, expected \"%s\", got \"%s\"", __FILE__, __LINE__, "", dbus_message_get_signature (_reply));
+		dbus_message_unref (_reply);
+		return;
+	}
 	dbus_message_iter_init (_reply, &_iter);
 	dbus_message_unref (_reply);
 }
 
 
 static char* rygel_external_media_item_dbus_proxy_get_genre (RygelExternalMediaItem* self) {
+	DBusError _dbus_error;
 	DBusGConnection *_connection;
 	DBusMessage *_message, *_reply;
 	DBusMessageIter _iter, _subiter;
@@ -3639,11 +4174,27 @@ static char* rygel_external_media_item_dbus_proxy_get_genre (RygelExternalMediaI
 	_tmp238_ = "Genre";
 	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp238_);
 	g_object_get (self, "connection", &_connection, NULL);
-	_reply = dbus_connection_send_with_reply_and_block (dbus_g_connection_get_connection (_connection), _message, -1, NULL);
+	dbus_error_init (&_dbus_error);
+	_reply = dbus_connection_send_with_reply_and_block (dbus_g_connection_get_connection (_connection), _message, -1, &_dbus_error);
 	dbus_g_connection_unref (_connection);
 	dbus_message_unref (_message);
+	if (dbus_error_is_set (&_dbus_error)) {
+		g_critical ("file %s: line %d: uncaught error: %s (%s)", __FILE__, __LINE__, _dbus_error.message, _dbus_error.name);
+		dbus_error_free (&_dbus_error);
+		return NULL;
+	}
+	if (strcmp (dbus_message_get_signature (_reply), "v")) {
+		g_critical ("file %s: line %d: Invalid signature, expected \"%s\", got \"%s\"", __FILE__, __LINE__, "v", dbus_message_get_signature (_reply));
+		dbus_message_unref (_reply);
+		return NULL;
+	}
 	dbus_message_iter_init (_reply, &_iter);
 	dbus_message_iter_recurse (&_iter, &_subiter);
+	if (strcmp (dbus_message_iter_get_signature (&_subiter), "s")) {
+		g_critical ("file %s: line %d: Invalid signature, expected \"%s\", got \"%s\"", __FILE__, __LINE__, "s", dbus_message_iter_get_signature (&_subiter));
+		dbus_message_unref (_reply);
+		return NULL;
+	}
 	dbus_message_iter_get_basic (&_subiter, &_tmp239_);
 	dbus_message_iter_next (&_subiter);
 	_result = g_strdup (_tmp239_);
@@ -3653,6 +4204,7 @@ static char* rygel_external_media_item_dbus_proxy_get_genre (RygelExternalMediaI
 
 
 static void rygel_external_media_item_dbus_proxy_set_genre (RygelExternalMediaItem* self, const char* value) {
+	DBusError _dbus_error;
 	DBusGConnection *_connection;
 	DBusMessage *_message, *_reply;
 	DBusMessageIter _iter, _subiter;
@@ -3673,15 +4225,27 @@ static void rygel_external_media_item_dbus_proxy_set_genre (RygelExternalMediaIt
 	dbus_message_iter_append_basic (&_subiter, DBUS_TYPE_STRING, &_tmp242_);
 	dbus_message_iter_close_container (&_iter, &_subiter);
 	g_object_get (self, "connection", &_connection, NULL);
-	_reply = dbus_connection_send_with_reply_and_block (dbus_g_connection_get_connection (_connection), _message, -1, NULL);
+	dbus_error_init (&_dbus_error);
+	_reply = dbus_connection_send_with_reply_and_block (dbus_g_connection_get_connection (_connection), _message, -1, &_dbus_error);
 	dbus_g_connection_unref (_connection);
 	dbus_message_unref (_message);
+	if (dbus_error_is_set (&_dbus_error)) {
+		g_critical ("file %s: line %d: uncaught error: %s (%s)", __FILE__, __LINE__, _dbus_error.message, _dbus_error.name);
+		dbus_error_free (&_dbus_error);
+		return;
+	}
+	if (strcmp (dbus_message_get_signature (_reply), "")) {
+		g_critical ("file %s: line %d: Invalid signature, expected \"%s\", got \"%s\"", __FILE__, __LINE__, "", dbus_message_get_signature (_reply));
+		dbus_message_unref (_reply);
+		return;
+	}
 	dbus_message_iter_init (_reply, &_iter);
 	dbus_message_unref (_reply);
 }
 
 
 static char* rygel_external_media_item_dbus_proxy_get_dlna_profile (RygelExternalMediaItem* self) {
+	DBusError _dbus_error;
 	DBusGConnection *_connection;
 	DBusMessage *_message, *_reply;
 	DBusMessageIter _iter, _subiter;
@@ -3699,11 +4263,27 @@ static char* rygel_external_media_item_dbus_proxy_get_dlna_profile (RygelExterna
 	_tmp244_ = "DlnaProfile";
 	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp244_);
 	g_object_get (self, "connection", &_connection, NULL);
-	_reply = dbus_connection_send_with_reply_and_block (dbus_g_connection_get_connection (_connection), _message, -1, NULL);
+	dbus_error_init (&_dbus_error);
+	_reply = dbus_connection_send_with_reply_and_block (dbus_g_connection_get_connection (_connection), _message, -1, &_dbus_error);
 	dbus_g_connection_unref (_connection);
 	dbus_message_unref (_message);
+	if (dbus_error_is_set (&_dbus_error)) {
+		g_critical ("file %s: line %d: uncaught error: %s (%s)", __FILE__, __LINE__, _dbus_error.message, _dbus_error.name);
+		dbus_error_free (&_dbus_error);
+		return NULL;
+	}
+	if (strcmp (dbus_message_get_signature (_reply), "v")) {
+		g_critical ("file %s: line %d: Invalid signature, expected \"%s\", got \"%s\"", __FILE__, __LINE__, "v", dbus_message_get_signature (_reply));
+		dbus_message_unref (_reply);
+		return NULL;
+	}
 	dbus_message_iter_init (_reply, &_iter);
 	dbus_message_iter_recurse (&_iter, &_subiter);
+	if (strcmp (dbus_message_iter_get_signature (&_subiter), "s")) {
+		g_critical ("file %s: line %d: Invalid signature, expected \"%s\", got \"%s\"", __FILE__, __LINE__, "s", dbus_message_iter_get_signature (&_subiter));
+		dbus_message_unref (_reply);
+		return NULL;
+	}
 	dbus_message_iter_get_basic (&_subiter, &_tmp245_);
 	dbus_message_iter_next (&_subiter);
 	_result = g_strdup (_tmp245_);
@@ -3713,6 +4293,7 @@ static char* rygel_external_media_item_dbus_proxy_get_dlna_profile (RygelExterna
 
 
 static void rygel_external_media_item_dbus_proxy_set_dlna_profile (RygelExternalMediaItem* self, const char* value) {
+	DBusError _dbus_error;
 	DBusGConnection *_connection;
 	DBusMessage *_message, *_reply;
 	DBusMessageIter _iter, _subiter;
@@ -3733,15 +4314,27 @@ static void rygel_external_media_item_dbus_proxy_set_dlna_profile (RygelExternal
 	dbus_message_iter_append_basic (&_subiter, DBUS_TYPE_STRING, &_tmp248_);
 	dbus_message_iter_close_container (&_iter, &_subiter);
 	g_object_get (self, "connection", &_connection, NULL);
-	_reply = dbus_connection_send_with_reply_and_block (dbus_g_connection_get_connection (_connection), _message, -1, NULL);
+	dbus_error_init (&_dbus_error);
+	_reply = dbus_connection_send_with_reply_and_block (dbus_g_connection_get_connection (_connection), _message, -1, &_dbus_error);
 	dbus_g_connection_unref (_connection);
 	dbus_message_unref (_message);
+	if (dbus_error_is_set (&_dbus_error)) {
+		g_critical ("file %s: line %d: uncaught error: %s (%s)", __FILE__, __LINE__, _dbus_error.message, _dbus_error.name);
+		dbus_error_free (&_dbus_error);
+		return;
+	}
+	if (strcmp (dbus_message_get_signature (_reply), "")) {
+		g_critical ("file %s: line %d: Invalid signature, expected \"%s\", got \"%s\"", __FILE__, __LINE__, "", dbus_message_get_signature (_reply));
+		dbus_message_unref (_reply);
+		return;
+	}
 	dbus_message_iter_init (_reply, &_iter);
 	dbus_message_unref (_reply);
 }
 
 
 static gint rygel_external_media_item_dbus_proxy_get_duration (RygelExternalMediaItem* self) {
+	DBusError _dbus_error;
 	DBusGConnection *_connection;
 	DBusMessage *_message, *_reply;
 	DBusMessageIter _iter, _subiter;
@@ -3759,11 +4352,27 @@ static gint rygel_external_media_item_dbus_proxy_get_duration (RygelExternalMedi
 	_tmp250_ = "Duration";
 	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp250_);
 	g_object_get (self, "connection", &_connection, NULL);
-	_reply = dbus_connection_send_with_reply_and_block (dbus_g_connection_get_connection (_connection), _message, -1, NULL);
+	dbus_error_init (&_dbus_error);
+	_reply = dbus_connection_send_with_reply_and_block (dbus_g_connection_get_connection (_connection), _message, -1, &_dbus_error);
 	dbus_g_connection_unref (_connection);
 	dbus_message_unref (_message);
+	if (dbus_error_is_set (&_dbus_error)) {
+		g_critical ("file %s: line %d: uncaught error: %s (%s)", __FILE__, __LINE__, _dbus_error.message, _dbus_error.name);
+		dbus_error_free (&_dbus_error);
+		return 0;
+	}
+	if (strcmp (dbus_message_get_signature (_reply), "v")) {
+		g_critical ("file %s: line %d: Invalid signature, expected \"%s\", got \"%s\"", __FILE__, __LINE__, "v", dbus_message_get_signature (_reply));
+		dbus_message_unref (_reply);
+		return 0;
+	}
 	dbus_message_iter_init (_reply, &_iter);
 	dbus_message_iter_recurse (&_iter, &_subiter);
+	if (strcmp (dbus_message_iter_get_signature (&_subiter), "i")) {
+		g_critical ("file %s: line %d: Invalid signature, expected \"%s\", got \"%s\"", __FILE__, __LINE__, "i", dbus_message_iter_get_signature (&_subiter));
+		dbus_message_unref (_reply);
+		return 0;
+	}
 	dbus_message_iter_get_basic (&_subiter, &_tmp251_);
 	dbus_message_iter_next (&_subiter);
 	_result = _tmp251_;
@@ -3773,6 +4382,7 @@ static gint rygel_external_media_item_dbus_proxy_get_duration (RygelExternalMedi
 
 
 static void rygel_external_media_item_dbus_proxy_set_duration (RygelExternalMediaItem* self, gint value) {
+	DBusError _dbus_error;
 	DBusGConnection *_connection;
 	DBusMessage *_message, *_reply;
 	DBusMessageIter _iter, _subiter;
@@ -3793,15 +4403,27 @@ static void rygel_external_media_item_dbus_proxy_set_duration (RygelExternalMedi
 	dbus_message_iter_append_basic (&_subiter, DBUS_TYPE_INT32, &_tmp254_);
 	dbus_message_iter_close_container (&_iter, &_subiter);
 	g_object_get (self, "connection", &_connection, NULL);
-	_reply = dbus_connection_send_with_reply_and_block (dbus_g_connection_get_connection (_connection), _message, -1, NULL);
+	dbus_error_init (&_dbus_error);
+	_reply = dbus_connection_send_with_reply_and_block (dbus_g_connection_get_connection (_connection), _message, -1, &_dbus_error);
 	dbus_g_connection_unref (_connection);
 	dbus_message_unref (_message);
+	if (dbus_error_is_set (&_dbus_error)) {
+		g_critical ("file %s: line %d: uncaught error: %s (%s)", __FILE__, __LINE__, _dbus_error.message, _dbus_error.name);
+		dbus_error_free (&_dbus_error);
+		return;
+	}
+	if (strcmp (dbus_message_get_signature (_reply), "")) {
+		g_critical ("file %s: line %d: Invalid signature, expected \"%s\", got \"%s\"", __FILE__, __LINE__, "", dbus_message_get_signature (_reply));
+		dbus_message_unref (_reply);
+		return;
+	}
 	dbus_message_iter_init (_reply, &_iter);
 	dbus_message_unref (_reply);
 }
 
 
 static gint rygel_external_media_item_dbus_proxy_get_bitrate (RygelExternalMediaItem* self) {
+	DBusError _dbus_error;
 	DBusGConnection *_connection;
 	DBusMessage *_message, *_reply;
 	DBusMessageIter _iter, _subiter;
@@ -3819,11 +4441,27 @@ static gint rygel_external_media_item_dbus_proxy_get_bitrate (RygelExternalMedia
 	_tmp256_ = "Bitrate";
 	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp256_);
 	g_object_get (self, "connection", &_connection, NULL);
-	_reply = dbus_connection_send_with_reply_and_block (dbus_g_connection_get_connection (_connection), _message, -1, NULL);
+	dbus_error_init (&_dbus_error);
+	_reply = dbus_connection_send_with_reply_and_block (dbus_g_connection_get_connection (_connection), _message, -1, &_dbus_error);
 	dbus_g_connection_unref (_connection);
 	dbus_message_unref (_message);
+	if (dbus_error_is_set (&_dbus_error)) {
+		g_critical ("file %s: line %d: uncaught error: %s (%s)", __FILE__, __LINE__, _dbus_error.message, _dbus_error.name);
+		dbus_error_free (&_dbus_error);
+		return 0;
+	}
+	if (strcmp (dbus_message_get_signature (_reply), "v")) {
+		g_critical ("file %s: line %d: Invalid signature, expected \"%s\", got \"%s\"", __FILE__, __LINE__, "v", dbus_message_get_signature (_reply));
+		dbus_message_unref (_reply);
+		return 0;
+	}
 	dbus_message_iter_init (_reply, &_iter);
 	dbus_message_iter_recurse (&_iter, &_subiter);
+	if (strcmp (dbus_message_iter_get_signature (&_subiter), "i")) {
+		g_critical ("file %s: line %d: Invalid signature, expected \"%s\", got \"%s\"", __FILE__, __LINE__, "i", dbus_message_iter_get_signature (&_subiter));
+		dbus_message_unref (_reply);
+		return 0;
+	}
 	dbus_message_iter_get_basic (&_subiter, &_tmp257_);
 	dbus_message_iter_next (&_subiter);
 	_result = _tmp257_;
@@ -3833,6 +4471,7 @@ static gint rygel_external_media_item_dbus_proxy_get_bitrate (RygelExternalMedia
 
 
 static void rygel_external_media_item_dbus_proxy_set_bitrate (RygelExternalMediaItem* self, gint value) {
+	DBusError _dbus_error;
 	DBusGConnection *_connection;
 	DBusMessage *_message, *_reply;
 	DBusMessageIter _iter, _subiter;
@@ -3853,15 +4492,27 @@ static void rygel_external_media_item_dbus_proxy_set_bitrate (RygelExternalMedia
 	dbus_message_iter_append_basic (&_subiter, DBUS_TYPE_INT32, &_tmp260_);
 	dbus_message_iter_close_container (&_iter, &_subiter);
 	g_object_get (self, "connection", &_connection, NULL);
-	_reply = dbus_connection_send_with_reply_and_block (dbus_g_connection_get_connection (_connection), _message, -1, NULL);
+	dbus_error_init (&_dbus_error);
+	_reply = dbus_connection_send_with_reply_and_block (dbus_g_connection_get_connection (_connection), _message, -1, &_dbus_error);
 	dbus_g_connection_unref (_connection);
 	dbus_message_unref (_message);
+	if (dbus_error_is_set (&_dbus_error)) {
+		g_critical ("file %s: line %d: uncaught error: %s (%s)", __FILE__, __LINE__, _dbus_error.message, _dbus_error.name);
+		dbus_error_free (&_dbus_error);
+		return;
+	}
+	if (strcmp (dbus_message_get_signature (_reply), "")) {
+		g_critical ("file %s: line %d: Invalid signature, expected \"%s\", got \"%s\"", __FILE__, __LINE__, "", dbus_message_get_signature (_reply));
+		dbus_message_unref (_reply);
+		return;
+	}
 	dbus_message_iter_init (_reply, &_iter);
 	dbus_message_unref (_reply);
 }
 
 
 static gint rygel_external_media_item_dbus_proxy_get_sample_rate (RygelExternalMediaItem* self) {
+	DBusError _dbus_error;
 	DBusGConnection *_connection;
 	DBusMessage *_message, *_reply;
 	DBusMessageIter _iter, _subiter;
@@ -3879,11 +4530,27 @@ static gint rygel_external_media_item_dbus_proxy_get_sample_rate (RygelExternalM
 	_tmp262_ = "SampleRate";
 	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp262_);
 	g_object_get (self, "connection", &_connection, NULL);
-	_reply = dbus_connection_send_with_reply_and_block (dbus_g_connection_get_connection (_connection), _message, -1, NULL);
+	dbus_error_init (&_dbus_error);
+	_reply = dbus_connection_send_with_reply_and_block (dbus_g_connection_get_connection (_connection), _message, -1, &_dbus_error);
 	dbus_g_connection_unref (_connection);
 	dbus_message_unref (_message);
+	if (dbus_error_is_set (&_dbus_error)) {
+		g_critical ("file %s: line %d: uncaught error: %s (%s)", __FILE__, __LINE__, _dbus_error.message, _dbus_error.name);
+		dbus_error_free (&_dbus_error);
+		return 0;
+	}
+	if (strcmp (dbus_message_get_signature (_reply), "v")) {
+		g_critical ("file %s: line %d: Invalid signature, expected \"%s\", got \"%s\"", __FILE__, __LINE__, "v", dbus_message_get_signature (_reply));
+		dbus_message_unref (_reply);
+		return 0;
+	}
 	dbus_message_iter_init (_reply, &_iter);
 	dbus_message_iter_recurse (&_iter, &_subiter);
+	if (strcmp (dbus_message_iter_get_signature (&_subiter), "i")) {
+		g_critical ("file %s: line %d: Invalid signature, expected \"%s\", got \"%s\"", __FILE__, __LINE__, "i", dbus_message_iter_get_signature (&_subiter));
+		dbus_message_unref (_reply);
+		return 0;
+	}
 	dbus_message_iter_get_basic (&_subiter, &_tmp263_);
 	dbus_message_iter_next (&_subiter);
 	_result = _tmp263_;
@@ -3893,6 +4560,7 @@ static gint rygel_external_media_item_dbus_proxy_get_sample_rate (RygelExternalM
 
 
 static void rygel_external_media_item_dbus_proxy_set_sample_rate (RygelExternalMediaItem* self, gint value) {
+	DBusError _dbus_error;
 	DBusGConnection *_connection;
 	DBusMessage *_message, *_reply;
 	DBusMessageIter _iter, _subiter;
@@ -3913,15 +4581,27 @@ static void rygel_external_media_item_dbus_proxy_set_sample_rate (RygelExternalM
 	dbus_message_iter_append_basic (&_subiter, DBUS_TYPE_INT32, &_tmp266_);
 	dbus_message_iter_close_container (&_iter, &_subiter);
 	g_object_get (self, "connection", &_connection, NULL);
-	_reply = dbus_connection_send_with_reply_and_block (dbus_g_connection_get_connection (_connection), _message, -1, NULL);
+	dbus_error_init (&_dbus_error);
+	_reply = dbus_connection_send_with_reply_and_block (dbus_g_connection_get_connection (_connection), _message, -1, &_dbus_error);
 	dbus_g_connection_unref (_connection);
 	dbus_message_unref (_message);
+	if (dbus_error_is_set (&_dbus_error)) {
+		g_critical ("file %s: line %d: uncaught error: %s (%s)", __FILE__, __LINE__, _dbus_error.message, _dbus_error.name);
+		dbus_error_free (&_dbus_error);
+		return;
+	}
+	if (strcmp (dbus_message_get_signature (_reply), "")) {
+		g_critical ("file %s: line %d: Invalid signature, expected \"%s\", got \"%s\"", __FILE__, __LINE__, "", dbus_message_get_signature (_reply));
+		dbus_message_unref (_reply);
+		return;
+	}
 	dbus_message_iter_init (_reply, &_iter);
 	dbus_message_unref (_reply);
 }
 
 
 static gint rygel_external_media_item_dbus_proxy_get_bits_per_sample (RygelExternalMediaItem* self) {
+	DBusError _dbus_error;
 	DBusGConnection *_connection;
 	DBusMessage *_message, *_reply;
 	DBusMessageIter _iter, _subiter;
@@ -3939,11 +4619,27 @@ static gint rygel_external_media_item_dbus_proxy_get_bits_per_sample (RygelExter
 	_tmp268_ = "BitsPerSample";
 	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp268_);
 	g_object_get (self, "connection", &_connection, NULL);
-	_reply = dbus_connection_send_with_reply_and_block (dbus_g_connection_get_connection (_connection), _message, -1, NULL);
+	dbus_error_init (&_dbus_error);
+	_reply = dbus_connection_send_with_reply_and_block (dbus_g_connection_get_connection (_connection), _message, -1, &_dbus_error);
 	dbus_g_connection_unref (_connection);
 	dbus_message_unref (_message);
+	if (dbus_error_is_set (&_dbus_error)) {
+		g_critical ("file %s: line %d: uncaught error: %s (%s)", __FILE__, __LINE__, _dbus_error.message, _dbus_error.name);
+		dbus_error_free (&_dbus_error);
+		return 0;
+	}
+	if (strcmp (dbus_message_get_signature (_reply), "v")) {
+		g_critical ("file %s: line %d: Invalid signature, expected \"%s\", got \"%s\"", __FILE__, __LINE__, "v", dbus_message_get_signature (_reply));
+		dbus_message_unref (_reply);
+		return 0;
+	}
 	dbus_message_iter_init (_reply, &_iter);
 	dbus_message_iter_recurse (&_iter, &_subiter);
+	if (strcmp (dbus_message_iter_get_signature (&_subiter), "i")) {
+		g_critical ("file %s: line %d: Invalid signature, expected \"%s\", got \"%s\"", __FILE__, __LINE__, "i", dbus_message_iter_get_signature (&_subiter));
+		dbus_message_unref (_reply);
+		return 0;
+	}
 	dbus_message_iter_get_basic (&_subiter, &_tmp269_);
 	dbus_message_iter_next (&_subiter);
 	_result = _tmp269_;
@@ -3953,6 +4649,7 @@ static gint rygel_external_media_item_dbus_proxy_get_bits_per_sample (RygelExter
 
 
 static void rygel_external_media_item_dbus_proxy_set_bits_per_sample (RygelExternalMediaItem* self, gint value) {
+	DBusError _dbus_error;
 	DBusGConnection *_connection;
 	DBusMessage *_message, *_reply;
 	DBusMessageIter _iter, _subiter;
@@ -3973,15 +4670,27 @@ static void rygel_external_media_item_dbus_proxy_set_bits_per_sample (RygelExter
 	dbus_message_iter_append_basic (&_subiter, DBUS_TYPE_INT32, &_tmp272_);
 	dbus_message_iter_close_container (&_iter, &_subiter);
 	g_object_get (self, "connection", &_connection, NULL);
-	_reply = dbus_connection_send_with_reply_and_block (dbus_g_connection_get_connection (_connection), _message, -1, NULL);
+	dbus_error_init (&_dbus_error);
+	_reply = dbus_connection_send_with_reply_and_block (dbus_g_connection_get_connection (_connection), _message, -1, &_dbus_error);
 	dbus_g_connection_unref (_connection);
 	dbus_message_unref (_message);
+	if (dbus_error_is_set (&_dbus_error)) {
+		g_critical ("file %s: line %d: uncaught error: %s (%s)", __FILE__, __LINE__, _dbus_error.message, _dbus_error.name);
+		dbus_error_free (&_dbus_error);
+		return;
+	}
+	if (strcmp (dbus_message_get_signature (_reply), "")) {
+		g_critical ("file %s: line %d: Invalid signature, expected \"%s\", got \"%s\"", __FILE__, __LINE__, "", dbus_message_get_signature (_reply));
+		dbus_message_unref (_reply);
+		return;
+	}
 	dbus_message_iter_init (_reply, &_iter);
 	dbus_message_unref (_reply);
 }
 
 
 static gint rygel_external_media_item_dbus_proxy_get_width (RygelExternalMediaItem* self) {
+	DBusError _dbus_error;
 	DBusGConnection *_connection;
 	DBusMessage *_message, *_reply;
 	DBusMessageIter _iter, _subiter;
@@ -3999,11 +4708,27 @@ static gint rygel_external_media_item_dbus_proxy_get_width (RygelExternalMediaIt
 	_tmp274_ = "Width";
 	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp274_);
 	g_object_get (self, "connection", &_connection, NULL);
-	_reply = dbus_connection_send_with_reply_and_block (dbus_g_connection_get_connection (_connection), _message, -1, NULL);
+	dbus_error_init (&_dbus_error);
+	_reply = dbus_connection_send_with_reply_and_block (dbus_g_connection_get_connection (_connection), _message, -1, &_dbus_error);
 	dbus_g_connection_unref (_connection);
 	dbus_message_unref (_message);
+	if (dbus_error_is_set (&_dbus_error)) {
+		g_critical ("file %s: line %d: uncaught error: %s (%s)", __FILE__, __LINE__, _dbus_error.message, _dbus_error.name);
+		dbus_error_free (&_dbus_error);
+		return 0;
+	}
+	if (strcmp (dbus_message_get_signature (_reply), "v")) {
+		g_critical ("file %s: line %d: Invalid signature, expected \"%s\", got \"%s\"", __FILE__, __LINE__, "v", dbus_message_get_signature (_reply));
+		dbus_message_unref (_reply);
+		return 0;
+	}
 	dbus_message_iter_init (_reply, &_iter);
 	dbus_message_iter_recurse (&_iter, &_subiter);
+	if (strcmp (dbus_message_iter_get_signature (&_subiter), "i")) {
+		g_critical ("file %s: line %d: Invalid signature, expected \"%s\", got \"%s\"", __FILE__, __LINE__, "i", dbus_message_iter_get_signature (&_subiter));
+		dbus_message_unref (_reply);
+		return 0;
+	}
 	dbus_message_iter_get_basic (&_subiter, &_tmp275_);
 	dbus_message_iter_next (&_subiter);
 	_result = _tmp275_;
@@ -4013,6 +4738,7 @@ static gint rygel_external_media_item_dbus_proxy_get_width (RygelExternalMediaIt
 
 
 static void rygel_external_media_item_dbus_proxy_set_width (RygelExternalMediaItem* self, gint value) {
+	DBusError _dbus_error;
 	DBusGConnection *_connection;
 	DBusMessage *_message, *_reply;
 	DBusMessageIter _iter, _subiter;
@@ -4033,15 +4759,27 @@ static void rygel_external_media_item_dbus_proxy_set_width (RygelExternalMediaIt
 	dbus_message_iter_append_basic (&_subiter, DBUS_TYPE_INT32, &_tmp278_);
 	dbus_message_iter_close_container (&_iter, &_subiter);
 	g_object_get (self, "connection", &_connection, NULL);
-	_reply = dbus_connection_send_with_reply_and_block (dbus_g_connection_get_connection (_connection), _message, -1, NULL);
+	dbus_error_init (&_dbus_error);
+	_reply = dbus_connection_send_with_reply_and_block (dbus_g_connection_get_connection (_connection), _message, -1, &_dbus_error);
 	dbus_g_connection_unref (_connection);
 	dbus_message_unref (_message);
+	if (dbus_error_is_set (&_dbus_error)) {
+		g_critical ("file %s: line %d: uncaught error: %s (%s)", __FILE__, __LINE__, _dbus_error.message, _dbus_error.name);
+		dbus_error_free (&_dbus_error);
+		return;
+	}
+	if (strcmp (dbus_message_get_signature (_reply), "")) {
+		g_critical ("file %s: line %d: Invalid signature, expected \"%s\", got \"%s\"", __FILE__, __LINE__, "", dbus_message_get_signature (_reply));
+		dbus_message_unref (_reply);
+		return;
+	}
 	dbus_message_iter_init (_reply, &_iter);
 	dbus_message_unref (_reply);
 }
 
 
 static gint rygel_external_media_item_dbus_proxy_get_height (RygelExternalMediaItem* self) {
+	DBusError _dbus_error;
 	DBusGConnection *_connection;
 	DBusMessage *_message, *_reply;
 	DBusMessageIter _iter, _subiter;
@@ -4059,11 +4797,27 @@ static gint rygel_external_media_item_dbus_proxy_get_height (RygelExternalMediaI
 	_tmp280_ = "Height";
 	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp280_);
 	g_object_get (self, "connection", &_connection, NULL);
-	_reply = dbus_connection_send_with_reply_and_block (dbus_g_connection_get_connection (_connection), _message, -1, NULL);
+	dbus_error_init (&_dbus_error);
+	_reply = dbus_connection_send_with_reply_and_block (dbus_g_connection_get_connection (_connection), _message, -1, &_dbus_error);
 	dbus_g_connection_unref (_connection);
 	dbus_message_unref (_message);
+	if (dbus_error_is_set (&_dbus_error)) {
+		g_critical ("file %s: line %d: uncaught error: %s (%s)", __FILE__, __LINE__, _dbus_error.message, _dbus_error.name);
+		dbus_error_free (&_dbus_error);
+		return 0;
+	}
+	if (strcmp (dbus_message_get_signature (_reply), "v")) {
+		g_critical ("file %s: line %d: Invalid signature, expected \"%s\", got \"%s\"", __FILE__, __LINE__, "v", dbus_message_get_signature (_reply));
+		dbus_message_unref (_reply);
+		return 0;
+	}
 	dbus_message_iter_init (_reply, &_iter);
 	dbus_message_iter_recurse (&_iter, &_subiter);
+	if (strcmp (dbus_message_iter_get_signature (&_subiter), "i")) {
+		g_critical ("file %s: line %d: Invalid signature, expected \"%s\", got \"%s\"", __FILE__, __LINE__, "i", dbus_message_iter_get_signature (&_subiter));
+		dbus_message_unref (_reply);
+		return 0;
+	}
 	dbus_message_iter_get_basic (&_subiter, &_tmp281_);
 	dbus_message_iter_next (&_subiter);
 	_result = _tmp281_;
@@ -4073,6 +4827,7 @@ static gint rygel_external_media_item_dbus_proxy_get_height (RygelExternalMediaI
 
 
 static void rygel_external_media_item_dbus_proxy_set_height (RygelExternalMediaItem* self, gint value) {
+	DBusError _dbus_error;
 	DBusGConnection *_connection;
 	DBusMessage *_message, *_reply;
 	DBusMessageIter _iter, _subiter;
@@ -4093,15 +4848,27 @@ static void rygel_external_media_item_dbus_proxy_set_height (RygelExternalMediaI
 	dbus_message_iter_append_basic (&_subiter, DBUS_TYPE_INT32, &_tmp284_);
 	dbus_message_iter_close_container (&_iter, &_subiter);
 	g_object_get (self, "connection", &_connection, NULL);
-	_reply = dbus_connection_send_with_reply_and_block (dbus_g_connection_get_connection (_connection), _message, -1, NULL);
+	dbus_error_init (&_dbus_error);
+	_reply = dbus_connection_send_with_reply_and_block (dbus_g_connection_get_connection (_connection), _message, -1, &_dbus_error);
 	dbus_g_connection_unref (_connection);
 	dbus_message_unref (_message);
+	if (dbus_error_is_set (&_dbus_error)) {
+		g_critical ("file %s: line %d: uncaught error: %s (%s)", __FILE__, __LINE__, _dbus_error.message, _dbus_error.name);
+		dbus_error_free (&_dbus_error);
+		return;
+	}
+	if (strcmp (dbus_message_get_signature (_reply), "")) {
+		g_critical ("file %s: line %d: Invalid signature, expected \"%s\", got \"%s\"", __FILE__, __LINE__, "", dbus_message_get_signature (_reply));
+		dbus_message_unref (_reply);
+		return;
+	}
 	dbus_message_iter_init (_reply, &_iter);
 	dbus_message_unref (_reply);
 }
 
 
 static gint rygel_external_media_item_dbus_proxy_get_color_depth (RygelExternalMediaItem* self) {
+	DBusError _dbus_error;
 	DBusGConnection *_connection;
 	DBusMessage *_message, *_reply;
 	DBusMessageIter _iter, _subiter;
@@ -4119,11 +4886,27 @@ static gint rygel_external_media_item_dbus_proxy_get_color_depth (RygelExternalM
 	_tmp286_ = "ColorDepth";
 	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp286_);
 	g_object_get (self, "connection", &_connection, NULL);
-	_reply = dbus_connection_send_with_reply_and_block (dbus_g_connection_get_connection (_connection), _message, -1, NULL);
+	dbus_error_init (&_dbus_error);
+	_reply = dbus_connection_send_with_reply_and_block (dbus_g_connection_get_connection (_connection), _message, -1, &_dbus_error);
 	dbus_g_connection_unref (_connection);
 	dbus_message_unref (_message);
+	if (dbus_error_is_set (&_dbus_error)) {
+		g_critical ("file %s: line %d: uncaught error: %s (%s)", __FILE__, __LINE__, _dbus_error.message, _dbus_error.name);
+		dbus_error_free (&_dbus_error);
+		return 0;
+	}
+	if (strcmp (dbus_message_get_signature (_reply), "v")) {
+		g_critical ("file %s: line %d: Invalid signature, expected \"%s\", got \"%s\"", __FILE__, __LINE__, "v", dbus_message_get_signature (_reply));
+		dbus_message_unref (_reply);
+		return 0;
+	}
 	dbus_message_iter_init (_reply, &_iter);
 	dbus_message_iter_recurse (&_iter, &_subiter);
+	if (strcmp (dbus_message_iter_get_signature (&_subiter), "i")) {
+		g_critical ("file %s: line %d: Invalid signature, expected \"%s\", got \"%s\"", __FILE__, __LINE__, "i", dbus_message_iter_get_signature (&_subiter));
+		dbus_message_unref (_reply);
+		return 0;
+	}
 	dbus_message_iter_get_basic (&_subiter, &_tmp287_);
 	dbus_message_iter_next (&_subiter);
 	_result = _tmp287_;
@@ -4133,6 +4916,7 @@ static gint rygel_external_media_item_dbus_proxy_get_color_depth (RygelExternalM
 
 
 static void rygel_external_media_item_dbus_proxy_set_color_depth (RygelExternalMediaItem* self, gint value) {
+	DBusError _dbus_error;
 	DBusGConnection *_connection;
 	DBusMessage *_message, *_reply;
 	DBusMessageIter _iter, _subiter;
@@ -4153,15 +4937,27 @@ static void rygel_external_media_item_dbus_proxy_set_color_depth (RygelExternalM
 	dbus_message_iter_append_basic (&_subiter, DBUS_TYPE_INT32, &_tmp290_);
 	dbus_message_iter_close_container (&_iter, &_subiter);
 	g_object_get (self, "connection", &_connection, NULL);
-	_reply = dbus_connection_send_with_reply_and_block (dbus_g_connection_get_connection (_connection), _message, -1, NULL);
+	dbus_error_init (&_dbus_error);
+	_reply = dbus_connection_send_with_reply_and_block (dbus_g_connection_get_connection (_connection), _message, -1, &_dbus_error);
 	dbus_g_connection_unref (_connection);
 	dbus_message_unref (_message);
+	if (dbus_error_is_set (&_dbus_error)) {
+		g_critical ("file %s: line %d: uncaught error: %s (%s)", __FILE__, __LINE__, _dbus_error.message, _dbus_error.name);
+		dbus_error_free (&_dbus_error);
+		return;
+	}
+	if (strcmp (dbus_message_get_signature (_reply), "")) {
+		g_critical ("file %s: line %d: Invalid signature, expected \"%s\", got \"%s\"", __FILE__, __LINE__, "", dbus_message_get_signature (_reply));
+		dbus_message_unref (_reply);
+		return;
+	}
 	dbus_message_iter_init (_reply, &_iter);
 	dbus_message_unref (_reply);
 }
 
 
 static char* rygel_external_media_item_dbus_proxy_get_thumbnail (RygelExternalMediaItem* self) {
+	DBusError _dbus_error;
 	DBusGConnection *_connection;
 	DBusMessage *_message, *_reply;
 	DBusMessageIter _iter, _subiter;
@@ -4179,11 +4975,27 @@ static char* rygel_external_media_item_dbus_proxy_get_thumbnail (RygelExternalMe
 	_tmp292_ = "Thumbnail";
 	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp292_);
 	g_object_get (self, "connection", &_connection, NULL);
-	_reply = dbus_connection_send_with_reply_and_block (dbus_g_connection_get_connection (_connection), _message, -1, NULL);
+	dbus_error_init (&_dbus_error);
+	_reply = dbus_connection_send_with_reply_and_block (dbus_g_connection_get_connection (_connection), _message, -1, &_dbus_error);
 	dbus_g_connection_unref (_connection);
 	dbus_message_unref (_message);
+	if (dbus_error_is_set (&_dbus_error)) {
+		g_critical ("file %s: line %d: uncaught error: %s (%s)", __FILE__, __LINE__, _dbus_error.message, _dbus_error.name);
+		dbus_error_free (&_dbus_error);
+		return NULL;
+	}
+	if (strcmp (dbus_message_get_signature (_reply), "v")) {
+		g_critical ("file %s: line %d: Invalid signature, expected \"%s\", got \"%s\"", __FILE__, __LINE__, "v", dbus_message_get_signature (_reply));
+		dbus_message_unref (_reply);
+		return NULL;
+	}
 	dbus_message_iter_init (_reply, &_iter);
 	dbus_message_iter_recurse (&_iter, &_subiter);
+	if (strcmp (dbus_message_iter_get_signature (&_subiter), "o")) {
+		g_critical ("file %s: line %d: Invalid signature, expected \"%s\", got \"%s\"", __FILE__, __LINE__, "o", dbus_message_iter_get_signature (&_subiter));
+		dbus_message_unref (_reply);
+		return NULL;
+	}
 	dbus_message_iter_get_basic (&_subiter, &_tmp293_);
 	dbus_message_iter_next (&_subiter);
 	_result = g_strdup (_tmp293_);
@@ -4193,6 +5005,7 @@ static char* rygel_external_media_item_dbus_proxy_get_thumbnail (RygelExternalMe
 
 
 static void rygel_external_media_item_dbus_proxy_set_thumbnail (RygelExternalMediaItem* self, const char* value) {
+	DBusError _dbus_error;
 	DBusGConnection *_connection;
 	DBusMessage *_message, *_reply;
 	DBusMessageIter _iter, _subiter;
@@ -4213,15 +5026,27 @@ static void rygel_external_media_item_dbus_proxy_set_thumbnail (RygelExternalMed
 	dbus_message_iter_append_basic (&_subiter, DBUS_TYPE_OBJECT_PATH, &_tmp296_);
 	dbus_message_iter_close_container (&_iter, &_subiter);
 	g_object_get (self, "connection", &_connection, NULL);
-	_reply = dbus_connection_send_with_reply_and_block (dbus_g_connection_get_connection (_connection), _message, -1, NULL);
+	dbus_error_init (&_dbus_error);
+	_reply = dbus_connection_send_with_reply_and_block (dbus_g_connection_get_connection (_connection), _message, -1, &_dbus_error);
 	dbus_g_connection_unref (_connection);
 	dbus_message_unref (_message);
+	if (dbus_error_is_set (&_dbus_error)) {
+		g_critical ("file %s: line %d: uncaught error: %s (%s)", __FILE__, __LINE__, _dbus_error.message, _dbus_error.name);
+		dbus_error_free (&_dbus_error);
+		return;
+	}
+	if (strcmp (dbus_message_get_signature (_reply), "")) {
+		g_critical ("file %s: line %d: Invalid signature, expected \"%s\", got \"%s\"", __FILE__, __LINE__, "", dbus_message_get_signature (_reply));
+		dbus_message_unref (_reply);
+		return;
+	}
 	dbus_message_iter_init (_reply, &_iter);
 	dbus_message_unref (_reply);
 }
 
 
 static char* rygel_external_media_item_dbus_proxy_get_album_art (RygelExternalMediaItem* self) {
+	DBusError _dbus_error;
 	DBusGConnection *_connection;
 	DBusMessage *_message, *_reply;
 	DBusMessageIter _iter, _subiter;
@@ -4239,11 +5064,27 @@ static char* rygel_external_media_item_dbus_proxy_get_album_art (RygelExternalMe
 	_tmp298_ = "AlbumArt";
 	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp298_);
 	g_object_get (self, "connection", &_connection, NULL);
-	_reply = dbus_connection_send_with_reply_and_block (dbus_g_connection_get_connection (_connection), _message, -1, NULL);
+	dbus_error_init (&_dbus_error);
+	_reply = dbus_connection_send_with_reply_and_block (dbus_g_connection_get_connection (_connection), _message, -1, &_dbus_error);
 	dbus_g_connection_unref (_connection);
 	dbus_message_unref (_message);
+	if (dbus_error_is_set (&_dbus_error)) {
+		g_critical ("file %s: line %d: uncaught error: %s (%s)", __FILE__, __LINE__, _dbus_error.message, _dbus_error.name);
+		dbus_error_free (&_dbus_error);
+		return NULL;
+	}
+	if (strcmp (dbus_message_get_signature (_reply), "v")) {
+		g_critical ("file %s: line %d: Invalid signature, expected \"%s\", got \"%s\"", __FILE__, __LINE__, "v", dbus_message_get_signature (_reply));
+		dbus_message_unref (_reply);
+		return NULL;
+	}
 	dbus_message_iter_init (_reply, &_iter);
 	dbus_message_iter_recurse (&_iter, &_subiter);
+	if (strcmp (dbus_message_iter_get_signature (&_subiter), "o")) {
+		g_critical ("file %s: line %d: Invalid signature, expected \"%s\", got \"%s\"", __FILE__, __LINE__, "o", dbus_message_iter_get_signature (&_subiter));
+		dbus_message_unref (_reply);
+		return NULL;
+	}
 	dbus_message_iter_get_basic (&_subiter, &_tmp299_);
 	dbus_message_iter_next (&_subiter);
 	_result = g_strdup (_tmp299_);
@@ -4253,6 +5094,7 @@ static char* rygel_external_media_item_dbus_proxy_get_album_art (RygelExternalMe
 
 
 static void rygel_external_media_item_dbus_proxy_set_album_art (RygelExternalMediaItem* self, const char* value) {
+	DBusError _dbus_error;
 	DBusGConnection *_connection;
 	DBusMessage *_message, *_reply;
 	DBusMessageIter _iter, _subiter;
@@ -4273,9 +5115,20 @@ static void rygel_external_media_item_dbus_proxy_set_album_art (RygelExternalMed
 	dbus_message_iter_append_basic (&_subiter, DBUS_TYPE_OBJECT_PATH, &_tmp302_);
 	dbus_message_iter_close_container (&_iter, &_subiter);
 	g_object_get (self, "connection", &_connection, NULL);
-	_reply = dbus_connection_send_with_reply_and_block (dbus_g_connection_get_connection (_connection), _message, -1, NULL);
+	dbus_error_init (&_dbus_error);
+	_reply = dbus_connection_send_with_reply_and_block (dbus_g_connection_get_connection (_connection), _message, -1, &_dbus_error);
 	dbus_g_connection_unref (_connection);
 	dbus_message_unref (_message);
+	if (dbus_error_is_set (&_dbus_error)) {
+		g_critical ("file %s: line %d: uncaught error: %s (%s)", __FILE__, __LINE__, _dbus_error.message, _dbus_error.name);
+		dbus_error_free (&_dbus_error);
+		return;
+	}
+	if (strcmp (dbus_message_get_signature (_reply), "")) {
+		g_critical ("file %s: line %d: Invalid signature, expected \"%s\", got \"%s\"", __FILE__, __LINE__, "", dbus_message_get_signature (_reply));
+		dbus_message_unref (_reply);
+		return;
+	}
 	dbus_message_iter_init (_reply, &_iter);
 	dbus_message_unref (_reply);
 }
@@ -4793,14 +5646,16 @@ static void free_desktop_dbus_object_base_init (FreeDesktopDBusObjectIface * ifa
 
 
 GType free_desktop_dbus_object_get_type (void) {
-	static GType free_desktop_dbus_object_type_id = 0;
-	if (free_desktop_dbus_object_type_id == 0) {
+	static volatile gsize free_desktop_dbus_object_type_id__volatile = 0;
+	if (g_once_init_enter (&free_desktop_dbus_object_type_id__volatile)) {
 		static const GTypeInfo g_define_type_info = { sizeof (FreeDesktopDBusObjectIface), (GBaseInitFunc) free_desktop_dbus_object_base_init, (GBaseFinalizeFunc) NULL, (GClassInitFunc) NULL, (GClassFinalizeFunc) NULL, NULL, 0, 0, (GInstanceInitFunc) NULL, NULL };
+		GType free_desktop_dbus_object_type_id;
 		free_desktop_dbus_object_type_id = g_type_register_static (G_TYPE_INTERFACE, "FreeDesktopDBusObject", &g_define_type_info, 0);
 		g_type_interface_add_prerequisite (free_desktop_dbus_object_type_id, DBUS_TYPE_G_PROXY);
 		g_type_set_qdata (free_desktop_dbus_object_type_id, g_quark_from_string ("ValaDBusInterfaceProxyType"), &free_desktop_dbus_object_dbus_proxy_get_type);
+		g_once_init_leave (&free_desktop_dbus_object_type_id__volatile, free_desktop_dbus_object_type_id);
 	}
-	return free_desktop_dbus_object_type_id;
+	return free_desktop_dbus_object_type_id__volatile;
 }
 
 
@@ -4832,11 +5687,11 @@ static GObject* free_desktop_dbus_object_dbus_proxy_construct (GType gtype, guin
 
 static void _dbus_handle_free_desktop_dbus_object_name_owner_changed (FreeDesktopDBusObject* self, DBusConnection* connection, DBusMessage* message) {
 	DBusMessageIter iter;
-	const char* name = NULL;
+	char* name = NULL;
 	const char* _tmp315_;
-	const char* old_owner = NULL;
+	char* old_owner = NULL;
 	const char* _tmp316_;
-	const char* new_owner = NULL;
+	char* new_owner = NULL;
 	const char* _tmp317_;
 	DBusMessage* reply;
 	if (strcmp (dbus_message_get_signature (message), "sss")) {
@@ -4853,6 +5708,9 @@ static void _dbus_handle_free_desktop_dbus_object_name_owner_changed (FreeDeskto
 	dbus_message_iter_next (&iter);
 	new_owner = g_strdup (_tmp317_);
 	g_signal_emit_by_name (self, "name-owner-changed", name, old_owner, new_owner);
+	_g_free0 (name);
+	_g_free0 (old_owner);
+	_g_free0 (new_owner);
 }
 
 
@@ -4912,8 +5770,16 @@ static void free_desktop_dbus_object_dbus_proxy_list_names_async (FreeDesktopDBu
 
 static void free_desktop_dbus_object_dbus_proxy_list_names_ready (DBusPendingCall* pending, void* user_data) {
 	FreeDesktopDBusObjectDBusProxyListNamesData* _data_;
+	GObject * _obj_;
+	GSimpleAsyncResult * _res_;
 	_data_ = user_data;
-	g_simple_async_result_complete (g_simple_async_result_new (g_object_newv (G_TYPE_OBJECT, 0, NULL), _data_->_callback_, _data_->_user_data_, _data_));
+	_obj_ = g_object_newv (G_TYPE_OBJECT, 0, NULL);
+	_res_ = g_simple_async_result_new (_obj_, _data_->_callback_, _data_->_user_data_, _data_);
+	g_simple_async_result_complete (_res_);
+	g_object_unref (_obj_);
+	g_object_unref (_res_);
+	g_slice_free (FreeDesktopDBusObjectDBusProxyListNamesData, _data_);
+	dbus_pending_call_unref (pending);
 }
 
 
@@ -5008,7 +5874,7 @@ static char** free_desktop_dbus_object_dbus_proxy_list_names_finish (FreeDesktop
 				_ecode = DBUS_GERROR_REMOTE_EXCEPTION;
 			}
 		}
-		g_set_error_literal (error, _edomain, _ecode, _dbus_error.message);
+		g_set_error (error, _edomain, _ecode, "%s", _dbus_error.message);
 		dbus_error_free (&_dbus_error);
 		return NULL;
 	}
@@ -5066,8 +5932,16 @@ static void free_desktop_dbus_object_dbus_proxy_list_activatable_names_async (Fr
 
 static void free_desktop_dbus_object_dbus_proxy_list_activatable_names_ready (DBusPendingCall* pending, void* user_data) {
 	FreeDesktopDBusObjectDBusProxyListActivatableNamesData* _data_;
+	GObject * _obj_;
+	GSimpleAsyncResult * _res_;
 	_data_ = user_data;
-	g_simple_async_result_complete (g_simple_async_result_new (g_object_newv (G_TYPE_OBJECT, 0, NULL), _data_->_callback_, _data_->_user_data_, _data_));
+	_obj_ = g_object_newv (G_TYPE_OBJECT, 0, NULL);
+	_res_ = g_simple_async_result_new (_obj_, _data_->_callback_, _data_->_user_data_, _data_);
+	g_simple_async_result_complete (_res_);
+	g_object_unref (_obj_);
+	g_object_unref (_res_);
+	g_slice_free (FreeDesktopDBusObjectDBusProxyListActivatableNamesData, _data_);
+	dbus_pending_call_unref (pending);
 }
 
 
@@ -5162,7 +6036,7 @@ static char** free_desktop_dbus_object_dbus_proxy_list_activatable_names_finish 
 				_ecode = DBUS_GERROR_REMOTE_EXCEPTION;
 			}
 		}
-		g_set_error_literal (error, _edomain, _ecode, _dbus_error.message);
+		g_set_error (error, _edomain, _ecode, "%s", _dbus_error.message);
 		dbus_error_free (&_dbus_error);
 		return NULL;
 	}
@@ -5543,14 +6417,16 @@ static void free_desktop_properties_base_init (FreeDesktopPropertiesIface * ifac
 
 
 GType free_desktop_properties_get_type (void) {
-	static GType free_desktop_properties_type_id = 0;
-	if (free_desktop_properties_type_id == 0) {
+	static volatile gsize free_desktop_properties_type_id__volatile = 0;
+	if (g_once_init_enter (&free_desktop_properties_type_id__volatile)) {
 		static const GTypeInfo g_define_type_info = { sizeof (FreeDesktopPropertiesIface), (GBaseInitFunc) free_desktop_properties_base_init, (GBaseFinalizeFunc) NULL, (GClassInitFunc) NULL, (GClassFinalizeFunc) NULL, NULL, 0, 0, (GInstanceInitFunc) NULL, NULL };
+		GType free_desktop_properties_type_id;
 		free_desktop_properties_type_id = g_type_register_static (G_TYPE_INTERFACE, "FreeDesktopProperties", &g_define_type_info, 0);
 		g_type_interface_add_prerequisite (free_desktop_properties_type_id, DBUS_TYPE_G_PROXY);
 		g_type_set_qdata (free_desktop_properties_type_id, g_quark_from_string ("ValaDBusInterfaceProxyType"), &free_desktop_properties_dbus_proxy_get_type);
+		g_once_init_leave (&free_desktop_properties_type_id__volatile, free_desktop_properties_type_id);
 	}
-	return free_desktop_properties_type_id;
+	return free_desktop_properties_type_id__volatile;
 }
 
 
@@ -5636,8 +6512,16 @@ static void free_desktop_properties_dbus_proxy_get_all_async (FreeDesktopPropert
 
 static void free_desktop_properties_dbus_proxy_get_all_ready (DBusPendingCall* pending, void* user_data) {
 	FreeDesktopPropertiesDBusProxyGetAllData* _data_;
+	GObject * _obj_;
+	GSimpleAsyncResult * _res_;
 	_data_ = user_data;
-	g_simple_async_result_complete (g_simple_async_result_new (g_object_newv (G_TYPE_OBJECT, 0, NULL), _data_->_callback_, _data_->_user_data_, _data_));
+	_obj_ = g_object_newv (G_TYPE_OBJECT, 0, NULL);
+	_res_ = g_simple_async_result_new (_obj_, _data_->_callback_, _data_->_user_data_, _data_);
+	g_simple_async_result_complete (_res_);
+	g_object_unref (_obj_);
+	g_object_unref (_res_);
+	g_slice_free (FreeDesktopPropertiesDBusProxyGetAllData, _data_);
+	dbus_pending_call_unref (pending);
 }
 
 
@@ -5729,7 +6613,7 @@ static GHashTable* free_desktop_properties_dbus_proxy_get_all_finish (FreeDeskto
 				_ecode = DBUS_GERROR_REMOTE_EXCEPTION;
 			}
 		}
-		g_set_error_literal (error, _edomain, _ecode, _dbus_error.message);
+		g_set_error (error, _edomain, _ecode, "%s", _dbus_error.message);
 		dbus_error_free (&_dbus_error);
 		return NULL;
 	}

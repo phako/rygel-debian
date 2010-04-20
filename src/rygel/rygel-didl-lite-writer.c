@@ -119,6 +119,16 @@ typedef struct _RygelIconInfoClass RygelIconInfoClass;
 
 typedef struct _RygelThumbnail RygelThumbnail;
 typedef struct _RygelThumbnailClass RygelThumbnailClass;
+
+#define RYGEL_TYPE_SUBTITLE (rygel_subtitle_get_type ())
+#define RYGEL_SUBTITLE(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_SUBTITLE, RygelSubtitle))
+#define RYGEL_SUBTITLE_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TYPE_SUBTITLE, RygelSubtitleClass))
+#define RYGEL_IS_SUBTITLE(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TYPE_SUBTITLE))
+#define RYGEL_IS_SUBTITLE_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_TYPE_SUBTITLE))
+#define RYGEL_SUBTITLE_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_TYPE_SUBTITLE, RygelSubtitleClass))
+
+typedef struct _RygelSubtitle RygelSubtitle;
+typedef struct _RygelSubtitleClass RygelSubtitleClass;
 typedef struct _RygelTranscodeManagerPrivate RygelTranscodeManagerPrivate;
 
 #define RYGEL_TYPE_STATE_MACHINE (rygel_state_machine_get_type ())
@@ -166,7 +176,6 @@ struct _RygelMediaObject {
 	guint64 modified;
 	GeeArrayList* uris;
 	RygelMediaContainer* parent;
-	RygelMediaContainer* parent_ref;
 };
 
 struct _RygelMediaObjectClass {
@@ -194,6 +203,8 @@ struct _RygelMediaItem {
 	gint pixel_height;
 	gint color_depth;
 	GeeArrayList* thumbnails;
+	GeeArrayList* subtitles;
+	gboolean place_holder;
 };
 
 struct _RygelMediaItemClass {
@@ -209,7 +220,7 @@ struct _RygelTranscodeManager {
 
 struct _RygelTranscodeManagerClass {
 	GObjectClass parent_class;
-	char* (*create_uri_for_item) (RygelTranscodeManager* self, RygelMediaItem* item, gint thumbnail_index, const char* transcode_target, char** protocol);
+	char* (*create_uri_for_item) (RygelTranscodeManager* self, RygelMediaItem* item, gint thumbnail_index, gint subtitle_index, const char* transcode_target);
 	void (*add_resources) (RygelTranscodeManager* self, GUPnPDIDLLiteItem* didl_item, RygelMediaItem* item, GError** error);
 	char* (*get_protocol) (RygelTranscodeManager* self);
 	char* (*get_protocol_info) (RygelTranscodeManager* self);
@@ -237,7 +248,7 @@ struct _RygelHTTPServerClass {
 struct _RygelMediaContainer {
 	RygelMediaObject parent_instance;
 	RygelMediaContainerPrivate * priv;
-	guint child_count;
+	gint child_count;
 	guint32 update_id;
 };
 
@@ -247,6 +258,8 @@ struct _RygelMediaContainerClass {
 	GeeList* (*get_children_finish) (RygelMediaContainer* self, GAsyncResult* _res_, GError** error);
 	void (*search) (RygelMediaContainer* self, RygelSearchExpression* expression, guint offset, guint max_count, GCancellable* cancellable, GAsyncReadyCallback _callback_, gpointer _user_data_);
 	GeeList* (*search_finish) (RygelMediaContainer* self, GAsyncResult* _res_, guint* total_matches, GError** error);
+	void (*add_item) (RygelMediaContainer* self, RygelMediaItem* item, GCancellable* cancellable, GAsyncReadyCallback _callback_, gpointer _user_data_);
+	void (*add_item_finish) (RygelMediaContainer* self, GAsyncResult* _res_, GError** error);
 };
 
 
@@ -273,11 +286,20 @@ gpointer rygel_icon_info_ref (gpointer instance);
 void rygel_icon_info_unref (gpointer instance);
 GParamSpec* rygel_param_spec_icon_info (const gchar* name, const gchar* nick, const gchar* blurb, GType object_type, GParamFlags flags);
 void rygel_value_set_icon_info (GValue* value, gpointer v_object);
+void rygel_value_take_icon_info (GValue* value, gpointer v_object);
 gpointer rygel_value_get_icon_info (const GValue* value);
 GType rygel_icon_info_get_type (void);
 GType rygel_thumbnail_get_type (void);
+gpointer rygel_subtitle_ref (gpointer instance);
+void rygel_subtitle_unref (gpointer instance);
+GParamSpec* rygel_param_spec_subtitle (const gchar* name, const gchar* nick, const gchar* blurb, GType object_type, GParamFlags flags);
+void rygel_value_set_subtitle (GValue* value, gpointer v_object);
+void rygel_value_take_subtitle (GValue* value, gpointer v_object);
+gpointer rygel_value_get_subtitle (const GValue* value);
+GType rygel_subtitle_get_type (void);
 #define RYGEL_MEDIA_ITEM_VIDEO_CLASS "object.item.videoItem"
 #define RYGEL_MEDIA_ITEM_MUSIC_CLASS "object.item.audioItem.musicTrack"
+void rygel_http_server_add_proxy_resource (RygelHTTPServer* self, GUPnPDIDLLiteItem* didl_item, RygelMediaItem* item, GError** error);
 void rygel_transcode_manager_add_resources (RygelTranscodeManager* self, GUPnPDIDLLiteItem* didl_item, RygelMediaItem* item, GError** error);
 GType rygel_state_machine_get_type (void);
 void rygel_media_item_add_resources (RygelMediaItem* self, GUPnPDIDLLiteItem* didl_item, gboolean allow_internal, GError** error);
@@ -285,6 +307,7 @@ gpointer rygel_search_expression_ref (gpointer instance);
 void rygel_search_expression_unref (gpointer instance);
 GParamSpec* rygel_param_spec_search_expression (const gchar* name, const gchar* nick, const gchar* blurb, GType object_type, GParamFlags flags);
 void rygel_value_set_search_expression (GValue* value, gpointer v_object);
+void rygel_value_take_search_expression (GValue* value, gpointer v_object);
 gpointer rygel_value_get_search_expression (const GValue* value);
 GType rygel_search_expression_get_type (void);
 static void rygel_didl_lite_writer_finalize (GObject* obj);
@@ -304,16 +327,16 @@ static gpointer _g_object_ref0 (gpointer self) {
 
 #line 37 "rygel-didl-lite-writer.vala"
 RygelDIDLLiteWriter* rygel_didl_lite_writer_construct (GType object_type, RygelHTTPServer* http_server) {
-#line 308 "rygel-didl-lite-writer.c"
+#line 331 "rygel-didl-lite-writer.c"
 	RygelDIDLLiteWriter * self;
 	RygelHTTPServer* _tmp0_;
 #line 37 "rygel-didl-lite-writer.vala"
 	g_return_val_if_fail (http_server != NULL, NULL);
-#line 313 "rygel-didl-lite-writer.c"
+#line 336 "rygel-didl-lite-writer.c"
 	self = g_object_newv (object_type, 0, NULL);
 #line 38 "rygel-didl-lite-writer.vala"
 	self->priv->http_server = (_tmp0_ = _g_object_ref0 (http_server), _g_object_unref0 (self->priv->http_server), _tmp0_);
-#line 317 "rygel-didl-lite-writer.c"
+#line 340 "rygel-didl-lite-writer.c"
 	return self;
 }
 
@@ -322,25 +345,25 @@ RygelDIDLLiteWriter* rygel_didl_lite_writer_construct (GType object_type, RygelH
 RygelDIDLLiteWriter* rygel_didl_lite_writer_new (RygelHTTPServer* http_server) {
 #line 37 "rygel-didl-lite-writer.vala"
 	return rygel_didl_lite_writer_construct (RYGEL_TYPE_DIDL_LITE_WRITER, http_server);
-#line 326 "rygel-didl-lite-writer.c"
+#line 349 "rygel-didl-lite-writer.c"
 }
 
 
 #line 41 "rygel-didl-lite-writer.vala"
 void rygel_didl_lite_writer_serialize (RygelDIDLLiteWriter* self, RygelMediaObject* media_object, GError** error) {
-#line 332 "rygel-didl-lite-writer.c"
+#line 355 "rygel-didl-lite-writer.c"
 	GError * _inner_error_;
 #line 41 "rygel-didl-lite-writer.vala"
 	g_return_if_fail (self != NULL);
 #line 41 "rygel-didl-lite-writer.vala"
 	g_return_if_fail (media_object != NULL);
-#line 338 "rygel-didl-lite-writer.c"
+#line 361 "rygel-didl-lite-writer.c"
 	_inner_error_ = NULL;
 #line 42 "rygel-didl-lite-writer.vala"
 	if (RYGEL_IS_MEDIA_ITEM (media_object)) {
 #line 43 "rygel-didl-lite-writer.vala"
 		rygel_didl_lite_writer_serialize_item (self, RYGEL_MEDIA_ITEM (media_object), &_inner_error_);
-#line 344 "rygel-didl-lite-writer.c"
+#line 367 "rygel-didl-lite-writer.c"
 		if (_inner_error_ != NULL) {
 			g_propagate_error (error, _inner_error_);
 			return;
@@ -350,7 +373,7 @@ void rygel_didl_lite_writer_serialize (RygelDIDLLiteWriter* self, RygelMediaObje
 		if (RYGEL_IS_MEDIA_CONTAINER (media_object)) {
 #line 45 "rygel-didl-lite-writer.vala"
 			rygel_didl_lite_writer_serialize_container (self, RYGEL_MEDIA_CONTAINER (media_object), &_inner_error_);
-#line 354 "rygel-didl-lite-writer.c"
+#line 377 "rygel-didl-lite-writer.c"
 			if (_inner_error_ != NULL) {
 				g_propagate_error (error, _inner_error_);
 				return;
@@ -368,19 +391,17 @@ void rygel_didl_lite_writer_serialize (RygelDIDLLiteWriter* self, RygelMediaObje
 
 #line 52 "rygel-didl-lite-writer.vala"
 static void rygel_didl_lite_writer_serialize_item (RygelDIDLLiteWriter* self, RygelMediaItem* item, GError** error) {
-#line 372 "rygel-didl-lite-writer.c"
+#line 395 "rygel-didl-lite-writer.c"
 	GError * _inner_error_;
 	GUPnPDIDLLiteItem* didl_item;
 	gboolean _tmp0_ = FALSE;
 	gboolean _tmp1_ = FALSE;
 	gboolean _tmp2_ = FALSE;
-	gboolean _tmp3_ = FALSE;
-	gboolean internal_allowed;
 #line 52 "rygel-didl-lite-writer.vala"
 	g_return_if_fail (self != NULL);
 #line 52 "rygel-didl-lite-writer.vala"
 	g_return_if_fail (item != NULL);
-#line 384 "rygel-didl-lite-writer.c"
+#line 405 "rygel-didl-lite-writer.c"
 	_inner_error_ = NULL;
 #line 53 "rygel-didl-lite-writer.vala"
 	didl_item = gupnp_didl_lite_writer_add_item ((GUPnPDIDLLiteWriter*) self);
@@ -390,11 +411,11 @@ static void rygel_didl_lite_writer_serialize_item (RygelDIDLLiteWriter* self, Ry
 	if (((RygelMediaObject*) item)->parent != NULL) {
 #line 57 "rygel-didl-lite-writer.vala"
 		gupnp_didl_lite_object_set_parent_id ((GUPnPDIDLLiteObject*) didl_item, ((RygelMediaObject*) ((RygelMediaObject*) item)->parent)->id);
-#line 394 "rygel-didl-lite-writer.c"
+#line 415 "rygel-didl-lite-writer.c"
 	} else {
 #line 59 "rygel-didl-lite-writer.vala"
 		gupnp_didl_lite_object_set_parent_id ((GUPnPDIDLLiteObject*) didl_item, "0");
-#line 398 "rygel-didl-lite-writer.c"
+#line 419 "rygel-didl-lite-writer.c"
 	}
 #line 62 "rygel-didl-lite-writer.vala"
 	gupnp_didl_lite_object_set_restricted ((GUPnPDIDLLiteObject*) didl_item, FALSE);
@@ -406,11 +427,11 @@ static void rygel_didl_lite_writer_serialize_item (RygelDIDLLiteWriter* self, Ry
 	if (item->author != NULL) {
 #line 66 "rygel-didl-lite-writer.vala"
 		_tmp0_ = _vala_strcmp0 (item->author, "") != 0;
-#line 410 "rygel-didl-lite-writer.c"
+#line 431 "rygel-didl-lite-writer.c"
 	} else {
 #line 66 "rygel-didl-lite-writer.vala"
 		_tmp0_ = FALSE;
-#line 414 "rygel-didl-lite-writer.c"
+#line 435 "rygel-didl-lite-writer.c"
 	}
 #line 66 "rygel-didl-lite-writer.vala"
 	if (_tmp0_) {
@@ -420,13 +441,13 @@ static void rygel_didl_lite_writer_serialize_item (RygelDIDLLiteWriter* self, Ry
 		if (g_str_has_prefix (((RygelMediaObject*) item)->upnp_class, RYGEL_MEDIA_ITEM_VIDEO_CLASS)) {
 #line 70 "rygel-didl-lite-writer.vala"
 			gupnp_didl_lite_object_set_author ((GUPnPDIDLLiteObject*) didl_item, item->author);
-#line 424 "rygel-didl-lite-writer.c"
+#line 445 "rygel-didl-lite-writer.c"
 		} else {
 #line 71 "rygel-didl-lite-writer.vala"
 			if (g_str_has_prefix (((RygelMediaObject*) item)->upnp_class, RYGEL_MEDIA_ITEM_MUSIC_CLASS)) {
 #line 72 "rygel-didl-lite-writer.vala"
 				gupnp_didl_lite_object_set_artist ((GUPnPDIDLLiteObject*) didl_item, item->author);
-#line 430 "rygel-didl-lite-writer.c"
+#line 451 "rygel-didl-lite-writer.c"
 			}
 		}
 	}
@@ -434,105 +455,119 @@ static void rygel_didl_lite_writer_serialize_item (RygelDIDLLiteWriter* self, Ry
 	if (item->track_number >= 0) {
 #line 77 "rygel-didl-lite-writer.vala"
 		gupnp_didl_lite_object_set_track_number ((GUPnPDIDLLiteObject*) didl_item, item->track_number);
-#line 438 "rygel-didl-lite-writer.c"
+#line 459 "rygel-didl-lite-writer.c"
 	}
 #line 80 "rygel-didl-lite-writer.vala"
 	if (item->album != NULL) {
 #line 80 "rygel-didl-lite-writer.vala"
 		_tmp1_ = _vala_strcmp0 (item->album, "") != 0;
-#line 444 "rygel-didl-lite-writer.c"
+#line 465 "rygel-didl-lite-writer.c"
 	} else {
 #line 80 "rygel-didl-lite-writer.vala"
 		_tmp1_ = FALSE;
-#line 448 "rygel-didl-lite-writer.c"
+#line 469 "rygel-didl-lite-writer.c"
 	}
 #line 80 "rygel-didl-lite-writer.vala"
 	if (_tmp1_) {
 #line 81 "rygel-didl-lite-writer.vala"
 		gupnp_didl_lite_object_set_album ((GUPnPDIDLLiteObject*) didl_item, item->album);
-#line 454 "rygel-didl-lite-writer.c"
+#line 475 "rygel-didl-lite-writer.c"
 	}
 #line 84 "rygel-didl-lite-writer.vala"
 	if (item->date != NULL) {
 #line 84 "rygel-didl-lite-writer.vala"
 		_tmp2_ = _vala_strcmp0 (item->date, "") != 0;
-#line 460 "rygel-didl-lite-writer.c"
+#line 481 "rygel-didl-lite-writer.c"
 	} else {
 #line 84 "rygel-didl-lite-writer.vala"
 		_tmp2_ = FALSE;
-#line 464 "rygel-didl-lite-writer.c"
+#line 485 "rygel-didl-lite-writer.c"
 	}
 #line 84 "rygel-didl-lite-writer.vala"
 	if (_tmp2_) {
 #line 85 "rygel-didl-lite-writer.vala"
 		gupnp_didl_lite_object_set_date ((GUPnPDIDLLiteObject*) didl_item, item->date);
-#line 470 "rygel-didl-lite-writer.c"
+#line 491 "rygel-didl-lite-writer.c"
 	}
+#line 88 "rygel-didl-lite-writer.vala"
+	if (item->place_holder) {
 #line 89 "rygel-didl-lite-writer.vala"
-	rygel_transcode_manager_add_resources ((RygelTranscodeManager*) self->priv->http_server, didl_item, item, &_inner_error_);
-#line 474 "rygel-didl-lite-writer.c"
-	if (_inner_error_ != NULL) {
-		g_propagate_error (error, _inner_error_);
-		_g_object_unref0 (didl_item);
-		return;
-	}
-#line 91 "rygel-didl-lite-writer.vala"
-	if (_vala_strcmp0 (gssdp_client_get_interface ((GSSDPClient*) self->priv->http_server->context), "lo") == 0) {
-#line 91 "rygel-didl-lite-writer.vala"
-		_tmp3_ = TRUE;
-#line 484 "rygel-didl-lite-writer.c"
+		rygel_http_server_add_proxy_resource (self->priv->http_server, didl_item, item, &_inner_error_);
+#line 497 "rygel-didl-lite-writer.c"
+		if (_inner_error_ != NULL) {
+			g_propagate_error (error, _inner_error_);
+			_g_object_unref0 (didl_item);
+			return;
+		}
 	} else {
+		gboolean internal_allowed = FALSE;
+		gboolean _tmp3_ = FALSE;
 #line 92 "rygel-didl-lite-writer.vala"
-		_tmp3_ = _vala_strcmp0 (gssdp_client_get_host_ip ((GSSDPClient*) self->priv->http_server->context), "127.0.0.1") == 0;
-#line 488 "rygel-didl-lite-writer.c"
-	}
-#line 91 "rygel-didl-lite-writer.vala"
-	internal_allowed = _tmp3_;
-#line 94 "rygel-didl-lite-writer.vala"
-	rygel_media_item_add_resources (item, didl_item, internal_allowed, &_inner_error_);
-#line 494 "rygel-didl-lite-writer.c"
-	if (_inner_error_ != NULL) {
-		g_propagate_error (error, _inner_error_);
-		_g_object_unref0 (didl_item);
-		return;
+		rygel_transcode_manager_add_resources ((RygelTranscodeManager*) self->priv->http_server, didl_item, item, &_inner_error_);
+#line 508 "rygel-didl-lite-writer.c"
+		if (_inner_error_ != NULL) {
+			g_propagate_error (error, _inner_error_);
+			_g_object_unref0 (didl_item);
+			return;
+		}
+#line 96 "rygel-didl-lite-writer.vala"
+		if (_vala_strcmp0 (gssdp_client_get_interface ((GSSDPClient*) self->priv->http_server->context), "lo") == 0) {
+#line 96 "rygel-didl-lite-writer.vala"
+			_tmp3_ = TRUE;
+#line 518 "rygel-didl-lite-writer.c"
+		} else {
+#line 97 "rygel-didl-lite-writer.vala"
+			_tmp3_ = _vala_strcmp0 (gssdp_client_get_host_ip ((GSSDPClient*) self->priv->http_server->context), "127.0.0.1") == 0;
+#line 522 "rygel-didl-lite-writer.c"
+		}
+#line 96 "rygel-didl-lite-writer.vala"
+		internal_allowed = _tmp3_;
+#line 98 "rygel-didl-lite-writer.vala"
+		rygel_media_item_add_resources (item, didl_item, internal_allowed, &_inner_error_);
+#line 528 "rygel-didl-lite-writer.c"
+		if (_inner_error_ != NULL) {
+			g_propagate_error (error, _inner_error_);
+			_g_object_unref0 (didl_item);
+			return;
+		}
 	}
 	_g_object_unref0 (didl_item);
 }
 
 
-#line 97 "rygel-didl-lite-writer.vala"
-static void rygel_didl_lite_writer_serialize_container (RygelDIDLLiteWriter* self, RygelMediaContainer* container, GError** error) {
-#line 506 "rygel-didl-lite-writer.c"
-	GUPnPDIDLLiteContainer* didl_container;
-#line 97 "rygel-didl-lite-writer.vala"
-	g_return_if_fail (self != NULL);
-#line 97 "rygel-didl-lite-writer.vala"
-	g_return_if_fail (container != NULL);
-#line 98 "rygel-didl-lite-writer.vala"
-	didl_container = gupnp_didl_lite_writer_add_container ((GUPnPDIDLLiteWriter*) self);
-#line 99 "rygel-didl-lite-writer.vala"
-	if (((RygelMediaObject*) container)->parent != NULL) {
-#line 100 "rygel-didl-lite-writer.vala"
-		gupnp_didl_lite_object_set_parent_id ((GUPnPDIDLLiteObject*) didl_container, ((RygelMediaObject*) ((RygelMediaObject*) container)->parent)->id);
-#line 518 "rygel-didl-lite-writer.c"
-	} else {
 #line 102 "rygel-didl-lite-writer.vala"
-		gupnp_didl_lite_object_set_parent_id ((GUPnPDIDLLiteObject*) didl_container, "-1");
-#line 522 "rygel-didl-lite-writer.c"
-	}
+static void rygel_didl_lite_writer_serialize_container (RygelDIDLLiteWriter* self, RygelMediaContainer* container, GError** error) {
+#line 541 "rygel-didl-lite-writer.c"
+	GUPnPDIDLLiteContainer* didl_container;
+#line 102 "rygel-didl-lite-writer.vala"
+	g_return_if_fail (self != NULL);
+#line 102 "rygel-didl-lite-writer.vala"
+	g_return_if_fail (container != NULL);
+#line 103 "rygel-didl-lite-writer.vala"
+	didl_container = gupnp_didl_lite_writer_add_container ((GUPnPDIDLLiteWriter*) self);
+#line 104 "rygel-didl-lite-writer.vala"
+	if (((RygelMediaObject*) container)->parent != NULL) {
 #line 105 "rygel-didl-lite-writer.vala"
-	gupnp_didl_lite_object_set_id ((GUPnPDIDLLiteObject*) didl_container, ((RygelMediaObject*) container)->id);
-#line 106 "rygel-didl-lite-writer.vala"
-	gupnp_didl_lite_object_set_title ((GUPnPDIDLLiteObject*) didl_container, rygel_media_object_get_title ((RygelMediaObject*) container));
+		gupnp_didl_lite_object_set_parent_id ((GUPnPDIDLLiteObject*) didl_container, ((RygelMediaObject*) ((RygelMediaObject*) container)->parent)->id);
+#line 553 "rygel-didl-lite-writer.c"
+	} else {
 #line 107 "rygel-didl-lite-writer.vala"
-	gupnp_didl_lite_container_set_child_count (didl_container, container->child_count);
-#line 108 "rygel-didl-lite-writer.vala"
-	gupnp_didl_lite_object_set_upnp_class ((GUPnPDIDLLiteObject*) didl_container, ((RygelMediaObject*) container)->upnp_class);
-#line 109 "rygel-didl-lite-writer.vala"
-	gupnp_didl_lite_object_set_restricted ((GUPnPDIDLLiteObject*) didl_container, FALSE);
+		gupnp_didl_lite_object_set_parent_id ((GUPnPDIDLLiteObject*) didl_container, "-1");
+#line 557 "rygel-didl-lite-writer.c"
+	}
 #line 110 "rygel-didl-lite-writer.vala"
+	gupnp_didl_lite_object_set_id ((GUPnPDIDLLiteObject*) didl_container, ((RygelMediaObject*) container)->id);
+#line 111 "rygel-didl-lite-writer.vala"
+	gupnp_didl_lite_object_set_title ((GUPnPDIDLLiteObject*) didl_container, rygel_media_object_get_title ((RygelMediaObject*) container));
+#line 112 "rygel-didl-lite-writer.vala"
+	gupnp_didl_lite_container_set_child_count (didl_container, container->child_count);
+#line 113 "rygel-didl-lite-writer.vala"
+	gupnp_didl_lite_object_set_upnp_class ((GUPnPDIDLLiteObject*) didl_container, ((RygelMediaObject*) container)->upnp_class);
+#line 114 "rygel-didl-lite-writer.vala"
+	gupnp_didl_lite_object_set_restricted ((GUPnPDIDLLiteObject*) didl_container, gee_collection_get_size ((GeeCollection*) ((RygelMediaObject*) container)->uris) <= 0);
+#line 115 "rygel-didl-lite-writer.vala"
 	gupnp_didl_lite_container_set_searchable (didl_container, TRUE);
-#line 536 "rygel-didl-lite-writer.c"
+#line 571 "rygel-didl-lite-writer.c"
 	_g_object_unref0 (didl_container);
 }
 
@@ -558,12 +593,14 @@ static void rygel_didl_lite_writer_finalize (GObject* obj) {
 
 
 GType rygel_didl_lite_writer_get_type (void) {
-	static GType rygel_didl_lite_writer_type_id = 0;
-	if (rygel_didl_lite_writer_type_id == 0) {
+	static volatile gsize rygel_didl_lite_writer_type_id__volatile = 0;
+	if (g_once_init_enter (&rygel_didl_lite_writer_type_id__volatile)) {
 		static const GTypeInfo g_define_type_info = { sizeof (RygelDIDLLiteWriterClass), (GBaseInitFunc) NULL, (GBaseFinalizeFunc) NULL, (GClassInitFunc) rygel_didl_lite_writer_class_init, (GClassFinalizeFunc) NULL, NULL, sizeof (RygelDIDLLiteWriter), 0, (GInstanceInitFunc) rygel_didl_lite_writer_instance_init, NULL };
+		GType rygel_didl_lite_writer_type_id;
 		rygel_didl_lite_writer_type_id = g_type_register_static (GUPNP_TYPE_DIDL_LITE_WRITER, "RygelDIDLLiteWriter", &g_define_type_info, 0);
+		g_once_init_leave (&rygel_didl_lite_writer_type_id__volatile, rygel_didl_lite_writer_type_id);
 	}
-	return rygel_didl_lite_writer_type_id;
+	return rygel_didl_lite_writer_type_id__volatile;
 }
 
 

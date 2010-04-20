@@ -30,79 +30,82 @@ using Gee;
  */
 public class Rygel.TrackerSearchContainer : Rygel.MediaContainer {
     /* class-wide constants */
-    private const string TRACKER_SERVICE = "org.freedesktop.Tracker";
-    private const string TRACKER_PATH = "/org/freedesktop/Tracker";
-    private const string SEARCH_PATH = "/org/freedesktop/Tracker/Search";
-    private const string METADATA_PATH = "/org/freedesktop/Tracker/Metadata";
+    private const string TRACKER_SERVICE = "org.freedesktop.Tracker1";
+    private const string RESOURCES_PATH = "/org/freedesktop/Tracker1/Resources";
 
-    public TrackerSearchIface search_proxy;
+    private const string ITEM_VARIABLE = "?item";
+    private const string MODIFIED_PREDICATE = "nfo:fileLastModified";
+    private const string MODIFIED_VARIABLE = "?modified";
+    private const string URL_PREDICATE = "nie:url";
+    private const string URL_VARIABLE = "?url";
 
-    public string service;
+    public TrackerSelectionQuery query;
+    public TrackerItemFactory item_factory;
 
-    public string query_condition;
+    private TrackerResourcesIface resources;
 
-    public string[] keywords;
-
-    public TrackerSearchContainer (string         id,
-                                   MediaContainer parent,
-                                   string         title,
-                                   string         service,
-                                   string         query_condition = "",
-                                   string[]       keywords = new string[0]) {
+    public TrackerSearchContainer (string                id,
+                                   MediaContainer        parent,
+                                   string                title,
+                                   TrackerItemFactory    item_factory,
+                                   TrackerQueryTriplets? mandatory = null,
+                                   ArrayList<string>?    filters = null) {
         base (id, parent, title, 0);
 
-        this.service = service;
-        this.keywords = keywords;
-        this.query_condition = query_condition;
+        this.item_factory = item_factory;
+
+        var variables = new ArrayList<string> ();
+        variables.add (ITEM_VARIABLE);
+        variables.add (URL_VARIABLE);
+
+        TrackerQueryTriplets our_mandatory;
+        if (mandatory != null) {
+            our_mandatory = mandatory;
+        } else {
+            our_mandatory = new TrackerQueryTriplets ();
+        }
+
+        our_mandatory.add (new TrackerQueryTriplet (ITEM_VARIABLE,
+                                                    "a",
+                                                    item_factory.category,
+                                                    false));
+        our_mandatory.add (new TrackerQueryTriplet (ITEM_VARIABLE,
+                                                    MODIFIED_PREDICATE,
+                                                    MODIFIED_VARIABLE,
+                                                    false));
+        our_mandatory.add (new TrackerQueryTriplet (ITEM_VARIABLE,
+                                                    URL_PREDICATE,
+                                                    URL_VARIABLE,
+                                                    false));
+
+        var optional = new TrackerQueryTriplets ();
+        foreach (var chain in this.item_factory.key_chains) {
+            var key = chain.last ();
+            var variable = "?" + key.replace (":", "_");
+
+            variables.add (variable);
+
+            var triplet = this.triplet_from_chain (chain,
+                                                   variable,
+                                                   ITEM_VARIABLE);
+
+            if (!our_mandatory.contains (triplet)) {
+                optional.add (triplet);
+            }
+        }
+
+        this.query = new TrackerSelectionQuery (variables,
+                                                our_mandatory,
+                                                optional,
+                                                filters,
+                                                MODIFIED_VARIABLE);
 
         try {
             this.create_proxies ();
 
-            /* FIXME: We need to hook to some tracker signals to keep
-             *        this field up2date at all times
-             */
             this.get_children_count.begin ();
         } catch (DBus.Error error) {
             critical ("Failed to connect to session bus: %s\n", error.message);
-        }
-    }
-
-    private async void get_children_count () {
-        try {
-            // We are performing actual search (though an optimized one) to get
-            // the hitcount rather than GetHitCount because GetHitCount only
-            // allows us to get hit count for Text searches.
-            string query;
-
-            if (this.query_condition != "") {
-                query = "<rdfq:Condition>\n" +
-                            this.query_condition +
-                        "</rdfq:Condition>";
-            } else {
-                query = "";
-            }
-
-            var search_result = yield this.search_proxy.query (
-                                        0,
-                                        this.service,
-                                        new string[0],
-                                        "",
-                                        this.keywords,
-                                        query,
-                                        false,
-                                        new string[0],
-                                        false,
-                                        0,
-                                        -1);
-
-            this.child_count = search_result.length[0];
-            this.updated ();
-        } catch (GLib.Error error) {
-            critical ("error getting items under service '%s': %s",
-                      this.service,
-                      error.message);
-
-            return;
         }
     }
 
@@ -132,41 +135,27 @@ public class Rygel.TrackerSearchContainer : Rygel.MediaContainer {
                                         out uint         total_matches,
                                         Cancellable?     cancellable)
                                         throws GLib.Error {
-        string query = this.create_query_from_expression (expression);
         var results = new ArrayList<MediaObject> ();
-
+        var query = this.create_query (expression,
+                                       (int) offset,
+                                       (int) max_count);
         if (query == null) {
-            /* FIXME: chain-up when bug#601558 is fixed
             return yield base.search (expression,
-                                  offset,
-                                  max_count,
-                                  total_matches,
-                                  cancellable);*/
-            return results;
+                                      offset,
+                                      max_count,
+                                      out total_matches,
+                                      cancellable);
         }
 
-        string[] keys = TrackerItem.get_metadata_keys ();
-
-        var search_result = yield this.search_proxy.query (
-                                        0,
-                                        this.service,
-                                        keys,
-                                        "",
-                                        this.keywords,
-                                        query,
-                                        false,
-                                        new string[0],
-                                        false,
-                                        (int) offset,
-                                        (int) max_count);
+        yield query.execute (this.resources);
 
         /* Iterate through all items */
-        for (uint i = 0; i < search_result.length[0]; i++) {
-            string path = search_result[i, 0];
-            string service = search_result[i, 1];
-            string[] metadata = this.slice_strvv_tail (search_result, i, 2);
+        for (uint i = 0; i < query.result.length[0]; i++) {
+            var id = this.create_child_id_for_urn (query.result[i, 0]);
+            var uri = query.result[i, 1];
+            string[] metadata = this.slice_strvv_tail (query.result, i, 2);
 
-            var item = this.create_item (service, path, metadata);
+            var item = this.item_factory.create (id, uri, this, metadata);
             results.add (item);
         }
 
@@ -175,129 +164,141 @@ public class Rygel.TrackerSearchContainer : Rygel.MediaContainer {
         return results;
     }
 
-    private string? create_query_from_expression (SearchExpression expression) {
-        string query = null;
+    public string create_child_id_for_urn (string urn) {
+        return this.id + ":" + urn;
+    }
 
+    private TrackerQueryTriplet triplet_from_chain (
+                                        Gee.List<string> chain,
+                                        string?          variable = null,
+                                        string?          subject = null) {
+        var key = chain.first ();
+
+        TrackerQueryTriplet triplet;
+
+        if (chain.size == 1) {
+            triplet = new TrackerQueryTriplet (subject,
+                                               key,
+                                               variable,
+                                               subject != null);
+        } else {
+            var child_chain = chain.slice (chain.index_of (key) + 1,
+                                           chain.size);
+
+            var child = this.triplet_from_chain (child_chain, variable);
+
+            triplet = new TrackerQueryTriplet.chain (subject, key, child);
+        }
+
+        return triplet;
+    }
+
+    private async void get_children_count () {
+        try {
+            var query = new TrackerSelectionQuery.clone (this.query);
+
+            query.variables = new ArrayList<string> ();
+            query.variables.add ("COUNT(" + ITEM_VARIABLE + ") AS x");
+            query.optional = new TrackerQueryTriplets ();
+
+            yield query.execute (this.resources);
+
+            this.child_count = query.result[0,0].to_int ();
+            this.updated ();
+        } catch (GLib.Error error) {
+            critical ("error getting item count under category '%s': %s",
+                      this.item_factory.category,
+                      error.message);
+
+            return;
+        }
+    }
+
+    private TrackerSelectionQuery? create_query (SearchExpression expression,
+                                                 int              offset,
+                                                 int              max_count) {
         if (expression == null || !(expression is RelationalExpression)) {
-            return query;
+            return null;
         }
 
         var rel_expression = expression as RelationalExpression;
-        var query_op = this.get_op_for_expression (rel_expression);
+        var query = new TrackerSelectionQuery.clone (this.query);
 
-        if (rel_expression.operand1 == "@id" && query_op != null) {
-            query = create_query_for_id (rel_expression, query_op);
-        } else if (rel_expression.operand1 == "@parentID" &&
-                   rel_expression.compare_string (this.id)) {
-            if (this.query_condition != "") {
-                query = "<rdfq:Condition>\n" +
-                            this.query_condition +
-                        "</rdfq:Condition>";
-            } else {
-                query = "";
+        if (rel_expression.operand1 == "@parentID") {
+            if (!rel_expression.compare_string (this.id)) {
+                return null;
             }
-        }
-
-        return query;
-    }
-
-    private string? create_query_for_id (RelationalExpression expression,
-                                         string               query_op) {
-        string query = null;
-        string parent_id;
-        string service;
-
-        var path = this.get_item_info (expression.operand2,
-                                       out parent_id,
-                                       out service);
-
-        if (path != null && parent_id != null && parent_id == this.id) {
-            var dir = Path.get_dirname (path);
-            var basename = Path.get_basename (path);
-
-            var search_condition = "<rdfq:and>\n" +
-                                        "<" + query_op + ">\n" +
-                                            "<rdfq:Property " +
-                                                "name=\"File:Path\" />\n" +
-                                            "<rdf:String>" +
-                                                dir +
-                                            "</rdf:String>\n" +
-                                        "</" + query_op + ">\n" +
-                                        "<" + query_op + ">\n" +
-                                            "<rdfq:Property " +
-                                                "name=\"File:Name\" />\n" +
-                                            "<rdf:String>" +
-                                                basename +
-                                            "</rdf:String>\n" +
-                                        "</" + query_op + ">\n" +
-                                   "</rdfq:and>\n";
-
-            if (this.query_condition != "") {
-                query = "<rdfq:Condition>\n" +
-                            "<rdfq:and>\n" +
-                                search_condition +
-                                this.query_condition +
-                            "</rdfq:and>\n" +
-                        "</rdfq:Condition>";
-            } else {
-                query = "<rdfq:Condition>\n" +
-                            search_condition +
-                        "</rdfq:Condition>";
-            }
-        }
-
-        return query;
-    }
-
-    private string? get_op_for_expression (RelationalExpression expression) {
-        switch (expression.op) {
-        case SearchCriteriaOp.EQ:
-            return "rdfq:equals";
-        case SearchCriteriaOp.CONTAINS:
-            return "rdfq:contains";
-        default:
-            return null;
-        }
-    }
-
-    private MediaItem? create_item (string   service,
-                                    string   path,
-                                    string[] metadata)
-                                    throws GLib.Error {
-        var id = service + ":" + this.id + ":" + path;
-
-        if (service == TrackerVideoItem.SERVICE) {
-            return new TrackerVideoItem (id,
-                                         path,
-                                         this,
-                                         metadata);
-        } else if (service == TrackerImageItem.SERVICE) {
-            return new TrackerImageItem (id,
-                                         path,
-                                         this,
-                                         metadata);
-        } else if (service == TrackerMusicItem.SERVICE) {
-            return new TrackerMusicItem (id,
-                                         path,
-                                         this,
-                                         metadata);
         } else {
-            return null;
+            var filter = create_filter_for_child (rel_expression);
+            if (filter != null) {
+                query.filters.insert (0, filter);
+            } else {
+                return null;
+            }
         }
+
+        query.offset = offset;
+        query.max_count = max_count;
+
+        return query;
     }
 
-    // Returns the path, ID of the parent and service this item belongs to, or
-    // null item_id is invalid
+    private string? create_filter_for_child (RelationalExpression expression) {
+        string filter = null;
+        string variable = null;
+        string value = null;
+
+        if (expression.operand1 == "@id") {
+            variable = ITEM_VARIABLE;
+
+            string parent_id;
+
+            var urn = this.get_item_info (expression.operand2, out parent_id);
+            if (urn == null || parent_id == null || parent_id != this.id) {
+                return null;
+            }
+
+            switch (expression.op) {
+                case SearchCriteriaOp.EQ:
+                    value = "<" + urn + ">";
+                    break;
+                case SearchCriteriaOp.CONTAINS:
+                    value = expression.operand2;
+                    break;
+            }
+        } else if (expression.operand1 == "res") {
+            variable = URL_VARIABLE;
+            value = "\"" + expression.operand2 + "\"";
+        }
+
+        if (variable == null || value == null) {
+            return null;
+        }
+
+        switch (expression.op) {
+            case SearchCriteriaOp.EQ:
+                filter = variable + " = " + value;
+                break;
+            case SearchCriteriaOp.CONTAINS:
+                filter = "regex(" + variable + ", " +
+                                    Regex.escape_string (value) +
+                         ")";
+                break;
+        }
+
+        return filter;
+    }
+
+    // Returns the URN and the ID of the parent this item belongs to, or null
+    // if item_id is invalid
     private string? get_item_info (string     item_id,
-                                   out string parent_id,
-                                   out string service) {
-        var tokens = item_id.split (":", 3);
+                                   out string parent_id) {
+        var tokens = item_id.split (":", 2);
 
-        if (tokens[0] != null && tokens[1] != null && tokens[2] != null) {
-            service = tokens[0];
-            parent_id = tokens[1];
+        if (tokens[0] != null && tokens[1] != null) {
+            parent_id = tokens[0];
 
-            return tokens[2];
+            return tokens[1];
         } else {
             return null;
         }
@@ -306,9 +307,9 @@ public class Rygel.TrackerSearchContainer : Rygel.MediaContainer {
     private void create_proxies () throws DBus.Error {
         DBus.Connection connection = DBus.Bus.get (DBus.BusType.SESSION);
 
-        this.search_proxy = connection.get_object (TRACKER_SERVICE,
-                                                   SEARCH_PATH)
-                                                   as TrackerSearchIface;
+        this.resources = connection.get_object (TRACKER_SERVICE,
+                                                RESOURCES_PATH)
+                                                as TrackerResourcesIface;
     }
 
     /**

@@ -83,6 +83,7 @@ enum  {
 	RYGEL_TEST_VIDEO_ITEM_DUMMY_PROPERTY
 };
 #define RYGEL_TEST_VIDEO_ITEM_TEST_MIMETYPE "video/mpeg"
+#define RYGEL_TEST_VIDEO_ITEM_PIPELINE "videotestsrc is-live=1 ! " "ffenc_mpeg2video ! " "mpegtsmux"
 RygelTestItem* rygel_test_item_construct (GType object_type, const char* id, RygelMediaContainer* parent, const char* title, const char* mime, const char* upnp_class);
 RygelTestVideoItem* rygel_test_video_item_new (const char* id, RygelMediaContainer* parent, const char* title);
 RygelTestVideoItem* rygel_test_video_item_construct (GType object_type, const char* id, RygelMediaContainer* parent, const char* title);
@@ -90,54 +91,51 @@ static GstElement* rygel_test_video_item_real_create_stream_source (RygelMediaIt
 
 
 
-#line 35 "rygel-test-video-item.vala"
+#line 36 "rygel-test-video-item.vala"
 RygelTestVideoItem* rygel_test_video_item_construct (GType object_type, const char* id, RygelMediaContainer* parent, const char* title) {
-#line 96 "rygel-test-video-item.c"
+#line 97 "rygel-test-video-item.c"
 	RygelTestVideoItem * self;
-#line 35 "rygel-test-video-item.vala"
+#line 36 "rygel-test-video-item.vala"
 	g_return_val_if_fail (id != NULL, NULL);
-#line 35 "rygel-test-video-item.vala"
+#line 36 "rygel-test-video-item.vala"
 	g_return_val_if_fail (parent != NULL, NULL);
-#line 35 "rygel-test-video-item.vala"
+#line 36 "rygel-test-video-item.vala"
 	g_return_val_if_fail (title != NULL, NULL);
-#line 38 "rygel-test-video-item.vala"
+#line 39 "rygel-test-video-item.vala"
 	self = (RygelTestVideoItem*) rygel_test_item_construct (object_type, id, parent, title, RYGEL_TEST_VIDEO_ITEM_TEST_MIMETYPE, RYGEL_MEDIA_ITEM_VIDEO_CLASS);
-#line 106 "rygel-test-video-item.c"
+#line 107 "rygel-test-video-item.c"
 	return self;
 }
 
 
-#line 35 "rygel-test-video-item.vala"
+#line 36 "rygel-test-video-item.vala"
 RygelTestVideoItem* rygel_test_video_item_new (const char* id, RygelMediaContainer* parent, const char* title) {
-#line 35 "rygel-test-video-item.vala"
+#line 36 "rygel-test-video-item.vala"
 	return rygel_test_video_item_construct (RYGEL_TYPE_TEST_VIDEO_ITEM, id, parent, title);
-#line 115 "rygel-test-video-item.c"
+#line 116 "rygel-test-video-item.c"
 }
 
 
-#line 45 "rygel-test-video-item.vala"
+#line 46 "rygel-test-video-item.vala"
 static GstElement* rygel_test_video_item_real_create_stream_source (RygelMediaItem* base) {
-#line 121 "rygel-test-video-item.c"
+#line 122 "rygel-test-video-item.c"
 	RygelTestVideoItem * self;
-	GstElement* result;
+	GstElement* result = NULL;
 	GError * _inner_error_;
 	self = (RygelTestVideoItem*) base;
 	_inner_error_ = NULL;
 	{
 		GstElement* _tmp0_;
-#line 47 "rygel-test-video-item.vala"
-		_tmp0_ = gst_parse_bin_from_description ("videotestsrc is-live=1 ! ffenc_mpeg2video ! mpegtsmux", TRUE, &_inner_error_);
-#line 131 "rygel-test-video-item.c"
+#line 48 "rygel-test-video-item.vala"
+		_tmp0_ = gst_parse_bin_from_description (RYGEL_TEST_VIDEO_ITEM_PIPELINE, TRUE, &_inner_error_);
+#line 132 "rygel-test-video-item.c"
 		if (_inner_error_ != NULL) {
 			goto __catch1_g_error;
-			g_critical ("file %s: line %d: unexpected error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
-			g_clear_error (&_inner_error_);
-			return NULL;
 		}
 		result = _tmp0_;
-#line 47 "rygel-test-video-item.vala"
+#line 48 "rygel-test-video-item.vala"
 		return result;
-#line 141 "rygel-test-video-item.c"
+#line 139 "rygel-test-video-item.c"
 	}
 	goto __finally1;
 	__catch1_g_error:
@@ -146,18 +144,18 @@ static GstElement* rygel_test_video_item_real_create_stream_source (RygelMediaIt
 		err = _inner_error_;
 		_inner_error_ = NULL;
 		{
-#line 49 "rygel-test-video-item.vala"
-			g_warning ("rygel-test-video-item.vala:49: Required plugin missing (%s)", err->message);
-#line 152 "rygel-test-video-item.c"
+#line 50 "rygel-test-video-item.vala"
+			g_warning ("rygel-test-video-item.vala:50: Required plugin missing (%s)", err->message);
+#line 150 "rygel-test-video-item.c"
 			result = NULL;
 			_g_error_free0 (err);
-#line 50 "rygel-test-video-item.vala"
+#line 52 "rygel-test-video-item.vala"
 			return result;
-#line 157 "rygel-test-video-item.c"
+#line 155 "rygel-test-video-item.c"
 		}
 	}
 	__finally1:
-	if (_inner_error_ != NULL) {
+	{
 		g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
 		g_clear_error (&_inner_error_);
 		return NULL;
@@ -176,12 +174,14 @@ static void rygel_test_video_item_instance_init (RygelTestVideoItem * self) {
 
 
 GType rygel_test_video_item_get_type (void) {
-	static GType rygel_test_video_item_type_id = 0;
-	if (rygel_test_video_item_type_id == 0) {
+	static volatile gsize rygel_test_video_item_type_id__volatile = 0;
+	if (g_once_init_enter (&rygel_test_video_item_type_id__volatile)) {
 		static const GTypeInfo g_define_type_info = { sizeof (RygelTestVideoItemClass), (GBaseInitFunc) NULL, (GBaseFinalizeFunc) NULL, (GClassInitFunc) rygel_test_video_item_class_init, (GClassFinalizeFunc) NULL, NULL, sizeof (RygelTestVideoItem), 0, (GInstanceInitFunc) rygel_test_video_item_instance_init, NULL };
+		GType rygel_test_video_item_type_id;
 		rygel_test_video_item_type_id = g_type_register_static (RYGEL_TYPE_TEST_ITEM, "RygelTestVideoItem", &g_define_type_info, 0);
+		g_once_init_leave (&rygel_test_video_item_type_id__volatile, rygel_test_video_item_type_id);
 	}
-	return rygel_test_video_item_type_id;
+	return rygel_test_video_item_type_id__volatile;
 }
 
 

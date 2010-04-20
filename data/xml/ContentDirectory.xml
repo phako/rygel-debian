@@ -13,6 +13,10 @@ This includes disabling any automatic tab-to-space conversion
 feature provided by your editor.
 ================================================================-->
 <scpd xmlns="urn:schemas-upnp-org:service-1-0">
+	<specVersion>
+		<major>1</major>
+		<minor>0</minor>
+	</specVersion>
 	<serviceStateTable>
 		<stateVariable>
 			<name>SearchCapabilities</name>
@@ -104,19 +108,11 @@ feature provided by your editor.
 			<dataType>string</dataType>
 		</stateVariable>
 
-<!-- Optional state variables that are not implemented yet
 		<stateVariable>
 			<Optional/>
-			<name>SortExtensionCapabilities</name>
+			<name>A_ARG_TYPE_URI</name>
 			<sendEventsAttribute>no</sendEventsAttribute>
-			<dataType>string</dataType>
-		</stateVariable>
-
-		<stateVariable>
-			<Optional/>
-			<name>TransferIDs</name>
-			<sendEventsAttribute>yes</sendEventsAttribute>
-			<dataType>string</dataType>
+			<dataType>uri</dataType>
 		</stateVariable>
 
 		<stateVariable>
@@ -124,6 +120,13 @@ feature provided by your editor.
 			<name>A_ARG_TYPE_TransferID</name>
 			<sendEventsAttribute>no</sendEventsAttribute>
 			<dataType>ui4</dataType>
+		</stateVariable>
+
+		<stateVariable>
+			<Optional/>
+			<name>TransferIDs</name>
+			<sendEventsAttribute>yes</sendEventsAttribute>
+			<dataType>string</dataType>
 		</stateVariable>
 
 		<stateVariable>
@@ -153,18 +156,19 @@ feature provided by your editor.
 			<dataType>string</dataType>
 		</stateVariable>
 
+<!-- Optional state variables that are not implemented yet
 		<stateVariable>
 			<Optional/>
-			<name>A_ARG_TYPE_TagValueList</name>
+			<name>SortExtensionCapabilities</name>
 			<sendEventsAttribute>no</sendEventsAttribute>
 			<dataType>string</dataType>
 		</stateVariable>
 
 		<stateVariable>
 			<Optional/>
-			<name>A_ARG_TYPE_URI</name>
+			<name>A_ARG_TYPE_TagValueList</name>
 			<sendEventsAttribute>no</sendEventsAttribute>
-			<dataType>uri</dataType>
+			<dataType>string</dataType>
 		</stateVariable>
 -->
 	</serviceStateTable>
@@ -328,19 +332,6 @@ feature provided by your editor.
 			</argumentList>
 		</action>
 
-<!-- Optional actions that are not implemented yet
-                <action>
-			<Optional/>
-			<name>GetSortExtensionCapabilities</name>
-			<argumentList>
-				<argument>
-					<name>SortExtensionCaps</name>
-					<direction>out</direction>
-					<relatedStateVariable>SortExtensionCapabilities</relatedStateVariable>
-				</argument>
-			</argumentList>
-		</action>
-
 		<action>
 			<Optional/>
 			<name>CreateObject</name>
@@ -364,6 +355,80 @@ feature provided by your editor.
 					<name>Result</name>
 					<direction>out</direction>
 					<relatedStateVariable>A_ARG_TYPE_Result</relatedStateVariable>
+				</argument>
+			</argumentList>
+		</action>
+
+		<action>
+			<Optional/>
+			<name>ImportResource</name>
+			<argumentList>
+				<argument>
+					<name>SourceURI</name>
+					<direction>in</direction>
+					<relatedStateVariable>A_ARG_TYPE_URI</relatedStateVariable>
+				</argument>
+				<argument>
+					<name>DestinationURI</name>
+					<direction>in</direction>
+					<relatedStateVariable>A_ARG_TYPE_URI</relatedStateVariable>
+				</argument>
+				<argument>
+					<name>TransferID</name>
+					<direction>out</direction>
+					<relatedStateVariable>A_ARG_TYPE_TransferID</relatedStateVariable>
+				</argument>
+			</argumentList>
+		</action>
+
+		<action>
+			<Optional/>
+			<name>GetTransferProgress</name>
+			<argumentList>
+				<argument>
+					<name>TransferID</name>
+					<direction>in</direction>
+					<relatedStateVariable>A_ARG_TYPE_TransferID</relatedStateVariable>
+				</argument>
+				<argument>
+					<name>TransferStatus</name>
+					<direction>out</direction>
+					<relatedStateVariable>A_ARG_TYPE_TransferStatus</relatedStateVariable>
+				</argument>
+				<argument>
+					<name>TransferLength</name>
+					<direction>out</direction>
+					<relatedStateVariable>A_ARG_TYPE_TransferLength</relatedStateVariable>
+				</argument>
+				<argument>
+					<name>TransferTotal</name>
+					<direction>out</direction>
+					<relatedStateVariable>A_ARG_TYPE_TransferTotal</relatedStateVariable>
+				</argument>
+			</argumentList>
+		</action>
+
+		<action>
+			<Optional/>
+			<name>StopTransferResource</name>
+			<argumentList>
+				<argument>
+					<name>TransferID</name>
+					<direction>in</direction>
+					<relatedStateVariable>A_ARG_TYPE_TransferID</relatedStateVariable>
+				</argument>
+			</argumentList>
+		</action>
+
+<!-- Optional actions that are not implemented yet
+                <action>
+			<Optional/>
+			<name>GetSortExtensionCapabilities</name>
+			<argumentList>
+				<argument>
+					<name>SortExtensionCaps</name>
+					<direction>out</direction>
+					<relatedStateVariable>SortExtensionCapabilities</relatedStateVariable>
 				</argument>
 			</argumentList>
 		</action>
@@ -426,28 +491,6 @@ feature provided by your editor.
 
 		<action>
 			<Optional/>
-			<name>ImportResource</name>
-			<argumentList>
-				<argument>
-					<name>SourceURI</name>
-					<direction>in</direction>
-					<relatedStateVariable>A_ARG_TYPE_URI</relatedStateVariable>
-				</argument>
-				<argument>
-					<name>DestinationURI</name>
-					<direction>in</direction>
-					<relatedStateVariable>A_ARG_TYPE_URI</relatedStateVariable>
-				</argument>
-				<argument>
-					<name>TransferID</name>
-					<direction>out</direction>
-					<relatedStateVariable>A_ARG_TYPE_TransferID</relatedStateVariable>
-				</argument>
-			</argumentList>
-		</action>
-
-		<action>
-			<Optional/>
 			<name>ExportResource</name>
 			<argumentList>
 				<argument>
@@ -476,45 +519,6 @@ feature provided by your editor.
 					<name>ResourceURI</name>
 					<direction>in</direction>
 					<relatedStateVariable>A_ARG_TYPE_URI</relatedStateVariable>
-				</argument>
-			</argumentList>
-		</action>
-
-		<action>
-			<Optional/>
-			<name>StopTransferResource</name>
-			<argumentList>
-				<argument>
-					<name>TransferID</name>
-					<direction>in</direction>
-					<relatedStateVariable>A_ARG_TYPE_TransferID</relatedStateVariable>
-				</argument>
-			</argumentList>
-		</action>
-
-		<action>
-			<Optional/>
-			<name>GetTransferProgress</name>
-			<argumentList>
-				<argument>
-					<name>TransferID</name>
-					<direction>in</direction>
-					<relatedStateVariable>A_ARG_TYPE_TransferID</relatedStateVariable>
-				</argument>
-				<argument>
-					<name>TransferStatus</name>
-					<direction>out</direction>
-					<relatedStateVariable>A_ARG_TYPE_TransferStatus</relatedStateVariable>
-				</argument>
-				<argument>
-					<name>TransferLength</name>
-					<direction>out</direction>
-					<relatedStateVariable>A_ARG_TYPE_TransferLength</relatedStateVariable>
-				</argument>
-				<argument>
-					<name>TransferTotal</name>
-					<direction>out</direction>
-					<relatedStateVariable>A_ARG_TYPE_TransferTotal</relatedStateVariable>
 				</argument>
 			</argumentList>
 		</action>

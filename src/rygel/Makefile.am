@@ -36,6 +36,7 @@ BUILT_SOURCES = rygel-1.0.vapi \
 		rygel.h
 
 rygel_SOURCES = $(VAPI_SOURCE_FILES) \
+		rygel-http-item-uri.vala \
 		rygel-dbus-service.vala \
 		rygel-root-device.vala \
 		rygel-root-device-factory.vala \
@@ -53,7 +54,9 @@ VAPI_SOURCE_FILES = rygel-configuration.vala \
 		    rygel-http-server.vala \
 		    rygel-state-machine.vala \
 		    rygel-http-request.vala \
-		    rygel-http-request-handler.vala \
+		    rygel-http-get-handler.vala \
+		    rygel-http-get.vala \
+		    rygel-http-post.vala \
 		    rygel-http-identity-handler.vala \
 		    rygel-http-transcode-handler.vala \
 		    rygel-http-seek.vala \
@@ -72,8 +75,13 @@ VAPI_SOURCE_FILES = rygel-configuration.vala \
 		    rygel-media-item.vala \
 		    rygel-thumbnail.vala \
 		    rygel-thumbnailer.vala \
+		    rygel-subtitle.vala \
+		    rygel-subtitle-manager.vala \
 		    rygel-browse.vala \
 		    rygel-search.vala \
+			rygel-xbox-hacks.vala \
+		    rygel-import-resource.vala \
+		    rygel-item-creator.vala \
 		    rygel-search-expression.vala \
 		    rygel-relational-expression.vala \
 		    rygel-logical-expression.vala \
@@ -86,11 +94,16 @@ VAPI_SOURCE_FILES = rygel-configuration.vala \
 		    rygel-mp2ts-transcoder-bin.vala \
 		    rygel-mp3-transcoder-bin.vala \
 		    rygel-l16-transcoder-bin.vala \
+		    rygel-wma-transcoder.vala \
+		    rygel-wma-transcoder-bin.vala \
+		    rygel-wmv-transcoder.vala \
+		    rygel-wmv-transcoder-bin.vala \
 		    rygel-gst-utils.vala \
 		    rygel-media-db.vala \
 		    rygel-metadata-extractor.vala \
 		    rygel-media-db-container.vala \
 		    rygel-media-db-object-factory.vala \
+		    rygel-media-receiver-registrar.vala \
 		    rygel-log-handler.vala
 
 rygel_VALAFLAGS = \

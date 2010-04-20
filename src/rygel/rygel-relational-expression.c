@@ -105,6 +105,16 @@ typedef struct _RygelIconInfoClass RygelIconInfoClass;
 
 typedef struct _RygelThumbnail RygelThumbnail;
 typedef struct _RygelThumbnailClass RygelThumbnailClass;
+
+#define RYGEL_TYPE_SUBTITLE (rygel_subtitle_get_type ())
+#define RYGEL_SUBTITLE(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_SUBTITLE, RygelSubtitle))
+#define RYGEL_SUBTITLE_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TYPE_SUBTITLE, RygelSubtitleClass))
+#define RYGEL_IS_SUBTITLE(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TYPE_SUBTITLE))
+#define RYGEL_IS_SUBTITLE_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_TYPE_SUBTITLE))
+#define RYGEL_SUBTITLE_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_TYPE_SUBTITLE, RygelSubtitleClass))
+
+typedef struct _RygelSubtitle RygelSubtitle;
+typedef struct _RygelSubtitleClass RygelSubtitleClass;
 #define _g_object_unref0(var) ((var == NULL) ? NULL : (var = (g_object_unref (var), NULL)))
 #define _g_free0(var) (var = (g_free (var), NULL))
 
@@ -141,7 +151,6 @@ struct _RygelMediaObject {
 	guint64 modified;
 	GeeArrayList* uris;
 	RygelMediaContainer* parent;
-	RygelMediaContainer* parent_ref;
 };
 
 struct _RygelMediaObjectClass {
@@ -169,6 +178,8 @@ struct _RygelMediaItem {
 	gint pixel_height;
 	gint color_depth;
 	GeeArrayList* thumbnails;
+	GeeArrayList* subtitles;
+	gboolean place_holder;
 };
 
 struct _RygelMediaItemClass {
@@ -184,6 +195,7 @@ gpointer rygel_search_expression_ref (gpointer instance);
 void rygel_search_expression_unref (gpointer instance);
 GParamSpec* rygel_param_spec_search_expression (const gchar* name, const gchar* nick, const gchar* blurb, GType object_type, GParamFlags flags);
 void rygel_value_set_search_expression (GValue* value, gpointer v_object);
+void rygel_value_take_search_expression (GValue* value, gpointer v_object);
 gpointer rygel_value_get_search_expression (const GValue* value);
 GType rygel_search_expression_get_type (void);
 GType rygel_media_object_get_type (void);
@@ -199,9 +211,17 @@ gpointer rygel_icon_info_ref (gpointer instance);
 void rygel_icon_info_unref (gpointer instance);
 GParamSpec* rygel_param_spec_icon_info (const gchar* name, const gchar* nick, const gchar* blurb, GType object_type, GParamFlags flags);
 void rygel_value_set_icon_info (GValue* value, gpointer v_object);
+void rygel_value_take_icon_info (GValue* value, gpointer v_object);
 gpointer rygel_value_get_icon_info (const GValue* value);
 GType rygel_icon_info_get_type (void);
 GType rygel_thumbnail_get_type (void);
+gpointer rygel_subtitle_ref (gpointer instance);
+void rygel_subtitle_unref (gpointer instance);
+GParamSpec* rygel_param_spec_subtitle (const gchar* name, const gchar* nick, const gchar* blurb, GType object_type, GParamFlags flags);
+void rygel_value_set_subtitle (GValue* value, gpointer v_object);
+void rygel_value_take_subtitle (GValue* value, gpointer v_object);
+gpointer rygel_value_get_subtitle (const GValue* value);
+GType rygel_subtitle_get_type (void);
 static gboolean rygel_relational_expression_compare_resource (RygelRelationalExpression* self, RygelMediaObject* media_object);
 static gboolean rygel_relational_expression_real_satisfied_by (RygelSearchExpression* base, RygelMediaObject* media_object);
 static char* rygel_relational_expression_real_to_string (RygelSearchExpression* base);
@@ -219,9 +239,9 @@ static gpointer _g_object_ref0 (gpointer self) {
 
 #line 29 "rygel-relational-expression.vala"
 static gboolean rygel_relational_expression_real_satisfied_by (RygelSearchExpression* base, RygelMediaObject* media_object) {
-#line 223 "rygel-relational-expression.c"
+#line 243 "rygel-relational-expression.c"
 	RygelRelationalExpression * self;
-	gboolean result;
+	gboolean result = FALSE;
 	GQuark _tmp2_;
 	const char* _tmp1_;
 	static GQuark _tmp2__label0 = 0;
@@ -233,95 +253,116 @@ static gboolean rygel_relational_expression_real_satisfied_by (RygelSearchExpres
 	self = (RygelRelationalExpression*) base;
 #line 29 "rygel-relational-expression.vala"
 	g_return_val_if_fail (media_object != NULL, FALSE);
-#line 237 "rygel-relational-expression.c"
+#line 257 "rygel-relational-expression.c"
 	_tmp1_ = (const char*) ((RygelSearchExpression*) self)->operand1;
 	_tmp2_ = (NULL == _tmp1_) ? 0 : g_quark_from_string (_tmp1_);
 	if (_tmp2_ == ((0 != _tmp2__label0) ? _tmp2__label0 : (_tmp2__label0 = g_quark_from_static_string ("@id"))))
-	do {
-		result = rygel_relational_expression_compare_string (self, media_object->id);
+	switch (0) {
+		default:
+		{
+			result = rygel_relational_expression_compare_string (self, media_object->id);
 #line 32 "rygel-relational-expression.vala"
-		return result;
-#line 245 "rygel-relational-expression.c"
-	} while (0); else if (_tmp2_ == ((0 != _tmp2__label1) ? _tmp2__label1 : (_tmp2__label1 = g_quark_from_static_string ("@parentID"))))
-	do {
-		result = rygel_relational_expression_compare_string (self, ((RygelMediaObject*) media_object->parent)->id);
-#line 34 "rygel-relational-expression.vala"
-		return result;
-#line 251 "rygel-relational-expression.c"
-	} while (0); else if (_tmp2_ == ((0 != _tmp2__label2) ? _tmp2__label2 : (_tmp2__label2 = g_quark_from_static_string ("@refID"))))
-	do {
-		result = FALSE;
-#line 36 "rygel-relational-expression.vala"
-		return result;
-#line 257 "rygel-relational-expression.c"
-	} while (0); else if (_tmp2_ == ((0 != _tmp2__label3) ? _tmp2__label3 : (_tmp2__label3 = g_quark_from_static_string ("upnp:class"))))
-	do {
-		result = rygel_relational_expression_compare_string (self, media_object->upnp_class);
-#line 38 "rygel-relational-expression.vala"
-		return result;
-#line 263 "rygel-relational-expression.c"
-	} while (0); else if (_tmp2_ == ((0 != _tmp2__label4) ? _tmp2__label4 : (_tmp2__label4 = g_quark_from_static_string ("dc:title"))))
-	do {
-		result = rygel_relational_expression_compare_string (self, rygel_media_object_get_title (media_object));
-#line 40 "rygel-relational-expression.vala"
-		return result;
-#line 269 "rygel-relational-expression.c"
-	} while (0); else if (_tmp2_ == ((0 != _tmp2__label5) ? _tmp2__label5 : (_tmp2__label5 = g_quark_from_static_string ("dc:creator"))))
-	do {
-		RygelMediaObject* _tmp0_;
-		RygelMediaItem* item;
-#line 42 "rygel-relational-expression.vala"
-		if (!RYGEL_IS_MEDIA_ITEM (media_object)) {
-#line 276 "rygel-relational-expression.c"
-			result = FALSE;
-#line 43 "rygel-relational-expression.vala"
 			return result;
-#line 280 "rygel-relational-expression.c"
+#line 267 "rygel-relational-expression.c"
 		}
-#line 46 "rygel-relational-expression.vala"
-		item = _g_object_ref0 ((_tmp0_ = media_object, RYGEL_IS_MEDIA_ITEM (_tmp0_) ? ((RygelMediaItem*) _tmp0_) : NULL));
-#line 284 "rygel-relational-expression.c"
-		result = rygel_relational_expression_compare_string (self, item->author);
-		_g_object_unref0 (item);
-#line 47 "rygel-relational-expression.vala"
-		return result;
-#line 289 "rygel-relational-expression.c"
-	} while (0); else
-	do {
-#line 49 "rygel-relational-expression.vala"
-		if (g_str_has_prefix ((const char*) ((RygelSearchExpression*) self)->operand1, "res")) {
-#line 294 "rygel-relational-expression.c"
-			result = rygel_relational_expression_compare_resource (self, media_object);
-#line 50 "rygel-relational-expression.vala"
+	} else if (_tmp2_ == ((0 != _tmp2__label1) ? _tmp2__label1 : (_tmp2__label1 = g_quark_from_static_string ("@parentID"))))
+	switch (0) {
+		default:
+		{
+			result = rygel_relational_expression_compare_string (self, ((RygelMediaObject*) media_object->parent)->id);
+#line 34 "rygel-relational-expression.vala"
 			return result;
-#line 298 "rygel-relational-expression.c"
-		} else {
+#line 276 "rygel-relational-expression.c"
+		}
+	} else if (_tmp2_ == ((0 != _tmp2__label2) ? _tmp2__label2 : (_tmp2__label2 = g_quark_from_static_string ("@refID"))))
+	switch (0) {
+		default:
+		{
 			result = FALSE;
-#line 52 "rygel-relational-expression.vala"
+#line 36 "rygel-relational-expression.vala"
+			return result;
+#line 285 "rygel-relational-expression.c"
+		}
+	} else if (_tmp2_ == ((0 != _tmp2__label3) ? _tmp2__label3 : (_tmp2__label3 = g_quark_from_static_string ("upnp:class"))))
+	switch (0) {
+		default:
+		{
+			result = rygel_relational_expression_compare_string (self, media_object->upnp_class);
+#line 38 "rygel-relational-expression.vala"
+			return result;
+#line 294 "rygel-relational-expression.c"
+		}
+	} else if (_tmp2_ == ((0 != _tmp2__label4) ? _tmp2__label4 : (_tmp2__label4 = g_quark_from_static_string ("dc:title"))))
+	switch (0) {
+		default:
+		{
+			result = rygel_relational_expression_compare_string (self, rygel_media_object_get_title (media_object));
+#line 40 "rygel-relational-expression.vala"
 			return result;
 #line 303 "rygel-relational-expression.c"
 		}
-	} while (0);
+	} else if (_tmp2_ == ((0 != _tmp2__label5) ? _tmp2__label5 : (_tmp2__label5 = g_quark_from_static_string ("dc:creator"))))
+	switch (0) {
+		default:
+		{
+			RygelMediaObject* _tmp0_;
+			RygelMediaItem* item;
+#line 42 "rygel-relational-expression.vala"
+			if (!RYGEL_IS_MEDIA_ITEM (media_object)) {
+#line 313 "rygel-relational-expression.c"
+				result = FALSE;
+#line 43 "rygel-relational-expression.vala"
+				return result;
+#line 317 "rygel-relational-expression.c"
+			}
+#line 46 "rygel-relational-expression.vala"
+			item = _g_object_ref0 ((_tmp0_ = media_object, RYGEL_IS_MEDIA_ITEM (_tmp0_) ? ((RygelMediaItem*) _tmp0_) : NULL));
+#line 321 "rygel-relational-expression.c"
+			result = rygel_relational_expression_compare_string (self, item->author);
+			_g_object_unref0 (item);
+#line 47 "rygel-relational-expression.vala"
+			return result;
+#line 326 "rygel-relational-expression.c"
+		}
+	} else
+	switch (0) {
+		default:
+		{
+#line 49 "rygel-relational-expression.vala"
+			if (g_str_has_prefix ((const char*) ((RygelSearchExpression*) self)->operand1, "res")) {
+#line 334 "rygel-relational-expression.c"
+				result = rygel_relational_expression_compare_resource (self, media_object);
+#line 50 "rygel-relational-expression.vala"
+				return result;
+#line 338 "rygel-relational-expression.c"
+			} else {
+				result = FALSE;
+#line 52 "rygel-relational-expression.vala"
+				return result;
+#line 343 "rygel-relational-expression.c"
+			}
+		}
+	}
 }
 
 
 #line 57 "rygel-relational-expression.vala"
 static char* rygel_relational_expression_real_to_string (RygelSearchExpression* base) {
-#line 311 "rygel-relational-expression.c"
+#line 352 "rygel-relational-expression.c"
 	RygelRelationalExpression * self;
-	char* result;
+	char* result = NULL;
 	self = (RygelRelationalExpression*) base;
 	result = g_strdup_printf ("%s %d %s", (const char*) ((RygelSearchExpression*) self)->operand1, (gint) GPOINTER_TO_INT (((RygelSearchExpression*) self)->op), (const char*) ((RygelSearchExpression*) self)->operand2);
 #line 58 "rygel-relational-expression.vala"
 	return result;
-#line 318 "rygel-relational-expression.c"
+#line 359 "rygel-relational-expression.c"
 }
 
 
 #line 61 "rygel-relational-expression.vala"
 static gboolean rygel_relational_expression_compare_resource (RygelRelationalExpression* self, RygelMediaObject* media_object) {
-#line 324 "rygel-relational-expression.c"
-	gboolean result;
+#line 365 "rygel-relational-expression.c"
+	gboolean result = FALSE;
 	gboolean ret;
 #line 61 "rygel-relational-expression.vala"
 	g_return_val_if_fail (self != NULL, FALSE);
@@ -329,20 +370,20 @@ static gboolean rygel_relational_expression_compare_resource (RygelRelationalExp
 	g_return_val_if_fail (media_object != NULL, FALSE);
 #line 62 "rygel-relational-expression.vala"
 	ret = FALSE;
-#line 333 "rygel-relational-expression.c"
+#line 374 "rygel-relational-expression.c"
 	{
 		GeeIterator* _uri_it;
 		_uri_it = gee_abstract_collection_iterator ((GeeAbstractCollection*) media_object->uris);
 #line 64 "rygel-relational-expression.vala"
 		while (TRUE) {
-#line 339 "rygel-relational-expression.c"
+#line 380 "rygel-relational-expression.c"
 			char* uri;
 			gboolean _tmp0_ = FALSE;
 #line 64 "rygel-relational-expression.vala"
 			if (!gee_iterator_next (_uri_it)) {
 #line 64 "rygel-relational-expression.vala"
 				break;
-#line 346 "rygel-relational-expression.c"
+#line 387 "rygel-relational-expression.c"
 			}
 #line 64 "rygel-relational-expression.vala"
 			uri = (char*) gee_iterator_get (_uri_it);
@@ -350,25 +391,25 @@ static gboolean rygel_relational_expression_compare_resource (RygelRelationalExp
 			if (_vala_strcmp0 ((const char*) ((RygelSearchExpression*) self)->operand1, "res") == 0) {
 #line 65 "rygel-relational-expression.vala"
 				_tmp0_ = rygel_relational_expression_compare_string (self, uri);
-#line 354 "rygel-relational-expression.c"
+#line 395 "rygel-relational-expression.c"
 			} else {
 #line 65 "rygel-relational-expression.vala"
 				_tmp0_ = FALSE;
-#line 358 "rygel-relational-expression.c"
+#line 399 "rygel-relational-expression.c"
 			}
 #line 65 "rygel-relational-expression.vala"
 			if (_tmp0_) {
 #line 66 "rygel-relational-expression.vala"
 				ret = TRUE;
-#line 364 "rygel-relational-expression.c"
+#line 405 "rygel-relational-expression.c"
 				_g_free0 (uri);
 #line 67 "rygel-relational-expression.vala"
 				break;
-#line 368 "rygel-relational-expression.c"
+#line 409 "rygel-relational-expression.c"
 			} else {
 #line 68 "rygel-relational-expression.vala"
 				if (_vala_strcmp0 ((const char*) ((RygelSearchExpression*) self)->operand1, "res@protocolInfo") == 0) {
-#line 372 "rygel-relational-expression.c"
+#line 413 "rygel-relational-expression.c"
 				}
 			}
 			_g_free0 (uri);
@@ -378,49 +419,49 @@ static gboolean rygel_relational_expression_compare_resource (RygelRelationalExp
 	result = ret;
 #line 73 "rygel-relational-expression.vala"
 	return result;
-#line 382 "rygel-relational-expression.c"
+#line 423 "rygel-relational-expression.c"
 }
 
 
-#line 1021 "glib-2.0.vapi"
+#line 1048 "glib-2.0.vapi"
 static gboolean string_contains (const char* self, const char* needle) {
-#line 388 "rygel-relational-expression.c"
-	gboolean result;
-#line 1021 "glib-2.0.vapi"
+#line 429 "rygel-relational-expression.c"
+	gboolean result = FALSE;
+#line 1048 "glib-2.0.vapi"
 	g_return_val_if_fail (self != NULL, FALSE);
-#line 1021 "glib-2.0.vapi"
+#line 1048 "glib-2.0.vapi"
 	g_return_val_if_fail (needle != NULL, FALSE);
-#line 394 "rygel-relational-expression.c"
+#line 435 "rygel-relational-expression.c"
 	result = strstr (self, needle) != NULL;
-#line 1022 "glib-2.0.vapi"
+#line 1049 "glib-2.0.vapi"
 	return result;
-#line 398 "rygel-relational-expression.c"
+#line 439 "rygel-relational-expression.c"
 }
 
 
 #line 76 "rygel-relational-expression.vala"
 gboolean rygel_relational_expression_compare_string (RygelRelationalExpression* self, const char* str) {
-#line 404 "rygel-relational-expression.c"
-	gboolean result;
+#line 445 "rygel-relational-expression.c"
+	gboolean result = FALSE;
 #line 76 "rygel-relational-expression.vala"
 	g_return_val_if_fail (self != NULL, FALSE);
 #line 77 "rygel-relational-expression.vala"
 	switch (GPOINTER_TO_INT (((RygelSearchExpression*) self)->op)) {
-#line 410 "rygel-relational-expression.c"
+#line 451 "rygel-relational-expression.c"
 		case GUPNP_SEARCH_CRITERIA_OP_EXISTS:
 		{
 #line 79 "rygel-relational-expression.vala"
 			if (_vala_strcmp0 ((const char*) ((RygelSearchExpression*) self)->operand2, "true") == 0) {
-#line 415 "rygel-relational-expression.c"
+#line 456 "rygel-relational-expression.c"
 				result = str != NULL;
 #line 80 "rygel-relational-expression.vala"
 				return result;
-#line 419 "rygel-relational-expression.c"
+#line 460 "rygel-relational-expression.c"
 			} else {
 				result = str == NULL;
 #line 82 "rygel-relational-expression.vala"
 				return result;
-#line 424 "rygel-relational-expression.c"
+#line 465 "rygel-relational-expression.c"
 			}
 		}
 		case GUPNP_SEARCH_CRITERIA_OP_EQ:
@@ -428,28 +469,28 @@ gboolean rygel_relational_expression_compare_string (RygelRelationalExpression* 
 			result = _vala_strcmp0 ((const char*) ((RygelSearchExpression*) self)->operand2, str) == 0;
 #line 85 "rygel-relational-expression.vala"
 			return result;
-#line 432 "rygel-relational-expression.c"
+#line 473 "rygel-relational-expression.c"
 		}
 		case GUPNP_SEARCH_CRITERIA_OP_CONTAINS:
 		{
 			result = string_contains (str, (const char*) ((RygelSearchExpression*) self)->operand2);
 #line 87 "rygel-relational-expression.vala"
 			return result;
-#line 439 "rygel-relational-expression.c"
+#line 480 "rygel-relational-expression.c"
 		}
 		case GUPNP_SEARCH_CRITERIA_OP_DERIVED_FROM:
 		{
 			result = g_str_has_prefix (str, (const char*) ((RygelSearchExpression*) self)->operand2);
 #line 89 "rygel-relational-expression.vala"
 			return result;
-#line 446 "rygel-relational-expression.c"
+#line 487 "rygel-relational-expression.c"
 		}
 		default:
 		{
 			result = FALSE;
 #line 91 "rygel-relational-expression.vala"
 			return result;
-#line 453 "rygel-relational-expression.c"
+#line 494 "rygel-relational-expression.c"
 		}
 	}
 }
@@ -457,11 +498,11 @@ gboolean rygel_relational_expression_compare_string (RygelRelationalExpression* 
 
 #line 27 "rygel-relational-expression.vala"
 RygelRelationalExpression* rygel_relational_expression_construct (GType object_type) {
-#line 461 "rygel-relational-expression.c"
+#line 502 "rygel-relational-expression.c"
 	RygelRelationalExpression* self;
 #line 27 "rygel-relational-expression.vala"
 	self = (RygelRelationalExpression*) rygel_search_expression_construct (object_type, GUPNP_TYPE_SEARCH_CRITERIA_OP, NULL, NULL, G_TYPE_STRING, (GBoxedCopyFunc) g_strdup, g_free, G_TYPE_STRING, (GBoxedCopyFunc) g_strdup, g_free);
-#line 465 "rygel-relational-expression.c"
+#line 506 "rygel-relational-expression.c"
 	return self;
 }
 
@@ -470,7 +511,7 @@ RygelRelationalExpression* rygel_relational_expression_construct (GType object_t
 RygelRelationalExpression* rygel_relational_expression_new (void) {
 #line 27 "rygel-relational-expression.vala"
 	return rygel_relational_expression_construct (RYGEL_TYPE_RELATIONAL_EXPRESSION);
-#line 474 "rygel-relational-expression.c"
+#line 515 "rygel-relational-expression.c"
 }
 
 
@@ -486,12 +527,14 @@ static void rygel_relational_expression_instance_init (RygelRelationalExpression
 
 
 GType rygel_relational_expression_get_type (void) {
-	static GType rygel_relational_expression_type_id = 0;
-	if (rygel_relational_expression_type_id == 0) {
+	static volatile gsize rygel_relational_expression_type_id__volatile = 0;
+	if (g_once_init_enter (&rygel_relational_expression_type_id__volatile)) {
 		static const GTypeInfo g_define_type_info = { sizeof (RygelRelationalExpressionClass), (GBaseInitFunc) NULL, (GBaseFinalizeFunc) NULL, (GClassInitFunc) rygel_relational_expression_class_init, (GClassFinalizeFunc) NULL, NULL, sizeof (RygelRelationalExpression), 0, (GInstanceInitFunc) rygel_relational_expression_instance_init, NULL };
+		GType rygel_relational_expression_type_id;
 		rygel_relational_expression_type_id = g_type_register_static (RYGEL_TYPE_SEARCH_EXPRESSION, "RygelRelationalExpression", &g_define_type_info, 0);
+		g_once_init_leave (&rygel_relational_expression_type_id__volatile, rygel_relational_expression_type_id);
 	}
-	return rygel_relational_expression_type_id;
+	return rygel_relational_expression_type_id__volatile;
 }
 
 

@@ -22,15 +22,14 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-using GUPnP;
-using Gee;
 using Gst;
 
 /**
  * Represents Test audio item.
  */
 public class Rygel.TestAudioItem : Rygel.TestItem {
-    const string TEST_MIMETYPE = "audio/x-wav";
+    private const string TEST_MIMETYPE = "audio/x-wav";
+    private const string PIPELINE = "audiotestsrc is-live=1 ! wavenc";
 
     public TestAudioItem (string         id,
                           MediaContainer parent,
@@ -44,10 +43,11 @@ public class Rygel.TestAudioItem : Rygel.TestItem {
 
     public override Element? create_stream_source () {
         try {
-          return Gst.parse_bin_from_description ("audiotestsrc is-live=1 ! wavenc", true);
+            return parse_bin_from_description (PIPELINE, true);
         } catch (Error err) {
-          warning ("Required plugin missing (%s)", err.message);
-          return null;
+            warning ("Required plugin missing (%s)", err.message);
+
+            return null;
         }
     }
 }

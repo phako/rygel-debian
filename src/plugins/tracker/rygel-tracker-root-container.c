@@ -43,36 +43,47 @@ typedef struct _RygelTrackerRootContainer RygelTrackerRootContainer;
 typedef struct _RygelTrackerRootContainerClass RygelTrackerRootContainerClass;
 typedef struct _RygelTrackerRootContainerPrivate RygelTrackerRootContainerPrivate;
 
-#define RYGEL_TYPE_TRACKER_SEARCH_CONTAINER (rygel_tracker_search_container_get_type ())
-#define RYGEL_TRACKER_SEARCH_CONTAINER(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_TRACKER_SEARCH_CONTAINER, RygelTrackerSearchContainer))
-#define RYGEL_TRACKER_SEARCH_CONTAINER_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TYPE_TRACKER_SEARCH_CONTAINER, RygelTrackerSearchContainerClass))
-#define RYGEL_IS_TRACKER_SEARCH_CONTAINER(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TYPE_TRACKER_SEARCH_CONTAINER))
-#define RYGEL_IS_TRACKER_SEARCH_CONTAINER_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_TYPE_TRACKER_SEARCH_CONTAINER))
-#define RYGEL_TRACKER_SEARCH_CONTAINER_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_TYPE_TRACKER_SEARCH_CONTAINER, RygelTrackerSearchContainerClass))
+#define RYGEL_TYPE_TRACKER_CATEGORY_CONTAINER (rygel_tracker_category_container_get_type ())
+#define RYGEL_TRACKER_CATEGORY_CONTAINER(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_TRACKER_CATEGORY_CONTAINER, RygelTrackerCategoryContainer))
+#define RYGEL_TRACKER_CATEGORY_CONTAINER_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TYPE_TRACKER_CATEGORY_CONTAINER, RygelTrackerCategoryContainerClass))
+#define RYGEL_IS_TRACKER_CATEGORY_CONTAINER(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TYPE_TRACKER_CATEGORY_CONTAINER))
+#define RYGEL_IS_TRACKER_CATEGORY_CONTAINER_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_TYPE_TRACKER_CATEGORY_CONTAINER))
+#define RYGEL_TRACKER_CATEGORY_CONTAINER_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_TYPE_TRACKER_CATEGORY_CONTAINER, RygelTrackerCategoryContainerClass))
 
-typedef struct _RygelTrackerSearchContainer RygelTrackerSearchContainer;
-typedef struct _RygelTrackerSearchContainerClass RygelTrackerSearchContainerClass;
+typedef struct _RygelTrackerCategoryContainer RygelTrackerCategoryContainer;
+typedef struct _RygelTrackerCategoryContainerClass RygelTrackerCategoryContainerClass;
+
+#define RYGEL_TYPE_TRACKER_MUSIC (rygel_tracker_music_get_type ())
+#define RYGEL_TRACKER_MUSIC(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_TRACKER_MUSIC, RygelTrackerMusic))
+#define RYGEL_TRACKER_MUSIC_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TYPE_TRACKER_MUSIC, RygelTrackerMusicClass))
+#define RYGEL_IS_TRACKER_MUSIC(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TYPE_TRACKER_MUSIC))
+#define RYGEL_IS_TRACKER_MUSIC_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_TYPE_TRACKER_MUSIC))
+#define RYGEL_TRACKER_MUSIC_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_TYPE_TRACKER_MUSIC, RygelTrackerMusicClass))
+
+typedef struct _RygelTrackerMusic RygelTrackerMusic;
+typedef struct _RygelTrackerMusicClass RygelTrackerMusicClass;
 #define _g_object_unref0(var) ((var == NULL) ? NULL : (var = (g_object_unref (var), NULL)))
 
-#define RYGEL_TYPE_TRACKER_METADATA_VALUES (rygel_tracker_metadata_values_get_type ())
-#define RYGEL_TRACKER_METADATA_VALUES(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_TRACKER_METADATA_VALUES, RygelTrackerMetadataValues))
-#define RYGEL_TRACKER_METADATA_VALUES_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TYPE_TRACKER_METADATA_VALUES, RygelTrackerMetadataValuesClass))
-#define RYGEL_IS_TRACKER_METADATA_VALUES(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TYPE_TRACKER_METADATA_VALUES))
-#define RYGEL_IS_TRACKER_METADATA_VALUES_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_TYPE_TRACKER_METADATA_VALUES))
-#define RYGEL_TRACKER_METADATA_VALUES_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_TYPE_TRACKER_METADATA_VALUES, RygelTrackerMetadataValuesClass))
+#define RYGEL_TYPE_TRACKER_VIDEOS (rygel_tracker_videos_get_type ())
+#define RYGEL_TRACKER_VIDEOS(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_TRACKER_VIDEOS, RygelTrackerVideos))
+#define RYGEL_TRACKER_VIDEOS_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TYPE_TRACKER_VIDEOS, RygelTrackerVideosClass))
+#define RYGEL_IS_TRACKER_VIDEOS(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TYPE_TRACKER_VIDEOS))
+#define RYGEL_IS_TRACKER_VIDEOS_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_TYPE_TRACKER_VIDEOS))
+#define RYGEL_TRACKER_VIDEOS_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_TYPE_TRACKER_VIDEOS, RygelTrackerVideosClass))
 
-typedef struct _RygelTrackerMetadataValues RygelTrackerMetadataValues;
-typedef struct _RygelTrackerMetadataValuesClass RygelTrackerMetadataValuesClass;
+typedef struct _RygelTrackerVideos RygelTrackerVideos;
+typedef struct _RygelTrackerVideosClass RygelTrackerVideosClass;
 
-#define RYGEL_TYPE_TRACKER_KEYWORDS (rygel_tracker_keywords_get_type ())
-#define RYGEL_TRACKER_KEYWORDS(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_TRACKER_KEYWORDS, RygelTrackerKeywords))
-#define RYGEL_TRACKER_KEYWORDS_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TYPE_TRACKER_KEYWORDS, RygelTrackerKeywordsClass))
-#define RYGEL_IS_TRACKER_KEYWORDS(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TYPE_TRACKER_KEYWORDS))
-#define RYGEL_IS_TRACKER_KEYWORDS_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_TYPE_TRACKER_KEYWORDS))
-#define RYGEL_TRACKER_KEYWORDS_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_TYPE_TRACKER_KEYWORDS, RygelTrackerKeywordsClass))
+#define RYGEL_TYPE_TRACKER_PICTURES (rygel_tracker_pictures_get_type ())
+#define RYGEL_TRACKER_PICTURES(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_TRACKER_PICTURES, RygelTrackerPictures))
+#define RYGEL_TRACKER_PICTURES_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TYPE_TRACKER_PICTURES, RygelTrackerPicturesClass))
+#define RYGEL_IS_TRACKER_PICTURES(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TYPE_TRACKER_PICTURES))
+#define RYGEL_IS_TRACKER_PICTURES_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_TYPE_TRACKER_PICTURES))
+#define RYGEL_TRACKER_PICTURES_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_TYPE_TRACKER_PICTURES, RygelTrackerPicturesClass))
 
-typedef struct _RygelTrackerKeywords RygelTrackerKeywords;
-typedef struct _RygelTrackerKeywordsClass RygelTrackerKeywordsClass;
+typedef struct _RygelTrackerPictures RygelTrackerPictures;
+typedef struct _RygelTrackerPicturesClass RygelTrackerPicturesClass;
+#define _g_error_free0(var) ((var == NULL) ? NULL : (var = (g_error_free (var), NULL)))
 
 struct _RygelTrackerRootContainer {
 	RygelSimpleContainer parent_instance;
@@ -90,72 +101,57 @@ GType rygel_tracker_root_container_get_type (void);
 enum  {
 	RYGEL_TRACKER_ROOT_CONTAINER_DUMMY_PROPERTY
 };
-#define RYGEL_TRACKER_IMAGE_ITEM_SERVICE "Images"
-RygelTrackerSearchContainer* rygel_tracker_search_container_new (const char* id, RygelMediaContainer* parent, const char* title, const char* service, const char* query_condition, char** keywords, int keywords_length1);
-RygelTrackerSearchContainer* rygel_tracker_search_container_construct (GType object_type, const char* id, RygelMediaContainer* parent, const char* title, const char* service, const char* query_condition, char** keywords, int keywords_length1);
-GType rygel_tracker_search_container_get_type (void);
-#define RYGEL_TRACKER_MUSIC_ITEM_SERVICE "Music"
-#define RYGEL_TRACKER_VIDEO_ITEM_SERVICE "Videos"
-RygelTrackerMetadataValues* rygel_tracker_metadata_values_new (const char* key, const char* id, RygelMediaContainer* parent, const char* title);
-RygelTrackerMetadataValues* rygel_tracker_metadata_values_construct (GType object_type, const char* key, const char* id, RygelMediaContainer* parent, const char* title);
-GType rygel_tracker_metadata_values_get_type (void);
-RygelTrackerKeywords* rygel_tracker_keywords_new (const char* id, RygelMediaContainer* parent);
-RygelTrackerKeywords* rygel_tracker_keywords_construct (GType object_type, const char* id, RygelMediaContainer* parent);
-GType rygel_tracker_keywords_get_type (void);
+static gboolean rygel_tracker_root_container_get_bool_config_without_error (RygelTrackerRootContainer* self, const char* key);
+RygelTrackerMusic* rygel_tracker_music_new (const char* id, RygelMediaContainer* parent, const char* title);
+RygelTrackerMusic* rygel_tracker_music_construct (GType object_type, const char* id, RygelMediaContainer* parent, const char* title);
+GType rygel_tracker_category_container_get_type (void);
+GType rygel_tracker_music_get_type (void);
+RygelTrackerVideos* rygel_tracker_videos_new (const char* id, RygelMediaContainer* parent, const char* title);
+RygelTrackerVideos* rygel_tracker_videos_construct (GType object_type, const char* id, RygelMediaContainer* parent, const char* title);
+GType rygel_tracker_videos_get_type (void);
+RygelTrackerPictures* rygel_tracker_pictures_new (const char* id, RygelMediaContainer* parent, const char* title);
+RygelTrackerPictures* rygel_tracker_pictures_construct (GType object_type, const char* id, RygelMediaContainer* parent, const char* title);
+GType rygel_tracker_pictures_get_type (void);
 RygelTrackerRootContainer* rygel_tracker_root_container_new (const char* title);
 RygelTrackerRootContainer* rygel_tracker_root_container_construct (GType object_type, const char* title);
-static void _vala_array_destroy (gpointer array, gint array_length, GDestroyNotify destroy_func);
-static void _vala_array_free (gpointer array, gint array_length, GDestroyNotify destroy_func);
 
 
 
 #line 33 "rygel-tracker-root-container.vala"
 RygelTrackerRootContainer* rygel_tracker_root_container_construct (GType object_type, const char* title) {
-#line 115 "rygel-tracker-root-container.c"
+#line 123 "rygel-tracker-root-container.c"
 	RygelTrackerRootContainer * self;
-	RygelTrackerSearchContainer* _tmp1_;
-	gint _tmp0__length1;
-	char** _tmp0_;
-	RygelTrackerSearchContainer* _tmp3_;
-	gint _tmp2__length1;
-	char** _tmp2_;
-	RygelTrackerSearchContainer* _tmp5_;
-	gint _tmp4__length1;
-	char** _tmp4_;
-	RygelTrackerMetadataValues* _tmp6_;
-	RygelTrackerMetadataValues* _tmp7_;
-	RygelTrackerKeywords* _tmp8_;
 #line 33 "rygel-tracker-root-container.vala"
 	g_return_val_if_fail (title != NULL, NULL);
 #line 34 "rygel-tracker-root-container.vala"
 	self = (RygelTrackerRootContainer*) rygel_simple_container_construct_root (object_type, title);
 #line 36 "rygel-tracker-root-container.vala"
-	rygel_simple_container_add_child ((RygelSimpleContainer*) self, (RygelMediaObject*) (_tmp1_ = rygel_tracker_search_container_new ("16", (RygelMediaContainer*) self, "Pictures", RYGEL_TRACKER_IMAGE_ITEM_SERVICE, "", (_tmp0_ = g_new0 (char*, 0 + 1), _tmp0__length1 = 0, _tmp0_), 0)));
+	if (rygel_tracker_root_container_get_bool_config_without_error (self, "share-music")) {
+#line 131 "rygel-tracker-root-container.c"
+		RygelTrackerMusic* _tmp0_;
+#line 37 "rygel-tracker-root-container.vala"
+		rygel_simple_container_add_child ((RygelSimpleContainer*) self, (RygelMediaObject*) (_tmp0_ = rygel_tracker_music_new ("Music", (RygelMediaContainer*) self, "Music")));
 #line 135 "rygel-tracker-root-container.c"
-	_g_object_unref0 (_tmp1_);
-	_tmp0_ = (_vala_array_free (_tmp0_, _tmp0__length1, (GDestroyNotify) g_free), NULL);
-#line 41 "rygel-tracker-root-container.vala"
-	rygel_simple_container_add_child ((RygelSimpleContainer*) self, (RygelMediaObject*) (_tmp3_ = rygel_tracker_search_container_new ("14", (RygelMediaContainer*) self, "Music", RYGEL_TRACKER_MUSIC_ITEM_SERVICE, "", (_tmp2_ = g_new0 (char*, 0 + 1), _tmp2__length1 = 0, _tmp2_), 0)));
+		_g_object_unref0 (_tmp0_);
+	}
+#line 40 "rygel-tracker-root-container.vala"
+	if (rygel_tracker_root_container_get_bool_config_without_error (self, "share-videos")) {
 #line 140 "rygel-tracker-root-container.c"
-	_g_object_unref0 (_tmp3_);
-	_tmp2_ = (_vala_array_free (_tmp2_, _tmp2__length1, (GDestroyNotify) g_free), NULL);
-#line 46 "rygel-tracker-root-container.vala"
-	rygel_simple_container_add_child ((RygelSimpleContainer*) self, (RygelMediaObject*) (_tmp5_ = rygel_tracker_search_container_new ("15", (RygelMediaContainer*) self, "Videos", RYGEL_TRACKER_VIDEO_ITEM_SERVICE, "", (_tmp4_ = g_new0 (char*, 0 + 1), _tmp4__length1 = 0, _tmp4_), 0)));
-#line 145 "rygel-tracker-root-container.c"
-	_g_object_unref0 (_tmp5_);
-	_tmp4_ = (_vala_array_free (_tmp4_, _tmp4__length1, (GDestroyNotify) g_free), NULL);
-#line 51 "rygel-tracker-root-container.vala"
-	rygel_simple_container_add_child ((RygelSimpleContainer*) self, (RygelMediaObject*) (_tmp6_ = rygel_tracker_metadata_values_new ("Audio:Artist", "17", (RygelMediaContainer*) self, "Artists")));
-#line 150 "rygel-tracker-root-container.c"
-	_g_object_unref0 (_tmp6_);
-#line 55 "rygel-tracker-root-container.vala"
-	rygel_simple_container_add_child ((RygelSimpleContainer*) self, (RygelMediaObject*) (_tmp7_ = rygel_tracker_metadata_values_new ("Audio:Album", "18", (RygelMediaContainer*) self, "Albums")));
-#line 154 "rygel-tracker-root-container.c"
-	_g_object_unref0 (_tmp7_);
-#line 59 "rygel-tracker-root-container.vala"
-	rygel_simple_container_add_child ((RygelSimpleContainer*) self, (RygelMediaObject*) (_tmp8_ = rygel_tracker_keywords_new ("19", (RygelMediaContainer*) self)));
-#line 158 "rygel-tracker-root-container.c"
-	_g_object_unref0 (_tmp8_);
+		RygelTrackerVideos* _tmp1_;
+#line 41 "rygel-tracker-root-container.vala"
+		rygel_simple_container_add_child ((RygelSimpleContainer*) self, (RygelMediaObject*) (_tmp1_ = rygel_tracker_videos_new ("Videos", (RygelMediaContainer*) self, "Videos")));
+#line 144 "rygel-tracker-root-container.c"
+		_g_object_unref0 (_tmp1_);
+	}
+#line 44 "rygel-tracker-root-container.vala"
+	if (rygel_tracker_root_container_get_bool_config_without_error (self, "share-pictures")) {
+#line 149 "rygel-tracker-root-container.c"
+		RygelTrackerPictures* _tmp2_;
+#line 45 "rygel-tracker-root-container.vala"
+		rygel_simple_container_add_child ((RygelSimpleContainer*) self, (RygelMediaObject*) (_tmp2_ = rygel_tracker_pictures_new ("Pictures", (RygelMediaContainer*) self, "Pictures")));
+#line 153 "rygel-tracker-root-container.c"
+		_g_object_unref0 (_tmp2_);
+	}
 	return self;
 }
 
@@ -164,7 +160,62 @@ RygelTrackerRootContainer* rygel_tracker_root_container_construct (GType object_
 RygelTrackerRootContainer* rygel_tracker_root_container_new (const char* title) {
 #line 33 "rygel-tracker-root-container.vala"
 	return rygel_tracker_root_container_construct (RYGEL_TYPE_TRACKER_ROOT_CONTAINER, title);
-#line 168 "rygel-tracker-root-container.c"
+#line 164 "rygel-tracker-root-container.c"
+}
+
+
+#line 49 "rygel-tracker-root-container.vala"
+static gboolean rygel_tracker_root_container_get_bool_config_without_error (RygelTrackerRootContainer* self, const char* key) {
+#line 170 "rygel-tracker-root-container.c"
+	gboolean result = FALSE;
+	GError * _inner_error_;
+	gboolean value;
+	RygelMetaConfig* config;
+#line 49 "rygel-tracker-root-container.vala"
+	g_return_val_if_fail (self != NULL, FALSE);
+#line 49 "rygel-tracker-root-container.vala"
+	g_return_val_if_fail (key != NULL, FALSE);
+#line 179 "rygel-tracker-root-container.c"
+	_inner_error_ = NULL;
+#line 50 "rygel-tracker-root-container.vala"
+	value = TRUE;
+#line 51 "rygel-tracker-root-container.vala"
+	config = rygel_meta_config_get_default ();
+#line 185 "rygel-tracker-root-container.c"
+	{
+		gboolean _tmp0_;
+#line 54 "rygel-tracker-root-container.vala"
+		_tmp0_ = rygel_configuration_get_bool ((RygelConfiguration*) config, "Tracker", key, &_inner_error_);
+#line 190 "rygel-tracker-root-container.c"
+		if (_inner_error_ != NULL) {
+			goto __catch0_g_error;
+		}
+#line 54 "rygel-tracker-root-container.vala"
+		value = _tmp0_;
+#line 196 "rygel-tracker-root-container.c"
+	}
+	goto __finally0;
+	__catch0_g_error:
+	{
+		GError * _error_;
+		_error_ = _inner_error_;
+		_inner_error_ = NULL;
+		{
+			_g_error_free0 (_error_);
+		}
+	}
+	__finally0:
+	if (_inner_error_ != NULL) {
+		_g_object_unref0 (config);
+		g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
+		g_clear_error (&_inner_error_);
+		return FALSE;
+	}
+	result = value;
+	_g_object_unref0 (config);
+#line 57 "rygel-tracker-root-container.vala"
+	return result;
+#line 219 "rygel-tracker-root-container.c"
 }
 
 
@@ -178,30 +229,14 @@ static void rygel_tracker_root_container_instance_init (RygelTrackerRootContaine
 
 
 GType rygel_tracker_root_container_get_type (void) {
-	static GType rygel_tracker_root_container_type_id = 0;
-	if (rygel_tracker_root_container_type_id == 0) {
+	static volatile gsize rygel_tracker_root_container_type_id__volatile = 0;
+	if (g_once_init_enter (&rygel_tracker_root_container_type_id__volatile)) {
 		static const GTypeInfo g_define_type_info = { sizeof (RygelTrackerRootContainerClass), (GBaseInitFunc) NULL, (GBaseFinalizeFunc) NULL, (GClassInitFunc) rygel_tracker_root_container_class_init, (GClassFinalizeFunc) NULL, NULL, sizeof (RygelTrackerRootContainer), 0, (GInstanceInitFunc) rygel_tracker_root_container_instance_init, NULL };
+		GType rygel_tracker_root_container_type_id;
 		rygel_tracker_root_container_type_id = g_type_register_static (RYGEL_TYPE_SIMPLE_CONTAINER, "RygelTrackerRootContainer", &g_define_type_info, 0);
+		g_once_init_leave (&rygel_tracker_root_container_type_id__volatile, rygel_tracker_root_container_type_id);
 	}
-	return rygel_tracker_root_container_type_id;
-}
-
-
-static void _vala_array_destroy (gpointer array, gint array_length, GDestroyNotify destroy_func) {
-	if ((array != NULL) && (destroy_func != NULL)) {
-		int i;
-		for (i = 0; i < array_length; i = i + 1) {
-			if (((gpointer*) array)[i] != NULL) {
-				destroy_func (((gpointer*) array)[i]);
-			}
-		}
-	}
-}
-
-
-static void _vala_array_free (gpointer array, gint array_length, GDestroyNotify destroy_func) {
-	_vala_array_destroy (array, array_length, destroy_func);
-	g_free (array);
+	return rygel_tracker_root_container_type_id__volatile;
 }
 
 

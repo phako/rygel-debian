@@ -222,23 +222,20 @@ RygelMediaExportPrefSection* rygel_media_export_pref_section_construct (GType ob
 #line 223 "rygel-media-export-pref-section.c"
 		if (_inner_error_ != NULL) {
 			goto __catch11_g_error;
-			g_critical ("file %s: line %d: unexpected error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
-			g_clear_error (&_inner_error_);
-			return NULL;
 		}
 		{
 			GeeIterator* _uri_it;
 			_uri_it = gee_abstract_collection_iterator ((GeeAbstractCollection*) uris);
 #line 62 "rygel-media-export-pref-section.vala"
 			while (TRUE) {
-#line 235 "rygel-media-export-pref-section.c"
+#line 232 "rygel-media-export-pref-section.c"
 				char* uri;
 				GtkTreeIter iter = {0};
 #line 62 "rygel-media-export-pref-section.vala"
 				if (!gee_iterator_next (_uri_it)) {
 #line 62 "rygel-media-export-pref-section.vala"
 					break;
-#line 242 "rygel-media-export-pref-section.c"
+#line 239 "rygel-media-export-pref-section.c"
 				}
 #line 62 "rygel-media-export-pref-section.vala"
 				uri = (char*) gee_iterator_get (_uri_it);
@@ -246,7 +243,7 @@ RygelMediaExportPrefSection* rygel_media_export_pref_section_construct (GType ob
 				gtk_list_store_append (self->priv->liststore, &iter);
 #line 66 "rygel-media-export-pref-section.vala"
 				gtk_list_store_set (self->priv->liststore, &iter, 0, uri, -1, -1);
-#line 250 "rygel-media-export-pref-section.c"
+#line 247 "rygel-media-export-pref-section.c"
 				_g_free0 (uri);
 			}
 			_g_object_unref0 (_uri_it);
@@ -299,7 +296,7 @@ RygelMediaExportPrefSection* rygel_media_export_pref_section_construct (GType ob
 	gee_abstract_collection_add ((GeeAbstractCollection*) ((RygelPluginPrefSection*) self)->widgets, (GtkWidget*) label);
 #line 90 "rygel-media-export-pref-section.vala"
 	rygel_plugin_pref_section_reset_widgets_sensitivity ((RygelPluginPrefSection*) self);
-#line 303 "rygel-media-export-pref-section.c"
+#line 300 "rygel-media-export-pref-section.c"
 	_g_object_unref0 (button);
 	_g_object_unref0 (label);
 	return self;
@@ -310,13 +307,13 @@ RygelMediaExportPrefSection* rygel_media_export_pref_section_construct (GType ob
 RygelMediaExportPrefSection* rygel_media_export_pref_section_new (GtkBuilder* builder, RygelUserConfig* config) {
 #line 41 "rygel-media-export-pref-section.vala"
 	return rygel_media_export_pref_section_construct (RYGEL_TYPE_MEDIA_EXPORT_PREF_SECTION, builder, config);
-#line 314 "rygel-media-export-pref-section.c"
+#line 311 "rygel-media-export-pref-section.c"
 }
 
 
 #line 93 "rygel-media-export-pref-section.vala"
 static void rygel_media_export_pref_section_real_save (RygelPreferencesSection* base) {
-#line 320 "rygel-media-export-pref-section.c"
+#line 317 "rygel-media-export-pref-section.c"
 	RygelMediaExportPrefSection * self;
 	GtkTreeIter iter = {0};
 	GeeArrayList* uri_list;
@@ -327,14 +324,14 @@ static void rygel_media_export_pref_section_real_save (RygelPreferencesSection* 
 	uri_list = gee_array_list_new (G_TYPE_STRING, (GBoxedCopyFunc) g_strdup, g_free, NULL);
 #line 99 "rygel-media-export-pref-section.vala"
 	if (gtk_tree_model_get_iter_first ((GtkTreeModel*) self->priv->liststore, &iter)) {
-#line 331 "rygel-media-export-pref-section.c"
+#line 328 "rygel-media-export-pref-section.c"
 		{
 			gboolean _tmp0_;
 #line 100 "rygel-media-export-pref-section.vala"
 			_tmp0_ = TRUE;
 #line 100 "rygel-media-export-pref-section.vala"
 			while (TRUE) {
-#line 338 "rygel-media-export-pref-section.c"
+#line 335 "rygel-media-export-pref-section.c"
 				char* uri;
 #line 100 "rygel-media-export-pref-section.vala"
 				if (!_tmp0_) {
@@ -342,25 +339,25 @@ static void rygel_media_export_pref_section_real_save (RygelPreferencesSection* 
 					if (!gtk_tree_model_iter_next ((GtkTreeModel*) self->priv->liststore, &iter)) {
 #line 105 "rygel-media-export-pref-section.vala"
 						break;
-#line 346 "rygel-media-export-pref-section.c"
+#line 343 "rygel-media-export-pref-section.c"
 					}
 				}
 #line 100 "rygel-media-export-pref-section.vala"
 				_tmp0_ = FALSE;
-#line 351 "rygel-media-export-pref-section.c"
+#line 348 "rygel-media-export-pref-section.c"
 				uri = NULL;
 #line 103 "rygel-media-export-pref-section.vala"
 				gtk_tree_model_get ((GtkTreeModel*) self->priv->liststore, &iter, 0, &uri, -1, -1);
 #line 104 "rygel-media-export-pref-section.vala"
 				gee_abstract_collection_add ((GeeAbstractCollection*) uri_list, uri);
-#line 357 "rygel-media-export-pref-section.c"
+#line 354 "rygel-media-export-pref-section.c"
 				_g_free0 (uri);
 			}
 		}
 	}
 #line 108 "rygel-media-export-pref-section.vala"
 	rygel_user_config_set_string_list (((RygelPreferencesSection*) self)->config, ((RygelPreferencesSection*) self)->name, RYGEL_MEDIA_EXPORT_PREF_SECTION_URIS_KEY, uri_list);
-#line 364 "rygel-media-export-pref-section.c"
+#line 361 "rygel-media-export-pref-section.c"
 	_g_object_unref0 (uri_list);
 }
 
@@ -379,40 +376,40 @@ static void rygel_media_export_pref_section_on_add_button_clicked (RygelMediaExp
 	g_return_if_fail (button != NULL);
 #line 112 "rygel-media-export-pref-section.vala"
 	if (gtk_dialog_run ((GtkDialog*) self->priv->dialog) == GTK_RESPONSE_OK) {
-#line 383 "rygel-media-export-pref-section.c"
+#line 380 "rygel-media-export-pref-section.c"
 		GtkTreeIter iter = {0};
 		GSList* dirs;
 #line 115 "rygel-media-export-pref-section.vala"
 		dirs = gtk_file_chooser_get_files ((GtkFileChooser*) self->priv->dialog);
-#line 388 "rygel-media-export-pref-section.c"
+#line 385 "rygel-media-export-pref-section.c"
 		{
 			GSList* dir_collection;
 			GSList* dir_it;
 #line 117 "rygel-media-export-pref-section.vala"
 			dir_collection = dirs;
-#line 394 "rygel-media-export-pref-section.c"
+#line 391 "rygel-media-export-pref-section.c"
 			for (dir_it = dir_collection; dir_it != NULL; dir_it = dir_it->next) {
 				GFile* dir;
 #line 117 "rygel-media-export-pref-section.vala"
 				dir = _g_object_ref0 ((GFile*) dir_it->data);
-#line 399 "rygel-media-export-pref-section.c"
+#line 396 "rygel-media-export-pref-section.c"
 				{
 					char* path;
 #line 118 "rygel-media-export-pref-section.vala"
 					path = g_file_get_path (dir);
 #line 120 "rygel-media-export-pref-section.vala"
 					if (path == NULL) {
-#line 406 "rygel-media-export-pref-section.c"
+#line 403 "rygel-media-export-pref-section.c"
 						char* _tmp0_;
 #line 121 "rygel-media-export-pref-section.vala"
 						path = (_tmp0_ = g_file_get_uri (dir), _g_free0 (path), _tmp0_);
-#line 410 "rygel-media-export-pref-section.c"
+#line 407 "rygel-media-export-pref-section.c"
 					}
 #line 124 "rygel-media-export-pref-section.vala"
 					gtk_list_store_append (self->priv->liststore, &iter);
 #line 125 "rygel-media-export-pref-section.vala"
 					gtk_list_store_set (self->priv->liststore, &iter, 0, path, -1, -1);
-#line 416 "rygel-media-export-pref-section.c"
+#line 413 "rygel-media-export-pref-section.c"
 					_g_object_unref0 (dir);
 					_g_free0 (path);
 				}
@@ -422,7 +419,7 @@ static void rygel_media_export_pref_section_on_add_button_clicked (RygelMediaExp
 	}
 #line 129 "rygel-media-export-pref-section.vala"
 	gtk_widget_hide ((GtkWidget*) self->priv->dialog);
-#line 426 "rygel-media-export-pref-section.c"
+#line 423 "rygel-media-export-pref-section.c"
 }
 
 
@@ -439,7 +436,7 @@ static void _g_list_free_gtk_tree_path_free (GList* self) {
 
 #line 132 "rygel-media-export-pref-section.vala"
 static void rygel_media_export_pref_section_on_remove_button_clicked (RygelMediaExportPrefSection* self, GtkButton* button) {
-#line 443 "rygel-media-export-pref-section.c"
+#line 440 "rygel-media-export-pref-section.c"
 	GtkTreeSelection* selection;
 	GList* rows;
 	GeeArrayList* row_refs;
@@ -453,23 +450,23 @@ static void rygel_media_export_pref_section_on_remove_button_clicked (RygelMedia
 	rows = gtk_tree_selection_get_selected_rows (selection, NULL);
 #line 137 "rygel-media-export-pref-section.vala"
 	row_refs = gee_array_list_new (GTK_TYPE_TREE_ROW_REFERENCE, (GBoxedCopyFunc) gtk_tree_row_reference_copy, gtk_tree_row_reference_free, NULL);
-#line 457 "rygel-media-export-pref-section.c"
+#line 454 "rygel-media-export-pref-section.c"
 	{
 		GList* row_collection;
 		GList* row_it;
 #line 138 "rygel-media-export-pref-section.vala"
 		row_collection = rows;
-#line 463 "rygel-media-export-pref-section.c"
+#line 460 "rygel-media-export-pref-section.c"
 		for (row_it = row_collection; row_it != NULL; row_it = row_it->next) {
 			GtkTreePath* row;
 #line 138 "rygel-media-export-pref-section.vala"
 			row = _gtk_tree_path_copy0 ((GtkTreePath*) row_it->data);
-#line 468 "rygel-media-export-pref-section.c"
+#line 465 "rygel-media-export-pref-section.c"
 			{
 				GtkTreeRowReference* _tmp0_;
 #line 139 "rygel-media-export-pref-section.vala"
 				gee_abstract_collection_add ((GeeAbstractCollection*) row_refs, _tmp0_ = gtk_tree_row_reference_new ((GtkTreeModel*) self->priv->liststore, row));
-#line 473 "rygel-media-export-pref-section.c"
+#line 470 "rygel-media-export-pref-section.c"
 				_gtk_tree_row_reference_free0 (_tmp0_);
 				_gtk_tree_path_free0 (row);
 			}
@@ -480,7 +477,7 @@ static void rygel_media_export_pref_section_on_remove_button_clicked (RygelMedia
 		_row_ref_it = gee_abstract_collection_iterator ((GeeAbstractCollection*) row_refs);
 #line 143 "rygel-media-export-pref-section.vala"
 		while (TRUE) {
-#line 484 "rygel-media-export-pref-section.c"
+#line 481 "rygel-media-export-pref-section.c"
 			GtkTreeRowReference* row_ref;
 			GtkTreeIter iter = {0};
 			GtkTreePath* path;
@@ -488,7 +485,7 @@ static void rygel_media_export_pref_section_on_remove_button_clicked (RygelMedia
 			if (!gee_iterator_next (_row_ref_it)) {
 #line 143 "rygel-media-export-pref-section.vala"
 				break;
-#line 492 "rygel-media-export-pref-section.c"
+#line 489 "rygel-media-export-pref-section.c"
 			}
 #line 143 "rygel-media-export-pref-section.vala"
 			row_ref = (GtkTreeRowReference*) gee_iterator_get (_row_ref_it);
@@ -498,7 +495,7 @@ static void rygel_media_export_pref_section_on_remove_button_clicked (RygelMedia
 			gtk_tree_model_get_iter ((GtkTreeModel*) self->priv->liststore, &iter, path);
 #line 149 "rygel-media-export-pref-section.vala"
 			gtk_list_store_remove (self->priv->liststore, &iter);
-#line 502 "rygel-media-export-pref-section.c"
+#line 499 "rygel-media-export-pref-section.c"
 			_gtk_tree_row_reference_free0 (row_ref);
 			_gtk_tree_path_free0 (path);
 		}
@@ -518,7 +515,7 @@ static void rygel_media_export_pref_section_on_clear_button_clicked (RygelMediaE
 	g_return_if_fail (button != NULL);
 #line 154 "rygel-media-export-pref-section.vala"
 	gtk_list_store_clear (self->priv->liststore);
-#line 522 "rygel-media-export-pref-section.c"
+#line 519 "rygel-media-export-pref-section.c"
 }
 
 
@@ -546,12 +543,14 @@ static void rygel_media_export_pref_section_finalize (GObject* obj) {
 
 
 GType rygel_media_export_pref_section_get_type (void) {
-	static GType rygel_media_export_pref_section_type_id = 0;
-	if (rygel_media_export_pref_section_type_id == 0) {
+	static volatile gsize rygel_media_export_pref_section_type_id__volatile = 0;
+	if (g_once_init_enter (&rygel_media_export_pref_section_type_id__volatile)) {
 		static const GTypeInfo g_define_type_info = { sizeof (RygelMediaExportPrefSectionClass), (GBaseInitFunc) NULL, (GBaseFinalizeFunc) NULL, (GClassInitFunc) rygel_media_export_pref_section_class_init, (GClassFinalizeFunc) NULL, NULL, sizeof (RygelMediaExportPrefSection), 0, (GInstanceInitFunc) rygel_media_export_pref_section_instance_init, NULL };
+		GType rygel_media_export_pref_section_type_id;
 		rygel_media_export_pref_section_type_id = g_type_register_static (RYGEL_TYPE_PLUGIN_PREF_SECTION, "RygelMediaExportPrefSection", &g_define_type_info, 0);
+		g_once_init_leave (&rygel_media_export_pref_section_type_id__volatile, rygel_media_export_pref_section_type_id);
 	}
-	return rygel_media_export_pref_section_type_id;
+	return rygel_media_export_pref_section_type_id__volatile;
 }
 
 

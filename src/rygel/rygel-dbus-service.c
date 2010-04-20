@@ -175,7 +175,8 @@ RygelDBusService* rygel_dbus_service_construct (GType object_type, RygelMain* ma
 #line 44 "rygel-dbus-service.vala"
 	if (request_name_result != DBUS_REQUEST_NAME_REPLY_PRIMARY_OWNER) {
 #line 45 "rygel-dbus-service.vala"
-		g_warning ("rygel-dbus-service.vala:45: Failed to start D-Bus service, name '%s' already taken", rygel_dbus_service_RYGEL_SERVICE);
+		g_warning ("rygel-dbus-service.vala:45: Failed to start D-Bus service, name '%s' a" \
+"lready taken", rygel_dbus_service_RYGEL_SERVICE);
 #line 180 "rygel-dbus-service.c"
 	} else {
 #line 48 "rygel-dbus-service.vala"
@@ -343,12 +344,14 @@ static void rygel_dbus_service_finalize (GObject* obj) {
 
 
 GType rygel_dbus_service_get_type (void) {
-	static GType rygel_dbus_service_type_id = 0;
-	if (rygel_dbus_service_type_id == 0) {
+	static volatile gsize rygel_dbus_service_type_id__volatile = 0;
+	if (g_once_init_enter (&rygel_dbus_service_type_id__volatile)) {
 		static const GTypeInfo g_define_type_info = { sizeof (RygelDBusServiceClass), (GBaseInitFunc) NULL, (GBaseFinalizeFunc) NULL, (GClassInitFunc) rygel_dbus_service_class_init, (GClassFinalizeFunc) NULL, NULL, sizeof (RygelDBusService), 0, (GInstanceInitFunc) rygel_dbus_service_instance_init, NULL };
+		GType rygel_dbus_service_type_id;
 		rygel_dbus_service_type_id = g_type_register_static (G_TYPE_OBJECT, "RygelDBusService", &g_define_type_info, 0);
+		g_once_init_leave (&rygel_dbus_service_type_id__volatile, rygel_dbus_service_type_id);
 	}
-	return rygel_dbus_service_type_id;
+	return rygel_dbus_service_type_id__volatile;
 }
 
 

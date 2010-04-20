@@ -258,7 +258,7 @@ static void rygel_connection_manager_get_current_connection_info_cb (RygelConnec
 #line 259 "rygel-connection-manager.c"
 	}
 #line 107 "rygel-connection-manager.vala"
-	gupnp_service_action_set (action, "ResID", G_TYPE_INT, -1, "AVTransportID", G_TYPE_INT, -1, "ProtocolInfo", G_TYPE_STRING, "", "PeerConnectionManager", G_TYPE_STRING, "", "PeerConnectionID", G_TYPE_INT, -1, "Direction", G_TYPE_STRING, "Input", "Status", G_TYPE_STRING, "Unknown", NULL);
+	gupnp_service_action_set (action, "RcsID", G_TYPE_INT, -1, "AVTransportID", G_TYPE_INT, -1, "ProtocolInfo", G_TYPE_STRING, "", "PeerConnectionManager", G_TYPE_STRING, "", "PeerConnectionID", G_TYPE_INT, -1, "Direction", G_TYPE_STRING, "Input", "Status", G_TYPE_STRING, "Unknown", NULL);
 #line 115 "rygel-connection-manager.vala"
 	gupnp_service_action_return (action);
 #line 265 "rygel-connection-manager.c"
@@ -304,12 +304,14 @@ static void rygel_connection_manager_finalize (GObject* obj) {
 
 
 GType rygel_connection_manager_get_type (void) {
-	static GType rygel_connection_manager_type_id = 0;
-	if (rygel_connection_manager_type_id == 0) {
+	static volatile gsize rygel_connection_manager_type_id__volatile = 0;
+	if (g_once_init_enter (&rygel_connection_manager_type_id__volatile)) {
 		static const GTypeInfo g_define_type_info = { sizeof (RygelConnectionManagerClass), (GBaseInitFunc) NULL, (GBaseFinalizeFunc) NULL, (GClassInitFunc) rygel_connection_manager_class_init, (GClassFinalizeFunc) NULL, NULL, sizeof (RygelConnectionManager), 0, (GInstanceInitFunc) rygel_connection_manager_instance_init, NULL };
+		GType rygel_connection_manager_type_id;
 		rygel_connection_manager_type_id = g_type_register_static (GUPNP_TYPE_SERVICE, "RygelConnectionManager", &g_define_type_info, 0);
+		g_once_init_leave (&rygel_connection_manager_type_id__volatile, rygel_connection_manager_type_id);
 	}
-	return rygel_connection_manager_type_id;
+	return rygel_connection_manager_type_id__volatile;
 }
 
 

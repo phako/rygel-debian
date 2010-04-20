@@ -164,8 +164,6 @@ struct _RygelContentDirectory {
 struct _RygelContentDirectoryClass {
 	GUPnPServiceClass parent_class;
 	RygelMediaContainer* (*create_root_container) (RygelContentDirectory* self);
-	void (*browse_cb) (RygelContentDirectory* self, RygelContentDirectory* content_dir, GUPnPServiceAction* action);
-	void (*search_cb) (RygelContentDirectory* self, RygelContentDirectory* content_dir, GUPnPServiceAction* action);
 };
 
 
@@ -194,7 +192,7 @@ RygelSourceConnectionManager* rygel_source_connection_manager_construct (GType o
 
 #line 30 "rygel-source-connection-manager.vala"
 static void rygel_source_connection_manager_real_constructed (GObject* base) {
-#line 198 "rygel-source-connection-manager.c"
+#line 196 "rygel-source-connection-manager.c"
 	RygelSourceConnectionManager * self;
 	RygelHTTPServer* server;
 	char* _tmp0_;
@@ -205,7 +203,7 @@ static void rygel_source_connection_manager_real_constructed (GObject* base) {
 	server = rygel_source_connection_manager_get_http_server (self);
 #line 34 "rygel-source-connection-manager.vala"
 	((RygelConnectionManager*) self)->source_protocol_info = (_tmp0_ = rygel_transcode_manager_get_protocol_info ((RygelTranscodeManager*) server), _g_free0 (((RygelConnectionManager*) self)->source_protocol_info), _tmp0_);
-#line 209 "rygel-source-connection-manager.c"
+#line 207 "rygel-source-connection-manager.c"
 	_g_object_unref0 (server);
 }
 
@@ -217,8 +215,8 @@ static gpointer _g_object_ref0 (gpointer self) {
 
 #line 37 "rygel-source-connection-manager.vala"
 static RygelHTTPServer* rygel_source_connection_manager_get_http_server (RygelSourceConnectionManager* self) {
-#line 221 "rygel-source-connection-manager.c"
-	RygelHTTPServer* result;
+#line 219 "rygel-source-connection-manager.c"
+	RygelHTTPServer* result = NULL;
 	RygelHTTPServer* server;
 	GUPnPRootDevice* _tmp0_ = NULL;
 	RygelRootDevice* root_device;
@@ -228,32 +226,32 @@ static RygelHTTPServer* rygel_source_connection_manager_get_http_server (RygelSo
 	server = NULL;
 #line 40 "rygel-source-connection-manager.vala"
 	root_device = RYGEL_ROOT_DEVICE ((g_object_get ((GUPnPService*) self, "root-device", &_tmp0_, NULL), _tmp0_));
-#line 232 "rygel-source-connection-manager.c"
+#line 230 "rygel-source-connection-manager.c"
 	{
 		GeeIterator* _service_it;
 		_service_it = gee_abstract_collection_iterator ((GeeAbstractCollection*) root_device->services);
 #line 43 "rygel-source-connection-manager.vala"
 		while (TRUE) {
-#line 238 "rygel-source-connection-manager.c"
+#line 236 "rygel-source-connection-manager.c"
 			GUPnPServiceInfo* service;
 #line 43 "rygel-source-connection-manager.vala"
 			if (!gee_iterator_next (_service_it)) {
 #line 43 "rygel-source-connection-manager.vala"
 				break;
-#line 244 "rygel-source-connection-manager.c"
+#line 242 "rygel-source-connection-manager.c"
 			}
 #line 43 "rygel-source-connection-manager.vala"
 			service = (GUPnPServiceInfo*) gee_iterator_get (_service_it);
 #line 44 "rygel-source-connection-manager.vala"
 			if (g_type_is_a (G_TYPE_FROM_INSTANCE ((GObject*) service), RYGEL_TYPE_CONTENT_DIRECTORY)) {
-#line 250 "rygel-source-connection-manager.c"
+#line 248 "rygel-source-connection-manager.c"
 				RygelContentDirectory* content_directory;
 				RygelHTTPServer* _tmp1_;
 #line 45 "rygel-source-connection-manager.vala"
 				content_directory = _g_object_ref0 (RYGEL_CONTENT_DIRECTORY (service));
 #line 46 "rygel-source-connection-manager.vala"
 				server = (_tmp1_ = _g_object_ref0 (content_directory->http_server), _g_object_unref0 (server), _tmp1_);
-#line 257 "rygel-source-connection-manager.c"
+#line 255 "rygel-source-connection-manager.c"
 				_g_object_unref0 (content_directory);
 			}
 			_g_object_unref0 (service);
@@ -264,17 +262,17 @@ static RygelHTTPServer* rygel_source_connection_manager_get_http_server (RygelSo
 	_g_object_unref0 (root_device);
 #line 50 "rygel-source-connection-manager.vala"
 	return result;
-#line 268 "rygel-source-connection-manager.c"
+#line 266 "rygel-source-connection-manager.c"
 }
 
 
 #line 29 "rygel-source-connection-manager.vala"
 RygelSourceConnectionManager* rygel_source_connection_manager_construct (GType object_type) {
-#line 274 "rygel-source-connection-manager.c"
+#line 272 "rygel-source-connection-manager.c"
 	RygelSourceConnectionManager * self;
 #line 29 "rygel-source-connection-manager.vala"
 	self = (RygelSourceConnectionManager*) rygel_connection_manager_construct (object_type);
-#line 278 "rygel-source-connection-manager.c"
+#line 276 "rygel-source-connection-manager.c"
 	return self;
 }
 
@@ -283,7 +281,7 @@ RygelSourceConnectionManager* rygel_source_connection_manager_construct (GType o
 RygelSourceConnectionManager* rygel_source_connection_manager_new (void) {
 #line 29 "rygel-source-connection-manager.vala"
 	return rygel_source_connection_manager_construct (RYGEL_TYPE_SOURCE_CONNECTION_MANAGER);
-#line 287 "rygel-source-connection-manager.c"
+#line 285 "rygel-source-connection-manager.c"
 }
 
 
@@ -298,12 +296,14 @@ static void rygel_source_connection_manager_instance_init (RygelSourceConnection
 
 
 GType rygel_source_connection_manager_get_type (void) {
-	static GType rygel_source_connection_manager_type_id = 0;
-	if (rygel_source_connection_manager_type_id == 0) {
+	static volatile gsize rygel_source_connection_manager_type_id__volatile = 0;
+	if (g_once_init_enter (&rygel_source_connection_manager_type_id__volatile)) {
 		static const GTypeInfo g_define_type_info = { sizeof (RygelSourceConnectionManagerClass), (GBaseInitFunc) NULL, (GBaseFinalizeFunc) NULL, (GClassInitFunc) rygel_source_connection_manager_class_init, (GClassFinalizeFunc) NULL, NULL, sizeof (RygelSourceConnectionManager), 0, (GInstanceInitFunc) rygel_source_connection_manager_instance_init, NULL };
+		GType rygel_source_connection_manager_type_id;
 		rygel_source_connection_manager_type_id = g_type_register_static (RYGEL_TYPE_CONNECTION_MANAGER, "RygelSourceConnectionManager", &g_define_type_info, 0);
+		g_once_init_leave (&rygel_source_connection_manager_type_id__volatile, rygel_source_connection_manager_type_id);
 	}
-	return rygel_source_connection_manager_type_id;
+	return rygel_source_connection_manager_type_id__volatile;
 }
 
 

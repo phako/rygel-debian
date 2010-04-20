@@ -124,7 +124,7 @@ RygelGstLaunchItem* rygel_gst_launch_item_new (const char* id, RygelMediaContain
 static GstElement* rygel_gst_launch_item_real_create_stream_source (RygelMediaItem* base) {
 #line 126 "rygel-gst-launch-item.c"
 	RygelGstLaunchItem * self;
-	GstElement* result;
+	GstElement* result = NULL;
 	GError * _inner_error_;
 	self = (RygelGstLaunchItem*) base;
 	_inner_error_ = NULL;
@@ -135,14 +135,11 @@ static GstElement* rygel_gst_launch_item_real_create_stream_source (RygelMediaIt
 #line 136 "rygel-gst-launch-item.c"
 		if (_inner_error_ != NULL) {
 			goto __catch2_g_error;
-			g_critical ("file %s: line %d: unexpected error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
-			g_clear_error (&_inner_error_);
-			return NULL;
 		}
 		result = _tmp0_;
 #line 49 "rygel-gst-launch-item.vala"
 		return result;
-#line 146 "rygel-gst-launch-item.c"
+#line 143 "rygel-gst-launch-item.c"
 	}
 	goto __finally2;
 	__catch2_g_error:
@@ -153,16 +150,16 @@ static GstElement* rygel_gst_launch_item_real_create_stream_source (RygelMediaIt
 		{
 #line 51 "rygel-gst-launch-item.vala"
 			g_warning ("rygel-gst-launch-item.vala:51: parse launchline failed: %s", err->message);
-#line 157 "rygel-gst-launch-item.c"
+#line 154 "rygel-gst-launch-item.c"
 			result = NULL;
 			_g_error_free0 (err);
 #line 52 "rygel-gst-launch-item.vala"
 			return result;
-#line 162 "rygel-gst-launch-item.c"
+#line 159 "rygel-gst-launch-item.c"
 		}
 	}
 	__finally2:
-	if (_inner_error_ != NULL) {
+	{
 		g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
 		g_clear_error (&_inner_error_);
 		return NULL;
@@ -192,12 +189,14 @@ static void rygel_gst_launch_item_finalize (GObject* obj) {
 
 
 GType rygel_gst_launch_item_get_type (void) {
-	static GType rygel_gst_launch_item_type_id = 0;
-	if (rygel_gst_launch_item_type_id == 0) {
+	static volatile gsize rygel_gst_launch_item_type_id__volatile = 0;
+	if (g_once_init_enter (&rygel_gst_launch_item_type_id__volatile)) {
 		static const GTypeInfo g_define_type_info = { sizeof (RygelGstLaunchItemClass), (GBaseInitFunc) NULL, (GBaseFinalizeFunc) NULL, (GClassInitFunc) rygel_gst_launch_item_class_init, (GClassFinalizeFunc) NULL, NULL, sizeof (RygelGstLaunchItem), 0, (GInstanceInitFunc) rygel_gst_launch_item_instance_init, NULL };
+		GType rygel_gst_launch_item_type_id;
 		rygel_gst_launch_item_type_id = g_type_register_static (RYGEL_TYPE_MEDIA_ITEM, "RygelGstLaunchItem", &g_define_type_info, 0);
+		g_once_init_leave (&rygel_gst_launch_item_type_id__volatile, rygel_gst_launch_item_type_id);
 	}
-	return rygel_gst_launch_item_type_id;
+	return rygel_gst_launch_item_type_id__volatile;
 }
 
 

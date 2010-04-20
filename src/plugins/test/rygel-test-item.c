@@ -102,12 +102,14 @@ static void rygel_test_item_instance_init (RygelTestItem * self) {
 
 
 GType rygel_test_item_get_type (void) {
-	static GType rygel_test_item_type_id = 0;
-	if (rygel_test_item_type_id == 0) {
+	static volatile gsize rygel_test_item_type_id__volatile = 0;
+	if (g_once_init_enter (&rygel_test_item_type_id__volatile)) {
 		static const GTypeInfo g_define_type_info = { sizeof (RygelTestItemClass), (GBaseInitFunc) NULL, (GBaseFinalizeFunc) NULL, (GClassInitFunc) rygel_test_item_class_init, (GClassFinalizeFunc) NULL, NULL, sizeof (RygelTestItem), 0, (GInstanceInitFunc) rygel_test_item_instance_init, NULL };
+		GType rygel_test_item_type_id;
 		rygel_test_item_type_id = g_type_register_static (RYGEL_TYPE_MEDIA_ITEM, "RygelTestItem", &g_define_type_info, G_TYPE_FLAG_ABSTRACT);
+		g_once_init_leave (&rygel_test_item_type_id__volatile, rygel_test_item_type_id);
 	}
-	return rygel_test_item_type_id;
+	return rygel_test_item_type_id__volatile;
 }
 
 

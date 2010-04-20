@@ -138,7 +138,8 @@ static void rygel_mediathek_rss_container_on_feed_got (RygelMediathekRssContaine
 		case 304:
 		{
 #line 34 "rygel-mediathek-rss-container.vala"
-			g_message ("rygel-mediathek-rss-container.vala:34: Feed has not changed, nothing to do");
+			g_message ("rygel-mediathek-rss-container.vala:34: Feed has not changed, nothing t" \
+"o do");
 #line 35 "rygel-mediathek-rss-container.vala"
 			break;
 #line 145 "rygel-mediathek-rss-container.c"
@@ -174,7 +175,7 @@ static void rygel_mediathek_rss_container_on_feed_got (RygelMediathekRssContaine
 #line 52 "rygel-mediathek-rss-container.vala"
 static gboolean rygel_mediathek_rss_container_parse_response (RygelMediathekRssContainer* self, const char* data, gsize length) {
 #line 177 "rygel-mediathek-rss-container.c"
-	gboolean result;
+	gboolean result = FALSE;
 	GError * _inner_error_;
 	gboolean ret;
 	xmlDoc* doc;
@@ -197,7 +198,7 @@ static gboolean rygel_mediathek_rss_container_parse_response (RygelMediathekRssC
 #line 56 "rygel-mediathek-rss-container.vala"
 		gee_abstract_collection_clear ((GeeAbstractCollection*) ((RygelSimpleContainer*) self)->children);
 #line 57 "rygel-mediathek-rss-container.vala"
-		((RygelMediaContainer*) self)->child_count = (guint) 0;
+		((RygelMediaContainer*) self)->child_count = 0;
 #line 59 "rygel-mediathek-rss-container.vala"
 		ctx = xmlXPathNewContext (doc);
 #line 60 "rygel-mediathek-rss-container.vala"
@@ -412,12 +413,14 @@ static void rygel_mediathek_rss_container_finalize (GObject* obj) {
 
 
 GType rygel_mediathek_rss_container_get_type (void) {
-	static GType rygel_mediathek_rss_container_type_id = 0;
-	if (rygel_mediathek_rss_container_type_id == 0) {
+	static volatile gsize rygel_mediathek_rss_container_type_id__volatile = 0;
+	if (g_once_init_enter (&rygel_mediathek_rss_container_type_id__volatile)) {
 		static const GTypeInfo g_define_type_info = { sizeof (RygelMediathekRssContainerClass), (GBaseInitFunc) NULL, (GBaseFinalizeFunc) NULL, (GClassInitFunc) rygel_mediathek_rss_container_class_init, (GClassFinalizeFunc) NULL, NULL, sizeof (RygelMediathekRssContainer), 0, (GInstanceInitFunc) rygel_mediathek_rss_container_instance_init, NULL };
+		GType rygel_mediathek_rss_container_type_id;
 		rygel_mediathek_rss_container_type_id = g_type_register_static (RYGEL_TYPE_SIMPLE_CONTAINER, "RygelMediathekRssContainer", &g_define_type_info, 0);
+		g_once_init_leave (&rygel_mediathek_rss_container_type_id__volatile, rygel_mediathek_rss_container_type_id);
 	}
-	return rygel_mediathek_rss_container_type_id;
+	return rygel_mediathek_rss_container_type_id__volatile;
 }
 
 

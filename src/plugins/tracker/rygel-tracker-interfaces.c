@@ -34,124 +34,115 @@
 #include <dbus/dbus.h>
 
 
-#define RYGEL_TYPE_TRACKER_IFACE (rygel_tracker_iface_get_type ())
-#define RYGEL_TRACKER_IFACE(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_TRACKER_IFACE, RygelTrackerIface))
-#define RYGEL_IS_TRACKER_IFACE(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TYPE_TRACKER_IFACE))
-#define RYGEL_TRACKER_IFACE_GET_INTERFACE(obj) (G_TYPE_INSTANCE_GET_INTERFACE ((obj), RYGEL_TYPE_TRACKER_IFACE, RygelTrackerIfaceIface))
+#define RYGEL_TYPE_TRACKER_STATS_IFACE (rygel_tracker_stats_iface_get_type ())
+#define RYGEL_TRACKER_STATS_IFACE(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_TRACKER_STATS_IFACE, RygelTrackerStatsIface))
+#define RYGEL_IS_TRACKER_STATS_IFACE(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TYPE_TRACKER_STATS_IFACE))
+#define RYGEL_TRACKER_STATS_IFACE_GET_INTERFACE(obj) (G_TYPE_INSTANCE_GET_INTERFACE ((obj), RYGEL_TYPE_TRACKER_STATS_IFACE, RygelTrackerStatsIfaceIface))
 
-typedef struct _RygelTrackerIface RygelTrackerIface;
-typedef struct _RygelTrackerIfaceIface RygelTrackerIfaceIface;
-typedef struct _RygelTrackerIfaceDBusProxy RygelTrackerIfaceDBusProxy;
-typedef DBusGProxyClass RygelTrackerIfaceDBusProxyClass;
-typedef struct _RygelTrackerIfaceDBusProxyGetVersionData RygelTrackerIfaceDBusProxyGetVersionData;
+typedef struct _RygelTrackerStatsIface RygelTrackerStatsIface;
+typedef struct _RygelTrackerStatsIfaceIface RygelTrackerStatsIfaceIface;
+typedef struct _RygelTrackerStatsIfaceDBusProxy RygelTrackerStatsIfaceDBusProxy;
+typedef DBusGProxyClass RygelTrackerStatsIfaceDBusProxyClass;
+typedef struct _RygelTrackerStatsIfaceDBusProxyGetStatisticsData RygelTrackerStatsIfaceDBusProxyGetStatisticsData;
 
-#define RYGEL_TYPE_TRACKER_KEYWORDS_IFACE (rygel_tracker_keywords_iface_get_type ())
-#define RYGEL_TRACKER_KEYWORDS_IFACE(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_TRACKER_KEYWORDS_IFACE, RygelTrackerKeywordsIface))
-#define RYGEL_IS_TRACKER_KEYWORDS_IFACE(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TYPE_TRACKER_KEYWORDS_IFACE))
-#define RYGEL_TRACKER_KEYWORDS_IFACE_GET_INTERFACE(obj) (G_TYPE_INSTANCE_GET_INTERFACE ((obj), RYGEL_TYPE_TRACKER_KEYWORDS_IFACE, RygelTrackerKeywordsIfaceIface))
+#define RYGEL_TYPE_TRACKER_RESOURCES_IFACE (rygel_tracker_resources_iface_get_type ())
+#define RYGEL_TRACKER_RESOURCES_IFACE(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_TRACKER_RESOURCES_IFACE, RygelTrackerResourcesIface))
+#define RYGEL_IS_TRACKER_RESOURCES_IFACE(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TYPE_TRACKER_RESOURCES_IFACE))
+#define RYGEL_TRACKER_RESOURCES_IFACE_GET_INTERFACE(obj) (G_TYPE_INSTANCE_GET_INTERFACE ((obj), RYGEL_TYPE_TRACKER_RESOURCES_IFACE, RygelTrackerResourcesIfaceIface))
 
-typedef struct _RygelTrackerKeywordsIface RygelTrackerKeywordsIface;
-typedef struct _RygelTrackerKeywordsIfaceIface RygelTrackerKeywordsIfaceIface;
+typedef struct _RygelTrackerResourcesIface RygelTrackerResourcesIface;
+typedef struct _RygelTrackerResourcesIfaceIface RygelTrackerResourcesIfaceIface;
 #define _g_free0(var) (var = (g_free (var), NULL))
-typedef struct _RygelTrackerKeywordsIfaceDBusProxy RygelTrackerKeywordsIfaceDBusProxy;
-typedef DBusGProxyClass RygelTrackerKeywordsIfaceDBusProxyClass;
-typedef struct _RygelTrackerKeywordsIfaceDBusProxyGetListData RygelTrackerKeywordsIfaceDBusProxyGetListData;
+typedef struct _RygelTrackerResourcesIfaceDBusProxy RygelTrackerResourcesIfaceDBusProxy;
+typedef DBusGProxyClass RygelTrackerResourcesIfaceDBusProxyClass;
+typedef struct _RygelTrackerResourcesIfaceDBusProxySparqlQueryData RygelTrackerResourcesIfaceDBusProxySparqlQueryData;
+typedef struct _RygelTrackerResourcesIfaceDBusProxySparqlUpdateBlankData RygelTrackerResourcesIfaceDBusProxySparqlUpdateBlankData;
 
-#define RYGEL_TYPE_TRACKER_METADATA_IFACE (rygel_tracker_metadata_iface_get_type ())
-#define RYGEL_TRACKER_METADATA_IFACE(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_TRACKER_METADATA_IFACE, RygelTrackerMetadataIface))
-#define RYGEL_IS_TRACKER_METADATA_IFACE(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TYPE_TRACKER_METADATA_IFACE))
-#define RYGEL_TRACKER_METADATA_IFACE_GET_INTERFACE(obj) (G_TYPE_INSTANCE_GET_INTERFACE ((obj), RYGEL_TYPE_TRACKER_METADATA_IFACE, RygelTrackerMetadataIfaceIface))
+#define RYGEL_TYPE_TRACKER_RESOURCES_CLASS_IFACE (rygel_tracker_resources_class_iface_get_type ())
+#define RYGEL_TRACKER_RESOURCES_CLASS_IFACE(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_TRACKER_RESOURCES_CLASS_IFACE, RygelTrackerResourcesClassIface))
+#define RYGEL_IS_TRACKER_RESOURCES_CLASS_IFACE(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TYPE_TRACKER_RESOURCES_CLASS_IFACE))
+#define RYGEL_TRACKER_RESOURCES_CLASS_IFACE_GET_INTERFACE(obj) (G_TYPE_INSTANCE_GET_INTERFACE ((obj), RYGEL_TYPE_TRACKER_RESOURCES_CLASS_IFACE, RygelTrackerResourcesClassIfaceIface))
 
-typedef struct _RygelTrackerMetadataIface RygelTrackerMetadataIface;
-typedef struct _RygelTrackerMetadataIfaceIface RygelTrackerMetadataIfaceIface;
-typedef struct _RygelTrackerMetadataIfaceDBusProxy RygelTrackerMetadataIfaceDBusProxy;
-typedef DBusGProxyClass RygelTrackerMetadataIfaceDBusProxyClass;
-typedef struct _RygelTrackerMetadataIfaceDBusProxyGetUniqueValuesData RygelTrackerMetadataIfaceDBusProxyGetUniqueValuesData;
-typedef struct _RygelTrackerMetadataIfaceDBusProxyGetData RygelTrackerMetadataIfaceDBusProxyGetData;
+typedef struct _RygelTrackerResourcesClassIface RygelTrackerResourcesClassIface;
+typedef struct _RygelTrackerResourcesClassIfaceIface RygelTrackerResourcesClassIfaceIface;
+typedef struct _RygelTrackerResourcesClassIfaceDBusProxy RygelTrackerResourcesClassIfaceDBusProxy;
+typedef DBusGProxyClass RygelTrackerResourcesClassIfaceDBusProxyClass;
 
-#define RYGEL_TYPE_TRACKER_SEARCH_IFACE (rygel_tracker_search_iface_get_type ())
-#define RYGEL_TRACKER_SEARCH_IFACE(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_TRACKER_SEARCH_IFACE, RygelTrackerSearchIface))
-#define RYGEL_IS_TRACKER_SEARCH_IFACE(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TYPE_TRACKER_SEARCH_IFACE))
-#define RYGEL_TRACKER_SEARCH_IFACE_GET_INTERFACE(obj) (G_TYPE_INSTANCE_GET_INTERFACE ((obj), RYGEL_TYPE_TRACKER_SEARCH_IFACE, RygelTrackerSearchIfaceIface))
+#define RYGEL_TYPE_TRACKER_MINER_IFACE (rygel_tracker_miner_iface_get_type ())
+#define RYGEL_TRACKER_MINER_IFACE(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_TRACKER_MINER_IFACE, RygelTrackerMinerIface))
+#define RYGEL_IS_TRACKER_MINER_IFACE(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TYPE_TRACKER_MINER_IFACE))
+#define RYGEL_TRACKER_MINER_IFACE_GET_INTERFACE(obj) (G_TYPE_INSTANCE_GET_INTERFACE ((obj), RYGEL_TYPE_TRACKER_MINER_IFACE, RygelTrackerMinerIfaceIface))
 
-typedef struct _RygelTrackerSearchIface RygelTrackerSearchIface;
-typedef struct _RygelTrackerSearchIfaceIface RygelTrackerSearchIfaceIface;
-typedef struct _RygelTrackerSearchIfaceDBusProxy RygelTrackerSearchIfaceDBusProxy;
-typedef DBusGProxyClass RygelTrackerSearchIfaceDBusProxyClass;
-typedef struct _RygelTrackerSearchIfaceDBusProxyQueryData RygelTrackerSearchIfaceDBusProxyQueryData;
+typedef struct _RygelTrackerMinerIface RygelTrackerMinerIface;
+typedef struct _RygelTrackerMinerIfaceIface RygelTrackerMinerIfaceIface;
+typedef struct _RygelTrackerMinerIfaceDBusProxy RygelTrackerMinerIfaceDBusProxy;
+typedef DBusGProxyClass RygelTrackerMinerIfaceDBusProxyClass;
+typedef struct _RygelTrackerMinerIfaceDBusProxyIgnoreNextUpdateData RygelTrackerMinerIfaceDBusProxyIgnoreNextUpdateData;
 typedef struct _DBusObjectVTable _DBusObjectVTable;
 
-struct _RygelTrackerIfaceIface {
+struct _RygelTrackerStatsIfaceIface {
 	GTypeInterface parent_iface;
-	void (*get_version) (RygelTrackerIface* self, GAsyncReadyCallback _callback_, gpointer _user_data_);
-	gint (*get_version_finish) (RygelTrackerIface* self, GAsyncResult* _res_, GError** error);
+	void (*get_statistics) (RygelTrackerStatsIface* self, GAsyncReadyCallback _callback_, gpointer _user_data_);
+	char** (*get_statistics_finish) (RygelTrackerStatsIface* self, GAsyncResult* _res_, int* result_length1, int* result_length2, GError** error);
 };
 
-struct _RygelTrackerIfaceDBusProxy {
+struct _RygelTrackerStatsIfaceDBusProxy {
 	DBusGProxy parent_instance;
 	gboolean disposed;
 };
 
-struct _RygelTrackerIfaceDBusProxyGetVersionData {
+struct _RygelTrackerStatsIfaceDBusProxyGetStatisticsData {
 	GAsyncReadyCallback _callback_;
 	gpointer _user_data_;
 	DBusPendingCall* pending;
 };
 
-struct _RygelTrackerKeywordsIfaceIface {
+struct _RygelTrackerResourcesIfaceIface {
 	GTypeInterface parent_iface;
-	void (*get_list) (RygelTrackerKeywordsIface* self, const char* service, GAsyncReadyCallback _callback_, gpointer _user_data_);
-	char** (*get_list_finish) (RygelTrackerKeywordsIface* self, GAsyncResult* _res_, int* result_length1, int* result_length2, GError** error);
+	void (*sparql_query) (RygelTrackerResourcesIface* self, const char* query, GAsyncReadyCallback _callback_, gpointer _user_data_);
+	char** (*sparql_query_finish) (RygelTrackerResourcesIface* self, GAsyncResult* _res_, int* result_length1, int* result_length2, GError** error);
+	void (*sparql_update_blank) (RygelTrackerResourcesIface* self, const char* query, GAsyncReadyCallback _callback_, gpointer _user_data_);
+	GHashTable** (*sparql_update_blank_finish) (RygelTrackerResourcesIface* self, GAsyncResult* _res_, int* result_length1, int* result_length2, GError** error);
 };
 
-struct _RygelTrackerKeywordsIfaceDBusProxy {
+struct _RygelTrackerResourcesIfaceDBusProxy {
 	DBusGProxy parent_instance;
 	gboolean disposed;
 };
 
-struct _RygelTrackerKeywordsIfaceDBusProxyGetListData {
+struct _RygelTrackerResourcesIfaceDBusProxySparqlQueryData {
 	GAsyncReadyCallback _callback_;
 	gpointer _user_data_;
 	DBusPendingCall* pending;
 };
 
-struct _RygelTrackerMetadataIfaceIface {
-	GTypeInterface parent_iface;
-	void (*get_unique_values) (RygelTrackerMetadataIface* self, const char* service, char** meta_types, int meta_types_length1, const char* query, gboolean descending, gint offset, gint max_hits, GAsyncReadyCallback _callback_, gpointer _user_data_);
-	char** (*get_unique_values_finish) (RygelTrackerMetadataIface* self, GAsyncResult* _res_, int* result_length1, int* result_length2, GError** error);
-	void (*get) (RygelTrackerMetadataIface* self, const char* service_type, const char* uri, char** keys, int keys_length1, GAsyncReadyCallback _callback_, gpointer _user_data_);
-	char** (*get_finish) (RygelTrackerMetadataIface* self, GAsyncResult* _res_, int* result_length1, GError** error);
-};
-
-struct _RygelTrackerMetadataIfaceDBusProxy {
-	DBusGProxy parent_instance;
-	gboolean disposed;
-};
-
-struct _RygelTrackerMetadataIfaceDBusProxyGetUniqueValuesData {
+struct _RygelTrackerResourcesIfaceDBusProxySparqlUpdateBlankData {
 	GAsyncReadyCallback _callback_;
 	gpointer _user_data_;
 	DBusPendingCall* pending;
 };
 
-struct _RygelTrackerMetadataIfaceDBusProxyGetData {
-	GAsyncReadyCallback _callback_;
-	gpointer _user_data_;
-	DBusPendingCall* pending;
-};
-
-struct _RygelTrackerSearchIfaceIface {
+struct _RygelTrackerResourcesClassIfaceIface {
 	GTypeInterface parent_iface;
-	void (*query) (RygelTrackerSearchIface* self, gint live_query_id, const char* service, char** fields, int fields_length1, const char* search_text, char** keywords, int keywords_length1, const char* query_condition, gboolean sort_by_service, char** sort_fields, int sort_fields_length1, gboolean sort_descending, gint offset, gint max_hits, GAsyncReadyCallback _callback_, gpointer _user_data_);
-	char** (*query_finish) (RygelTrackerSearchIface* self, GAsyncResult* _res_, int* result_length1, int* result_length2, GError** error);
 };
 
-struct _RygelTrackerSearchIfaceDBusProxy {
+struct _RygelTrackerResourcesClassIfaceDBusProxy {
 	DBusGProxy parent_instance;
 	gboolean disposed;
 };
 
-struct _RygelTrackerSearchIfaceDBusProxyQueryData {
+struct _RygelTrackerMinerIfaceIface {
+	GTypeInterface parent_iface;
+	void (*ignore_next_update) (RygelTrackerMinerIface* self, char** urls, int urls_length1, GAsyncReadyCallback _callback_, gpointer _user_data_);
+	void (*ignore_next_update_finish) (RygelTrackerMinerIface* self, GAsyncResult* _res_, GError** error);
+};
+
+struct _RygelTrackerMinerIfaceDBusProxy {
+	DBusGProxy parent_instance;
+	gboolean disposed;
+};
+
+struct _RygelTrackerMinerIfaceDBusProxyIgnoreNextUpdateData {
 	GAsyncReadyCallback _callback_;
 	gpointer _user_data_;
 	DBusPendingCall* pending;
@@ -163,127 +154,142 @@ struct _DBusObjectVTable {
 
 
 
-GType rygel_tracker_iface_get_type (void);
-void rygel_tracker_iface_dbus_register_object (DBusConnection* connection, const char* path, void* object);
-void _rygel_tracker_iface_dbus_unregister (DBusConnection* connection, void* _user_data_);
-DBusHandlerResult rygel_tracker_iface_dbus_message (DBusConnection* connection, DBusMessage* message, void* object);
-static DBusHandlerResult _dbus_rygel_tracker_iface_introspect (RygelTrackerIface* self, DBusConnection* connection, DBusMessage* message);
-static DBusHandlerResult _dbus_rygel_tracker_iface_property_get_all (RygelTrackerIface* self, DBusConnection* connection, DBusMessage* message);
-static DBusHandlerResult _dbus_rygel_tracker_iface_get_version (RygelTrackerIface* self, DBusConnection* connection, DBusMessage* message);
-static void _dbus_rygel_tracker_iface_get_version_ready (GObject * source_object, GAsyncResult * _res_, gpointer * _user_data_);
-GType rygel_tracker_iface_dbus_proxy_get_type (void);
-RygelTrackerIface* rygel_tracker_iface_dbus_proxy_new (DBusGConnection* connection, const char* name, const char* path);
-DBusHandlerResult rygel_tracker_iface_dbus_proxy_filter (DBusConnection* connection, DBusMessage* message, void* user_data);
+GType rygel_tracker_stats_iface_get_type (void);
+void rygel_tracker_stats_iface_get_statistics (RygelTrackerStatsIface* self, GAsyncReadyCallback _callback_, gpointer _user_data_);
+char** rygel_tracker_stats_iface_get_statistics_finish (RygelTrackerStatsIface* self, GAsyncResult* _res_, int* result_length1, int* result_length2, GError** error);
+void rygel_tracker_stats_iface_dbus_register_object (DBusConnection* connection, const char* path, void* object);
+void _rygel_tracker_stats_iface_dbus_unregister (DBusConnection* connection, void* _user_data_);
+DBusHandlerResult rygel_tracker_stats_iface_dbus_message (DBusConnection* connection, DBusMessage* message, void* object);
+static DBusHandlerResult _dbus_rygel_tracker_stats_iface_introspect (RygelTrackerStatsIface* self, DBusConnection* connection, DBusMessage* message);
+static DBusHandlerResult _dbus_rygel_tracker_stats_iface_property_get_all (RygelTrackerStatsIface* self, DBusConnection* connection, DBusMessage* message);
+static DBusHandlerResult _dbus_rygel_tracker_stats_iface_get_statistics (RygelTrackerStatsIface* self, DBusConnection* connection, DBusMessage* message);
+static void _dbus_rygel_tracker_stats_iface_get_statistics_ready (GObject * source_object, GAsyncResult * _res_, gpointer * _user_data_);
+GType rygel_tracker_stats_iface_dbus_proxy_get_type (void);
+RygelTrackerStatsIface* rygel_tracker_stats_iface_dbus_proxy_new (DBusGConnection* connection, const char* name, const char* path);
+DBusHandlerResult rygel_tracker_stats_iface_dbus_proxy_filter (DBusConnection* connection, DBusMessage* message, void* user_data);
 enum  {
-	RYGEL_TRACKER_IFACE_DBUS_PROXY_DUMMY_PROPERTY
+	RYGEL_TRACKER_STATS_IFACE_DBUS_PROXY_DUMMY_PROPERTY
 };
-static void rygel_tracker_iface_dbus_proxy_get_version_async (RygelTrackerIface* self, GAsyncReadyCallback _callback_, gpointer _user_data_);
-static void rygel_tracker_iface_dbus_proxy_get_version_ready (DBusPendingCall* pending, void* user_data);
-static gint rygel_tracker_iface_dbus_proxy_get_version_finish (RygelTrackerIface* self, GAsyncResult* _res_, GError** error);
-static void rygel_tracker_iface_dbus_proxy_rygel_tracker_iface__interface_init (RygelTrackerIfaceIface* iface);
-static void rygel_tracker_iface_dbus_proxy_get_property (GObject * object, guint property_id, GValue * value, GParamSpec * pspec);
-static void rygel_tracker_iface_dbus_proxy_set_property (GObject * object, guint property_id, const GValue * value, GParamSpec * pspec);
-GType rygel_tracker_keywords_iface_get_type (void);
-void rygel_tracker_keywords_iface_dbus_register_object (DBusConnection* connection, const char* path, void* object);
-void _rygel_tracker_keywords_iface_dbus_unregister (DBusConnection* connection, void* _user_data_);
-DBusHandlerResult rygel_tracker_keywords_iface_dbus_message (DBusConnection* connection, DBusMessage* message, void* object);
-static DBusHandlerResult _dbus_rygel_tracker_keywords_iface_introspect (RygelTrackerKeywordsIface* self, DBusConnection* connection, DBusMessage* message);
-static DBusHandlerResult _dbus_rygel_tracker_keywords_iface_property_get_all (RygelTrackerKeywordsIface* self, DBusConnection* connection, DBusMessage* message);
-static DBusHandlerResult _dbus_rygel_tracker_keywords_iface_get_list (RygelTrackerKeywordsIface* self, DBusConnection* connection, DBusMessage* message);
-static void _dbus_rygel_tracker_keywords_iface_get_list_ready (GObject * source_object, GAsyncResult * _res_, gpointer * _user_data_);
-GType rygel_tracker_keywords_iface_dbus_proxy_get_type (void);
-RygelTrackerKeywordsIface* rygel_tracker_keywords_iface_dbus_proxy_new (DBusGConnection* connection, const char* name, const char* path);
-DBusHandlerResult rygel_tracker_keywords_iface_dbus_proxy_filter (DBusConnection* connection, DBusMessage* message, void* user_data);
+static void rygel_tracker_stats_iface_dbus_proxy_get_statistics_async (RygelTrackerStatsIface* self, GAsyncReadyCallback _callback_, gpointer _user_data_);
+static void rygel_tracker_stats_iface_dbus_proxy_get_statistics_ready (DBusPendingCall* pending, void* user_data);
+static char** rygel_tracker_stats_iface_dbus_proxy_get_statistics_finish (RygelTrackerStatsIface* self, GAsyncResult* _res_, int* result_length1, int* result_length2, GError** error);
+static void rygel_tracker_stats_iface_dbus_proxy_rygel_tracker_stats_iface__interface_init (RygelTrackerStatsIfaceIface* iface);
+static void rygel_tracker_stats_iface_dbus_proxy_get_property (GObject * object, guint property_id, GValue * value, GParamSpec * pspec);
+static void rygel_tracker_stats_iface_dbus_proxy_set_property (GObject * object, guint property_id, const GValue * value, GParamSpec * pspec);
+GType rygel_tracker_resources_iface_get_type (void);
+void rygel_tracker_resources_iface_sparql_query (RygelTrackerResourcesIface* self, const char* query, GAsyncReadyCallback _callback_, gpointer _user_data_);
+char** rygel_tracker_resources_iface_sparql_query_finish (RygelTrackerResourcesIface* self, GAsyncResult* _res_, int* result_length1, int* result_length2, GError** error);
+void rygel_tracker_resources_iface_sparql_update_blank (RygelTrackerResourcesIface* self, const char* query, GAsyncReadyCallback _callback_, gpointer _user_data_);
+GHashTable** rygel_tracker_resources_iface_sparql_update_blank_finish (RygelTrackerResourcesIface* self, GAsyncResult* _res_, int* result_length1, int* result_length2, GError** error);
+void rygel_tracker_resources_iface_dbus_register_object (DBusConnection* connection, const char* path, void* object);
+void _rygel_tracker_resources_iface_dbus_unregister (DBusConnection* connection, void* _user_data_);
+DBusHandlerResult rygel_tracker_resources_iface_dbus_message (DBusConnection* connection, DBusMessage* message, void* object);
+static DBusHandlerResult _dbus_rygel_tracker_resources_iface_introspect (RygelTrackerResourcesIface* self, DBusConnection* connection, DBusMessage* message);
+static DBusHandlerResult _dbus_rygel_tracker_resources_iface_property_get_all (RygelTrackerResourcesIface* self, DBusConnection* connection, DBusMessage* message);
+static DBusHandlerResult _dbus_rygel_tracker_resources_iface_sparql_query (RygelTrackerResourcesIface* self, DBusConnection* connection, DBusMessage* message);
+static void _dbus_rygel_tracker_resources_iface_sparql_query_ready (GObject * source_object, GAsyncResult * _res_, gpointer * _user_data_);
+static DBusHandlerResult _dbus_rygel_tracker_resources_iface_sparql_update_blank (RygelTrackerResourcesIface* self, DBusConnection* connection, DBusMessage* message);
+static void _dbus_rygel_tracker_resources_iface_sparql_update_blank_ready (GObject * source_object, GAsyncResult * _res_, gpointer * _user_data_);
+GType rygel_tracker_resources_iface_dbus_proxy_get_type (void);
+RygelTrackerResourcesIface* rygel_tracker_resources_iface_dbus_proxy_new (DBusGConnection* connection, const char* name, const char* path);
+DBusHandlerResult rygel_tracker_resources_iface_dbus_proxy_filter (DBusConnection* connection, DBusMessage* message, void* user_data);
 enum  {
-	RYGEL_TRACKER_KEYWORDS_IFACE_DBUS_PROXY_DUMMY_PROPERTY
+	RYGEL_TRACKER_RESOURCES_IFACE_DBUS_PROXY_DUMMY_PROPERTY
 };
-static void rygel_tracker_keywords_iface_dbus_proxy_get_list_async (RygelTrackerKeywordsIface* self, const char* service, GAsyncReadyCallback _callback_, gpointer _user_data_);
-static void rygel_tracker_keywords_iface_dbus_proxy_get_list_ready (DBusPendingCall* pending, void* user_data);
-static char** rygel_tracker_keywords_iface_dbus_proxy_get_list_finish (RygelTrackerKeywordsIface* self, GAsyncResult* _res_, int* result_length1, int* result_length2, GError** error);
-static void rygel_tracker_keywords_iface_dbus_proxy_rygel_tracker_keywords_iface__interface_init (RygelTrackerKeywordsIfaceIface* iface);
-static void rygel_tracker_keywords_iface_dbus_proxy_get_property (GObject * object, guint property_id, GValue * value, GParamSpec * pspec);
-static void rygel_tracker_keywords_iface_dbus_proxy_set_property (GObject * object, guint property_id, const GValue * value, GParamSpec * pspec);
-GType rygel_tracker_metadata_iface_get_type (void);
-void rygel_tracker_metadata_iface_dbus_register_object (DBusConnection* connection, const char* path, void* object);
-void _rygel_tracker_metadata_iface_dbus_unregister (DBusConnection* connection, void* _user_data_);
-DBusHandlerResult rygel_tracker_metadata_iface_dbus_message (DBusConnection* connection, DBusMessage* message, void* object);
-static DBusHandlerResult _dbus_rygel_tracker_metadata_iface_introspect (RygelTrackerMetadataIface* self, DBusConnection* connection, DBusMessage* message);
-static DBusHandlerResult _dbus_rygel_tracker_metadata_iface_property_get_all (RygelTrackerMetadataIface* self, DBusConnection* connection, DBusMessage* message);
-static DBusHandlerResult _dbus_rygel_tracker_metadata_iface_get_unique_values (RygelTrackerMetadataIface* self, DBusConnection* connection, DBusMessage* message);
-static void _dbus_rygel_tracker_metadata_iface_get_unique_values_ready (GObject * source_object, GAsyncResult * _res_, gpointer * _user_data_);
-static DBusHandlerResult _dbus_rygel_tracker_metadata_iface_get (RygelTrackerMetadataIface* self, DBusConnection* connection, DBusMessage* message);
-static void _dbus_rygel_tracker_metadata_iface_get_ready (GObject * source_object, GAsyncResult * _res_, gpointer * _user_data_);
-GType rygel_tracker_metadata_iface_dbus_proxy_get_type (void);
-RygelTrackerMetadataIface* rygel_tracker_metadata_iface_dbus_proxy_new (DBusGConnection* connection, const char* name, const char* path);
-DBusHandlerResult rygel_tracker_metadata_iface_dbus_proxy_filter (DBusConnection* connection, DBusMessage* message, void* user_data);
+static void rygel_tracker_resources_iface_dbus_proxy_sparql_query_async (RygelTrackerResourcesIface* self, const char* query, GAsyncReadyCallback _callback_, gpointer _user_data_);
+static void rygel_tracker_resources_iface_dbus_proxy_sparql_query_ready (DBusPendingCall* pending, void* user_data);
+static char** rygel_tracker_resources_iface_dbus_proxy_sparql_query_finish (RygelTrackerResourcesIface* self, GAsyncResult* _res_, int* result_length1, int* result_length2, GError** error);
+static void rygel_tracker_resources_iface_dbus_proxy_sparql_update_blank_async (RygelTrackerResourcesIface* self, const char* query, GAsyncReadyCallback _callback_, gpointer _user_data_);
+static void rygel_tracker_resources_iface_dbus_proxy_sparql_update_blank_ready (DBusPendingCall* pending, void* user_data);
+static GHashTable** rygel_tracker_resources_iface_dbus_proxy_sparql_update_blank_finish (RygelTrackerResourcesIface* self, GAsyncResult* _res_, int* result_length1, int* result_length2, GError** error);
+static void rygel_tracker_resources_iface_dbus_proxy_rygel_tracker_resources_iface__interface_init (RygelTrackerResourcesIfaceIface* iface);
+static void rygel_tracker_resources_iface_dbus_proxy_get_property (GObject * object, guint property_id, GValue * value, GParamSpec * pspec);
+static void rygel_tracker_resources_iface_dbus_proxy_set_property (GObject * object, guint property_id, const GValue * value, GParamSpec * pspec);
+GType rygel_tracker_resources_class_iface_get_type (void);
+void rygel_tracker_resources_class_iface_dbus_register_object (DBusConnection* connection, const char* path, void* object);
+void _rygel_tracker_resources_class_iface_dbus_unregister (DBusConnection* connection, void* _user_data_);
+DBusHandlerResult rygel_tracker_resources_class_iface_dbus_message (DBusConnection* connection, DBusMessage* message, void* object);
+static DBusHandlerResult _dbus_rygel_tracker_resources_class_iface_introspect (RygelTrackerResourcesClassIface* self, DBusConnection* connection, DBusMessage* message);
+static DBusHandlerResult _dbus_rygel_tracker_resources_class_iface_property_get_all (RygelTrackerResourcesClassIface* self, DBusConnection* connection, DBusMessage* message);
+static void _dbus_rygel_tracker_resources_class_iface_subjects_added (GObject* _sender, char** subjects, int subjects_length1, DBusConnection* _connection);
+static void _dbus_rygel_tracker_resources_class_iface_subjects_removed (GObject* _sender, char** subjects, int subjects_length1, DBusConnection* _connection);
+static void _dbus_rygel_tracker_resources_class_iface_subjects_changed (GObject* _sender, char** before, int before_length1, char** after, int after_length1, DBusConnection* _connection);
+GType rygel_tracker_resources_class_iface_dbus_proxy_get_type (void);
+RygelTrackerResourcesClassIface* rygel_tracker_resources_class_iface_dbus_proxy_new (DBusGConnection* connection, const char* name, const char* path);
+static void _dbus_handle_rygel_tracker_resources_class_iface_subjects_added (RygelTrackerResourcesClassIface* self, DBusConnection* connection, DBusMessage* message);
+static void _dbus_handle_rygel_tracker_resources_class_iface_subjects_removed (RygelTrackerResourcesClassIface* self, DBusConnection* connection, DBusMessage* message);
+static void _dbus_handle_rygel_tracker_resources_class_iface_subjects_changed (RygelTrackerResourcesClassIface* self, DBusConnection* connection, DBusMessage* message);
+DBusHandlerResult rygel_tracker_resources_class_iface_dbus_proxy_filter (DBusConnection* connection, DBusMessage* message, void* user_data);
 enum  {
-	RYGEL_TRACKER_METADATA_IFACE_DBUS_PROXY_DUMMY_PROPERTY
+	RYGEL_TRACKER_RESOURCES_CLASS_IFACE_DBUS_PROXY_DUMMY_PROPERTY
 };
-static void rygel_tracker_metadata_iface_dbus_proxy_get_unique_values_async (RygelTrackerMetadataIface* self, const char* service, char** meta_types, int meta_types_length1, const char* query, gboolean descending, gint offset, gint max_hits, GAsyncReadyCallback _callback_, gpointer _user_data_);
-static void rygel_tracker_metadata_iface_dbus_proxy_get_unique_values_ready (DBusPendingCall* pending, void* user_data);
-static char** rygel_tracker_metadata_iface_dbus_proxy_get_unique_values_finish (RygelTrackerMetadataIface* self, GAsyncResult* _res_, int* result_length1, int* result_length2, GError** error);
-static void rygel_tracker_metadata_iface_dbus_proxy_get_async (RygelTrackerMetadataIface* self, const char* service_type, const char* uri, char** keys, int keys_length1, GAsyncReadyCallback _callback_, gpointer _user_data_);
-static void rygel_tracker_metadata_iface_dbus_proxy_get_ready (DBusPendingCall* pending, void* user_data);
-static char** rygel_tracker_metadata_iface_dbus_proxy_get_finish (RygelTrackerMetadataIface* self, GAsyncResult* _res_, int* result_length1, GError** error);
-static void rygel_tracker_metadata_iface_dbus_proxy_rygel_tracker_metadata_iface__interface_init (RygelTrackerMetadataIfaceIface* iface);
-static void rygel_tracker_metadata_iface_dbus_proxy_get_property (GObject * object, guint property_id, GValue * value, GParamSpec * pspec);
-static void rygel_tracker_metadata_iface_dbus_proxy_set_property (GObject * object, guint property_id, const GValue * value, GParamSpec * pspec);
-GType rygel_tracker_search_iface_get_type (void);
-void rygel_tracker_search_iface_dbus_register_object (DBusConnection* connection, const char* path, void* object);
-void _rygel_tracker_search_iface_dbus_unregister (DBusConnection* connection, void* _user_data_);
-DBusHandlerResult rygel_tracker_search_iface_dbus_message (DBusConnection* connection, DBusMessage* message, void* object);
-static DBusHandlerResult _dbus_rygel_tracker_search_iface_introspect (RygelTrackerSearchIface* self, DBusConnection* connection, DBusMessage* message);
-static DBusHandlerResult _dbus_rygel_tracker_search_iface_property_get_all (RygelTrackerSearchIface* self, DBusConnection* connection, DBusMessage* message);
-static DBusHandlerResult _dbus_rygel_tracker_search_iface_query (RygelTrackerSearchIface* self, DBusConnection* connection, DBusMessage* message);
-static void _dbus_rygel_tracker_search_iface_query_ready (GObject * source_object, GAsyncResult * _res_, gpointer * _user_data_);
-GType rygel_tracker_search_iface_dbus_proxy_get_type (void);
-RygelTrackerSearchIface* rygel_tracker_search_iface_dbus_proxy_new (DBusGConnection* connection, const char* name, const char* path);
-DBusHandlerResult rygel_tracker_search_iface_dbus_proxy_filter (DBusConnection* connection, DBusMessage* message, void* user_data);
+static void rygel_tracker_resources_class_iface_dbus_proxy_rygel_tracker_resources_class_iface__interface_init (RygelTrackerResourcesClassIfaceIface* iface);
+static void rygel_tracker_resources_class_iface_dbus_proxy_get_property (GObject * object, guint property_id, GValue * value, GParamSpec * pspec);
+static void rygel_tracker_resources_class_iface_dbus_proxy_set_property (GObject * object, guint property_id, const GValue * value, GParamSpec * pspec);
+GType rygel_tracker_miner_iface_get_type (void);
+void rygel_tracker_miner_iface_ignore_next_update (RygelTrackerMinerIface* self, char** urls, int urls_length1, GAsyncReadyCallback _callback_, gpointer _user_data_);
+void rygel_tracker_miner_iface_ignore_next_update_finish (RygelTrackerMinerIface* self, GAsyncResult* _res_, GError** error);
+void rygel_tracker_miner_iface_dbus_register_object (DBusConnection* connection, const char* path, void* object);
+void _rygel_tracker_miner_iface_dbus_unregister (DBusConnection* connection, void* _user_data_);
+DBusHandlerResult rygel_tracker_miner_iface_dbus_message (DBusConnection* connection, DBusMessage* message, void* object);
+static DBusHandlerResult _dbus_rygel_tracker_miner_iface_introspect (RygelTrackerMinerIface* self, DBusConnection* connection, DBusMessage* message);
+static DBusHandlerResult _dbus_rygel_tracker_miner_iface_property_get_all (RygelTrackerMinerIface* self, DBusConnection* connection, DBusMessage* message);
+static DBusHandlerResult _dbus_rygel_tracker_miner_iface_ignore_next_update (RygelTrackerMinerIface* self, DBusConnection* connection, DBusMessage* message);
+static void _dbus_rygel_tracker_miner_iface_ignore_next_update_ready (GObject * source_object, GAsyncResult * _res_, gpointer * _user_data_);
+GType rygel_tracker_miner_iface_dbus_proxy_get_type (void);
+RygelTrackerMinerIface* rygel_tracker_miner_iface_dbus_proxy_new (DBusGConnection* connection, const char* name, const char* path);
+DBusHandlerResult rygel_tracker_miner_iface_dbus_proxy_filter (DBusConnection* connection, DBusMessage* message, void* user_data);
 enum  {
-	RYGEL_TRACKER_SEARCH_IFACE_DBUS_PROXY_DUMMY_PROPERTY
+	RYGEL_TRACKER_MINER_IFACE_DBUS_PROXY_DUMMY_PROPERTY
 };
-static void rygel_tracker_search_iface_dbus_proxy_query_async (RygelTrackerSearchIface* self, gint live_query_id, const char* service, char** fields, int fields_length1, const char* search_text, char** keywords, int keywords_length1, const char* query_condition, gboolean sort_by_service, char** sort_fields, int sort_fields_length1, gboolean sort_descending, gint offset, gint max_hits, GAsyncReadyCallback _callback_, gpointer _user_data_);
-static void rygel_tracker_search_iface_dbus_proxy_query_ready (DBusPendingCall* pending, void* user_data);
-static char** rygel_tracker_search_iface_dbus_proxy_query_finish (RygelTrackerSearchIface* self, GAsyncResult* _res_, int* result_length1, int* result_length2, GError** error);
-static void rygel_tracker_search_iface_dbus_proxy_rygel_tracker_search_iface__interface_init (RygelTrackerSearchIfaceIface* iface);
-static void rygel_tracker_search_iface_dbus_proxy_get_property (GObject * object, guint property_id, GValue * value, GParamSpec * pspec);
-static void rygel_tracker_search_iface_dbus_proxy_set_property (GObject * object, guint property_id, const GValue * value, GParamSpec * pspec);
+static void rygel_tracker_miner_iface_dbus_proxy_ignore_next_update_async (RygelTrackerMinerIface* self, char** urls, int urls_length1, GAsyncReadyCallback _callback_, gpointer _user_data_);
+static void rygel_tracker_miner_iface_dbus_proxy_ignore_next_update_ready (DBusPendingCall* pending, void* user_data);
+static void rygel_tracker_miner_iface_dbus_proxy_ignore_next_update_finish (RygelTrackerMinerIface* self, GAsyncResult* _res_, GError** error);
+static void rygel_tracker_miner_iface_dbus_proxy_rygel_tracker_miner_iface__interface_init (RygelTrackerMinerIfaceIface* iface);
+static void rygel_tracker_miner_iface_dbus_proxy_get_property (GObject * object, guint property_id, GValue * value, GParamSpec * pspec);
+static void rygel_tracker_miner_iface_dbus_proxy_set_property (GObject * object, guint property_id, const GValue * value, GParamSpec * pspec);
+#define RYGEL_RESOURCES_CLASS_PATH "/org/freedesktop/Tracker1/" "Resources/Classes/"
+#define RYGEL_MUSIC_RESOURCES_CLASS_PATH RYGEL_RESOURCES_CLASS_PATH "nmm/MusicPiece"
+#define RYGEL_VIDEO_RESOURCES_CLASS_PATH RYGEL_RESOURCES_CLASS_PATH "nmm/Video"
+#define RYGEL_PHOTO_RESOURCES_CLASS_PATH RYGEL_RESOURCES_CLASS_PATH "nfo/Image"
 static void _vala_array_destroy (gpointer array, gint array_length, GDestroyNotify destroy_func);
 static void _vala_array_free (gpointer array, gint array_length, GDestroyNotify destroy_func);
 static void _vala_dbus_register_object (DBusConnection* connection, const char* path, void* object);
 static void _vala_dbus_unregister_object (gpointer connection, GObject* object);
 
-static const DBusObjectPathVTable _rygel_tracker_iface_dbus_path_vtable = {_rygel_tracker_iface_dbus_unregister, rygel_tracker_iface_dbus_message};
-static const _DBusObjectVTable _rygel_tracker_iface_dbus_vtable = {rygel_tracker_iface_dbus_register_object};
-static const DBusObjectPathVTable _rygel_tracker_keywords_iface_dbus_path_vtable = {_rygel_tracker_keywords_iface_dbus_unregister, rygel_tracker_keywords_iface_dbus_message};
-static const _DBusObjectVTable _rygel_tracker_keywords_iface_dbus_vtable = {rygel_tracker_keywords_iface_dbus_register_object};
-static const DBusObjectPathVTable _rygel_tracker_metadata_iface_dbus_path_vtable = {_rygel_tracker_metadata_iface_dbus_unregister, rygel_tracker_metadata_iface_dbus_message};
-static const _DBusObjectVTable _rygel_tracker_metadata_iface_dbus_vtable = {rygel_tracker_metadata_iface_dbus_register_object};
-static const DBusObjectPathVTable _rygel_tracker_search_iface_dbus_path_vtable = {_rygel_tracker_search_iface_dbus_unregister, rygel_tracker_search_iface_dbus_message};
-static const _DBusObjectVTable _rygel_tracker_search_iface_dbus_vtable = {rygel_tracker_search_iface_dbus_register_object};
+static const DBusObjectPathVTable _rygel_tracker_stats_iface_dbus_path_vtable = {_rygel_tracker_stats_iface_dbus_unregister, rygel_tracker_stats_iface_dbus_message};
+static const _DBusObjectVTable _rygel_tracker_stats_iface_dbus_vtable = {rygel_tracker_stats_iface_dbus_register_object};
+static const DBusObjectPathVTable _rygel_tracker_resources_iface_dbus_path_vtable = {_rygel_tracker_resources_iface_dbus_unregister, rygel_tracker_resources_iface_dbus_message};
+static const _DBusObjectVTable _rygel_tracker_resources_iface_dbus_vtable = {rygel_tracker_resources_iface_dbus_register_object};
+static const DBusObjectPathVTable _rygel_tracker_resources_class_iface_dbus_path_vtable = {_rygel_tracker_resources_class_iface_dbus_unregister, rygel_tracker_resources_class_iface_dbus_message};
+static const _DBusObjectVTable _rygel_tracker_resources_class_iface_dbus_vtable = {rygel_tracker_resources_class_iface_dbus_register_object};
+static const DBusObjectPathVTable _rygel_tracker_miner_iface_dbus_path_vtable = {_rygel_tracker_miner_iface_dbus_unregister, rygel_tracker_miner_iface_dbus_message};
+static const _DBusObjectVTable _rygel_tracker_miner_iface_dbus_vtable = {rygel_tracker_miner_iface_dbus_register_object};
 
+static void g_cclosure_user_marshal_VOID__BOXED_INT (GClosure * closure, GValue * return_value, guint n_param_values, const GValue * param_values, gpointer invocation_hint, gpointer marshal_data);
+static void g_cclosure_user_marshal_VOID__BOXED_INT_BOXED_INT (GClosure * closure, GValue * return_value, guint n_param_values, const GValue * param_values, gpointer invocation_hint, gpointer marshal_data);
 
-#line 49 "rygel-tracker-plugin-factory.vala"
-void rygel_tracker_iface_get_version (RygelTrackerIface* self, GAsyncReadyCallback _callback_, gpointer _user_data_) {
-#line 49 "rygel-tracker-plugin-factory.vala"
-	RYGEL_TRACKER_IFACE_GET_INTERFACE (self)->get_version (self, _callback_, _user_data_);
-#line 271 "rygel-tracker-interfaces.c"
+#line 50 "rygel-tracker-plugin-factory.vala"
+void rygel_tracker_stats_iface_get_statistics (RygelTrackerStatsIface* self, GAsyncReadyCallback _callback_, gpointer _user_data_) {
+#line 50 "rygel-tracker-plugin-factory.vala"
+	RYGEL_TRACKER_STATS_IFACE_GET_INTERFACE (self)->get_statistics (self, _callback_, _user_data_);
+#line 277 "rygel-tracker-interfaces.c"
 }
 
 
-#line 49 "rygel-tracker-plugin-factory.vala"
-gint rygel_tracker_iface_get_version_finish (RygelTrackerIface* self, GAsyncResult* _res_, GError** error) {
-#line 49 "rygel-tracker-plugin-factory.vala"
-	return RYGEL_TRACKER_IFACE_GET_INTERFACE (self)->get_version_finish (self, _res_, error);
-#line 279 "rygel-tracker-interfaces.c"
+#line 50 "rygel-tracker-plugin-factory.vala"
+char** rygel_tracker_stats_iface_get_statistics_finish (RygelTrackerStatsIface* self, GAsyncResult* _res_, int* result_length1, int* result_length2, GError** error) {
+#line 50 "rygel-tracker-plugin-factory.vala"
+	return RYGEL_TRACKER_STATS_IFACE_GET_INTERFACE (self)->get_statistics_finish (self, _res_, result_length1, result_length2, error);
+#line 285 "rygel-tracker-interfaces.c"
 }
 
 
-void _rygel_tracker_iface_dbus_unregister (DBusConnection* connection, void* _user_data_) {
+void _rygel_tracker_stats_iface_dbus_unregister (DBusConnection* connection, void* _user_data_) {
 }
 
 
-static DBusHandlerResult _dbus_rygel_tracker_iface_introspect (RygelTrackerIface* self, DBusConnection* connection, DBusMessage* message) {
+static DBusHandlerResult _dbus_rygel_tracker_stats_iface_introspect (RygelTrackerStatsIface* self, DBusConnection* connection, DBusMessage* message) {
 	DBusMessage* reply;
 	DBusMessageIter iter;
 	GString* xml_data;
@@ -292,7 +298,7 @@ static DBusHandlerResult _dbus_rygel_tracker_iface_introspect (RygelTrackerIface
 	reply = dbus_message_new_method_return (message);
 	dbus_message_iter_init_append (reply, &iter);
 	xml_data = g_string_new ("<!DOCTYPE node PUBLIC \"-//freedesktop//DTD D-BUS Object Introspection 1.0//EN\" \"http://www.freedesktop.org/standards/dbus/1.0/introspect.dtd\">\n");
-	g_string_append (xml_data, "<node>\n<interface name=\"org.freedesktop.DBus.Introspectable\">\n  <method name=\"Introspect\">\n    <arg name=\"data\" direction=\"out\" type=\"s\"/>\n  </method>\n</interface>\n<interface name=\"org.freedesktop.DBus.Properties\">\n  <method name=\"Get\">\n    <arg name=\"interface\" direction=\"in\" type=\"s\"/>\n    <arg name=\"propname\" direction=\"in\" type=\"s\"/>\n    <arg name=\"value\" direction=\"out\" type=\"v\"/>\n  </method>\n  <method name=\"Set\">\n    <arg name=\"interface\" direction=\"in\" type=\"s\"/>\n    <arg name=\"propname\" direction=\"in\" type=\"s\"/>\n    <arg name=\"value\" direction=\"in\" type=\"v\"/>\n  </method>\n  <method name=\"GetAll\">\n    <arg name=\"interface\" direction=\"in\" type=\"s\"/>\n    <arg name=\"props\" direction=\"out\" type=\"a{sv}\"/>\n  </method>\n</interface>\n<interface name=\"org.freedesktop.Tracker\">\n  <method name=\"GetVersion\">\n    <arg name=\"result\" type=\"i\" direction=\"out\"/>\n  </method>\n</interface>\n");
+	g_string_append (xml_data, "<node>\n<interface name=\"org.freedesktop.DBus.Introspectable\">\n  <method name=\"Introspect\">\n    <arg name=\"data\" direction=\"out\" type=\"s\"/>\n  </method>\n</interface>\n<interface name=\"org.freedesktop.DBus.Properties\">\n  <method name=\"Get\">\n    <arg name=\"interface\" direction=\"in\" type=\"s\"/>\n    <arg name=\"propname\" direction=\"in\" type=\"s\"/>\n    <arg name=\"value\" direction=\"out\" type=\"v\"/>\n  </method>\n  <method name=\"Set\">\n    <arg name=\"interface\" direction=\"in\" type=\"s\"/>\n    <arg name=\"propname\" direction=\"in\" type=\"s\"/>\n    <arg name=\"value\" direction=\"in\" type=\"v\"/>\n  </method>\n  <method name=\"GetAll\">\n    <arg name=\"interface\" direction=\"in\" type=\"s\"/>\n    <arg name=\"props\" direction=\"out\" type=\"a{sv}\"/>\n  </method>\n</interface>\n<interface name=\"org.freedesktop.Tracker1.Statistics\">\n  <method name=\"GetStatistics\">\n    <arg name=\"result\" type=\"aas\" direction=\"out\"/>\n  </method>\n</interface>\n");
 	dbus_connection_list_registered (connection, g_object_get_data ((GObject *) self, "dbus_object_path"), &children);
 	for (i = 0; children[i]; i++) {
 		g_string_append_printf (xml_data, "<node name=\"%s\"/>\n", children[i]);
@@ -311,7 +317,7 @@ static DBusHandlerResult _dbus_rygel_tracker_iface_introspect (RygelTrackerIface
 }
 
 
-static DBusHandlerResult _dbus_rygel_tracker_iface_property_get_all (RygelTrackerIface* self, DBusConnection* connection, DBusMessage* message) {
+static DBusHandlerResult _dbus_rygel_tracker_stats_iface_property_get_all (RygelTrackerStatsIface* self, DBusConnection* connection, DBusMessage* message) {
 	DBusMessage* reply;
 	DBusMessageIter iter, reply_iter, subiter;
 	char* interface_name;
@@ -325,7 +331,7 @@ static DBusHandlerResult _dbus_rygel_tracker_iface_property_get_all (RygelTracke
 	dbus_message_iter_get_basic (&iter, &_tmp0_);
 	dbus_message_iter_next (&iter);
 	interface_name = g_strdup (_tmp0_);
-	if (strcmp (interface_name, "org.freedesktop.Tracker") == 0) {
+	if (strcmp (interface_name, "org.freedesktop.Tracker1.Statistics") == 0) {
 		dbus_message_iter_open_container (&reply_iter, DBUS_TYPE_ARRAY, "{sv}", &subiter);
 		dbus_message_iter_close_container (&reply_iter, &subiter);
 	} else {
@@ -343,7 +349,7 @@ static DBusHandlerResult _dbus_rygel_tracker_iface_property_get_all (RygelTracke
 }
 
 
-static DBusHandlerResult _dbus_rygel_tracker_iface_get_version (RygelTrackerIface* self, DBusConnection* connection, DBusMessage* message) {
+static DBusHandlerResult _dbus_rygel_tracker_stats_iface_get_statistics (RygelTrackerStatsIface* self, DBusConnection* connection, DBusMessage* message) {
 	DBusMessageIter iter;
 	gpointer * _user_data_;
 	if (strcmp (dbus_message_get_signature (message), "")) {
@@ -353,23 +359,29 @@ static DBusHandlerResult _dbus_rygel_tracker_iface_get_version (RygelTrackerIfac
 	_user_data_ = g_new0 (gpointer, 2);
 	_user_data_[0] = dbus_connection_ref (connection);
 	_user_data_[1] = dbus_message_ref (message);
-	rygel_tracker_iface_get_version (self, _dbus_rygel_tracker_iface_get_version_ready, _user_data_);
+	rygel_tracker_stats_iface_get_statistics (self, _dbus_rygel_tracker_stats_iface_get_statistics_ready, _user_data_);
 	return DBUS_HANDLER_RESULT_HANDLED;
 }
 
 
-static void _dbus_rygel_tracker_iface_get_version_ready (GObject * source_object, GAsyncResult * _res_, gpointer * _user_data_) {
+static void _dbus_rygel_tracker_stats_iface_get_statistics_ready (GObject * source_object, GAsyncResult * _res_, gpointer * _user_data_) {
 	DBusConnection * connection;
 	DBusMessage * message;
 	DBusMessageIter iter;
 	GError* error;
-	gint result;
+	char** result;
+	int result_length1;
+	int result_length2;
 	DBusMessage* reply;
-	dbus_int32_t _tmp1_;
+	char** _tmp1_;
+	DBusMessageIter _tmp2_;
+	int _tmp3_;
 	connection = _user_data_[0];
 	message = _user_data_[1];
 	error = NULL;
-	result = rygel_tracker_iface_get_version_finish (source_object, _res_, &error);
+	result_length1 = 0;
+	result_length2 = 0;
+	result = rygel_tracker_stats_iface_get_statistics_finish (source_object, _res_, &result_length1, &result_length2, &error);
 	if (error) {
 		if (error->domain == DBUS_GERROR) {
 			switch (error->code) {
@@ -481,509 +493,20 @@ static void _dbus_rygel_tracker_iface_get_version_ready (GObject * source_object
 	reply = dbus_message_new_method_return (message);
 	dbus_message_iter_init_append (reply, &iter);
 	_tmp1_ = result;
-	dbus_message_iter_append_basic (&iter, DBUS_TYPE_INT32, &_tmp1_);
-	dbus_connection_send (connection, reply, NULL);
-	dbus_message_unref (reply);
-	dbus_connection_unref (connection);
-	dbus_message_unref (message);
-	g_free (_user_data_);
-}
-
-
-DBusHandlerResult rygel_tracker_iface_dbus_message (DBusConnection* connection, DBusMessage* message, void* object) {
-	DBusHandlerResult result;
-	result = DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
-	if (dbus_message_is_method_call (message, "org.freedesktop.DBus.Introspectable", "Introspect")) {
-		result = _dbus_rygel_tracker_iface_introspect (object, connection, message);
-	} else if (dbus_message_is_method_call (message, "org.freedesktop.DBus.Properties", "GetAll")) {
-		result = _dbus_rygel_tracker_iface_property_get_all (object, connection, message);
-	} else if (dbus_message_is_method_call (message, "org.freedesktop.Tracker", "GetVersion")) {
-		result = _dbus_rygel_tracker_iface_get_version (object, connection, message);
-	}
-	if (result == DBUS_HANDLER_RESULT_HANDLED) {
-		return result;
-	} else {
-		return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
-	}
-}
-
-
-void rygel_tracker_iface_dbus_register_object (DBusConnection* connection, const char* path, void* object) {
-	if (!g_object_get_data (object, "dbus_object_path")) {
-		g_object_set_data (object, "dbus_object_path", g_strdup (path));
-		dbus_connection_register_object_path (connection, path, &_rygel_tracker_iface_dbus_path_vtable, object);
-		g_object_weak_ref (object, _vala_dbus_unregister_object, connection);
-	}
-}
-
-
-static void rygel_tracker_iface_base_init (RygelTrackerIfaceIface * iface) {
-	static gboolean initialized = FALSE;
-	if (!initialized) {
-		initialized = TRUE;
-		g_type_set_qdata (RYGEL_TYPE_TRACKER_IFACE, g_quark_from_static_string ("DBusObjectVTable"), (void*) (&_rygel_tracker_iface_dbus_vtable));
-	}
-}
-
-
-GType rygel_tracker_iface_get_type (void) {
-	static GType rygel_tracker_iface_type_id = 0;
-	if (rygel_tracker_iface_type_id == 0) {
-		static const GTypeInfo g_define_type_info = { sizeof (RygelTrackerIfaceIface), (GBaseInitFunc) rygel_tracker_iface_base_init, (GBaseFinalizeFunc) NULL, (GClassInitFunc) NULL, (GClassFinalizeFunc) NULL, NULL, 0, 0, (GInstanceInitFunc) NULL, NULL };
-		rygel_tracker_iface_type_id = g_type_register_static (G_TYPE_INTERFACE, "RygelTrackerIface", &g_define_type_info, 0);
-		g_type_interface_add_prerequisite (rygel_tracker_iface_type_id, DBUS_TYPE_G_PROXY);
-		g_type_set_qdata (rygel_tracker_iface_type_id, g_quark_from_string ("ValaDBusInterfaceProxyType"), &rygel_tracker_iface_dbus_proxy_get_type);
-	}
-	return rygel_tracker_iface_type_id;
-}
-
-
-G_DEFINE_TYPE_EXTENDED (RygelTrackerIfaceDBusProxy, rygel_tracker_iface_dbus_proxy, DBUS_TYPE_G_PROXY, 0, G_IMPLEMENT_INTERFACE (RYGEL_TYPE_TRACKER_IFACE, rygel_tracker_iface_dbus_proxy_rygel_tracker_iface__interface_init) );
-RygelTrackerIface* rygel_tracker_iface_dbus_proxy_new (DBusGConnection* connection, const char* name, const char* path) {
-	RygelTrackerIface* self;
-	self = g_object_new (rygel_tracker_iface_dbus_proxy_get_type (), "connection", connection, "name", name, "path", path, "interface", "org.freedesktop.Tracker", NULL);
-	return self;
-}
-
-
-static GObject* rygel_tracker_iface_dbus_proxy_construct (GType gtype, guint n_properties, GObjectConstructParam* properties) {
-	GObject* self;
-	DBusGConnection *connection;
-	char* path;
-	char* filter;
-	self = G_OBJECT_CLASS (rygel_tracker_iface_dbus_proxy_parent_class)->constructor (gtype, n_properties, properties);
-	g_object_get (self, "connection", &connection, NULL);
-	g_object_get (self, "path", &path, NULL);
-	dbus_connection_add_filter (dbus_g_connection_get_connection (connection), rygel_tracker_iface_dbus_proxy_filter, self, NULL);
-	filter = g_strdup_printf ("type='signal',path='%s'", path);
-	dbus_bus_add_match (dbus_g_connection_get_connection (connection), filter, NULL);
-	dbus_g_connection_unref (connection);
-	g_free (path);
-	g_free (filter);
-	return self;
-}
-
-
-DBusHandlerResult rygel_tracker_iface_dbus_proxy_filter (DBusConnection* connection, DBusMessage* message, void* user_data) {
-	if (dbus_message_has_path (message, dbus_g_proxy_get_path (user_data))) {
-	}
-	return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
-}
-
-
-static void rygel_tracker_iface_dbus_proxy_dispose (GObject* self) {
-	DBusGConnection *connection;
-	if (((RygelTrackerIfaceDBusProxy*) self)->disposed) {
-		return;
-	}
-	((RygelTrackerIfaceDBusProxy*) self)->disposed = TRUE;
-	g_object_get (self, "connection", &connection, NULL);
-	dbus_connection_remove_filter (dbus_g_connection_get_connection (connection), rygel_tracker_iface_dbus_proxy_filter, self);
-	G_OBJECT_CLASS (rygel_tracker_iface_dbus_proxy_parent_class)->dispose (self);
-}
-
-
-static void rygel_tracker_iface_dbus_proxy_class_init (RygelTrackerIfaceDBusProxyClass* klass) {
-	G_OBJECT_CLASS (klass)->constructor = rygel_tracker_iface_dbus_proxy_construct;
-	G_OBJECT_CLASS (klass)->dispose = rygel_tracker_iface_dbus_proxy_dispose;
-	G_OBJECT_CLASS (klass)->get_property = rygel_tracker_iface_dbus_proxy_get_property;
-	G_OBJECT_CLASS (klass)->set_property = rygel_tracker_iface_dbus_proxy_set_property;
-}
-
-
-static void rygel_tracker_iface_dbus_proxy_init (RygelTrackerIfaceDBusProxy* self) {
-}
-
-
-static void rygel_tracker_iface_dbus_proxy_get_version_async (RygelTrackerIface* self, GAsyncReadyCallback _callback_, gpointer _user_data_) {
-	DBusGConnection *_connection;
-	DBusMessage *_message;
-	DBusPendingCall *_pending;
-	DBusMessageIter _iter;
-	RygelTrackerIfaceDBusProxyGetVersionData* _data_;
-	_message = dbus_message_new_method_call (dbus_g_proxy_get_bus_name ((DBusGProxy*) self), dbus_g_proxy_get_path ((DBusGProxy*) self), "org.freedesktop.Tracker", "GetVersion");
-	dbus_message_iter_init_append (_message, &_iter);
-	g_object_get (self, "connection", &_connection, NULL);
-	dbus_connection_send_with_reply (dbus_g_connection_get_connection (_connection), _message, &_pending, -1);
-	dbus_g_connection_unref (_connection);
-	dbus_message_unref (_message);
-	_data_ = g_slice_new0 (RygelTrackerIfaceDBusProxyGetVersionData);
-	_data_->_callback_ = _callback_;
-	_data_->_user_data_ = _user_data_;
-	_data_->pending = _pending;
-	dbus_pending_call_set_notify (_pending, rygel_tracker_iface_dbus_proxy_get_version_ready, _data_, NULL);
-}
-
-
-static void rygel_tracker_iface_dbus_proxy_get_version_ready (DBusPendingCall* pending, void* user_data) {
-	RygelTrackerIfaceDBusProxyGetVersionData* _data_;
-	_data_ = user_data;
-	g_simple_async_result_complete (g_simple_async_result_new (g_object_newv (G_TYPE_OBJECT, 0, NULL), _data_->_callback_, _data_->_user_data_, _data_));
-}
-
-
-static gint rygel_tracker_iface_dbus_proxy_get_version_finish (RygelTrackerIface* self, GAsyncResult* _res_, GError** error) {
-	RygelTrackerIfaceDBusProxyGetVersionData* _data_;
-	DBusError _dbus_error;
-	DBusMessage *_reply;
-	DBusMessageIter _iter;
-	gint _result;
-	dbus_int32_t _tmp4_;
-	_data_ = g_simple_async_result_get_source_tag ((GSimpleAsyncResult *) _res_);
-	dbus_error_init (&_dbus_error);
-	_reply = dbus_pending_call_steal_reply (_data_->pending);
-	dbus_set_error_from_message (&_dbus_error, _reply);
-	if (dbus_error_is_set (&_dbus_error)) {
-		GQuark _edomain;
-		gint _ecode;
-		if (strstr (_dbus_error.name, "org.freedesktop.DBus.Error") == _dbus_error.name) {
-			const char* _tmp3_;
-			_edomain = DBUS_GERROR;
-			_tmp3_ = _dbus_error.name + 27;
-			if (strcmp (_tmp3_, "Failed") == 0) {
-				_ecode = DBUS_GERROR_FAILED;
-			} else if (strcmp (_tmp3_, "NoMemory") == 0) {
-				_ecode = DBUS_GERROR_NO_MEMORY;
-			} else if (strcmp (_tmp3_, "ServiceUnknown") == 0) {
-				_ecode = DBUS_GERROR_SERVICE_UNKNOWN;
-			} else if (strcmp (_tmp3_, "NameHasNoOwner") == 0) {
-				_ecode = DBUS_GERROR_NAME_HAS_NO_OWNER;
-			} else if (strcmp (_tmp3_, "NoReply") == 0) {
-				_ecode = DBUS_GERROR_NO_REPLY;
-			} else if (strcmp (_tmp3_, "IOError") == 0) {
-				_ecode = DBUS_GERROR_IO_ERROR;
-			} else if (strcmp (_tmp3_, "BadAddress") == 0) {
-				_ecode = DBUS_GERROR_BAD_ADDRESS;
-			} else if (strcmp (_tmp3_, "NotSupported") == 0) {
-				_ecode = DBUS_GERROR_NOT_SUPPORTED;
-			} else if (strcmp (_tmp3_, "LimitsExceeded") == 0) {
-				_ecode = DBUS_GERROR_LIMITS_EXCEEDED;
-			} else if (strcmp (_tmp3_, "AccessDenied") == 0) {
-				_ecode = DBUS_GERROR_ACCESS_DENIED;
-			} else if (strcmp (_tmp3_, "AuthFailed") == 0) {
-				_ecode = DBUS_GERROR_AUTH_FAILED;
-			} else if (strcmp (_tmp3_, "NoServer") == 0) {
-				_ecode = DBUS_GERROR_NO_SERVER;
-			} else if (strcmp (_tmp3_, "Timeout") == 0) {
-				_ecode = DBUS_GERROR_TIMEOUT;
-			} else if (strcmp (_tmp3_, "NoNetwork") == 0) {
-				_ecode = DBUS_GERROR_NO_NETWORK;
-			} else if (strcmp (_tmp3_, "AddressInUse") == 0) {
-				_ecode = DBUS_GERROR_ADDRESS_IN_USE;
-			} else if (strcmp (_tmp3_, "Disconnected") == 0) {
-				_ecode = DBUS_GERROR_DISCONNECTED;
-			} else if (strcmp (_tmp3_, "InvalidArgs") == 0) {
-				_ecode = DBUS_GERROR_INVALID_ARGS;
-			} else if (strcmp (_tmp3_, "FileNotFound") == 0) {
-				_ecode = DBUS_GERROR_FILE_NOT_FOUND;
-			} else if (strcmp (_tmp3_, "FileExists") == 0) {
-				_ecode = DBUS_GERROR_FILE_EXISTS;
-			} else if (strcmp (_tmp3_, "UnknownMethod") == 0) {
-				_ecode = DBUS_GERROR_UNKNOWN_METHOD;
-			} else if (strcmp (_tmp3_, "TimedOut") == 0) {
-				_ecode = DBUS_GERROR_TIMED_OUT;
-			} else if (strcmp (_tmp3_, "MatchRuleNotFound") == 0) {
-				_ecode = DBUS_GERROR_MATCH_RULE_NOT_FOUND;
-			} else if (strcmp (_tmp3_, "MatchRuleInvalid") == 0) {
-				_ecode = DBUS_GERROR_MATCH_RULE_INVALID;
-			} else if (strcmp (_tmp3_, "Spawn.ExecFailed") == 0) {
-				_ecode = DBUS_GERROR_SPAWN_EXEC_FAILED;
-			} else if (strcmp (_tmp3_, "Spawn.ForkFailed") == 0) {
-				_ecode = DBUS_GERROR_SPAWN_FORK_FAILED;
-			} else if (strcmp (_tmp3_, "Spawn.ChildExited") == 0) {
-				_ecode = DBUS_GERROR_SPAWN_CHILD_EXITED;
-			} else if (strcmp (_tmp3_, "Spawn.ChildSignaled") == 0) {
-				_ecode = DBUS_GERROR_SPAWN_CHILD_SIGNALED;
-			} else if (strcmp (_tmp3_, "Spawn.Failed") == 0) {
-				_ecode = DBUS_GERROR_SPAWN_FAILED;
-			} else if (strcmp (_tmp3_, "UnixProcessIdUnknown") == 0) {
-				_ecode = DBUS_GERROR_UNIX_PROCESS_ID_UNKNOWN;
-			} else if (strcmp (_tmp3_, "InvalidSignature") == 0) {
-				_ecode = DBUS_GERROR_INVALID_SIGNATURE;
-			} else if (strcmp (_tmp3_, "InvalidFileContent") == 0) {
-				_ecode = DBUS_GERROR_INVALID_FILE_CONTENT;
-			} else if (strcmp (_tmp3_, "SELinuxSecurityContextUnknown") == 0) {
-				_ecode = DBUS_GERROR_SELINUX_SECURITY_CONTEXT_UNKNOWN;
-			} else if (strcmp (_tmp3_, "RemoteException") == 0) {
-				_ecode = DBUS_GERROR_REMOTE_EXCEPTION;
-			}
+	dbus_message_iter_open_container (&iter, DBUS_TYPE_ARRAY, "as", &_tmp2_);
+	for (_tmp3_ = 0; _tmp3_ < result_length1; _tmp3_++) {
+		DBusMessageIter _tmp4_;
+		int _tmp5_;
+		dbus_message_iter_open_container (&_tmp2_, DBUS_TYPE_ARRAY, "s", &_tmp4_);
+		for (_tmp5_ = 0; _tmp5_ < result_length2; _tmp5_++) {
+			const char* _tmp6_;
+			_tmp6_ = *_tmp1_;
+			dbus_message_iter_append_basic (&_tmp4_, DBUS_TYPE_STRING, &_tmp6_);
+			_tmp1_++;
 		}
-		g_set_error_literal (error, _edomain, _ecode, _dbus_error.message);
-		dbus_error_free (&_dbus_error);
-		return 0;
+		dbus_message_iter_close_container (&_tmp2_, &_tmp4_);
 	}
-	if (strcmp (dbus_message_get_signature (_reply), "i")) {
-		g_set_error (error, DBUS_GERROR, DBUS_GERROR_INVALID_SIGNATURE, "Invalid signature, expected \"%s\", got \"%s\"", "i", dbus_message_get_signature (_reply));
-		dbus_message_unref (_reply);
-		return 0;
-	}
-	dbus_message_iter_init (_reply, &_iter);
-	dbus_message_iter_get_basic (&_iter, &_tmp4_);
-	dbus_message_iter_next (&_iter);
-	_result = _tmp4_;
-	dbus_message_unref (_reply);
-	return _result;
-}
-
-
-static void rygel_tracker_iface_dbus_proxy_rygel_tracker_iface__interface_init (RygelTrackerIfaceIface* iface) {
-	iface->get_version = rygel_tracker_iface_dbus_proxy_get_version_async;
-	iface->get_version_finish = rygel_tracker_iface_dbus_proxy_get_version_finish;
-}
-
-
-static void rygel_tracker_iface_dbus_proxy_get_property (GObject * object, guint property_id, GValue * value, GParamSpec * pspec) {
-}
-
-
-static void rygel_tracker_iface_dbus_proxy_set_property (GObject * object, guint property_id, const GValue * value, GParamSpec * pspec) {
-}
-
-
-#line 49 "rygel-tracker-plugin-factory.vala"
-void rygel_tracker_keywords_iface_get_list (RygelTrackerKeywordsIface* self, const char* service, GAsyncReadyCallback _callback_, gpointer _user_data_) {
-#line 49 "rygel-tracker-plugin-factory.vala"
-	RYGEL_TRACKER_KEYWORDS_IFACE_GET_INTERFACE (self)->get_list (self, service, _callback_, _user_data_);
-#line 748 "rygel-tracker-interfaces.c"
-}
-
-
-#line 49 "rygel-tracker-plugin-factory.vala"
-char** rygel_tracker_keywords_iface_get_list_finish (RygelTrackerKeywordsIface* self, GAsyncResult* _res_, int* result_length1, int* result_length2, GError** error) {
-#line 49 "rygel-tracker-plugin-factory.vala"
-	return RYGEL_TRACKER_KEYWORDS_IFACE_GET_INTERFACE (self)->get_list_finish (self, _res_, result_length1, result_length2, error);
-#line 756 "rygel-tracker-interfaces.c"
-}
-
-
-void _rygel_tracker_keywords_iface_dbus_unregister (DBusConnection* connection, void* _user_data_) {
-}
-
-
-static DBusHandlerResult _dbus_rygel_tracker_keywords_iface_introspect (RygelTrackerKeywordsIface* self, DBusConnection* connection, DBusMessage* message) {
-	DBusMessage* reply;
-	DBusMessageIter iter;
-	GString* xml_data;
-	char** children;
-	int i;
-	reply = dbus_message_new_method_return (message);
-	dbus_message_iter_init_append (reply, &iter);
-	xml_data = g_string_new ("<!DOCTYPE node PUBLIC \"-//freedesktop//DTD D-BUS Object Introspection 1.0//EN\" \"http://www.freedesktop.org/standards/dbus/1.0/introspect.dtd\">\n");
-	g_string_append (xml_data, "<node>\n<interface name=\"org.freedesktop.DBus.Introspectable\">\n  <method name=\"Introspect\">\n    <arg name=\"data\" direction=\"out\" type=\"s\"/>\n  </method>\n</interface>\n<interface name=\"org.freedesktop.DBus.Properties\">\n  <method name=\"Get\">\n    <arg name=\"interface\" direction=\"in\" type=\"s\"/>\n    <arg name=\"propname\" direction=\"in\" type=\"s\"/>\n    <arg name=\"value\" direction=\"out\" type=\"v\"/>\n  </method>\n  <method name=\"Set\">\n    <arg name=\"interface\" direction=\"in\" type=\"s\"/>\n    <arg name=\"propname\" direction=\"in\" type=\"s\"/>\n    <arg name=\"value\" direction=\"in\" type=\"v\"/>\n  </method>\n  <method name=\"GetAll\">\n    <arg name=\"interface\" direction=\"in\" type=\"s\"/>\n    <arg name=\"props\" direction=\"out\" type=\"a{sv}\"/>\n  </method>\n</interface>\n<interface name=\"org.freedesktop.Tracker.Keywords\">\n  <method name=\"GetList\">\n    <arg name=\"service\" type=\"s\" direction=\"in\"/>\n    <arg name=\"result\" type=\"aas\" direction=\"out\"/>\n  </method>\n</interface>\n");
-	dbus_connection_list_registered (connection, g_object_get_data ((GObject *) self, "dbus_object_path"), &children);
-	for (i = 0; children[i]; i++) {
-		g_string_append_printf (xml_data, "<node name=\"%s\"/>\n", children[i]);
-	}
-	dbus_free_string_array (children);
-	g_string_append (xml_data, "</node>\n");
-	dbus_message_iter_append_basic (&iter, DBUS_TYPE_STRING, &xml_data->str);
-	g_string_free (xml_data, TRUE);
-	if (reply) {
-		dbus_connection_send (connection, reply, NULL);
-		dbus_message_unref (reply);
-		return DBUS_HANDLER_RESULT_HANDLED;
-	} else {
-		return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
-	}
-}
-
-
-static DBusHandlerResult _dbus_rygel_tracker_keywords_iface_property_get_all (RygelTrackerKeywordsIface* self, DBusConnection* connection, DBusMessage* message) {
-	DBusMessage* reply;
-	DBusMessageIter iter, reply_iter, subiter;
-	char* interface_name;
-	const char* _tmp5_;
-	if (strcmp (dbus_message_get_signature (message), "s")) {
-		return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
-	}
-	dbus_message_iter_init (message, &iter);
-	reply = dbus_message_new_method_return (message);
-	dbus_message_iter_init_append (reply, &reply_iter);
-	dbus_message_iter_get_basic (&iter, &_tmp5_);
-	dbus_message_iter_next (&iter);
-	interface_name = g_strdup (_tmp5_);
-	if (strcmp (interface_name, "org.freedesktop.Tracker.Keywords") == 0) {
-		dbus_message_iter_open_container (&reply_iter, DBUS_TYPE_ARRAY, "{sv}", &subiter);
-		dbus_message_iter_close_container (&reply_iter, &subiter);
-	} else {
-		dbus_message_unref (reply);
-		reply = NULL;
-	}
-	g_free (interface_name);
-	if (reply) {
-		dbus_connection_send (connection, reply, NULL);
-		dbus_message_unref (reply);
-		return DBUS_HANDLER_RESULT_HANDLED;
-	} else {
-		return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
-	}
-}
-
-
-static DBusHandlerResult _dbus_rygel_tracker_keywords_iface_get_list (RygelTrackerKeywordsIface* self, DBusConnection* connection, DBusMessage* message) {
-	DBusMessageIter iter;
-	char* service = NULL;
-	const char* _tmp6_;
-	gpointer * _user_data_;
-	if (strcmp (dbus_message_get_signature (message), "s")) {
-		return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
-	}
-	dbus_message_iter_init (message, &iter);
-	dbus_message_iter_get_basic (&iter, &_tmp6_);
-	dbus_message_iter_next (&iter);
-	service = g_strdup (_tmp6_);
-	_user_data_ = g_new0 (gpointer, 2);
-	_user_data_[0] = dbus_connection_ref (connection);
-	_user_data_[1] = dbus_message_ref (message);
-	rygel_tracker_keywords_iface_get_list (self, service, _dbus_rygel_tracker_keywords_iface_get_list_ready, _user_data_);
-	_g_free0 (service);
-	return DBUS_HANDLER_RESULT_HANDLED;
-}
-
-
-static void _dbus_rygel_tracker_keywords_iface_get_list_ready (GObject * source_object, GAsyncResult * _res_, gpointer * _user_data_) {
-	DBusConnection * connection;
-	DBusMessage * message;
-	DBusMessageIter iter;
-	GError* error;
-	char** result;
-	int result_length1;
-	int result_length2;
-	DBusMessage* reply;
-	char** _tmp7_;
-	DBusMessageIter _tmp8_;
-	int _tmp9_;
-	connection = _user_data_[0];
-	message = _user_data_[1];
-	error = NULL;
-	result_length1 = 0;
-	result_length2 = 0;
-	result = rygel_tracker_keywords_iface_get_list_finish (source_object, _res_, &result_length1, &result_length2, &error);
-	if (error) {
-		if (error->domain == DBUS_GERROR) {
-			switch (error->code) {
-				case DBUS_GERROR_FAILED:
-				reply = dbus_message_new_error (message, "org.freedesktop.DBus.Error.Failed", error->message);
-				break;
-				case DBUS_GERROR_NO_MEMORY:
-				reply = dbus_message_new_error (message, "org.freedesktop.DBus.Error.NoMemory", error->message);
-				break;
-				case DBUS_GERROR_SERVICE_UNKNOWN:
-				reply = dbus_message_new_error (message, "org.freedesktop.DBus.Error.ServiceUnknown", error->message);
-				break;
-				case DBUS_GERROR_NAME_HAS_NO_OWNER:
-				reply = dbus_message_new_error (message, "org.freedesktop.DBus.Error.NameHasNoOwner", error->message);
-				break;
-				case DBUS_GERROR_NO_REPLY:
-				reply = dbus_message_new_error (message, "org.freedesktop.DBus.Error.NoReply", error->message);
-				break;
-				case DBUS_GERROR_IO_ERROR:
-				reply = dbus_message_new_error (message, "org.freedesktop.DBus.Error.IOError", error->message);
-				break;
-				case DBUS_GERROR_BAD_ADDRESS:
-				reply = dbus_message_new_error (message, "org.freedesktop.DBus.Error.BadAddress", error->message);
-				break;
-				case DBUS_GERROR_NOT_SUPPORTED:
-				reply = dbus_message_new_error (message, "org.freedesktop.DBus.Error.NotSupported", error->message);
-				break;
-				case DBUS_GERROR_LIMITS_EXCEEDED:
-				reply = dbus_message_new_error (message, "org.freedesktop.DBus.Error.LimitsExceeded", error->message);
-				break;
-				case DBUS_GERROR_ACCESS_DENIED:
-				reply = dbus_message_new_error (message, "org.freedesktop.DBus.Error.AccessDenied", error->message);
-				break;
-				case DBUS_GERROR_AUTH_FAILED:
-				reply = dbus_message_new_error (message, "org.freedesktop.DBus.Error.AuthFailed", error->message);
-				break;
-				case DBUS_GERROR_NO_SERVER:
-				reply = dbus_message_new_error (message, "org.freedesktop.DBus.Error.NoServer", error->message);
-				break;
-				case DBUS_GERROR_TIMEOUT:
-				reply = dbus_message_new_error (message, "org.freedesktop.DBus.Error.Timeout", error->message);
-				break;
-				case DBUS_GERROR_NO_NETWORK:
-				reply = dbus_message_new_error (message, "org.freedesktop.DBus.Error.NoNetwork", error->message);
-				break;
-				case DBUS_GERROR_ADDRESS_IN_USE:
-				reply = dbus_message_new_error (message, "org.freedesktop.DBus.Error.AddressInUse", error->message);
-				break;
-				case DBUS_GERROR_DISCONNECTED:
-				reply = dbus_message_new_error (message, "org.freedesktop.DBus.Error.Disconnected", error->message);
-				break;
-				case DBUS_GERROR_INVALID_ARGS:
-				reply = dbus_message_new_error (message, "org.freedesktop.DBus.Error.InvalidArgs", error->message);
-				break;
-				case DBUS_GERROR_FILE_NOT_FOUND:
-				reply = dbus_message_new_error (message, "org.freedesktop.DBus.Error.FileNotFound", error->message);
-				break;
-				case DBUS_GERROR_FILE_EXISTS:
-				reply = dbus_message_new_error (message, "org.freedesktop.DBus.Error.FileExists", error->message);
-				break;
-				case DBUS_GERROR_UNKNOWN_METHOD:
-				reply = dbus_message_new_error (message, "org.freedesktop.DBus.Error.UnknownMethod", error->message);
-				break;
-				case DBUS_GERROR_TIMED_OUT:
-				reply = dbus_message_new_error (message, "org.freedesktop.DBus.Error.TimedOut", error->message);
-				break;
-				case DBUS_GERROR_MATCH_RULE_NOT_FOUND:
-				reply = dbus_message_new_error (message, "org.freedesktop.DBus.Error.MatchRuleNotFound", error->message);
-				break;
-				case DBUS_GERROR_MATCH_RULE_INVALID:
-				reply = dbus_message_new_error (message, "org.freedesktop.DBus.Error.MatchRuleInvalid", error->message);
-				break;
-				case DBUS_GERROR_SPAWN_EXEC_FAILED:
-				reply = dbus_message_new_error (message, "org.freedesktop.DBus.Error.Spawn.ExecFailed", error->message);
-				break;
-				case DBUS_GERROR_SPAWN_FORK_FAILED:
-				reply = dbus_message_new_error (message, "org.freedesktop.DBus.Error.Spawn.ForkFailed", error->message);
-				break;
-				case DBUS_GERROR_SPAWN_CHILD_EXITED:
-				reply = dbus_message_new_error (message, "org.freedesktop.DBus.Error.Spawn.ChildExited", error->message);
-				break;
-				case DBUS_GERROR_SPAWN_CHILD_SIGNALED:
-				reply = dbus_message_new_error (message, "org.freedesktop.DBus.Error.Spawn.ChildSignaled", error->message);
-				break;
-				case DBUS_GERROR_SPAWN_FAILED:
-				reply = dbus_message_new_error (message, "org.freedesktop.DBus.Error.Spawn.Failed", error->message);
-				break;
-				case DBUS_GERROR_UNIX_PROCESS_ID_UNKNOWN:
-				reply = dbus_message_new_error (message, "org.freedesktop.DBus.Error.UnixProcessIdUnknown", error->message);
-				break;
-				case DBUS_GERROR_INVALID_SIGNATURE:
-				reply = dbus_message_new_error (message, "org.freedesktop.DBus.Error.InvalidSignature", error->message);
-				break;
-				case DBUS_GERROR_INVALID_FILE_CONTENT:
-				reply = dbus_message_new_error (message, "org.freedesktop.DBus.Error.InvalidFileContent", error->message);
-				break;
-				case DBUS_GERROR_SELINUX_SECURITY_CONTEXT_UNKNOWN:
-				reply = dbus_message_new_error (message, "org.freedesktop.DBus.Error.SELinuxSecurityContextUnknown", error->message);
-				break;
-				case DBUS_GERROR_REMOTE_EXCEPTION:
-				reply = dbus_message_new_error (message, "org.freedesktop.DBus.Error.RemoteException", error->message);
-				break;
-			}
-		}
-		dbus_connection_send (connection, reply, NULL);
-		dbus_message_unref (reply);
-		return;
-	}
-	reply = dbus_message_new_method_return (message);
-	dbus_message_iter_init_append (reply, &iter);
-	_tmp7_ = result;
-	dbus_message_iter_open_container (&iter, DBUS_TYPE_ARRAY, "as", &_tmp8_);
-	for (_tmp9_ = 0; _tmp9_ < result_length1; _tmp9_++) {
-		DBusMessageIter _tmp10_;
-		int _tmp11_;
-		dbus_message_iter_open_container (&_tmp8_, DBUS_TYPE_ARRAY, "s", &_tmp10_);
-		for (_tmp11_ = 0; _tmp11_ < result_length2; _tmp11_++) {
-			const char* _tmp12_;
-			_tmp12_ = *_tmp7_;
-			dbus_message_iter_append_basic (&_tmp10_, DBUS_TYPE_STRING, &_tmp12_);
-			_tmp7_++;
-		}
-		dbus_message_iter_close_container (&_tmp8_, &_tmp10_);
-	}
-	dbus_message_iter_close_container (&iter, &_tmp8_);
+	dbus_message_iter_close_container (&iter, &_tmp2_);
 	result = (_vala_array_free (result,  result_length1 *  result_length2, (GDestroyNotify) g_free), NULL);
 	dbus_connection_send (connection, reply, NULL);
 	dbus_message_unref (reply);
@@ -993,15 +516,15 @@ static void _dbus_rygel_tracker_keywords_iface_get_list_ready (GObject * source_
 }
 
 
-DBusHandlerResult rygel_tracker_keywords_iface_dbus_message (DBusConnection* connection, DBusMessage* message, void* object) {
+DBusHandlerResult rygel_tracker_stats_iface_dbus_message (DBusConnection* connection, DBusMessage* message, void* object) {
 	DBusHandlerResult result;
 	result = DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
 	if (dbus_message_is_method_call (message, "org.freedesktop.DBus.Introspectable", "Introspect")) {
-		result = _dbus_rygel_tracker_keywords_iface_introspect (object, connection, message);
+		result = _dbus_rygel_tracker_stats_iface_introspect (object, connection, message);
 	} else if (dbus_message_is_method_call (message, "org.freedesktop.DBus.Properties", "GetAll")) {
-		result = _dbus_rygel_tracker_keywords_iface_property_get_all (object, connection, message);
-	} else if (dbus_message_is_method_call (message, "org.freedesktop.Tracker.Keywords", "GetList")) {
-		result = _dbus_rygel_tracker_keywords_iface_get_list (object, connection, message);
+		result = _dbus_rygel_tracker_stats_iface_property_get_all (object, connection, message);
+	} else if (dbus_message_is_method_call (message, "org.freedesktop.Tracker1.Statistics", "GetStatistics")) {
+		result = _dbus_rygel_tracker_stats_iface_get_statistics (object, connection, message);
 	}
 	if (result == DBUS_HANDLER_RESULT_HANDLED) {
 		return result;
@@ -1011,53 +534,55 @@ DBusHandlerResult rygel_tracker_keywords_iface_dbus_message (DBusConnection* con
 }
 
 
-void rygel_tracker_keywords_iface_dbus_register_object (DBusConnection* connection, const char* path, void* object) {
+void rygel_tracker_stats_iface_dbus_register_object (DBusConnection* connection, const char* path, void* object) {
 	if (!g_object_get_data (object, "dbus_object_path")) {
 		g_object_set_data (object, "dbus_object_path", g_strdup (path));
-		dbus_connection_register_object_path (connection, path, &_rygel_tracker_keywords_iface_dbus_path_vtable, object);
+		dbus_connection_register_object_path (connection, path, &_rygel_tracker_stats_iface_dbus_path_vtable, object);
 		g_object_weak_ref (object, _vala_dbus_unregister_object, connection);
 	}
 }
 
 
-static void rygel_tracker_keywords_iface_base_init (RygelTrackerKeywordsIfaceIface * iface) {
+static void rygel_tracker_stats_iface_base_init (RygelTrackerStatsIfaceIface * iface) {
 	static gboolean initialized = FALSE;
 	if (!initialized) {
 		initialized = TRUE;
-		g_type_set_qdata (RYGEL_TYPE_TRACKER_KEYWORDS_IFACE, g_quark_from_static_string ("DBusObjectVTable"), (void*) (&_rygel_tracker_keywords_iface_dbus_vtable));
+		g_type_set_qdata (RYGEL_TYPE_TRACKER_STATS_IFACE, g_quark_from_static_string ("DBusObjectVTable"), (void*) (&_rygel_tracker_stats_iface_dbus_vtable));
 	}
 }
 
 
-GType rygel_tracker_keywords_iface_get_type (void) {
-	static GType rygel_tracker_keywords_iface_type_id = 0;
-	if (rygel_tracker_keywords_iface_type_id == 0) {
-		static const GTypeInfo g_define_type_info = { sizeof (RygelTrackerKeywordsIfaceIface), (GBaseInitFunc) rygel_tracker_keywords_iface_base_init, (GBaseFinalizeFunc) NULL, (GClassInitFunc) NULL, (GClassFinalizeFunc) NULL, NULL, 0, 0, (GInstanceInitFunc) NULL, NULL };
-		rygel_tracker_keywords_iface_type_id = g_type_register_static (G_TYPE_INTERFACE, "RygelTrackerKeywordsIface", &g_define_type_info, 0);
-		g_type_interface_add_prerequisite (rygel_tracker_keywords_iface_type_id, DBUS_TYPE_G_PROXY);
-		g_type_set_qdata (rygel_tracker_keywords_iface_type_id, g_quark_from_string ("ValaDBusInterfaceProxyType"), &rygel_tracker_keywords_iface_dbus_proxy_get_type);
+GType rygel_tracker_stats_iface_get_type (void) {
+	static volatile gsize rygel_tracker_stats_iface_type_id__volatile = 0;
+	if (g_once_init_enter (&rygel_tracker_stats_iface_type_id__volatile)) {
+		static const GTypeInfo g_define_type_info = { sizeof (RygelTrackerStatsIfaceIface), (GBaseInitFunc) rygel_tracker_stats_iface_base_init, (GBaseFinalizeFunc) NULL, (GClassInitFunc) NULL, (GClassFinalizeFunc) NULL, NULL, 0, 0, (GInstanceInitFunc) NULL, NULL };
+		GType rygel_tracker_stats_iface_type_id;
+		rygel_tracker_stats_iface_type_id = g_type_register_static (G_TYPE_INTERFACE, "RygelTrackerStatsIface", &g_define_type_info, 0);
+		g_type_interface_add_prerequisite (rygel_tracker_stats_iface_type_id, DBUS_TYPE_G_PROXY);
+		g_type_set_qdata (rygel_tracker_stats_iface_type_id, g_quark_from_string ("ValaDBusInterfaceProxyType"), &rygel_tracker_stats_iface_dbus_proxy_get_type);
+		g_once_init_leave (&rygel_tracker_stats_iface_type_id__volatile, rygel_tracker_stats_iface_type_id);
 	}
-	return rygel_tracker_keywords_iface_type_id;
+	return rygel_tracker_stats_iface_type_id__volatile;
 }
 
 
-G_DEFINE_TYPE_EXTENDED (RygelTrackerKeywordsIfaceDBusProxy, rygel_tracker_keywords_iface_dbus_proxy, DBUS_TYPE_G_PROXY, 0, G_IMPLEMENT_INTERFACE (RYGEL_TYPE_TRACKER_KEYWORDS_IFACE, rygel_tracker_keywords_iface_dbus_proxy_rygel_tracker_keywords_iface__interface_init) );
-RygelTrackerKeywordsIface* rygel_tracker_keywords_iface_dbus_proxy_new (DBusGConnection* connection, const char* name, const char* path) {
-	RygelTrackerKeywordsIface* self;
-	self = g_object_new (rygel_tracker_keywords_iface_dbus_proxy_get_type (), "connection", connection, "name", name, "path", path, "interface", "org.freedesktop.Tracker.Keywords", NULL);
+G_DEFINE_TYPE_EXTENDED (RygelTrackerStatsIfaceDBusProxy, rygel_tracker_stats_iface_dbus_proxy, DBUS_TYPE_G_PROXY, 0, G_IMPLEMENT_INTERFACE (RYGEL_TYPE_TRACKER_STATS_IFACE, rygel_tracker_stats_iface_dbus_proxy_rygel_tracker_stats_iface__interface_init) );
+RygelTrackerStatsIface* rygel_tracker_stats_iface_dbus_proxy_new (DBusGConnection* connection, const char* name, const char* path) {
+	RygelTrackerStatsIface* self;
+	self = g_object_new (rygel_tracker_stats_iface_dbus_proxy_get_type (), "connection", connection, "name", name, "path", path, "interface", "org.freedesktop.Tracker1.Statistics", NULL);
 	return self;
 }
 
 
-static GObject* rygel_tracker_keywords_iface_dbus_proxy_construct (GType gtype, guint n_properties, GObjectConstructParam* properties) {
+static GObject* rygel_tracker_stats_iface_dbus_proxy_construct (GType gtype, guint n_properties, GObjectConstructParam* properties) {
 	GObject* self;
 	DBusGConnection *connection;
 	char* path;
 	char* filter;
-	self = G_OBJECT_CLASS (rygel_tracker_keywords_iface_dbus_proxy_parent_class)->constructor (gtype, n_properties, properties);
+	self = G_OBJECT_CLASS (rygel_tracker_stats_iface_dbus_proxy_parent_class)->constructor (gtype, n_properties, properties);
 	g_object_get (self, "connection", &connection, NULL);
 	g_object_get (self, "path", &path, NULL);
-	dbus_connection_add_filter (dbus_g_connection_get_connection (connection), rygel_tracker_keywords_iface_dbus_proxy_filter, self, NULL);
+	dbus_connection_add_filter (dbus_g_connection_get_connection (connection), rygel_tracker_stats_iface_dbus_proxy_filter, self, NULL);
 	filter = g_strdup_printf ("type='signal',path='%s'", path);
 	dbus_bus_add_match (dbus_g_connection_get_connection (connection), filter, NULL);
 	dbus_g_connection_unref (connection);
@@ -1067,80 +592,85 @@ static GObject* rygel_tracker_keywords_iface_dbus_proxy_construct (GType gtype, 
 }
 
 
-DBusHandlerResult rygel_tracker_keywords_iface_dbus_proxy_filter (DBusConnection* connection, DBusMessage* message, void* user_data) {
+DBusHandlerResult rygel_tracker_stats_iface_dbus_proxy_filter (DBusConnection* connection, DBusMessage* message, void* user_data) {
 	if (dbus_message_has_path (message, dbus_g_proxy_get_path (user_data))) {
 	}
 	return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
 }
 
 
-static void rygel_tracker_keywords_iface_dbus_proxy_dispose (GObject* self) {
+static void rygel_tracker_stats_iface_dbus_proxy_dispose (GObject* self) {
 	DBusGConnection *connection;
-	if (((RygelTrackerKeywordsIfaceDBusProxy*) self)->disposed) {
+	if (((RygelTrackerStatsIfaceDBusProxy*) self)->disposed) {
 		return;
 	}
-	((RygelTrackerKeywordsIfaceDBusProxy*) self)->disposed = TRUE;
+	((RygelTrackerStatsIfaceDBusProxy*) self)->disposed = TRUE;
 	g_object_get (self, "connection", &connection, NULL);
-	dbus_connection_remove_filter (dbus_g_connection_get_connection (connection), rygel_tracker_keywords_iface_dbus_proxy_filter, self);
-	G_OBJECT_CLASS (rygel_tracker_keywords_iface_dbus_proxy_parent_class)->dispose (self);
+	dbus_connection_remove_filter (dbus_g_connection_get_connection (connection), rygel_tracker_stats_iface_dbus_proxy_filter, self);
+	G_OBJECT_CLASS (rygel_tracker_stats_iface_dbus_proxy_parent_class)->dispose (self);
 }
 
 
-static void rygel_tracker_keywords_iface_dbus_proxy_class_init (RygelTrackerKeywordsIfaceDBusProxyClass* klass) {
-	G_OBJECT_CLASS (klass)->constructor = rygel_tracker_keywords_iface_dbus_proxy_construct;
-	G_OBJECT_CLASS (klass)->dispose = rygel_tracker_keywords_iface_dbus_proxy_dispose;
-	G_OBJECT_CLASS (klass)->get_property = rygel_tracker_keywords_iface_dbus_proxy_get_property;
-	G_OBJECT_CLASS (klass)->set_property = rygel_tracker_keywords_iface_dbus_proxy_set_property;
+static void rygel_tracker_stats_iface_dbus_proxy_class_init (RygelTrackerStatsIfaceDBusProxyClass* klass) {
+	G_OBJECT_CLASS (klass)->constructor = rygel_tracker_stats_iface_dbus_proxy_construct;
+	G_OBJECT_CLASS (klass)->dispose = rygel_tracker_stats_iface_dbus_proxy_dispose;
+	G_OBJECT_CLASS (klass)->get_property = rygel_tracker_stats_iface_dbus_proxy_get_property;
+	G_OBJECT_CLASS (klass)->set_property = rygel_tracker_stats_iface_dbus_proxy_set_property;
 }
 
 
-static void rygel_tracker_keywords_iface_dbus_proxy_init (RygelTrackerKeywordsIfaceDBusProxy* self) {
+static void rygel_tracker_stats_iface_dbus_proxy_init (RygelTrackerStatsIfaceDBusProxy* self) {
 }
 
 
-static void rygel_tracker_keywords_iface_dbus_proxy_get_list_async (RygelTrackerKeywordsIface* self, const char* service, GAsyncReadyCallback _callback_, gpointer _user_data_) {
+static void rygel_tracker_stats_iface_dbus_proxy_get_statistics_async (RygelTrackerStatsIface* self, GAsyncReadyCallback _callback_, gpointer _user_data_) {
 	DBusGConnection *_connection;
 	DBusMessage *_message;
 	DBusPendingCall *_pending;
 	DBusMessageIter _iter;
-	const char* _tmp13_;
-	RygelTrackerKeywordsIfaceDBusProxyGetListData* _data_;
-	_message = dbus_message_new_method_call (dbus_g_proxy_get_bus_name ((DBusGProxy*) self), dbus_g_proxy_get_path ((DBusGProxy*) self), "org.freedesktop.Tracker.Keywords", "GetList");
+	RygelTrackerStatsIfaceDBusProxyGetStatisticsData* _data_;
+	_message = dbus_message_new_method_call (dbus_g_proxy_get_bus_name ((DBusGProxy*) self), dbus_g_proxy_get_path ((DBusGProxy*) self), "org.freedesktop.Tracker1.Statistics", "GetStatistics");
 	dbus_message_iter_init_append (_message, &_iter);
-	_tmp13_ = service;
-	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp13_);
 	g_object_get (self, "connection", &_connection, NULL);
 	dbus_connection_send_with_reply (dbus_g_connection_get_connection (_connection), _message, &_pending, -1);
 	dbus_g_connection_unref (_connection);
 	dbus_message_unref (_message);
-	_data_ = g_slice_new0 (RygelTrackerKeywordsIfaceDBusProxyGetListData);
+	_data_ = g_slice_new0 (RygelTrackerStatsIfaceDBusProxyGetStatisticsData);
 	_data_->_callback_ = _callback_;
 	_data_->_user_data_ = _user_data_;
 	_data_->pending = _pending;
-	dbus_pending_call_set_notify (_pending, rygel_tracker_keywords_iface_dbus_proxy_get_list_ready, _data_, NULL);
+	dbus_pending_call_set_notify (_pending, rygel_tracker_stats_iface_dbus_proxy_get_statistics_ready, _data_, NULL);
 }
 
 
-static void rygel_tracker_keywords_iface_dbus_proxy_get_list_ready (DBusPendingCall* pending, void* user_data) {
-	RygelTrackerKeywordsIfaceDBusProxyGetListData* _data_;
+static void rygel_tracker_stats_iface_dbus_proxy_get_statistics_ready (DBusPendingCall* pending, void* user_data) {
+	RygelTrackerStatsIfaceDBusProxyGetStatisticsData* _data_;
+	GObject * _obj_;
+	GSimpleAsyncResult * _res_;
 	_data_ = user_data;
-	g_simple_async_result_complete (g_simple_async_result_new (g_object_newv (G_TYPE_OBJECT, 0, NULL), _data_->_callback_, _data_->_user_data_, _data_));
+	_obj_ = g_object_newv (G_TYPE_OBJECT, 0, NULL);
+	_res_ = g_simple_async_result_new (_obj_, _data_->_callback_, _data_->_user_data_, _data_);
+	g_simple_async_result_complete (_res_);
+	g_object_unref (_obj_);
+	g_object_unref (_res_);
+	g_slice_free (RygelTrackerStatsIfaceDBusProxyGetStatisticsData, _data_);
+	dbus_pending_call_unref (pending);
 }
 
 
-static char** rygel_tracker_keywords_iface_dbus_proxy_get_list_finish (RygelTrackerKeywordsIface* self, GAsyncResult* _res_, int* result_length1, int* result_length2, GError** error) {
-	RygelTrackerKeywordsIfaceDBusProxyGetListData* _data_;
+static char** rygel_tracker_stats_iface_dbus_proxy_get_statistics_finish (RygelTrackerStatsIface* self, GAsyncResult* _res_, int* result_length1, int* result_length2, GError** error) {
+	RygelTrackerStatsIfaceDBusProxyGetStatisticsData* _data_;
 	DBusError _dbus_error;
 	DBusMessage *_reply;
 	DBusMessageIter _iter;
 	char** _result;
 	int _result_length1;
 	int _result_length2;
-	char** _tmp20_;
-	int _tmp20__length;
-	int _tmp20__size;
-	int _tmp20__length1;
-	DBusMessageIter _tmp21_;
+	char** _tmp12_;
+	int _tmp12__length;
+	int _tmp12__size;
+	int _tmp12__length1;
+	DBusMessageIter _tmp13_;
 	_data_ = g_simple_async_result_get_source_tag ((GSimpleAsyncResult *) _res_);
 	dbus_error_init (&_dbus_error);
 	_reply = dbus_pending_call_steal_reply (_data_->pending);
@@ -1149,78 +679,78 @@ static char** rygel_tracker_keywords_iface_dbus_proxy_get_list_finish (RygelTrac
 		GQuark _edomain;
 		gint _ecode;
 		if (strstr (_dbus_error.name, "org.freedesktop.DBus.Error") == _dbus_error.name) {
-			const char* _tmp18_;
+			const char* _tmp11_;
 			_edomain = DBUS_GERROR;
-			_tmp18_ = _dbus_error.name + 27;
-			if (strcmp (_tmp18_, "Failed") == 0) {
+			_tmp11_ = _dbus_error.name + 27;
+			if (strcmp (_tmp11_, "Failed") == 0) {
 				_ecode = DBUS_GERROR_FAILED;
-			} else if (strcmp (_tmp18_, "NoMemory") == 0) {
+			} else if (strcmp (_tmp11_, "NoMemory") == 0) {
 				_ecode = DBUS_GERROR_NO_MEMORY;
-			} else if (strcmp (_tmp18_, "ServiceUnknown") == 0) {
+			} else if (strcmp (_tmp11_, "ServiceUnknown") == 0) {
 				_ecode = DBUS_GERROR_SERVICE_UNKNOWN;
-			} else if (strcmp (_tmp18_, "NameHasNoOwner") == 0) {
+			} else if (strcmp (_tmp11_, "NameHasNoOwner") == 0) {
 				_ecode = DBUS_GERROR_NAME_HAS_NO_OWNER;
-			} else if (strcmp (_tmp18_, "NoReply") == 0) {
+			} else if (strcmp (_tmp11_, "NoReply") == 0) {
 				_ecode = DBUS_GERROR_NO_REPLY;
-			} else if (strcmp (_tmp18_, "IOError") == 0) {
+			} else if (strcmp (_tmp11_, "IOError") == 0) {
 				_ecode = DBUS_GERROR_IO_ERROR;
-			} else if (strcmp (_tmp18_, "BadAddress") == 0) {
+			} else if (strcmp (_tmp11_, "BadAddress") == 0) {
 				_ecode = DBUS_GERROR_BAD_ADDRESS;
-			} else if (strcmp (_tmp18_, "NotSupported") == 0) {
+			} else if (strcmp (_tmp11_, "NotSupported") == 0) {
 				_ecode = DBUS_GERROR_NOT_SUPPORTED;
-			} else if (strcmp (_tmp18_, "LimitsExceeded") == 0) {
+			} else if (strcmp (_tmp11_, "LimitsExceeded") == 0) {
 				_ecode = DBUS_GERROR_LIMITS_EXCEEDED;
-			} else if (strcmp (_tmp18_, "AccessDenied") == 0) {
+			} else if (strcmp (_tmp11_, "AccessDenied") == 0) {
 				_ecode = DBUS_GERROR_ACCESS_DENIED;
-			} else if (strcmp (_tmp18_, "AuthFailed") == 0) {
+			} else if (strcmp (_tmp11_, "AuthFailed") == 0) {
 				_ecode = DBUS_GERROR_AUTH_FAILED;
-			} else if (strcmp (_tmp18_, "NoServer") == 0) {
+			} else if (strcmp (_tmp11_, "NoServer") == 0) {
 				_ecode = DBUS_GERROR_NO_SERVER;
-			} else if (strcmp (_tmp18_, "Timeout") == 0) {
+			} else if (strcmp (_tmp11_, "Timeout") == 0) {
 				_ecode = DBUS_GERROR_TIMEOUT;
-			} else if (strcmp (_tmp18_, "NoNetwork") == 0) {
+			} else if (strcmp (_tmp11_, "NoNetwork") == 0) {
 				_ecode = DBUS_GERROR_NO_NETWORK;
-			} else if (strcmp (_tmp18_, "AddressInUse") == 0) {
+			} else if (strcmp (_tmp11_, "AddressInUse") == 0) {
 				_ecode = DBUS_GERROR_ADDRESS_IN_USE;
-			} else if (strcmp (_tmp18_, "Disconnected") == 0) {
+			} else if (strcmp (_tmp11_, "Disconnected") == 0) {
 				_ecode = DBUS_GERROR_DISCONNECTED;
-			} else if (strcmp (_tmp18_, "InvalidArgs") == 0) {
+			} else if (strcmp (_tmp11_, "InvalidArgs") == 0) {
 				_ecode = DBUS_GERROR_INVALID_ARGS;
-			} else if (strcmp (_tmp18_, "FileNotFound") == 0) {
+			} else if (strcmp (_tmp11_, "FileNotFound") == 0) {
 				_ecode = DBUS_GERROR_FILE_NOT_FOUND;
-			} else if (strcmp (_tmp18_, "FileExists") == 0) {
+			} else if (strcmp (_tmp11_, "FileExists") == 0) {
 				_ecode = DBUS_GERROR_FILE_EXISTS;
-			} else if (strcmp (_tmp18_, "UnknownMethod") == 0) {
+			} else if (strcmp (_tmp11_, "UnknownMethod") == 0) {
 				_ecode = DBUS_GERROR_UNKNOWN_METHOD;
-			} else if (strcmp (_tmp18_, "TimedOut") == 0) {
+			} else if (strcmp (_tmp11_, "TimedOut") == 0) {
 				_ecode = DBUS_GERROR_TIMED_OUT;
-			} else if (strcmp (_tmp18_, "MatchRuleNotFound") == 0) {
+			} else if (strcmp (_tmp11_, "MatchRuleNotFound") == 0) {
 				_ecode = DBUS_GERROR_MATCH_RULE_NOT_FOUND;
-			} else if (strcmp (_tmp18_, "MatchRuleInvalid") == 0) {
+			} else if (strcmp (_tmp11_, "MatchRuleInvalid") == 0) {
 				_ecode = DBUS_GERROR_MATCH_RULE_INVALID;
-			} else if (strcmp (_tmp18_, "Spawn.ExecFailed") == 0) {
+			} else if (strcmp (_tmp11_, "Spawn.ExecFailed") == 0) {
 				_ecode = DBUS_GERROR_SPAWN_EXEC_FAILED;
-			} else if (strcmp (_tmp18_, "Spawn.ForkFailed") == 0) {
+			} else if (strcmp (_tmp11_, "Spawn.ForkFailed") == 0) {
 				_ecode = DBUS_GERROR_SPAWN_FORK_FAILED;
-			} else if (strcmp (_tmp18_, "Spawn.ChildExited") == 0) {
+			} else if (strcmp (_tmp11_, "Spawn.ChildExited") == 0) {
 				_ecode = DBUS_GERROR_SPAWN_CHILD_EXITED;
-			} else if (strcmp (_tmp18_, "Spawn.ChildSignaled") == 0) {
+			} else if (strcmp (_tmp11_, "Spawn.ChildSignaled") == 0) {
 				_ecode = DBUS_GERROR_SPAWN_CHILD_SIGNALED;
-			} else if (strcmp (_tmp18_, "Spawn.Failed") == 0) {
+			} else if (strcmp (_tmp11_, "Spawn.Failed") == 0) {
 				_ecode = DBUS_GERROR_SPAWN_FAILED;
-			} else if (strcmp (_tmp18_, "UnixProcessIdUnknown") == 0) {
+			} else if (strcmp (_tmp11_, "UnixProcessIdUnknown") == 0) {
 				_ecode = DBUS_GERROR_UNIX_PROCESS_ID_UNKNOWN;
-			} else if (strcmp (_tmp18_, "InvalidSignature") == 0) {
+			} else if (strcmp (_tmp11_, "InvalidSignature") == 0) {
 				_ecode = DBUS_GERROR_INVALID_SIGNATURE;
-			} else if (strcmp (_tmp18_, "InvalidFileContent") == 0) {
+			} else if (strcmp (_tmp11_, "InvalidFileContent") == 0) {
 				_ecode = DBUS_GERROR_INVALID_FILE_CONTENT;
-			} else if (strcmp (_tmp18_, "SELinuxSecurityContextUnknown") == 0) {
+			} else if (strcmp (_tmp11_, "SELinuxSecurityContextUnknown") == 0) {
 				_ecode = DBUS_GERROR_SELINUX_SECURITY_CONTEXT_UNKNOWN;
-			} else if (strcmp (_tmp18_, "RemoteException") == 0) {
+			} else if (strcmp (_tmp11_, "RemoteException") == 0) {
 				_ecode = DBUS_GERROR_REMOTE_EXCEPTION;
 			}
 		}
-		g_set_error_literal (error, _edomain, _ecode, _dbus_error.message);
+		g_set_error (error, _edomain, _ecode, "%s", _dbus_error.message);
 		dbus_error_free (&_dbus_error);
 		return NULL;
 	}
@@ -1232,33 +762,33 @@ static char** rygel_tracker_keywords_iface_dbus_proxy_get_list_finish (RygelTrac
 	dbus_message_iter_init (_reply, &_iter);
 	_result_length1 = 0;
 	_result_length2 = 0;
-	_tmp20_ = g_new (char*, 5);
-	_tmp20__length = 0;
-	_tmp20__size = 4;
-	_tmp20__length1 = 0;
-	dbus_message_iter_recurse (&_iter, &_tmp21_);
-	for (; dbus_message_iter_get_arg_type (&_tmp21_); _tmp20__length1++) {
-		int _tmp20__length2;
-		DBusMessageIter _tmp22_;
-		_tmp20__length2 = 0;
-		dbus_message_iter_recurse (&_tmp21_, &_tmp22_);
-		for (; dbus_message_iter_get_arg_type (&_tmp22_); _tmp20__length2++) {
-			const char* _tmp23_;
-			if (_tmp20__size == _tmp20__length) {
-				_tmp20__size = 2 * _tmp20__size;
-				_tmp20_ = g_renew (char*, _tmp20_, _tmp20__size + 1);
+	_tmp12_ = g_new (char*, 5);
+	_tmp12__length = 0;
+	_tmp12__size = 4;
+	_tmp12__length1 = 0;
+	dbus_message_iter_recurse (&_iter, &_tmp13_);
+	for (; dbus_message_iter_get_arg_type (&_tmp13_); _tmp12__length1++) {
+		int _tmp12__length2;
+		DBusMessageIter _tmp14_;
+		_tmp12__length2 = 0;
+		dbus_message_iter_recurse (&_tmp13_, &_tmp14_);
+		for (; dbus_message_iter_get_arg_type (&_tmp14_); _tmp12__length2++) {
+			const char* _tmp15_;
+			if (_tmp12__size == _tmp12__length) {
+				_tmp12__size = 2 * _tmp12__size;
+				_tmp12_ = g_renew (char*, _tmp12_, _tmp12__size + 1);
 			}
-			dbus_message_iter_get_basic (&_tmp22_, &_tmp23_);
-			dbus_message_iter_next (&_tmp22_);
-			_tmp20_[_tmp20__length++] = g_strdup (_tmp23_);
+			dbus_message_iter_get_basic (&_tmp14_, &_tmp15_);
+			dbus_message_iter_next (&_tmp14_);
+			_tmp12_[_tmp12__length++] = g_strdup (_tmp15_);
 		}
-		_result_length2 = _tmp20__length2;
-		dbus_message_iter_next (&_tmp21_);
+		_result_length2 = _tmp12__length2;
+		dbus_message_iter_next (&_tmp13_);
 	}
-	_result_length1 = _tmp20__length1;
-	_tmp20_[_tmp20__length] = NULL;
+	_result_length1 = _tmp12__length1;
+	_tmp12_[_tmp12__length] = NULL;
 	dbus_message_iter_next (&_iter);
-	_result = _tmp20_;
+	_result = _tmp12_;
 	*result_length1 = _result_length1;
 	*result_length2 = _result_length2;
 	dbus_message_unref (_reply);
@@ -1266,57 +796,57 @@ static char** rygel_tracker_keywords_iface_dbus_proxy_get_list_finish (RygelTrac
 }
 
 
-static void rygel_tracker_keywords_iface_dbus_proxy_rygel_tracker_keywords_iface__interface_init (RygelTrackerKeywordsIfaceIface* iface) {
-	iface->get_list = rygel_tracker_keywords_iface_dbus_proxy_get_list_async;
-	iface->get_list_finish = rygel_tracker_keywords_iface_dbus_proxy_get_list_finish;
+static void rygel_tracker_stats_iface_dbus_proxy_rygel_tracker_stats_iface__interface_init (RygelTrackerStatsIfaceIface* iface) {
+	iface->get_statistics = rygel_tracker_stats_iface_dbus_proxy_get_statistics_async;
+	iface->get_statistics_finish = rygel_tracker_stats_iface_dbus_proxy_get_statistics_finish;
 }
 
 
-static void rygel_tracker_keywords_iface_dbus_proxy_get_property (GObject * object, guint property_id, GValue * value, GParamSpec * pspec) {
+static void rygel_tracker_stats_iface_dbus_proxy_get_property (GObject * object, guint property_id, GValue * value, GParamSpec * pspec) {
 }
 
 
-static void rygel_tracker_keywords_iface_dbus_proxy_set_property (GObject * object, guint property_id, const GValue * value, GParamSpec * pspec) {
+static void rygel_tracker_stats_iface_dbus_proxy_set_property (GObject * object, guint property_id, const GValue * value, GParamSpec * pspec) {
 }
 
 
-#line 49 "rygel-tracker-plugin-factory.vala"
-void rygel_tracker_metadata_iface_get_unique_values (RygelTrackerMetadataIface* self, const char* service, char** meta_types, int meta_types_length1, const char* query, gboolean descending, gint offset, gint max_hits, GAsyncReadyCallback _callback_, gpointer _user_data_) {
-#line 49 "rygel-tracker-plugin-factory.vala"
-	RYGEL_TRACKER_METADATA_IFACE_GET_INTERFACE (self)->get_unique_values (self, service, meta_types, meta_types_length1, query, descending, offset, max_hits, _callback_, _user_data_);
-#line 1288 "rygel-tracker-interfaces.c"
+#line 50 "rygel-tracker-plugin-factory.vala"
+void rygel_tracker_resources_iface_sparql_query (RygelTrackerResourcesIface* self, const char* query, GAsyncReadyCallback _callback_, gpointer _user_data_) {
+#line 50 "rygel-tracker-plugin-factory.vala"
+	RYGEL_TRACKER_RESOURCES_IFACE_GET_INTERFACE (self)->sparql_query (self, query, _callback_, _user_data_);
+#line 818 "rygel-tracker-interfaces.c"
 }
 
 
-#line 49 "rygel-tracker-plugin-factory.vala"
-char** rygel_tracker_metadata_iface_get_unique_values_finish (RygelTrackerMetadataIface* self, GAsyncResult* _res_, int* result_length1, int* result_length2, GError** error) {
-#line 49 "rygel-tracker-plugin-factory.vala"
-	return RYGEL_TRACKER_METADATA_IFACE_GET_INTERFACE (self)->get_unique_values_finish (self, _res_, result_length1, result_length2, error);
-#line 1296 "rygel-tracker-interfaces.c"
+#line 50 "rygel-tracker-plugin-factory.vala"
+char** rygel_tracker_resources_iface_sparql_query_finish (RygelTrackerResourcesIface* self, GAsyncResult* _res_, int* result_length1, int* result_length2, GError** error) {
+#line 50 "rygel-tracker-plugin-factory.vala"
+	return RYGEL_TRACKER_RESOURCES_IFACE_GET_INTERFACE (self)->sparql_query_finish (self, _res_, result_length1, result_length2, error);
+#line 826 "rygel-tracker-interfaces.c"
 }
 
 
-#line 49 "rygel-tracker-plugin-factory.vala"
-void rygel_tracker_metadata_iface_get (RygelTrackerMetadataIface* self, const char* service_type, const char* uri, char** keys, int keys_length1, GAsyncReadyCallback _callback_, gpointer _user_data_) {
-#line 49 "rygel-tracker-plugin-factory.vala"
-	RYGEL_TRACKER_METADATA_IFACE_GET_INTERFACE (self)->get (self, service_type, uri, keys, keys_length1, _callback_, _user_data_);
-#line 1304 "rygel-tracker-interfaces.c"
+#line 50 "rygel-tracker-plugin-factory.vala"
+void rygel_tracker_resources_iface_sparql_update_blank (RygelTrackerResourcesIface* self, const char* query, GAsyncReadyCallback _callback_, gpointer _user_data_) {
+#line 50 "rygel-tracker-plugin-factory.vala"
+	RYGEL_TRACKER_RESOURCES_IFACE_GET_INTERFACE (self)->sparql_update_blank (self, query, _callback_, _user_data_);
+#line 834 "rygel-tracker-interfaces.c"
 }
 
 
-#line 49 "rygel-tracker-plugin-factory.vala"
-char** rygel_tracker_metadata_iface_get_finish (RygelTrackerMetadataIface* self, GAsyncResult* _res_, int* result_length1, GError** error) {
-#line 49 "rygel-tracker-plugin-factory.vala"
-	return RYGEL_TRACKER_METADATA_IFACE_GET_INTERFACE (self)->get_finish (self, _res_, result_length1, error);
-#line 1312 "rygel-tracker-interfaces.c"
+#line 50 "rygel-tracker-plugin-factory.vala"
+GHashTable** rygel_tracker_resources_iface_sparql_update_blank_finish (RygelTrackerResourcesIface* self, GAsyncResult* _res_, int* result_length1, int* result_length2, GError** error) {
+#line 50 "rygel-tracker-plugin-factory.vala"
+	return RYGEL_TRACKER_RESOURCES_IFACE_GET_INTERFACE (self)->sparql_update_blank_finish (self, _res_, result_length1, result_length2, error);
+#line 842 "rygel-tracker-interfaces.c"
 }
 
 
-void _rygel_tracker_metadata_iface_dbus_unregister (DBusConnection* connection, void* _user_data_) {
+void _rygel_tracker_resources_iface_dbus_unregister (DBusConnection* connection, void* _user_data_) {
 }
 
 
-static DBusHandlerResult _dbus_rygel_tracker_metadata_iface_introspect (RygelTrackerMetadataIface* self, DBusConnection* connection, DBusMessage* message) {
+static DBusHandlerResult _dbus_rygel_tracker_resources_iface_introspect (RygelTrackerResourcesIface* self, DBusConnection* connection, DBusMessage* message) {
 	DBusMessage* reply;
 	DBusMessageIter iter;
 	GString* xml_data;
@@ -1325,7 +855,7 @@ static DBusHandlerResult _dbus_rygel_tracker_metadata_iface_introspect (RygelTra
 	reply = dbus_message_new_method_return (message);
 	dbus_message_iter_init_append (reply, &iter);
 	xml_data = g_string_new ("<!DOCTYPE node PUBLIC \"-//freedesktop//DTD D-BUS Object Introspection 1.0//EN\" \"http://www.freedesktop.org/standards/dbus/1.0/introspect.dtd\">\n");
-	g_string_append (xml_data, "<node>\n<interface name=\"org.freedesktop.DBus.Introspectable\">\n  <method name=\"Introspect\">\n    <arg name=\"data\" direction=\"out\" type=\"s\"/>\n  </method>\n</interface>\n<interface name=\"org.freedesktop.DBus.Properties\">\n  <method name=\"Get\">\n    <arg name=\"interface\" direction=\"in\" type=\"s\"/>\n    <arg name=\"propname\" direction=\"in\" type=\"s\"/>\n    <arg name=\"value\" direction=\"out\" type=\"v\"/>\n  </method>\n  <method name=\"Set\">\n    <arg name=\"interface\" direction=\"in\" type=\"s\"/>\n    <arg name=\"propname\" direction=\"in\" type=\"s\"/>\n    <arg name=\"value\" direction=\"in\" type=\"v\"/>\n  </method>\n  <method name=\"GetAll\">\n    <arg name=\"interface\" direction=\"in\" type=\"s\"/>\n    <arg name=\"props\" direction=\"out\" type=\"a{sv}\"/>\n  </method>\n</interface>\n<interface name=\"org.freedesktop.Tracker.Metadata\">\n  <method name=\"GetUniqueValues\">\n    <arg name=\"service\" type=\"s\" direction=\"in\"/>\n    <arg name=\"meta_types\" type=\"as\" direction=\"in\"/>\n    <arg name=\"query\" type=\"s\" direction=\"in\"/>\n    <arg name=\"descending\" type=\"b\" direction=\"in\"/>\n    <arg name=\"offset\" type=\"i\" direction=\"in\"/>\n    <arg name=\"max_hits\" type=\"i\" direction=\"in\"/>\n    <arg name=\"result\" type=\"aas\" direction=\"out\"/>\n  </method>\n  <method name=\"Get\">\n    <arg name=\"service_type\" type=\"s\" direction=\"in\"/>\n    <arg name=\"uri\" type=\"s\" direction=\"in\"/>\n    <arg name=\"keys\" type=\"as\" direction=\"in\"/>\n    <arg name=\"result\" type=\"as\" direction=\"out\"/>\n  </method>\n</interface>\n");
+	g_string_append (xml_data, "<node>\n<interface name=\"org.freedesktop.DBus.Introspectable\">\n  <method name=\"Introspect\">\n    <arg name=\"data\" direction=\"out\" type=\"s\"/>\n  </method>\n</interface>\n<interface name=\"org.freedesktop.DBus.Properties\">\n  <method name=\"Get\">\n    <arg name=\"interface\" direction=\"in\" type=\"s\"/>\n    <arg name=\"propname\" direction=\"in\" type=\"s\"/>\n    <arg name=\"value\" direction=\"out\" type=\"v\"/>\n  </method>\n  <method name=\"Set\">\n    <arg name=\"interface\" direction=\"in\" type=\"s\"/>\n    <arg name=\"propname\" direction=\"in\" type=\"s\"/>\n    <arg name=\"value\" direction=\"in\" type=\"v\"/>\n  </method>\n  <method name=\"GetAll\">\n    <arg name=\"interface\" direction=\"in\" type=\"s\"/>\n    <arg name=\"props\" direction=\"out\" type=\"a{sv}\"/>\n  </method>\n</interface>\n<interface name=\"org.freedesktop.Tracker1.Resources\">\n  <method name=\"SparqlQuery\">\n    <arg name=\"query\" type=\"s\" direction=\"in\"/>\n    <arg name=\"result\" type=\"aas\" direction=\"out\"/>\n  </method>\n  <method name=\"SparqlUpdateBlank\">\n    <arg name=\"query\" type=\"s\" direction=\"in\"/>\n    <arg name=\"result\" type=\"aaa{ss}\" direction=\"out\"/>\n  </method>\n</interface>\n");
 	dbus_connection_list_registered (connection, g_object_get_data ((GObject *) self, "dbus_object_path"), &children);
 	for (i = 0; children[i]; i++) {
 		g_string_append_printf (xml_data, "<node name=\"%s\"/>\n", children[i]);
@@ -1344,21 +874,21 @@ static DBusHandlerResult _dbus_rygel_tracker_metadata_iface_introspect (RygelTra
 }
 
 
-static DBusHandlerResult _dbus_rygel_tracker_metadata_iface_property_get_all (RygelTrackerMetadataIface* self, DBusConnection* connection, DBusMessage* message) {
+static DBusHandlerResult _dbus_rygel_tracker_resources_iface_property_get_all (RygelTrackerResourcesIface* self, DBusConnection* connection, DBusMessage* message) {
 	DBusMessage* reply;
 	DBusMessageIter iter, reply_iter, subiter;
 	char* interface_name;
-	const char* _tmp24_;
+	const char* _tmp16_;
 	if (strcmp (dbus_message_get_signature (message), "s")) {
 		return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
 	}
 	dbus_message_iter_init (message, &iter);
 	reply = dbus_message_new_method_return (message);
 	dbus_message_iter_init_append (reply, &reply_iter);
-	dbus_message_iter_get_basic (&iter, &_tmp24_);
+	dbus_message_iter_get_basic (&iter, &_tmp16_);
 	dbus_message_iter_next (&iter);
-	interface_name = g_strdup (_tmp24_);
-	if (strcmp (interface_name, "org.freedesktop.Tracker.Metadata") == 0) {
+	interface_name = g_strdup (_tmp16_);
+	if (strcmp (interface_name, "org.freedesktop.Tracker1.Resources") == 0) {
 		dbus_message_iter_open_container (&reply_iter, DBUS_TYPE_ARRAY, "{sv}", &subiter);
 		dbus_message_iter_close_container (&reply_iter, &subiter);
 	} else {
@@ -1376,77 +906,28 @@ static DBusHandlerResult _dbus_rygel_tracker_metadata_iface_property_get_all (Ry
 }
 
 
-static DBusHandlerResult _dbus_rygel_tracker_metadata_iface_get_unique_values (RygelTrackerMetadataIface* self, DBusConnection* connection, DBusMessage* message) {
+static DBusHandlerResult _dbus_rygel_tracker_resources_iface_sparql_query (RygelTrackerResourcesIface* self, DBusConnection* connection, DBusMessage* message) {
 	DBusMessageIter iter;
-	char* service = NULL;
-	const char* _tmp25_;
-	char** meta_types = NULL;
-	int meta_types_length1;
-	char** _tmp26_;
-	int _tmp26__length;
-	int _tmp26__size;
-	int _tmp26__length1;
-	DBusMessageIter _tmp27_;
 	char* query = NULL;
-	const char* _tmp29_;
-	gboolean descending = FALSE;
-	dbus_bool_t _tmp30_;
-	gint offset = 0;
-	dbus_int32_t _tmp31_;
-	gint max_hits = 0;
-	dbus_int32_t _tmp32_;
+	const char* _tmp17_;
 	gpointer * _user_data_;
-	if (strcmp (dbus_message_get_signature (message), "sassbii")) {
+	if (strcmp (dbus_message_get_signature (message), "s")) {
 		return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
 	}
 	dbus_message_iter_init (message, &iter);
-	dbus_message_iter_get_basic (&iter, &_tmp25_);
+	dbus_message_iter_get_basic (&iter, &_tmp17_);
 	dbus_message_iter_next (&iter);
-	service = g_strdup (_tmp25_);
-	meta_types_length1 = 0;
-	_tmp26_ = g_new (char*, 5);
-	_tmp26__length = 0;
-	_tmp26__size = 4;
-	_tmp26__length1 = 0;
-	dbus_message_iter_recurse (&iter, &_tmp27_);
-	for (; dbus_message_iter_get_arg_type (&_tmp27_); _tmp26__length1++) {
-		const char* _tmp28_;
-		if (_tmp26__size == _tmp26__length) {
-			_tmp26__size = 2 * _tmp26__size;
-			_tmp26_ = g_renew (char*, _tmp26_, _tmp26__size + 1);
-		}
-		dbus_message_iter_get_basic (&_tmp27_, &_tmp28_);
-		dbus_message_iter_next (&_tmp27_);
-		_tmp26_[_tmp26__length++] = g_strdup (_tmp28_);
-	}
-	meta_types_length1 = _tmp26__length1;
-	_tmp26_[_tmp26__length] = NULL;
-	dbus_message_iter_next (&iter);
-	meta_types = _tmp26_;
-	dbus_message_iter_get_basic (&iter, &_tmp29_);
-	dbus_message_iter_next (&iter);
-	query = g_strdup (_tmp29_);
-	dbus_message_iter_get_basic (&iter, &_tmp30_);
-	dbus_message_iter_next (&iter);
-	descending = _tmp30_;
-	dbus_message_iter_get_basic (&iter, &_tmp31_);
-	dbus_message_iter_next (&iter);
-	offset = _tmp31_;
-	dbus_message_iter_get_basic (&iter, &_tmp32_);
-	dbus_message_iter_next (&iter);
-	max_hits = _tmp32_;
+	query = g_strdup (_tmp17_);
 	_user_data_ = g_new0 (gpointer, 2);
 	_user_data_[0] = dbus_connection_ref (connection);
 	_user_data_[1] = dbus_message_ref (message);
-	rygel_tracker_metadata_iface_get_unique_values (self, service, meta_types, meta_types_length1, query, descending, offset, max_hits, _dbus_rygel_tracker_metadata_iface_get_unique_values_ready, _user_data_);
-	_g_free0 (service);
-	meta_types = (_vala_array_free (meta_types, meta_types_length1, (GDestroyNotify) g_free), NULL);
+	rygel_tracker_resources_iface_sparql_query (self, query, _dbus_rygel_tracker_resources_iface_sparql_query_ready, _user_data_);
 	_g_free0 (query);
 	return DBUS_HANDLER_RESULT_HANDLED;
 }
 
 
-static void _dbus_rygel_tracker_metadata_iface_get_unique_values_ready (GObject * source_object, GAsyncResult * _res_, gpointer * _user_data_) {
+static void _dbus_rygel_tracker_resources_iface_sparql_query_ready (GObject * source_object, GAsyncResult * _res_, gpointer * _user_data_) {
 	DBusConnection * connection;
 	DBusMessage * message;
 	DBusMessageIter iter;
@@ -1455,15 +936,15 @@ static void _dbus_rygel_tracker_metadata_iface_get_unique_values_ready (GObject 
 	int result_length1;
 	int result_length2;
 	DBusMessage* reply;
-	char** _tmp33_;
-	DBusMessageIter _tmp34_;
-	int _tmp35_;
+	char** _tmp18_;
+	DBusMessageIter _tmp19_;
+	int _tmp20_;
 	connection = _user_data_[0];
 	message = _user_data_[1];
 	error = NULL;
 	result_length1 = 0;
 	result_length2 = 0;
-	result = rygel_tracker_metadata_iface_get_unique_values_finish (source_object, _res_, &result_length1, &result_length2, &error);
+	result = rygel_tracker_resources_iface_sparql_query_finish (source_object, _res_, &result_length1, &result_length2, &error);
 	if (error) {
 		if (error->domain == DBUS_GERROR) {
 			switch (error->code) {
@@ -1574,21 +1055,21 @@ static void _dbus_rygel_tracker_metadata_iface_get_unique_values_ready (GObject 
 	}
 	reply = dbus_message_new_method_return (message);
 	dbus_message_iter_init_append (reply, &iter);
-	_tmp33_ = result;
-	dbus_message_iter_open_container (&iter, DBUS_TYPE_ARRAY, "as", &_tmp34_);
-	for (_tmp35_ = 0; _tmp35_ < result_length1; _tmp35_++) {
-		DBusMessageIter _tmp36_;
-		int _tmp37_;
-		dbus_message_iter_open_container (&_tmp34_, DBUS_TYPE_ARRAY, "s", &_tmp36_);
-		for (_tmp37_ = 0; _tmp37_ < result_length2; _tmp37_++) {
-			const char* _tmp38_;
-			_tmp38_ = *_tmp33_;
-			dbus_message_iter_append_basic (&_tmp36_, DBUS_TYPE_STRING, &_tmp38_);
-			_tmp33_++;
+	_tmp18_ = result;
+	dbus_message_iter_open_container (&iter, DBUS_TYPE_ARRAY, "as", &_tmp19_);
+	for (_tmp20_ = 0; _tmp20_ < result_length1; _tmp20_++) {
+		DBusMessageIter _tmp21_;
+		int _tmp22_;
+		dbus_message_iter_open_container (&_tmp19_, DBUS_TYPE_ARRAY, "s", &_tmp21_);
+		for (_tmp22_ = 0; _tmp22_ < result_length2; _tmp22_++) {
+			const char* _tmp23_;
+			_tmp23_ = *_tmp18_;
+			dbus_message_iter_append_basic (&_tmp21_, DBUS_TYPE_STRING, &_tmp23_);
+			_tmp18_++;
 		}
-		dbus_message_iter_close_container (&_tmp34_, &_tmp36_);
+		dbus_message_iter_close_container (&_tmp19_, &_tmp21_);
 	}
-	dbus_message_iter_close_container (&iter, &_tmp34_);
+	dbus_message_iter_close_container (&iter, &_tmp19_);
 	result = (_vala_array_free (result,  result_length1 *  result_length2, (GDestroyNotify) g_free), NULL);
 	dbus_connection_send (connection, reply, NULL);
 	dbus_message_unref (reply);
@@ -1598,77 +1079,45 @@ static void _dbus_rygel_tracker_metadata_iface_get_unique_values_ready (GObject 
 }
 
 
-static DBusHandlerResult _dbus_rygel_tracker_metadata_iface_get (RygelTrackerMetadataIface* self, DBusConnection* connection, DBusMessage* message) {
+static DBusHandlerResult _dbus_rygel_tracker_resources_iface_sparql_update_blank (RygelTrackerResourcesIface* self, DBusConnection* connection, DBusMessage* message) {
 	DBusMessageIter iter;
-	char* service_type = NULL;
-	const char* _tmp39_;
-	char* uri = NULL;
-	const char* _tmp40_;
-	char** keys = NULL;
-	int keys_length1;
-	char** _tmp41_;
-	int _tmp41__length;
-	int _tmp41__size;
-	int _tmp41__length1;
-	DBusMessageIter _tmp42_;
+	char* query = NULL;
+	const char* _tmp24_;
 	gpointer * _user_data_;
-	if (strcmp (dbus_message_get_signature (message), "ssas")) {
+	if (strcmp (dbus_message_get_signature (message), "s")) {
 		return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
 	}
 	dbus_message_iter_init (message, &iter);
-	dbus_message_iter_get_basic (&iter, &_tmp39_);
+	dbus_message_iter_get_basic (&iter, &_tmp24_);
 	dbus_message_iter_next (&iter);
-	service_type = g_strdup (_tmp39_);
-	dbus_message_iter_get_basic (&iter, &_tmp40_);
-	dbus_message_iter_next (&iter);
-	uri = g_strdup (_tmp40_);
-	keys_length1 = 0;
-	_tmp41_ = g_new (char*, 5);
-	_tmp41__length = 0;
-	_tmp41__size = 4;
-	_tmp41__length1 = 0;
-	dbus_message_iter_recurse (&iter, &_tmp42_);
-	for (; dbus_message_iter_get_arg_type (&_tmp42_); _tmp41__length1++) {
-		const char* _tmp43_;
-		if (_tmp41__size == _tmp41__length) {
-			_tmp41__size = 2 * _tmp41__size;
-			_tmp41_ = g_renew (char*, _tmp41_, _tmp41__size + 1);
-		}
-		dbus_message_iter_get_basic (&_tmp42_, &_tmp43_);
-		dbus_message_iter_next (&_tmp42_);
-		_tmp41_[_tmp41__length++] = g_strdup (_tmp43_);
-	}
-	keys_length1 = _tmp41__length1;
-	_tmp41_[_tmp41__length] = NULL;
-	dbus_message_iter_next (&iter);
-	keys = _tmp41_;
+	query = g_strdup (_tmp24_);
 	_user_data_ = g_new0 (gpointer, 2);
 	_user_data_[0] = dbus_connection_ref (connection);
 	_user_data_[1] = dbus_message_ref (message);
-	rygel_tracker_metadata_iface_get (self, service_type, uri, keys, keys_length1, _dbus_rygel_tracker_metadata_iface_get_ready, _user_data_);
-	_g_free0 (service_type);
-	_g_free0 (uri);
-	keys = (_vala_array_free (keys, keys_length1, (GDestroyNotify) g_free), NULL);
+	rygel_tracker_resources_iface_sparql_update_blank (self, query, _dbus_rygel_tracker_resources_iface_sparql_update_blank_ready, _user_data_);
+	_g_free0 (query);
 	return DBUS_HANDLER_RESULT_HANDLED;
 }
 
 
-static void _dbus_rygel_tracker_metadata_iface_get_ready (GObject * source_object, GAsyncResult * _res_, gpointer * _user_data_) {
+static void _dbus_rygel_tracker_resources_iface_sparql_update_blank_ready (GObject * source_object, GAsyncResult * _res_, gpointer * _user_data_) {
 	DBusConnection * connection;
 	DBusMessage * message;
 	DBusMessageIter iter;
 	GError* error;
-	char** result;
+	GHashTable** result;
 	int result_length1;
+	int result_length2;
 	DBusMessage* reply;
-	char** _tmp44_;
-	DBusMessageIter _tmp45_;
-	int _tmp46_;
+	GHashTable** _tmp25_;
+	DBusMessageIter _tmp26_;
+	int _tmp27_;
 	connection = _user_data_[0];
 	message = _user_data_[1];
 	error = NULL;
 	result_length1 = 0;
-	result = rygel_tracker_metadata_iface_get_finish (source_object, _res_, &result_length1, &error);
+	result_length2 = 0;
+	result = rygel_tracker_resources_iface_sparql_update_blank_finish (source_object, _res_, &result_length1, &result_length2, &error);
 	if (error) {
 		if (error->domain == DBUS_GERROR) {
 			switch (error->code) {
@@ -1779,16 +1228,39 @@ static void _dbus_rygel_tracker_metadata_iface_get_ready (GObject * source_objec
 	}
 	reply = dbus_message_new_method_return (message);
 	dbus_message_iter_init_append (reply, &iter);
-	_tmp44_ = result;
-	dbus_message_iter_open_container (&iter, DBUS_TYPE_ARRAY, "s", &_tmp45_);
-	for (_tmp46_ = 0; _tmp46_ < result_length1; _tmp46_++) {
-		const char* _tmp47_;
-		_tmp47_ = *_tmp44_;
-		dbus_message_iter_append_basic (&_tmp45_, DBUS_TYPE_STRING, &_tmp47_);
-		_tmp44_++;
+	_tmp25_ = result;
+	dbus_message_iter_open_container (&iter, DBUS_TYPE_ARRAY, "aa{ss}", &_tmp26_);
+	for (_tmp27_ = 0; _tmp27_ < result_length1; _tmp27_++) {
+		DBusMessageIter _tmp28_;
+		int _tmp29_;
+		dbus_message_iter_open_container (&_tmp26_, DBUS_TYPE_ARRAY, "a{ss}", &_tmp28_);
+		for (_tmp29_ = 0; _tmp29_ < result_length2; _tmp29_++) {
+			DBusMessageIter _tmp30_, _tmp31_;
+			GHashTableIter _tmp32_;
+			gpointer _tmp33_, _tmp34_;
+			dbus_message_iter_open_container (&_tmp28_, DBUS_TYPE_ARRAY, "{ss}", &_tmp30_);
+			g_hash_table_iter_init (&_tmp32_, *_tmp25_);
+			while (g_hash_table_iter_next (&_tmp32_, &_tmp33_, &_tmp34_)) {
+				char* _key;
+				char* _value;
+				const char* _tmp35_;
+				const char* _tmp36_;
+				dbus_message_iter_open_container (&_tmp30_, DBUS_TYPE_DICT_ENTRY, NULL, &_tmp31_);
+				_key = (char*) _tmp33_;
+				_value = (char*) _tmp34_;
+				_tmp35_ = _key;
+				dbus_message_iter_append_basic (&_tmp31_, DBUS_TYPE_STRING, &_tmp35_);
+				_tmp36_ = _value;
+				dbus_message_iter_append_basic (&_tmp31_, DBUS_TYPE_STRING, &_tmp36_);
+				dbus_message_iter_close_container (&_tmp30_, &_tmp31_);
+			}
+			dbus_message_iter_close_container (&_tmp28_, &_tmp30_);
+			_tmp25_++;
+		}
+		dbus_message_iter_close_container (&_tmp26_, &_tmp28_);
 	}
-	dbus_message_iter_close_container (&iter, &_tmp45_);
-	result = (_vala_array_free (result,  result_length1, (GDestroyNotify) g_free), NULL);
+	dbus_message_iter_close_container (&iter, &_tmp26_);
+	result = (_vala_array_free (result,  result_length1 *  result_length2, (GDestroyNotify) g_hash_table_unref), NULL);
 	dbus_connection_send (connection, reply, NULL);
 	dbus_message_unref (reply);
 	dbus_connection_unref (connection);
@@ -1797,17 +1269,17 @@ static void _dbus_rygel_tracker_metadata_iface_get_ready (GObject * source_objec
 }
 
 
-DBusHandlerResult rygel_tracker_metadata_iface_dbus_message (DBusConnection* connection, DBusMessage* message, void* object) {
+DBusHandlerResult rygel_tracker_resources_iface_dbus_message (DBusConnection* connection, DBusMessage* message, void* object) {
 	DBusHandlerResult result;
 	result = DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
 	if (dbus_message_is_method_call (message, "org.freedesktop.DBus.Introspectable", "Introspect")) {
-		result = _dbus_rygel_tracker_metadata_iface_introspect (object, connection, message);
+		result = _dbus_rygel_tracker_resources_iface_introspect (object, connection, message);
 	} else if (dbus_message_is_method_call (message, "org.freedesktop.DBus.Properties", "GetAll")) {
-		result = _dbus_rygel_tracker_metadata_iface_property_get_all (object, connection, message);
-	} else if (dbus_message_is_method_call (message, "org.freedesktop.Tracker.Metadata", "GetUniqueValues")) {
-		result = _dbus_rygel_tracker_metadata_iface_get_unique_values (object, connection, message);
-	} else if (dbus_message_is_method_call (message, "org.freedesktop.Tracker.Metadata", "Get")) {
-		result = _dbus_rygel_tracker_metadata_iface_get (object, connection, message);
+		result = _dbus_rygel_tracker_resources_iface_property_get_all (object, connection, message);
+	} else if (dbus_message_is_method_call (message, "org.freedesktop.Tracker1.Resources", "SparqlQuery")) {
+		result = _dbus_rygel_tracker_resources_iface_sparql_query (object, connection, message);
+	} else if (dbus_message_is_method_call (message, "org.freedesktop.Tracker1.Resources", "SparqlUpdateBlank")) {
+		result = _dbus_rygel_tracker_resources_iface_sparql_update_blank (object, connection, message);
 	}
 	if (result == DBUS_HANDLER_RESULT_HANDLED) {
 		return result;
@@ -1817,53 +1289,55 @@ DBusHandlerResult rygel_tracker_metadata_iface_dbus_message (DBusConnection* con
 }
 
 
-void rygel_tracker_metadata_iface_dbus_register_object (DBusConnection* connection, const char* path, void* object) {
+void rygel_tracker_resources_iface_dbus_register_object (DBusConnection* connection, const char* path, void* object) {
 	if (!g_object_get_data (object, "dbus_object_path")) {
 		g_object_set_data (object, "dbus_object_path", g_strdup (path));
-		dbus_connection_register_object_path (connection, path, &_rygel_tracker_metadata_iface_dbus_path_vtable, object);
+		dbus_connection_register_object_path (connection, path, &_rygel_tracker_resources_iface_dbus_path_vtable, object);
 		g_object_weak_ref (object, _vala_dbus_unregister_object, connection);
 	}
 }
 
 
-static void rygel_tracker_metadata_iface_base_init (RygelTrackerMetadataIfaceIface * iface) {
+static void rygel_tracker_resources_iface_base_init (RygelTrackerResourcesIfaceIface * iface) {
 	static gboolean initialized = FALSE;
 	if (!initialized) {
 		initialized = TRUE;
-		g_type_set_qdata (RYGEL_TYPE_TRACKER_METADATA_IFACE, g_quark_from_static_string ("DBusObjectVTable"), (void*) (&_rygel_tracker_metadata_iface_dbus_vtable));
+		g_type_set_qdata (RYGEL_TYPE_TRACKER_RESOURCES_IFACE, g_quark_from_static_string ("DBusObjectVTable"), (void*) (&_rygel_tracker_resources_iface_dbus_vtable));
 	}
 }
 
 
-GType rygel_tracker_metadata_iface_get_type (void) {
-	static GType rygel_tracker_metadata_iface_type_id = 0;
-	if (rygel_tracker_metadata_iface_type_id == 0) {
-		static const GTypeInfo g_define_type_info = { sizeof (RygelTrackerMetadataIfaceIface), (GBaseInitFunc) rygel_tracker_metadata_iface_base_init, (GBaseFinalizeFunc) NULL, (GClassInitFunc) NULL, (GClassFinalizeFunc) NULL, NULL, 0, 0, (GInstanceInitFunc) NULL, NULL };
-		rygel_tracker_metadata_iface_type_id = g_type_register_static (G_TYPE_INTERFACE, "RygelTrackerMetadataIface", &g_define_type_info, 0);
-		g_type_interface_add_prerequisite (rygel_tracker_metadata_iface_type_id, DBUS_TYPE_G_PROXY);
-		g_type_set_qdata (rygel_tracker_metadata_iface_type_id, g_quark_from_string ("ValaDBusInterfaceProxyType"), &rygel_tracker_metadata_iface_dbus_proxy_get_type);
+GType rygel_tracker_resources_iface_get_type (void) {
+	static volatile gsize rygel_tracker_resources_iface_type_id__volatile = 0;
+	if (g_once_init_enter (&rygel_tracker_resources_iface_type_id__volatile)) {
+		static const GTypeInfo g_define_type_info = { sizeof (RygelTrackerResourcesIfaceIface), (GBaseInitFunc) rygel_tracker_resources_iface_base_init, (GBaseFinalizeFunc) NULL, (GClassInitFunc) NULL, (GClassFinalizeFunc) NULL, NULL, 0, 0, (GInstanceInitFunc) NULL, NULL };
+		GType rygel_tracker_resources_iface_type_id;
+		rygel_tracker_resources_iface_type_id = g_type_register_static (G_TYPE_INTERFACE, "RygelTrackerResourcesIface", &g_define_type_info, 0);
+		g_type_interface_add_prerequisite (rygel_tracker_resources_iface_type_id, DBUS_TYPE_G_PROXY);
+		g_type_set_qdata (rygel_tracker_resources_iface_type_id, g_quark_from_string ("ValaDBusInterfaceProxyType"), &rygel_tracker_resources_iface_dbus_proxy_get_type);
+		g_once_init_leave (&rygel_tracker_resources_iface_type_id__volatile, rygel_tracker_resources_iface_type_id);
 	}
-	return rygel_tracker_metadata_iface_type_id;
+	return rygel_tracker_resources_iface_type_id__volatile;
 }
 
 
-G_DEFINE_TYPE_EXTENDED (RygelTrackerMetadataIfaceDBusProxy, rygel_tracker_metadata_iface_dbus_proxy, DBUS_TYPE_G_PROXY, 0, G_IMPLEMENT_INTERFACE (RYGEL_TYPE_TRACKER_METADATA_IFACE, rygel_tracker_metadata_iface_dbus_proxy_rygel_tracker_metadata_iface__interface_init) );
-RygelTrackerMetadataIface* rygel_tracker_metadata_iface_dbus_proxy_new (DBusGConnection* connection, const char* name, const char* path) {
-	RygelTrackerMetadataIface* self;
-	self = g_object_new (rygel_tracker_metadata_iface_dbus_proxy_get_type (), "connection", connection, "name", name, "path", path, "interface", "org.freedesktop.Tracker.Metadata", NULL);
+G_DEFINE_TYPE_EXTENDED (RygelTrackerResourcesIfaceDBusProxy, rygel_tracker_resources_iface_dbus_proxy, DBUS_TYPE_G_PROXY, 0, G_IMPLEMENT_INTERFACE (RYGEL_TYPE_TRACKER_RESOURCES_IFACE, rygel_tracker_resources_iface_dbus_proxy_rygel_tracker_resources_iface__interface_init) );
+RygelTrackerResourcesIface* rygel_tracker_resources_iface_dbus_proxy_new (DBusGConnection* connection, const char* name, const char* path) {
+	RygelTrackerResourcesIface* self;
+	self = g_object_new (rygel_tracker_resources_iface_dbus_proxy_get_type (), "connection", connection, "name", name, "path", path, "interface", "org.freedesktop.Tracker1.Resources", NULL);
 	return self;
 }
 
 
-static GObject* rygel_tracker_metadata_iface_dbus_proxy_construct (GType gtype, guint n_properties, GObjectConstructParam* properties) {
+static GObject* rygel_tracker_resources_iface_dbus_proxy_construct (GType gtype, guint n_properties, GObjectConstructParam* properties) {
 	GObject* self;
 	DBusGConnection *connection;
 	char* path;
 	char* filter;
-	self = G_OBJECT_CLASS (rygel_tracker_metadata_iface_dbus_proxy_parent_class)->constructor (gtype, n_properties, properties);
+	self = G_OBJECT_CLASS (rygel_tracker_resources_iface_dbus_proxy_parent_class)->constructor (gtype, n_properties, properties);
 	g_object_get (self, "connection", &connection, NULL);
 	g_object_get (self, "path", &path, NULL);
-	dbus_connection_add_filter (dbus_g_connection_get_connection (connection), rygel_tracker_metadata_iface_dbus_proxy_filter, self, NULL);
+	dbus_connection_add_filter (dbus_g_connection_get_connection (connection), rygel_tracker_resources_iface_dbus_proxy_filter, self, NULL);
 	filter = g_strdup_printf ("type='signal',path='%s'", path);
 	dbus_bus_add_match (dbus_g_connection_get_connection (connection), filter, NULL);
 	dbus_g_connection_unref (connection);
@@ -1873,104 +1347,88 @@ static GObject* rygel_tracker_metadata_iface_dbus_proxy_construct (GType gtype, 
 }
 
 
-DBusHandlerResult rygel_tracker_metadata_iface_dbus_proxy_filter (DBusConnection* connection, DBusMessage* message, void* user_data) {
+DBusHandlerResult rygel_tracker_resources_iface_dbus_proxy_filter (DBusConnection* connection, DBusMessage* message, void* user_data) {
 	if (dbus_message_has_path (message, dbus_g_proxy_get_path (user_data))) {
 	}
 	return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
 }
 
 
-static void rygel_tracker_metadata_iface_dbus_proxy_dispose (GObject* self) {
+static void rygel_tracker_resources_iface_dbus_proxy_dispose (GObject* self) {
 	DBusGConnection *connection;
-	if (((RygelTrackerMetadataIfaceDBusProxy*) self)->disposed) {
+	if (((RygelTrackerResourcesIfaceDBusProxy*) self)->disposed) {
 		return;
 	}
-	((RygelTrackerMetadataIfaceDBusProxy*) self)->disposed = TRUE;
+	((RygelTrackerResourcesIfaceDBusProxy*) self)->disposed = TRUE;
 	g_object_get (self, "connection", &connection, NULL);
-	dbus_connection_remove_filter (dbus_g_connection_get_connection (connection), rygel_tracker_metadata_iface_dbus_proxy_filter, self);
-	G_OBJECT_CLASS (rygel_tracker_metadata_iface_dbus_proxy_parent_class)->dispose (self);
+	dbus_connection_remove_filter (dbus_g_connection_get_connection (connection), rygel_tracker_resources_iface_dbus_proxy_filter, self);
+	G_OBJECT_CLASS (rygel_tracker_resources_iface_dbus_proxy_parent_class)->dispose (self);
 }
 
 
-static void rygel_tracker_metadata_iface_dbus_proxy_class_init (RygelTrackerMetadataIfaceDBusProxyClass* klass) {
-	G_OBJECT_CLASS (klass)->constructor = rygel_tracker_metadata_iface_dbus_proxy_construct;
-	G_OBJECT_CLASS (klass)->dispose = rygel_tracker_metadata_iface_dbus_proxy_dispose;
-	G_OBJECT_CLASS (klass)->get_property = rygel_tracker_metadata_iface_dbus_proxy_get_property;
-	G_OBJECT_CLASS (klass)->set_property = rygel_tracker_metadata_iface_dbus_proxy_set_property;
+static void rygel_tracker_resources_iface_dbus_proxy_class_init (RygelTrackerResourcesIfaceDBusProxyClass* klass) {
+	G_OBJECT_CLASS (klass)->constructor = rygel_tracker_resources_iface_dbus_proxy_construct;
+	G_OBJECT_CLASS (klass)->dispose = rygel_tracker_resources_iface_dbus_proxy_dispose;
+	G_OBJECT_CLASS (klass)->get_property = rygel_tracker_resources_iface_dbus_proxy_get_property;
+	G_OBJECT_CLASS (klass)->set_property = rygel_tracker_resources_iface_dbus_proxy_set_property;
 }
 
 
-static void rygel_tracker_metadata_iface_dbus_proxy_init (RygelTrackerMetadataIfaceDBusProxy* self) {
+static void rygel_tracker_resources_iface_dbus_proxy_init (RygelTrackerResourcesIfaceDBusProxy* self) {
 }
 
 
-static void rygel_tracker_metadata_iface_dbus_proxy_get_unique_values_async (RygelTrackerMetadataIface* self, const char* service, char** meta_types, int meta_types_length1, const char* query, gboolean descending, gint offset, gint max_hits, GAsyncReadyCallback _callback_, gpointer _user_data_) {
+static void rygel_tracker_resources_iface_dbus_proxy_sparql_query_async (RygelTrackerResourcesIface* self, const char* query, GAsyncReadyCallback _callback_, gpointer _user_data_) {
 	DBusGConnection *_connection;
 	DBusMessage *_message;
 	DBusPendingCall *_pending;
 	DBusMessageIter _iter;
-	const char* _tmp48_;
-	char** _tmp49_;
-	DBusMessageIter _tmp50_;
-	int _tmp51_;
-	const char* _tmp53_;
-	dbus_bool_t _tmp54_;
-	dbus_int32_t _tmp55_;
-	dbus_int32_t _tmp56_;
-	RygelTrackerMetadataIfaceDBusProxyGetUniqueValuesData* _data_;
-	_message = dbus_message_new_method_call (dbus_g_proxy_get_bus_name ((DBusGProxy*) self), dbus_g_proxy_get_path ((DBusGProxy*) self), "org.freedesktop.Tracker.Metadata", "GetUniqueValues");
+	const char* _tmp37_;
+	RygelTrackerResourcesIfaceDBusProxySparqlQueryData* _data_;
+	_message = dbus_message_new_method_call (dbus_g_proxy_get_bus_name ((DBusGProxy*) self), dbus_g_proxy_get_path ((DBusGProxy*) self), "org.freedesktop.Tracker1.Resources", "SparqlQuery");
 	dbus_message_iter_init_append (_message, &_iter);
-	_tmp48_ = service;
-	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp48_);
-	_tmp49_ = meta_types;
-	dbus_message_iter_open_container (&_iter, DBUS_TYPE_ARRAY, "s", &_tmp50_);
-	for (_tmp51_ = 0; _tmp51_ < meta_types_length1; _tmp51_++) {
-		const char* _tmp52_;
-		_tmp52_ = *_tmp49_;
-		dbus_message_iter_append_basic (&_tmp50_, DBUS_TYPE_STRING, &_tmp52_);
-		_tmp49_++;
-	}
-	dbus_message_iter_close_container (&_iter, &_tmp50_);
-	_tmp53_ = query;
-	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp53_);
-	_tmp54_ = descending;
-	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_BOOLEAN, &_tmp54_);
-	_tmp55_ = offset;
-	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_INT32, &_tmp55_);
-	_tmp56_ = max_hits;
-	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_INT32, &_tmp56_);
+	_tmp37_ = query;
+	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp37_);
 	g_object_get (self, "connection", &_connection, NULL);
 	dbus_connection_send_with_reply (dbus_g_connection_get_connection (_connection), _message, &_pending, -1);
 	dbus_g_connection_unref (_connection);
 	dbus_message_unref (_message);
-	_data_ = g_slice_new0 (RygelTrackerMetadataIfaceDBusProxyGetUniqueValuesData);
+	_data_ = g_slice_new0 (RygelTrackerResourcesIfaceDBusProxySparqlQueryData);
 	_data_->_callback_ = _callback_;
 	_data_->_user_data_ = _user_data_;
 	_data_->pending = _pending;
-	dbus_pending_call_set_notify (_pending, rygel_tracker_metadata_iface_dbus_proxy_get_unique_values_ready, _data_, NULL);
+	dbus_pending_call_set_notify (_pending, rygel_tracker_resources_iface_dbus_proxy_sparql_query_ready, _data_, NULL);
 }
 
 
-static void rygel_tracker_metadata_iface_dbus_proxy_get_unique_values_ready (DBusPendingCall* pending, void* user_data) {
-	RygelTrackerMetadataIfaceDBusProxyGetUniqueValuesData* _data_;
+static void rygel_tracker_resources_iface_dbus_proxy_sparql_query_ready (DBusPendingCall* pending, void* user_data) {
+	RygelTrackerResourcesIfaceDBusProxySparqlQueryData* _data_;
+	GObject * _obj_;
+	GSimpleAsyncResult * _res_;
 	_data_ = user_data;
-	g_simple_async_result_complete (g_simple_async_result_new (g_object_newv (G_TYPE_OBJECT, 0, NULL), _data_->_callback_, _data_->_user_data_, _data_));
+	_obj_ = g_object_newv (G_TYPE_OBJECT, 0, NULL);
+	_res_ = g_simple_async_result_new (_obj_, _data_->_callback_, _data_->_user_data_, _data_);
+	g_simple_async_result_complete (_res_);
+	g_object_unref (_obj_);
+	g_object_unref (_res_);
+	g_slice_free (RygelTrackerResourcesIfaceDBusProxySparqlQueryData, _data_);
+	dbus_pending_call_unref (pending);
 }
 
 
-static char** rygel_tracker_metadata_iface_dbus_proxy_get_unique_values_finish (RygelTrackerMetadataIface* self, GAsyncResult* _res_, int* result_length1, int* result_length2, GError** error) {
-	RygelTrackerMetadataIfaceDBusProxyGetUniqueValuesData* _data_;
+static char** rygel_tracker_resources_iface_dbus_proxy_sparql_query_finish (RygelTrackerResourcesIface* self, GAsyncResult* _res_, int* result_length1, int* result_length2, GError** error) {
+	RygelTrackerResourcesIfaceDBusProxySparqlQueryData* _data_;
 	DBusError _dbus_error;
 	DBusMessage *_reply;
 	DBusMessageIter _iter;
 	char** _result;
 	int _result_length1;
 	int _result_length2;
-	char** _tmp71_;
-	int _tmp71__length;
-	int _tmp71__size;
-	int _tmp71__length1;
-	DBusMessageIter _tmp72_;
+	char** _tmp44_;
+	int _tmp44__length;
+	int _tmp44__size;
+	int _tmp44__length1;
+	DBusMessageIter _tmp45_;
 	_data_ = g_simple_async_result_get_source_tag ((GSimpleAsyncResult *) _res_);
 	dbus_error_init (&_dbus_error);
 	_reply = dbus_pending_call_steal_reply (_data_->pending);
@@ -1979,78 +1437,78 @@ static char** rygel_tracker_metadata_iface_dbus_proxy_get_unique_values_finish (
 		GQuark _edomain;
 		gint _ecode;
 		if (strstr (_dbus_error.name, "org.freedesktop.DBus.Error") == _dbus_error.name) {
-			const char* _tmp61_;
+			const char* _tmp42_;
 			_edomain = DBUS_GERROR;
-			_tmp61_ = _dbus_error.name + 27;
-			if (strcmp (_tmp61_, "Failed") == 0) {
+			_tmp42_ = _dbus_error.name + 27;
+			if (strcmp (_tmp42_, "Failed") == 0) {
 				_ecode = DBUS_GERROR_FAILED;
-			} else if (strcmp (_tmp61_, "NoMemory") == 0) {
+			} else if (strcmp (_tmp42_, "NoMemory") == 0) {
 				_ecode = DBUS_GERROR_NO_MEMORY;
-			} else if (strcmp (_tmp61_, "ServiceUnknown") == 0) {
+			} else if (strcmp (_tmp42_, "ServiceUnknown") == 0) {
 				_ecode = DBUS_GERROR_SERVICE_UNKNOWN;
-			} else if (strcmp (_tmp61_, "NameHasNoOwner") == 0) {
+			} else if (strcmp (_tmp42_, "NameHasNoOwner") == 0) {
 				_ecode = DBUS_GERROR_NAME_HAS_NO_OWNER;
-			} else if (strcmp (_tmp61_, "NoReply") == 0) {
+			} else if (strcmp (_tmp42_, "NoReply") == 0) {
 				_ecode = DBUS_GERROR_NO_REPLY;
-			} else if (strcmp (_tmp61_, "IOError") == 0) {
+			} else if (strcmp (_tmp42_, "IOError") == 0) {
 				_ecode = DBUS_GERROR_IO_ERROR;
-			} else if (strcmp (_tmp61_, "BadAddress") == 0) {
+			} else if (strcmp (_tmp42_, "BadAddress") == 0) {
 				_ecode = DBUS_GERROR_BAD_ADDRESS;
-			} else if (strcmp (_tmp61_, "NotSupported") == 0) {
+			} else if (strcmp (_tmp42_, "NotSupported") == 0) {
 				_ecode = DBUS_GERROR_NOT_SUPPORTED;
-			} else if (strcmp (_tmp61_, "LimitsExceeded") == 0) {
+			} else if (strcmp (_tmp42_, "LimitsExceeded") == 0) {
 				_ecode = DBUS_GERROR_LIMITS_EXCEEDED;
-			} else if (strcmp (_tmp61_, "AccessDenied") == 0) {
+			} else if (strcmp (_tmp42_, "AccessDenied") == 0) {
 				_ecode = DBUS_GERROR_ACCESS_DENIED;
-			} else if (strcmp (_tmp61_, "AuthFailed") == 0) {
+			} else if (strcmp (_tmp42_, "AuthFailed") == 0) {
 				_ecode = DBUS_GERROR_AUTH_FAILED;
-			} else if (strcmp (_tmp61_, "NoServer") == 0) {
+			} else if (strcmp (_tmp42_, "NoServer") == 0) {
 				_ecode = DBUS_GERROR_NO_SERVER;
-			} else if (strcmp (_tmp61_, "Timeout") == 0) {
+			} else if (strcmp (_tmp42_, "Timeout") == 0) {
 				_ecode = DBUS_GERROR_TIMEOUT;
-			} else if (strcmp (_tmp61_, "NoNetwork") == 0) {
+			} else if (strcmp (_tmp42_, "NoNetwork") == 0) {
 				_ecode = DBUS_GERROR_NO_NETWORK;
-			} else if (strcmp (_tmp61_, "AddressInUse") == 0) {
+			} else if (strcmp (_tmp42_, "AddressInUse") == 0) {
 				_ecode = DBUS_GERROR_ADDRESS_IN_USE;
-			} else if (strcmp (_tmp61_, "Disconnected") == 0) {
+			} else if (strcmp (_tmp42_, "Disconnected") == 0) {
 				_ecode = DBUS_GERROR_DISCONNECTED;
-			} else if (strcmp (_tmp61_, "InvalidArgs") == 0) {
+			} else if (strcmp (_tmp42_, "InvalidArgs") == 0) {
 				_ecode = DBUS_GERROR_INVALID_ARGS;
-			} else if (strcmp (_tmp61_, "FileNotFound") == 0) {
+			} else if (strcmp (_tmp42_, "FileNotFound") == 0) {
 				_ecode = DBUS_GERROR_FILE_NOT_FOUND;
-			} else if (strcmp (_tmp61_, "FileExists") == 0) {
+			} else if (strcmp (_tmp42_, "FileExists") == 0) {
 				_ecode = DBUS_GERROR_FILE_EXISTS;
-			} else if (strcmp (_tmp61_, "UnknownMethod") == 0) {
+			} else if (strcmp (_tmp42_, "UnknownMethod") == 0) {
 				_ecode = DBUS_GERROR_UNKNOWN_METHOD;
-			} else if (strcmp (_tmp61_, "TimedOut") == 0) {
+			} else if (strcmp (_tmp42_, "TimedOut") == 0) {
 				_ecode = DBUS_GERROR_TIMED_OUT;
-			} else if (strcmp (_tmp61_, "MatchRuleNotFound") == 0) {
+			} else if (strcmp (_tmp42_, "MatchRuleNotFound") == 0) {
 				_ecode = DBUS_GERROR_MATCH_RULE_NOT_FOUND;
-			} else if (strcmp (_tmp61_, "MatchRuleInvalid") == 0) {
+			} else if (strcmp (_tmp42_, "MatchRuleInvalid") == 0) {
 				_ecode = DBUS_GERROR_MATCH_RULE_INVALID;
-			} else if (strcmp (_tmp61_, "Spawn.ExecFailed") == 0) {
+			} else if (strcmp (_tmp42_, "Spawn.ExecFailed") == 0) {
 				_ecode = DBUS_GERROR_SPAWN_EXEC_FAILED;
-			} else if (strcmp (_tmp61_, "Spawn.ForkFailed") == 0) {
+			} else if (strcmp (_tmp42_, "Spawn.ForkFailed") == 0) {
 				_ecode = DBUS_GERROR_SPAWN_FORK_FAILED;
-			} else if (strcmp (_tmp61_, "Spawn.ChildExited") == 0) {
+			} else if (strcmp (_tmp42_, "Spawn.ChildExited") == 0) {
 				_ecode = DBUS_GERROR_SPAWN_CHILD_EXITED;
-			} else if (strcmp (_tmp61_, "Spawn.ChildSignaled") == 0) {
+			} else if (strcmp (_tmp42_, "Spawn.ChildSignaled") == 0) {
 				_ecode = DBUS_GERROR_SPAWN_CHILD_SIGNALED;
-			} else if (strcmp (_tmp61_, "Spawn.Failed") == 0) {
+			} else if (strcmp (_tmp42_, "Spawn.Failed") == 0) {
 				_ecode = DBUS_GERROR_SPAWN_FAILED;
-			} else if (strcmp (_tmp61_, "UnixProcessIdUnknown") == 0) {
+			} else if (strcmp (_tmp42_, "UnixProcessIdUnknown") == 0) {
 				_ecode = DBUS_GERROR_UNIX_PROCESS_ID_UNKNOWN;
-			} else if (strcmp (_tmp61_, "InvalidSignature") == 0) {
+			} else if (strcmp (_tmp42_, "InvalidSignature") == 0) {
 				_ecode = DBUS_GERROR_INVALID_SIGNATURE;
-			} else if (strcmp (_tmp61_, "InvalidFileContent") == 0) {
+			} else if (strcmp (_tmp42_, "InvalidFileContent") == 0) {
 				_ecode = DBUS_GERROR_INVALID_FILE_CONTENT;
-			} else if (strcmp (_tmp61_, "SELinuxSecurityContextUnknown") == 0) {
+			} else if (strcmp (_tmp42_, "SELinuxSecurityContextUnknown") == 0) {
 				_ecode = DBUS_GERROR_SELINUX_SECURITY_CONTEXT_UNKNOWN;
-			} else if (strcmp (_tmp61_, "RemoteException") == 0) {
+			} else if (strcmp (_tmp42_, "RemoteException") == 0) {
 				_ecode = DBUS_GERROR_REMOTE_EXCEPTION;
 			}
 		}
-		g_set_error_literal (error, _edomain, _ecode, _dbus_error.message);
+		g_set_error (error, _edomain, _ecode, "%s", _dbus_error.message);
 		dbus_error_free (&_dbus_error);
 		return NULL;
 	}
@@ -2062,33 +1520,33 @@ static char** rygel_tracker_metadata_iface_dbus_proxy_get_unique_values_finish (
 	dbus_message_iter_init (_reply, &_iter);
 	_result_length1 = 0;
 	_result_length2 = 0;
-	_tmp71_ = g_new (char*, 5);
-	_tmp71__length = 0;
-	_tmp71__size = 4;
-	_tmp71__length1 = 0;
-	dbus_message_iter_recurse (&_iter, &_tmp72_);
-	for (; dbus_message_iter_get_arg_type (&_tmp72_); _tmp71__length1++) {
-		int _tmp71__length2;
-		DBusMessageIter _tmp73_;
-		_tmp71__length2 = 0;
-		dbus_message_iter_recurse (&_tmp72_, &_tmp73_);
-		for (; dbus_message_iter_get_arg_type (&_tmp73_); _tmp71__length2++) {
-			const char* _tmp74_;
-			if (_tmp71__size == _tmp71__length) {
-				_tmp71__size = 2 * _tmp71__size;
-				_tmp71_ = g_renew (char*, _tmp71_, _tmp71__size + 1);
+	_tmp44_ = g_new (char*, 5);
+	_tmp44__length = 0;
+	_tmp44__size = 4;
+	_tmp44__length1 = 0;
+	dbus_message_iter_recurse (&_iter, &_tmp45_);
+	for (; dbus_message_iter_get_arg_type (&_tmp45_); _tmp44__length1++) {
+		int _tmp44__length2;
+		DBusMessageIter _tmp46_;
+		_tmp44__length2 = 0;
+		dbus_message_iter_recurse (&_tmp45_, &_tmp46_);
+		for (; dbus_message_iter_get_arg_type (&_tmp46_); _tmp44__length2++) {
+			const char* _tmp47_;
+			if (_tmp44__size == _tmp44__length) {
+				_tmp44__size = 2 * _tmp44__size;
+				_tmp44_ = g_renew (char*, _tmp44_, _tmp44__size + 1);
 			}
-			dbus_message_iter_get_basic (&_tmp73_, &_tmp74_);
-			dbus_message_iter_next (&_tmp73_);
-			_tmp71_[_tmp71__length++] = g_strdup (_tmp74_);
+			dbus_message_iter_get_basic (&_tmp46_, &_tmp47_);
+			dbus_message_iter_next (&_tmp46_);
+			_tmp44_[_tmp44__length++] = g_strdup (_tmp47_);
 		}
-		_result_length2 = _tmp71__length2;
-		dbus_message_iter_next (&_tmp72_);
+		_result_length2 = _tmp44__length2;
+		dbus_message_iter_next (&_tmp45_);
 	}
-	_result_length1 = _tmp71__length1;
-	_tmp71_[_tmp71__length] = NULL;
+	_result_length1 = _tmp44__length1;
+	_tmp44_[_tmp44__length] = NULL;
 	dbus_message_iter_next (&_iter);
-	_result = _tmp71_;
+	_result = _tmp44_;
 	*result_length1 = _result_length1;
 	*result_length2 = _result_length2;
 	dbus_message_unref (_reply);
@@ -2096,63 +1554,57 @@ static char** rygel_tracker_metadata_iface_dbus_proxy_get_unique_values_finish (
 }
 
 
-static void rygel_tracker_metadata_iface_dbus_proxy_get_async (RygelTrackerMetadataIface* self, const char* service_type, const char* uri, char** keys, int keys_length1, GAsyncReadyCallback _callback_, gpointer _user_data_) {
+static void rygel_tracker_resources_iface_dbus_proxy_sparql_update_blank_async (RygelTrackerResourcesIface* self, const char* query, GAsyncReadyCallback _callback_, gpointer _user_data_) {
 	DBusGConnection *_connection;
 	DBusMessage *_message;
 	DBusPendingCall *_pending;
 	DBusMessageIter _iter;
-	const char* _tmp75_;
-	const char* _tmp76_;
-	char** _tmp77_;
-	DBusMessageIter _tmp78_;
-	int _tmp79_;
-	RygelTrackerMetadataIfaceDBusProxyGetData* _data_;
-	_message = dbus_message_new_method_call (dbus_g_proxy_get_bus_name ((DBusGProxy*) self), dbus_g_proxy_get_path ((DBusGProxy*) self), "org.freedesktop.Tracker.Metadata", "Get");
+	const char* _tmp48_;
+	RygelTrackerResourcesIfaceDBusProxySparqlUpdateBlankData* _data_;
+	_message = dbus_message_new_method_call (dbus_g_proxy_get_bus_name ((DBusGProxy*) self), dbus_g_proxy_get_path ((DBusGProxy*) self), "org.freedesktop.Tracker1.Resources", "SparqlUpdateBlank");
 	dbus_message_iter_init_append (_message, &_iter);
-	_tmp75_ = service_type;
-	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp75_);
-	_tmp76_ = uri;
-	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp76_);
-	_tmp77_ = keys;
-	dbus_message_iter_open_container (&_iter, DBUS_TYPE_ARRAY, "s", &_tmp78_);
-	for (_tmp79_ = 0; _tmp79_ < keys_length1; _tmp79_++) {
-		const char* _tmp80_;
-		_tmp80_ = *_tmp77_;
-		dbus_message_iter_append_basic (&_tmp78_, DBUS_TYPE_STRING, &_tmp80_);
-		_tmp77_++;
-	}
-	dbus_message_iter_close_container (&_iter, &_tmp78_);
+	_tmp48_ = query;
+	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp48_);
 	g_object_get (self, "connection", &_connection, NULL);
 	dbus_connection_send_with_reply (dbus_g_connection_get_connection (_connection), _message, &_pending, -1);
 	dbus_g_connection_unref (_connection);
 	dbus_message_unref (_message);
-	_data_ = g_slice_new0 (RygelTrackerMetadataIfaceDBusProxyGetData);
+	_data_ = g_slice_new0 (RygelTrackerResourcesIfaceDBusProxySparqlUpdateBlankData);
 	_data_->_callback_ = _callback_;
 	_data_->_user_data_ = _user_data_;
 	_data_->pending = _pending;
-	dbus_pending_call_set_notify (_pending, rygel_tracker_metadata_iface_dbus_proxy_get_ready, _data_, NULL);
+	dbus_pending_call_set_notify (_pending, rygel_tracker_resources_iface_dbus_proxy_sparql_update_blank_ready, _data_, NULL);
 }
 
 
-static void rygel_tracker_metadata_iface_dbus_proxy_get_ready (DBusPendingCall* pending, void* user_data) {
-	RygelTrackerMetadataIfaceDBusProxyGetData* _data_;
+static void rygel_tracker_resources_iface_dbus_proxy_sparql_update_blank_ready (DBusPendingCall* pending, void* user_data) {
+	RygelTrackerResourcesIfaceDBusProxySparqlUpdateBlankData* _data_;
+	GObject * _obj_;
+	GSimpleAsyncResult * _res_;
 	_data_ = user_data;
-	g_simple_async_result_complete (g_simple_async_result_new (g_object_newv (G_TYPE_OBJECT, 0, NULL), _data_->_callback_, _data_->_user_data_, _data_));
+	_obj_ = g_object_newv (G_TYPE_OBJECT, 0, NULL);
+	_res_ = g_simple_async_result_new (_obj_, _data_->_callback_, _data_->_user_data_, _data_);
+	g_simple_async_result_complete (_res_);
+	g_object_unref (_obj_);
+	g_object_unref (_res_);
+	g_slice_free (RygelTrackerResourcesIfaceDBusProxySparqlUpdateBlankData, _data_);
+	dbus_pending_call_unref (pending);
 }
 
 
-static char** rygel_tracker_metadata_iface_dbus_proxy_get_finish (RygelTrackerMetadataIface* self, GAsyncResult* _res_, int* result_length1, GError** error) {
-	RygelTrackerMetadataIfaceDBusProxyGetData* _data_;
+static GHashTable** rygel_tracker_resources_iface_dbus_proxy_sparql_update_blank_finish (RygelTrackerResourcesIface* self, GAsyncResult* _res_, int* result_length1, int* result_length2, GError** error) {
+	RygelTrackerResourcesIfaceDBusProxySparqlUpdateBlankData* _data_;
 	DBusError _dbus_error;
 	DBusMessage *_reply;
 	DBusMessageIter _iter;
-	char** _result;
+	GHashTable** _result;
 	int _result_length1;
-	char** _tmp91_;
-	int _tmp91__length;
-	int _tmp91__size;
-	int _tmp91__length1;
-	DBusMessageIter _tmp92_;
+	int _result_length2;
+	GHashTable** _tmp59_;
+	int _tmp59__length;
+	int _tmp59__size;
+	int _tmp59__length1;
+	DBusMessageIter _tmp60_;
 	_data_ = g_simple_async_result_get_source_tag ((GSimpleAsyncResult *) _res_);
 	dbus_error_init (&_dbus_error);
 	_reply = dbus_pending_call_steal_reply (_data_->pending);
@@ -2161,150 +1613,162 @@ static char** rygel_tracker_metadata_iface_dbus_proxy_get_finish (RygelTrackerMe
 		GQuark _edomain;
 		gint _ecode;
 		if (strstr (_dbus_error.name, "org.freedesktop.DBus.Error") == _dbus_error.name) {
-			const char* _tmp84_;
+			const char* _tmp57_;
 			_edomain = DBUS_GERROR;
-			_tmp84_ = _dbus_error.name + 27;
-			if (strcmp (_tmp84_, "Failed") == 0) {
+			_tmp57_ = _dbus_error.name + 27;
+			if (strcmp (_tmp57_, "Failed") == 0) {
 				_ecode = DBUS_GERROR_FAILED;
-			} else if (strcmp (_tmp84_, "NoMemory") == 0) {
+			} else if (strcmp (_tmp57_, "NoMemory") == 0) {
 				_ecode = DBUS_GERROR_NO_MEMORY;
-			} else if (strcmp (_tmp84_, "ServiceUnknown") == 0) {
+			} else if (strcmp (_tmp57_, "ServiceUnknown") == 0) {
 				_ecode = DBUS_GERROR_SERVICE_UNKNOWN;
-			} else if (strcmp (_tmp84_, "NameHasNoOwner") == 0) {
+			} else if (strcmp (_tmp57_, "NameHasNoOwner") == 0) {
 				_ecode = DBUS_GERROR_NAME_HAS_NO_OWNER;
-			} else if (strcmp (_tmp84_, "NoReply") == 0) {
+			} else if (strcmp (_tmp57_, "NoReply") == 0) {
 				_ecode = DBUS_GERROR_NO_REPLY;
-			} else if (strcmp (_tmp84_, "IOError") == 0) {
+			} else if (strcmp (_tmp57_, "IOError") == 0) {
 				_ecode = DBUS_GERROR_IO_ERROR;
-			} else if (strcmp (_tmp84_, "BadAddress") == 0) {
+			} else if (strcmp (_tmp57_, "BadAddress") == 0) {
 				_ecode = DBUS_GERROR_BAD_ADDRESS;
-			} else if (strcmp (_tmp84_, "NotSupported") == 0) {
+			} else if (strcmp (_tmp57_, "NotSupported") == 0) {
 				_ecode = DBUS_GERROR_NOT_SUPPORTED;
-			} else if (strcmp (_tmp84_, "LimitsExceeded") == 0) {
+			} else if (strcmp (_tmp57_, "LimitsExceeded") == 0) {
 				_ecode = DBUS_GERROR_LIMITS_EXCEEDED;
-			} else if (strcmp (_tmp84_, "AccessDenied") == 0) {
+			} else if (strcmp (_tmp57_, "AccessDenied") == 0) {
 				_ecode = DBUS_GERROR_ACCESS_DENIED;
-			} else if (strcmp (_tmp84_, "AuthFailed") == 0) {
+			} else if (strcmp (_tmp57_, "AuthFailed") == 0) {
 				_ecode = DBUS_GERROR_AUTH_FAILED;
-			} else if (strcmp (_tmp84_, "NoServer") == 0) {
+			} else if (strcmp (_tmp57_, "NoServer") == 0) {
 				_ecode = DBUS_GERROR_NO_SERVER;
-			} else if (strcmp (_tmp84_, "Timeout") == 0) {
+			} else if (strcmp (_tmp57_, "Timeout") == 0) {
 				_ecode = DBUS_GERROR_TIMEOUT;
-			} else if (strcmp (_tmp84_, "NoNetwork") == 0) {
+			} else if (strcmp (_tmp57_, "NoNetwork") == 0) {
 				_ecode = DBUS_GERROR_NO_NETWORK;
-			} else if (strcmp (_tmp84_, "AddressInUse") == 0) {
+			} else if (strcmp (_tmp57_, "AddressInUse") == 0) {
 				_ecode = DBUS_GERROR_ADDRESS_IN_USE;
-			} else if (strcmp (_tmp84_, "Disconnected") == 0) {
+			} else if (strcmp (_tmp57_, "Disconnected") == 0) {
 				_ecode = DBUS_GERROR_DISCONNECTED;
-			} else if (strcmp (_tmp84_, "InvalidArgs") == 0) {
+			} else if (strcmp (_tmp57_, "InvalidArgs") == 0) {
 				_ecode = DBUS_GERROR_INVALID_ARGS;
-			} else if (strcmp (_tmp84_, "FileNotFound") == 0) {
+			} else if (strcmp (_tmp57_, "FileNotFound") == 0) {
 				_ecode = DBUS_GERROR_FILE_NOT_FOUND;
-			} else if (strcmp (_tmp84_, "FileExists") == 0) {
+			} else if (strcmp (_tmp57_, "FileExists") == 0) {
 				_ecode = DBUS_GERROR_FILE_EXISTS;
-			} else if (strcmp (_tmp84_, "UnknownMethod") == 0) {
+			} else if (strcmp (_tmp57_, "UnknownMethod") == 0) {
 				_ecode = DBUS_GERROR_UNKNOWN_METHOD;
-			} else if (strcmp (_tmp84_, "TimedOut") == 0) {
+			} else if (strcmp (_tmp57_, "TimedOut") == 0) {
 				_ecode = DBUS_GERROR_TIMED_OUT;
-			} else if (strcmp (_tmp84_, "MatchRuleNotFound") == 0) {
+			} else if (strcmp (_tmp57_, "MatchRuleNotFound") == 0) {
 				_ecode = DBUS_GERROR_MATCH_RULE_NOT_FOUND;
-			} else if (strcmp (_tmp84_, "MatchRuleInvalid") == 0) {
+			} else if (strcmp (_tmp57_, "MatchRuleInvalid") == 0) {
 				_ecode = DBUS_GERROR_MATCH_RULE_INVALID;
-			} else if (strcmp (_tmp84_, "Spawn.ExecFailed") == 0) {
+			} else if (strcmp (_tmp57_, "Spawn.ExecFailed") == 0) {
 				_ecode = DBUS_GERROR_SPAWN_EXEC_FAILED;
-			} else if (strcmp (_tmp84_, "Spawn.ForkFailed") == 0) {
+			} else if (strcmp (_tmp57_, "Spawn.ForkFailed") == 0) {
 				_ecode = DBUS_GERROR_SPAWN_FORK_FAILED;
-			} else if (strcmp (_tmp84_, "Spawn.ChildExited") == 0) {
+			} else if (strcmp (_tmp57_, "Spawn.ChildExited") == 0) {
 				_ecode = DBUS_GERROR_SPAWN_CHILD_EXITED;
-			} else if (strcmp (_tmp84_, "Spawn.ChildSignaled") == 0) {
+			} else if (strcmp (_tmp57_, "Spawn.ChildSignaled") == 0) {
 				_ecode = DBUS_GERROR_SPAWN_CHILD_SIGNALED;
-			} else if (strcmp (_tmp84_, "Spawn.Failed") == 0) {
+			} else if (strcmp (_tmp57_, "Spawn.Failed") == 0) {
 				_ecode = DBUS_GERROR_SPAWN_FAILED;
-			} else if (strcmp (_tmp84_, "UnixProcessIdUnknown") == 0) {
+			} else if (strcmp (_tmp57_, "UnixProcessIdUnknown") == 0) {
 				_ecode = DBUS_GERROR_UNIX_PROCESS_ID_UNKNOWN;
-			} else if (strcmp (_tmp84_, "InvalidSignature") == 0) {
+			} else if (strcmp (_tmp57_, "InvalidSignature") == 0) {
 				_ecode = DBUS_GERROR_INVALID_SIGNATURE;
-			} else if (strcmp (_tmp84_, "InvalidFileContent") == 0) {
+			} else if (strcmp (_tmp57_, "InvalidFileContent") == 0) {
 				_ecode = DBUS_GERROR_INVALID_FILE_CONTENT;
-			} else if (strcmp (_tmp84_, "SELinuxSecurityContextUnknown") == 0) {
+			} else if (strcmp (_tmp57_, "SELinuxSecurityContextUnknown") == 0) {
 				_ecode = DBUS_GERROR_SELINUX_SECURITY_CONTEXT_UNKNOWN;
-			} else if (strcmp (_tmp84_, "RemoteException") == 0) {
+			} else if (strcmp (_tmp57_, "RemoteException") == 0) {
 				_ecode = DBUS_GERROR_REMOTE_EXCEPTION;
 			}
 		}
-		g_set_error_literal (error, _edomain, _ecode, _dbus_error.message);
+		g_set_error (error, _edomain, _ecode, "%s", _dbus_error.message);
 		dbus_error_free (&_dbus_error);
 		return NULL;
 	}
-	if (strcmp (dbus_message_get_signature (_reply), "as")) {
-		g_set_error (error, DBUS_GERROR, DBUS_GERROR_INVALID_SIGNATURE, "Invalid signature, expected \"%s\", got \"%s\"", "as", dbus_message_get_signature (_reply));
+	if (strcmp (dbus_message_get_signature (_reply), "aaa{ss}")) {
+		g_set_error (error, DBUS_GERROR, DBUS_GERROR_INVALID_SIGNATURE, "Invalid signature, expected \"%s\", got \"%s\"", "aaa{ss}", dbus_message_get_signature (_reply));
 		dbus_message_unref (_reply);
 		return NULL;
 	}
 	dbus_message_iter_init (_reply, &_iter);
 	_result_length1 = 0;
-	_tmp91_ = g_new (char*, 5);
-	_tmp91__length = 0;
-	_tmp91__size = 4;
-	_tmp91__length1 = 0;
-	dbus_message_iter_recurse (&_iter, &_tmp92_);
-	for (; dbus_message_iter_get_arg_type (&_tmp92_); _tmp91__length1++) {
-		const char* _tmp93_;
-		if (_tmp91__size == _tmp91__length) {
-			_tmp91__size = 2 * _tmp91__size;
-			_tmp91_ = g_renew (char*, _tmp91_, _tmp91__size + 1);
+	_result_length2 = 0;
+	_tmp59_ = g_new (GHashTable*, 5);
+	_tmp59__length = 0;
+	_tmp59__size = 4;
+	_tmp59__length1 = 0;
+	dbus_message_iter_recurse (&_iter, &_tmp60_);
+	for (; dbus_message_iter_get_arg_type (&_tmp60_); _tmp59__length1++) {
+		int _tmp59__length2;
+		DBusMessageIter _tmp61_;
+		_tmp59__length2 = 0;
+		dbus_message_iter_recurse (&_tmp60_, &_tmp61_);
+		for (; dbus_message_iter_get_arg_type (&_tmp61_); _tmp59__length2++) {
+			GHashTable* _tmp62_;
+			DBusMessageIter _tmp63_;
+			DBusMessageIter _tmp64_;
+			if (_tmp59__size == _tmp59__length) {
+				_tmp59__size = 2 * _tmp59__size;
+				_tmp59_ = g_renew (GHashTable*, _tmp59_, _tmp59__size + 1);
+			}
+			_tmp62_ = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_free);
+			dbus_message_iter_recurse (&_tmp61_, &_tmp63_);
+			while (dbus_message_iter_get_arg_type (&_tmp63_)) {
+				char* _key;
+				char* _value;
+				const char* _tmp65_;
+				const char* _tmp66_;
+				dbus_message_iter_recurse (&_tmp63_, &_tmp64_);
+				dbus_message_iter_get_basic (&_tmp64_, &_tmp65_);
+				dbus_message_iter_next (&_tmp64_);
+				_key = g_strdup (_tmp65_);
+				dbus_message_iter_get_basic (&_tmp64_, &_tmp66_);
+				dbus_message_iter_next (&_tmp64_);
+				_value = g_strdup (_tmp66_);
+				g_hash_table_insert (_tmp62_, _key, _value);
+				dbus_message_iter_next (&_tmp63_);
+			}
+			dbus_message_iter_next (&_tmp61_);
+			_tmp59_[_tmp59__length++] = _tmp62_;
 		}
-		dbus_message_iter_get_basic (&_tmp92_, &_tmp93_);
-		dbus_message_iter_next (&_tmp92_);
-		_tmp91_[_tmp91__length++] = g_strdup (_tmp93_);
+		_result_length2 = _tmp59__length2;
+		dbus_message_iter_next (&_tmp60_);
 	}
-	_result_length1 = _tmp91__length1;
-	_tmp91_[_tmp91__length] = NULL;
+	_result_length1 = _tmp59__length1;
+	_tmp59_[_tmp59__length] = NULL;
 	dbus_message_iter_next (&_iter);
-	_result = _tmp91_;
+	_result = _tmp59_;
 	*result_length1 = _result_length1;
+	*result_length2 = _result_length2;
 	dbus_message_unref (_reply);
 	return _result;
 }
 
 
-static void rygel_tracker_metadata_iface_dbus_proxy_rygel_tracker_metadata_iface__interface_init (RygelTrackerMetadataIfaceIface* iface) {
-	iface->get_unique_values = rygel_tracker_metadata_iface_dbus_proxy_get_unique_values_async;
-	iface->get_unique_values_finish = rygel_tracker_metadata_iface_dbus_proxy_get_unique_values_finish;
-	iface->get = rygel_tracker_metadata_iface_dbus_proxy_get_async;
-	iface->get_finish = rygel_tracker_metadata_iface_dbus_proxy_get_finish;
+static void rygel_tracker_resources_iface_dbus_proxy_rygel_tracker_resources_iface__interface_init (RygelTrackerResourcesIfaceIface* iface) {
+	iface->sparql_query = rygel_tracker_resources_iface_dbus_proxy_sparql_query_async;
+	iface->sparql_query_finish = rygel_tracker_resources_iface_dbus_proxy_sparql_query_finish;
+	iface->sparql_update_blank = rygel_tracker_resources_iface_dbus_proxy_sparql_update_blank_async;
+	iface->sparql_update_blank_finish = rygel_tracker_resources_iface_dbus_proxy_sparql_update_blank_finish;
 }
 
 
-static void rygel_tracker_metadata_iface_dbus_proxy_get_property (GObject * object, guint property_id, GValue * value, GParamSpec * pspec) {
+static void rygel_tracker_resources_iface_dbus_proxy_get_property (GObject * object, guint property_id, GValue * value, GParamSpec * pspec) {
 }
 
 
-static void rygel_tracker_metadata_iface_dbus_proxy_set_property (GObject * object, guint property_id, const GValue * value, GParamSpec * pspec) {
+static void rygel_tracker_resources_iface_dbus_proxy_set_property (GObject * object, guint property_id, const GValue * value, GParamSpec * pspec) {
 }
 
 
-#line 49 "rygel-tracker-plugin-factory.vala"
-void rygel_tracker_search_iface_query (RygelTrackerSearchIface* self, gint live_query_id, const char* service, char** fields, int fields_length1, const char* search_text, char** keywords, int keywords_length1, const char* query_condition, gboolean sort_by_service, char** sort_fields, int sort_fields_length1, gboolean sort_descending, gint offset, gint max_hits, GAsyncReadyCallback _callback_, gpointer _user_data_) {
-#line 49 "rygel-tracker-plugin-factory.vala"
-	RYGEL_TRACKER_SEARCH_IFACE_GET_INTERFACE (self)->query (self, live_query_id, service, fields, fields_length1, search_text, keywords, keywords_length1, query_condition, sort_by_service, sort_fields, sort_fields_length1, sort_descending, offset, max_hits, _callback_, _user_data_);
-#line 2292 "rygel-tracker-interfaces.c"
+void _rygel_tracker_resources_class_iface_dbus_unregister (DBusConnection* connection, void* _user_data_) {
 }
 
 
-#line 49 "rygel-tracker-plugin-factory.vala"
-char** rygel_tracker_search_iface_query_finish (RygelTrackerSearchIface* self, GAsyncResult* _res_, int* result_length1, int* result_length2, GError** error) {
-#line 49 "rygel-tracker-plugin-factory.vala"
-	return RYGEL_TRACKER_SEARCH_IFACE_GET_INTERFACE (self)->query_finish (self, _res_, result_length1, result_length2, error);
-#line 2300 "rygel-tracker-interfaces.c"
-}
-
-
-void _rygel_tracker_search_iface_dbus_unregister (DBusConnection* connection, void* _user_data_) {
-}
-
-
-static DBusHandlerResult _dbus_rygel_tracker_search_iface_introspect (RygelTrackerSearchIface* self, DBusConnection* connection, DBusMessage* message) {
+static DBusHandlerResult _dbus_rygel_tracker_resources_class_iface_introspect (RygelTrackerResourcesClassIface* self, DBusConnection* connection, DBusMessage* message) {
 	DBusMessage* reply;
 	DBusMessageIter iter;
 	GString* xml_data;
@@ -2313,7 +1777,7 @@ static DBusHandlerResult _dbus_rygel_tracker_search_iface_introspect (RygelTrack
 	reply = dbus_message_new_method_return (message);
 	dbus_message_iter_init_append (reply, &iter);
 	xml_data = g_string_new ("<!DOCTYPE node PUBLIC \"-//freedesktop//DTD D-BUS Object Introspection 1.0//EN\" \"http://www.freedesktop.org/standards/dbus/1.0/introspect.dtd\">\n");
-	g_string_append (xml_data, "<node>\n<interface name=\"org.freedesktop.DBus.Introspectable\">\n  <method name=\"Introspect\">\n    <arg name=\"data\" direction=\"out\" type=\"s\"/>\n  </method>\n</interface>\n<interface name=\"org.freedesktop.DBus.Properties\">\n  <method name=\"Get\">\n    <arg name=\"interface\" direction=\"in\" type=\"s\"/>\n    <arg name=\"propname\" direction=\"in\" type=\"s\"/>\n    <arg name=\"value\" direction=\"out\" type=\"v\"/>\n  </method>\n  <method name=\"Set\">\n    <arg name=\"interface\" direction=\"in\" type=\"s\"/>\n    <arg name=\"propname\" direction=\"in\" type=\"s\"/>\n    <arg name=\"value\" direction=\"in\" type=\"v\"/>\n  </method>\n  <method name=\"GetAll\">\n    <arg name=\"interface\" direction=\"in\" type=\"s\"/>\n    <arg name=\"props\" direction=\"out\" type=\"a{sv}\"/>\n  </method>\n</interface>\n<interface name=\"org.freedesktop.Tracker.Search\">\n  <method name=\"Query\">\n    <arg name=\"live_query_id\" type=\"i\" direction=\"in\"/>\n    <arg name=\"service\" type=\"s\" direction=\"in\"/>\n    <arg name=\"fields\" type=\"as\" direction=\"in\"/>\n    <arg name=\"search_text\" type=\"s\" direction=\"in\"/>\n    <arg name=\"keywords\" type=\"as\" direction=\"in\"/>\n    <arg name=\"query_condition\" type=\"s\" direction=\"in\"/>\n    <arg name=\"sort_by_service\" type=\"b\" direction=\"in\"/>\n    <arg name=\"sort_fields\" type=\"as\" direction=\"in\"/>\n    <arg name=\"sort_descending\" type=\"b\" direction=\"in\"/>\n    <arg name=\"offset\" type=\"i\" direction=\"in\"/>\n    <arg name=\"max_hits\" type=\"i\" direction=\"in\"/>\n    <arg name=\"result\" type=\"aas\" direction=\"out\"/>\n  </method>\n</interface>\n");
+	g_string_append (xml_data, "<node>\n<interface name=\"org.freedesktop.DBus.Introspectable\">\n  <method name=\"Introspect\">\n    <arg name=\"data\" direction=\"out\" type=\"s\"/>\n  </method>\n</interface>\n<interface name=\"org.freedesktop.DBus.Properties\">\n  <method name=\"Get\">\n    <arg name=\"interface\" direction=\"in\" type=\"s\"/>\n    <arg name=\"propname\" direction=\"in\" type=\"s\"/>\n    <arg name=\"value\" direction=\"out\" type=\"v\"/>\n  </method>\n  <method name=\"Set\">\n    <arg name=\"interface\" direction=\"in\" type=\"s\"/>\n    <arg name=\"propname\" direction=\"in\" type=\"s\"/>\n    <arg name=\"value\" direction=\"in\" type=\"v\"/>\n  </method>\n  <method name=\"GetAll\">\n    <arg name=\"interface\" direction=\"in\" type=\"s\"/>\n    <arg name=\"props\" direction=\"out\" type=\"a{sv}\"/>\n  </method>\n</interface>\n<interface name=\"org.freedesktop.Tracker1.Resources.Class\">\n  <signal name=\"SubjectsAdded\">\n    <arg name=\"subjects\" type=\"as\"/>\n  </signal>\n  <signal name=\"SubjectsRemoved\">\n    <arg name=\"subjects\" type=\"as\"/>\n  </signal>\n  <signal name=\"SubjectsChanged\">\n    <arg name=\"before\" type=\"as\"/>\n    <arg name=\"after\" type=\"as\"/>\n  </signal>\n</interface>\n");
 	dbus_connection_list_registered (connection, g_object_get_data ((GObject *) self, "dbus_object_path"), &children);
 	for (i = 0; children[i]; i++) {
 		g_string_append_printf (xml_data, "<node name=\"%s\"/>\n", children[i]);
@@ -2332,21 +1796,21 @@ static DBusHandlerResult _dbus_rygel_tracker_search_iface_introspect (RygelTrack
 }
 
 
-static DBusHandlerResult _dbus_rygel_tracker_search_iface_property_get_all (RygelTrackerSearchIface* self, DBusConnection* connection, DBusMessage* message) {
+static DBusHandlerResult _dbus_rygel_tracker_resources_class_iface_property_get_all (RygelTrackerResourcesClassIface* self, DBusConnection* connection, DBusMessage* message) {
 	DBusMessage* reply;
 	DBusMessageIter iter, reply_iter, subiter;
 	char* interface_name;
-	const char* _tmp94_;
+	const char* _tmp67_;
 	if (strcmp (dbus_message_get_signature (message), "s")) {
 		return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
 	}
 	dbus_message_iter_init (message, &iter);
 	reply = dbus_message_new_method_return (message);
 	dbus_message_iter_init_append (reply, &reply_iter);
-	dbus_message_iter_get_basic (&iter, &_tmp94_);
+	dbus_message_iter_get_basic (&iter, &_tmp67_);
 	dbus_message_iter_next (&iter);
-	interface_name = g_strdup (_tmp94_);
-	if (strcmp (interface_name, "org.freedesktop.Tracker.Search") == 0) {
+	interface_name = g_strdup (_tmp67_);
+	if (strcmp (interface_name, "org.freedesktop.Tracker1.Resources.Class") == 0) {
 		dbus_message_iter_open_container (&reply_iter, DBUS_TYPE_ARRAY, "{sv}", &subiter);
 		dbus_message_iter_close_container (&reply_iter, &subiter);
 	} else {
@@ -2364,57 +1828,460 @@ static DBusHandlerResult _dbus_rygel_tracker_search_iface_property_get_all (Ryge
 }
 
 
-static DBusHandlerResult _dbus_rygel_tracker_search_iface_query (RygelTrackerSearchIface* self, DBusConnection* connection, DBusMessage* message) {
+DBusHandlerResult rygel_tracker_resources_class_iface_dbus_message (DBusConnection* connection, DBusMessage* message, void* object) {
+	DBusHandlerResult result;
+	result = DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
+	if (dbus_message_is_method_call (message, "org.freedesktop.DBus.Introspectable", "Introspect")) {
+		result = _dbus_rygel_tracker_resources_class_iface_introspect (object, connection, message);
+	} else if (dbus_message_is_method_call (message, "org.freedesktop.DBus.Properties", "GetAll")) {
+		result = _dbus_rygel_tracker_resources_class_iface_property_get_all (object, connection, message);
+	}
+	if (result == DBUS_HANDLER_RESULT_HANDLED) {
+		return result;
+	} else {
+		return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
+	}
+}
+
+
+static void _dbus_rygel_tracker_resources_class_iface_subjects_added (GObject* _sender, char** subjects, int subjects_length1, DBusConnection* _connection) {
+	const char * _path;
+	DBusMessage *_message;
+	DBusMessageIter _iter;
+	char** _tmp68_;
+	DBusMessageIter _tmp69_;
+	int _tmp70_;
+	_path = g_object_get_data (_sender, "dbus_object_path");
+	_message = dbus_message_new_signal (_path, "org.freedesktop.Tracker1.Resources.Class", "SubjectsAdded");
+	dbus_message_iter_init_append (_message, &_iter);
+	_tmp68_ = subjects;
+	dbus_message_iter_open_container (&_iter, DBUS_TYPE_ARRAY, "s", &_tmp69_);
+	for (_tmp70_ = 0; _tmp70_ < subjects_length1; _tmp70_++) {
+		const char* _tmp71_;
+		_tmp71_ = *_tmp68_;
+		dbus_message_iter_append_basic (&_tmp69_, DBUS_TYPE_STRING, &_tmp71_);
+		_tmp68_++;
+	}
+	dbus_message_iter_close_container (&_iter, &_tmp69_);
+	dbus_connection_send (_connection, _message, NULL);
+	dbus_message_unref (_message);
+}
+
+
+static void _dbus_rygel_tracker_resources_class_iface_subjects_removed (GObject* _sender, char** subjects, int subjects_length1, DBusConnection* _connection) {
+	const char * _path;
+	DBusMessage *_message;
+	DBusMessageIter _iter;
+	char** _tmp72_;
+	DBusMessageIter _tmp73_;
+	int _tmp74_;
+	_path = g_object_get_data (_sender, "dbus_object_path");
+	_message = dbus_message_new_signal (_path, "org.freedesktop.Tracker1.Resources.Class", "SubjectsRemoved");
+	dbus_message_iter_init_append (_message, &_iter);
+	_tmp72_ = subjects;
+	dbus_message_iter_open_container (&_iter, DBUS_TYPE_ARRAY, "s", &_tmp73_);
+	for (_tmp74_ = 0; _tmp74_ < subjects_length1; _tmp74_++) {
+		const char* _tmp75_;
+		_tmp75_ = *_tmp72_;
+		dbus_message_iter_append_basic (&_tmp73_, DBUS_TYPE_STRING, &_tmp75_);
+		_tmp72_++;
+	}
+	dbus_message_iter_close_container (&_iter, &_tmp73_);
+	dbus_connection_send (_connection, _message, NULL);
+	dbus_message_unref (_message);
+}
+
+
+static void _dbus_rygel_tracker_resources_class_iface_subjects_changed (GObject* _sender, char** before, int before_length1, char** after, int after_length1, DBusConnection* _connection) {
+	const char * _path;
+	DBusMessage *_message;
+	DBusMessageIter _iter;
+	char** _tmp76_;
+	DBusMessageIter _tmp77_;
+	int _tmp78_;
+	char** _tmp80_;
+	DBusMessageIter _tmp81_;
+	int _tmp82_;
+	_path = g_object_get_data (_sender, "dbus_object_path");
+	_message = dbus_message_new_signal (_path, "org.freedesktop.Tracker1.Resources.Class", "SubjectsChanged");
+	dbus_message_iter_init_append (_message, &_iter);
+	_tmp76_ = before;
+	dbus_message_iter_open_container (&_iter, DBUS_TYPE_ARRAY, "s", &_tmp77_);
+	for (_tmp78_ = 0; _tmp78_ < before_length1; _tmp78_++) {
+		const char* _tmp79_;
+		_tmp79_ = *_tmp76_;
+		dbus_message_iter_append_basic (&_tmp77_, DBUS_TYPE_STRING, &_tmp79_);
+		_tmp76_++;
+	}
+	dbus_message_iter_close_container (&_iter, &_tmp77_);
+	_tmp80_ = after;
+	dbus_message_iter_open_container (&_iter, DBUS_TYPE_ARRAY, "s", &_tmp81_);
+	for (_tmp82_ = 0; _tmp82_ < after_length1; _tmp82_++) {
+		const char* _tmp83_;
+		_tmp83_ = *_tmp80_;
+		dbus_message_iter_append_basic (&_tmp81_, DBUS_TYPE_STRING, &_tmp83_);
+		_tmp80_++;
+	}
+	dbus_message_iter_close_container (&_iter, &_tmp81_);
+	dbus_connection_send (_connection, _message, NULL);
+	dbus_message_unref (_message);
+}
+
+
+void rygel_tracker_resources_class_iface_dbus_register_object (DBusConnection* connection, const char* path, void* object) {
+	if (!g_object_get_data (object, "dbus_object_path")) {
+		g_object_set_data (object, "dbus_object_path", g_strdup (path));
+		dbus_connection_register_object_path (connection, path, &_rygel_tracker_resources_class_iface_dbus_path_vtable, object);
+		g_object_weak_ref (object, _vala_dbus_unregister_object, connection);
+	}
+	g_signal_connect (object, "subjects-added", (GCallback) _dbus_rygel_tracker_resources_class_iface_subjects_added, connection);
+	g_signal_connect (object, "subjects-removed", (GCallback) _dbus_rygel_tracker_resources_class_iface_subjects_removed, connection);
+	g_signal_connect (object, "subjects-changed", (GCallback) _dbus_rygel_tracker_resources_class_iface_subjects_changed, connection);
+}
+
+
+static void rygel_tracker_resources_class_iface_base_init (RygelTrackerResourcesClassIfaceIface * iface) {
+	static gboolean initialized = FALSE;
+	if (!initialized) {
+		initialized = TRUE;
+		g_signal_new ("subjects_added", RYGEL_TYPE_TRACKER_RESOURCES_CLASS_IFACE, G_SIGNAL_RUN_LAST, 0, NULL, NULL, g_cclosure_user_marshal_VOID__BOXED_INT, G_TYPE_NONE, 2, G_TYPE_STRV, G_TYPE_INT);
+		g_signal_new ("subjects_removed", RYGEL_TYPE_TRACKER_RESOURCES_CLASS_IFACE, G_SIGNAL_RUN_LAST, 0, NULL, NULL, g_cclosure_user_marshal_VOID__BOXED_INT, G_TYPE_NONE, 2, G_TYPE_STRV, G_TYPE_INT);
+		g_signal_new ("subjects_changed", RYGEL_TYPE_TRACKER_RESOURCES_CLASS_IFACE, G_SIGNAL_RUN_LAST, 0, NULL, NULL, g_cclosure_user_marshal_VOID__BOXED_INT_BOXED_INT, G_TYPE_NONE, 4, G_TYPE_STRV, G_TYPE_INT, G_TYPE_STRV, G_TYPE_INT);
+		g_type_set_qdata (RYGEL_TYPE_TRACKER_RESOURCES_CLASS_IFACE, g_quark_from_static_string ("DBusObjectVTable"), (void*) (&_rygel_tracker_resources_class_iface_dbus_vtable));
+	}
+}
+
+
+GType rygel_tracker_resources_class_iface_get_type (void) {
+	static volatile gsize rygel_tracker_resources_class_iface_type_id__volatile = 0;
+	if (g_once_init_enter (&rygel_tracker_resources_class_iface_type_id__volatile)) {
+		static const GTypeInfo g_define_type_info = { sizeof (RygelTrackerResourcesClassIfaceIface), (GBaseInitFunc) rygel_tracker_resources_class_iface_base_init, (GBaseFinalizeFunc) NULL, (GClassInitFunc) NULL, (GClassFinalizeFunc) NULL, NULL, 0, 0, (GInstanceInitFunc) NULL, NULL };
+		GType rygel_tracker_resources_class_iface_type_id;
+		rygel_tracker_resources_class_iface_type_id = g_type_register_static (G_TYPE_INTERFACE, "RygelTrackerResourcesClassIface", &g_define_type_info, 0);
+		g_type_interface_add_prerequisite (rygel_tracker_resources_class_iface_type_id, DBUS_TYPE_G_PROXY);
+		g_type_set_qdata (rygel_tracker_resources_class_iface_type_id, g_quark_from_string ("ValaDBusInterfaceProxyType"), &rygel_tracker_resources_class_iface_dbus_proxy_get_type);
+		g_once_init_leave (&rygel_tracker_resources_class_iface_type_id__volatile, rygel_tracker_resources_class_iface_type_id);
+	}
+	return rygel_tracker_resources_class_iface_type_id__volatile;
+}
+
+
+G_DEFINE_TYPE_EXTENDED (RygelTrackerResourcesClassIfaceDBusProxy, rygel_tracker_resources_class_iface_dbus_proxy, DBUS_TYPE_G_PROXY, 0, G_IMPLEMENT_INTERFACE (RYGEL_TYPE_TRACKER_RESOURCES_CLASS_IFACE, rygel_tracker_resources_class_iface_dbus_proxy_rygel_tracker_resources_class_iface__interface_init) );
+RygelTrackerResourcesClassIface* rygel_tracker_resources_class_iface_dbus_proxy_new (DBusGConnection* connection, const char* name, const char* path) {
+	RygelTrackerResourcesClassIface* self;
+	self = g_object_new (rygel_tracker_resources_class_iface_dbus_proxy_get_type (), "connection", connection, "name", name, "path", path, "interface", "org.freedesktop.Tracker1.Resources.Class", NULL);
+	return self;
+}
+
+
+static GObject* rygel_tracker_resources_class_iface_dbus_proxy_construct (GType gtype, guint n_properties, GObjectConstructParam* properties) {
+	GObject* self;
+	DBusGConnection *connection;
+	char* path;
+	char* filter;
+	self = G_OBJECT_CLASS (rygel_tracker_resources_class_iface_dbus_proxy_parent_class)->constructor (gtype, n_properties, properties);
+	g_object_get (self, "connection", &connection, NULL);
+	g_object_get (self, "path", &path, NULL);
+	dbus_connection_add_filter (dbus_g_connection_get_connection (connection), rygel_tracker_resources_class_iface_dbus_proxy_filter, self, NULL);
+	filter = g_strdup_printf ("type='signal',path='%s'", path);
+	dbus_bus_add_match (dbus_g_connection_get_connection (connection), filter, NULL);
+	dbus_g_connection_unref (connection);
+	g_free (path);
+	g_free (filter);
+	return self;
+}
+
+
+static void _dbus_handle_rygel_tracker_resources_class_iface_subjects_added (RygelTrackerResourcesClassIface* self, DBusConnection* connection, DBusMessage* message) {
 	DBusMessageIter iter;
-	gint live_query_id = 0;
-	dbus_int32_t _tmp95_;
-	char* service = NULL;
+	char** subjects = NULL;
+	int subjects_length1;
+	char** _tmp84_;
+	int _tmp84__length;
+	int _tmp84__size;
+	int _tmp84__length1;
+	DBusMessageIter _tmp85_;
+	DBusMessage* reply;
+	if (strcmp (dbus_message_get_signature (message), "as")) {
+		return;
+	}
+	dbus_message_iter_init (message, &iter);
+	subjects_length1 = 0;
+	_tmp84_ = g_new (char*, 5);
+	_tmp84__length = 0;
+	_tmp84__size = 4;
+	_tmp84__length1 = 0;
+	dbus_message_iter_recurse (&iter, &_tmp85_);
+	for (; dbus_message_iter_get_arg_type (&_tmp85_); _tmp84__length1++) {
+		const char* _tmp86_;
+		if (_tmp84__size == _tmp84__length) {
+			_tmp84__size = 2 * _tmp84__size;
+			_tmp84_ = g_renew (char*, _tmp84_, _tmp84__size + 1);
+		}
+		dbus_message_iter_get_basic (&_tmp85_, &_tmp86_);
+		dbus_message_iter_next (&_tmp85_);
+		_tmp84_[_tmp84__length++] = g_strdup (_tmp86_);
+	}
+	subjects_length1 = _tmp84__length1;
+	_tmp84_[_tmp84__length] = NULL;
+	dbus_message_iter_next (&iter);
+	subjects = _tmp84_;
+	g_signal_emit_by_name (self, "subjects-added", subjects, subjects_length1);
+	subjects = (_vala_array_free (subjects, subjects_length1, (GDestroyNotify) g_free), NULL);
+}
+
+
+static void _dbus_handle_rygel_tracker_resources_class_iface_subjects_removed (RygelTrackerResourcesClassIface* self, DBusConnection* connection, DBusMessage* message) {
+	DBusMessageIter iter;
+	char** subjects = NULL;
+	int subjects_length1;
+	char** _tmp87_;
+	int _tmp87__length;
+	int _tmp87__size;
+	int _tmp87__length1;
+	DBusMessageIter _tmp88_;
+	DBusMessage* reply;
+	if (strcmp (dbus_message_get_signature (message), "as")) {
+		return;
+	}
+	dbus_message_iter_init (message, &iter);
+	subjects_length1 = 0;
+	_tmp87_ = g_new (char*, 5);
+	_tmp87__length = 0;
+	_tmp87__size = 4;
+	_tmp87__length1 = 0;
+	dbus_message_iter_recurse (&iter, &_tmp88_);
+	for (; dbus_message_iter_get_arg_type (&_tmp88_); _tmp87__length1++) {
+		const char* _tmp89_;
+		if (_tmp87__size == _tmp87__length) {
+			_tmp87__size = 2 * _tmp87__size;
+			_tmp87_ = g_renew (char*, _tmp87_, _tmp87__size + 1);
+		}
+		dbus_message_iter_get_basic (&_tmp88_, &_tmp89_);
+		dbus_message_iter_next (&_tmp88_);
+		_tmp87_[_tmp87__length++] = g_strdup (_tmp89_);
+	}
+	subjects_length1 = _tmp87__length1;
+	_tmp87_[_tmp87__length] = NULL;
+	dbus_message_iter_next (&iter);
+	subjects = _tmp87_;
+	g_signal_emit_by_name (self, "subjects-removed", subjects, subjects_length1);
+	subjects = (_vala_array_free (subjects, subjects_length1, (GDestroyNotify) g_free), NULL);
+}
+
+
+static void _dbus_handle_rygel_tracker_resources_class_iface_subjects_changed (RygelTrackerResourcesClassIface* self, DBusConnection* connection, DBusMessage* message) {
+	DBusMessageIter iter;
+	char** before = NULL;
+	int before_length1;
+	char** _tmp90_;
+	int _tmp90__length;
+	int _tmp90__size;
+	int _tmp90__length1;
+	DBusMessageIter _tmp91_;
+	char** after = NULL;
+	int after_length1;
+	char** _tmp93_;
+	int _tmp93__length;
+	int _tmp93__size;
+	int _tmp93__length1;
+	DBusMessageIter _tmp94_;
+	DBusMessage* reply;
+	if (strcmp (dbus_message_get_signature (message), "asas")) {
+		return;
+	}
+	dbus_message_iter_init (message, &iter);
+	before_length1 = 0;
+	_tmp90_ = g_new (char*, 5);
+	_tmp90__length = 0;
+	_tmp90__size = 4;
+	_tmp90__length1 = 0;
+	dbus_message_iter_recurse (&iter, &_tmp91_);
+	for (; dbus_message_iter_get_arg_type (&_tmp91_); _tmp90__length1++) {
+		const char* _tmp92_;
+		if (_tmp90__size == _tmp90__length) {
+			_tmp90__size = 2 * _tmp90__size;
+			_tmp90_ = g_renew (char*, _tmp90_, _tmp90__size + 1);
+		}
+		dbus_message_iter_get_basic (&_tmp91_, &_tmp92_);
+		dbus_message_iter_next (&_tmp91_);
+		_tmp90_[_tmp90__length++] = g_strdup (_tmp92_);
+	}
+	before_length1 = _tmp90__length1;
+	_tmp90_[_tmp90__length] = NULL;
+	dbus_message_iter_next (&iter);
+	before = _tmp90_;
+	after_length1 = 0;
+	_tmp93_ = g_new (char*, 5);
+	_tmp93__length = 0;
+	_tmp93__size = 4;
+	_tmp93__length1 = 0;
+	dbus_message_iter_recurse (&iter, &_tmp94_);
+	for (; dbus_message_iter_get_arg_type (&_tmp94_); _tmp93__length1++) {
+		const char* _tmp95_;
+		if (_tmp93__size == _tmp93__length) {
+			_tmp93__size = 2 * _tmp93__size;
+			_tmp93_ = g_renew (char*, _tmp93_, _tmp93__size + 1);
+		}
+		dbus_message_iter_get_basic (&_tmp94_, &_tmp95_);
+		dbus_message_iter_next (&_tmp94_);
+		_tmp93_[_tmp93__length++] = g_strdup (_tmp95_);
+	}
+	after_length1 = _tmp93__length1;
+	_tmp93_[_tmp93__length] = NULL;
+	dbus_message_iter_next (&iter);
+	after = _tmp93_;
+	g_signal_emit_by_name (self, "subjects-changed", before, before_length1, after, after_length1);
+	before = (_vala_array_free (before, before_length1, (GDestroyNotify) g_free), NULL);
+	after = (_vala_array_free (after, after_length1, (GDestroyNotify) g_free), NULL);
+}
+
+
+DBusHandlerResult rygel_tracker_resources_class_iface_dbus_proxy_filter (DBusConnection* connection, DBusMessage* message, void* user_data) {
+	if (dbus_message_has_path (message, dbus_g_proxy_get_path (user_data))) {
+		if (dbus_message_is_signal (message, "org.freedesktop.Tracker1.Resources.Class", "SubjectsAdded")) {
+			_dbus_handle_rygel_tracker_resources_class_iface_subjects_added (user_data, connection, message);
+		} else if (dbus_message_is_signal (message, "org.freedesktop.Tracker1.Resources.Class", "SubjectsRemoved")) {
+			_dbus_handle_rygel_tracker_resources_class_iface_subjects_removed (user_data, connection, message);
+		} else if (dbus_message_is_signal (message, "org.freedesktop.Tracker1.Resources.Class", "SubjectsChanged")) {
+			_dbus_handle_rygel_tracker_resources_class_iface_subjects_changed (user_data, connection, message);
+		}
+	}
+	return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
+}
+
+
+static void rygel_tracker_resources_class_iface_dbus_proxy_dispose (GObject* self) {
+	DBusGConnection *connection;
+	if (((RygelTrackerResourcesClassIfaceDBusProxy*) self)->disposed) {
+		return;
+	}
+	((RygelTrackerResourcesClassIfaceDBusProxy*) self)->disposed = TRUE;
+	g_object_get (self, "connection", &connection, NULL);
+	dbus_connection_remove_filter (dbus_g_connection_get_connection (connection), rygel_tracker_resources_class_iface_dbus_proxy_filter, self);
+	G_OBJECT_CLASS (rygel_tracker_resources_class_iface_dbus_proxy_parent_class)->dispose (self);
+}
+
+
+static void rygel_tracker_resources_class_iface_dbus_proxy_class_init (RygelTrackerResourcesClassIfaceDBusProxyClass* klass) {
+	G_OBJECT_CLASS (klass)->constructor = rygel_tracker_resources_class_iface_dbus_proxy_construct;
+	G_OBJECT_CLASS (klass)->dispose = rygel_tracker_resources_class_iface_dbus_proxy_dispose;
+	G_OBJECT_CLASS (klass)->get_property = rygel_tracker_resources_class_iface_dbus_proxy_get_property;
+	G_OBJECT_CLASS (klass)->set_property = rygel_tracker_resources_class_iface_dbus_proxy_set_property;
+}
+
+
+static void rygel_tracker_resources_class_iface_dbus_proxy_init (RygelTrackerResourcesClassIfaceDBusProxy* self) {
+}
+
+
+static void rygel_tracker_resources_class_iface_dbus_proxy_rygel_tracker_resources_class_iface__interface_init (RygelTrackerResourcesClassIfaceIface* iface) {
+}
+
+
+static void rygel_tracker_resources_class_iface_dbus_proxy_get_property (GObject * object, guint property_id, GValue * value, GParamSpec * pspec) {
+}
+
+
+static void rygel_tracker_resources_class_iface_dbus_proxy_set_property (GObject * object, guint property_id, const GValue * value, GParamSpec * pspec) {
+}
+
+
+#line 50 "rygel-tracker-plugin-factory.vala"
+void rygel_tracker_miner_iface_ignore_next_update (RygelTrackerMinerIface* self, char** urls, int urls_length1, GAsyncReadyCallback _callback_, gpointer _user_data_) {
+#line 50 "rygel-tracker-plugin-factory.vala"
+	RYGEL_TRACKER_MINER_IFACE_GET_INTERFACE (self)->ignore_next_update (self, urls, urls_length1, _callback_, _user_data_);
+#line 2195 "rygel-tracker-interfaces.c"
+}
+
+
+#line 50 "rygel-tracker-plugin-factory.vala"
+void rygel_tracker_miner_iface_ignore_next_update_finish (RygelTrackerMinerIface* self, GAsyncResult* _res_, GError** error) {
+#line 50 "rygel-tracker-plugin-factory.vala"
+	RYGEL_TRACKER_MINER_IFACE_GET_INTERFACE (self)->ignore_next_update_finish (self, _res_, error);
+#line 2203 "rygel-tracker-interfaces.c"
+}
+
+
+void _rygel_tracker_miner_iface_dbus_unregister (DBusConnection* connection, void* _user_data_) {
+}
+
+
+static DBusHandlerResult _dbus_rygel_tracker_miner_iface_introspect (RygelTrackerMinerIface* self, DBusConnection* connection, DBusMessage* message) {
+	DBusMessage* reply;
+	DBusMessageIter iter;
+	GString* xml_data;
+	char** children;
+	int i;
+	reply = dbus_message_new_method_return (message);
+	dbus_message_iter_init_append (reply, &iter);
+	xml_data = g_string_new ("<!DOCTYPE node PUBLIC \"-//freedesktop//DTD D-BUS Object Introspection 1.0//EN\" \"http://www.freedesktop.org/standards/dbus/1.0/introspect.dtd\">\n");
+	g_string_append (xml_data, "<node>\n<interface name=\"org.freedesktop.DBus.Introspectable\">\n  <method name=\"Introspect\">\n    <arg name=\"data\" direction=\"out\" type=\"s\"/>\n  </method>\n</interface>\n<interface name=\"org.freedesktop.DBus.Properties\">\n  <method name=\"Get\">\n    <arg name=\"interface\" direction=\"in\" type=\"s\"/>\n    <arg name=\"propname\" direction=\"in\" type=\"s\"/>\n    <arg name=\"value\" direction=\"out\" type=\"v\"/>\n  </method>\n  <method name=\"Set\">\n    <arg name=\"interface\" direction=\"in\" type=\"s\"/>\n    <arg name=\"propname\" direction=\"in\" type=\"s\"/>\n    <arg name=\"value\" direction=\"in\" type=\"v\"/>\n  </method>\n  <method name=\"GetAll\">\n    <arg name=\"interface\" direction=\"in\" type=\"s\"/>\n    <arg name=\"props\" direction=\"out\" type=\"a{sv}\"/>\n  </method>\n</interface>\n<interface name=\"org.freedesktop.Tracker1.Miner\">\n  <method name=\"IgnoreNextUpdate\">\n    <arg name=\"urls\" type=\"as\" direction=\"in\"/>\n  </method>\n</interface>\n");
+	dbus_connection_list_registered (connection, g_object_get_data ((GObject *) self, "dbus_object_path"), &children);
+	for (i = 0; children[i]; i++) {
+		g_string_append_printf (xml_data, "<node name=\"%s\"/>\n", children[i]);
+	}
+	dbus_free_string_array (children);
+	g_string_append (xml_data, "</node>\n");
+	dbus_message_iter_append_basic (&iter, DBUS_TYPE_STRING, &xml_data->str);
+	g_string_free (xml_data, TRUE);
+	if (reply) {
+		dbus_connection_send (connection, reply, NULL);
+		dbus_message_unref (reply);
+		return DBUS_HANDLER_RESULT_HANDLED;
+	} else {
+		return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
+	}
+}
+
+
+static DBusHandlerResult _dbus_rygel_tracker_miner_iface_property_get_all (RygelTrackerMinerIface* self, DBusConnection* connection, DBusMessage* message) {
+	DBusMessage* reply;
+	DBusMessageIter iter, reply_iter, subiter;
+	char* interface_name;
 	const char* _tmp96_;
-	char** fields = NULL;
-	int fields_length1;
+	if (strcmp (dbus_message_get_signature (message), "s")) {
+		return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
+	}
+	dbus_message_iter_init (message, &iter);
+	reply = dbus_message_new_method_return (message);
+	dbus_message_iter_init_append (reply, &reply_iter);
+	dbus_message_iter_get_basic (&iter, &_tmp96_);
+	dbus_message_iter_next (&iter);
+	interface_name = g_strdup (_tmp96_);
+	if (strcmp (interface_name, "org.freedesktop.Tracker1.Miner") == 0) {
+		dbus_message_iter_open_container (&reply_iter, DBUS_TYPE_ARRAY, "{sv}", &subiter);
+		dbus_message_iter_close_container (&reply_iter, &subiter);
+	} else {
+		dbus_message_unref (reply);
+		reply = NULL;
+	}
+	g_free (interface_name);
+	if (reply) {
+		dbus_connection_send (connection, reply, NULL);
+		dbus_message_unref (reply);
+		return DBUS_HANDLER_RESULT_HANDLED;
+	} else {
+		return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
+	}
+}
+
+
+static DBusHandlerResult _dbus_rygel_tracker_miner_iface_ignore_next_update (RygelTrackerMinerIface* self, DBusConnection* connection, DBusMessage* message) {
+	DBusMessageIter iter;
+	char** urls = NULL;
+	int urls_length1;
 	char** _tmp97_;
 	int _tmp97__length;
 	int _tmp97__size;
 	int _tmp97__length1;
 	DBusMessageIter _tmp98_;
-	char* search_text = NULL;
-	const char* _tmp100_;
-	char** keywords = NULL;
-	int keywords_length1;
-	char** _tmp101_;
-	int _tmp101__length;
-	int _tmp101__size;
-	int _tmp101__length1;
-	DBusMessageIter _tmp102_;
-	char* query_condition = NULL;
-	const char* _tmp104_;
-	gboolean sort_by_service = FALSE;
-	dbus_bool_t _tmp105_;
-	char** sort_fields = NULL;
-	int sort_fields_length1;
-	char** _tmp106_;
-	int _tmp106__length;
-	int _tmp106__size;
-	int _tmp106__length1;
-	DBusMessageIter _tmp107_;
-	gboolean sort_descending = FALSE;
-	dbus_bool_t _tmp109_;
-	gint offset = 0;
-	dbus_int32_t _tmp110_;
-	gint max_hits = 0;
-	dbus_int32_t _tmp111_;
 	gpointer * _user_data_;
-	if (strcmp (dbus_message_get_signature (message), "isassassbasbii")) {
+	if (strcmp (dbus_message_get_signature (message), "as")) {
 		return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
 	}
 	dbus_message_iter_init (message, &iter);
-	dbus_message_iter_get_basic (&iter, &_tmp95_);
-	dbus_message_iter_next (&iter);
-	live_query_id = _tmp95_;
-	dbus_message_iter_get_basic (&iter, &_tmp96_);
-	dbus_message_iter_next (&iter);
-	service = g_strdup (_tmp96_);
-	fields_length1 = 0;
+	urls_length1 = 0;
 	_tmp97_ = g_new (char*, 5);
 	_tmp97__length = 0;
 	_tmp97__size = 4;
@@ -2430,100 +2297,29 @@ static DBusHandlerResult _dbus_rygel_tracker_search_iface_query (RygelTrackerSea
 		dbus_message_iter_next (&_tmp98_);
 		_tmp97_[_tmp97__length++] = g_strdup (_tmp99_);
 	}
-	fields_length1 = _tmp97__length1;
+	urls_length1 = _tmp97__length1;
 	_tmp97_[_tmp97__length] = NULL;
 	dbus_message_iter_next (&iter);
-	fields = _tmp97_;
-	dbus_message_iter_get_basic (&iter, &_tmp100_);
-	dbus_message_iter_next (&iter);
-	search_text = g_strdup (_tmp100_);
-	keywords_length1 = 0;
-	_tmp101_ = g_new (char*, 5);
-	_tmp101__length = 0;
-	_tmp101__size = 4;
-	_tmp101__length1 = 0;
-	dbus_message_iter_recurse (&iter, &_tmp102_);
-	for (; dbus_message_iter_get_arg_type (&_tmp102_); _tmp101__length1++) {
-		const char* _tmp103_;
-		if (_tmp101__size == _tmp101__length) {
-			_tmp101__size = 2 * _tmp101__size;
-			_tmp101_ = g_renew (char*, _tmp101_, _tmp101__size + 1);
-		}
-		dbus_message_iter_get_basic (&_tmp102_, &_tmp103_);
-		dbus_message_iter_next (&_tmp102_);
-		_tmp101_[_tmp101__length++] = g_strdup (_tmp103_);
-	}
-	keywords_length1 = _tmp101__length1;
-	_tmp101_[_tmp101__length] = NULL;
-	dbus_message_iter_next (&iter);
-	keywords = _tmp101_;
-	dbus_message_iter_get_basic (&iter, &_tmp104_);
-	dbus_message_iter_next (&iter);
-	query_condition = g_strdup (_tmp104_);
-	dbus_message_iter_get_basic (&iter, &_tmp105_);
-	dbus_message_iter_next (&iter);
-	sort_by_service = _tmp105_;
-	sort_fields_length1 = 0;
-	_tmp106_ = g_new (char*, 5);
-	_tmp106__length = 0;
-	_tmp106__size = 4;
-	_tmp106__length1 = 0;
-	dbus_message_iter_recurse (&iter, &_tmp107_);
-	for (; dbus_message_iter_get_arg_type (&_tmp107_); _tmp106__length1++) {
-		const char* _tmp108_;
-		if (_tmp106__size == _tmp106__length) {
-			_tmp106__size = 2 * _tmp106__size;
-			_tmp106_ = g_renew (char*, _tmp106_, _tmp106__size + 1);
-		}
-		dbus_message_iter_get_basic (&_tmp107_, &_tmp108_);
-		dbus_message_iter_next (&_tmp107_);
-		_tmp106_[_tmp106__length++] = g_strdup (_tmp108_);
-	}
-	sort_fields_length1 = _tmp106__length1;
-	_tmp106_[_tmp106__length] = NULL;
-	dbus_message_iter_next (&iter);
-	sort_fields = _tmp106_;
-	dbus_message_iter_get_basic (&iter, &_tmp109_);
-	dbus_message_iter_next (&iter);
-	sort_descending = _tmp109_;
-	dbus_message_iter_get_basic (&iter, &_tmp110_);
-	dbus_message_iter_next (&iter);
-	offset = _tmp110_;
-	dbus_message_iter_get_basic (&iter, &_tmp111_);
-	dbus_message_iter_next (&iter);
-	max_hits = _tmp111_;
+	urls = _tmp97_;
 	_user_data_ = g_new0 (gpointer, 2);
 	_user_data_[0] = dbus_connection_ref (connection);
 	_user_data_[1] = dbus_message_ref (message);
-	rygel_tracker_search_iface_query (self, live_query_id, service, fields, fields_length1, search_text, keywords, keywords_length1, query_condition, sort_by_service, sort_fields, sort_fields_length1, sort_descending, offset, max_hits, _dbus_rygel_tracker_search_iface_query_ready, _user_data_);
-	_g_free0 (service);
-	fields = (_vala_array_free (fields, fields_length1, (GDestroyNotify) g_free), NULL);
-	_g_free0 (search_text);
-	keywords = (_vala_array_free (keywords, keywords_length1, (GDestroyNotify) g_free), NULL);
-	_g_free0 (query_condition);
-	sort_fields = (_vala_array_free (sort_fields, sort_fields_length1, (GDestroyNotify) g_free), NULL);
+	rygel_tracker_miner_iface_ignore_next_update (self, urls, urls_length1, _dbus_rygel_tracker_miner_iface_ignore_next_update_ready, _user_data_);
+	urls = (_vala_array_free (urls, urls_length1, (GDestroyNotify) g_free), NULL);
 	return DBUS_HANDLER_RESULT_HANDLED;
 }
 
 
-static void _dbus_rygel_tracker_search_iface_query_ready (GObject * source_object, GAsyncResult * _res_, gpointer * _user_data_) {
+static void _dbus_rygel_tracker_miner_iface_ignore_next_update_ready (GObject * source_object, GAsyncResult * _res_, gpointer * _user_data_) {
 	DBusConnection * connection;
 	DBusMessage * message;
 	DBusMessageIter iter;
 	GError* error;
-	char** result;
-	int result_length1;
-	int result_length2;
 	DBusMessage* reply;
-	char** _tmp112_;
-	DBusMessageIter _tmp113_;
-	int _tmp114_;
 	connection = _user_data_[0];
 	message = _user_data_[1];
 	error = NULL;
-	result_length1 = 0;
-	result_length2 = 0;
-	result = rygel_tracker_search_iface_query_finish (source_object, _res_, &result_length1, &result_length2, &error);
+	rygel_tracker_miner_iface_ignore_next_update_finish (source_object, _res_, &error);
 	if (error) {
 		if (error->domain == DBUS_GERROR) {
 			switch (error->code) {
@@ -2634,22 +2430,6 @@ static void _dbus_rygel_tracker_search_iface_query_ready (GObject * source_objec
 	}
 	reply = dbus_message_new_method_return (message);
 	dbus_message_iter_init_append (reply, &iter);
-	_tmp112_ = result;
-	dbus_message_iter_open_container (&iter, DBUS_TYPE_ARRAY, "as", &_tmp113_);
-	for (_tmp114_ = 0; _tmp114_ < result_length1; _tmp114_++) {
-		DBusMessageIter _tmp115_;
-		int _tmp116_;
-		dbus_message_iter_open_container (&_tmp113_, DBUS_TYPE_ARRAY, "s", &_tmp115_);
-		for (_tmp116_ = 0; _tmp116_ < result_length2; _tmp116_++) {
-			const char* _tmp117_;
-			_tmp117_ = *_tmp112_;
-			dbus_message_iter_append_basic (&_tmp115_, DBUS_TYPE_STRING, &_tmp117_);
-			_tmp112_++;
-		}
-		dbus_message_iter_close_container (&_tmp113_, &_tmp115_);
-	}
-	dbus_message_iter_close_container (&iter, &_tmp113_);
-	result = (_vala_array_free (result,  result_length1 *  result_length2, (GDestroyNotify) g_free), NULL);
 	dbus_connection_send (connection, reply, NULL);
 	dbus_message_unref (reply);
 	dbus_connection_unref (connection);
@@ -2658,15 +2438,15 @@ static void _dbus_rygel_tracker_search_iface_query_ready (GObject * source_objec
 }
 
 
-DBusHandlerResult rygel_tracker_search_iface_dbus_message (DBusConnection* connection, DBusMessage* message, void* object) {
+DBusHandlerResult rygel_tracker_miner_iface_dbus_message (DBusConnection* connection, DBusMessage* message, void* object) {
 	DBusHandlerResult result;
 	result = DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
 	if (dbus_message_is_method_call (message, "org.freedesktop.DBus.Introspectable", "Introspect")) {
-		result = _dbus_rygel_tracker_search_iface_introspect (object, connection, message);
+		result = _dbus_rygel_tracker_miner_iface_introspect (object, connection, message);
 	} else if (dbus_message_is_method_call (message, "org.freedesktop.DBus.Properties", "GetAll")) {
-		result = _dbus_rygel_tracker_search_iface_property_get_all (object, connection, message);
-	} else if (dbus_message_is_method_call (message, "org.freedesktop.Tracker.Search", "Query")) {
-		result = _dbus_rygel_tracker_search_iface_query (object, connection, message);
+		result = _dbus_rygel_tracker_miner_iface_property_get_all (object, connection, message);
+	} else if (dbus_message_is_method_call (message, "org.freedesktop.Tracker1.Miner", "IgnoreNextUpdate")) {
+		result = _dbus_rygel_tracker_miner_iface_ignore_next_update (object, connection, message);
 	}
 	if (result == DBUS_HANDLER_RESULT_HANDLED) {
 		return result;
@@ -2676,53 +2456,55 @@ DBusHandlerResult rygel_tracker_search_iface_dbus_message (DBusConnection* conne
 }
 
 
-void rygel_tracker_search_iface_dbus_register_object (DBusConnection* connection, const char* path, void* object) {
+void rygel_tracker_miner_iface_dbus_register_object (DBusConnection* connection, const char* path, void* object) {
 	if (!g_object_get_data (object, "dbus_object_path")) {
 		g_object_set_data (object, "dbus_object_path", g_strdup (path));
-		dbus_connection_register_object_path (connection, path, &_rygel_tracker_search_iface_dbus_path_vtable, object);
+		dbus_connection_register_object_path (connection, path, &_rygel_tracker_miner_iface_dbus_path_vtable, object);
 		g_object_weak_ref (object, _vala_dbus_unregister_object, connection);
 	}
 }
 
 
-static void rygel_tracker_search_iface_base_init (RygelTrackerSearchIfaceIface * iface) {
+static void rygel_tracker_miner_iface_base_init (RygelTrackerMinerIfaceIface * iface) {
 	static gboolean initialized = FALSE;
 	if (!initialized) {
 		initialized = TRUE;
-		g_type_set_qdata (RYGEL_TYPE_TRACKER_SEARCH_IFACE, g_quark_from_static_string ("DBusObjectVTable"), (void*) (&_rygel_tracker_search_iface_dbus_vtable));
+		g_type_set_qdata (RYGEL_TYPE_TRACKER_MINER_IFACE, g_quark_from_static_string ("DBusObjectVTable"), (void*) (&_rygel_tracker_miner_iface_dbus_vtable));
 	}
 }
 
 
-GType rygel_tracker_search_iface_get_type (void) {
-	static GType rygel_tracker_search_iface_type_id = 0;
-	if (rygel_tracker_search_iface_type_id == 0) {
-		static const GTypeInfo g_define_type_info = { sizeof (RygelTrackerSearchIfaceIface), (GBaseInitFunc) rygel_tracker_search_iface_base_init, (GBaseFinalizeFunc) NULL, (GClassInitFunc) NULL, (GClassFinalizeFunc) NULL, NULL, 0, 0, (GInstanceInitFunc) NULL, NULL };
-		rygel_tracker_search_iface_type_id = g_type_register_static (G_TYPE_INTERFACE, "RygelTrackerSearchIface", &g_define_type_info, 0);
-		g_type_interface_add_prerequisite (rygel_tracker_search_iface_type_id, DBUS_TYPE_G_PROXY);
-		g_type_set_qdata (rygel_tracker_search_iface_type_id, g_quark_from_string ("ValaDBusInterfaceProxyType"), &rygel_tracker_search_iface_dbus_proxy_get_type);
+GType rygel_tracker_miner_iface_get_type (void) {
+	static volatile gsize rygel_tracker_miner_iface_type_id__volatile = 0;
+	if (g_once_init_enter (&rygel_tracker_miner_iface_type_id__volatile)) {
+		static const GTypeInfo g_define_type_info = { sizeof (RygelTrackerMinerIfaceIface), (GBaseInitFunc) rygel_tracker_miner_iface_base_init, (GBaseFinalizeFunc) NULL, (GClassInitFunc) NULL, (GClassFinalizeFunc) NULL, NULL, 0, 0, (GInstanceInitFunc) NULL, NULL };
+		GType rygel_tracker_miner_iface_type_id;
+		rygel_tracker_miner_iface_type_id = g_type_register_static (G_TYPE_INTERFACE, "RygelTrackerMinerIface", &g_define_type_info, 0);
+		g_type_interface_add_prerequisite (rygel_tracker_miner_iface_type_id, DBUS_TYPE_G_PROXY);
+		g_type_set_qdata (rygel_tracker_miner_iface_type_id, g_quark_from_string ("ValaDBusInterfaceProxyType"), &rygel_tracker_miner_iface_dbus_proxy_get_type);
+		g_once_init_leave (&rygel_tracker_miner_iface_type_id__volatile, rygel_tracker_miner_iface_type_id);
 	}
-	return rygel_tracker_search_iface_type_id;
+	return rygel_tracker_miner_iface_type_id__volatile;
 }
 
 
-G_DEFINE_TYPE_EXTENDED (RygelTrackerSearchIfaceDBusProxy, rygel_tracker_search_iface_dbus_proxy, DBUS_TYPE_G_PROXY, 0, G_IMPLEMENT_INTERFACE (RYGEL_TYPE_TRACKER_SEARCH_IFACE, rygel_tracker_search_iface_dbus_proxy_rygel_tracker_search_iface__interface_init) );
-RygelTrackerSearchIface* rygel_tracker_search_iface_dbus_proxy_new (DBusGConnection* connection, const char* name, const char* path) {
-	RygelTrackerSearchIface* self;
-	self = g_object_new (rygel_tracker_search_iface_dbus_proxy_get_type (), "connection", connection, "name", name, "path", path, "interface", "org.freedesktop.Tracker.Search", NULL);
+G_DEFINE_TYPE_EXTENDED (RygelTrackerMinerIfaceDBusProxy, rygel_tracker_miner_iface_dbus_proxy, DBUS_TYPE_G_PROXY, 0, G_IMPLEMENT_INTERFACE (RYGEL_TYPE_TRACKER_MINER_IFACE, rygel_tracker_miner_iface_dbus_proxy_rygel_tracker_miner_iface__interface_init) );
+RygelTrackerMinerIface* rygel_tracker_miner_iface_dbus_proxy_new (DBusGConnection* connection, const char* name, const char* path) {
+	RygelTrackerMinerIface* self;
+	self = g_object_new (rygel_tracker_miner_iface_dbus_proxy_get_type (), "connection", connection, "name", name, "path", path, "interface", "org.freedesktop.Tracker1.Miner", NULL);
 	return self;
 }
 
 
-static GObject* rygel_tracker_search_iface_dbus_proxy_construct (GType gtype, guint n_properties, GObjectConstructParam* properties) {
+static GObject* rygel_tracker_miner_iface_dbus_proxy_construct (GType gtype, guint n_properties, GObjectConstructParam* properties) {
 	GObject* self;
 	DBusGConnection *connection;
 	char* path;
 	char* filter;
-	self = G_OBJECT_CLASS (rygel_tracker_search_iface_dbus_proxy_parent_class)->constructor (gtype, n_properties, properties);
+	self = G_OBJECT_CLASS (rygel_tracker_miner_iface_dbus_proxy_parent_class)->constructor (gtype, n_properties, properties);
 	g_object_get (self, "connection", &connection, NULL);
 	g_object_get (self, "path", &path, NULL);
-	dbus_connection_add_filter (dbus_g_connection_get_connection (connection), rygel_tracker_search_iface_dbus_proxy_filter, self, NULL);
+	dbus_connection_add_filter (dbus_g_connection_get_connection (connection), rygel_tracker_miner_iface_dbus_proxy_filter, self, NULL);
 	filter = g_strdup_printf ("type='signal',path='%s'", path);
 	dbus_bus_add_match (dbus_g_connection_get_connection (connection), filter, NULL);
 	dbus_g_connection_unref (connection);
@@ -2732,137 +2514,89 @@ static GObject* rygel_tracker_search_iface_dbus_proxy_construct (GType gtype, gu
 }
 
 
-DBusHandlerResult rygel_tracker_search_iface_dbus_proxy_filter (DBusConnection* connection, DBusMessage* message, void* user_data) {
+DBusHandlerResult rygel_tracker_miner_iface_dbus_proxy_filter (DBusConnection* connection, DBusMessage* message, void* user_data) {
 	if (dbus_message_has_path (message, dbus_g_proxy_get_path (user_data))) {
 	}
 	return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
 }
 
 
-static void rygel_tracker_search_iface_dbus_proxy_dispose (GObject* self) {
+static void rygel_tracker_miner_iface_dbus_proxy_dispose (GObject* self) {
 	DBusGConnection *connection;
-	if (((RygelTrackerSearchIfaceDBusProxy*) self)->disposed) {
+	if (((RygelTrackerMinerIfaceDBusProxy*) self)->disposed) {
 		return;
 	}
-	((RygelTrackerSearchIfaceDBusProxy*) self)->disposed = TRUE;
+	((RygelTrackerMinerIfaceDBusProxy*) self)->disposed = TRUE;
 	g_object_get (self, "connection", &connection, NULL);
-	dbus_connection_remove_filter (dbus_g_connection_get_connection (connection), rygel_tracker_search_iface_dbus_proxy_filter, self);
-	G_OBJECT_CLASS (rygel_tracker_search_iface_dbus_proxy_parent_class)->dispose (self);
+	dbus_connection_remove_filter (dbus_g_connection_get_connection (connection), rygel_tracker_miner_iface_dbus_proxy_filter, self);
+	G_OBJECT_CLASS (rygel_tracker_miner_iface_dbus_proxy_parent_class)->dispose (self);
 }
 
 
-static void rygel_tracker_search_iface_dbus_proxy_class_init (RygelTrackerSearchIfaceDBusProxyClass* klass) {
-	G_OBJECT_CLASS (klass)->constructor = rygel_tracker_search_iface_dbus_proxy_construct;
-	G_OBJECT_CLASS (klass)->dispose = rygel_tracker_search_iface_dbus_proxy_dispose;
-	G_OBJECT_CLASS (klass)->get_property = rygel_tracker_search_iface_dbus_proxy_get_property;
-	G_OBJECT_CLASS (klass)->set_property = rygel_tracker_search_iface_dbus_proxy_set_property;
+static void rygel_tracker_miner_iface_dbus_proxy_class_init (RygelTrackerMinerIfaceDBusProxyClass* klass) {
+	G_OBJECT_CLASS (klass)->constructor = rygel_tracker_miner_iface_dbus_proxy_construct;
+	G_OBJECT_CLASS (klass)->dispose = rygel_tracker_miner_iface_dbus_proxy_dispose;
+	G_OBJECT_CLASS (klass)->get_property = rygel_tracker_miner_iface_dbus_proxy_get_property;
+	G_OBJECT_CLASS (klass)->set_property = rygel_tracker_miner_iface_dbus_proxy_set_property;
 }
 
 
-static void rygel_tracker_search_iface_dbus_proxy_init (RygelTrackerSearchIfaceDBusProxy* self) {
+static void rygel_tracker_miner_iface_dbus_proxy_init (RygelTrackerMinerIfaceDBusProxy* self) {
 }
 
 
-static void rygel_tracker_search_iface_dbus_proxy_query_async (RygelTrackerSearchIface* self, gint live_query_id, const char* service, char** fields, int fields_length1, const char* search_text, char** keywords, int keywords_length1, const char* query_condition, gboolean sort_by_service, char** sort_fields, int sort_fields_length1, gboolean sort_descending, gint offset, gint max_hits, GAsyncReadyCallback _callback_, gpointer _user_data_) {
+static void rygel_tracker_miner_iface_dbus_proxy_ignore_next_update_async (RygelTrackerMinerIface* self, char** urls, int urls_length1, GAsyncReadyCallback _callback_, gpointer _user_data_) {
 	DBusGConnection *_connection;
 	DBusMessage *_message;
 	DBusPendingCall *_pending;
 	DBusMessageIter _iter;
-	dbus_int32_t _tmp118_;
-	const char* _tmp119_;
-	char** _tmp120_;
-	DBusMessageIter _tmp121_;
-	int _tmp122_;
-	const char* _tmp124_;
-	char** _tmp125_;
-	DBusMessageIter _tmp126_;
-	int _tmp127_;
-	const char* _tmp129_;
-	dbus_bool_t _tmp130_;
-	char** _tmp131_;
-	DBusMessageIter _tmp132_;
-	int _tmp133_;
-	dbus_bool_t _tmp135_;
-	dbus_int32_t _tmp136_;
-	dbus_int32_t _tmp137_;
-	RygelTrackerSearchIfaceDBusProxyQueryData* _data_;
-	_message = dbus_message_new_method_call (dbus_g_proxy_get_bus_name ((DBusGProxy*) self), dbus_g_proxy_get_path ((DBusGProxy*) self), "org.freedesktop.Tracker.Search", "Query");
+	char** _tmp100_;
+	DBusMessageIter _tmp101_;
+	int _tmp102_;
+	RygelTrackerMinerIfaceDBusProxyIgnoreNextUpdateData* _data_;
+	_message = dbus_message_new_method_call (dbus_g_proxy_get_bus_name ((DBusGProxy*) self), dbus_g_proxy_get_path ((DBusGProxy*) self), "org.freedesktop.Tracker1.Miner", "IgnoreNextUpdate");
 	dbus_message_iter_init_append (_message, &_iter);
-	_tmp118_ = live_query_id;
-	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_INT32, &_tmp118_);
-	_tmp119_ = service;
-	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp119_);
-	_tmp120_ = fields;
-	dbus_message_iter_open_container (&_iter, DBUS_TYPE_ARRAY, "s", &_tmp121_);
-	for (_tmp122_ = 0; _tmp122_ < fields_length1; _tmp122_++) {
-		const char* _tmp123_;
-		_tmp123_ = *_tmp120_;
-		dbus_message_iter_append_basic (&_tmp121_, DBUS_TYPE_STRING, &_tmp123_);
-		_tmp120_++;
+	_tmp100_ = urls;
+	dbus_message_iter_open_container (&_iter, DBUS_TYPE_ARRAY, "s", &_tmp101_);
+	for (_tmp102_ = 0; _tmp102_ < urls_length1; _tmp102_++) {
+		const char* _tmp103_;
+		_tmp103_ = *_tmp100_;
+		dbus_message_iter_append_basic (&_tmp101_, DBUS_TYPE_STRING, &_tmp103_);
+		_tmp100_++;
 	}
-	dbus_message_iter_close_container (&_iter, &_tmp121_);
-	_tmp124_ = search_text;
-	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp124_);
-	_tmp125_ = keywords;
-	dbus_message_iter_open_container (&_iter, DBUS_TYPE_ARRAY, "s", &_tmp126_);
-	for (_tmp127_ = 0; _tmp127_ < keywords_length1; _tmp127_++) {
-		const char* _tmp128_;
-		_tmp128_ = *_tmp125_;
-		dbus_message_iter_append_basic (&_tmp126_, DBUS_TYPE_STRING, &_tmp128_);
-		_tmp125_++;
-	}
-	dbus_message_iter_close_container (&_iter, &_tmp126_);
-	_tmp129_ = query_condition;
-	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp129_);
-	_tmp130_ = sort_by_service;
-	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_BOOLEAN, &_tmp130_);
-	_tmp131_ = sort_fields;
-	dbus_message_iter_open_container (&_iter, DBUS_TYPE_ARRAY, "s", &_tmp132_);
-	for (_tmp133_ = 0; _tmp133_ < sort_fields_length1; _tmp133_++) {
-		const char* _tmp134_;
-		_tmp134_ = *_tmp131_;
-		dbus_message_iter_append_basic (&_tmp132_, DBUS_TYPE_STRING, &_tmp134_);
-		_tmp131_++;
-	}
-	dbus_message_iter_close_container (&_iter, &_tmp132_);
-	_tmp135_ = sort_descending;
-	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_BOOLEAN, &_tmp135_);
-	_tmp136_ = offset;
-	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_INT32, &_tmp136_);
-	_tmp137_ = max_hits;
-	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_INT32, &_tmp137_);
+	dbus_message_iter_close_container (&_iter, &_tmp101_);
 	g_object_get (self, "connection", &_connection, NULL);
 	dbus_connection_send_with_reply (dbus_g_connection_get_connection (_connection), _message, &_pending, -1);
 	dbus_g_connection_unref (_connection);
 	dbus_message_unref (_message);
-	_data_ = g_slice_new0 (RygelTrackerSearchIfaceDBusProxyQueryData);
+	_data_ = g_slice_new0 (RygelTrackerMinerIfaceDBusProxyIgnoreNextUpdateData);
 	_data_->_callback_ = _callback_;
 	_data_->_user_data_ = _user_data_;
 	_data_->pending = _pending;
-	dbus_pending_call_set_notify (_pending, rygel_tracker_search_iface_dbus_proxy_query_ready, _data_, NULL);
+	dbus_pending_call_set_notify (_pending, rygel_tracker_miner_iface_dbus_proxy_ignore_next_update_ready, _data_, NULL);
 }
 
 
-static void rygel_tracker_search_iface_dbus_proxy_query_ready (DBusPendingCall* pending, void* user_data) {
-	RygelTrackerSearchIfaceDBusProxyQueryData* _data_;
+static void rygel_tracker_miner_iface_dbus_proxy_ignore_next_update_ready (DBusPendingCall* pending, void* user_data) {
+	RygelTrackerMinerIfaceDBusProxyIgnoreNextUpdateData* _data_;
+	GObject * _obj_;
+	GSimpleAsyncResult * _res_;
 	_data_ = user_data;
-	g_simple_async_result_complete (g_simple_async_result_new (g_object_newv (G_TYPE_OBJECT, 0, NULL), _data_->_callback_, _data_->_user_data_, _data_));
+	_obj_ = g_object_newv (G_TYPE_OBJECT, 0, NULL);
+	_res_ = g_simple_async_result_new (_obj_, _data_->_callback_, _data_->_user_data_, _data_);
+	g_simple_async_result_complete (_res_);
+	g_object_unref (_obj_);
+	g_object_unref (_res_);
+	g_slice_free (RygelTrackerMinerIfaceDBusProxyIgnoreNextUpdateData, _data_);
+	dbus_pending_call_unref (pending);
 }
 
 
-static char** rygel_tracker_search_iface_dbus_proxy_query_finish (RygelTrackerSearchIface* self, GAsyncResult* _res_, int* result_length1, int* result_length2, GError** error) {
-	RygelTrackerSearchIfaceDBusProxyQueryData* _data_;
+static void rygel_tracker_miner_iface_dbus_proxy_ignore_next_update_finish (RygelTrackerMinerIface* self, GAsyncResult* _res_, GError** error) {
+	RygelTrackerMinerIfaceDBusProxyIgnoreNextUpdateData* _data_;
 	DBusError _dbus_error;
 	DBusMessage *_reply;
 	DBusMessageIter _iter;
-	char** _result;
-	int _result_length1;
-	int _result_length2;
-	char** _tmp163_;
-	int _tmp163__length;
-	int _tmp163__size;
-	int _tmp163__length1;
-	DBusMessageIter _tmp164_;
 	_data_ = g_simple_async_result_get_source_tag ((GSimpleAsyncResult *) _res_);
 	dbus_error_init (&_dbus_error);
 	_reply = dbus_pending_call_steal_reply (_data_->pending);
@@ -2871,134 +2605,102 @@ static char** rygel_tracker_search_iface_dbus_proxy_query_finish (RygelTrackerSe
 		GQuark _edomain;
 		gint _ecode;
 		if (strstr (_dbus_error.name, "org.freedesktop.DBus.Error") == _dbus_error.name) {
-			const char* _tmp142_;
+			const char* _tmp104_;
 			_edomain = DBUS_GERROR;
-			_tmp142_ = _dbus_error.name + 27;
-			if (strcmp (_tmp142_, "Failed") == 0) {
+			_tmp104_ = _dbus_error.name + 27;
+			if (strcmp (_tmp104_, "Failed") == 0) {
 				_ecode = DBUS_GERROR_FAILED;
-			} else if (strcmp (_tmp142_, "NoMemory") == 0) {
+			} else if (strcmp (_tmp104_, "NoMemory") == 0) {
 				_ecode = DBUS_GERROR_NO_MEMORY;
-			} else if (strcmp (_tmp142_, "ServiceUnknown") == 0) {
+			} else if (strcmp (_tmp104_, "ServiceUnknown") == 0) {
 				_ecode = DBUS_GERROR_SERVICE_UNKNOWN;
-			} else if (strcmp (_tmp142_, "NameHasNoOwner") == 0) {
+			} else if (strcmp (_tmp104_, "NameHasNoOwner") == 0) {
 				_ecode = DBUS_GERROR_NAME_HAS_NO_OWNER;
-			} else if (strcmp (_tmp142_, "NoReply") == 0) {
+			} else if (strcmp (_tmp104_, "NoReply") == 0) {
 				_ecode = DBUS_GERROR_NO_REPLY;
-			} else if (strcmp (_tmp142_, "IOError") == 0) {
+			} else if (strcmp (_tmp104_, "IOError") == 0) {
 				_ecode = DBUS_GERROR_IO_ERROR;
-			} else if (strcmp (_tmp142_, "BadAddress") == 0) {
+			} else if (strcmp (_tmp104_, "BadAddress") == 0) {
 				_ecode = DBUS_GERROR_BAD_ADDRESS;
-			} else if (strcmp (_tmp142_, "NotSupported") == 0) {
+			} else if (strcmp (_tmp104_, "NotSupported") == 0) {
 				_ecode = DBUS_GERROR_NOT_SUPPORTED;
-			} else if (strcmp (_tmp142_, "LimitsExceeded") == 0) {
+			} else if (strcmp (_tmp104_, "LimitsExceeded") == 0) {
 				_ecode = DBUS_GERROR_LIMITS_EXCEEDED;
-			} else if (strcmp (_tmp142_, "AccessDenied") == 0) {
+			} else if (strcmp (_tmp104_, "AccessDenied") == 0) {
 				_ecode = DBUS_GERROR_ACCESS_DENIED;
-			} else if (strcmp (_tmp142_, "AuthFailed") == 0) {
+			} else if (strcmp (_tmp104_, "AuthFailed") == 0) {
 				_ecode = DBUS_GERROR_AUTH_FAILED;
-			} else if (strcmp (_tmp142_, "NoServer") == 0) {
+			} else if (strcmp (_tmp104_, "NoServer") == 0) {
 				_ecode = DBUS_GERROR_NO_SERVER;
-			} else if (strcmp (_tmp142_, "Timeout") == 0) {
+			} else if (strcmp (_tmp104_, "Timeout") == 0) {
 				_ecode = DBUS_GERROR_TIMEOUT;
-			} else if (strcmp (_tmp142_, "NoNetwork") == 0) {
+			} else if (strcmp (_tmp104_, "NoNetwork") == 0) {
 				_ecode = DBUS_GERROR_NO_NETWORK;
-			} else if (strcmp (_tmp142_, "AddressInUse") == 0) {
+			} else if (strcmp (_tmp104_, "AddressInUse") == 0) {
 				_ecode = DBUS_GERROR_ADDRESS_IN_USE;
-			} else if (strcmp (_tmp142_, "Disconnected") == 0) {
+			} else if (strcmp (_tmp104_, "Disconnected") == 0) {
 				_ecode = DBUS_GERROR_DISCONNECTED;
-			} else if (strcmp (_tmp142_, "InvalidArgs") == 0) {
+			} else if (strcmp (_tmp104_, "InvalidArgs") == 0) {
 				_ecode = DBUS_GERROR_INVALID_ARGS;
-			} else if (strcmp (_tmp142_, "FileNotFound") == 0) {
+			} else if (strcmp (_tmp104_, "FileNotFound") == 0) {
 				_ecode = DBUS_GERROR_FILE_NOT_FOUND;
-			} else if (strcmp (_tmp142_, "FileExists") == 0) {
+			} else if (strcmp (_tmp104_, "FileExists") == 0) {
 				_ecode = DBUS_GERROR_FILE_EXISTS;
-			} else if (strcmp (_tmp142_, "UnknownMethod") == 0) {
+			} else if (strcmp (_tmp104_, "UnknownMethod") == 0) {
 				_ecode = DBUS_GERROR_UNKNOWN_METHOD;
-			} else if (strcmp (_tmp142_, "TimedOut") == 0) {
+			} else if (strcmp (_tmp104_, "TimedOut") == 0) {
 				_ecode = DBUS_GERROR_TIMED_OUT;
-			} else if (strcmp (_tmp142_, "MatchRuleNotFound") == 0) {
+			} else if (strcmp (_tmp104_, "MatchRuleNotFound") == 0) {
 				_ecode = DBUS_GERROR_MATCH_RULE_NOT_FOUND;
-			} else if (strcmp (_tmp142_, "MatchRuleInvalid") == 0) {
+			} else if (strcmp (_tmp104_, "MatchRuleInvalid") == 0) {
 				_ecode = DBUS_GERROR_MATCH_RULE_INVALID;
-			} else if (strcmp (_tmp142_, "Spawn.ExecFailed") == 0) {
+			} else if (strcmp (_tmp104_, "Spawn.ExecFailed") == 0) {
 				_ecode = DBUS_GERROR_SPAWN_EXEC_FAILED;
-			} else if (strcmp (_tmp142_, "Spawn.ForkFailed") == 0) {
+			} else if (strcmp (_tmp104_, "Spawn.ForkFailed") == 0) {
 				_ecode = DBUS_GERROR_SPAWN_FORK_FAILED;
-			} else if (strcmp (_tmp142_, "Spawn.ChildExited") == 0) {
+			} else if (strcmp (_tmp104_, "Spawn.ChildExited") == 0) {
 				_ecode = DBUS_GERROR_SPAWN_CHILD_EXITED;
-			} else if (strcmp (_tmp142_, "Spawn.ChildSignaled") == 0) {
+			} else if (strcmp (_tmp104_, "Spawn.ChildSignaled") == 0) {
 				_ecode = DBUS_GERROR_SPAWN_CHILD_SIGNALED;
-			} else if (strcmp (_tmp142_, "Spawn.Failed") == 0) {
+			} else if (strcmp (_tmp104_, "Spawn.Failed") == 0) {
 				_ecode = DBUS_GERROR_SPAWN_FAILED;
-			} else if (strcmp (_tmp142_, "UnixProcessIdUnknown") == 0) {
+			} else if (strcmp (_tmp104_, "UnixProcessIdUnknown") == 0) {
 				_ecode = DBUS_GERROR_UNIX_PROCESS_ID_UNKNOWN;
-			} else if (strcmp (_tmp142_, "InvalidSignature") == 0) {
+			} else if (strcmp (_tmp104_, "InvalidSignature") == 0) {
 				_ecode = DBUS_GERROR_INVALID_SIGNATURE;
-			} else if (strcmp (_tmp142_, "InvalidFileContent") == 0) {
+			} else if (strcmp (_tmp104_, "InvalidFileContent") == 0) {
 				_ecode = DBUS_GERROR_INVALID_FILE_CONTENT;
-			} else if (strcmp (_tmp142_, "SELinuxSecurityContextUnknown") == 0) {
+			} else if (strcmp (_tmp104_, "SELinuxSecurityContextUnknown") == 0) {
 				_ecode = DBUS_GERROR_SELINUX_SECURITY_CONTEXT_UNKNOWN;
-			} else if (strcmp (_tmp142_, "RemoteException") == 0) {
+			} else if (strcmp (_tmp104_, "RemoteException") == 0) {
 				_ecode = DBUS_GERROR_REMOTE_EXCEPTION;
 			}
 		}
-		g_set_error_literal (error, _edomain, _ecode, _dbus_error.message);
+		g_set_error (error, _edomain, _ecode, "%s", _dbus_error.message);
 		dbus_error_free (&_dbus_error);
-		return NULL;
+		return;
 	}
-	if (strcmp (dbus_message_get_signature (_reply), "aas")) {
-		g_set_error (error, DBUS_GERROR, DBUS_GERROR_INVALID_SIGNATURE, "Invalid signature, expected \"%s\", got \"%s\"", "aas", dbus_message_get_signature (_reply));
+	if (strcmp (dbus_message_get_signature (_reply), "")) {
+		g_set_error (error, DBUS_GERROR, DBUS_GERROR_INVALID_SIGNATURE, "Invalid signature, expected \"%s\", got \"%s\"", "", dbus_message_get_signature (_reply));
 		dbus_message_unref (_reply);
-		return NULL;
+		return;
 	}
 	dbus_message_iter_init (_reply, &_iter);
-	_result_length1 = 0;
-	_result_length2 = 0;
-	_tmp163_ = g_new (char*, 5);
-	_tmp163__length = 0;
-	_tmp163__size = 4;
-	_tmp163__length1 = 0;
-	dbus_message_iter_recurse (&_iter, &_tmp164_);
-	for (; dbus_message_iter_get_arg_type (&_tmp164_); _tmp163__length1++) {
-		int _tmp163__length2;
-		DBusMessageIter _tmp165_;
-		_tmp163__length2 = 0;
-		dbus_message_iter_recurse (&_tmp164_, &_tmp165_);
-		for (; dbus_message_iter_get_arg_type (&_tmp165_); _tmp163__length2++) {
-			const char* _tmp166_;
-			if (_tmp163__size == _tmp163__length) {
-				_tmp163__size = 2 * _tmp163__size;
-				_tmp163_ = g_renew (char*, _tmp163_, _tmp163__size + 1);
-			}
-			dbus_message_iter_get_basic (&_tmp165_, &_tmp166_);
-			dbus_message_iter_next (&_tmp165_);
-			_tmp163_[_tmp163__length++] = g_strdup (_tmp166_);
-		}
-		_result_length2 = _tmp163__length2;
-		dbus_message_iter_next (&_tmp164_);
-	}
-	_result_length1 = _tmp163__length1;
-	_tmp163_[_tmp163__length] = NULL;
-	dbus_message_iter_next (&_iter);
-	_result = _tmp163_;
-	*result_length1 = _result_length1;
-	*result_length2 = _result_length2;
 	dbus_message_unref (_reply);
-	return _result;
 }
 
 
-static void rygel_tracker_search_iface_dbus_proxy_rygel_tracker_search_iface__interface_init (RygelTrackerSearchIfaceIface* iface) {
-	iface->query = rygel_tracker_search_iface_dbus_proxy_query_async;
-	iface->query_finish = rygel_tracker_search_iface_dbus_proxy_query_finish;
+static void rygel_tracker_miner_iface_dbus_proxy_rygel_tracker_miner_iface__interface_init (RygelTrackerMinerIfaceIface* iface) {
+	iface->ignore_next_update = rygel_tracker_miner_iface_dbus_proxy_ignore_next_update_async;
+	iface->ignore_next_update_finish = rygel_tracker_miner_iface_dbus_proxy_ignore_next_update_finish;
 }
 
 
-static void rygel_tracker_search_iface_dbus_proxy_get_property (GObject * object, guint property_id, GValue * value, GParamSpec * pspec) {
+static void rygel_tracker_miner_iface_dbus_proxy_get_property (GObject * object, guint property_id, GValue * value, GParamSpec * pspec) {
 }
 
 
-static void rygel_tracker_search_iface_dbus_proxy_set_property (GObject * object, guint property_id, const GValue * value, GParamSpec * pspec) {
+static void rygel_tracker_miner_iface_dbus_proxy_set_property (GObject * object, guint property_id, const GValue * value, GParamSpec * pspec) {
 }
 
 
@@ -3038,6 +2740,44 @@ static void _vala_dbus_unregister_object (gpointer connection, GObject* object) 
 	g_free (path);
 }
 
+
+
+static void g_cclosure_user_marshal_VOID__BOXED_INT (GClosure * closure, GValue * return_value, guint n_param_values, const GValue * param_values, gpointer invocation_hint, gpointer marshal_data) {
+	typedef void (*GMarshalFunc_VOID__BOXED_INT) (gpointer data1, gpointer arg_1, gint arg_2, gpointer data2);
+	register GMarshalFunc_VOID__BOXED_INT callback;
+	register GCClosure * cc;
+	register gpointer data1, data2;
+	cc = (GCClosure *) closure;
+	g_return_if_fail (n_param_values == 3);
+	if (G_CCLOSURE_SWAP_DATA (closure)) {
+		data1 = closure->data;
+		data2 = param_values->data[0].v_pointer;
+	} else {
+		data1 = param_values->data[0].v_pointer;
+		data2 = closure->data;
+	}
+	callback = (GMarshalFunc_VOID__BOXED_INT) (marshal_data ? marshal_data : cc->callback);
+	callback (data1, g_value_get_boxed (param_values + 1), g_value_get_int (param_values + 2), data2);
+}
+
+
+static void g_cclosure_user_marshal_VOID__BOXED_INT_BOXED_INT (GClosure * closure, GValue * return_value, guint n_param_values, const GValue * param_values, gpointer invocation_hint, gpointer marshal_data) {
+	typedef void (*GMarshalFunc_VOID__BOXED_INT_BOXED_INT) (gpointer data1, gpointer arg_1, gint arg_2, gpointer arg_3, gint arg_4, gpointer data2);
+	register GMarshalFunc_VOID__BOXED_INT_BOXED_INT callback;
+	register GCClosure * cc;
+	register gpointer data1, data2;
+	cc = (GCClosure *) closure;
+	g_return_if_fail (n_param_values == 5);
+	if (G_CCLOSURE_SWAP_DATA (closure)) {
+		data1 = closure->data;
+		data2 = param_values->data[0].v_pointer;
+	} else {
+		data1 = param_values->data[0].v_pointer;
+		data2 = closure->data;
+	}
+	callback = (GMarshalFunc_VOID__BOXED_INT_BOXED_INT) (marshal_data ? marshal_data : cc->callback);
+	callback (data1, g_value_get_boxed (param_values + 1), g_value_get_int (param_values + 2), g_value_get_boxed (param_values + 3), g_value_get_int (param_values + 4), data2);
+}
 
 
 

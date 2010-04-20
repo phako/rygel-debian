@@ -30,27 +30,44 @@ using Gee;
  */
 public class Rygel.TrackerMetadataValues : Rygel.SimpleContainer {
     /* class-wide constants */
-    private const string TRACKER_SERVICE = "org.freedesktop.Tracker";
-    private const string METADATA_PATH = "/org/freedesktop/Tracker/Metadata";
+    private const string TRACKER_SERVICE = "org.freedesktop.Tracker1";
+    private const string RESOURCES_PATH = "/org/freedesktop/Tracker1/Resources";
+    private const string ITEM_VARIABLE = "?item";
 
-    private const string SERVICE = "Files";
-    private const string QUERY_CONDITION =
-                                        "<rdfq:equals>\n" +
-                                            "<rdfq:Property name=\"%s\" />\n" +
-                                            "<rdf:String>%s</rdf:String>\n" +
-                                        "</rdfq:equals>\n";
+    public delegate string IDFunc (string value);
+    public delegate string FilterFunc (string variable, string value);
 
-    public TrackerMetadataIface metadata;
+    private TrackerItemFactory item_factory;
 
-    public string key;
+    // In tracker 0.7, we might don't get values of keys in place so you need a
+    // chain of keys to reach to final destination. For instances:
+    // nmm:Performer -> nmm:artistName
+    public string[] key_chain;
+    public IDFunc id_func;
+    public IDFunc title_func;
+    public FilterFunc filter_func;
 
-    public TrackerMetadataValues (string         key,
-                                  string         id,
-                                  MediaContainer parent,
-                                  string         title) {
+    private TrackerResourcesIface resources;
+    private TrackerResourcesClassIface resources_class;
+
+    public TrackerMetadataValues (string             id,
+                                  MediaContainer     parent,
+                                  string             title,
+                                  TrackerItemFactory item_factory,
+                                  string[]           key_chain,
+                                  IDFunc?            id_func =
+                                        default_id_func,
+                                  IDFunc?            title_func =
+                                        default_id_func,
+                                  FilterFunc?        filter_func =
+                                        default_filter_func) {
         base (id, parent, title);
 
-        this.key = key;
+        this.item_factory = item_factory;
+        this.key_chain = key_chain;
+        this.id_func = id_func;
+        this.title_func = title_func;
+        this.filter_func = filter_func;
 
         try {
             this.create_proxies ();
@@ -62,47 +79,94 @@ public class Rygel.TrackerMetadataValues : Rygel.SimpleContainer {
         }
 
         this.fetch_metadata_values.begin ();
+
+        this.hook_to_changes ();
     }
 
     private async void fetch_metadata_values () {
-        string[,] values;
+        // First thing, clear the existing hierarchy, if any
+        this.clear ();
+
+        int i;
+        var mandatory = new TrackerQueryTriplets ();
+
+        // All variables used in the query
+        var num_keys = this.key_chain.length - 1;
+        var variables = new string[num_keys];
+        for (i = 0; i < num_keys; i++) {
+            variables[i] = "?" + key_chain[i].replace (":", "_");
+
+            string subject;
+            if (i == 0) {
+                subject = null;
+            } else {
+                subject = variables[i - 1];
+            }
+
+            mandatory.add (new TrackerQueryTriplet (subject,
+                                                    this.key_chain[i],
+                                                    variables[i],
+                                                    false));
+        }
+
+        mandatory.insert (0, new TrackerQueryTriplet (
+                                        ITEM_VARIABLE,
+                                        "a",
+                                        this.item_factory.category,
+                                        false));
+
+        // Variables to select from query
+        var selected = new ArrayList<string> ();
+        // Last variable is the only thing we are interested in the result
+        var last_variable = variables[num_keys - 1];
+        selected.add ("DISTINCT " + last_variable);
+
+        var query = new TrackerSelectionQuery (selected,
+                                               mandatory,
+                                               null,
+                                               null,
+                                               last_variable);
 
         try {
-            var keys = new string[] { this.key };
-
-            /* FIXME: We need to hook to some tracker signals to keep
-             *        this field up2date at all times
-             */
-            values = yield this.metadata.get_unique_values (SERVICE,
-                                                            keys,
-                                                            "",
-                                                            false,
-                                                            0,
-                                                            -1);
+            yield query.execute (this.resources);
         } catch (DBus.Error error) {
             critical ("error getting all values for '%s': %s",
-                      this.key,
+                      string.joinv (" -> ", this.key_chain),
                       error.message);
 
             return;
         }
 
         /* Iterate through all the values */
-        for (uint i = 0; i < values.length[0]; i++) {
-            string value = values[i, 0];
+        for (i = 0; i < query.result.length[0]; i++) {
+            string value = query.result[i, 0];
 
             if (value == "") {
                 continue;
             }
 
-            var query_condition = QUERY_CONDITION.printf (
-                                        this.key,
-                                        Markup.escape_text (value));
-            var container = new TrackerSearchContainer (value,
+            var id = this.id_func (value);
+            if (!this.is_child_id_unique (id)) {
+                continue;
+            }
+
+            var title = this.title_func (value);
+
+            // The child container can use the same mandatory triplets we used
+            // in our query.
+            var child_mandatory = new TrackerQueryTriplets.clone (mandatory);
+
+            // However we constrain the object of our last mandatory triplet.
+            var filters = new ArrayList<string> ();
+            var filter = this.filter_func (child_mandatory.last ().obj, value);
+            filters.add (filter);
+
+            var container = new TrackerSearchContainer (id,
                                                         this,
-                                                        value,
-                                                        SERVICE,
-                                                        query_condition);
+                                                        title,
+                                                        this.item_factory,
+                                                        child_mandatory,
+                                                        filters);
 
             this.add_child (container);
         }
@@ -110,12 +174,51 @@ public class Rygel.TrackerMetadataValues : Rygel.SimpleContainer {
         this.updated ();
     }
 
+    public static string default_id_func (string value) {
+        return value;
+    }
+
+    public static string default_filter_func (string variable, string value) {
+        return variable + " = \"" + value + "\"";
+    }
+
     private void create_proxies () throws DBus.Error {
         DBus.Connection connection = DBus.Bus.get (DBus.BusType.SESSION);
 
-        this.metadata = connection.get_object (TRACKER_SERVICE,
-                                               METADATA_PATH)
-                                               as TrackerMetadataIface;
+        this.resources = connection.get_object (TRACKER_SERVICE,
+                                                RESOURCES_PATH)
+                                                as TrackerResourcesIface;
+        this.resources_class = connection.get_object (
+                                        TRACKER_SERVICE,
+                                        this.item_factory.resources_class_path)
+                                        as TrackerResourcesClassIface;
+    }
+
+    private void hook_to_changes () {
+        // For any changes in subjects, just recreate hierarchy
+        this.resources_class.subjects_added.connect ((subjects) => {
+            this.fetch_metadata_values.begin ();
+        });
+        this.resources_class.subjects_removed.connect ((subjects) => {
+            this.fetch_metadata_values.begin ();
+        });
+        this.resources_class.subjects_changed.connect ((before, after) => {
+            this.fetch_metadata_values.begin ();
+        });
+    }
+
+    private bool is_child_id_unique (string child_id) {
+        var unique = true;
+
+        foreach (var child in this.children) {
+            if (child.id == child_id) {
+                unique = false;
+
+                break;
+            }
+        }
+
+        return unique;
     }
 }
 

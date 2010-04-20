@@ -63,6 +63,16 @@ typedef struct _RygelMediaContainerPrivate RygelMediaContainerPrivate;
 typedef struct _RygelSearchExpression RygelSearchExpression;
 typedef struct _RygelSearchExpressionClass RygelSearchExpressionClass;
 
+#define RYGEL_TYPE_MEDIA_ITEM (rygel_media_item_get_type ())
+#define RYGEL_MEDIA_ITEM(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_MEDIA_ITEM, RygelMediaItem))
+#define RYGEL_MEDIA_ITEM_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TYPE_MEDIA_ITEM, RygelMediaItemClass))
+#define RYGEL_IS_MEDIA_ITEM(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TYPE_MEDIA_ITEM))
+#define RYGEL_IS_MEDIA_ITEM_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_TYPE_MEDIA_ITEM))
+#define RYGEL_MEDIA_ITEM_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_TYPE_MEDIA_ITEM, RygelMediaItemClass))
+
+typedef struct _RygelMediaItem RygelMediaItem;
+typedef struct _RygelMediaItemClass RygelMediaItemClass;
+
 #define RYGEL_TYPE_MEDIA_DB_CONTAINER (rygel_media_db_container_get_type ())
 #define RYGEL_MEDIA_DB_CONTAINER(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_MEDIA_DB_CONTAINER, RygelMediaDBContainer))
 #define RYGEL_MEDIA_DB_CONTAINER_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TYPE_MEDIA_DB_CONTAINER, RygelMediaDBContainerClass))
@@ -86,6 +96,8 @@ typedef struct _RygelMediaDBClass RygelMediaDBClass;
 #define _g_object_unref0(var) ((var == NULL) ? NULL : (var = (g_object_unref (var), NULL)))
 #define _g_error_free0(var) ((var == NULL) ? NULL : (var = (g_error_free (var), NULL)))
 typedef struct _RygelMediaDbContainerGetChildrenData RygelMediaDbContainerGetChildrenData;
+#define _rygel_search_expression_unref0(var) ((var == NULL) ? NULL : (var = (rygel_search_expression_unref (var), NULL)))
+typedef struct _RygelMediaDbContainerSearchData RygelMediaDbContainerSearchData;
 
 struct _RygelMediaObject {
 	GObject parent_instance;
@@ -95,7 +107,6 @@ struct _RygelMediaObject {
 	guint64 modified;
 	GeeArrayList* uris;
 	RygelMediaContainer* parent;
-	RygelMediaContainer* parent_ref;
 };
 
 struct _RygelMediaObjectClass {
@@ -105,7 +116,7 @@ struct _RygelMediaObjectClass {
 struct _RygelMediaContainer {
 	RygelMediaObject parent_instance;
 	RygelMediaContainerPrivate * priv;
-	guint child_count;
+	gint child_count;
 	guint32 update_id;
 };
 
@@ -115,6 +126,8 @@ struct _RygelMediaContainerClass {
 	GeeList* (*get_children_finish) (RygelMediaContainer* self, GAsyncResult* _res_, GError** error);
 	void (*search) (RygelMediaContainer* self, RygelSearchExpression* expression, guint offset, guint max_count, GCancellable* cancellable, GAsyncReadyCallback _callback_, gpointer _user_data_);
 	GeeList* (*search_finish) (RygelMediaContainer* self, GAsyncResult* _res_, guint* total_matches, GError** error);
+	void (*add_item) (RygelMediaContainer* self, RygelMediaItem* item, GCancellable* cancellable, GAsyncReadyCallback _callback_, gpointer _user_data_);
+	void (*add_item_finish) (RygelMediaContainer* self, GAsyncResult* _res_, GError** error);
 };
 
 struct _RygelMediaDBContainer {
@@ -128,6 +141,7 @@ struct _RygelMediaDBContainerClass {
 };
 
 typedef enum  {
+	RYGEL_DATABASE_ERROR_IO_ERROR,
 	RYGEL_DATABASE_ERROR_SQLITE_ERROR
 } RygelDatabaseError;
 #define RYGEL_DATABASE_ERROR rygel_database_error_quark ()
@@ -146,6 +160,22 @@ struct _RygelMediaDbContainerGetChildrenData {
 	GError * _inner_error_;
 };
 
+struct _RygelMediaDbContainerSearchData {
+	int _state_;
+	GAsyncResult* _res_;
+	GSimpleAsyncResult* _async_result;
+	RygelMediaDBContainer* self;
+	RygelSearchExpression* expression;
+	guint offset;
+	guint max_count;
+	guint total_matches;
+	GCancellable* cancellable;
+	GeeList* result;
+	guint max_objects;
+	GeeList* children;
+	GError * _inner_error_;
+};
+
 
 static gpointer rygel_media_db_container_parent_class = NULL;
 
@@ -155,8 +185,10 @@ gpointer rygel_search_expression_ref (gpointer instance);
 void rygel_search_expression_unref (gpointer instance);
 GParamSpec* rygel_param_spec_search_expression (const gchar* name, const gchar* nick, const gchar* blurb, GType object_type, GParamFlags flags);
 void rygel_value_set_search_expression (GValue* value, gpointer v_object);
+void rygel_value_take_search_expression (GValue* value, gpointer v_object);
 gpointer rygel_value_get_search_expression (const GValue* value);
 GType rygel_search_expression_get_type (void);
+GType rygel_media_item_get_type (void);
 GType rygel_media_db_container_get_type (void);
 GType rygel_media_db_get_type (void);
 enum  {
@@ -164,7 +196,7 @@ enum  {
 };
 GQuark rygel_database_error_quark (void);
 gint rygel_media_db_get_child_count (RygelMediaDB* self, const char* container_id, GError** error);
-RygelMediaContainer* rygel_media_container_construct (GType object_type, const char* id, RygelMediaContainer* parent, const char* title, guint child_count);
+RygelMediaContainer* rygel_media_container_construct (GType object_type, const char* id, RygelMediaContainer* parent, const char* title, gint child_count);
 static void rygel_media_db_container_on_db_container_updated (RygelMediaDBContainer* self, RygelMediaContainer* container, RygelMediaContainer* container_updated);
 static void _rygel_media_db_container_on_db_container_updated_rygel_media_container_container_updated (RygelMediaContainer* _sender, RygelMediaContainer* container, gpointer self);
 RygelMediaDBContainer* rygel_media_db_container_new (RygelMediaDB* media_db, const char* id, const char* title);
@@ -174,6 +206,11 @@ static void rygel_media_db_container_real_get_children (RygelMediaContainer* bas
 static void rygel_media_db_container_get_children_ready (GObject* source_object, GAsyncResult* _res_, gpointer _user_data_);
 GeeArrayList* rygel_media_db_get_children (RygelMediaDB* self, const char* container_id, glong offset, glong max_count, GError** error);
 static gboolean rygel_media_db_container_real_get_children_co (RygelMediaDbContainerGetChildrenData* data);
+static void rygel_media_db_container_real_search_data_free (gpointer _data);
+static void rygel_media_db_container_real_search (RygelMediaContainer* base, RygelSearchExpression* expression, guint offset, guint max_count, GCancellable* cancellable, GAsyncReadyCallback _callback_, gpointer _user_data_);
+static void rygel_media_db_container_search_ready (GObject* source_object, GAsyncResult* _res_, gpointer _user_data_);
+GeeList* rygel_media_db_get_objects_by_search_expression (RygelMediaDB* self, RygelSearchExpression* expression, const char* container_id, guint offset, guint max_count, GError** error);
+static gboolean rygel_media_db_container_real_search_co (RygelMediaDbContainerSearchData* data);
 static void rygel_media_db_container_finalize (GObject* obj);
 
 
@@ -183,130 +220,132 @@ static gpointer _g_object_ref0 (gpointer self) {
 }
 
 
-#line 41 "rygel-media-db-container.vala"
+#line 42 "rygel-media-db-container.vala"
 static void _rygel_media_db_container_on_db_container_updated_rygel_media_container_container_updated (RygelMediaContainer* _sender, RygelMediaContainer* container, gpointer self) {
-#line 189 "rygel-media-db-container.c"
+#line 226 "rygel-media-db-container.c"
 	rygel_media_db_container_on_db_container_updated (self, _sender, container);
 }
 
 
-#line 26 "rygel-media-db-container.vala"
+#line 27 "rygel-media-db-container.vala"
 RygelMediaDBContainer* rygel_media_db_container_construct (GType object_type, RygelMediaDB* media_db, const char* id, const char* title) {
-#line 196 "rygel-media-db-container.c"
+#line 233 "rygel-media-db-container.c"
 	GError * _inner_error_;
 	RygelMediaDBContainer * self;
 	gint count = 0;
 	RygelMediaDB* _tmp1_;
-#line 26 "rygel-media-db-container.vala"
+#line 27 "rygel-media-db-container.vala"
 	g_return_val_if_fail (media_db != NULL, NULL);
-#line 26 "rygel-media-db-container.vala"
+#line 27 "rygel-media-db-container.vala"
 	g_return_val_if_fail (id != NULL, NULL);
-#line 26 "rygel-media-db-container.vala"
+#line 27 "rygel-media-db-container.vala"
 	g_return_val_if_fail (title != NULL, NULL);
-#line 207 "rygel-media-db-container.c"
+#line 244 "rygel-media-db-container.c"
 	_inner_error_ = NULL;
 	{
 		gint _tmp0_;
-#line 29 "rygel-media-db-container.vala"
+#line 30 "rygel-media-db-container.vala"
 		_tmp0_ = rygel_media_db_get_child_count (media_db, id, &_inner_error_);
-#line 213 "rygel-media-db-container.c"
+#line 250 "rygel-media-db-container.c"
 		if (_inner_error_ != NULL) {
 			if (_inner_error_->domain == RYGEL_DATABASE_ERROR) {
-				goto __catch54_rygel_database_error;
+				goto __catch67_rygel_database_error;
 			}
 			g_critical ("file %s: line %d: unexpected error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
 			g_clear_error (&_inner_error_);
 			return NULL;
 		}
-#line 29 "rygel-media-db-container.vala"
+#line 30 "rygel-media-db-container.vala"
 		count = _tmp0_;
-#line 224 "rygel-media-db-container.c"
+#line 261 "rygel-media-db-container.c"
 	}
-	goto __finally54;
-	__catch54_rygel_database_error:
+	goto __finally67;
+	__catch67_rygel_database_error:
 	{
 		GError * e;
 		e = _inner_error_;
 		_inner_error_ = NULL;
 		{
-#line 31 "rygel-media-db-container.vala"
-			g_debug ("rygel-media-db-container.vala:31: Could not get child count from database: %s", e->message);
-#line 33 "rygel-media-db-container.vala"
+#line 32 "rygel-media-db-container.vala"
+			g_debug ("rygel-media-db-container.vala:32: Could not get child count from datab" \
+"ase: %s", e->message);
+#line 34 "rygel-media-db-container.vala"
 			count = 0;
-#line 237 "rygel-media-db-container.c"
+#line 274 "rygel-media-db-container.c"
 			_g_error_free0 (e);
 		}
 	}
-	__finally54:
+	__finally67:
 	if (_inner_error_ != NULL) {
 		g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
 		g_clear_error (&_inner_error_);
 		return NULL;
 	}
-#line 35 "rygel-media-db-container.vala"
-	self = (RygelMediaDBContainer*) rygel_media_container_construct (object_type, id, NULL, title, (guint) count);
-#line 37 "rygel-media-db-container.vala"
-	self->media_db = (_tmp1_ = _g_object_ref0 (media_db), _g_object_unref0 (self->media_db), _tmp1_);
+#line 36 "rygel-media-db-container.vala"
+	self = (RygelMediaDBContainer*) rygel_media_container_construct (object_type, id, NULL, title, count);
 #line 38 "rygel-media-db-container.vala"
+	self->media_db = (_tmp1_ = _g_object_ref0 (media_db), _g_object_unref0 (self->media_db), _tmp1_);
+#line 39 "rygel-media-db-container.vala"
 	g_signal_connect_object ((RygelMediaContainer*) self, "container-updated", (GCallback) _rygel_media_db_container_on_db_container_updated_rygel_media_container_container_updated, self, 0);
-#line 253 "rygel-media-db-container.c"
+#line 290 "rygel-media-db-container.c"
 	return self;
 }
 
 
-#line 26 "rygel-media-db-container.vala"
+#line 27 "rygel-media-db-container.vala"
 RygelMediaDBContainer* rygel_media_db_container_new (RygelMediaDB* media_db, const char* id, const char* title) {
-#line 26 "rygel-media-db-container.vala"
+#line 27 "rygel-media-db-container.vala"
 	return rygel_media_db_container_construct (RYGEL_TYPE_MEDIA_DB_CONTAINER, media_db, id, title);
-#line 262 "rygel-media-db-container.c"
+#line 299 "rygel-media-db-container.c"
 }
 
 
-#line 41 "rygel-media-db-container.vala"
+#line 42 "rygel-media-db-container.vala"
 static void rygel_media_db_container_on_db_container_updated (RygelMediaDBContainer* self, RygelMediaContainer* container, RygelMediaContainer* container_updated) {
-#line 268 "rygel-media-db-container.c"
+#line 305 "rygel-media-db-container.c"
 	GError * _inner_error_;
-#line 41 "rygel-media-db-container.vala"
+#line 42 "rygel-media-db-container.vala"
 	g_return_if_fail (self != NULL);
-#line 41 "rygel-media-db-container.vala"
+#line 42 "rygel-media-db-container.vala"
 	g_return_if_fail (container != NULL);
-#line 41 "rygel-media-db-container.vala"
+#line 42 "rygel-media-db-container.vala"
 	g_return_if_fail (container_updated != NULL);
-#line 276 "rygel-media-db-container.c"
+#line 313 "rygel-media-db-container.c"
 	_inner_error_ = NULL;
 	{
 		gint _tmp0_;
-#line 44 "rygel-media-db-container.vala"
+#line 45 "rygel-media-db-container.vala"
 		_tmp0_ = rygel_media_db_get_child_count (self->media_db, ((RygelMediaObject*) self)->id, &_inner_error_);
-#line 282 "rygel-media-db-container.c"
+#line 319 "rygel-media-db-container.c"
 		if (_inner_error_ != NULL) {
 			if (_inner_error_->domain == RYGEL_DATABASE_ERROR) {
-				goto __catch55_rygel_database_error;
+				goto __catch68_rygel_database_error;
 			}
 			g_critical ("file %s: line %d: unexpected error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
 			g_clear_error (&_inner_error_);
 			return;
 		}
-#line 44 "rygel-media-db-container.vala"
-		((RygelMediaContainer*) self)->child_count = (guint) _tmp0_;
-#line 293 "rygel-media-db-container.c"
+#line 45 "rygel-media-db-container.vala"
+		((RygelMediaContainer*) self)->child_count = _tmp0_;
+#line 330 "rygel-media-db-container.c"
 	}
-	goto __finally55;
-	__catch55_rygel_database_error:
+	goto __finally68;
+	__catch68_rygel_database_error:
 	{
 		GError * e;
 		e = _inner_error_;
 		_inner_error_ = NULL;
 		{
-#line 46 "rygel-media-db-container.vala"
-			g_debug ("rygel-media-db-container.vala:46: Could not get child count from database: %s", e->message);
-#line 48 "rygel-media-db-container.vala"
-			((RygelMediaContainer*) self)->child_count = (guint) 0;
-#line 306 "rygel-media-db-container.c"
+#line 47 "rygel-media-db-container.vala"
+			g_debug ("rygel-media-db-container.vala:47: Could not get child count from datab" \
+"ase: %s", e->message);
+#line 49 "rygel-media-db-container.vala"
+			((RygelMediaContainer*) self)->child_count = 0;
+#line 343 "rygel-media-db-container.c"
 			_g_error_free0 (e);
 		}
 	}
-	__finally55:
+	__finally68:
 	if (_inner_error_ != NULL) {
 		g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
 		g_clear_error (&_inner_error_);
@@ -320,6 +359,7 @@ static void rygel_media_db_container_real_get_children_data_free (gpointer _data
 	data = _data;
 	_g_object_unref0 (data->cancellable);
 	_g_object_unref0 (data->result);
+	g_object_unref (data->self);
 	g_slice_free (RygelMediaDbContainerGetChildrenData, data);
 }
 
@@ -331,7 +371,7 @@ static void rygel_media_db_container_real_get_children (RygelMediaContainer* bas
 	_data_ = g_slice_new0 (RygelMediaDbContainerGetChildrenData);
 	_data_->_async_result = g_simple_async_result_new (G_OBJECT (self), _callback_, _user_data_, rygel_media_db_container_real_get_children);
 	g_simple_async_result_set_op_res_gpointer (_data_->_async_result, _data_, rygel_media_db_container_real_get_children_data_free);
-	_data_->self = self;
+	_data_->self = g_object_ref (self);
 	_data_->offset = offset;
 	_data_->max_count = max_count;
 	_data_->cancellable = _g_object_ref0 (cancellable);
@@ -362,43 +402,17 @@ static void rygel_media_db_container_get_children_ready (GObject* source_object,
 
 static gboolean rygel_media_db_container_real_get_children_co (RygelMediaDbContainerGetChildrenData* data) {
 	switch (data->_state_) {
+		case 0:
+		goto _state_0;
 		default:
 		g_assert_not_reached ();
-		case 0:
-		{
-			data->children = rygel_media_db_get_children (data->self->media_db, ((RygelMediaObject*) data->self)->id, (glong) data->offset, (glong) data->max_count, &data->_inner_error_);
-			if (data->_inner_error_ != NULL) {
-				g_simple_async_result_set_from_error (data->_async_result, data->_inner_error_);
-				g_error_free (data->_inner_error_);
-				{
-					if (data->_state_ == 0) {
-						g_simple_async_result_complete_in_idle (data->_async_result);
-					} else {
-						g_simple_async_result_complete (data->_async_result);
-					}
-					g_object_unref (data->_async_result);
-					return FALSE;
-				}
-			}
-			{
-				data->_child_it = gee_abstract_collection_iterator ((GeeAbstractCollection*) data->children);
-#line 60 "rygel-media-db-container.vala"
-				while (TRUE) {
-#line 60 "rygel-media-db-container.vala"
-					if (!gee_iterator_next (data->_child_it)) {
-#line 60 "rygel-media-db-container.vala"
-						break;
-#line 392 "rygel-media-db-container.c"
-					}
-					data->child = (RygelMediaObject*) gee_iterator_get (data->_child_it);
-#line 61 "rygel-media-db-container.vala"
-					data->child->parent = (RygelMediaContainer*) data->self;
-#line 397 "rygel-media-db-container.c"
-					_g_object_unref0 (data->child);
-				}
-				_g_object_unref0 (data->_child_it);
-			}
-			data->result = (GeeList*) data->children;
+	}
+	_state_0:
+	{
+		data->children = rygel_media_db_get_children (data->self->media_db, ((RygelMediaObject*) data->self)->id, (glong) data->offset, (glong) data->max_count, &data->_inner_error_);
+		if (data->_inner_error_ != NULL) {
+			g_simple_async_result_set_from_error (data->_async_result, data->_inner_error_);
+			g_error_free (data->_inner_error_);
 			{
 				if (data->_state_ == 0) {
 					g_simple_async_result_complete_in_idle (data->_async_result);
@@ -408,8 +422,26 @@ static gboolean rygel_media_db_container_real_get_children_co (RygelMediaDbConta
 				g_object_unref (data->_async_result);
 				return FALSE;
 			}
-			_g_object_unref0 (data->children);
 		}
+		{
+			data->_child_it = gee_abstract_collection_iterator ((GeeAbstractCollection*) data->children);
+#line 61 "rygel-media-db-container.vala"
+			while (TRUE) {
+#line 61 "rygel-media-db-container.vala"
+				if (!gee_iterator_next (data->_child_it)) {
+#line 61 "rygel-media-db-container.vala"
+					break;
+#line 433 "rygel-media-db-container.c"
+				}
+				data->child = (RygelMediaObject*) gee_iterator_get (data->_child_it);
+#line 62 "rygel-media-db-container.vala"
+				data->child->parent = (RygelMediaContainer*) data->self;
+#line 438 "rygel-media-db-container.c"
+				_g_object_unref0 (data->child);
+			}
+			_g_object_unref0 (data->_child_it);
+		}
+		data->result = (GeeList*) data->children;
 		{
 			if (data->_state_ == 0) {
 				g_simple_async_result_complete_in_idle (data->_async_result);
@@ -419,6 +451,128 @@ static gboolean rygel_media_db_container_real_get_children_co (RygelMediaDbConta
 			g_object_unref (data->_async_result);
 			return FALSE;
 		}
+		_g_object_unref0 (data->children);
+	}
+	{
+		if (data->_state_ == 0) {
+			g_simple_async_result_complete_in_idle (data->_async_result);
+		} else {
+			g_simple_async_result_complete (data->_async_result);
+		}
+		g_object_unref (data->_async_result);
+		return FALSE;
+	}
+}
+
+
+static void rygel_media_db_container_real_search_data_free (gpointer _data) {
+	RygelMediaDbContainerSearchData* data;
+	data = _data;
+	_rygel_search_expression_unref0 (data->expression);
+	_g_object_unref0 (data->cancellable);
+	_g_object_unref0 (data->result);
+	g_object_unref (data->self);
+	g_slice_free (RygelMediaDbContainerSearchData, data);
+}
+
+
+static gpointer _rygel_search_expression_ref0 (gpointer self) {
+	return self ? rygel_search_expression_ref (self) : NULL;
+}
+
+
+static void rygel_media_db_container_real_search (RygelMediaContainer* base, RygelSearchExpression* expression, guint offset, guint max_count, GCancellable* cancellable, GAsyncReadyCallback _callback_, gpointer _user_data_) {
+	RygelMediaDBContainer * self;
+	RygelMediaDbContainerSearchData* _data_;
+	self = (RygelMediaDBContainer*) base;
+	_data_ = g_slice_new0 (RygelMediaDbContainerSearchData);
+	_data_->_async_result = g_simple_async_result_new (G_OBJECT (self), _callback_, _user_data_, rygel_media_db_container_real_search);
+	g_simple_async_result_set_op_res_gpointer (_data_->_async_result, _data_, rygel_media_db_container_real_search_data_free);
+	_data_->self = g_object_ref (self);
+	_data_->expression = _rygel_search_expression_ref0 (expression);
+	_data_->offset = offset;
+	_data_->max_count = max_count;
+	_data_->cancellable = _g_object_ref0 (cancellable);
+	rygel_media_db_container_real_search_co (_data_);
+}
+
+
+static GeeList* rygel_media_db_container_real_search_finish (RygelMediaContainer* base, GAsyncResult* _res_, guint* total_matches, GError** error) {
+	GeeList* result;
+	RygelMediaDbContainerSearchData* _data_;
+	if (g_simple_async_result_propagate_error (G_SIMPLE_ASYNC_RESULT (_res_), error)) {
+		return NULL;
+	}
+	_data_ = g_simple_async_result_get_op_res_gpointer (G_SIMPLE_ASYNC_RESULT (_res_));
+	*total_matches = _data_->total_matches;
+	_data_->total_matches = NULL;
+	result = _data_->result;
+	_data_->result = NULL;
+	return result;
+}
+
+
+static void rygel_media_db_container_search_ready (GObject* source_object, GAsyncResult* _res_, gpointer _user_data_) {
+	RygelMediaDbContainerSearchData* data;
+	data = _user_data_;
+	data->_res_ = _res_;
+	rygel_media_db_container_real_search_co (data);
+}
+
+
+static gboolean rygel_media_db_container_real_search_co (RygelMediaDbContainerSearchData* data) {
+	switch (data->_state_) {
+		case 0:
+		goto _state_0;
+		default:
+		g_assert_not_reached ();
+	}
+	_state_0:
+	{
+		data->max_objects = data->max_count;
+#line 76 "rygel-media-db-container.vala"
+		if (data->max_objects == 0) {
+#line 77 "rygel-media-db-container.vala"
+			data->max_objects = (guint) (-1);
+#line 536 "rygel-media-db-container.c"
+		}
+		data->children = rygel_media_db_get_objects_by_search_expression (data->self->media_db, data->expression, ((RygelMediaObject*) data->self)->id, data->offset, data->max_objects, &data->_inner_error_);
+		if (data->_inner_error_ != NULL) {
+			g_simple_async_result_set_from_error (data->_async_result, data->_inner_error_);
+			g_error_free (data->_inner_error_);
+			{
+				if (data->_state_ == 0) {
+					g_simple_async_result_complete_in_idle (data->_async_result);
+				} else {
+					g_simple_async_result_complete (data->_async_result);
+				}
+				g_object_unref (data->_async_result);
+				return FALSE;
+			}
+		}
+#line 86 "rygel-media-db-container.vala"
+		data->total_matches = (guint) gee_collection_get_size ((GeeCollection*) data->children);
+#line 554 "rygel-media-db-container.c"
+		data->result = data->children;
+		{
+			if (data->_state_ == 0) {
+				g_simple_async_result_complete_in_idle (data->_async_result);
+			} else {
+				g_simple_async_result_complete (data->_async_result);
+			}
+			g_object_unref (data->_async_result);
+			return FALSE;
+		}
+		_g_object_unref0 (data->children);
+	}
+	{
+		if (data->_state_ == 0) {
+			g_simple_async_result_complete_in_idle (data->_async_result);
+		} else {
+			g_simple_async_result_complete (data->_async_result);
+		}
+		g_object_unref (data->_async_result);
+		return FALSE;
 	}
 }
 
@@ -427,6 +581,8 @@ static void rygel_media_db_container_class_init (RygelMediaDBContainerClass * kl
 	rygel_media_db_container_parent_class = g_type_class_peek_parent (klass);
 	RYGEL_MEDIA_CONTAINER_CLASS (klass)->get_children = rygel_media_db_container_real_get_children;
 	RYGEL_MEDIA_CONTAINER_CLASS (klass)->get_children_finish = rygel_media_db_container_real_get_children_finish;
+	RYGEL_MEDIA_CONTAINER_CLASS (klass)->search = rygel_media_db_container_real_search;
+	RYGEL_MEDIA_CONTAINER_CLASS (klass)->search_finish = rygel_media_db_container_real_search_finish;
 	G_OBJECT_CLASS (klass)->finalize = rygel_media_db_container_finalize;
 }
 
@@ -444,12 +600,14 @@ static void rygel_media_db_container_finalize (GObject* obj) {
 
 
 GType rygel_media_db_container_get_type (void) {
-	static GType rygel_media_db_container_type_id = 0;
-	if (rygel_media_db_container_type_id == 0) {
+	static volatile gsize rygel_media_db_container_type_id__volatile = 0;
+	if (g_once_init_enter (&rygel_media_db_container_type_id__volatile)) {
 		static const GTypeInfo g_define_type_info = { sizeof (RygelMediaDBContainerClass), (GBaseInitFunc) NULL, (GBaseFinalizeFunc) NULL, (GClassInitFunc) rygel_media_db_container_class_init, (GClassFinalizeFunc) NULL, NULL, sizeof (RygelMediaDBContainer), 0, (GInstanceInitFunc) rygel_media_db_container_instance_init, NULL };
+		GType rygel_media_db_container_type_id;
 		rygel_media_db_container_type_id = g_type_register_static (RYGEL_TYPE_MEDIA_CONTAINER, "RygelMediaDBContainer", &g_define_type_info, 0);
+		g_once_init_leave (&rygel_media_db_container_type_id__volatile, rygel_media_db_container_type_id);
 	}
-	return rygel_media_db_container_type_id;
+	return rygel_media_db_container_type_id__volatile;
 }
 
 

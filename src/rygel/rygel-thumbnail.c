@@ -88,6 +88,7 @@ gpointer rygel_icon_info_ref (gpointer instance);
 void rygel_icon_info_unref (gpointer instance);
 GParamSpec* rygel_param_spec_icon_info (const gchar* name, const gchar* nick, const gchar* blurb, GType object_type, GParamFlags flags);
 void rygel_value_set_icon_info (GValue* value, gpointer v_object);
+void rygel_value_take_icon_info (GValue* value, gpointer v_object);
 gpointer rygel_value_get_icon_info (const GValue* value);
 GType rygel_icon_info_get_type (void);
 GType rygel_thumbnail_get_type (void);
@@ -106,7 +107,7 @@ static void rygel_thumbnail_finalize (RygelIconInfo* obj);
 
 #line 31 "rygel-thumbnail.vala"
 RygelThumbnail* rygel_thumbnail_construct (GType object_type, const char* mime_type, const char* dlna_profile) {
-#line 110 "rygel-thumbnail.c"
+#line 111 "rygel-thumbnail.c"
 	RygelThumbnail* self;
 	char* _tmp0_;
 #line 31 "rygel-thumbnail.vala"
@@ -117,7 +118,7 @@ RygelThumbnail* rygel_thumbnail_construct (GType object_type, const char* mime_t
 	self = (RygelThumbnail*) rygel_icon_info_construct (object_type, mime_type);
 #line 35 "rygel-thumbnail.vala"
 	self->dlna_profile = (_tmp0_ = g_strdup (dlna_profile), _g_free0 (self->dlna_profile), _tmp0_);
-#line 121 "rygel-thumbnail.c"
+#line 122 "rygel-thumbnail.c"
 	return self;
 }
 
@@ -126,14 +127,14 @@ RygelThumbnail* rygel_thumbnail_construct (GType object_type, const char* mime_t
 RygelThumbnail* rygel_thumbnail_new (const char* mime_type, const char* dlna_profile) {
 #line 31 "rygel-thumbnail.vala"
 	return rygel_thumbnail_construct (RYGEL_TYPE_THUMBNAIL, mime_type, dlna_profile);
-#line 130 "rygel-thumbnail.c"
+#line 131 "rygel-thumbnail.c"
 }
 
 
 #line 38 "rygel-thumbnail.vala"
 GUPnPDIDLLiteResource* rygel_thumbnail_add_resource (RygelThumbnail* self, GUPnPDIDLLiteItem* didl_item, const char* protocol) {
-#line 136 "rygel-thumbnail.c"
-	GUPnPDIDLLiteResource* result;
+#line 137 "rygel-thumbnail.c"
+	GUPnPDIDLLiteResource* result = NULL;
 	GUPnPDIDLLiteResource* res;
 	GUPnPProtocolInfo* _tmp0_;
 #line 38 "rygel-thumbnail.vala"
@@ -156,19 +157,19 @@ GUPnPDIDLLiteResource* rygel_thumbnail_add_resource (RygelThumbnail* self, GUPnP
 	gupnp_didl_lite_resource_set_color_depth (res, ((RygelIconInfo*) self)->depth);
 #line 50 "rygel-thumbnail.vala"
 	gupnp_didl_lite_resource_set_protocol_info (res, _tmp0_ = rygel_thumbnail_get_protocol_info (self, protocol));
-#line 160 "rygel-thumbnail.c"
+#line 161 "rygel-thumbnail.c"
 	_g_object_unref0 (_tmp0_);
 	result = res;
 #line 52 "rygel-thumbnail.vala"
 	return result;
-#line 165 "rygel-thumbnail.c"
+#line 166 "rygel-thumbnail.c"
 }
 
 
 #line 55 "rygel-thumbnail.vala"
 static GUPnPProtocolInfo* rygel_thumbnail_get_protocol_info (RygelThumbnail* self, const char* protocol) {
-#line 171 "rygel-thumbnail.c"
-	GUPnPProtocolInfo* result;
+#line 172 "rygel-thumbnail.c"
+	GUPnPProtocolInfo* result = NULL;
 	GUPnPProtocolInfo* protocol_info;
 #line 55 "rygel-thumbnail.vala"
 	g_return_val_if_fail (self != NULL, NULL);
@@ -183,12 +184,12 @@ static GUPnPProtocolInfo* rygel_thumbnail_get_protocol_info (RygelThumbnail* sel
 #line 60 "rygel-thumbnail.vala"
 	gupnp_protocol_info_set_protocol (protocol_info, protocol);
 #line 61 "rygel-thumbnail.vala"
-	gupnp_protocol_info_set_dlna_flags (protocol_info, gupnp_protocol_info_get_dlna_flags (protocol_info) | (GUPNP_DLNA_FLAGS_INTERACTIVE_TRANSFER_MODE | GUPNP_DLNA_FLAGS_BACKGROUND_TRANSFER_MODE));
-#line 188 "rygel-thumbnail.c"
+	gupnp_protocol_info_set_dlna_flags (protocol_info, gupnp_protocol_info_get_dlna_flags (protocol_info) | (((GUPNP_DLNA_FLAGS_INTERACTIVE_TRANSFER_MODE | GUPNP_DLNA_FLAGS_BACKGROUND_TRANSFER_MODE) | GUPNP_DLNA_FLAGS_CONNECTION_STALL) | GUPNP_DLNA_FLAGS_DLNA_V15));
+#line 189 "rygel-thumbnail.c"
 	result = protocol_info;
-#line 64 "rygel-thumbnail.vala"
+#line 66 "rygel-thumbnail.vala"
 	return result;
-#line 192 "rygel-thumbnail.c"
+#line 193 "rygel-thumbnail.c"
 }
 
 
@@ -211,12 +212,14 @@ static void rygel_thumbnail_finalize (RygelIconInfo* obj) {
 
 
 GType rygel_thumbnail_get_type (void) {
-	static GType rygel_thumbnail_type_id = 0;
-	if (rygel_thumbnail_type_id == 0) {
+	static volatile gsize rygel_thumbnail_type_id__volatile = 0;
+	if (g_once_init_enter (&rygel_thumbnail_type_id__volatile)) {
 		static const GTypeInfo g_define_type_info = { sizeof (RygelThumbnailClass), (GBaseInitFunc) NULL, (GBaseFinalizeFunc) NULL, (GClassInitFunc) rygel_thumbnail_class_init, (GClassFinalizeFunc) NULL, NULL, sizeof (RygelThumbnail), 0, (GInstanceInitFunc) rygel_thumbnail_instance_init, NULL };
+		GType rygel_thumbnail_type_id;
 		rygel_thumbnail_type_id = g_type_register_static (RYGEL_TYPE_ICON_INFO, "RygelThumbnail", &g_define_type_info, 0);
+		g_once_init_leave (&rygel_thumbnail_type_id__volatile, rygel_thumbnail_type_id);
 	}
-	return rygel_thumbnail_type_id;
+	return rygel_thumbnail_type_id__volatile;
 }
 
 

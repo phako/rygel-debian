@@ -97,7 +97,7 @@ RygelTrackerPlugin* rygel_tracker_plugin_construct (GType object_type) {
 #line 98 "rygel-tracker-plugin.c"
 		if (_inner_error_ != NULL) {
 			if (_inner_error_->domain == G_CONVERT_ERROR) {
-				goto __catch6_g_convert_error;
+				goto __catch9_g_convert_error;
 			}
 			_rygel_icon_info_unref0 (icon_info);
 			g_critical ("file %s: line %d: unexpected error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
@@ -116,8 +116,8 @@ RygelTrackerPlugin* rygel_tracker_plugin_construct (GType object_type) {
 		rygel_plugin_add_icon ((RygelPlugin*) self, icon_info);
 #line 118 "rygel-tracker-plugin.c"
 	}
-	goto __finally6;
-	__catch6_g_convert_error:
+	goto __finally9;
+	__catch9_g_convert_error:
 	{
 		GError * err;
 		err = _inner_error_;
@@ -129,7 +129,7 @@ RygelTrackerPlugin* rygel_tracker_plugin_construct (GType object_type) {
 			_g_error_free0 (err);
 		}
 	}
-	__finally6:
+	__finally9:
 	if (_inner_error_ != NULL) {
 		_rygel_icon_info_unref0 (icon_info);
 		g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
@@ -159,12 +159,14 @@ static void rygel_tracker_plugin_instance_init (RygelTrackerPlugin * self) {
 
 
 GType rygel_tracker_plugin_get_type (void) {
-	static GType rygel_tracker_plugin_type_id = 0;
-	if (rygel_tracker_plugin_type_id == 0) {
+	static volatile gsize rygel_tracker_plugin_type_id__volatile = 0;
+	if (g_once_init_enter (&rygel_tracker_plugin_type_id__volatile)) {
 		static const GTypeInfo g_define_type_info = { sizeof (RygelTrackerPluginClass), (GBaseInitFunc) NULL, (GBaseFinalizeFunc) NULL, (GClassInitFunc) rygel_tracker_plugin_class_init, (GClassFinalizeFunc) NULL, NULL, sizeof (RygelTrackerPlugin), 0, (GInstanceInitFunc) rygel_tracker_plugin_instance_init, NULL };
+		GType rygel_tracker_plugin_type_id;
 		rygel_tracker_plugin_type_id = g_type_register_static (RYGEL_TYPE_PLUGIN, "RygelTrackerPlugin", &g_define_type_info, 0);
+		g_once_init_leave (&rygel_tracker_plugin_type_id__volatile, rygel_tracker_plugin_type_id);
 	}
-	return rygel_tracker_plugin_type_id;
+	return rygel_tracker_plugin_type_id__volatile;
 }
 
 

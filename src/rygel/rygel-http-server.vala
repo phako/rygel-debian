@@ -27,7 +27,7 @@ using Gee;
 
 internal class Rygel.HTTPServer : Rygel.TranscodeManager, Rygel.StateMachine {
     private const string SERVER_PATH_PREFIX = "/RygelHTTPServer";
-    private string path_root;
+    public string path_root { get; private set; }
 
     // Reference to root container of associated ContentDirectory
     public MediaContainer root_container;
@@ -51,6 +51,7 @@ internal class Rygel.HTTPServer : Rygel.TranscodeManager, Rygel.StateMachine {
     public async void run () {
         context.server.add_handler (this.path_root, server_handler);
         context.server.request_aborted.connect (this.on_request_aborted);
+        context.server.request_started.connect (this.on_request_started);
 
         if (this.cancellable != null) {
             this.cancellable.cancelled += this.on_cancelled;
@@ -64,12 +65,26 @@ internal class Rygel.HTTPServer : Rygel.TranscodeManager, Rygel.StateMachine {
      */
     internal override void add_resources (DIDLLiteItem didl_item,
                                           MediaItem    item)
-                                throws Error {
+                                          throws Error {
+        // Subtitles first
+        foreach (var subtitle in item.subtitles) {
+            if (!is_http_uri (subtitle.uri)) {
+                var uri = subtitle.uri; // Save the original URI
+                var index = item.subtitles.index_of (subtitle);
+
+                subtitle.uri = this.create_uri_for_item (item,
+                                                         -1,
+                                                         index,
+                                                         null);
+                subtitle.add_didl_node (didl_item);
+
+                // Now restore the original URI
+                subtitle.uri = uri;
+            }
+        }
+
         if (!this.http_uri_present (item)) {
-            // Create the HTTP proxy URI
-            string protocol;
-            var uri = this.create_uri_for_item (item, -1, null, out protocol);
-            item.add_resource (didl_item, uri, protocol);
+            this.add_proxy_resource (didl_item, item);
         }
 
         base.add_resources (didl_item, item);
@@ -79,18 +94,28 @@ internal class Rygel.HTTPServer : Rygel.TranscodeManager, Rygel.StateMachine {
             if (!is_http_uri (thumbnail.uri)) {
                 var uri = thumbnail.uri; // Save the original URI
                 var index = item.thumbnails.index_of (thumbnail);
-                string protocol;
 
                 thumbnail.uri = this.create_uri_for_item (item,
                                                           index,
-                                                          null,
-                                                          out protocol);
-                thumbnail.add_resource (didl_item, protocol);
+                                                          -1,
+                                                          null);
+                thumbnail.add_resource (didl_item, this.get_protocol ());
 
                 // Now restore the original URI
                 thumbnail.uri = uri;
             }
         }
+    }
+
+    internal void add_proxy_resource (DIDLLiteItem didl_item,
+                                      MediaItem    item)
+                                      throws Error {
+        var uri = this.create_uri_for_item (item, -1, -1, null);
+
+        item.add_resource (didl_item,
+                           uri.to_string (),
+                           this.get_protocol (),
+                           uri.to_string ());
     }
 
     private bool http_uri_present (MediaItem item) {
@@ -120,31 +145,17 @@ internal class Rygel.HTTPServer : Rygel.TranscodeManager, Rygel.StateMachine {
         this.completed ();
     }
 
-    private string create_uri_for_path (string path) {
-        return "http://%s:%u%s%s".printf (this.context.host_ip,
-                                          this.context.port,
-                                          this.path_root,
-                                          path);
-    }
-
     internal override string create_uri_for_item (MediaItem item,
                                                   int       thumbnail_index,
-                                                  string?   transcode_target,
-                                                  out string protocol) {
-        string escaped = Uri.escape_string (item.id, "", true);
-        string query = "?itemid=" + escaped;
-        if (thumbnail_index >= 0) {
-            query += "&thumbnail=" + thumbnail_index.to_string ();
-        }
+                                                  int       subtitle_index,
+                                                  string?   transcode_target) {
+        var uri = new HTTPItemURI (item.id,
+                                   this,
+                                   thumbnail_index,
+                                   subtitle_index,
+                                   transcode_target);
 
-        if (transcode_target != null) {
-            escaped = Uri.escape_string (transcode_target, "", true);
-            query += "&transcode=" + escaped;
-        }
-
-        protocol = "http-get";
-
-        return create_uri_for_path (query);
+        return uri.to_string ();
     }
 
     internal override string get_protocol () {
@@ -181,12 +192,7 @@ internal class Rygel.HTTPServer : Rygel.TranscodeManager, Rygel.StateMachine {
                 debug ("%s : %s", name, value);
         });
 
-        var request = new HTTPRequest (this, server, msg, query);
-
-        request.completed += this.on_request_completed;
-        this.requests.add (request);
-
-        request.run.begin ();
+        this.queue_request (new HTTPGet (this, server, msg));
     }
 
     private void on_request_aborted (Soup.Server        server,
@@ -202,6 +208,28 @@ internal class Rygel.HTTPServer : Rygel.TranscodeManager, Rygel.StateMachine {
                 break;
             }
         }
+    }
+
+    private void on_request_started (Soup.Server        server,
+                                     Soup.Message       message,
+                                     Soup.ClientContext client) {
+        message.got_headers.connect (this.on_got_headers);
+    }
+
+    private void on_got_headers (Soup.Message msg) {
+        if (msg.method == "POST" &&
+            msg.uri.path.has_prefix (this.path_root)) {
+            debug ("HTTP POST request for URI '%s'",
+                   msg.get_uri ().to_string (false));
+
+            this.queue_request (new HTTPPost (this, this.context.server, msg));
+        }
+    }
+
+    private void queue_request (HTTPRequest request) {
+        request.completed += this.on_request_completed;
+        this.requests.add (request);
+        request.run.begin ();
     }
 }
 

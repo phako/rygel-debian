@@ -23,8 +23,7 @@ Package: rygel
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Recommends: gstreamer0.10-plugins-base, gstreamer0.10-plugins-ugly, gstreamer0.10-ffmpeg
-#Suggests: rygel-tracker, rygel-mediathek
-Suggests: rygel-mediathek
+Suggests: rygel-tracker, rygel-mediathek
 Description: GNOME UPnP/DLNA services
  Rygel is a collection of DLNA (UPnP AV) services (devices in UPnP speak),
  implemented through a plug-in mechanism. Important facts and features:
@@ -84,25 +83,25 @@ Description: GNOME UPnP/DLNA services - Mediathek plugin
  from the 2nd German TV station online service (http://www.zdf.de/)
  over the UPnP network.
 
-#Package: rygel-tracker
-#Architecture: any
-#Depends: ${shlibs:Depends}, ${misc:Depends}, rygel (= ${binary:Version})
-#Recommends: tracker
-#Description: GNOME UPnP/DLNA services - Tracker plugin
-# Rygel is a collection of DLNA (UPnP AV) services (devices in UPnP speak),
-# implemented through a plug-in mechanism. Important facts and features:
-#   * APIs to ease the implementation of AV devices (currently only
-#     MediaServer V 2.0 specification).
-#   * Audio and Video Transcoding: source format could be anything
-#     GStreamer's decodebin2 can handle but output formats are currently
-#     limited to: mp3, PCM and MPEG TS. Fortunately the transcoding
-#     framework is flexible enough to easily add more transcoding targets.
-#   * Specifically designed for GNOME (Mobile).
-#   * Based on GUPnP.
-#   * Written (mostly) in Vala language.
-# .
-# This package provides a MediaServer plugin that exports user's media
-# contents known to Tracker (http://www.gnome.org/projects/tracker).
+Package: rygel-tracker
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, rygel (= ${binary:Version})
+Recommends: tracker
+Description: GNOME UPnP/DLNA services - Tracker plugin
+ Rygel is a collection of DLNA (UPnP AV) services (devices in UPnP speak),
+ implemented through a plug-in mechanism. Important facts and features:
+   * APIs to ease the implementation of AV devices (currently only
+     MediaServer V 2.0 specification).
+   * Audio and Video Transcoding: source format could be anything
+     GStreamer's decodebin2 can handle but output formats are currently
+     limited to: mp3, PCM and MPEG TS. Fortunately the transcoding
+     framework is flexible enough to easily add more transcoding targets.
+   * Specifically designed for GNOME (Mobile).
+   * Based on GUPnP.
+   * Written (mostly) in Vala language.
+ .
+ This package provides a MediaServer plugin that exports user's media
+ contents known to Tracker (http://projects.gnome.org/tracker).
 
 Package: rygel-gst-renderer
 Architecture: any

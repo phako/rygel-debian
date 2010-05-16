@@ -29,6 +29,7 @@
 #include <rygel.h>
 #include <stdlib.h>
 #include <string.h>
+#include <glib/gi18n-lib.h>
 
 
 #define RYGEL_TYPE_TRACKER_METADATA_VALUES (rygel_tracker_metadata_values_get_type ())
@@ -124,21 +125,21 @@ static const char* RYGEL_TRACKER_YEARS_KEY_CHAIN[2] = {"nie:contentCreated", NUL
 
 #line 44 "rygel-tracker-years.vala"
 static char* _rygel_tracker_years_year_id_func_rygel_tracker_metadata_values_id_func (const char* value, gpointer self) {
-#line 128 "rygel-tracker-years.c"
+#line 129 "rygel-tracker-years.c"
 	return rygel_tracker_years_year_id_func (value);
 }
 
 
 #line 48 "rygel-tracker-years.vala"
 static char* _rygel_tracker_years_year_filter_func_rygel_tracker_metadata_values_filter_func (const char* variable, const char* value, gpointer self) {
-#line 135 "rygel-tracker-years.c"
+#line 136 "rygel-tracker-years.c"
 	return rygel_tracker_years_year_filter_func (variable, value);
 }
 
 
 #line 32 "rygel-tracker-years.vala"
 RygelTrackerYears* rygel_tracker_years_construct (GType object_type, RygelMediaContainer* parent, RygelTrackerItemFactory* item_factory) {
-#line 142 "rygel-tracker-years.c"
+#line 143 "rygel-tracker-years.c"
 	RygelTrackerYears * self;
 	char* _tmp0_;
 #line 32 "rygel-tracker-years.vala"
@@ -146,8 +147,8 @@ RygelTrackerYears* rygel_tracker_years_construct (GType object_type, RygelMediaC
 #line 32 "rygel-tracker-years.vala"
 	g_return_val_if_fail (item_factory != NULL, NULL);
 #line 34 "rygel-tracker-years.vala"
-	self = (RygelTrackerYears*) rygel_tracker_metadata_values_construct (object_type, _tmp0_ = g_strconcat (((RygelMediaObject*) parent)->id, "Year", NULL), parent, "Year", item_factory, RYGEL_TRACKER_YEARS_KEY_CHAIN, G_N_ELEMENTS (RYGEL_TRACKER_YEARS_KEY_CHAIN), _rygel_tracker_years_year_id_func_rygel_tracker_metadata_values_id_func, NULL, _rygel_tracker_years_year_id_func_rygel_tracker_metadata_values_id_func, NULL, _rygel_tracker_years_year_filter_func_rygel_tracker_metadata_values_filter_func, NULL);
-#line 151 "rygel-tracker-years.c"
+	self = (RygelTrackerYears*) rygel_tracker_metadata_values_construct (object_type, _tmp0_ = g_strconcat (((RygelMediaObject*) parent)->id, "Year", NULL), parent, _ ("Year"), item_factory, RYGEL_TRACKER_YEARS_KEY_CHAIN, G_N_ELEMENTS (RYGEL_TRACKER_YEARS_KEY_CHAIN), _rygel_tracker_years_year_id_func_rygel_tracker_metadata_values_id_func, NULL, _rygel_tracker_years_year_id_func_rygel_tracker_metadata_values_id_func, NULL, _rygel_tracker_years_year_filter_func_rygel_tracker_metadata_values_filter_func, NULL);
+#line 152 "rygel-tracker-years.c"
 	_g_free0 (_tmp0_);
 	return self;
 }
@@ -157,27 +158,27 @@ RygelTrackerYears* rygel_tracker_years_construct (GType object_type, RygelMediaC
 RygelTrackerYears* rygel_tracker_years_new (RygelMediaContainer* parent, RygelTrackerItemFactory* item_factory) {
 #line 32 "rygel-tracker-years.vala"
 	return rygel_tracker_years_construct (RYGEL_TYPE_TRACKER_YEARS, parent, item_factory);
-#line 161 "rygel-tracker-years.c"
+#line 162 "rygel-tracker-years.c"
 }
 
 
 #line 44 "rygel-tracker-years.vala"
 static char* rygel_tracker_years_year_id_func (const char* value) {
-#line 167 "rygel-tracker-years.c"
+#line 168 "rygel-tracker-years.c"
 	char* result = NULL;
 #line 44 "rygel-tracker-years.vala"
 	g_return_val_if_fail (value != NULL, NULL);
-#line 171 "rygel-tracker-years.c"
+#line 172 "rygel-tracker-years.c"
 	result = g_strndup (value, (gsize) 4);
 #line 45 "rygel-tracker-years.vala"
 	return result;
-#line 175 "rygel-tracker-years.c"
+#line 176 "rygel-tracker-years.c"
 }
 
 
 #line 48 "rygel-tracker-years.vala"
 static char* rygel_tracker_years_year_filter_func (const char* variable, const char* value) {
-#line 181 "rygel-tracker-years.c"
+#line 182 "rygel-tracker-years.c"
 	char* result = NULL;
 	char* year;
 	char* next_year;
@@ -202,13 +203,13 @@ static char* rygel_tracker_years_year_filter_func (const char* variable, const c
 	year = (_tmp0_ = g_strconcat (year, "-01-01T00:00:00Z", NULL), _g_free0 (year), _tmp0_);
 #line 53 "rygel-tracker-years.vala"
 	next_year = (_tmp1_ = g_strconcat (next_year, "-01-01T00:00:00Z", NULL), _g_free0 (next_year), _tmp1_);
-#line 206 "rygel-tracker-years.c"
+#line 207 "rygel-tracker-years.c"
 	result = (_tmp8_ = g_strconcat (_tmp7_ = g_strconcat (_tmp6_ = g_strconcat (_tmp5_ = g_strconcat (_tmp4_ = g_strconcat (_tmp3_ = g_strconcat (_tmp2_ = g_strconcat (variable, " > \"", NULL), year, NULL), "\" && ", NULL), variable, NULL), " < \"", NULL), next_year, NULL), "\"", NULL), _g_free0 (_tmp7_), _g_free0 (_tmp6_), _g_free0 (_tmp5_), _g_free0 (_tmp4_), _g_free0 (_tmp3_), _g_free0 (_tmp2_), _tmp8_);
 	_g_free0 (year);
 	_g_free0 (next_year);
 #line 55 "rygel-tracker-years.vala"
 	return result;
-#line 212 "rygel-tracker-years.c"
+#line 213 "rygel-tracker-years.c"
 	_g_free0 (year);
 	_g_free0 (next_year);
 }

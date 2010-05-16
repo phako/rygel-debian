@@ -342,6 +342,7 @@ enum  {
 	RYGEL_EXTERNAL_MEDIA_ITEM_DBUS_PROXY_DUMMY_PROPERTY,
 	RYGEL_EXTERNAL_MEDIA_ITEM_DBUS_PROXY_PARENT,
 	RYGEL_EXTERNAL_MEDIA_ITEM_DBUS_PROXY_DISPLAY_NAME,
+	RYGEL_EXTERNAL_MEDIA_ITEM_DBUS_PROXY_URLS,
 	RYGEL_EXTERNAL_MEDIA_ITEM_DBUS_PROXY_MIME_TYPE,
 	RYGEL_EXTERNAL_MEDIA_ITEM_DBUS_PROXY_MEDIA_TYPE,
 	RYGEL_EXTERNAL_MEDIA_ITEM_DBUS_PROXY_SIZE,
@@ -3201,6 +3202,7 @@ static void rygel_external_media_item_base_init (RygelExternalMediaItemIface * i
 	static gboolean initialized = FALSE;
 	if (!initialized) {
 		initialized = TRUE;
+		g_object_interface_install_property (iface, g_param_spec_boxed ("urls", "urls", "urls", G_TYPE_STRV, G_PARAM_STATIC_NAME | G_PARAM_STATIC_NICK | G_PARAM_STATIC_BLURB | G_PARAM_READABLE | G_PARAM_WRITABLE));
 		g_object_interface_install_property (iface, g_param_spec_string ("mime-type", "mime-type", "mime-type", NULL, G_PARAM_STATIC_NAME | G_PARAM_STATIC_NICK | G_PARAM_STATIC_BLURB | G_PARAM_READABLE | G_PARAM_WRITABLE));
 		g_object_interface_install_property (iface, g_param_spec_string ("media-type", "media-type", "media-type", NULL, G_PARAM_STATIC_NAME | G_PARAM_STATIC_NICK | G_PARAM_STATIC_BLURB | G_PARAM_READABLE | G_PARAM_WRITABLE));
 		g_object_interface_install_property (iface, g_param_spec_int ("size", "size", "size", G_MININT, G_MAXINT, 0, G_PARAM_STATIC_NAME | G_PARAM_STATIC_NICK | G_PARAM_STATIC_BLURB | G_PARAM_READABLE | G_PARAM_WRITABLE));
@@ -3290,6 +3292,7 @@ static void rygel_external_media_item_dbus_proxy_class_init (RygelExternalMediaI
 	G_OBJECT_CLASS (klass)->set_property = rygel_external_media_item_dbus_proxy_set_property;
 	g_object_class_override_property (G_OBJECT_CLASS (klass), RYGEL_EXTERNAL_MEDIA_ITEM_DBUS_PROXY_PARENT, "parent");
 	g_object_class_override_property (G_OBJECT_CLASS (klass), RYGEL_EXTERNAL_MEDIA_ITEM_DBUS_PROXY_DISPLAY_NAME, "display-name");
+	g_object_class_override_property (G_OBJECT_CLASS (klass), RYGEL_EXTERNAL_MEDIA_ITEM_DBUS_PROXY_URLS, "urls");
 	g_object_class_override_property (G_OBJECT_CLASS (klass), RYGEL_EXTERNAL_MEDIA_ITEM_DBUS_PROXY_MIME_TYPE, "mime-type");
 	g_object_class_override_property (G_OBJECT_CLASS (klass), RYGEL_EXTERNAL_MEDIA_ITEM_DBUS_PROXY_MEDIA_TYPE, "media-type");
 	g_object_class_override_property (G_OBJECT_CLASS (klass), RYGEL_EXTERNAL_MEDIA_ITEM_DBUS_PROXY_SIZE, "size");

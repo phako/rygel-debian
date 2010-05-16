@@ -13,7 +13,9 @@ AM_CFLAGS = $(LIBGUPNP_CFLAGS) \
             $(GEE_CFLAGS) \
             $(LIBDBUS_GLIB_CFLAGS) \
             $(LIBGSTREAMER_CFLAGS) \
-            -I$(top_srcdir)/src/rygel -DDATA_DIR='"$(shareddir)"'
+            $(UUID_CFLAGS) \
+            -I$(top_srcdir)/src/rygel -DDATA_DIR='"$(shareddir)"' \
+	    -include config.h
 
 librygel_gst_renderer_la_SOURCES = rygel-gst-connection-manager.vala \
 				   rygel-gst-rendering-control.vala \
@@ -32,7 +34,8 @@ librygel_gst_renderer_la_LIBADD = $(LIBGUPNP_LIBS) \
                     	          $(LIBGUPNP_AV_LIBS) \
 				  $(LIBGSTREAMER_LIBS) \
 				  $(LIBDBUS_GLIB_LIBS) \
-				  $(GEE_LIBS)
+				  $(GEE_LIBS) \
+				  $(UUID_LIBS)
 librygel_gst_renderer_la_LDFLAGS = -shared -fPIC -module -avoid-version
 
 MAINTAINERCLEANFILES = Makefile.in

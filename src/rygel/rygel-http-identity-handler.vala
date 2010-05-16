@@ -94,7 +94,7 @@ internal class Rygel.HTTPIdentityHandler : Rygel.HTTPGetHandler {
         if (item.should_stream ()) {
             Gst.Element src = item.create_stream_source ();
             if (src == null) {
-                throw new HTTPRequestError.NOT_FOUND ("Not found");
+                throw new HTTPRequestError.NOT_FOUND (_("Not found"));
             }
 
             return new LiveResponse (request.server,
@@ -106,8 +106,8 @@ internal class Rygel.HTTPIdentityHandler : Rygel.HTTPGetHandler {
         } else {
             if (item.uris.size == 0) {
                 throw new HTTPRequestError.NOT_FOUND (
-                        "Requested item '%s' didn't provide a URI\n",
-                        item.id);
+                                        _("Item '%s' didn't provide a URI"),
+                                        item.id);
             }
 
             return new SeekableResponse (request.server,

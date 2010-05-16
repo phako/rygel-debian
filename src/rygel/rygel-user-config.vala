@@ -41,6 +41,7 @@ public class Rygel.UserConfig : GLib.Object, Configuration {
                                                     "enable-lpcm-transcoder";
     protected static const string WMV_TRANSCODER_KEY = "enable-wmv-transcoder";
     protected static const string LOG_LEVEL_KEY = "log-level";
+    protected static const string PLUGIN_PATH_KEY = "plugin-path";
 
     private const string DBUS_SERVICE = "org.freedesktop.DBus";
     private const string DBUS_PATH = "/org/freedesktop/DBus";
@@ -138,6 +139,10 @@ public class Rygel.UserConfig : GLib.Object, Configuration {
                                         LogLevel.DEBUG);
     }
 
+    public string get_plugin_path () throws GLib.Error {
+        return this.get_string ("general", PLUGIN_PATH_KEY);
+    }
+
     public static UserConfig get_default () throws Error {
         if (config == null) {
             config = new UserConfig ();
@@ -160,7 +165,7 @@ public class Rygel.UserConfig : GLib.Object, Configuration {
                                       out path,
                                       KeyFileFlags.KEEP_COMMENTS |
                                       KeyFileFlags.KEEP_TRANSLATIONS);
-        debug ("Loaded user configuration from file '%s'", path);
+        debug (_("Loaded user configuration from file '%s'"), path);
 
         try {
             DBus.Connection connection = DBus.Bus.get (DBus.BusType.SESSION);
@@ -174,7 +179,7 @@ public class Rygel.UserConfig : GLib.Object, Configuration {
                                                    DBUS_PATH,
                                                    DBUS_INTERFACE);
         } catch (DBus.Error err) {
-            debug ("Failed to connect to session bus: %s", err.message);
+            debug (_("Failed to connect to session bus: %s"), err.message);
         }
     }
 
@@ -191,7 +196,7 @@ public class Rygel.UserConfig : GLib.Object, Configuration {
         try {
             FileUtils.set_contents (path, data, (long) length);
         } catch (FileError err) {
-            critical ("Failed to save configuration data to file '%s': %s",
+            critical (_("Failed to save configuration data to file '%s': %s"),
                       path,
                       err.message);
         }
@@ -211,7 +216,8 @@ public class Rygel.UserConfig : GLib.Object, Configuration {
 
         if (val == null || val == "") {
             throw new ConfigurationError.NO_VALUE_SET (
-                                        "No value available for '%s'", key);
+                                        _("No value available for '%s'"),
+                                        key);
         }
 
         return val;
@@ -239,7 +245,8 @@ public class Rygel.UserConfig : GLib.Object, Configuration {
 
         if (val == 0 || val < min || val > max) {
             throw new ConfigurationError.VALUE_OUT_OF_RANGE (
-                                        "Value of '%s' out of range", key);
+                                        _("Value of '%s' out of range"),
+                                        key);
         }
 
         return val;
@@ -339,7 +346,8 @@ public class Rygel.UserConfig : GLib.Object, Configuration {
                 this.set_bool ("general", ENABLED_KEY, false);
             }
         } catch (GLib.Error err) {
-            warning ("Failed to %s Rygel service: %s\n",
+            // Failed to start/stop Rygel service
+            warning (_("Failed to %s Rygel service: %s"),
                      enable? "start": "stop",
                      err.message);
         }

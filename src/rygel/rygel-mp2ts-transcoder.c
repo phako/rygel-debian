@@ -266,7 +266,7 @@ gpointer rygel_value_get_subtitle (const GValue* value);
 GType rygel_subtitle_get_type (void);
 static guint rygel_mp2_ts_transcoder_real_get_distance (RygelTranscoder* base, RygelMediaItem* item);
 GstElement* rygel_gst_utils_create_element (const char* factoryname, const char* name, GError** error);
-static inline void _dynamic_set_bitrate2 (GstElement* obj, gint value);
+static inline void _dynamic_set_bitrate3 (GstElement* obj, gint value);
 GstElement* rygel_mp2_ts_transcoder_create_encoder (RygelMP2TSTranscoder* self, RygelMediaItem* item, const char* src_pad_name, const char* sink_pad_name, GError** error);
 static void rygel_mp2_ts_transcoder_finalize (GObject* obj);
 
@@ -433,7 +433,7 @@ static guint rygel_mp2_ts_transcoder_real_get_distance (RygelTranscoder* base, R
 }
 
 
-static inline void _dynamic_set_bitrate2 (GstElement* obj, gint value) {
+static inline void _dynamic_set_bitrate3 (GstElement* obj, gint value) {
 	g_object_set (obj, "bitrate", value, NULL);
 }
 
@@ -502,7 +502,7 @@ GstElement* rygel_mp2_ts_transcoder_create_encoder (RygelMP2TSTranscoder* self, 
 		return NULL;
 	}
 #line 118 "rygel-mp2ts-transcoder.vala"
-	_dynamic_set_bitrate2 (encoder, ((gint) RYGEL_MP2_TS_TRANSCODER_VIDEO_BITRATE) * 1000);
+	_dynamic_set_bitrate3 (encoder, ((gint) RYGEL_MP2_TS_TRANSCODER_VIDEO_BITRATE) * 1000);
 #line 120 "rygel-mp2ts-transcoder.vala"
 	bin = (GstBin*) gst_bin_new ("video-encoder-bin");
 #line 121 "rygel-mp2ts-transcoder.vala"

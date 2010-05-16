@@ -237,15 +237,15 @@ enum  {
 	RYGEL_HTTP_GET_DUMMY_PROPERTY
 };
 #define RYGEL_HTTP_GET_ITEM_URI "http://DoesntMatterWhatThisIs"
-RygelHTTPGet* rygel_http_get_new (void);
-RygelHTTPGet* rygel_http_get_construct (GType object_type);
+RygelHTTPGet* rygel_http_get_new (RygelThumbnail* thumbnail, RygelSubtitle* subtitle);
+RygelHTTPGet* rygel_http_get_construct (GType object_type, RygelThumbnail* thumbnail, RygelSubtitle* subtitle);
 static void rygel_http_get_add_headers (RygelHTTPGet* self, gint64 start, gint64 stop);
-RygelHTTPGet* rygel_http_get_new_seek_start (gint64 start);
-RygelHTTPGet* rygel_http_get_construct_seek_start (GType object_type, gint64 start);
-RygelHTTPGet* rygel_http_get_new_seek_stop (gint64 stop);
-RygelHTTPGet* rygel_http_get_construct_seek_stop (GType object_type, gint64 stop);
-RygelHTTPGet* rygel_http_get_new_seek_start_stop (gint64 start, gint64 stop);
-RygelHTTPGet* rygel_http_get_construct_seek_start_stop (GType object_type, gint64 start, gint64 stop);
+RygelHTTPGet* rygel_http_get_new_seek_start (gint64 start, RygelThumbnail* thumbnail, RygelSubtitle* subtitle);
+RygelHTTPGet* rygel_http_get_construct_seek_start (GType object_type, gint64 start, RygelThumbnail* thumbnail, RygelSubtitle* subtitle);
+RygelHTTPGet* rygel_http_get_new_seek_stop (gint64 stop, RygelThumbnail* thumbnail, RygelSubtitle* subtitle);
+RygelHTTPGet* rygel_http_get_construct_seek_stop (GType object_type, gint64 stop, RygelThumbnail* thumbnail, RygelSubtitle* subtitle);
+RygelHTTPGet* rygel_http_get_new_seek_start_stop (gint64 start, gint64 stop, RygelThumbnail* thumbnail, RygelSubtitle* subtitle);
+RygelHTTPGet* rygel_http_get_construct_seek_start_stop (GType object_type, gint64 start, gint64 stop, RygelThumbnail* thumbnail, RygelSubtitle* subtitle);
 static void rygel_http_get_finalize (GObject* obj);
 GType rygel_http_byte_seek_test_get_type (void);
 #define RYGEL_HTTP_BYTE_SEEK_TEST_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), RYGEL_TYPE_HTTP_BYTE_SEEK_TEST, RygelHTTPByteSeekTestPrivate))
@@ -257,10 +257,10 @@ static RygelHTTPByteSeekTest* rygel_http_byte_seek_test_construct (GType object_
 GQuark rygel_http_seek_error_quark (void);
 void rygel_http_byte_seek_test_run (RygelHTTPByteSeekTest* self, GError** error);
 gint rygel_http_byte_seek_test_main (char** args, int args_length1);
-static void rygel_http_byte_seek_test_test_no_seek (RygelHTTPByteSeekTest* self, GError** error);
-static void rygel_http_byte_seek_test_test_start_only_seek (RygelHTTPByteSeekTest* self, GError** error);
-static void rygel_http_byte_seek_test_test_stop_only_seek (RygelHTTPByteSeekTest* self, GError** error);
-static void rygel_http_byte_seek_test_test_start_stop_seek (RygelHTTPByteSeekTest* self, GError** error);
+static void rygel_http_byte_seek_test_test_no_seek (RygelHTTPByteSeekTest* self, RygelThumbnail* thumbnail, RygelSubtitle* subtitle, GError** error);
+static void rygel_http_byte_seek_test_test_start_only_seek (RygelHTTPByteSeekTest* self, RygelThumbnail* thumbnail, RygelSubtitle* subtitle, GError** error);
+static void rygel_http_byte_seek_test_test_stop_only_seek (RygelHTTPByteSeekTest* self, RygelThumbnail* thumbnail, RygelSubtitle* subtitle, GError** error);
+static void rygel_http_byte_seek_test_test_start_stop_seek (RygelHTTPByteSeekTest* self, RygelThumbnail* thumbnail, RygelSubtitle* subtitle, GError** error);
 static void rygel_http_byte_seek_test_test_seek (RygelHTTPByteSeekTest* self, RygelHTTPGet* request, gint64 start, gint64 stop, GError** error);
 gboolean rygel_http_byte_seek_needed (RygelHTTPGet* request);
 RygelHTTPByteSeek* rygel_http_byte_seek_new (RygelHTTPGet* request, GError** error);
@@ -272,6 +272,8 @@ gint64 rygel_http_seek_get_start (RygelHTTPSeek* self);
 gint64 rygel_http_seek_get_stop (RygelHTTPSeek* self);
 gint64 rygel_http_seek_get_length (RygelHTTPSeek* self);
 static void rygel_http_byte_seek_test_finalize (GObject* obj);
+static void _vala_array_destroy (gpointer array, gint array_length, GDestroyNotify destroy_func);
+static void _vala_array_free (gpointer array, gint array_length, GDestroyNotify destroy_func);
 static int _vala_strcmp0 (const char * str1, const char * str2);
 
 
@@ -283,11 +285,11 @@ GQuark rygel_test_error_quark (void) {
 
 #line 28 "rygel-http-byte-seek-test.vala"
 RygelHTTPIdentityHandler* rygel_http_identity_handler_construct (GType object_type) {
-#line 287 "rygel-http-byte-seek-test.c"
+#line 289 "rygel-http-byte-seek-test.c"
 	RygelHTTPIdentityHandler * self;
 #line 28 "rygel-http-byte-seek-test.vala"
 	self = (RygelHTTPIdentityHandler*) g_object_new (object_type, NULL);
-#line 291 "rygel-http-byte-seek-test.c"
+#line 293 "rygel-http-byte-seek-test.c"
 	return self;
 }
 
@@ -296,7 +298,7 @@ RygelHTTPIdentityHandler* rygel_http_identity_handler_construct (GType object_ty
 RygelHTTPIdentityHandler* rygel_http_identity_handler_new (void) {
 #line 28 "rygel-http-byte-seek-test.vala"
 	return rygel_http_identity_handler_construct (RYGEL_TYPE_HTTP_IDENTITY_HANDLER);
-#line 300 "rygel-http-byte-seek-test.c"
+#line 302 "rygel-http-byte-seek-test.c"
 }
 
 
@@ -323,11 +325,11 @@ GType rygel_http_identity_handler_get_type (void) {
 
 #line 30 "rygel-http-byte-seek-test.vala"
 RygelMediaItem* rygel_media_item_construct (GType object_type) {
-#line 327 "rygel-http-byte-seek-test.c"
+#line 329 "rygel-http-byte-seek-test.c"
 	RygelMediaItem * self;
 #line 30 "rygel-http-byte-seek-test.vala"
 	self = (RygelMediaItem*) g_object_new (object_type, NULL);
-#line 331 "rygel-http-byte-seek-test.c"
+#line 333 "rygel-http-byte-seek-test.c"
 	return self;
 }
 
@@ -336,7 +338,7 @@ RygelMediaItem* rygel_media_item_construct (GType object_type) {
 RygelMediaItem* rygel_media_item_new (void) {
 #line 30 "rygel-http-byte-seek-test.vala"
 	return rygel_media_item_construct (RYGEL_TYPE_MEDIA_ITEM);
-#line 340 "rygel-http-byte-seek-test.c"
+#line 342 "rygel-http-byte-seek-test.c"
 }
 
 
@@ -347,7 +349,7 @@ static void rygel_media_item_class_init (RygelMediaItemClass * klass) {
 
 
 static void rygel_media_item_instance_init (RygelMediaItem * self) {
-	self->size = (gint64) 1024;
+	self->size = (gint64) 2048;
 }
 
 
@@ -372,11 +374,11 @@ GType rygel_media_item_get_type (void) {
 
 #line 34 "rygel-http-byte-seek-test.vala"
 RygelThumbnail* rygel_thumbnail_construct (GType object_type) {
-#line 376 "rygel-http-byte-seek-test.c"
+#line 378 "rygel-http-byte-seek-test.c"
 	RygelThumbnail * self;
 #line 34 "rygel-http-byte-seek-test.vala"
 	self = (RygelThumbnail*) g_object_new (object_type, NULL);
-#line 380 "rygel-http-byte-seek-test.c"
+#line 382 "rygel-http-byte-seek-test.c"
 	return self;
 }
 
@@ -385,7 +387,7 @@ RygelThumbnail* rygel_thumbnail_construct (GType object_type) {
 RygelThumbnail* rygel_thumbnail_new (void) {
 #line 34 "rygel-http-byte-seek-test.vala"
 	return rygel_thumbnail_construct (RYGEL_TYPE_THUMBNAIL);
-#line 389 "rygel-http-byte-seek-test.c"
+#line 391 "rygel-http-byte-seek-test.c"
 }
 
 
@@ -421,11 +423,11 @@ GType rygel_thumbnail_get_type (void) {
 
 #line 38 "rygel-http-byte-seek-test.vala"
 RygelSubtitle* rygel_subtitle_construct (GType object_type) {
-#line 425 "rygel-http-byte-seek-test.c"
+#line 427 "rygel-http-byte-seek-test.c"
 	RygelSubtitle * self;
 #line 38 "rygel-http-byte-seek-test.vala"
 	self = (RygelSubtitle*) g_object_new (object_type, NULL);
-#line 429 "rygel-http-byte-seek-test.c"
+#line 431 "rygel-http-byte-seek-test.c"
 	return self;
 }
 
@@ -434,7 +436,7 @@ RygelSubtitle* rygel_subtitle_construct (GType object_type) {
 RygelSubtitle* rygel_subtitle_new (void) {
 #line 38 "rygel-http-byte-seek-test.vala"
 	return rygel_subtitle_construct (RYGEL_TYPE_SUBTITLE);
-#line 438 "rygel-http-byte-seek-test.c"
+#line 440 "rygel-http-byte-seek-test.c"
 }
 
 
@@ -445,7 +447,7 @@ static void rygel_subtitle_class_init (RygelSubtitleClass * klass) {
 
 
 static void rygel_subtitle_instance_init (RygelSubtitle * self) {
-	self->size = (gint64) 1024;
+	self->size = (gint64) 512;
 }
 
 
@@ -468,13 +470,20 @@ GType rygel_subtitle_get_type (void) {
 }
 
 
+static gpointer _g_object_ref0 (gpointer self) {
+	return self ? g_object_ref (self) : NULL;
+}
+
+
 #line 52 "rygel-http-byte-seek-test.vala"
-RygelHTTPGet* rygel_http_get_construct (GType object_type) {
-#line 474 "rygel-http-byte-seek-test.c"
+RygelHTTPGet* rygel_http_get_construct (GType object_type, RygelThumbnail* thumbnail, RygelSubtitle* subtitle) {
+#line 481 "rygel-http-byte-seek-test.c"
 	RygelHTTPGet * self;
 	SoupMessage* _tmp0_;
 	RygelMediaItem* _tmp1_;
 	RygelHTTPIdentityHandler* _tmp2_;
+	RygelThumbnail* _tmp3_;
+	RygelSubtitle* _tmp4_;
 #line 52 "rygel-http-byte-seek-test.vala"
 	self = (RygelHTTPGet*) g_object_new (object_type, NULL);
 #line 53 "rygel-http-byte-seek-test.vala"
@@ -483,89 +492,93 @@ RygelHTTPGet* rygel_http_get_construct (GType object_type) {
 	self->item = (_tmp1_ = rygel_media_item_new (), _g_object_unref0 (self->item), _tmp1_);
 #line 55 "rygel-http-byte-seek-test.vala"
 	self->handler = (_tmp2_ = rygel_http_identity_handler_new (), _g_object_unref0 (self->handler), _tmp2_);
-#line 487 "rygel-http-byte-seek-test.c"
+#line 56 "rygel-http-byte-seek-test.vala"
+	self->thumbnail = (_tmp3_ = _g_object_ref0 (thumbnail), _g_object_unref0 (self->thumbnail), _tmp3_);
+#line 57 "rygel-http-byte-seek-test.vala"
+	self->subtitle = (_tmp4_ = _g_object_ref0 (subtitle), _g_object_unref0 (self->subtitle), _tmp4_);
+#line 500 "rygel-http-byte-seek-test.c"
 	return self;
 }
 
 
 #line 52 "rygel-http-byte-seek-test.vala"
-RygelHTTPGet* rygel_http_get_new (void) {
+RygelHTTPGet* rygel_http_get_new (RygelThumbnail* thumbnail, RygelSubtitle* subtitle) {
 #line 52 "rygel-http-byte-seek-test.vala"
-	return rygel_http_get_construct (RYGEL_TYPE_HTTP_GET);
-#line 496 "rygel-http-byte-seek-test.c"
+	return rygel_http_get_construct (RYGEL_TYPE_HTTP_GET, thumbnail, subtitle);
+#line 509 "rygel-http-byte-seek-test.c"
 }
 
 
-#line 58 "rygel-http-byte-seek-test.vala"
-RygelHTTPGet* rygel_http_get_construct_seek_start (GType object_type, gint64 start) {
-#line 502 "rygel-http-byte-seek-test.c"
+#line 60 "rygel-http-byte-seek-test.vala"
+RygelHTTPGet* rygel_http_get_construct_seek_start (GType object_type, gint64 start, RygelThumbnail* thumbnail, RygelSubtitle* subtitle) {
+#line 515 "rygel-http-byte-seek-test.c"
 	RygelHTTPGet * self;
-#line 59 "rygel-http-byte-seek-test.vala"
-	self = (RygelHTTPGet*) rygel_http_get_construct (object_type);
-#line 61 "rygel-http-byte-seek-test.vala"
-	rygel_http_get_add_headers (self, start, (gint64) (-1));
-#line 508 "rygel-http-byte-seek-test.c"
-	return self;
-}
-
-
-#line 58 "rygel-http-byte-seek-test.vala"
-RygelHTTPGet* rygel_http_get_new_seek_start (gint64 start) {
-#line 58 "rygel-http-byte-seek-test.vala"
-	return rygel_http_get_construct_seek_start (RYGEL_TYPE_HTTP_GET, start);
-#line 517 "rygel-http-byte-seek-test.c"
-}
-
-
-#line 64 "rygel-http-byte-seek-test.vala"
-RygelHTTPGet* rygel_http_get_construct_seek_stop (GType object_type, gint64 stop) {
-#line 523 "rygel-http-byte-seek-test.c"
-	RygelHTTPGet * self;
+#line 63 "rygel-http-byte-seek-test.vala"
+	self = (RygelHTTPGet*) rygel_http_get_construct (object_type, thumbnail, subtitle);
 #line 65 "rygel-http-byte-seek-test.vala"
-	self = (RygelHTTPGet*) rygel_http_get_construct (object_type);
-#line 67 "rygel-http-byte-seek-test.vala"
-	rygel_http_get_add_headers (self, (gint64) 0, stop);
-#line 529 "rygel-http-byte-seek-test.c"
+	rygel_http_get_add_headers (self, start, (gint64) (-1));
+#line 521 "rygel-http-byte-seek-test.c"
 	return self;
 }
 
 
-#line 64 "rygel-http-byte-seek-test.vala"
-RygelHTTPGet* rygel_http_get_new_seek_stop (gint64 stop) {
-#line 64 "rygel-http-byte-seek-test.vala"
-	return rygel_http_get_construct_seek_stop (RYGEL_TYPE_HTTP_GET, stop);
-#line 538 "rygel-http-byte-seek-test.c"
+#line 60 "rygel-http-byte-seek-test.vala"
+RygelHTTPGet* rygel_http_get_new_seek_start (gint64 start, RygelThumbnail* thumbnail, RygelSubtitle* subtitle) {
+#line 60 "rygel-http-byte-seek-test.vala"
+	return rygel_http_get_construct_seek_start (RYGEL_TYPE_HTTP_GET, start, thumbnail, subtitle);
+#line 530 "rygel-http-byte-seek-test.c"
 }
 
 
-#line 70 "rygel-http-byte-seek-test.vala"
-RygelHTTPGet* rygel_http_get_construct_seek_start_stop (GType object_type, gint64 start, gint64 stop) {
-#line 544 "rygel-http-byte-seek-test.c"
+#line 68 "rygel-http-byte-seek-test.vala"
+RygelHTTPGet* rygel_http_get_construct_seek_stop (GType object_type, gint64 stop, RygelThumbnail* thumbnail, RygelSubtitle* subtitle) {
+#line 536 "rygel-http-byte-seek-test.c"
 	RygelHTTPGet * self;
 #line 71 "rygel-http-byte-seek-test.vala"
-	self = (RygelHTTPGet*) rygel_http_get_construct (object_type);
+	self = (RygelHTTPGet*) rygel_http_get_construct (object_type, thumbnail, subtitle);
 #line 73 "rygel-http-byte-seek-test.vala"
-	rygel_http_get_add_headers (self, start, stop);
-#line 550 "rygel-http-byte-seek-test.c"
+	rygel_http_get_add_headers (self, (gint64) 0, stop);
+#line 542 "rygel-http-byte-seek-test.c"
 	return self;
 }
 
 
-#line 70 "rygel-http-byte-seek-test.vala"
-RygelHTTPGet* rygel_http_get_new_seek_start_stop (gint64 start, gint64 stop) {
-#line 70 "rygel-http-byte-seek-test.vala"
-	return rygel_http_get_construct_seek_start_stop (RYGEL_TYPE_HTTP_GET, start, stop);
-#line 559 "rygel-http-byte-seek-test.c"
+#line 68 "rygel-http-byte-seek-test.vala"
+RygelHTTPGet* rygel_http_get_new_seek_stop (gint64 stop, RygelThumbnail* thumbnail, RygelSubtitle* subtitle) {
+#line 68 "rygel-http-byte-seek-test.vala"
+	return rygel_http_get_construct_seek_stop (RYGEL_TYPE_HTTP_GET, stop, thumbnail, subtitle);
+#line 551 "rygel-http-byte-seek-test.c"
 }
 
 
 #line 76 "rygel-http-byte-seek-test.vala"
-static void rygel_http_get_add_headers (RygelHTTPGet* self, gint64 start, gint64 stop) {
+RygelHTTPGet* rygel_http_get_construct_seek_start_stop (GType object_type, gint64 start, gint64 stop, RygelThumbnail* thumbnail, RygelSubtitle* subtitle) {
+#line 557 "rygel-http-byte-seek-test.c"
+	RygelHTTPGet * self;
+#line 80 "rygel-http-byte-seek-test.vala"
+	self = (RygelHTTPGet*) rygel_http_get_construct (object_type, thumbnail, subtitle);
+#line 82 "rygel-http-byte-seek-test.vala"
+	rygel_http_get_add_headers (self, start, stop);
+#line 563 "rygel-http-byte-seek-test.c"
+	return self;
+}
+
+
 #line 76 "rygel-http-byte-seek-test.vala"
+RygelHTTPGet* rygel_http_get_new_seek_start_stop (gint64 start, gint64 stop, RygelThumbnail* thumbnail, RygelSubtitle* subtitle) {
+#line 76 "rygel-http-byte-seek-test.vala"
+	return rygel_http_get_construct_seek_start_stop (RYGEL_TYPE_HTTP_GET, start, stop, thumbnail, subtitle);
+#line 572 "rygel-http-byte-seek-test.c"
+}
+
+
+#line 85 "rygel-http-byte-seek-test.vala"
+static void rygel_http_get_add_headers (RygelHTTPGet* self, gint64 start, gint64 stop) {
+#line 85 "rygel-http-byte-seek-test.vala"
 	g_return_if_fail (self != NULL);
-#line 77 "rygel-http-byte-seek-test.vala"
+#line 86 "rygel-http-byte-seek-test.vala"
 	soup_message_headers_set_range (self->msg->request_headers, start, stop);
-#line 569 "rygel-http-byte-seek-test.c"
+#line 582 "rygel-http-byte-seek-test.c"
 }
 
 
@@ -603,19 +616,19 @@ GType rygel_http_get_get_type (void) {
 }
 
 
-#line 84 "rygel-http-byte-seek-test.vala"
+#line 93 "rygel-http-byte-seek-test.vala"
 gint rygel_http_byte_seek_test_main (char** args, int args_length1) {
-#line 609 "rygel-http-byte-seek-test.c"
+#line 622 "rygel-http-byte-seek-test.c"
 	gint result = 0;
 	GError * _inner_error_;
 	_inner_error_ = NULL;
 	{
 		RygelHTTPByteSeekTest* test;
-#line 86 "rygel-http-byte-seek-test.vala"
+#line 95 "rygel-http-byte-seek-test.vala"
 		test = rygel_http_byte_seek_test_new ();
-#line 88 "rygel-http-byte-seek-test.vala"
+#line 97 "rygel-http-byte-seek-test.vala"
 		rygel_http_byte_seek_test_run (test, &_inner_error_);
-#line 619 "rygel-http-byte-seek-test.c"
+#line 632 "rygel-http-byte-seek-test.c"
 		if (_inner_error_ != NULL) {
 			_g_object_unref0 (test);
 			if (g_error_matches (_inner_error_, RYGEL_TEST_ERROR, RYGEL_TEST_ERROR_SKIP)) {
@@ -634,9 +647,9 @@ gint rygel_http_byte_seek_test_main (char** args, int args_length1) {
 		{
 			result = 77;
 			_g_error_free0 (_error_);
-#line 90 "rygel-http-byte-seek-test.vala"
+#line 99 "rygel-http-byte-seek-test.vala"
 			return result;
-#line 640 "rygel-http-byte-seek-test.c"
+#line 653 "rygel-http-byte-seek-test.c"
 		}
 	}
 	goto __finally0;
@@ -646,14 +659,14 @@ gint rygel_http_byte_seek_test_main (char** args, int args_length1) {
 		_error_ = _inner_error_;
 		_inner_error_ = NULL;
 		{
-#line 92 "rygel-http-byte-seek-test.vala"
-			g_critical ("rygel-http-byte-seek-test.vala:92: %s", _error_->message);
-#line 652 "rygel-http-byte-seek-test.c"
+#line 101 "rygel-http-byte-seek-test.vala"
+			g_critical ("rygel-http-byte-seek-test.vala:101: %s", _error_->message);
+#line 665 "rygel-http-byte-seek-test.c"
 			result = -1;
 			_g_error_free0 (_error_);
-#line 94 "rygel-http-byte-seek-test.vala"
+#line 103 "rygel-http-byte-seek-test.vala"
 			return result;
-#line 657 "rygel-http-byte-seek-test.c"
+#line 670 "rygel-http-byte-seek-test.c"
 		}
 	}
 	__finally0:
@@ -663,224 +676,230 @@ gint rygel_http_byte_seek_test_main (char** args, int args_length1) {
 		return 0;
 	}
 	result = 0;
-#line 97 "rygel-http-byte-seek-test.vala"
+#line 106 "rygel-http-byte-seek-test.vala"
 	return result;
-#line 669 "rygel-http-byte-seek-test.c"
+#line 682 "rygel-http-byte-seek-test.c"
 }
 
 
-#line 84 "rygel-http-byte-seek-test.vala"
+#line 93 "rygel-http-byte-seek-test.vala"
 int main (int argc, char ** argv) {
-#line 675 "rygel-http-byte-seek-test.c"
+#line 688 "rygel-http-byte-seek-test.c"
 	g_thread_init (NULL);
-#line 84 "rygel-http-byte-seek-test.vala"
+#line 93 "rygel-http-byte-seek-test.vala"
 	g_type_init ();
-#line 84 "rygel-http-byte-seek-test.vala"
+#line 93 "rygel-http-byte-seek-test.vala"
 	return rygel_http_byte_seek_test_main (argv, argc);
-#line 681 "rygel-http-byte-seek-test.c"
+#line 694 "rygel-http-byte-seek-test.c"
 }
 
 
-#line 100 "rygel-http-byte-seek-test.vala"
+#line 109 "rygel-http-byte-seek-test.vala"
 void rygel_http_byte_seek_test_run (RygelHTTPByteSeekTest* self, GError** error) {
-#line 687 "rygel-http-byte-seek-test.c"
+#line 700 "rygel-http-byte-seek-test.c"
 	GError * _inner_error_;
-#line 100 "rygel-http-byte-seek-test.vala"
+	RygelThumbnail** _tmp1_;
+	gint _thumbnails_size_;
+	gint thumbnails_length1;
+	RygelThumbnail** _tmp0_ = NULL;
+	RygelThumbnail** thumbnails;
+	RygelSubtitle** _tmp3_;
+	gint _subtitles_size_;
+	gint subtitles_length1;
+	RygelSubtitle** _tmp2_ = NULL;
+	RygelSubtitle** subtitles;
+#line 109 "rygel-http-byte-seek-test.vala"
 	g_return_if_fail (self != NULL);
-#line 691 "rygel-http-byte-seek-test.c"
+#line 714 "rygel-http-byte-seek-test.c"
 	_inner_error_ = NULL;
-#line 101 "rygel-http-byte-seek-test.vala"
-	rygel_http_byte_seek_test_test_no_seek (self, &_inner_error_);
-#line 695 "rygel-http-byte-seek-test.c"
-	if (_inner_error_ != NULL) {
-		if (_inner_error_->domain == RYGEL_HTTP_SEEK_ERROR) {
-			g_propagate_error (error, _inner_error_);
-			return;
-		} else {
-			g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
-			g_clear_error (&_inner_error_);
-			return;
+	thumbnails = (_tmp1_ = (_tmp0_ = g_new0 (RygelThumbnail*, 2 + 1), _tmp0_[0] = NULL, _tmp0_[1] = rygel_thumbnail_new (), _tmp0_), thumbnails_length1 = 2, _thumbnails_size_ = thumbnails_length1, _tmp1_);
+	subtitles = (_tmp3_ = (_tmp2_ = g_new0 (RygelSubtitle*, 2 + 1), _tmp2_[0] = NULL, _tmp2_[1] = rygel_subtitle_new (), _tmp2_), subtitles_length1 = 2, _subtitles_size_ = subtitles_length1, _tmp3_);
+	{
+		RygelThumbnail** thumbnail_collection;
+		int thumbnail_collection_length1;
+		int thumbnail_it;
+#line 113 "rygel-http-byte-seek-test.vala"
+		thumbnail_collection = thumbnails;
+#line 724 "rygel-http-byte-seek-test.c"
+		thumbnail_collection_length1 = thumbnails_length1;
+		for (thumbnail_it = 0; thumbnail_it < thumbnails_length1; thumbnail_it = thumbnail_it + 1) {
+			RygelThumbnail* thumbnail;
+			thumbnail = _g_object_ref0 (thumbnail_collection[thumbnail_it]);
+			{
+				{
+					RygelSubtitle** subtitle_collection;
+					int subtitle_collection_length1;
+					int subtitle_it;
+#line 114 "rygel-http-byte-seek-test.vala"
+					subtitle_collection = subtitles;
+#line 736 "rygel-http-byte-seek-test.c"
+					subtitle_collection_length1 = subtitles_length1;
+					for (subtitle_it = 0; subtitle_it < subtitles_length1; subtitle_it = subtitle_it + 1) {
+						RygelSubtitle* subtitle;
+						subtitle = _g_object_ref0 (subtitle_collection[subtitle_it]);
+						{
+#line 115 "rygel-http-byte-seek-test.vala"
+							rygel_http_byte_seek_test_test_no_seek (self, thumbnail, subtitle, &_inner_error_);
+#line 744 "rygel-http-byte-seek-test.c"
+							if (_inner_error_ != NULL) {
+								if (_inner_error_->domain == RYGEL_HTTP_SEEK_ERROR) {
+									g_propagate_error (error, _inner_error_);
+									_g_object_unref0 (subtitle);
+									_g_object_unref0 (thumbnail);
+									thumbnails = (_vala_array_free (thumbnails, thumbnails_length1, (GDestroyNotify) g_object_unref), NULL);
+									subtitles = (_vala_array_free (subtitles, subtitles_length1, (GDestroyNotify) g_object_unref), NULL);
+									return;
+								} else {
+									_g_object_unref0 (subtitle);
+									_g_object_unref0 (thumbnail);
+									thumbnails = (_vala_array_free (thumbnails, thumbnails_length1, (GDestroyNotify) g_object_unref), NULL);
+									subtitles = (_vala_array_free (subtitles, subtitles_length1, (GDestroyNotify) g_object_unref), NULL);
+									g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
+									g_clear_error (&_inner_error_);
+									return;
+								}
+							}
+#line 116 "rygel-http-byte-seek-test.vala"
+							rygel_http_byte_seek_test_test_start_only_seek (self, thumbnail, subtitle, &_inner_error_);
+#line 765 "rygel-http-byte-seek-test.c"
+							if (_inner_error_ != NULL) {
+								if (_inner_error_->domain == RYGEL_HTTP_SEEK_ERROR) {
+									g_propagate_error (error, _inner_error_);
+									_g_object_unref0 (subtitle);
+									_g_object_unref0 (thumbnail);
+									thumbnails = (_vala_array_free (thumbnails, thumbnails_length1, (GDestroyNotify) g_object_unref), NULL);
+									subtitles = (_vala_array_free (subtitles, subtitles_length1, (GDestroyNotify) g_object_unref), NULL);
+									return;
+								} else {
+									_g_object_unref0 (subtitle);
+									_g_object_unref0 (thumbnail);
+									thumbnails = (_vala_array_free (thumbnails, thumbnails_length1, (GDestroyNotify) g_object_unref), NULL);
+									subtitles = (_vala_array_free (subtitles, subtitles_length1, (GDestroyNotify) g_object_unref), NULL);
+									g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
+									g_clear_error (&_inner_error_);
+									return;
+								}
+							}
+#line 117 "rygel-http-byte-seek-test.vala"
+							rygel_http_byte_seek_test_test_stop_only_seek (self, thumbnail, subtitle, &_inner_error_);
+#line 786 "rygel-http-byte-seek-test.c"
+							if (_inner_error_ != NULL) {
+								if (_inner_error_->domain == RYGEL_HTTP_SEEK_ERROR) {
+									g_propagate_error (error, _inner_error_);
+									_g_object_unref0 (subtitle);
+									_g_object_unref0 (thumbnail);
+									thumbnails = (_vala_array_free (thumbnails, thumbnails_length1, (GDestroyNotify) g_object_unref), NULL);
+									subtitles = (_vala_array_free (subtitles, subtitles_length1, (GDestroyNotify) g_object_unref), NULL);
+									return;
+								} else {
+									_g_object_unref0 (subtitle);
+									_g_object_unref0 (thumbnail);
+									thumbnails = (_vala_array_free (thumbnails, thumbnails_length1, (GDestroyNotify) g_object_unref), NULL);
+									subtitles = (_vala_array_free (subtitles, subtitles_length1, (GDestroyNotify) g_object_unref), NULL);
+									g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
+									g_clear_error (&_inner_error_);
+									return;
+								}
+							}
+#line 118 "rygel-http-byte-seek-test.vala"
+							rygel_http_byte_seek_test_test_start_stop_seek (self, thumbnail, subtitle, &_inner_error_);
+#line 807 "rygel-http-byte-seek-test.c"
+							if (_inner_error_ != NULL) {
+								if (_inner_error_->domain == RYGEL_HTTP_SEEK_ERROR) {
+									g_propagate_error (error, _inner_error_);
+									_g_object_unref0 (subtitle);
+									_g_object_unref0 (thumbnail);
+									thumbnails = (_vala_array_free (thumbnails, thumbnails_length1, (GDestroyNotify) g_object_unref), NULL);
+									subtitles = (_vala_array_free (subtitles, subtitles_length1, (GDestroyNotify) g_object_unref), NULL);
+									return;
+								} else {
+									_g_object_unref0 (subtitle);
+									_g_object_unref0 (thumbnail);
+									thumbnails = (_vala_array_free (thumbnails, thumbnails_length1, (GDestroyNotify) g_object_unref), NULL);
+									subtitles = (_vala_array_free (subtitles, subtitles_length1, (GDestroyNotify) g_object_unref), NULL);
+									g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
+									g_clear_error (&_inner_error_);
+									return;
+								}
+							}
+							_g_object_unref0 (subtitle);
+						}
+					}
+				}
+				_g_object_unref0 (thumbnail);
+			}
 		}
 	}
-#line 102 "rygel-http-byte-seek-test.vala"
-	rygel_http_byte_seek_test_test_start_only_seek (self, &_inner_error_);
-#line 708 "rygel-http-byte-seek-test.c"
-	if (_inner_error_ != NULL) {
-		if (_inner_error_->domain == RYGEL_HTTP_SEEK_ERROR) {
-			g_propagate_error (error, _inner_error_);
-			return;
-		} else {
-			g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
-			g_clear_error (&_inner_error_);
-			return;
-		}
-	}
-#line 103 "rygel-http-byte-seek-test.vala"
-	rygel_http_byte_seek_test_test_stop_only_seek (self, &_inner_error_);
-#line 721 "rygel-http-byte-seek-test.c"
-	if (_inner_error_ != NULL) {
-		if (_inner_error_->domain == RYGEL_HTTP_SEEK_ERROR) {
-			g_propagate_error (error, _inner_error_);
-			return;
-		} else {
-			g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
-			g_clear_error (&_inner_error_);
-			return;
-		}
-	}
-#line 104 "rygel-http-byte-seek-test.vala"
-	rygel_http_byte_seek_test_test_start_stop_seek (self, &_inner_error_);
-#line 734 "rygel-http-byte-seek-test.c"
-	if (_inner_error_ != NULL) {
-		if (_inner_error_->domain == RYGEL_HTTP_SEEK_ERROR) {
-			g_propagate_error (error, _inner_error_);
-			return;
-		} else {
-			g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
-			g_clear_error (&_inner_error_);
-			return;
-		}
-	}
+	thumbnails = (_vala_array_free (thumbnails, thumbnails_length1, (GDestroyNotify) g_object_unref), NULL);
+	subtitles = (_vala_array_free (subtitles, subtitles_length1, (GDestroyNotify) g_object_unref), NULL);
 }
 
 
-#line 107 "rygel-http-byte-seek-test.vala"
+#line 123 "rygel-http-byte-seek-test.vala"
 static RygelHTTPByteSeekTest* rygel_http_byte_seek_test_construct (GType object_type) {
-#line 750 "rygel-http-byte-seek-test.c"
+#line 841 "rygel-http-byte-seek-test.c"
 	GError * _inner_error_;
 	RygelHTTPByteSeekTest * self;
 	GRegex* _tmp0_;
 	GRegex* _tmp1_;
 	_inner_error_ = NULL;
-#line 107 "rygel-http-byte-seek-test.vala"
+#line 123 "rygel-http-byte-seek-test.vala"
 	self = (RygelHTTPByteSeekTest*) g_object_new (object_type, NULL);
-#line 108 "rygel-http-byte-seek-test.vala"
+#line 124 "rygel-http-byte-seek-test.vala"
 	_tmp0_ = g_regex_new ("bytes +[0-9]+-[0-9]+/[0-9]+", G_REGEX_CASELESS, 0, &_inner_error_);
-#line 760 "rygel-http-byte-seek-test.c"
+#line 851 "rygel-http-byte-seek-test.c"
 	if (_inner_error_ != NULL) {
 		g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
 		g_clear_error (&_inner_error_);
 		return NULL;
 	}
-#line 108 "rygel-http-byte-seek-test.vala"
+#line 124 "rygel-http-byte-seek-test.vala"
 	self->priv->range_regex = (_tmp1_ = _tmp0_, _g_regex_unref0 (self->priv->range_regex), _tmp1_);
-#line 768 "rygel-http-byte-seek-test.c"
+#line 859 "rygel-http-byte-seek-test.c"
 	return self;
 }
 
 
-#line 107 "rygel-http-byte-seek-test.vala"
+#line 123 "rygel-http-byte-seek-test.vala"
 static RygelHTTPByteSeekTest* rygel_http_byte_seek_test_new (void) {
-#line 107 "rygel-http-byte-seek-test.vala"
+#line 123 "rygel-http-byte-seek-test.vala"
 	return rygel_http_byte_seek_test_construct (RYGEL_TYPE_HTTP_BYTE_SEEK_TEST);
-#line 777 "rygel-http-byte-seek-test.c"
+#line 868 "rygel-http-byte-seek-test.c"
 }
 
 
-#line 112 "rygel-http-byte-seek-test.vala"
-static void rygel_http_byte_seek_test_test_no_seek (RygelHTTPByteSeekTest* self, GError** error) {
-#line 783 "rygel-http-byte-seek-test.c"
+#line 128 "rygel-http-byte-seek-test.vala"
+static void rygel_http_byte_seek_test_test_no_seek (RygelHTTPByteSeekTest* self, RygelThumbnail* thumbnail, RygelSubtitle* subtitle, GError** error) {
+#line 874 "rygel-http-byte-seek-test.c"
 	GError * _inner_error_;
 	RygelHTTPGet* request;
-#line 112 "rygel-http-byte-seek-test.vala"
+	gint64 size = 0LL;
+#line 128 "rygel-http-byte-seek-test.vala"
 	g_return_if_fail (self != NULL);
-#line 788 "rygel-http-byte-seek-test.c"
+#line 880 "rygel-http-byte-seek-test.c"
 	_inner_error_ = NULL;
-#line 113 "rygel-http-byte-seek-test.vala"
-	request = rygel_http_get_new ();
-#line 115 "rygel-http-byte-seek-test.vala"
-	rygel_http_byte_seek_test_test_seek (self, request, (gint64) 0, request->item->size - 1, &_inner_error_);
-#line 794 "rygel-http-byte-seek-test.c"
-	if (_inner_error_ != NULL) {
-		if (_inner_error_->domain == RYGEL_HTTP_SEEK_ERROR) {
-			g_propagate_error (error, _inner_error_);
-			_g_object_unref0 (request);
-			return;
-		} else {
-			_g_object_unref0 (request);
-			g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
-			g_clear_error (&_inner_error_);
-			return;
-		}
-	}
-	_g_object_unref0 (request);
-}
-
-
-#line 118 "rygel-http-byte-seek-test.vala"
-static void rygel_http_byte_seek_test_test_start_only_seek (RygelHTTPByteSeekTest* self, GError** error) {
-#line 813 "rygel-http-byte-seek-test.c"
-	GError * _inner_error_;
-	RygelHTTPGet* request;
-#line 118 "rygel-http-byte-seek-test.vala"
-	g_return_if_fail (self != NULL);
-#line 818 "rygel-http-byte-seek-test.c"
-	_inner_error_ = NULL;
-#line 119 "rygel-http-byte-seek-test.vala"
-	request = rygel_http_get_new_seek_start ((gint64) 128);
-#line 121 "rygel-http-byte-seek-test.vala"
-	rygel_http_byte_seek_test_test_seek (self, request, (gint64) 128, request->item->size - 1, &_inner_error_);
-#line 824 "rygel-http-byte-seek-test.c"
-	if (_inner_error_ != NULL) {
-		if (_inner_error_->domain == RYGEL_HTTP_SEEK_ERROR) {
-			g_propagate_error (error, _inner_error_);
-			_g_object_unref0 (request);
-			return;
-		} else {
-			_g_object_unref0 (request);
-			g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
-			g_clear_error (&_inner_error_);
-			return;
-		}
-	}
-	_g_object_unref0 (request);
-}
-
-
-#line 124 "rygel-http-byte-seek-test.vala"
-static void rygel_http_byte_seek_test_test_stop_only_seek (RygelHTTPByteSeekTest* self, GError** error) {
-#line 843 "rygel-http-byte-seek-test.c"
-	GError * _inner_error_;
-	RygelHTTPGet* request;
-#line 124 "rygel-http-byte-seek-test.vala"
-	g_return_if_fail (self != NULL);
-#line 848 "rygel-http-byte-seek-test.c"
-	_inner_error_ = NULL;
-#line 125 "rygel-http-byte-seek-test.vala"
-	request = rygel_http_get_new_seek_stop ((gint64) 128);
-#line 127 "rygel-http-byte-seek-test.vala"
-	rygel_http_byte_seek_test_test_seek (self, request, (gint64) 0, (gint64) 128, &_inner_error_);
-#line 854 "rygel-http-byte-seek-test.c"
-	if (_inner_error_ != NULL) {
-		if (_inner_error_->domain == RYGEL_HTTP_SEEK_ERROR) {
-			g_propagate_error (error, _inner_error_);
-			_g_object_unref0 (request);
-			return;
-		} else {
-			_g_object_unref0 (request);
-			g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
-			g_clear_error (&_inner_error_);
-			return;
-		}
-	}
-	_g_object_unref0 (request);
-}
-
-
 #line 130 "rygel-http-byte-seek-test.vala"
-static void rygel_http_byte_seek_test_test_start_stop_seek (RygelHTTPByteSeekTest* self, GError** error) {
-#line 873 "rygel-http-byte-seek-test.c"
-	GError * _inner_error_;
-	RygelHTTPGet* request;
-#line 130 "rygel-http-byte-seek-test.vala"
-	g_return_if_fail (self != NULL);
-#line 878 "rygel-http-byte-seek-test.c"
-	_inner_error_ = NULL;
-#line 131 "rygel-http-byte-seek-test.vala"
-	request = rygel_http_get_new_seek_start_stop ((gint64) 128, (gint64) 256);
+	request = rygel_http_get_new (thumbnail, subtitle);
 #line 133 "rygel-http-byte-seek-test.vala"
-	rygel_http_byte_seek_test_test_seek (self, request, (gint64) 128, (gint64) 256, &_inner_error_);
-#line 884 "rygel-http-byte-seek-test.c"
+	if (request->thumbnail != NULL) {
+#line 134 "rygel-http-byte-seek-test.vala"
+		size = request->thumbnail->size;
+#line 888 "rygel-http-byte-seek-test.c"
+	} else {
+#line 135 "rygel-http-byte-seek-test.vala"
+		if (request->subtitle != NULL) {
+#line 136 "rygel-http-byte-seek-test.vala"
+			size = request->subtitle->size;
+#line 894 "rygel-http-byte-seek-test.c"
+		} else {
+#line 138 "rygel-http-byte-seek-test.vala"
+			size = request->item->size;
+#line 898 "rygel-http-byte-seek-test.c"
+		}
+	}
+#line 141 "rygel-http-byte-seek-test.vala"
+	rygel_http_byte_seek_test_test_seek (self, request, (gint64) 0, size - 1, &_inner_error_);
+#line 903 "rygel-http-byte-seek-test.c"
 	if (_inner_error_ != NULL) {
 		if (_inner_error_->domain == RYGEL_HTTP_SEEK_ERROR) {
 			g_propagate_error (error, _inner_error_);
@@ -897,24 +916,132 @@ static void rygel_http_byte_seek_test_test_start_stop_seek (RygelHTTPByteSeekTes
 }
 
 
-#line 136 "rygel-http-byte-seek-test.vala"
+#line 144 "rygel-http-byte-seek-test.vala"
+static void rygel_http_byte_seek_test_test_start_only_seek (RygelHTTPByteSeekTest* self, RygelThumbnail* thumbnail, RygelSubtitle* subtitle, GError** error) {
+#line 922 "rygel-http-byte-seek-test.c"
+	GError * _inner_error_;
+	RygelHTTPGet* request;
+	gint64 size = 0LL;
+#line 144 "rygel-http-byte-seek-test.vala"
+	g_return_if_fail (self != NULL);
+#line 928 "rygel-http-byte-seek-test.c"
+	_inner_error_ = NULL;
+#line 147 "rygel-http-byte-seek-test.vala"
+	request = rygel_http_get_new_seek_start ((gint64) 128, thumbnail, subtitle);
+#line 150 "rygel-http-byte-seek-test.vala"
+	if (request->thumbnail != NULL) {
+#line 151 "rygel-http-byte-seek-test.vala"
+		size = request->thumbnail->size;
+#line 936 "rygel-http-byte-seek-test.c"
+	} else {
+#line 152 "rygel-http-byte-seek-test.vala"
+		if (request->subtitle != NULL) {
+#line 153 "rygel-http-byte-seek-test.vala"
+			size = request->subtitle->size;
+#line 942 "rygel-http-byte-seek-test.c"
+		} else {
+#line 155 "rygel-http-byte-seek-test.vala"
+			size = request->item->size;
+#line 946 "rygel-http-byte-seek-test.c"
+		}
+	}
+#line 158 "rygel-http-byte-seek-test.vala"
+	rygel_http_byte_seek_test_test_seek (self, request, (gint64) 128, size - 1, &_inner_error_);
+#line 951 "rygel-http-byte-seek-test.c"
+	if (_inner_error_ != NULL) {
+		if (_inner_error_->domain == RYGEL_HTTP_SEEK_ERROR) {
+			g_propagate_error (error, _inner_error_);
+			_g_object_unref0 (request);
+			return;
+		} else {
+			_g_object_unref0 (request);
+			g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
+			g_clear_error (&_inner_error_);
+			return;
+		}
+	}
+	_g_object_unref0 (request);
+}
+
+
+#line 161 "rygel-http-byte-seek-test.vala"
+static void rygel_http_byte_seek_test_test_stop_only_seek (RygelHTTPByteSeekTest* self, RygelThumbnail* thumbnail, RygelSubtitle* subtitle, GError** error) {
+#line 970 "rygel-http-byte-seek-test.c"
+	GError * _inner_error_;
+	RygelHTTPGet* request;
+#line 161 "rygel-http-byte-seek-test.vala"
+	g_return_if_fail (self != NULL);
+#line 975 "rygel-http-byte-seek-test.c"
+	_inner_error_ = NULL;
+#line 164 "rygel-http-byte-seek-test.vala"
+	request = rygel_http_get_new_seek_stop ((gint64) 128, thumbnail, subtitle);
+#line 166 "rygel-http-byte-seek-test.vala"
+	rygel_http_byte_seek_test_test_seek (self, request, (gint64) 0, (gint64) 128, &_inner_error_);
+#line 981 "rygel-http-byte-seek-test.c"
+	if (_inner_error_ != NULL) {
+		if (_inner_error_->domain == RYGEL_HTTP_SEEK_ERROR) {
+			g_propagate_error (error, _inner_error_);
+			_g_object_unref0 (request);
+			return;
+		} else {
+			_g_object_unref0 (request);
+			g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
+			g_clear_error (&_inner_error_);
+			return;
+		}
+	}
+	_g_object_unref0 (request);
+}
+
+
+#line 169 "rygel-http-byte-seek-test.vala"
+static void rygel_http_byte_seek_test_test_start_stop_seek (RygelHTTPByteSeekTest* self, RygelThumbnail* thumbnail, RygelSubtitle* subtitle, GError** error) {
+#line 1000 "rygel-http-byte-seek-test.c"
+	GError * _inner_error_;
+	RygelHTTPGet* request;
+#line 169 "rygel-http-byte-seek-test.vala"
+	g_return_if_fail (self != NULL);
+#line 1005 "rygel-http-byte-seek-test.c"
+	_inner_error_ = NULL;
+#line 172 "rygel-http-byte-seek-test.vala"
+	request = rygel_http_get_new_seek_start_stop ((gint64) 128, (gint64) 256, thumbnail, subtitle);
+#line 177 "rygel-http-byte-seek-test.vala"
+	rygel_http_byte_seek_test_test_seek (self, request, (gint64) 128, (gint64) 256, &_inner_error_);
+#line 1011 "rygel-http-byte-seek-test.c"
+	if (_inner_error_ != NULL) {
+		if (_inner_error_->domain == RYGEL_HTTP_SEEK_ERROR) {
+			g_propagate_error (error, _inner_error_);
+			_g_object_unref0 (request);
+			return;
+		} else {
+			_g_object_unref0 (request);
+			g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
+			g_clear_error (&_inner_error_);
+			return;
+		}
+	}
+	_g_object_unref0 (request);
+}
+
+
+#line 180 "rygel-http-byte-seek-test.vala"
 static void rygel_http_byte_seek_test_test_seek (RygelHTTPByteSeekTest* self, RygelHTTPGet* request, gint64 start, gint64 stop, GError** error) {
-#line 903 "rygel-http-byte-seek-test.c"
+#line 1030 "rygel-http-byte-seek-test.c"
 	GError * _inner_error_;
 	RygelHTTPByteSeek* seek;
 	char* header;
 	char* _tmp0_;
-#line 136 "rygel-http-byte-seek-test.vala"
+#line 180 "rygel-http-byte-seek-test.vala"
 	g_return_if_fail (self != NULL);
-#line 136 "rygel-http-byte-seek-test.vala"
+#line 180 "rygel-http-byte-seek-test.vala"
 	g_return_if_fail (request != NULL);
-#line 912 "rygel-http-byte-seek-test.c"
+#line 1039 "rygel-http-byte-seek-test.c"
 	_inner_error_ = NULL;
-#line 139 "rygel-http-byte-seek-test.vala"
+#line 183 "rygel-http-byte-seek-test.vala"
 	g_assert (rygel_http_byte_seek_needed (request));
-#line 141 "rygel-http-byte-seek-test.vala"
+#line 185 "rygel-http-byte-seek-test.vala"
 	seek = rygel_http_byte_seek_new (request, &_inner_error_);
-#line 918 "rygel-http-byte-seek-test.c"
+#line 1045 "rygel-http-byte-seek-test.c"
 	if (_inner_error_ != NULL) {
 		if (_inner_error_->domain == RYGEL_HTTP_SEEK_ERROR) {
 			g_propagate_error (error, _inner_error_);
@@ -925,29 +1052,44 @@ static void rygel_http_byte_seek_test_test_seek (RygelHTTPByteSeekTest* self, Ry
 			return;
 		}
 	}
-#line 142 "rygel-http-byte-seek-test.vala"
+#line 186 "rygel-http-byte-seek-test.vala"
 	rygel_http_seek_add_response_headers ((RygelHTTPSeek*) seek);
-#line 144 "rygel-http-byte-seek-test.vala"
+#line 188 "rygel-http-byte-seek-test.vala"
 	g_assert (seek != NULL);
-#line 145 "rygel-http-byte-seek-test.vala"
+#line 189 "rygel-http-byte-seek-test.vala"
 	g_assert (rygel_http_seek_get_start ((RygelHTTPSeek*) seek) == start);
-#line 146 "rygel-http-byte-seek-test.vala"
+#line 190 "rygel-http-byte-seek-test.vala"
 	g_assert (rygel_http_seek_get_stop ((RygelHTTPSeek*) seek) == stop);
-#line 147 "rygel-http-byte-seek-test.vala"
-	g_assert (rygel_http_seek_get_length ((RygelHTTPSeek*) seek) == request->item->size);
-#line 149 "rygel-http-byte-seek-test.vala"
+#line 192 "rygel-http-byte-seek-test.vala"
+	if (request->thumbnail != NULL) {
+#line 193 "rygel-http-byte-seek-test.vala"
+		g_assert (rygel_http_seek_get_length ((RygelHTTPSeek*) seek) == request->thumbnail->size);
+#line 1068 "rygel-http-byte-seek-test.c"
+	} else {
+#line 194 "rygel-http-byte-seek-test.vala"
+		if (request->subtitle != NULL) {
+#line 195 "rygel-http-byte-seek-test.vala"
+			g_assert (rygel_http_seek_get_length ((RygelHTTPSeek*) seek) == request->subtitle->size);
+#line 1074 "rygel-http-byte-seek-test.c"
+		} else {
+#line 197 "rygel-http-byte-seek-test.vala"
+			g_assert (rygel_http_seek_get_length ((RygelHTTPSeek*) seek) == request->item->size);
+#line 1078 "rygel-http-byte-seek-test.c"
+		}
+	}
+#line 200 "rygel-http-byte-seek-test.vala"
 	header = g_strdup (soup_message_headers_get (request->msg->response_headers, "Accept-Ranges"));
-#line 150 "rygel-http-byte-seek-test.vala"
+#line 201 "rygel-http-byte-seek-test.vala"
 	g_assert (_vala_strcmp0 (header, "bytes") == 0);
-#line 151 "rygel-http-byte-seek-test.vala"
+#line 202 "rygel-http-byte-seek-test.vala"
 	header = (_tmp0_ = g_strdup (soup_message_headers_get (request->msg->response_headers, "Content-Range")), _g_free0 (header), _tmp0_);
-#line 152 "rygel-http-byte-seek-test.vala"
+#line 203 "rygel-http-byte-seek-test.vala"
 	g_assert (header != NULL);
-#line 153 "rygel-http-byte-seek-test.vala"
+#line 204 "rygel-http-byte-seek-test.vala"
 	g_assert (g_regex_match (self->priv->range_regex, header, 0, NULL));
-#line 155 "rygel-http-byte-seek-test.vala"
+#line 206 "rygel-http-byte-seek-test.vala"
 	g_assert (soup_message_headers_get_content_length (request->msg->response_headers) == ((rygel_http_seek_get_stop ((RygelHTTPSeek*) seek) + 1) - rygel_http_seek_get_start ((RygelHTTPSeek*) seek)));
-#line 951 "rygel-http-byte-seek-test.c"
+#line 1093 "rygel-http-byte-seek-test.c"
 	_g_object_unref0 (seek);
 	_g_free0 (header);
 }
@@ -982,6 +1124,24 @@ GType rygel_http_byte_seek_test_get_type (void) {
 		g_once_init_leave (&rygel_http_byte_seek_test_type_id__volatile, rygel_http_byte_seek_test_type_id);
 	}
 	return rygel_http_byte_seek_test_type_id__volatile;
+}
+
+
+static void _vala_array_destroy (gpointer array, gint array_length, GDestroyNotify destroy_func) {
+	if ((array != NULL) && (destroy_func != NULL)) {
+		int i;
+		for (i = 0; i < array_length; i = i + 1) {
+			if (((gpointer*) array)[i] != NULL) {
+				destroy_func (((gpointer*) array)[i]);
+			}
+		}
+	}
+}
+
+
+static void _vala_array_free (gpointer array, gint array_length, GDestroyNotify destroy_func) {
+	_vala_array_destroy (array, array_length, destroy_func);
+	g_free (array);
 }
 
 

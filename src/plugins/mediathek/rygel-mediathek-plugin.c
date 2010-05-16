@@ -26,6 +26,7 @@
 #include <glib.h>
 #include <glib-object.h>
 #include <rygel.h>
+#include <glib/gi18n-lib.h>
 
 
 #define RYGEL_TYPE_MEDIATHEK_CONTENT_DIR (rygel_mediathek_content_dir_get_type ())
@@ -77,39 +78,39 @@ RygelMediathekContentDir* rygel_mediathek_content_dir_construct (GType object_ty
 
 #line 27 "rygel-mediathek-plugin.vala"
 void module_init (RygelPluginLoader* loader) {
-#line 81 "rygel-mediathek-plugin.c"
+#line 82 "rygel-mediathek-plugin.c"
 	RygelPlugin* plugin;
 #line 27 "rygel-mediathek-plugin.vala"
 	g_return_if_fail (loader != NULL);
 #line 28 "rygel-mediathek-plugin.vala"
-	plugin = rygel_plugin_new_MediaServer ("ZDFMediathek", "ZDF Mediathek", RYGEL_TYPE_MEDIATHEK_CONTENT_DIR);
+	plugin = rygel_plugin_new_MediaServer ("ZDFMediathek", _ ("ZDF Mediathek"), RYGEL_TYPE_MEDIATHEK_CONTENT_DIR, NULL);
 #line 31 "rygel-mediathek-plugin.vala"
 	rygel_plugin_loader_add_plugin (loader, plugin);
-#line 89 "rygel-mediathek-plugin.c"
+#line 90 "rygel-mediathek-plugin.c"
 	_g_object_unref0 (plugin);
 }
 
 
 #line 35 "rygel-mediathek-plugin.vala"
 static RygelMediaContainer* rygel_mediathek_content_dir_real_create_root_container (RygelContentDirectory* base) {
-#line 96 "rygel-mediathek-plugin.c"
+#line 97 "rygel-mediathek-plugin.c"
 	RygelMediathekContentDir * self;
 	RygelMediaContainer* result = NULL;
 	self = (RygelMediathekContentDir*) base;
 	result = (RygelMediaContainer*) rygel_mediathek_root_container_get_instance ();
 #line 36 "rygel-mediathek-plugin.vala"
 	return result;
-#line 103 "rygel-mediathek-plugin.c"
+#line 104 "rygel-mediathek-plugin.c"
 }
 
 
 #line 34 "rygel-mediathek-plugin.vala"
 RygelMediathekContentDir* rygel_mediathek_content_dir_construct (GType object_type) {
-#line 109 "rygel-mediathek-plugin.c"
+#line 110 "rygel-mediathek-plugin.c"
 	RygelMediathekContentDir * self;
 #line 34 "rygel-mediathek-plugin.vala"
 	self = (RygelMediathekContentDir*) rygel_content_directory_construct (object_type);
-#line 113 "rygel-mediathek-plugin.c"
+#line 114 "rygel-mediathek-plugin.c"
 	return self;
 }
 
@@ -118,7 +119,7 @@ RygelMediathekContentDir* rygel_mediathek_content_dir_construct (GType object_ty
 RygelMediathekContentDir* rygel_mediathek_content_dir_new (void) {
 #line 34 "rygel-mediathek-plugin.vala"
 	return rygel_mediathek_content_dir_construct (RYGEL_TYPE_MEDIATHEK_CONTENT_DIR);
-#line 122 "rygel-mediathek-plugin.c"
+#line 123 "rygel-mediathek-plugin.c"
 }
 
 

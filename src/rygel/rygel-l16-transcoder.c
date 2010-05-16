@@ -269,7 +269,7 @@ gpointer rygel_value_get_subtitle (const GValue* value);
 GType rygel_subtitle_get_type (void);
 static guint rygel_l16_transcoder_real_get_distance (RygelTranscoder* base, RygelMediaItem* item);
 GstElement* rygel_gst_utils_create_element (const char* factoryname, const char* name, GError** error);
-static inline void _dynamic_set_caps5 (GstElement* obj, GstCaps* value);
+static inline void _dynamic_set_caps6 (GstElement* obj, GstCaps* value);
 GstElement* rygel_l16_transcoder_create_encoder (RygelL16Transcoder* self, RygelMediaItem* item, const char* src_pad_name, const char* sink_pad_name, GError** error);
 static void rygel_l16_transcoder_finalize (GObject* obj);
 
@@ -452,7 +452,7 @@ static gpointer _gst_object_ref0 (gpointer self) {
 }
 
 
-static inline void _dynamic_set_caps5 (GstElement* obj, GstCaps* value) {
+static inline void _dynamic_set_caps6 (GstElement* obj, GstCaps* value) {
 	g_object_set (obj, "caps", value, NULL);
 }
 
@@ -529,7 +529,7 @@ GstElement* rygel_l16_transcoder_create_encoder (RygelL16Transcoder* self, Rygel
 #line 128 "rygel-l16-transcoder.vala"
 	gst_bin_add_many (bin, _gst_object_ref0 (convert1), _gst_object_ref0 (resample), _gst_object_ref0 (audiorate), _gst_object_ref0 (convert2), _gst_object_ref0 (capsfilter), NULL);
 #line 130 "rygel-l16-transcoder.vala"
-	_dynamic_set_caps5 (capsfilter, _tmp0_ = gst_caps_new_simple ("audio/x-raw-int", "channels", G_TYPE_INT, RYGEL_L16_TRANSCODER_CHANNELS, "rate", G_TYPE_INT, RYGEL_L16_TRANSCODER_FREQUENCY, "width", G_TYPE_INT, RYGEL_L16_TRANSCODER_WIDTH, "depth", G_TYPE_INT, RYGEL_L16_TRANSCODER_DEPTH, "signed", G_TYPE_BOOLEAN, RYGEL_L16_TRANSCODER_SIGNED, "endianness", G_TYPE_INT, self->priv->endianness, NULL));
+	_dynamic_set_caps6 (capsfilter, _tmp0_ = gst_caps_new_simple ("audio/x-raw-int", "channels", G_TYPE_INT, RYGEL_L16_TRANSCODER_CHANNELS, "rate", G_TYPE_INT, RYGEL_L16_TRANSCODER_FREQUENCY, "width", G_TYPE_INT, RYGEL_L16_TRANSCODER_WIDTH, "depth", G_TYPE_INT, RYGEL_L16_TRANSCODER_DEPTH, "signed", G_TYPE_BOOLEAN, RYGEL_L16_TRANSCODER_SIGNED, "endianness", G_TYPE_INT, self->priv->endianness, NULL));
 #line 534 "rygel-l16-transcoder.c"
 	_gst_caps_unref0 (_tmp0_);
 #line 140 "rygel-l16-transcoder.vala"

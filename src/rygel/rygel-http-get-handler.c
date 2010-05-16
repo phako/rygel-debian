@@ -369,7 +369,7 @@ static void rygel_http_get_handler_real_add_response_headers (RygelHTTPGetHandle
 		resource = rygel_http_get_handler_add_resource (self, didl_item, request, &_inner_error_);
 #line 371 "rygel-http-get-handler.c"
 		if (_inner_error_ != NULL) {
-			goto __catch27_g_error;
+			goto __catch28_g_error;
 		}
 		tokens = (_tmp3_ = (_tmp2_ = _tmp1_ = g_strsplit (_tmp0_ = gupnp_protocol_info_to_string (gupnp_didl_lite_resource_get_protocol_info (resource)), ":", 4), _g_free0 (_tmp0_), _tmp2_), tokens_length1 = _vala_array_length (_tmp1_), _tokens_size_ = tokens_length1, _tmp3_);
 #line 52 "rygel-http-get-handler.vala"
@@ -380,8 +380,8 @@ static void rygel_http_get_handler_real_add_response_headers (RygelHTTPGetHandle
 		_g_object_unref0 (resource);
 		tokens = (_vala_array_free (tokens, tokens_length1, (GDestroyNotify) g_free), NULL);
 	}
-	goto __finally27;
-	__catch27_g_error:
+	goto __finally28;
+	__catch28_g_error:
 	{
 		GError * err;
 		err = _inner_error_;
@@ -393,7 +393,7 @@ static void rygel_http_get_handler_real_add_response_headers (RygelHTTPGetHandle
 			_g_error_free0 (err);
 		}
 	}
-	__finally27:
+	__finally28:
 	if (_inner_error_ != NULL) {
 		if (_inner_error_->domain == RYGEL_HTTP_REQUEST_ERROR) {
 			g_propagate_error (error, _inner_error_);

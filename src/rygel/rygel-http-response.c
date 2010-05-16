@@ -62,6 +62,9 @@ struct _RygelHTTPResponse {
 	GObject parent_instance;
 	RygelHTTPResponsePrivate * priv;
 	SoupMessage* msg;
+	GSourceFunc run_continue;
+	gpointer run_continue_target;
+	GDestroyNotify run_continue_target_destroy_notify;
 };
 
 struct _RygelHTTPResponseClass {
@@ -111,113 +114,119 @@ static gpointer _g_object_ref0 (gpointer self) {
 }
 
 
-#line 55 "rygel-http-response.vala"
+#line 57 "rygel-http-response.vala"
 static void _rygel_http_response_on_cancelled_g_cancellable_cancelled (GCancellable* _sender, gpointer self) {
-#line 117 "rygel-http-response.c"
+#line 120 "rygel-http-response.c"
 	rygel_http_response_on_cancelled (self, _sender);
 }
 
 
-#line 32 "rygel-http-response.vala"
+#line 34 "rygel-http-response.vala"
 RygelHTTPResponse* rygel_http_response_construct (GType object_type, SoupServer* server, SoupMessage* msg, gboolean partial, GCancellable* cancellable) {
-#line 124 "rygel-http-response.c"
+#line 127 "rygel-http-response.c"
 	RygelHTTPResponse * self;
 	SoupMessage* _tmp0_;
-#line 32 "rygel-http-response.vala"
+#line 34 "rygel-http-response.vala"
 	g_return_val_if_fail (server != NULL, NULL);
-#line 32 "rygel-http-response.vala"
+#line 34 "rygel-http-response.vala"
 	g_return_val_if_fail (msg != NULL, NULL);
-#line 32 "rygel-http-response.vala"
+#line 34 "rygel-http-response.vala"
 	self = (RygelHTTPResponse*) g_object_new (object_type, NULL);
-#line 36 "rygel-http-response.vala"
-	rygel_http_response_set_server (self, server);
-#line 37 "rygel-http-response.vala"
-	self->msg = (_tmp0_ = _g_object_ref0 (msg), _g_object_unref0 (self->msg), _tmp0_);
 #line 38 "rygel-http-response.vala"
-	rygel_state_machine_set_cancellable ((RygelStateMachine*) self, cancellable);
+	rygel_http_response_set_server (self, server);
+#line 39 "rygel-http-response.vala"
+	self->msg = (_tmp0_ = _g_object_ref0 (msg), _g_object_unref0 (self->msg), _tmp0_);
 #line 40 "rygel-http-response.vala"
+	rygel_state_machine_set_cancellable ((RygelStateMachine*) self, cancellable);
+#line 42 "rygel-http-response.vala"
 	if (partial) {
-#line 41 "rygel-http-response.vala"
-		soup_message_set_status (self->msg, (guint) SOUP_STATUS_PARTIAL_CONTENT);
-#line 143 "rygel-http-response.c"
-	} else {
 #line 43 "rygel-http-response.vala"
+		soup_message_set_status (self->msg, (guint) SOUP_STATUS_PARTIAL_CONTENT);
+#line 146 "rygel-http-response.c"
+	} else {
+#line 45 "rygel-http-response.vala"
 		soup_message_set_status (self->msg, (guint) SOUP_STATUS_OK);
-#line 147 "rygel-http-response.c"
+#line 150 "rygel-http-response.c"
 	}
-#line 46 "rygel-http-response.vala"
-	soup_message_body_set_accumulate (self->msg->response_body, FALSE);
 #line 48 "rygel-http-response.vala"
+	soup_message_body_set_accumulate (self->msg->response_body, FALSE);
+#line 50 "rygel-http-response.vala"
 	if (rygel_state_machine_get_cancellable ((RygelStateMachine*) self) != NULL) {
-#line 49 "rygel-http-response.vala"
+#line 51 "rygel-http-response.vala"
 		g_signal_connect_object (rygel_state_machine_get_cancellable ((RygelStateMachine*) self), "cancelled", (GCallback) _rygel_http_response_on_cancelled_g_cancellable_cancelled, self, 0);
-#line 155 "rygel-http-response.c"
+#line 158 "rygel-http-response.c"
 	}
 	return self;
 }
 
 
-#line 32 "rygel-http-response.vala"
+#line 34 "rygel-http-response.vala"
 void rygel_http_response_run (RygelHTTPResponse* self, GAsyncReadyCallback _callback_, gpointer _user_data_) {
-#line 32 "rygel-http-response.vala"
+#line 34 "rygel-http-response.vala"
 	RYGEL_HTTP_RESPONSE_GET_CLASS (self)->run (self, _callback_, _user_data_);
-#line 165 "rygel-http-response.c"
+#line 168 "rygel-http-response.c"
 }
 
 
-#line 32 "rygel-http-response.vala"
+#line 34 "rygel-http-response.vala"
 void rygel_http_response_run_finish (RygelHTTPResponse* self, GAsyncResult* _res_) {
-#line 32 "rygel-http-response.vala"
+#line 34 "rygel-http-response.vala"
 	RYGEL_HTTP_RESPONSE_GET_CLASS (self)->run_finish (self, _res_);
-#line 173 "rygel-http-response.c"
+#line 176 "rygel-http-response.c"
 }
 
 
-#line 55 "rygel-http-response.vala"
+#line 57 "rygel-http-response.vala"
 static void rygel_http_response_on_cancelled (RygelHTTPResponse* self, GCancellable* cancellable) {
-#line 55 "rygel-http-response.vala"
+#line 57 "rygel-http-response.vala"
 	g_return_if_fail (self != NULL);
-#line 55 "rygel-http-response.vala"
+#line 57 "rygel-http-response.vala"
 	g_return_if_fail (cancellable != NULL);
-#line 56 "rygel-http-response.vala"
+#line 58 "rygel-http-response.vala"
 	rygel_http_response_end (self, TRUE, (guint) SOUP_STATUS_CANCELLED);
-#line 185 "rygel-http-response.c"
+#line 188 "rygel-http-response.c"
 }
 
 
-#line 59 "rygel-http-response.vala"
+#line 61 "rygel-http-response.vala"
 void rygel_http_response_push_data (RygelHTTPResponse* self, void* data, gsize length) {
-#line 59 "rygel-http-response.vala"
+#line 61 "rygel-http-response.vala"
 	g_return_if_fail (self != NULL);
-#line 60 "rygel-http-response.vala"
+#line 62 "rygel-http-response.vala"
 	soup_message_body_append (self->msg->response_body, SOUP_MEMORY_COPY, data, length);
-#line 64 "rygel-http-response.vala"
+#line 66 "rygel-http-response.vala"
 	soup_server_unpause_message (self->priv->_server, self->msg);
-#line 197 "rygel-http-response.c"
+#line 200 "rygel-http-response.c"
 }
 
 
-#line 67 "rygel-http-response.vala"
-static void rygel_http_response_real_end (RygelHTTPResponse* self, gboolean aborted, guint status) {
-#line 67 "rygel-http-response.vala"
-	g_return_if_fail (self != NULL);
-#line 68 "rygel-http-response.vala"
-	if (status != SOUP_STATUS_NONE) {
 #line 69 "rygel-http-response.vala"
-		soup_message_set_status (self->msg, status);
-#line 209 "rygel-http-response.c"
+static void rygel_http_response_real_end (RygelHTTPResponse* self, gboolean aborted, guint status) {
+#line 69 "rygel-http-response.vala"
+	g_return_if_fail (self != NULL);
+#line 70 "rygel-http-response.vala"
+	if (self->run_continue != NULL) {
+#line 71 "rygel-http-response.vala"
+		self->run_continue (self->run_continue_target);
+#line 212 "rygel-http-response.c"
 	}
-#line 72 "rygel-http-response.vala"
+#line 74 "rygel-http-response.vala"
+	if (status != SOUP_STATUS_NONE) {
+#line 75 "rygel-http-response.vala"
+		soup_message_set_status (self->msg, status);
+#line 218 "rygel-http-response.c"
+	}
+#line 78 "rygel-http-response.vala"
 	g_signal_emit_by_name ((RygelStateMachine*) self, "completed");
-#line 213 "rygel-http-response.c"
+#line 222 "rygel-http-response.c"
 }
 
 
-#line 67 "rygel-http-response.vala"
+#line 69 "rygel-http-response.vala"
 void rygel_http_response_end (RygelHTTPResponse* self, gboolean aborted, guint status) {
-#line 67 "rygel-http-response.vala"
+#line 69 "rygel-http-response.vala"
 	RYGEL_HTTP_RESPONSE_GET_CLASS (self)->end (self, aborted, status);
-#line 221 "rygel-http-response.c"
+#line 230 "rygel-http-response.c"
 }
 
 
@@ -227,7 +236,7 @@ SoupServer* rygel_http_response_get_server (RygelHTTPResponse* self) {
 	result = self->priv->_server;
 #line 27 "rygel-http-response.vala"
 	return result;
-#line 231 "rygel-http-response.c"
+#line 240 "rygel-http-response.c"
 }
 
 
@@ -246,7 +255,7 @@ static GCancellable* rygel_http_response_real_get_cancellable (RygelStateMachine
 	result = self->priv->_cancellable;
 #line 30 "rygel-http-response.vala"
 	return result;
-#line 250 "rygel-http-response.c"
+#line 259 "rygel-http-response.c"
 }
 
 
@@ -291,6 +300,10 @@ static void rygel_http_response_finalize (GObject* obj) {
 	_g_object_unref0 (self->priv->_server);
 	_g_object_unref0 (self->msg);
 	_g_object_unref0 (self->priv->_cancellable);
+	(self->run_continue_target_destroy_notify == NULL) ? NULL : (self->run_continue_target_destroy_notify (self->run_continue_target), NULL);
+	self->run_continue = NULL;
+	self->run_continue_target = NULL;
+	self->run_continue_target_destroy_notify = NULL;
 	G_OBJECT_CLASS (rygel_http_response_parent_class)->finalize (obj);
 }
 

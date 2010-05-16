@@ -251,7 +251,7 @@ static GUPnPDIDLLiteResource* rygel_wmv_transcoder_real_add_resource (RygelTrans
 #define RYGEL_MEDIA_ITEM_IMAGE_CLASS "object.item.imageItem"
 static guint rygel_wmv_transcoder_real_get_distance (RygelTranscoder* base, RygelMediaItem* item);
 GstElement* rygel_gst_utils_create_element (const char* factoryname, const char* name, GError** error);
-static inline void _dynamic_set_bitrate7 (GstElement* obj, gint value);
+static inline void _dynamic_set_bitrate8 (GstElement* obj, gint value);
 GstElement* rygel_wmv_transcoder_create_encoder (RygelWMVTranscoder* self, RygelMediaItem* item, const char* src_pad_name, const char* sink_pad_name, GError** error);
 
 
@@ -388,7 +388,7 @@ static guint rygel_wmv_transcoder_real_get_distance (RygelTranscoder* base, Ryge
 }
 
 
-static inline void _dynamic_set_bitrate7 (GstElement* obj, gint value) {
+static inline void _dynamic_set_bitrate8 (GstElement* obj, gint value) {
 	g_object_set (obj, "bitrate", value, NULL);
 }
 
@@ -432,7 +432,7 @@ GstElement* rygel_wmv_transcoder_create_encoder (RygelWMVTranscoder* self, Rygel
 		return NULL;
 	}
 #line 88 "rygel-wmv-transcoder.vala"
-	_dynamic_set_bitrate7 (encoder, ((gint) RYGEL_WMV_TRANSCODER_VIDEO_BITRATE) * 1000);
+	_dynamic_set_bitrate8 (encoder, ((gint) RYGEL_WMV_TRANSCODER_VIDEO_BITRATE) * 1000);
 #line 90 "rygel-wmv-transcoder.vala"
 	bin = (GstBin*) gst_bin_new ("video-encoder-bin");
 #line 91 "rygel-wmv-transcoder.vala"

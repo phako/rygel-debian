@@ -28,12 +28,16 @@ using Gst;
 
 internal class Rygel.LiveResponse : Rygel.HTTPResponse {
     private const string SINK_NAME = "fakesink";
+    // High and low threshold for number of buffered chunks
+    private const uint MAX_BUFFERED_CHUNKS = 32;
+    private const uint MIN_BUFFERED_CHUNKS = 4;
 
     private Pipeline pipeline;
 
     private HTTPSeek time_range;
 
-    private SourceFunc run_continue;
+    private size_t buffered;
+    private bool out_of_sync;
 
     public LiveResponse (Soup.Server  server,
                          Soup.Message msg,
@@ -47,9 +51,14 @@ internal class Rygel.LiveResponse : Rygel.HTTPResponse {
 
         this.prepare_pipeline (name, src);
         this.time_range = time_range;
+
+        this.buffered = 0;
+        this.out_of_sync = false;
     }
 
     public override async void run () {
+        this.msg.wrote_chunk.connect (this.on_wrote_chunk);
+
         // Only bother attempting to seek if the offset is greater than zero.
         if (this.time_range != null && this.time_range.start > 0) {
             this.pipeline.set_state (State.PAUSED);
@@ -64,6 +73,7 @@ internal class Rygel.LiveResponse : Rygel.HTTPResponse {
 
     public override void end (bool aborted, uint status) {
         this.pipeline.set_state (State.NULL);
+        this.msg.wrote_chunk.disconnect (this.on_wrote_chunk);
 
         if (!aborted) {
             this.msg.response_body.complete ();
@@ -71,8 +81,6 @@ internal class Rygel.LiveResponse : Rygel.HTTPResponse {
         }
 
         base.end (aborted, status);
-
-        this.run_continue ();
     }
 
     private void prepare_pipeline (string name,
@@ -80,8 +88,8 @@ internal class Rygel.LiveResponse : Rygel.HTTPResponse {
         dynamic Element sink = ElementFactory.make ("fakesink", SINK_NAME);
 
         if (sink == null) {
-            throw new GstError.MISSING_PLUGIN ("Required plugin " +
-                                               "'fakesink' missing");
+            // 'fakesink' should not be translated
+            throw new GstError.MISSING_PLUGIN (_("Plugin 'fakesink' missing"));
         }
 
         sink.signal_handoffs = true;
@@ -98,8 +106,8 @@ internal class Rygel.LiveResponse : Rygel.HTTPResponse {
         } else {
             // static pads? easy!
             if (!src.link (sink)) {
-                throw new GstError.LINK ("Failed to link " +
-                                         src.name + " to " +
+                throw new GstError.LINK (_("Failed to link %s to %s"),
+                                         src.name,
                                          sink.name);
             }
         }
@@ -120,7 +128,7 @@ internal class Rygel.LiveResponse : Rygel.HTTPResponse {
         if (depay != null) {
             this.pipeline.add (depay);
             if (!depay.link (sink)) {
-                critical ("Failed to link %s to %s",
+                critical (_("Failed to link %s to %s"),
                           depay.name,
                           sink.name);
                 this.end (false, Soup.KnownStatusCode.NONE);
@@ -133,7 +141,7 @@ internal class Rygel.LiveResponse : Rygel.HTTPResponse {
         }
 
         if (src_pad.link (sink_pad) != PadLinkReturn.OK) {
-            critical ("Failed to link pad %s to %s",
+            critical (_("Failed to link pad %s to %s"),
                       src_pad.name,
                       sink_pad.name);
             this.end (false, Soup.KnownStatusCode.NONE);
@@ -151,9 +159,25 @@ internal class Rygel.LiveResponse : Rygel.HTTPResponse {
         Idle.add_full (Priority.HIGH_IDLE,
                        () => {
             this.push_data (buffer.data, buffer.size);
+            this.buffered++;
+
+            if (this.buffered > MAX_BUFFERED_CHUNKS) {
+                // Client is either not reading (Paused) or not fast enough
+                this.pipeline.set_state (State.PAUSED);
+                this.out_of_sync = true;
+            }
 
             return false;
         });
+    }
+
+    private void on_wrote_chunk (Soup.Message msg) {
+        this.buffered--;
+
+        if (out_of_sync && this.buffered < MIN_BUFFERED_CHUNKS) {
+            this.pipeline.set_state (State.PLAYING);
+            this.out_of_sync = false;
+        }
     }
 
     private bool bus_handler (Gst.Bus     bus,
@@ -187,14 +211,14 @@ internal class Rygel.LiveResponse : Rygel.HTTPResponse {
 
             if (message.type == MessageType.ERROR) {
                 message.parse_error (out err, out err_msg);
-                critical ("Error from pipeline %s:%s",
+                critical (_("Error from pipeline %s: %s"),
                           this.pipeline.name,
                           err_msg);
 
                 ret = false;
             } else if (message.type == MessageType.WARNING) {
                 message.parse_warning (out err, out err_msg);
-                warning ("Warning from pipeline %s:%s",
+                warning (_("Warning from pipeline %s: %s"),
                          this.pipeline.name,
                          err_msg);
             }
@@ -228,7 +252,7 @@ internal class Rygel.LiveResponse : Rygel.HTTPResponse {
                                  this.time_range.start,
                                  stop_type,
                                  this.time_range.stop)) {
-            warning ("Failed to seek to offset %lld", this.time_range.start);
+            warning (_("Failed to seek to offset %lld"), this.time_range.start);
 
             this.end (false,
                       Soup.KnownStatusCode.REQUESTED_RANGE_NOT_SATISFIABLE);

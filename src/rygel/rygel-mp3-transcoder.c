@@ -283,8 +283,8 @@ RygelL16Transcoder* rygel_l16_transcoder_construct (GType object_type, Endiannes
 GType rygel_l16_transcoder_get_type (void);
 GstElement* rygel_l16_transcoder_create_encoder (RygelL16Transcoder* self, RygelMediaItem* item, const char* src_pad_name, const char* sink_pad_name, GError** error);
 GstElement* rygel_gst_utils_create_element (const char* factoryname, const char* name, GError** error);
-static inline void _dynamic_set_quality3 (GstElement* obj, gint value);
-static inline void _dynamic_set_bitrate4 (GstElement* obj, gint value);
+static inline void _dynamic_set_quality4 (GstElement* obj, gint value);
+static inline void _dynamic_set_bitrate5 (GstElement* obj, gint value);
 GstElement* rygel_mp3_transcoder_create_encoder (RygelMP3Transcoder* self, RygelMediaItem* item, const char* src_pad_name, const char* sink_pad_name, GError** error);
 static void rygel_mp3_transcoder_finalize (GObject* obj);
 
@@ -421,12 +421,12 @@ static guint rygel_mp3_transcoder_real_get_distance (RygelTranscoder* base, Ryge
 }
 
 
-static inline void _dynamic_set_quality3 (GstElement* obj, gint value) {
+static inline void _dynamic_set_quality4 (GstElement* obj, gint value) {
 	g_object_set (obj, "quality", value, NULL);
 }
 
 
-static inline void _dynamic_set_bitrate4 (GstElement* obj, gint value) {
+static inline void _dynamic_set_bitrate5 (GstElement* obj, gint value) {
 	g_object_set (obj, "bitrate", value, NULL);
 }
 
@@ -488,11 +488,11 @@ GstElement* rygel_mp3_transcoder_create_encoder (RygelMP3Transcoder* self, Rygel
 #line 102 "rygel-mp3-transcoder.vala"
 	if (self->priv->layer == RYGEL_MP3_LAYER_THREE) {
 #line 104 "rygel-mp3-transcoder.vala"
-		_dynamic_set_quality3 (encoder, 0);
+		_dynamic_set_quality4 (encoder, 0);
 #line 493 "rygel-mp3-transcoder.c"
 	}
 #line 107 "rygel-mp3-transcoder.vala"
-	_dynamic_set_bitrate4 (encoder, RYGEL_MP3_TRANSCODER_BITRATE);
+	_dynamic_set_bitrate5 (encoder, RYGEL_MP3_TRANSCODER_BITRATE);
 #line 109 "rygel-mp3-transcoder.vala"
 	bin = (GstBin*) gst_bin_new ("mp3-encoder-bin");
 #line 110 "rygel-mp3-transcoder.vala"

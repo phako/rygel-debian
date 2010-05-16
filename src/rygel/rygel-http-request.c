@@ -34,6 +34,7 @@
 #include <string.h>
 #include <libgupnp-av/gupnp-av.h>
 #include <libgupnp/gupnp.h>
+#include <glib/gi18n-lib.h>
 
 
 #define RYGEL_TYPE_STATE_MACHINE (rygel_state_machine_get_type ())
@@ -294,7 +295,7 @@ static gpointer _g_object_ref0 (gpointer self) {
 
 #line 46 "rygel-http-request.vala"
 RygelHTTPRequest* rygel_http_request_construct (GType object_type, RygelHTTPServer* http_server, SoupServer* server, SoupMessage* msg) {
-#line 298 "rygel-http-request.c"
+#line 299 "rygel-http-request.c"
 	RygelHTTPRequest * self;
 	GCancellable* _tmp0_;
 	RygelMediaContainer* _tmp1_;
@@ -312,7 +313,7 @@ RygelHTTPRequest* rygel_http_request_construct (GType object_type, RygelHTTPServ
 	self->http_server = http_server;
 #line 50 "rygel-http-request.vala"
 	rygel_state_machine_set_cancellable ((RygelStateMachine*) self, _tmp0_ = g_cancellable_new ());
-#line 316 "rygel-http-request.c"
+#line 317 "rygel-http-request.c"
 	_g_object_unref0 (_tmp0_);
 #line 51 "rygel-http-request.vala"
 	self->priv->root_container = (_tmp1_ = _g_object_ref0 (http_server->root_container), _g_object_unref0 (self->priv->root_container), _tmp1_);
@@ -320,7 +321,7 @@ RygelHTTPRequest* rygel_http_request_construct (GType object_type, RygelHTTPServ
 	self->server = (_tmp2_ = _g_object_ref0 (server), _g_object_unref0 (self->server), _tmp2_);
 #line 53 "rygel-http-request.vala"
 	self->msg = (_tmp3_ = _g_object_ref0 (msg), _g_object_unref0 (self->msg), _tmp3_);
-#line 324 "rygel-http-request.c"
+#line 325 "rygel-http-request.c"
 	return self;
 }
 
@@ -376,7 +377,7 @@ static gboolean rygel_http_request_real_run_co (RygelHttpRequestRunData* data) {
 		_state_1:
 #line 57 "rygel-http-request.vala"
 		rygel_http_request_handle_finish (data->self, data->_res_);
-#line 380 "rygel-http-request.c"
+#line 381 "rygel-http-request.c"
 	}
 	{
 		if (data->_state_ == 0) {
@@ -436,21 +437,21 @@ static gboolean rygel_http_request_real_handle_co (RygelHttpRequestHandleData* d
 		{
 			data->_tmp0_ = rygel_http_item_uri_new_from_string (soup_message_get_uri (data->self->msg)->path, data->self->http_server, &data->_inner_error_);
 			if (data->_inner_error_ != NULL) {
-				goto __catch25_g_error;
+				goto __catch26_g_error;
 			}
 #line 62 "rygel-http-request.vala"
 			data->self->uri = (data->_tmp1_ = data->_tmp0_, _g_object_unref0 (data->self->uri), data->_tmp1_);
-#line 444 "rygel-http-request.c"
+#line 445 "rygel-http-request.c"
 		}
-		goto __finally25;
-		__catch25_g_error:
+		goto __finally26;
+		__catch26_g_error:
 		{
 			data->_error_ = data->_inner_error_;
 			data->_inner_error_ = NULL;
 			{
 #line 65 "rygel-http-request.vala"
 				rygel_http_request_handle_error (data->self, data->_error_);
-#line 454 "rygel-http-request.c"
+#line 455 "rygel-http-request.c"
 				_g_error_free0 (data->_error_);
 				{
 					if (data->_state_ == 0) {
@@ -464,7 +465,7 @@ static gboolean rygel_http_request_real_handle_co (RygelHttpRequestHandleData* d
 				_g_error_free0 (data->_error_);
 			}
 		}
-		__finally25:
+		__finally26:
 		if (data->_inner_error_ != NULL) {
 			g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, data->_inner_error_->message, g_quark_to_string (data->_inner_error_->domain), data->_inner_error_->code);
 			g_clear_error (&data->_inner_error_);
@@ -476,7 +477,7 @@ static gboolean rygel_http_request_real_handle_co (RygelHttpRequestHandleData* d
 		_state_2:
 #line 70 "rygel-http-request.vala"
 		rygel_http_request_find_item_finish (data->self, data->_res_);
-#line 480 "rygel-http-request.c"
+#line 481 "rygel-http-request.c"
 	}
 	{
 		if (data->_state_ == 0) {
@@ -494,7 +495,7 @@ static gboolean rygel_http_request_real_handle_co (RygelHttpRequestHandleData* d
 void rygel_http_request_handle (RygelHTTPRequest* self, GAsyncReadyCallback _callback_, gpointer _user_data_) {
 #line 60 "rygel-http-request.vala"
 	RYGEL_HTTP_REQUEST_GET_CLASS (self)->handle (self, _callback_, _user_data_);
-#line 498 "rygel-http-request.c"
+#line 499 "rygel-http-request.c"
 }
 
 
@@ -502,7 +503,7 @@ void rygel_http_request_handle (RygelHTTPRequest* self, GAsyncReadyCallback _cal
 void rygel_http_request_handle_finish (RygelHTTPRequest* self, GAsyncResult* _res_) {
 #line 60 "rygel-http-request.vala"
 	RYGEL_HTTP_REQUEST_GET_CLASS (self)->handle_finish (self, _res_);
-#line 506 "rygel-http-request.c"
+#line 507 "rygel-http-request.c"
 }
 
 
@@ -556,21 +557,21 @@ static gboolean rygel_http_request_real_find_item_co (RygelHttpRequestFindItemDa
 			_state_3:
 			data->_tmp0_ = rygel_media_container_find_object_finish (data->self->priv->root_container, data->_res_, &data->_inner_error_);
 			if (data->_inner_error_ != NULL) {
-				goto __catch26_g_error;
+				goto __catch27_g_error;
 			}
 #line 77 "rygel-http-request.vala"
 			data->media_object = (data->_tmp1_ = data->_tmp0_, _g_object_unref0 (data->media_object), data->_tmp1_);
-#line 564 "rygel-http-request.c"
+#line 565 "rygel-http-request.c"
 		}
-		goto __finally26;
-		__catch26_g_error:
+		goto __finally27;
+		__catch27_g_error:
 		{
 			data->err = data->_inner_error_;
 			data->_inner_error_ = NULL;
 			{
 #line 81 "rygel-http-request.vala"
 				rygel_http_request_handle_error (data->self, data->err);
-#line 574 "rygel-http-request.c"
+#line 575 "rygel-http-request.c"
 				_g_error_free0 (data->err);
 				_g_object_unref0 (data->media_object);
 				{
@@ -585,7 +586,7 @@ static gboolean rygel_http_request_real_find_item_co (RygelHttpRequestFindItemDa
 				_g_error_free0 (data->err);
 			}
 		}
-		__finally26:
+		__finally27:
 		if (data->_inner_error_ != NULL) {
 			_g_object_unref0 (data->media_object);
 			g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, data->_inner_error_->message, g_quark_to_string (data->_inner_error_->domain), data->_inner_error_->code);
@@ -596,17 +597,17 @@ static gboolean rygel_http_request_real_find_item_co (RygelHttpRequestFindItemDa
 		if (data->media_object == NULL) {
 #line 86 "rygel-http-request.vala"
 			data->_tmp2_ = TRUE;
-#line 600 "rygel-http-request.c"
+#line 601 "rygel-http-request.c"
 		} else {
 #line 86 "rygel-http-request.vala"
 			data->_tmp2_ = !RYGEL_IS_MEDIA_ITEM (data->media_object);
-#line 604 "rygel-http-request.c"
+#line 605 "rygel-http-request.c"
 		}
 #line 86 "rygel-http-request.vala"
 		if (data->_tmp2_) {
 #line 87 "rygel-http-request.vala"
-			rygel_http_request_handle_error (data->self, data->_tmp3_ = g_error_new (RYGEL_HTTP_REQUEST_ERROR, RYGEL_HTTP_REQUEST_ERROR_NOT_FOUND, "requested item '%s' not found", data->self->uri->item_id));
-#line 610 "rygel-http-request.c"
+			rygel_http_request_handle_error (data->self, data->_tmp3_ = g_error_new (RYGEL_HTTP_REQUEST_ERROR, RYGEL_HTTP_REQUEST_ERROR_NOT_FOUND, _ ("Requested item '%s' not found"), data->self->uri->item_id));
+#line 611 "rygel-http-request.c"
 			_g_error_free0 (data->_tmp3_);
 			_g_object_unref0 (data->media_object);
 			{
@@ -621,7 +622,7 @@ static gboolean rygel_http_request_real_find_item_co (RygelHttpRequestFindItemDa
 		}
 #line 93 "rygel-http-request.vala"
 		data->self->item = (data->_tmp4_ = _g_object_ref0 (RYGEL_MEDIA_ITEM (data->media_object)), _g_object_unref0 (data->self->item), data->_tmp4_);
-#line 625 "rygel-http-request.c"
+#line 626 "rygel-http-request.c"
 		_g_object_unref0 (data->media_object);
 	}
 	{
@@ -640,7 +641,7 @@ static gboolean rygel_http_request_real_find_item_co (RygelHttpRequestFindItemDa
 void rygel_http_request_find_item (RygelHTTPRequest* self, GAsyncReadyCallback _callback_, gpointer _user_data_) {
 #line 73 "rygel-http-request.vala"
 	RYGEL_HTTP_REQUEST_GET_CLASS (self)->find_item (self, _callback_, _user_data_);
-#line 644 "rygel-http-request.c"
+#line 645 "rygel-http-request.c"
 }
 
 
@@ -648,13 +649,13 @@ void rygel_http_request_find_item (RygelHTTPRequest* self, GAsyncReadyCallback _
 void rygel_http_request_find_item_finish (RygelHTTPRequest* self, GAsyncResult* _res_) {
 #line 73 "rygel-http-request.vala"
 	RYGEL_HTTP_REQUEST_GET_CLASS (self)->find_item_finish (self, _res_);
-#line 652 "rygel-http-request.c"
+#line 653 "rygel-http-request.c"
 }
 
 
 #line 96 "rygel-http-request.vala"
 static void rygel_http_request_real_handle_error (RygelHTTPRequest* self, GError* _error_) {
-#line 658 "rygel-http-request.c"
+#line 659 "rygel-http-request.c"
 	guint status = 0U;
 #line 96 "rygel-http-request.vala"
 	g_return_if_fail (self != NULL);
@@ -664,15 +665,15 @@ static void rygel_http_request_real_handle_error (RygelHTTPRequest* self, GError
 	if (_error_->domain == RYGEL_HTTP_REQUEST_ERROR) {
 #line 101 "rygel-http-request.vala"
 		status = (guint) _error_->code;
-#line 668 "rygel-http-request.c"
+#line 669 "rygel-http-request.c"
 	} else {
 #line 103 "rygel-http-request.vala"
 		status = (guint) SOUP_STATUS_NOT_FOUND;
-#line 672 "rygel-http-request.c"
+#line 673 "rygel-http-request.c"
 	}
 #line 106 "rygel-http-request.vala"
 	rygel_http_request_end (self, status);
-#line 676 "rygel-http-request.c"
+#line 677 "rygel-http-request.c"
 }
 
 
@@ -680,7 +681,7 @@ static void rygel_http_request_real_handle_error (RygelHTTPRequest* self, GError
 void rygel_http_request_handle_error (RygelHTTPRequest* self, GError* _error_) {
 #line 96 "rygel-http-request.vala"
 	RYGEL_HTTP_REQUEST_GET_CLASS (self)->handle_error (self, _error_);
-#line 684 "rygel-http-request.c"
+#line 685 "rygel-http-request.c"
 }
 
 
@@ -692,11 +693,11 @@ void rygel_http_request_end (RygelHTTPRequest* self, guint status) {
 	if (status != SOUP_STATUS_NONE) {
 #line 111 "rygel-http-request.vala"
 		soup_message_set_status (self->msg, status);
-#line 696 "rygel-http-request.c"
+#line 697 "rygel-http-request.c"
 	}
 #line 114 "rygel-http-request.vala"
 	g_signal_emit_by_name ((RygelStateMachine*) self, "completed");
-#line 700 "rygel-http-request.c"
+#line 701 "rygel-http-request.c"
 }
 
 
@@ -707,7 +708,7 @@ static GCancellable* rygel_http_request_real_get_cancellable (RygelStateMachine*
 	result = self->priv->_cancellable;
 #line 41 "rygel-http-request.vala"
 	return result;
-#line 711 "rygel-http-request.c"
+#line 712 "rygel-http-request.c"
 }
 
 

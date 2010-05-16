@@ -55,7 +55,7 @@ internal abstract class Rygel.HTTPGetHandler: GLib.Object {
                                                  tokens[3]);
         } catch (Error err) {
             warning ("Received request for 'contentFeatures.dlna.org' but " +
-                     "failed to provide the value in response headers");
+                       "failed to provide the value in response headers");
         }
 
         // Handle Samsung DLNA TV proprietary subtitle headers

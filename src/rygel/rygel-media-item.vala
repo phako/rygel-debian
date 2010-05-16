@@ -90,10 +90,18 @@ public class Rygel.MediaItem : MediaObject {
             src = Element.make_from_uri (URIType.SRC, this.uris.get (0), null);
         }
 
-        if (src != null && src.get_type ().name () == "GstRTSPSrc") {
-            // For rtspsrc since some RTSP sources takes a while to start
-            // transmitting
-            src.tcp_timeout = (int64) 60000000;
+        if (src != null) {
+            if (src.get_class ().find_property ("blocksize") != null) {
+                // The default is usually 4KiB which is not really big enough
+                // for most cases so we set this to 65KiB.
+                src.blocksize = (long) 65536;
+            }
+
+            if (src.get_class ().find_property ("tcp-timeout") != null) {
+                // For rtspsrc since some RTSP sources takes a while to start
+                // transmitting
+                src.tcp_timeout = (int64) 60000000;
+            }
         }
 
         return src;
@@ -242,7 +250,7 @@ public class Rygel.MediaItem : MediaObject {
     private string get_protocol_for_uri (string uri) throws Error {
         var scheme = Uri.parse_scheme (uri);
         if (scheme == null) {
-            throw new MediaItemError.BAD_URI ("Bad URI: %s", uri);
+            throw new MediaItemError.BAD_URI (_("Bad URI: %s"), uri);
         }
 
         if (scheme == "http") {
@@ -254,7 +262,7 @@ public class Rygel.MediaItem : MediaObject {
             return "rtsp-rtp-udp";
         } else {
             // Assume the protocol to be the scheme of the URI
-            warning ("Failed to probe protocol for URI %s. Assuming '%s'",
+            warning (_("Failed to probe protocol for URI %s. Assuming '%s'"),
                      uri,
                      scheme);
 

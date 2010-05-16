@@ -50,11 +50,12 @@ public class Rygel.MetaConfig : GLib.Object, Configuration {
         this.configs = new ArrayList<Configuration> ();
 
         this.configs.add (CmdlineConfig.get_default ());
+        this.configs.add (EnvironmentConfig.get_default ());
         try {
             var user_config = UserConfig.get_default ();
             this.configs.add (user_config);
         } catch (Error err) {
-            warning ("Failed to load user configuration: %s", err.message);
+            warning (_("Failed to load user configuration: %s"), err.message);
         }
     }
 
@@ -71,7 +72,7 @@ public class Rygel.MetaConfig : GLib.Object, Configuration {
         }
 
         if (unavailable) {
-            throw new ConfigurationError.NO_VALUE_SET ("No value available");
+            throw new ConfigurationError.NO_VALUE_SET (_("No value available"));
         }
 
         return val;
@@ -90,7 +91,7 @@ public class Rygel.MetaConfig : GLib.Object, Configuration {
         }
 
         if (unavailable) {
-            throw new ConfigurationError.NO_VALUE_SET ("No value available");
+            throw new ConfigurationError.NO_VALUE_SET (_("No value available"));
         }
 
         return val;
@@ -109,7 +110,7 @@ public class Rygel.MetaConfig : GLib.Object, Configuration {
         }
 
         if (unavailable) {
-            throw new ConfigurationError.NO_VALUE_SET ("No value available");
+            throw new ConfigurationError.NO_VALUE_SET (_("No value available"));
         }
 
         return val;
@@ -128,7 +129,7 @@ public class Rygel.MetaConfig : GLib.Object, Configuration {
         }
 
         if (unavailable) {
-            throw new ConfigurationError.NO_VALUE_SET ("No value available");
+            throw new ConfigurationError.NO_VALUE_SET (_("No value available"));
         }
 
         return val;
@@ -147,7 +148,7 @@ public class Rygel.MetaConfig : GLib.Object, Configuration {
         }
 
         if (unavailable) {
-            throw new ConfigurationError.NO_VALUE_SET ("No value available");
+            throw new ConfigurationError.NO_VALUE_SET (_("No value available"));
         }
 
         return val;
@@ -166,7 +167,7 @@ public class Rygel.MetaConfig : GLib.Object, Configuration {
         }
 
         if (unavailable) {
-            throw new ConfigurationError.NO_VALUE_SET ("No value available");
+            throw new ConfigurationError.NO_VALUE_SET (_("No value available"));
         }
 
         return val;
@@ -185,7 +186,7 @@ public class Rygel.MetaConfig : GLib.Object, Configuration {
         }
 
         if (unavailable) {
-            throw new ConfigurationError.NO_VALUE_SET ("No value available");
+            throw new ConfigurationError.NO_VALUE_SET (_("No value available"));
         }
 
         return val;
@@ -204,7 +205,7 @@ public class Rygel.MetaConfig : GLib.Object, Configuration {
         }
 
         if (unavailable) {
-            throw new ConfigurationError.NO_VALUE_SET ("No value available");
+            throw new ConfigurationError.NO_VALUE_SET (_("No value available"));
         }
 
         return val;
@@ -217,6 +218,25 @@ public class Rygel.MetaConfig : GLib.Object, Configuration {
         foreach (var config in this.configs) {
             try {
                 val = config.get_log_level ();
+                unavailable = false;
+                break;
+            } catch (GLib.Error err) {}
+        }
+
+        if (unavailable) {
+            throw new ConfigurationError.NO_VALUE_SET (_("No value available"));
+        }
+
+        return val;
+    }
+
+    public string get_plugin_path () throws GLib.Error {
+        string val = null;
+        bool unavailable = true;
+
+        foreach (var config in this.configs) {
+            try {
+                val = config.get_plugin_path ();
                 unavailable = false;
                 break;
             } catch (GLib.Error err) {}
@@ -243,7 +263,7 @@ public class Rygel.MetaConfig : GLib.Object, Configuration {
 
         if (unavailable) {
             throw new ConfigurationError.NO_VALUE_SET (
-                                        "No value available for '%s/enabled'",
+                                        _("No value set for '%s/enabled'"),
                                         section);
         }
 
@@ -262,7 +282,7 @@ public class Rygel.MetaConfig : GLib.Object, Configuration {
 
         if (val == null) {
             throw new ConfigurationError.NO_VALUE_SET (
-                                        "No value available for '%s/enabled'",
+                                        _("No value set for '%s/enabled'"),
                                         section);
         }
 
@@ -282,7 +302,7 @@ public class Rygel.MetaConfig : GLib.Object, Configuration {
 
         if (val == null) {
             throw new ConfigurationError.NO_VALUE_SET (
-                                        "No value available for '%s/%s'",
+                                        _("No value available for '%s/%s'"),
                                         section,
                                         key);
         }
@@ -304,7 +324,7 @@ public class Rygel.MetaConfig : GLib.Object, Configuration {
 
         if (val == null) {
             throw new ConfigurationError.NO_VALUE_SET (
-                                        "No value available for '%s/%s'",
+                                        _("No value available for '%s/%s'"),
                                         section,
                                         key);
         }
@@ -330,7 +350,7 @@ public class Rygel.MetaConfig : GLib.Object, Configuration {
 
         if (unavailable) {
             throw new ConfigurationError.NO_VALUE_SET (
-                                        "No value available for '%s/%s'",
+                                        _("No value available for '%s/%s'"),
                                         section,
                                         key);
         }
@@ -352,7 +372,7 @@ public class Rygel.MetaConfig : GLib.Object, Configuration {
 
         if (val == null) {
             throw new ConfigurationError.NO_VALUE_SET (
-                                        "No value available for '%s/%s'",
+                                        _("No value available for '%s/%s'"),
                                         section,
                                         key);
         }
@@ -376,7 +396,7 @@ public class Rygel.MetaConfig : GLib.Object, Configuration {
 
         if (unavailable) {
             throw new ConfigurationError.NO_VALUE_SET (
-                                        "No value available for '%s/%s'",
+                                        _("No value available for '%s/%s'"),
                                         section,
                                         key);
         }

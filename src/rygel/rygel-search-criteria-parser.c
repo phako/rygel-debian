@@ -413,14 +413,14 @@ static gboolean rygel_search_criteria_parser_real_run_co (RygelSearchCriteriaPar
 		{
 			data->_tmp0_ = rygel_search_criteria_parser_parse_or_expression (data->self, &data->_inner_error_);
 			if (data->_inner_error_ != NULL) {
-				goto __catch53_g_error;
+				goto __catch55_g_error;
 			}
 #line 131 "rygel-search-criteria-parser.vala"
 			data->self->expression = (data->_tmp1_ = data->_tmp0_, _rygel_search_expression_unref0 (data->self->expression), data->_tmp1_);
 #line 421 "rygel-search-criteria-parser.c"
 		}
-		goto __finally53;
-		__catch53_g_error:
+		goto __finally55;
+		__catch55_g_error:
 		{
 			data->err = data->_inner_error_;
 			data->_inner_error_ = NULL;
@@ -431,7 +431,7 @@ static gboolean rygel_search_criteria_parser_real_run_co (RygelSearchCriteriaPar
 				_g_error_free0 (data->err);
 			}
 		}
-		__finally53:
+		__finally55:
 		if (data->_inner_error_ != NULL) {
 			g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, data->_inner_error_->message, g_quark_to_string (data->_inner_error_->domain), data->_inner_error_->code);
 			g_clear_error (&data->_inner_error_);

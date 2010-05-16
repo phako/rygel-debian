@@ -99,7 +99,7 @@ internal class Rygel.RootDeviceFactory {
                                                 "device",
                                                 null);
         if (device_element == null) {
-            warning ("Element /root/device not found.");
+            warning (_("XML node '%s' not found."), "/root/device");
 
             return;
         }
@@ -108,6 +108,10 @@ internal class Rygel.RootDeviceFactory {
         this.set_friendly_name_and_udn (device_element,
                                         plugin.name,
                                         plugin.title);
+
+        if (plugin.description != null) {
+            this.set_description (device_element, plugin.description);
+        }
 
         /* Then list each icon */
         this.add_icons_to_desc (device_element, plugin);
@@ -128,7 +132,8 @@ internal class Rygel.RootDeviceFactory {
                                                    "friendlyName",
                                                    null);
         if (element == null) {
-            warning ("Element /root/device/friendlyName not found.");
+            warning (_("XML node '%s' not found."),
+                       "/root/device/friendlyName");
 
             return;
         }
@@ -149,7 +154,7 @@ internal class Rygel.RootDeviceFactory {
         /* UDN */
         element = Utils.get_xml_element (device_element, "UDN");
         if (element == null) {
-            warning ("Element /root/device/UDN not found.");
+            warning (_("XML node '%s' not found."), "/root/device/UDN");
 
             return;
         }
@@ -162,13 +167,28 @@ internal class Rygel.RootDeviceFactory {
         }
     }
 
+    private void set_description (Xml.Node *device_element,
+                                  string    description) {
+        Xml.Node *element = Utils.get_xml_element (device_element,
+                                                   "modelDescription",
+                                                   null);
+        if (element == null) {
+            warning (_("XML node '%s' not found."),
+                       "/root/device/modelDescription");
+
+            return;
+        }
+
+        element->set_content (description);
+    }
+
     private void add_services_to_desc (Xml.Node *device_element,
                                        Plugin    plugin) {
         Xml.Node *service_list_node = Utils.get_xml_element (device_element,
                                                              "serviceList",
                                                              null);
         if (service_list_node == null) {
-            warning ("Element /root/device/serviceList not found.");
+            warning (_("XML node '%s' not found."), "/root/device/serviceList");
 
             return;
         }
@@ -208,10 +228,13 @@ internal class Rygel.RootDeviceFactory {
 
     private void add_icons_to_desc (Xml.Node *device_element,
                                     Plugin    plugin) {
-        if (plugin.icon_infos == null || plugin.icon_infos.size == 0) {
-            debug ("No icon provided by %s.", plugin.name);
+        var icons = plugin.icon_infos;
 
-            return;
+        if (icons == null || icons.size == 0) {
+            debug (_("No icon provided by plugin '%s'. Using Rygel logo.."),
+                   plugin.name);
+
+            icons = plugin.default_icons;
         }
 
         Xml.Node *icon_list_node = Utils.get_xml_element (device_element,
@@ -224,8 +247,8 @@ internal class Rygel.RootDeviceFactory {
             icon_list_node->set_content ("");
         }
 
-        foreach (IconInfo icon_info in plugin.icon_infos) {
-            add_icon_to_desc (icon_list_node, icon_info, plugin);
+        foreach (var icon in icons) {
+            add_icon_to_desc (icon_list_node, icon, plugin);
         }
     }
 
@@ -271,10 +294,9 @@ internal class Rygel.RootDeviceFactory {
             res = doc.doc.dump (f);
 
         if (f == null || res == -1) {
-            string message = "Failed to write modified description" +
-                             " to %s.\n".printf (desc_path);
+            var message = _("Failed to write modified description to %s");
 
-            throw new IOError.FAILED (message);
+            throw new IOError.FAILED (message, desc_path);
         }
     }
 

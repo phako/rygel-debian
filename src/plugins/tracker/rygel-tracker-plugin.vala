@@ -30,7 +30,9 @@ public class Rygel.TrackerPlugin : Rygel.Plugin {
 
     public TrackerPlugin () {
         base.MediaServer ("Tracker",
-                          "@REALNAME@'s media",
+                           // @REALNAME@ is substituted for user's real name
+                           // and it doesn't need translation.
+                          _("@REALNAME@'s media"),
                           typeof (MediaTracker));
 
         var icon_info = new IconInfo ("image/png");
@@ -43,7 +45,7 @@ public class Rygel.TrackerPlugin : Rygel.Plugin {
 
             this.add_icon (icon_info);
         } catch (ConvertError err) {
-            warning ("Error creating URI from %s: %s", ICON, err.message);
+            warning (_("Error creating URI from %s: %s"), ICON, err.message);
         }
     }
 }

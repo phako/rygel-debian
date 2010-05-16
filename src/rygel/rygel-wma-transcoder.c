@@ -268,7 +268,7 @@ RygelL16Transcoder* rygel_l16_transcoder_construct (GType object_type, Endiannes
 GType rygel_l16_transcoder_get_type (void);
 GstElement* rygel_l16_transcoder_create_encoder (RygelL16Transcoder* self, RygelMediaItem* item, const char* src_pad_name, const char* sink_pad_name, GError** error);
 GstElement* rygel_gst_utils_create_element (const char* factoryname, const char* name, GError** error);
-static inline void _dynamic_set_bitrate6 (GstElement* obj, gint value);
+static inline void _dynamic_set_bitrate7 (GstElement* obj, gint value);
 GstElement* rygel_wma_transcoder_create_encoder (RygelWMATranscoder* self, RygelMediaItem* item, const char* src_pad_name, const char* sink_pad_name, GError** error);
 
 
@@ -401,7 +401,7 @@ static guint rygel_wma_transcoder_real_get_distance (RygelTranscoder* base, Ryge
 }
 
 
-static inline void _dynamic_set_bitrate6 (GstElement* obj, gint value) {
+static inline void _dynamic_set_bitrate7 (GstElement* obj, gint value) {
 	g_object_set (obj, "bitrate", value, NULL);
 }
 
@@ -450,7 +450,7 @@ GstElement* rygel_wma_transcoder_create_encoder (RygelWMATranscoder* self, Rygel
 		return NULL;
 	}
 #line 86 "rygel-wma-transcoder.vala"
-	_dynamic_set_bitrate6 (encoder, RYGEL_WMA_TRANSCODER_BITRATE * 1000);
+	_dynamic_set_bitrate7 (encoder, RYGEL_WMA_TRANSCODER_BITRATE * 1000);
 #line 88 "rygel-wma-transcoder.vala"
 	bin = (GstBin*) gst_bin_new ("wma-encoder-bin");
 #line 89 "rygel-wma-transcoder.vala"

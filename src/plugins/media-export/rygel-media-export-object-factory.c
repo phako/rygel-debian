@@ -25,10 +25,31 @@
 
 #include <glib.h>
 #include <glib-object.h>
-#include <rygel.h>
 #include <stdlib.h>
 #include <string.h>
+#include <rygel.h>
 
+
+#define RYGEL_TYPE_MEDIA_EXPORT_DB_OBJECT_FACTORY (rygel_media_export_db_object_factory_get_type ())
+#define RYGEL_MEDIA_EXPORT_DB_OBJECT_FACTORY(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_MEDIA_EXPORT_DB_OBJECT_FACTORY, RygelMediaExportDBObjectFactory))
+#define RYGEL_MEDIA_EXPORT_DB_OBJECT_FACTORY_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TYPE_MEDIA_EXPORT_DB_OBJECT_FACTORY, RygelMediaExportDBObjectFactoryClass))
+#define RYGEL_IS_MEDIA_EXPORT_DB_OBJECT_FACTORY(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TYPE_MEDIA_EXPORT_DB_OBJECT_FACTORY))
+#define RYGEL_IS_MEDIA_EXPORT_DB_OBJECT_FACTORY_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_TYPE_MEDIA_EXPORT_DB_OBJECT_FACTORY))
+#define RYGEL_MEDIA_EXPORT_DB_OBJECT_FACTORY_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_TYPE_MEDIA_EXPORT_DB_OBJECT_FACTORY, RygelMediaExportDBObjectFactoryClass))
+
+typedef struct _RygelMediaExportDBObjectFactory RygelMediaExportDBObjectFactory;
+typedef struct _RygelMediaExportDBObjectFactoryClass RygelMediaExportDBObjectFactoryClass;
+typedef struct _RygelMediaExportDBObjectFactoryPrivate RygelMediaExportDBObjectFactoryPrivate;
+
+#define RYGEL_TYPE_MEDIA_EXPORT_MEDIA_CACHE (rygel_media_export_media_cache_get_type ())
+#define RYGEL_MEDIA_EXPORT_MEDIA_CACHE(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_MEDIA_EXPORT_MEDIA_CACHE, RygelMediaExportMediaCache))
+#define RYGEL_MEDIA_EXPORT_MEDIA_CACHE_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TYPE_MEDIA_EXPORT_MEDIA_CACHE, RygelMediaExportMediaCacheClass))
+#define RYGEL_IS_MEDIA_EXPORT_MEDIA_CACHE(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TYPE_MEDIA_EXPORT_MEDIA_CACHE))
+#define RYGEL_IS_MEDIA_EXPORT_MEDIA_CACHE_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_TYPE_MEDIA_EXPORT_MEDIA_CACHE))
+#define RYGEL_MEDIA_EXPORT_MEDIA_CACHE_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_TYPE_MEDIA_EXPORT_MEDIA_CACHE, RygelMediaExportMediaCacheClass))
+
+typedef struct _RygelMediaExportMediaCache RygelMediaExportMediaCache;
+typedef struct _RygelMediaExportMediaCacheClass RygelMediaExportMediaCacheClass;
 
 #define RYGEL_TYPE_MEDIA_EXPORT_OBJECT_FACTORY (rygel_media_export_object_factory_get_type ())
 #define RYGEL_MEDIA_EXPORT_OBJECT_FACTORY(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_MEDIA_EXPORT_OBJECT_FACTORY, RygelMediaExportObjectFactory))
@@ -40,6 +61,16 @@
 typedef struct _RygelMediaExportObjectFactory RygelMediaExportObjectFactory;
 typedef struct _RygelMediaExportObjectFactoryClass RygelMediaExportObjectFactoryClass;
 typedef struct _RygelMediaExportObjectFactoryPrivate RygelMediaExportObjectFactoryPrivate;
+
+#define RYGEL_TYPE_MEDIA_EXPORT_DB_CONTAINER (rygel_media_export_db_container_get_type ())
+#define RYGEL_MEDIA_EXPORT_DB_CONTAINER(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_MEDIA_EXPORT_DB_CONTAINER, RygelMediaExportDBContainer))
+#define RYGEL_MEDIA_EXPORT_DB_CONTAINER_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TYPE_MEDIA_EXPORT_DB_CONTAINER, RygelMediaExportDBContainerClass))
+#define RYGEL_IS_MEDIA_EXPORT_DB_CONTAINER(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TYPE_MEDIA_EXPORT_DB_CONTAINER))
+#define RYGEL_IS_MEDIA_EXPORT_DB_CONTAINER_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_TYPE_MEDIA_EXPORT_DB_CONTAINER))
+#define RYGEL_MEDIA_EXPORT_DB_CONTAINER_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_TYPE_MEDIA_EXPORT_DB_CONTAINER, RygelMediaExportDBContainerClass))
+
+typedef struct _RygelMediaExportDBContainer RygelMediaExportDBContainer;
+typedef struct _RygelMediaExportDBContainerClass RygelMediaExportDBContainerClass;
 
 #define RYGEL_TYPE_MEDIA_EXPORT_QUERY_CONTAINER (rygel_media_export_query_container_get_type ())
 #define RYGEL_MEDIA_EXPORT_QUERY_CONTAINER(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_MEDIA_EXPORT_QUERY_CONTAINER, RygelMediaExportQueryContainer))
@@ -61,38 +92,54 @@ typedef struct _RygelMediaExportQueryContainerClass RygelMediaExportQueryContain
 typedef struct _RygelMediaExportWritableContainer RygelMediaExportWritableContainer;
 typedef struct _RygelMediaExportWritableContainerClass RygelMediaExportWritableContainerClass;
 
+struct _RygelMediaExportDBObjectFactory {
+	GObject parent_instance;
+	RygelMediaExportDBObjectFactoryPrivate * priv;
+};
+
+struct _RygelMediaExportDBObjectFactoryClass {
+	GObjectClass parent_class;
+	RygelMediaContainer* (*get_container) (RygelMediaExportDBObjectFactory* self, RygelMediaExportMediaCache* media_db, const char* id, const char* title, guint child_count);
+	RygelMediaItem* (*get_item) (RygelMediaExportDBObjectFactory* self, RygelMediaExportMediaCache* media_db, RygelMediaContainer* parent, const char* id, const char* title, const char* upnp_class);
+};
+
 struct _RygelMediaExportObjectFactory {
-	RygelMediaDBObjectFactory parent_instance;
+	RygelMediaExportDBObjectFactory parent_instance;
 	RygelMediaExportObjectFactoryPrivate * priv;
 };
 
 struct _RygelMediaExportObjectFactoryClass {
-	RygelMediaDBObjectFactoryClass parent_class;
+	RygelMediaExportDBObjectFactoryClass parent_class;
 };
 
 
 static gpointer rygel_media_export_object_factory_parent_class = NULL;
 
+GType rygel_media_export_db_object_factory_get_type (void);
+GType rygel_media_export_media_cache_get_type (void);
 GType rygel_media_export_object_factory_get_type (void);
 enum  {
 	RYGEL_MEDIA_EXPORT_OBJECT_FACTORY_DUMMY_PROPERTY
 };
 #define RYGEL_MEDIA_EXPORT_QUERY_CONTAINER_PREFIX "virtual-container:"
-RygelMediaExportQueryContainer* rygel_media_export_query_container_new (RygelMediaDB* media_db, const char* id, const char* name);
-RygelMediaExportQueryContainer* rygel_media_export_query_container_construct (GType object_type, RygelMediaDB* media_db, const char* id, const char* name);
+RygelMediaExportQueryContainer* rygel_media_export_query_container_new (RygelMediaExportMediaCache* media_db, const char* id, const char* name);
+RygelMediaExportQueryContainer* rygel_media_export_query_container_construct (GType object_type, RygelMediaExportMediaCache* media_db, const char* id, const char* name);
+GType rygel_media_export_db_container_get_type (void);
 GType rygel_media_export_query_container_get_type (void);
-RygelMediaExportWritableContainer* rygel_media_export_writable_container_new (RygelMediaDB* media_db, const char* id, const char* title);
-RygelMediaExportWritableContainer* rygel_media_export_writable_container_construct (GType object_type, RygelMediaDB* media_db, const char* id, const char* title);
+RygelMediaExportWritableContainer* rygel_media_export_writable_container_new (RygelMediaExportMediaCache* media_db, const char* id, const char* title);
+RygelMediaExportWritableContainer* rygel_media_export_writable_container_construct (GType object_type, RygelMediaExportMediaCache* media_db, const char* id, const char* title);
 GType rygel_media_export_writable_container_get_type (void);
-static RygelMediaContainer* rygel_media_export_object_factory_real_get_container (RygelMediaDBObjectFactory* base, RygelMediaDB* media_db, const char* id, const char* title, guint child_count);
+static RygelMediaContainer* rygel_media_export_object_factory_real_get_container (RygelMediaExportDBObjectFactory* base, RygelMediaExportMediaCache* media_db, const char* id, const char* title, guint child_count);
+RygelMediaExportDBObjectFactory* rygel_media_export_db_object_factory_new (void);
+RygelMediaExportDBObjectFactory* rygel_media_export_db_object_factory_construct (GType object_type);
 RygelMediaExportObjectFactory* rygel_media_export_object_factory_new (void);
 RygelMediaExportObjectFactory* rygel_media_export_object_factory_construct (GType object_type);
 
 
 
 #line 24 "rygel-media-export-object-factory.vala"
-static RygelMediaContainer* rygel_media_export_object_factory_real_get_container (RygelMediaDBObjectFactory* base, RygelMediaDB* media_db, const char* id, const char* title, guint child_count) {
-#line 96 "rygel-media-export-object-factory.c"
+static RygelMediaContainer* rygel_media_export_object_factory_real_get_container (RygelMediaExportDBObjectFactory* base, RygelMediaExportMediaCache* media_db, const char* id, const char* title, guint child_count) {
+#line 143 "rygel-media-export-object-factory.c"
 	RygelMediaExportObjectFactory * self;
 	RygelMediaContainer* result = NULL;
 	self = (RygelMediaExportObjectFactory*) base;
@@ -102,29 +149,29 @@ static RygelMediaContainer* rygel_media_export_object_factory_real_get_container
 	g_return_val_if_fail (id != NULL, NULL);
 #line 24 "rygel-media-export-object-factory.vala"
 	g_return_val_if_fail (title != NULL, NULL);
-#line 28 "rygel-media-export-object-factory.vala"
-	if (g_str_has_prefix (id, RYGEL_MEDIA_EXPORT_QUERY_CONTAINER_PREFIX)) {
-#line 108 "rygel-media-export-object-factory.c"
-		result = (RygelMediaContainer*) rygel_media_export_query_container_new (media_db, id, title);
 #line 29 "rygel-media-export-object-factory.vala"
+	if (g_str_has_prefix (id, RYGEL_MEDIA_EXPORT_QUERY_CONTAINER_PREFIX)) {
+#line 155 "rygel-media-export-object-factory.c"
+		result = (RygelMediaContainer*) rygel_media_export_query_container_new (media_db, id, title);
+#line 30 "rygel-media-export-object-factory.vala"
 		return result;
-#line 112 "rygel-media-export-object-factory.c"
+#line 159 "rygel-media-export-object-factory.c"
 	} else {
 		result = (RygelMediaContainer*) rygel_media_export_writable_container_new (media_db, id, title);
-#line 31 "rygel-media-export-object-factory.vala"
+#line 32 "rygel-media-export-object-factory.vala"
 		return result;
-#line 117 "rygel-media-export-object-factory.c"
+#line 164 "rygel-media-export-object-factory.c"
 	}
 }
 
 
 #line 23 "rygel-media-export-object-factory.vala"
 RygelMediaExportObjectFactory* rygel_media_export_object_factory_construct (GType object_type) {
-#line 124 "rygel-media-export-object-factory.c"
+#line 171 "rygel-media-export-object-factory.c"
 	RygelMediaExportObjectFactory * self;
 #line 23 "rygel-media-export-object-factory.vala"
-	self = (RygelMediaExportObjectFactory*) rygel_media_db_object_factory_construct (object_type);
-#line 128 "rygel-media-export-object-factory.c"
+	self = (RygelMediaExportObjectFactory*) rygel_media_export_db_object_factory_construct (object_type);
+#line 175 "rygel-media-export-object-factory.c"
 	return self;
 }
 
@@ -133,13 +180,13 @@ RygelMediaExportObjectFactory* rygel_media_export_object_factory_construct (GTyp
 RygelMediaExportObjectFactory* rygel_media_export_object_factory_new (void) {
 #line 23 "rygel-media-export-object-factory.vala"
 	return rygel_media_export_object_factory_construct (RYGEL_TYPE_MEDIA_EXPORT_OBJECT_FACTORY);
-#line 137 "rygel-media-export-object-factory.c"
+#line 184 "rygel-media-export-object-factory.c"
 }
 
 
 static void rygel_media_export_object_factory_class_init (RygelMediaExportObjectFactoryClass * klass) {
 	rygel_media_export_object_factory_parent_class = g_type_class_peek_parent (klass);
-	RYGEL_MEDIA_DB_OBJECT_FACTORY_CLASS (klass)->get_container = rygel_media_export_object_factory_real_get_container;
+	RYGEL_MEDIA_EXPORT_DB_OBJECT_FACTORY_CLASS (klass)->get_container = rygel_media_export_object_factory_real_get_container;
 }
 
 
@@ -152,7 +199,7 @@ GType rygel_media_export_object_factory_get_type (void) {
 	if (g_once_init_enter (&rygel_media_export_object_factory_type_id__volatile)) {
 		static const GTypeInfo g_define_type_info = { sizeof (RygelMediaExportObjectFactoryClass), (GBaseInitFunc) NULL, (GBaseFinalizeFunc) NULL, (GClassInitFunc) rygel_media_export_object_factory_class_init, (GClassFinalizeFunc) NULL, NULL, sizeof (RygelMediaExportObjectFactory), 0, (GInstanceInitFunc) rygel_media_export_object_factory_instance_init, NULL };
 		GType rygel_media_export_object_factory_type_id;
-		rygel_media_export_object_factory_type_id = g_type_register_static (RYGEL_TYPE_MEDIA_DB_OBJECT_FACTORY, "RygelMediaExportObjectFactory", &g_define_type_info, 0);
+		rygel_media_export_object_factory_type_id = g_type_register_static (RYGEL_TYPE_MEDIA_EXPORT_DB_OBJECT_FACTORY, "RygelMediaExportObjectFactory", &g_define_type_info, 0);
 		g_once_init_leave (&rygel_media_export_object_factory_type_id__volatile, rygel_media_export_object_factory_type_id);
 	}
 	return rygel_media_export_object_factory_type_id__volatile;

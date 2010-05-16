@@ -92,9 +92,11 @@ struct _RygelPlugin {
 	RygelPluginPrivate * priv;
 	char* name;
 	char* title;
+	char* description;
 	char* desc_path;
 	GeeArrayList* resource_infos;
 	GeeArrayList* icon_infos;
+	GeeArrayList* default_icons;
 };
 
 struct _RygelPluginClass {
@@ -146,7 +148,7 @@ static void rygel_root_device_finalize (GObject* obj);
 
 #line 34 "rygel-root-device.vala"
 RygelRootDevice* rygel_root_device_construct (GType object_type, GUPnPContext* context, RygelPlugin* plugin, GUPnPXMLDoc* description_doc, const char* description_path, const char* description_dir) {
-#line 150 "rygel-root-device.c"
+#line 152 "rygel-root-device.c"
 	RygelRootDevice * self;
 	GeeArrayList* _tmp0_;
 #line 34 "rygel-root-device.vala"
@@ -163,31 +165,31 @@ RygelRootDevice* rygel_root_device_construct (GType object_type, GUPnPContext* c
 	self = (RygelRootDevice*) g_object_new (object_type, "context", context, "resource-factory", plugin, "description-doc", description_doc, "description-path", description_path, "description-dir", description_dir, NULL);
 #line 45 "rygel-root-device.vala"
 	self->services = (_tmp0_ = gee_array_list_new (GUPNP_TYPE_SERVICE_INFO, (GBoxedCopyFunc) g_object_ref, g_object_unref, NULL), _g_object_unref0 (self->services), _tmp0_);
-#line 167 "rygel-root-device.c"
+#line 169 "rygel-root-device.c"
 	{
 		GeeIterator* _info_it;
 		_info_it = gee_abstract_collection_iterator ((GeeAbstractCollection*) plugin->resource_infos);
 #line 48 "rygel-root-device.vala"
 		while (TRUE) {
-#line 173 "rygel-root-device.c"
+#line 175 "rygel-root-device.c"
 			RygelResourceInfo* info;
 #line 48 "rygel-root-device.vala"
 			if (!gee_iterator_next (_info_it)) {
 #line 48 "rygel-root-device.vala"
 				break;
-#line 179 "rygel-root-device.c"
+#line 181 "rygel-root-device.c"
 			}
 #line 48 "rygel-root-device.vala"
 			info = (RygelResourceInfo*) gee_iterator_get (_info_it);
 #line 50 "rygel-root-device.vala"
 			if (g_type_is_a (info->type, GUPNP_TYPE_SERVICE)) {
-#line 185 "rygel-root-device.c"
+#line 187 "rygel-root-device.c"
 				GUPnPServiceInfo* service;
 #line 51 "rygel-root-device.vala"
 				service = gupnp_device_info_get_service ((GUPnPDeviceInfo*) self, info->upnp_type);
 #line 53 "rygel-root-device.vala"
 				gee_abstract_collection_add ((GeeAbstractCollection*) self->services, service);
-#line 191 "rygel-root-device.c"
+#line 193 "rygel-root-device.c"
 				_g_object_unref0 (service);
 			}
 			_rygel_resource_info_unref0 (info);
@@ -202,7 +204,7 @@ RygelRootDevice* rygel_root_device_construct (GType object_type, GUPnPContext* c
 RygelRootDevice* rygel_root_device_new (GUPnPContext* context, RygelPlugin* plugin, GUPnPXMLDoc* description_doc, const char* description_path, const char* description_dir) {
 #line 34 "rygel-root-device.vala"
 	return rygel_root_device_construct (RYGEL_TYPE_ROOT_DEVICE, context, plugin, description_doc, description_path, description_dir);
-#line 206 "rygel-root-device.c"
+#line 208 "rygel-root-device.c"
 }
 
 

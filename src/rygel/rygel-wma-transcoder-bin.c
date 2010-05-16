@@ -28,6 +28,7 @@
 #include <gst/gst.h>
 #include <stdlib.h>
 #include <string.h>
+#include <glib/gi18n-lib.h>
 
 
 #define RYGEL_TYPE_WMA_TRANSCODER_BIN (rygel_wma_transcoder_bin_get_type ())
@@ -122,8 +123,8 @@ static void rygel_wma_transcoder_bin_decodebin_pad_added (RygelWMATranscoderBin*
 static void _rygel_wma_transcoder_bin_decodebin_pad_added_gst_element_pad_added (GstElement* _sender, GstPad* pad, gpointer self);
 RygelWMATranscoderBin* rygel_wma_transcoder_bin_new (RygelMediaItem* item, GstElement* src, RygelWMATranscoder* transcoder, GError** error);
 RygelWMATranscoderBin* rygel_wma_transcoder_bin_construct (GType object_type, RygelMediaItem* item, GstElement* src, RygelWMATranscoder* transcoder, GError** error);
-void rygel_gst_utils_post_error (GstElement* dest, GError* _error_);
 GQuark rygel_gst_error_quark (void);
+void rygel_gst_utils_post_error (GstElement* dest, GError* _error_);
 static void rygel_wma_transcoder_bin_finalize (GObject* obj);
 
 
@@ -135,14 +136,14 @@ static gpointer _gst_object_ref0 (gpointer self) {
 
 #line 51 "rygel-wma-transcoder-bin.vala"
 static void _rygel_wma_transcoder_bin_decodebin_pad_added_gst_element_pad_added (GstElement* _sender, GstPad* pad, gpointer self) {
-#line 139 "rygel-wma-transcoder-bin.c"
+#line 140 "rygel-wma-transcoder-bin.c"
 	rygel_wma_transcoder_bin_decodebin_pad_added (self, _sender, pad);
 }
 
 
 #line 32 "rygel-wma-transcoder-bin.vala"
 RygelWMATranscoderBin* rygel_wma_transcoder_bin_construct (GType object_type, RygelMediaItem* item, GstElement* src, RygelWMATranscoder* transcoder, GError** error) {
-#line 146 "rygel-wma-transcoder-bin.c"
+#line 147 "rygel-wma-transcoder-bin.c"
 	GError * _inner_error_;
 	RygelWMATranscoderBin * self;
 	GstElement* decodebin;
@@ -156,12 +157,12 @@ RygelWMATranscoderBin* rygel_wma_transcoder_bin_construct (GType object_type, Ry
 	g_return_val_if_fail (src != NULL, NULL);
 #line 32 "rygel-wma-transcoder-bin.vala"
 	g_return_val_if_fail (transcoder != NULL, NULL);
-#line 160 "rygel-wma-transcoder-bin.c"
+#line 161 "rygel-wma-transcoder-bin.c"
 	_inner_error_ = NULL;
 	self = g_object_newv (object_type, 0, NULL);
 #line 35 "rygel-wma-transcoder-bin.vala"
 	decodebin = rygel_gst_utils_create_element (RYGEL_WMA_TRANSCODER_BIN_DECODEBIN, RYGEL_WMA_TRANSCODER_BIN_DECODEBIN, &_inner_error_);
-#line 165 "rygel-wma-transcoder-bin.c"
+#line 166 "rygel-wma-transcoder-bin.c"
 	if (_inner_error_ != NULL) {
 		g_propagate_error (error, _inner_error_);
 		gst_object_unref (self);
@@ -169,7 +170,7 @@ RygelWMATranscoderBin* rygel_wma_transcoder_bin_construct (GType object_type, Ry
 	}
 #line 37 "rygel-wma-transcoder-bin.vala"
 	_tmp0_ = rygel_wma_transcoder_create_encoder (transcoder, item, RYGEL_WMA_TRANSCODER_BIN_AUDIO_SRC_PAD, RYGEL_WMA_TRANSCODER_BIN_AUDIO_SINK_PAD, &_inner_error_);
-#line 173 "rygel-wma-transcoder-bin.c"
+#line 174 "rygel-wma-transcoder-bin.c"
 	if (_inner_error_ != NULL) {
 		g_propagate_error (error, _inner_error_);
 		_gst_object_unref0 (decodebin);
@@ -190,7 +191,7 @@ RygelWMATranscoderBin* rygel_wma_transcoder_bin_construct (GType object_type, Ry
 	gst_element_add_pad ((GstElement*) self, _gst_object_ref0 ((GstPad*) ghost));
 #line 48 "rygel-wma-transcoder-bin.vala"
 	g_signal_connect_object (decodebin, "pad-added", (GCallback) _rygel_wma_transcoder_bin_decodebin_pad_added_gst_element_pad_added, self, 0);
-#line 194 "rygel-wma-transcoder-bin.c"
+#line 195 "rygel-wma-transcoder-bin.c"
 	_gst_object_unref0 (decodebin);
 	_gst_object_unref0 (src_pad);
 	_gst_object_unref0 (ghost);
@@ -202,13 +203,13 @@ RygelWMATranscoderBin* rygel_wma_transcoder_bin_construct (GType object_type, Ry
 RygelWMATranscoderBin* rygel_wma_transcoder_bin_new (RygelMediaItem* item, GstElement* src, RygelWMATranscoder* transcoder, GError** error) {
 #line 32 "rygel-wma-transcoder-bin.vala"
 	return rygel_wma_transcoder_bin_construct (RYGEL_TYPE_WMA_TRANSCODER_BIN, item, src, transcoder, error);
-#line 206 "rygel-wma-transcoder-bin.c"
+#line 207 "rygel-wma-transcoder-bin.c"
 }
 
 
 #line 51 "rygel-wma-transcoder-bin.vala"
 static void rygel_wma_transcoder_bin_decodebin_pad_added (RygelWMATranscoderBin* self, GstElement* decodebin, GstPad* new_pad) {
-#line 212 "rygel-wma-transcoder-bin.c"
+#line 213 "rygel-wma-transcoder-bin.c"
 	GstPad* enc_pad;
 #line 51 "rygel-wma-transcoder-bin.vala"
 	g_return_if_fail (self != NULL);
@@ -220,24 +221,26 @@ static void rygel_wma_transcoder_bin_decodebin_pad_added (RygelWMATranscoderBin*
 	enc_pad = _gst_object_ref0 (gst_element_get_pad (self->priv->audio_enc, RYGEL_WMA_TRANSCODER_BIN_AUDIO_SINK_PAD));
 #line 53 "rygel-wma-transcoder-bin.vala"
 	if (!gst_pad_can_link (new_pad, enc_pad)) {
-#line 224 "rygel-wma-transcoder-bin.c"
+#line 225 "rygel-wma-transcoder-bin.c"
 		_gst_object_unref0 (enc_pad);
 #line 54 "rygel-wma-transcoder-bin.vala"
 		return;
-#line 228 "rygel-wma-transcoder-bin.c"
+#line 229 "rygel-wma-transcoder-bin.c"
 	}
 #line 57 "rygel-wma-transcoder-bin.vala"
 	if (gst_pad_link (new_pad, enc_pad) != GST_PAD_LINK_OK) {
-#line 232 "rygel-wma-transcoder-bin.c"
-		GError* _tmp0_;
+#line 233 "rygel-wma-transcoder-bin.c"
+		GError* _error_;
 #line 58 "rygel-wma-transcoder-bin.vala"
-		rygel_gst_utils_post_error ((GstElement*) self, _tmp0_ = g_error_new (RYGEL_GST_ERROR, RYGEL_GST_ERROR_LINK, "Failed to link pad %s to %s", gst_object_get_name ((GstObject*) new_pad), gst_object_get_name ((GstObject*) enc_pad)));
-#line 236 "rygel-wma-transcoder-bin.c"
-		_g_error_free0 (_tmp0_);
+		_error_ = g_error_new (RYGEL_GST_ERROR, RYGEL_GST_ERROR_LINK, _ ("Failed to link pad %s to %s"), gst_object_get_name ((GstObject*) new_pad), gst_object_get_name ((GstObject*) enc_pad));
+#line 61 "rygel-wma-transcoder-bin.vala"
+		rygel_gst_utils_post_error ((GstElement*) self, _error_);
+#line 239 "rygel-wma-transcoder-bin.c"
+		_g_error_free0 (_error_);
 		_gst_object_unref0 (enc_pad);
 #line 63 "rygel-wma-transcoder-bin.vala"
 		return;
-#line 241 "rygel-wma-transcoder-bin.c"
+#line 244 "rygel-wma-transcoder-bin.c"
 	}
 	_gst_object_unref0 (enc_pad);
 }

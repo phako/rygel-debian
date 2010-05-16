@@ -29,6 +29,7 @@
 #include <gst/gst.h>
 #include <stdlib.h>
 #include <string.h>
+#include <glib/gi18n-lib.h>
 
 
 #define RYGEL_TYPE_L16_TRANSCODER_BIN (rygel_l16_transcoder_bin_get_type ())
@@ -83,7 +84,6 @@ typedef struct _RygelMediaObjectClass RygelMediaObjectClass;
 typedef struct _RygelMediaItem RygelMediaItem;
 typedef struct _RygelMediaItemClass RygelMediaItemClass;
 #define _g_error_free0(var) ((var == NULL) ? NULL : (var = (g_error_free (var), NULL)))
-#define _g_free0(var) (var = (g_free (var), NULL))
 
 struct _RygelL16TranscoderBin {
 	GstBin parent_instance;
@@ -231,21 +231,15 @@ static void rygel_l16_transcoder_bin_decodebin_pad_added (RygelL16TranscoderBin*
 #line 63 "rygel-l16-transcoder-bin.vala"
 	if (gst_pad_link (new_pad, enc_pad) != GST_PAD_LINK_OK) {
 #line 234 "rygel-l16-transcoder-bin.c"
-		GError* _tmp3_;
-		char* _tmp2_;
-		char* _tmp1_;
-		char* _tmp0_;
+		GError* _tmp0_;
 #line 64 "rygel-l16-transcoder-bin.vala"
-		rygel_gst_utils_post_error ((GstElement*) self, _tmp3_ = g_error_new_literal (RYGEL_GST_ERROR, RYGEL_GST_ERROR_LINK, _tmp2_ = g_strconcat (_tmp1_ = g_strconcat (_tmp0_ = g_strconcat ("Failed to link pad ", gst_object_get_name ((GstObject*) new_pad), NULL), " to ", NULL), gst_object_get_name ((GstObject*) enc_pad), NULL)));
-#line 241 "rygel-l16-transcoder-bin.c"
-		_g_error_free0 (_tmp3_);
-		_g_free0 (_tmp2_);
-		_g_free0 (_tmp1_);
-		_g_free0 (_tmp0_);
+		rygel_gst_utils_post_error ((GstElement*) self, _tmp0_ = g_error_new (RYGEL_GST_ERROR, RYGEL_GST_ERROR_LINK, _ ("Failed to link pad %s to %s"), gst_object_get_name ((GstObject*) new_pad), gst_object_get_name ((GstObject*) enc_pad)));
+#line 238 "rygel-l16-transcoder-bin.c"
+		_g_error_free0 (_tmp0_);
 		_gst_object_unref0 (enc_pad);
 #line 69 "rygel-l16-transcoder-bin.vala"
 		return;
-#line 249 "rygel-l16-transcoder-bin.c"
+#line 243 "rygel-l16-transcoder-bin.c"
 	}
 	_gst_object_unref0 (enc_pad);
 }

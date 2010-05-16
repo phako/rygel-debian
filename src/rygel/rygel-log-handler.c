@@ -29,6 +29,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <gee.h>
+#include <glib/gi18n-lib.h>
 
 
 #define RYGEL_TYPE_LOG_LEVEL (rygel_log_level_get_type ())
@@ -95,6 +96,7 @@ struct _RygelConfigurationIface {
 	gboolean (*get_lpcm_transcoder) (RygelConfiguration* self, GError** error);
 	gboolean (*get_wmv_transcoder) (RygelConfiguration* self, GError** error);
 	RygelLogLevel (*get_log_level) (RygelConfiguration* self, GError** error);
+	char* (*get_plugin_path) (RygelConfiguration* self, GError** error);
 	gboolean (*get_enabled) (RygelConfiguration* self, const char* section, GError** error);
 	char* (*get_title) (RygelConfiguration* self, const char* section, GError** error);
 	char* (*get_string) (RygelConfiguration* self, const char* section, const char* key, GError** error);
@@ -148,33 +150,33 @@ static gpointer _g_object_ref0 (gpointer self) {
 
 #line 45 "rygel-log-handler.vala"
 RygelLogHandler* rygel_log_handler_get_default (void) {
-#line 152 "rygel-log-handler.c"
+#line 154 "rygel-log-handler.c"
 	RygelLogHandler* result = NULL;
 #line 46 "rygel-log-handler.vala"
 	if (rygel_log_handler_log_handler == NULL) {
-#line 156 "rygel-log-handler.c"
+#line 158 "rygel-log-handler.c"
 		RygelLogHandler* _tmp0_;
 #line 47 "rygel-log-handler.vala"
 		rygel_log_handler_log_handler = (_tmp0_ = rygel_log_handler_new (), _g_object_unref0 (rygel_log_handler_log_handler), _tmp0_);
-#line 160 "rygel-log-handler.c"
+#line 162 "rygel-log-handler.c"
 	}
 	result = _g_object_ref0 (rygel_log_handler_log_handler);
 #line 50 "rygel-log-handler.vala"
 	return result;
-#line 165 "rygel-log-handler.c"
+#line 167 "rygel-log-handler.c"
 }
 
 
 #line 69 "rygel-log-handler.vala"
 static void _rygel_log_handler_log_func_glog_func (const char* log_domain, GLogLevelFlags log_levels, const char* message, gpointer self) {
-#line 171 "rygel-log-handler.c"
+#line 173 "rygel-log-handler.c"
 	rygel_log_handler_log_func (self, log_domain, log_levels, message);
 }
 
 
 #line 53 "rygel-log-handler.vala"
 static RygelLogHandler* rygel_log_handler_construct (GType object_type) {
-#line 178 "rygel-log-handler.c"
+#line 180 "rygel-log-handler.c"
 	GError * _inner_error_;
 	RygelLogHandler * self;
 	RygelMetaConfig* config;
@@ -183,21 +185,21 @@ static RygelLogHandler* rygel_log_handler_construct (GType object_type) {
 	self = (RygelLogHandler*) g_object_new (object_type, NULL);
 #line 55 "rygel-log-handler.vala"
 	config = rygel_meta_config_get_default ();
-#line 187 "rygel-log-handler.c"
+#line 189 "rygel-log-handler.c"
 	{
 		RygelLogLevel _tmp0_;
 #line 58 "rygel-log-handler.vala"
 		_tmp0_ = rygel_configuration_get_log_level ((RygelConfiguration*) config, &_inner_error_);
-#line 192 "rygel-log-handler.c"
+#line 194 "rygel-log-handler.c"
 		if (_inner_error_ != NULL) {
-			goto __catch69_g_error;
+			goto __catch56_g_error;
 		}
 #line 58 "rygel-log-handler.vala"
 		self->levels = rygel_log_handler_log_level_to_flags (self, _tmp0_);
-#line 198 "rygel-log-handler.c"
+#line 200 "rygel-log-handler.c"
 	}
-	goto __finally69;
-	__catch69_g_error:
+	goto __finally56;
+	__catch56_g_error:
 	{
 		GError * err;
 		err = _inner_error_;
@@ -206,13 +208,12 @@ static RygelLogHandler* rygel_log_handler_construct (GType object_type) {
 #line 60 "rygel-log-handler.vala"
 			self->levels = RYGEL_LOG_HANDLER_DEFAULT_LEVELS;
 #line 62 "rygel-log-handler.vala"
-			g_warning ("rygel-log-handler.vala:62: Failed to get log level from configuration " \
-"sources: %s", err->message);
-#line 211 "rygel-log-handler.c"
+			g_warning (_ ("Failed to get log level from configuration: %s"), err->message);
+#line 213 "rygel-log-handler.c"
 			_g_error_free0 (err);
 		}
 	}
-	__finally69:
+	__finally56:
 	if (_inner_error_ != NULL) {
 		_g_object_unref0 (config);
 		g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
@@ -221,7 +222,7 @@ static RygelLogHandler* rygel_log_handler_construct (GType object_type) {
 	}
 #line 66 "rygel-log-handler.vala"
 	g_log_set_default_handler (_rygel_log_handler_log_func_glog_func, self);
-#line 224 "rygel-log-handler.c"
+#line 226 "rygel-log-handler.c"
 	_g_object_unref0 (config);
 	return self;
 }
@@ -231,7 +232,7 @@ static RygelLogHandler* rygel_log_handler_construct (GType object_type) {
 static RygelLogHandler* rygel_log_handler_new (void) {
 #line 53 "rygel-log-handler.vala"
 	return rygel_log_handler_construct (RYGEL_TYPE_LOG_HANDLER);
-#line 234 "rygel-log-handler.c"
+#line 236 "rygel-log-handler.c"
 }
 
 
@@ -245,14 +246,14 @@ static void rygel_log_handler_log_func (RygelLogHandler* self, const char* log_d
 	if ((self->levels & log_levels) == log_levels) {
 #line 74 "rygel-log-handler.vala"
 		g_log_default_handler (log_domain, log_levels, message, NULL);
-#line 248 "rygel-log-handler.c"
+#line 250 "rygel-log-handler.c"
 	}
 }
 
 
 #line 78 "rygel-log-handler.vala"
 static GLogLevelFlags rygel_log_handler_log_level_to_flags (RygelLogHandler* self, RygelLogLevel level) {
-#line 255 "rygel-log-handler.c"
+#line 257 "rygel-log-handler.c"
 	GLogLevelFlags result = 0;
 	GLogLevelFlags flags;
 #line 78 "rygel-log-handler.vala"
@@ -261,14 +262,14 @@ static GLogLevelFlags rygel_log_handler_log_level_to_flags (RygelLogHandler* sel
 	flags = RYGEL_LOG_HANDLER_DEFAULT_LEVELS;
 #line 81 "rygel-log-handler.vala"
 	switch (level) {
-#line 264 "rygel-log-handler.c"
+#line 266 "rygel-log-handler.c"
 		case RYGEL_LOG_LEVEL_CRITICAL:
 		{
 #line 83 "rygel-log-handler.vala"
 			flags = G_LOG_LEVEL_CRITICAL;
 #line 84 "rygel-log-handler.vala"
 			break;
-#line 271 "rygel-log-handler.c"
+#line 273 "rygel-log-handler.c"
 		}
 		case RYGEL_LOG_LEVEL_ERROR:
 		{
@@ -276,7 +277,7 @@ static GLogLevelFlags rygel_log_handler_log_level_to_flags (RygelLogHandler* sel
 			flags = G_LOG_LEVEL_CRITICAL | G_LOG_LEVEL_ERROR;
 #line 88 "rygel-log-handler.vala"
 			break;
-#line 279 "rygel-log-handler.c"
+#line 281 "rygel-log-handler.c"
 		}
 		case RYGEL_LOG_LEVEL_WARNING:
 		{
@@ -284,7 +285,7 @@ static GLogLevelFlags rygel_log_handler_log_level_to_flags (RygelLogHandler* sel
 			flags = (G_LOG_LEVEL_WARNING | G_LOG_LEVEL_CRITICAL) | G_LOG_LEVEL_ERROR;
 #line 93 "rygel-log-handler.vala"
 			break;
-#line 287 "rygel-log-handler.c"
+#line 289 "rygel-log-handler.c"
 		}
 		case RYGEL_LOG_LEVEL_INFO:
 		{
@@ -292,7 +293,7 @@ static GLogLevelFlags rygel_log_handler_log_level_to_flags (RygelLogHandler* sel
 			flags = (((G_LOG_LEVEL_WARNING | G_LOG_LEVEL_CRITICAL) | G_LOG_LEVEL_ERROR) | G_LOG_LEVEL_MESSAGE) | G_LOG_LEVEL_INFO;
 #line 100 "rygel-log-handler.vala"
 			break;
-#line 295 "rygel-log-handler.c"
+#line 297 "rygel-log-handler.c"
 		}
 		case RYGEL_LOG_LEVEL_DEBUG:
 		{
@@ -300,7 +301,7 @@ static GLogLevelFlags rygel_log_handler_log_level_to_flags (RygelLogHandler* sel
 			flags = ((((G_LOG_LEVEL_WARNING | G_LOG_LEVEL_CRITICAL) | G_LOG_LEVEL_ERROR) | G_LOG_LEVEL_MESSAGE) | G_LOG_LEVEL_INFO) | G_LOG_LEVEL_DEBUG;
 #line 108 "rygel-log-handler.vala"
 			break;
-#line 303 "rygel-log-handler.c"
+#line 305 "rygel-log-handler.c"
 		}
 		default:
 		{
@@ -308,13 +309,13 @@ static GLogLevelFlags rygel_log_handler_log_level_to_flags (RygelLogHandler* sel
 			flags = RYGEL_LOG_HANDLER_DEFAULT_LEVELS;
 #line 111 "rygel-log-handler.vala"
 			break;
-#line 311 "rygel-log-handler.c"
+#line 313 "rygel-log-handler.c"
 		}
 	}
 	result = flags;
 #line 114 "rygel-log-handler.vala"
 	return result;
-#line 317 "rygel-log-handler.c"
+#line 319 "rygel-log-handler.c"
 }
 
 

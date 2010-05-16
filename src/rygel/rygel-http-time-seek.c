@@ -32,6 +32,7 @@
 #include <libsoup/soup.h>
 #include <gee.h>
 #include <gst/gst.h>
+#include <glib/gi18n-lib.h>
 #include <float.h>
 #include <math.h>
 
@@ -364,7 +365,7 @@ static int _vala_strcmp0 (const char * str1, const char * str2);
 
 #line 34 "rygel-http-time-seek.vala"
 RygelHTTPTimeSeek* rygel_http_time_seek_construct (GType object_type, RygelHTTPGet* request, GError** error) {
-#line 368 "rygel-http-time-seek.c"
+#line 369 "rygel-http-time-seek.c"
 	GError * _inner_error_;
 	RygelHTTPTimeSeek * self;
 	char* range;
@@ -378,7 +379,7 @@ RygelHTTPTimeSeek* rygel_http_time_seek_construct (GType object_type, RygelHTTPG
 	char* _tmp0_;
 #line 34 "rygel-http-time-seek.vala"
 	g_return_val_if_fail (request != NULL, NULL);
-#line 382 "rygel-http-time-seek.c"
+#line 383 "rygel-http-time-seek.c"
 	_inner_error_ = NULL;
 	range = NULL;
 	time = NULL;
@@ -388,12 +389,12 @@ RygelHTTPTimeSeek* rygel_http_time_seek_construct (GType object_type, RygelHTTPG
 #line 38 "rygel-http-time-seek.vala"
 	duration = (gint64) (((RygelHTTPRequest*) request)->item->duration * GST_SECOND);
 #line 39 "rygel-http-time-seek.vala"
-	stop = duration - (10 * GST_MSECOND);
+	stop = duration - GST_SECOND;
 #line 41 "rygel-http-time-seek.vala"
 	range = (_tmp0_ = g_strdup (soup_message_headers_get (((RygelHTTPRequest*) request)->msg->request_headers, "TimeSeekRange.dlna.org")), _g_free0 (range), _tmp0_);
 #line 42 "rygel-http-time-seek.vala"
 	if (range != NULL) {
-#line 397 "rygel-http-time-seek.c"
+#line 398 "rygel-http-time-seek.c"
 		char** _tmp2_;
 		char** _tmp1_;
 		gboolean _tmp3_ = FALSE;
@@ -401,7 +402,7 @@ RygelHTTPTimeSeek* rygel_http_time_seek_construct (GType object_type, RygelHTTPG
 		char* _tmp5_;
 #line 43 "rygel-http-time-seek.vala"
 		if (!g_str_has_prefix (range, "npt=")) {
-#line 405 "rygel-http-time-seek.c"
+#line 406 "rygel-http-time-seek.c"
 			_inner_error_ = g_error_new (RYGEL_HTTP_SEEK_ERROR, RYGEL_HTTP_SEEK_ERROR_INVALID_RANGE, "Invalid Range '%s'", range);
 			{
 				if (_inner_error_->domain == RYGEL_HTTP_SEEK_ERROR) {
@@ -427,16 +428,16 @@ RygelHTTPTimeSeek* rygel_http_time_seek_construct (GType object_type, RygelHTTPG
 		if (range_tokens[0] == NULL) {
 #line 49 "rygel-http-time-seek.vala"
 			_tmp3_ = TRUE;
-#line 431 "rygel-http-time-seek.c"
+#line 432 "rygel-http-time-seek.c"
 		} else {
 #line 49 "rygel-http-time-seek.vala"
 			_tmp3_ = range_tokens[1] == NULL;
-#line 435 "rygel-http-time-seek.c"
+#line 436 "rygel-http-time-seek.c"
 		}
 #line 49 "rygel-http-time-seek.vala"
 		if (_tmp3_) {
-#line 439 "rygel-http-time-seek.c"
-			_inner_error_ = g_error_new (RYGEL_HTTP_SEEK_ERROR, RYGEL_HTTP_SEEK_ERROR_INVALID_RANGE, "Invalid Range '%s'", range);
+#line 440 "rygel-http-time-seek.c"
+			_inner_error_ = g_error_new (RYGEL_HTTP_SEEK_ERROR, RYGEL_HTTP_SEEK_ERROR_INVALID_RANGE, _ ("Invalid Range '%s'"), range);
 			{
 				if (_inner_error_->domain == RYGEL_HTTP_SEEK_ERROR) {
 					g_propagate_error (error, _inner_error_);
@@ -461,12 +462,12 @@ RygelHTTPTimeSeek* rygel_http_time_seek_construct (GType object_type, RygelHTTPG
 		if (g_unichar_isdigit (g_utf8_get_char (g_utf8_offset_to_pointer (time, 0)))) {
 #line 57 "rygel-http-time-seek.vala"
 			start = (gint64) (g_ascii_strtod (time, NULL) * GST_SECOND);
-#line 465 "rygel-http-time-seek.c"
+#line 466 "rygel-http-time-seek.c"
 		} else {
 #line 58 "rygel-http-time-seek.vala"
 			if (_vala_strcmp0 (time, "") != 0) {
-#line 469 "rygel-http-time-seek.c"
-				_inner_error_ = g_error_new (RYGEL_HTTP_SEEK_ERROR, RYGEL_HTTP_SEEK_ERROR_INVALID_RANGE, "Invalid Range '%s'", range);
+#line 470 "rygel-http-time-seek.c"
+				_inner_error_ = g_error_new (RYGEL_HTTP_SEEK_ERROR, RYGEL_HTTP_SEEK_ERROR_INVALID_RANGE, _ ("Invalid Range '%s'"), range);
 				{
 					if (_inner_error_->domain == RYGEL_HTTP_SEEK_ERROR) {
 						g_propagate_error (error, _inner_error_);
@@ -494,8 +495,8 @@ RygelHTTPTimeSeek* rygel_http_time_seek_construct (GType object_type, RygelHTTPG
 			stop = (gint64) (g_ascii_strtod (time, NULL) * GST_SECOND);
 #line 67 "rygel-http-time-seek.vala"
 			if (stop < start) {
-#line 498 "rygel-http-time-seek.c"
-				_inner_error_ = g_error_new (RYGEL_HTTP_SEEK_ERROR, RYGEL_HTTP_SEEK_ERROR_INVALID_RANGE, "Invalid Range '%s'", range);
+#line 499 "rygel-http-time-seek.c"
+				_inner_error_ = g_error_new (RYGEL_HTTP_SEEK_ERROR, RYGEL_HTTP_SEEK_ERROR_INVALID_RANGE, _ ("Invalid Range '%s'"), range);
 				{
 					if (_inner_error_->domain == RYGEL_HTTP_SEEK_ERROR) {
 						g_propagate_error (error, _inner_error_);
@@ -515,10 +516,10 @@ RygelHTTPTimeSeek* rygel_http_time_seek_construct (GType object_type, RygelHTTPG
 				}
 			}
 		} else {
-#line 71 "rygel-http-time-seek.vala"
+#line 72 "rygel-http-time-seek.vala"
 			if (_vala_strcmp0 (time, "") != 0) {
-#line 521 "rygel-http-time-seek.c"
-				_inner_error_ = g_error_new (RYGEL_HTTP_SEEK_ERROR, RYGEL_HTTP_SEEK_ERROR_INVALID_RANGE, "Invalid Range '%s'", range);
+#line 522 "rygel-http-time-seek.c"
+				_inner_error_ = g_error_new (RYGEL_HTTP_SEEK_ERROR, RYGEL_HTTP_SEEK_ERROR_INVALID_RANGE, _ ("Invalid Range '%s'"), range);
 				{
 					if (_inner_error_->domain == RYGEL_HTTP_SEEK_ERROR) {
 						g_propagate_error (error, _inner_error_);
@@ -539,9 +540,9 @@ RygelHTTPTimeSeek* rygel_http_time_seek_construct (GType object_type, RygelHTTPG
 			}
 		}
 	}
-#line 77 "rygel-http-time-seek.vala"
+#line 78 "rygel-http-time-seek.vala"
 	self = (RygelHTTPTimeSeek*) rygel_http_seek_construct (object_type, ((RygelHTTPRequest*) request)->msg, start, stop, duration);
-#line 545 "rygel-http-time-seek.c"
+#line 546 "rygel-http-time-seek.c"
 	_g_free0 (range);
 	_g_free0 (time);
 	range_tokens = (_vala_array_free (range_tokens, range_tokens_length1, (GDestroyNotify) g_free), NULL);
@@ -553,77 +554,88 @@ RygelHTTPTimeSeek* rygel_http_time_seek_construct (GType object_type, RygelHTTPG
 RygelHTTPTimeSeek* rygel_http_time_seek_new (RygelHTTPGet* request, GError** error) {
 #line 34 "rygel-http-time-seek.vala"
 	return rygel_http_time_seek_construct (RYGEL_TYPE_HTTP_TIME_SEEK, request, error);
-#line 557 "rygel-http-time-seek.c"
+#line 558 "rygel-http-time-seek.c"
 }
 
 
-#line 83 "rygel-http-time-seek.vala"
+#line 84 "rygel-http-time-seek.vala"
 gboolean rygel_http_time_seek_needed (RygelHTTPGet* request) {
-#line 563 "rygel-http-time-seek.c"
+#line 564 "rygel-http-time-seek.c"
 	gboolean result = FALSE;
 	gboolean _tmp0_ = FALSE;
-#line 83 "rygel-http-time-seek.vala"
-	g_return_val_if_fail (request != NULL, FALSE);
 #line 84 "rygel-http-time-seek.vala"
+	g_return_val_if_fail (request != NULL, FALSE);
+#line 85 "rygel-http-time-seek.vala"
 	if (((RygelHTTPRequest*) request)->item->duration > 0) {
-#line 570 "rygel-http-time-seek.c"
+#line 571 "rygel-http-time-seek.c"
 		gboolean _tmp1_ = FALSE;
-#line 85 "rygel-http-time-seek.vala"
+#line 86 "rygel-http-time-seek.vala"
 		if (RYGEL_IS_HTTP_TRANSCODE_HANDLER (request->handler)) {
-#line 85 "rygel-http-time-seek.vala"
+#line 86 "rygel-http-time-seek.vala"
 			_tmp1_ = TRUE;
-#line 576 "rygel-http-time-seek.c"
+#line 577 "rygel-http-time-seek.c"
 		} else {
 			gboolean _tmp2_ = FALSE;
-#line 86 "rygel-http-time-seek.vala"
-			if (request->thumbnail == NULL) {
+			gboolean _tmp3_ = FALSE;
 #line 87 "rygel-http-time-seek.vala"
-				_tmp2_ = rygel_media_item_should_stream (((RygelHTTPRequest*) request)->item);
-#line 583 "rygel-http-time-seek.c"
+			if (request->thumbnail == NULL) {
+#line 88 "rygel-http-time-seek.vala"
+				_tmp3_ = request->subtitle == NULL;
+#line 585 "rygel-http-time-seek.c"
 			} else {
-#line 86 "rygel-http-time-seek.vala"
-				_tmp2_ = FALSE;
-#line 587 "rygel-http-time-seek.c"
+#line 87 "rygel-http-time-seek.vala"
+				_tmp3_ = FALSE;
+#line 589 "rygel-http-time-seek.c"
 			}
-#line 86 "rygel-http-time-seek.vala"
-			_tmp1_ = _tmp2_;
-#line 591 "rygel-http-time-seek.c"
-		}
-#line 85 "rygel-http-time-seek.vala"
-		_tmp0_ = _tmp1_;
+#line 87 "rygel-http-time-seek.vala"
+			if (_tmp3_) {
+#line 89 "rygel-http-time-seek.vala"
+				_tmp2_ = rygel_media_item_should_stream (((RygelHTTPRequest*) request)->item);
 #line 595 "rygel-http-time-seek.c"
-	} else {
-#line 84 "rygel-http-time-seek.vala"
-		_tmp0_ = FALSE;
+			} else {
+#line 87 "rygel-http-time-seek.vala"
+				_tmp2_ = FALSE;
 #line 599 "rygel-http-time-seek.c"
+			}
+#line 87 "rygel-http-time-seek.vala"
+			_tmp1_ = _tmp2_;
+#line 603 "rygel-http-time-seek.c"
+		}
+#line 86 "rygel-http-time-seek.vala"
+		_tmp0_ = _tmp1_;
+#line 607 "rygel-http-time-seek.c"
+	} else {
+#line 85 "rygel-http-time-seek.vala"
+		_tmp0_ = FALSE;
+#line 611 "rygel-http-time-seek.c"
 	}
 	result = _tmp0_;
-#line 84 "rygel-http-time-seek.vala"
+#line 85 "rygel-http-time-seek.vala"
 	return result;
-#line 604 "rygel-http-time-seek.c"
+#line 616 "rygel-http-time-seek.c"
 }
 
 
-#line 90 "rygel-http-time-seek.vala"
+#line 92 "rygel-http-time-seek.vala"
 static void rygel_http_time_seek_real_add_response_headers (RygelHTTPSeek* base) {
-#line 610 "rygel-http-time-seek.c"
+#line 622 "rygel-http-time-seek.c"
 	RygelHTTPTimeSeek * self;
 	double start;
 	double stop;
 	double length;
 	char* range;
 	self = (RygelHTTPTimeSeek*) base;
-#line 92 "rygel-http-time-seek.vala"
-	start = ((double) rygel_http_seek_get_start ((RygelHTTPSeek*) self)) / GST_SECOND;
-#line 93 "rygel-http-time-seek.vala"
-	stop = ((double) rygel_http_seek_get_stop ((RygelHTTPSeek*) self)) / GST_SECOND;
 #line 94 "rygel-http-time-seek.vala"
-	length = ((double) rygel_http_seek_get_length ((RygelHTTPSeek*) self)) / GST_SECOND;
+	start = ((double) rygel_http_seek_get_start ((RygelHTTPSeek*) self)) / GST_SECOND;
+#line 95 "rygel-http-time-seek.vala"
+	stop = ((double) rygel_http_seek_get_stop ((RygelHTTPSeek*) self)) / GST_SECOND;
 #line 96 "rygel-http-time-seek.vala"
-	range = g_strdup_printf ("npt=%.2f-%.2f/%.2f", start, stop, length);
+	length = ((double) rygel_http_seek_get_length ((RygelHTTPSeek*) self)) / GST_SECOND;
 #line 98 "rygel-http-time-seek.vala"
+	range = g_strdup_printf ("npt=%.2f-%.2f/%.2f", start, stop, length);
+#line 100 "rygel-http-time-seek.vala"
 	soup_message_headers_append (rygel_http_seek_get_msg ((RygelHTTPSeek*) self)->response_headers, "TimeSeekRange.dlna.org", range);
-#line 627 "rygel-http-time-seek.c"
+#line 639 "rygel-http-time-seek.c"
 	_g_free0 (range);
 }
 

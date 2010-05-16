@@ -32,6 +32,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <gst/gst.h>
+#include <glib/gi18n-lib.h>
 
 
 #define RYGEL_TYPE_HTTP_GET_HANDLER (rygel_http_get_handler_get_type ())
@@ -344,7 +345,7 @@ static gpointer _g_object_ref0 (gpointer self) {
 
 #line 33 "rygel-http-transcode-handler.vala"
 RygelHTTPTranscodeHandler* rygel_http_transcode_handler_construct (GType object_type, RygelTranscoder* transcoder, GCancellable* cancellable) {
-#line 348 "rygel-http-transcode-handler.c"
+#line 349 "rygel-http-transcode-handler.c"
 	RygelHTTPTranscodeHandler * self;
 	RygelTranscoder* _tmp0_;
 #line 33 "rygel-http-transcode-handler.vala"
@@ -355,7 +356,7 @@ RygelHTTPTranscodeHandler* rygel_http_transcode_handler_construct (GType object_
 	self->priv->transcoder = (_tmp0_ = _g_object_ref0 (transcoder), _g_object_unref0 (self->priv->transcoder), _tmp0_);
 #line 36 "rygel-http-transcode-handler.vala"
 	rygel_http_get_handler_set_cancellable ((RygelHTTPGetHandler*) self, cancellable);
-#line 359 "rygel-http-transcode-handler.c"
+#line 360 "rygel-http-transcode-handler.c"
 	return self;
 }
 
@@ -364,19 +365,19 @@ RygelHTTPTranscodeHandler* rygel_http_transcode_handler_construct (GType object_
 RygelHTTPTranscodeHandler* rygel_http_transcode_handler_new (RygelTranscoder* transcoder, GCancellable* cancellable) {
 #line 33 "rygel-http-transcode-handler.vala"
 	return rygel_http_transcode_handler_construct (RYGEL_TYPE_HTTP_TRANSCODE_HANDLER, transcoder, cancellable);
-#line 368 "rygel-http-transcode-handler.c"
+#line 369 "rygel-http-transcode-handler.c"
 }
 
 
 #line 39 "rygel-http-transcode-handler.vala"
 static void rygel_http_transcode_handler_real_add_response_headers (RygelHTTPGetHandler* base, RygelHTTPGet* request, GError** error) {
-#line 374 "rygel-http-transcode-handler.c"
+#line 375 "rygel-http-transcode-handler.c"
 	RygelHTTPTranscodeHandler * self;
 	GError * _inner_error_;
 	self = (RygelHTTPTranscodeHandler*) base;
 #line 39 "rygel-http-transcode-handler.vala"
 	g_return_if_fail (request != NULL);
-#line 380 "rygel-http-transcode-handler.c"
+#line 381 "rygel-http-transcode-handler.c"
 	_inner_error_ = NULL;
 #line 41 "rygel-http-transcode-handler.vala"
 	soup_message_headers_append (((RygelHTTPRequest*) request)->msg->response_headers, "Content-Type", rygel_transcoder_get_mime_type (self->priv->transcoder));
@@ -384,11 +385,11 @@ static void rygel_http_transcode_handler_real_add_response_headers (RygelHTTPGet
 	if (request->seek != NULL) {
 #line 44 "rygel-http-transcode-handler.vala"
 		rygel_http_seek_add_response_headers (request->seek);
-#line 388 "rygel-http-transcode-handler.c"
+#line 389 "rygel-http-transcode-handler.c"
 	}
 #line 48 "rygel-http-transcode-handler.vala"
 	RYGEL_HTTP_GET_HANDLER_CLASS (rygel_http_transcode_handler_parent_class)->add_response_headers (RYGEL_HTTP_GET_HANDLER (self), request, &_inner_error_);
-#line 392 "rygel-http-transcode-handler.c"
+#line 393 "rygel-http-transcode-handler.c"
 	if (_inner_error_ != NULL) {
 		if (_inner_error_->domain == RYGEL_HTTP_REQUEST_ERROR) {
 			g_propagate_error (error, _inner_error_);
@@ -404,7 +405,7 @@ static void rygel_http_transcode_handler_real_add_response_headers (RygelHTTPGet
 
 #line 51 "rygel-http-transcode-handler.vala"
 static RygelHTTPResponse* rygel_http_transcode_handler_real_render_body (RygelHTTPGetHandler* base, RygelHTTPGet* request, GError** error) {
-#line 408 "rygel-http-transcode-handler.c"
+#line 409 "rygel-http-transcode-handler.c"
 	RygelHTTPTranscodeHandler * self;
 	RygelHTTPResponse* result = NULL;
 	GError * _inner_error_;
@@ -413,7 +414,7 @@ static RygelHTTPResponse* rygel_http_transcode_handler_real_render_body (RygelHT
 	self = (RygelHTTPTranscodeHandler*) base;
 #line 51 "rygel-http-transcode-handler.vala"
 	g_return_val_if_fail (request != NULL, NULL);
-#line 417 "rygel-http-transcode-handler.c"
+#line 418 "rygel-http-transcode-handler.c"
 	_inner_error_ = NULL;
 #line 53 "rygel-http-transcode-handler.vala"
 	item = _g_object_ref0 (((RygelHTTPRequest*) request)->item);
@@ -421,8 +422,8 @@ static RygelHTTPResponse* rygel_http_transcode_handler_real_render_body (RygelHT
 	src = rygel_media_item_create_stream_source (item);
 #line 55 "rygel-http-transcode-handler.vala"
 	if (src == NULL) {
-#line 425 "rygel-http-transcode-handler.c"
-		_inner_error_ = g_error_new_literal (RYGEL_HTTP_REQUEST_ERROR, RYGEL_HTTP_REQUEST_ERROR_NOT_FOUND, "Not found");
+#line 426 "rygel-http-transcode-handler.c"
+		_inner_error_ = g_error_new_literal (RYGEL_HTTP_REQUEST_ERROR, RYGEL_HTTP_REQUEST_ERROR_NOT_FOUND, _ ("Not found"));
 		{
 			if (_inner_error_->domain == RYGEL_HTTP_REQUEST_ERROR) {
 				g_propagate_error (error, _inner_error_);
@@ -444,27 +445,27 @@ static RygelHTTPResponse* rygel_http_transcode_handler_real_render_body (RygelHT
 		RygelLiveResponse* _tmp2_;
 #line 60 "rygel-http-transcode-handler.vala"
 		_tmp0_ = rygel_transcoder_create_source (self->priv->transcoder, item, src, &_inner_error_);
-#line 448 "rygel-http-transcode-handler.c"
+#line 449 "rygel-http-transcode-handler.c"
 		if (_inner_error_ != NULL) {
-			goto __catch33_g_error;
+			goto __catch34_g_error;
 		}
 #line 60 "rygel-http-transcode-handler.vala"
 		src = (_tmp1_ = _tmp0_, _gst_object_unref0 (src), _tmp1_);
 #line 62 "rygel-http-transcode-handler.vala"
 		_tmp2_ = rygel_live_response_new (((RygelHTTPRequest*) request)->server, ((RygelHTTPRequest*) request)->msg, "RygelLiveResponse", src, request->seek, rygel_http_get_handler_get_cancellable ((RygelHTTPGetHandler*) self), &_inner_error_);
-#line 456 "rygel-http-transcode-handler.c"
+#line 457 "rygel-http-transcode-handler.c"
 		if (_inner_error_ != NULL) {
-			goto __catch33_g_error;
+			goto __catch34_g_error;
 		}
 		result = (RygelHTTPResponse*) _tmp2_;
 		_g_object_unref0 (item);
 		_gst_object_unref0 (src);
 #line 62 "rygel-http-transcode-handler.vala"
 		return result;
-#line 465 "rygel-http-transcode-handler.c"
+#line 466 "rygel-http-transcode-handler.c"
 	}
-	goto __finally33;
-	__catch33_g_error:
+	goto __finally34;
+	__catch34_g_error:
 	{
 		GError * err;
 		err = _inner_error_;
@@ -475,12 +476,12 @@ static RygelHTTPResponse* rygel_http_transcode_handler_real_render_body (RygelHT
 				_g_error_free0 (err);
 				_g_object_unref0 (item);
 				_gst_object_unref0 (src);
-				goto __finally33;
+				goto __finally34;
 			}
 			_g_error_free0 (err);
 		}
 	}
-	__finally33:
+	__finally34:
 	{
 		if (_inner_error_->domain == RYGEL_HTTP_REQUEST_ERROR) {
 			g_propagate_error (error, _inner_error_);
@@ -502,7 +503,7 @@ static RygelHTTPResponse* rygel_http_transcode_handler_real_render_body (RygelHT
 
 #line 73 "rygel-http-transcode-handler.vala"
 static GUPnPDIDLLiteResource* rygel_http_transcode_handler_real_add_resource (RygelHTTPGetHandler* base, GUPnPDIDLLiteItem* didl_item, RygelHTTPGet* request, GError** error) {
-#line 506 "rygel-http-transcode-handler.c"
+#line 507 "rygel-http-transcode-handler.c"
 	RygelHTTPTranscodeHandler * self;
 	GUPnPDIDLLiteResource* result = NULL;
 	GError * _inner_error_;
@@ -512,11 +513,11 @@ static GUPnPDIDLLiteResource* rygel_http_transcode_handler_real_add_resource (Ry
 	g_return_val_if_fail (didl_item != NULL, NULL);
 #line 73 "rygel-http-transcode-handler.vala"
 	g_return_val_if_fail (request != NULL, NULL);
-#line 516 "rygel-http-transcode-handler.c"
+#line 517 "rygel-http-transcode-handler.c"
 	_inner_error_ = NULL;
 #line 76 "rygel-http-transcode-handler.vala"
 	_tmp0_ = rygel_transcoder_add_resource (self->priv->transcoder, didl_item, ((RygelHTTPRequest*) request)->item, (RygelTranscodeManager*) ((RygelHTTPRequest*) request)->http_server, &_inner_error_);
-#line 520 "rygel-http-transcode-handler.c"
+#line 521 "rygel-http-transcode-handler.c"
 	if (_inner_error_ != NULL) {
 		g_propagate_error (error, _inner_error_);
 		return NULL;
@@ -524,7 +525,7 @@ static GUPnPDIDLLiteResource* rygel_http_transcode_handler_real_add_resource (Ry
 	result = _tmp0_;
 #line 76 "rygel-http-transcode-handler.vala"
 	return result;
-#line 528 "rygel-http-transcode-handler.c"
+#line 529 "rygel-http-transcode-handler.c"
 }
 
 

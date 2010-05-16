@@ -30,6 +30,7 @@
 #include <string.h>
 #include <libgupnp-av/gupnp-av.h>
 #include <libgupnp/gupnp.h>
+#include <glib/gi18n-lib.h>
 #include <gee.h>
 #include <gst/gst.h>
 
@@ -262,10 +263,9 @@ struct _RygelItemCreatorRunData {
 	GSimpleAsyncResult* _async_result;
 	RygelItemCreator* self;
 	RygelMediaContainer* container;
-	char* _tmp0_;
-	GError* _tmp1_;
-	RygelMediaItem* _tmp2_;
-	char* _tmp3_;
+	char* message;
+	RygelMediaItem* _tmp0_;
+	char* _tmp1_;
 	GError * err;
 	GError * _inner_error_;
 };
@@ -329,8 +329,8 @@ static void rygel_item_creator_parse_args (RygelItemCreator* self, GAsyncReadyCa
 static void rygel_item_creator_parse_args_finish (RygelItemCreator* self, GAsyncResult* _res_, GError** error);
 static void rygel_item_creator_fetch_container (RygelItemCreator* self, GAsyncReadyCallback _callback_, gpointer _user_data_);
 static RygelMediaContainer* rygel_item_creator_fetch_container_finish (RygelItemCreator* self, GAsyncResult* _res_, GError** error);
-static void _lambda7_ (GUPnPDIDLLiteItem* didl_item, RygelItemCreator* self);
-static void __lambda7__gupnp_didl_lite_parser_item_available (GUPnPDIDLLiteParser* _sender, GUPnPDIDLLiteItem* item, gpointer self);
+static void _lambda6_ (GUPnPDIDLLiteItem* didl_item, RygelItemCreator* self);
+static void __lambda6__gupnp_didl_lite_parser_item_available (GUPnPDIDLLiteParser* _sender, GUPnPDIDLLiteItem* item, gpointer self);
 RygelMediaItem* rygel_media_item_new (const char* id, RygelMediaContainer* parent, const char* title, const char* upnp_class);
 RygelMediaItem* rygel_media_item_construct (GType object_type, const char* id, RygelMediaContainer* parent, const char* title, const char* upnp_class);
 static char* rygel_item_creator_get_generic_mime_type (RygelItemCreator* self);
@@ -456,7 +456,7 @@ static void rygel_item_creator_run_ready (GObject* source_object, GAsyncResult* 
 
 
 #line 62 "rygel-item-creator.vala"
-static void _lambda7_ (GUPnPDIDLLiteItem* didl_item, RygelItemCreator* self) {
+static void _lambda6_ (GUPnPDIDLLiteItem* didl_item, RygelItemCreator* self) {
 #line 461 "rygel-item-creator.c"
 	GUPnPDIDLLiteItem* _tmp0_;
 #line 62 "rygel-item-creator.vala"
@@ -468,9 +468,9 @@ static void _lambda7_ (GUPnPDIDLLiteItem* didl_item, RygelItemCreator* self) {
 
 
 #line 62 "rygel-item-creator.vala"
-static void __lambda7__gupnp_didl_lite_parser_item_available (GUPnPDIDLLiteParser* _sender, GUPnPDIDLLiteItem* item, gpointer self) {
+static void __lambda6__gupnp_didl_lite_parser_item_available (GUPnPDIDLLiteParser* _sender, GUPnPDIDLLiteItem* item, gpointer self) {
 #line 473 "rygel-item-creator.c"
-	_lambda7_ (item, self);
+	_lambda6_ (item, self);
 }
 
 
@@ -497,69 +497,72 @@ static gboolean rygel_item_creator_real_run_co (RygelItemCreatorRunData* data) {
 			_state_43:
 			data->container = rygel_item_creator_fetch_container_finish (data->self, data->_res_, &data->_inner_error_);
 			if (data->_inner_error_ != NULL) {
-				goto __catch52_g_error;
+				goto __catch54_g_error;
 			}
 #line 62 "rygel-item-creator.vala"
-			g_signal_connect_object (data->self->priv->didl_parser, "item-available", (GCallback) __lambda7__gupnp_didl_lite_parser_item_available, data->self, 0);
+			g_signal_connect_object (data->self->priv->didl_parser, "item-available", (GCallback) __lambda6__gupnp_didl_lite_parser_item_available, data->self, 0);
 #line 65 "rygel-item-creator.vala"
 			gupnp_didl_lite_parser_parse_didl (data->self->priv->didl_parser, data->self->elements, &data->_inner_error_);
 #line 507 "rygel-item-creator.c"
 			if (data->_inner_error_ != NULL) {
 				_g_object_unref0 (data->container);
-				goto __catch52_g_error;
+				goto __catch54_g_error;
 			}
 #line 66 "rygel-item-creator.vala"
 			if (data->self->didl_item == NULL) {
 #line 514 "rygel-item-creator.c"
-				data->_inner_error_ = (data->_tmp1_ = g_error_new_literal (RYGEL_ITEM_CREATOR_ERROR, RYGEL_ITEM_CREATOR_ERROR_PARSE, data->_tmp0_ = g_strconcat ("Failed to find any item " "in DIDL-Lite from client: ", data->self->elements, NULL)), _g_free0 (data->_tmp0_), data->_tmp1_);
+				data->message = g_strdup (_ ("No items in DIDL-Lite from client: '%s'"));
+				data->_inner_error_ = g_error_new (RYGEL_ITEM_CREATOR_ERROR, RYGEL_ITEM_CREATOR_ERROR_PARSE, data->message, data->self->elements);
 				{
+					_g_free0 (data->message);
 					_g_object_unref0 (data->container);
-					goto __catch52_g_error;
+					goto __catch54_g_error;
 				}
+				_g_free0 (data->message);
 			}
 #line 72 "rygel-item-creator.vala"
-			data->self->item = (data->_tmp2_ = rygel_media_item_new (gupnp_didl_lite_object_get_id ((GUPnPDIDLLiteObject*) data->self->didl_item), data->container, gupnp_didl_lite_object_get_title ((GUPnPDIDLLiteObject*) data->self->didl_item), gupnp_didl_lite_object_get_upnp_class ((GUPnPDIDLLiteObject*) data->self->didl_item)), _g_object_unref0 (data->self->item), data->_tmp2_);
+			data->self->item = (data->_tmp0_ = rygel_media_item_new (gupnp_didl_lite_object_get_id ((GUPnPDIDLLiteObject*) data->self->didl_item), data->container, gupnp_didl_lite_object_get_title ((GUPnPDIDLLiteObject*) data->self->didl_item), gupnp_didl_lite_object_get_upnp_class ((GUPnPDIDLLiteObject*) data->self->didl_item)), _g_object_unref0 (data->self->item), data->_tmp0_);
 #line 76 "rygel-item-creator.vala"
-			data->self->item->mime_type = (data->_tmp3_ = rygel_item_creator_get_generic_mime_type (data->self), _g_free0 (data->self->item->mime_type), data->_tmp3_);
+			data->self->item->mime_type = (data->_tmp1_ = rygel_item_creator_get_generic_mime_type (data->self), _g_free0 (data->self->item->mime_type), data->_tmp1_);
 #line 77 "rygel-item-creator.vala"
 			data->self->item->place_holder = TRUE;
-#line 527 "rygel-item-creator.c"
+#line 530 "rygel-item-creator.c"
 			data->_state_ = 44;
 			rygel_media_container_add_item (data->container, data->self->item, rygel_state_machine_get_cancellable ((RygelStateMachine*) data->self), rygel_item_creator_run_ready, data);
 			return FALSE;
 			_state_44:
 #line 79 "rygel-item-creator.vala"
 			rygel_media_container_add_item_finish (data->container, data->_res_, &data->_inner_error_);
-#line 534 "rygel-item-creator.c"
+#line 537 "rygel-item-creator.c"
 			if (data->_inner_error_ != NULL) {
 				_g_object_unref0 (data->container);
-				goto __catch52_g_error;
+				goto __catch54_g_error;
 			}
 #line 80 "rygel-item-creator.vala"
 			rygel_didl_lite_writer_serialize (data->self->priv->didl_writer, (RygelMediaObject*) data->self->item, &data->_inner_error_);
-#line 541 "rygel-item-creator.c"
+#line 544 "rygel-item-creator.c"
 			if (data->_inner_error_ != NULL) {
 				_g_object_unref0 (data->container);
-				goto __catch52_g_error;
+				goto __catch54_g_error;
 			}
 #line 83 "rygel-item-creator.vala"
 			rygel_item_creator_conclude (data->self);
-#line 548 "rygel-item-creator.c"
+#line 551 "rygel-item-creator.c"
 			_g_object_unref0 (data->container);
 		}
-		goto __finally52;
-		__catch52_g_error:
+		goto __finally54;
+		__catch54_g_error:
 		{
 			data->err = data->_inner_error_;
 			data->_inner_error_ = NULL;
 			{
 #line 85 "rygel-item-creator.vala"
 				rygel_item_creator_handle_error (data->self, data->err);
-#line 559 "rygel-item-creator.c"
+#line 562 "rygel-item-creator.c"
 				_g_error_free0 (data->err);
 			}
 		}
-		__finally52:
+		__finally54:
 		if (data->_inner_error_ != NULL) {
 			g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, data->_inner_error_->message, g_quark_to_string (data->_inner_error_->domain), data->_inner_error_->code);
 			g_clear_error (&data->_inner_error_);
@@ -628,16 +631,16 @@ static gboolean rygel_item_creator_parse_args_co (RygelItemCreatorParseArgsData*
 		if (data->self->container_id == NULL) {
 #line 94 "rygel-item-creator.vala"
 			data->_tmp0_ = TRUE;
-#line 632 "rygel-item-creator.c"
+#line 635 "rygel-item-creator.c"
 		} else {
 #line 94 "rygel-item-creator.vala"
 			data->_tmp0_ = data->self->elements == NULL;
-#line 636 "rygel-item-creator.c"
+#line 639 "rygel-item-creator.c"
 		}
 #line 94 "rygel-item-creator.vala"
 		if (data->_tmp0_) {
-#line 640 "rygel-item-creator.c"
-			data->_inner_error_ = g_error_new_literal (RYGEL_CONTENT_DIRECTORY_ERROR, RYGEL_CONTENT_DIRECTORY_ERROR_NO_SUCH_OBJECT, "No such object");
+#line 643 "rygel-item-creator.c"
+			data->_inner_error_ = g_error_new_literal (RYGEL_CONTENT_DIRECTORY_ERROR, RYGEL_CONTENT_DIRECTORY_ERROR_NO_SUCH_OBJECT, _ ("No such object"));
 			{
 				g_simple_async_result_set_from_error (data->_async_result, data->_inner_error_);
 				g_error_free (data->_inner_error_);
@@ -734,20 +737,20 @@ static gboolean rygel_item_creator_fetch_container_co (RygelItemCreatorFetchCont
 				return FALSE;
 			}
 		}
-#line 104 "rygel-item-creator.vala"
+#line 105 "rygel-item-creator.vala"
 		if (data->media_object == NULL) {
-#line 104 "rygel-item-creator.vala"
+#line 105 "rygel-item-creator.vala"
 			data->_tmp0_ = TRUE;
-#line 742 "rygel-item-creator.c"
+#line 745 "rygel-item-creator.c"
 		} else {
-#line 104 "rygel-item-creator.vala"
+#line 105 "rygel-item-creator.vala"
 			data->_tmp0_ = !RYGEL_IS_MEDIA_CONTAINER (data->media_object);
-#line 746 "rygel-item-creator.c"
+#line 749 "rygel-item-creator.c"
 		}
-#line 104 "rygel-item-creator.vala"
+#line 105 "rygel-item-creator.vala"
 		if (data->_tmp0_) {
-#line 750 "rygel-item-creator.c"
-			data->_inner_error_ = g_error_new_literal (RYGEL_CONTENT_DIRECTORY_ERROR, RYGEL_CONTENT_DIRECTORY_ERROR_NO_SUCH_OBJECT, "No such object");
+#line 753 "rygel-item-creator.c"
+			data->_inner_error_ = g_error_new_literal (RYGEL_CONTENT_DIRECTORY_ERROR, RYGEL_CONTENT_DIRECTORY_ERROR_NO_SUCH_OBJECT, _ ("No such object"));
 			{
 				g_simple_async_result_set_from_error (data->_async_result, data->_inner_error_);
 				g_error_free (data->_inner_error_);
@@ -788,56 +791,56 @@ static gboolean rygel_item_creator_fetch_container_co (RygelItemCreatorFetchCont
 }
 
 
-#line 111 "rygel-item-creator.vala"
-static void rygel_item_creator_conclude (RygelItemCreator* self) {
-#line 794 "rygel-item-creator.c"
-	char* didl;
-#line 111 "rygel-item-creator.vala"
-	g_return_if_fail (self != NULL);
 #line 113 "rygel-item-creator.vala"
+static void rygel_item_creator_conclude (RygelItemCreator* self) {
+#line 797 "rygel-item-creator.c"
+	char* didl;
+#line 113 "rygel-item-creator.vala"
+	g_return_if_fail (self != NULL);
+#line 115 "rygel-item-creator.vala"
 	didl = gupnp_didl_lite_writer_get_string ((GUPnPDIDLLiteWriter*) self->priv->didl_writer);
-#line 116 "rygel-item-creator.vala"
+#line 118 "rygel-item-creator.vala"
 	gupnp_service_action_set (self->priv->action, "Result", G_TYPE_STRING, didl, "ObjectID", G_TYPE_STRING, ((RygelMediaObject*) self->item)->id, NULL);
-#line 119 "rygel-item-creator.vala"
+#line 121 "rygel-item-creator.vala"
 	gupnp_service_action_return (self->priv->action);
-#line 120 "rygel-item-creator.vala"
+#line 122 "rygel-item-creator.vala"
 	g_signal_emit_by_name ((RygelStateMachine*) self, "completed");
-#line 806 "rygel-item-creator.c"
+#line 809 "rygel-item-creator.c"
 	_g_free0 (didl);
 }
 
 
-#line 123 "rygel-item-creator.vala"
-static void rygel_item_creator_handle_error (RygelItemCreator* self, GError* _error_) {
-#line 123 "rygel-item-creator.vala"
-	g_return_if_fail (self != NULL);
-#line 124 "rygel-item-creator.vala"
-	if (_error_->domain == RYGEL_CONTENT_DIRECTORY_ERROR) {
 #line 125 "rygel-item-creator.vala"
-		gupnp_service_action_return_error (self->priv->action, (guint) _error_->code, _error_->message);
-#line 819 "rygel-item-creator.c"
-	} else {
+static void rygel_item_creator_handle_error (RygelItemCreator* self, GError* _error_) {
+#line 125 "rygel-item-creator.vala"
+	g_return_if_fail (self != NULL);
+#line 126 "rygel-item-creator.vala"
+	if (_error_->domain == RYGEL_CONTENT_DIRECTORY_ERROR) {
 #line 127 "rygel-item-creator.vala"
+		gupnp_service_action_return_error (self->priv->action, (guint) _error_->code, _error_->message);
+#line 822 "rygel-item-creator.c"
+	} else {
+#line 129 "rygel-item-creator.vala"
 		gupnp_service_action_return_error (self->priv->action, (guint) 701, _error_->message);
-#line 823 "rygel-item-creator.c"
+#line 826 "rygel-item-creator.c"
 	}
-#line 130 "rygel-item-creator.vala"
-	g_warning ("rygel-item-creator.vala:130: Failed to create item under '%s': %s", self->container_id, _error_->message);
-#line 134 "rygel-item-creator.vala"
+#line 132 "rygel-item-creator.vala"
+	g_warning (_ ("Failed to create item under '%s': %s"), self->container_id, _error_->message);
+#line 136 "rygel-item-creator.vala"
 	g_signal_emit_by_name ((RygelStateMachine*) self, "completed");
-#line 829 "rygel-item-creator.c"
+#line 832 "rygel-item-creator.c"
 }
 
 
-#line 137 "rygel-item-creator.vala"
+#line 139 "rygel-item-creator.vala"
 static char* rygel_item_creator_get_generic_mime_type (RygelItemCreator* self) {
-#line 835 "rygel-item-creator.c"
+#line 838 "rygel-item-creator.c"
 	char* result = NULL;
 	GQuark _tmp1_;
 	const char* _tmp0_;
-#line 137 "rygel-item-creator.vala"
+#line 139 "rygel-item-creator.vala"
 	g_return_val_if_fail (self != NULL, NULL);
-#line 841 "rygel-item-creator.c"
+#line 844 "rygel-item-creator.c"
 	_tmp0_ = ((RygelMediaObject*) self->item)->upnp_class;
 	_tmp1_ = (NULL == _tmp0_) ? 0 : g_quark_from_string (_tmp0_);
 	if (_tmp1_ == g_quark_from_string (RYGEL_MEDIA_ITEM_IMAGE_CLASS))
@@ -845,27 +848,27 @@ static char* rygel_item_creator_get_generic_mime_type (RygelItemCreator* self) {
 		default:
 		{
 			result = g_strdup ("image");
-#line 140 "rygel-item-creator.vala"
+#line 142 "rygel-item-creator.vala"
 			return result;
-#line 851 "rygel-item-creator.c"
+#line 854 "rygel-item-creator.c"
 		}
 	} else if (_tmp1_ == g_quark_from_string (RYGEL_MEDIA_ITEM_VIDEO_CLASS))
 	switch (0) {
 		default:
 		{
 			result = g_strdup ("video");
-#line 142 "rygel-item-creator.vala"
+#line 144 "rygel-item-creator.vala"
 			return result;
-#line 860 "rygel-item-creator.c"
+#line 863 "rygel-item-creator.c"
 		}
 	} else
 	switch (0) {
 		default:
 		{
 			result = g_strdup ("audio");
-#line 145 "rygel-item-creator.vala"
+#line 147 "rygel-item-creator.vala"
 			return result;
-#line 869 "rygel-item-creator.c"
+#line 872 "rygel-item-creator.c"
 		}
 	}
 }
@@ -878,7 +881,7 @@ static GCancellable* rygel_item_creator_real_get_cancellable (RygelStateMachine*
 	result = self->priv->_cancellable;
 #line 45 "rygel-item-creator.vala"
 	return result;
-#line 882 "rygel-item-creator.c"
+#line 885 "rygel-item-creator.c"
 }
 
 

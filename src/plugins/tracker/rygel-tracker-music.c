@@ -29,6 +29,7 @@
 #include <rygel.h>
 #include <stdlib.h>
 #include <string.h>
+#include <glib/gi18n-lib.h>
 
 
 #define RYGEL_TYPE_TRACKER_CATEGORY_CONTAINER (rygel_tracker_category_container_get_type ())
@@ -154,7 +155,7 @@ static void _vala_array_free (gpointer array, gint array_length, GDestroyNotify 
 
 #line 30 "rygel-tracker-music.vala"
 RygelTrackerMusic* rygel_tracker_music_construct (GType object_type, const char* id, RygelMediaContainer* parent, const char* title) {
-#line 158 "rygel-tracker-music.c"
+#line 159 "rygel-tracker-music.c"
 	RygelTrackerMusic * self;
 	RygelTrackerMusicItemFactory* _tmp0_;
 	char** _tmp2_;
@@ -177,24 +178,24 @@ RygelTrackerMusic* rygel_tracker_music_construct (GType object_type, const char*
 	g_return_val_if_fail (title != NULL, NULL);
 #line 33 "rygel-tracker-music.vala"
 	self = (RygelTrackerMusic*) rygel_tracker_category_container_construct (object_type, id, parent, title, (RygelTrackerItemFactory*) (_tmp0_ = rygel_tracker_music_item_factory_new ()));
-#line 181 "rygel-tracker-music.c"
+#line 182 "rygel-tracker-music.c"
 	_rygel_tracker_item_factory_unref0 (_tmp0_);
 	key_chain = (_tmp2_ = (_tmp1_ = g_new0 (char*, 3 + 1), _tmp1_[0] = g_strdup ("nmm:performer"), _tmp1_[1] = g_strdup ("nmm:artistName"), _tmp1_[2] = NULL, _tmp1_), key_chain_length1 = 3, _key_chain_size_ = key_chain_length1, _tmp2_);
 #line 38 "rygel-tracker-music.vala"
-	rygel_simple_container_add_child ((RygelSimpleContainer*) self, (RygelMediaObject*) (_tmp4_ = rygel_tracker_metadata_values_new (_tmp3_ = g_strconcat (id, "Artists", NULL), (RygelMediaContainer*) self, "Artists", ((RygelTrackerCategoryContainer*) self)->item_factory, key_chain, key_chain_length1, rygel_tracker_metadata_values_default_id_func, NULL, rygel_tracker_metadata_values_default_id_func, NULL, rygel_tracker_metadata_values_default_filter_func, NULL)));
-#line 186 "rygel-tracker-music.c"
+	rygel_simple_container_add_child ((RygelSimpleContainer*) self, (RygelMediaObject*) (_tmp4_ = rygel_tracker_metadata_values_new (_tmp3_ = g_strconcat (id, "Artists", NULL), (RygelMediaContainer*) self, _ ("Artists"), ((RygelTrackerCategoryContainer*) self)->item_factory, key_chain, key_chain_length1, rygel_tracker_metadata_values_default_id_func, NULL, rygel_tracker_metadata_values_default_id_func, NULL, rygel_tracker_metadata_values_default_filter_func, NULL)));
+#line 187 "rygel-tracker-music.c"
 	_g_object_unref0 (_tmp4_);
 	_g_free0 (_tmp3_);
 #line 44 "rygel-tracker-music.vala"
 	key_chain = (_tmp6_ = (_tmp5_ = g_new0 (char*, 3 + 1), _tmp5_[0] = g_strdup ("nmm:musicAlbum"), _tmp5_[1] = g_strdup ("nmm:albumTitle"), _tmp5_[2] = NULL, _tmp5_), key_chain = (_vala_array_free (key_chain, key_chain_length1, (GDestroyNotify) g_free), NULL), key_chain_length1 = 3, _key_chain_size_ = key_chain_length1, _tmp6_);
 #line 45 "rygel-tracker-music.vala"
-	rygel_simple_container_add_child ((RygelSimpleContainer*) self, (RygelMediaObject*) (_tmp8_ = rygel_tracker_metadata_values_new (_tmp7_ = g_strconcat (id, "Albums", NULL), (RygelMediaContainer*) self, "Albums", ((RygelTrackerCategoryContainer*) self)->item_factory, key_chain, key_chain_length1, rygel_tracker_metadata_values_default_id_func, NULL, rygel_tracker_metadata_values_default_id_func, NULL, rygel_tracker_metadata_values_default_filter_func, NULL)));
-#line 193 "rygel-tracker-music.c"
+	rygel_simple_container_add_child ((RygelSimpleContainer*) self, (RygelMediaObject*) (_tmp8_ = rygel_tracker_metadata_values_new (_tmp7_ = g_strconcat (id, "Albums", NULL), (RygelMediaContainer*) self, _ ("Albums"), ((RygelTrackerCategoryContainer*) self)->item_factory, key_chain, key_chain_length1, rygel_tracker_metadata_values_default_id_func, NULL, rygel_tracker_metadata_values_default_id_func, NULL, rygel_tracker_metadata_values_default_filter_func, NULL)));
+#line 194 "rygel-tracker-music.c"
 	_g_object_unref0 (_tmp8_);
 	_g_free0 (_tmp7_);
 #line 50 "rygel-tracker-music.vala"
 	rygel_simple_container_add_child ((RygelSimpleContainer*) self, (RygelMediaObject*) (_tmp9_ = rygel_tracker_tags_new ((RygelMediaContainer*) self, ((RygelTrackerCategoryContainer*) self)->item_factory)));
-#line 198 "rygel-tracker-music.c"
+#line 199 "rygel-tracker-music.c"
 	_g_object_unref0 (_tmp9_);
 	key_chain = (_vala_array_free (key_chain, key_chain_length1, (GDestroyNotify) g_free), NULL);
 	return self;
@@ -205,7 +206,7 @@ RygelTrackerMusic* rygel_tracker_music_construct (GType object_type, const char*
 RygelTrackerMusic* rygel_tracker_music_new (const char* id, RygelMediaContainer* parent, const char* title) {
 #line 30 "rygel-tracker-music.vala"
 	return rygel_tracker_music_construct (RYGEL_TYPE_TRACKER_MUSIC, id, parent, title);
-#line 209 "rygel-tracker-music.c"
+#line 210 "rygel-tracker-music.c"
 }
 
 

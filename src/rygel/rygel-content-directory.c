@@ -32,6 +32,7 @@
 #include <string.h>
 #include <gio/gio.h>
 #include <gee.h>
+#include <glib/gi18n-lib.h>
 
 
 #define RYGEL_TYPE_CONTENT_DIRECTORY (rygel_content_directory_get_type ())
@@ -349,8 +350,8 @@ GType rygel_search_expression_get_type (void);
 GType rygel_media_item_get_type (void);
 static gboolean rygel_content_directory_update_notify (RygelContentDirectory* self);
 static gboolean _rygel_content_directory_update_notify_gsource_func (gpointer self);
-static gboolean _lambda8_ (Block1Data* _data1_);
-static gboolean __lambda8__gsource_func (gpointer self);
+static gboolean _lambda7_ (Block1Data* _data1_);
+static gboolean __lambda7__gsource_func (gpointer self);
 static Block1Data* block1_data_ref (Block1Data* _data1_);
 static void block1_data_unref (Block1Data* _data1_);
 RygelContentDirectory* rygel_content_directory_new (void);
@@ -367,15 +368,15 @@ GQuark rygel_content_directory_error_quark (void) {
 
 #line 72 "rygel-content-directory.vala"
 static RygelMediaContainer* rygel_content_directory_real_create_root_container (RygelContentDirectory* self) {
-#line 371 "rygel-content-directory.c"
+#line 372 "rygel-content-directory.c"
 	RygelMediaContainer* result = NULL;
 #line 72 "rygel-content-directory.vala"
 	g_return_val_if_fail (self != NULL, NULL);
-#line 375 "rygel-content-directory.c"
+#line 376 "rygel-content-directory.c"
 	result = NULL;
 #line 73 "rygel-content-directory.vala"
 	return result;
-#line 379 "rygel-content-directory.c"
+#line 380 "rygel-content-directory.c"
 }
 
 
@@ -383,132 +384,132 @@ static RygelMediaContainer* rygel_content_directory_real_create_root_container (
 RygelMediaContainer* rygel_content_directory_create_root_container (RygelContentDirectory* self) {
 #line 72 "rygel-content-directory.vala"
 	return RYGEL_CONTENT_DIRECTORY_GET_CLASS (self)->create_root_container (self);
-#line 387 "rygel-content-directory.c"
+#line 388 "rygel-content-directory.c"
 }
 
 
 #line 335 "rygel-content-directory.vala"
 static void _rygel_content_directory_on_container_updated_rygel_media_container_container_updated (RygelMediaContainer* _sender, RygelMediaContainer* container, gpointer self) {
-#line 393 "rygel-content-directory.c"
+#line 394 "rygel-content-directory.c"
 	rygel_content_directory_on_container_updated (self, _sender, container);
 }
 
 
 #line 147 "rygel-content-directory.vala"
 static void _rygel_content_directory_browse_cb_gupnp_service_action_invoked (RygelContentDirectory* _sender, GUPnPServiceAction* action, gpointer self) {
-#line 400 "rygel-content-directory.c"
+#line 401 "rygel-content-directory.c"
 	rygel_content_directory_browse_cb (self, _sender, action);
 }
 
 
 #line 155 "rygel-content-directory.vala"
 static void _rygel_content_directory_search_cb_gupnp_service_action_invoked (RygelContentDirectory* _sender, GUPnPServiceAction* action, gpointer self) {
-#line 407 "rygel-content-directory.c"
+#line 408 "rygel-content-directory.c"
 	rygel_content_directory_search_cb (self, _sender, action);
 }
 
 
 #line 163 "rygel-content-directory.vala"
 static void _rygel_content_directory_create_object_cb_gupnp_service_action_invoked (RygelContentDirectory* _sender, GUPnPServiceAction* action, gpointer self) {
-#line 414 "rygel-content-directory.c"
+#line 415 "rygel-content-directory.c"
 	rygel_content_directory_create_object_cb (self, _sender, action);
 }
 
 
 #line 171 "rygel-content-directory.vala"
 static void _rygel_content_directory_import_resource_cb_gupnp_service_action_invoked (RygelContentDirectory* _sender, GUPnPServiceAction* action, gpointer self) {
-#line 421 "rygel-content-directory.c"
+#line 422 "rygel-content-directory.c"
 	rygel_content_directory_import_resource_cb (self, _sender, action);
 }
 
 
 #line 194 "rygel-content-directory.vala"
 static void _rygel_content_directory_get_transfer_progress_cb_gupnp_service_action_invoked (RygelContentDirectory* _sender, GUPnPServiceAction* action, gpointer self) {
-#line 428 "rygel-content-directory.c"
+#line 429 "rygel-content-directory.c"
 	rygel_content_directory_get_transfer_progress_cb (self, _sender, action);
 }
 
 
 #line 215 "rygel-content-directory.vala"
 static void _rygel_content_directory_stop_transfer_resource_cb_gupnp_service_action_invoked (RygelContentDirectory* _sender, GUPnPServiceAction* action, gpointer self) {
-#line 435 "rygel-content-directory.c"
+#line 436 "rygel-content-directory.c"
 	rygel_content_directory_stop_transfer_resource_cb (self, _sender, action);
 }
 
 
 #line 186 "rygel-content-directory.vala"
 static void _rygel_content_directory_query_transfer_ids_gupnp_service_query_variable (RygelContentDirectory* _sender, const char* variable, GValue* value, gpointer self) {
-#line 442 "rygel-content-directory.c"
+#line 443 "rygel-content-directory.c"
 	rygel_content_directory_query_transfer_ids (self, _sender, variable, value);
 }
 
 
 #line 228 "rygel-content-directory.vala"
 static void _rygel_content_directory_get_system_update_id_cb_gupnp_service_action_invoked (RygelContentDirectory* _sender, GUPnPServiceAction* action, gpointer self) {
-#line 449 "rygel-content-directory.c"
+#line 450 "rygel-content-directory.c"
 	rygel_content_directory_get_system_update_id_cb (self, _sender, action);
 }
 
 
 #line 237 "rygel-content-directory.vala"
 static void _rygel_content_directory_query_system_update_id_gupnp_service_query_variable (RygelContentDirectory* _sender, const char* variable, GValue* value, gpointer self) {
-#line 456 "rygel-content-directory.c"
+#line 457 "rygel-content-directory.c"
 	rygel_content_directory_query_system_update_id (self, _sender, variable, value);
 }
 
 
 #line 246 "rygel-content-directory.vala"
 static void _rygel_content_directory_query_container_update_ids_gupnp_service_query_variable (RygelContentDirectory* _sender, const char* variable, GValue* value, gpointer self) {
-#line 463 "rygel-content-directory.c"
+#line 464 "rygel-content-directory.c"
 	rygel_content_directory_query_container_update_ids (self, _sender, variable, value);
 }
 
 
 #line 257 "rygel-content-directory.vala"
 static void _rygel_content_directory_get_search_capabilities_cb_gupnp_service_action_invoked (RygelContentDirectory* _sender, GUPnPServiceAction* action, gpointer self) {
-#line 470 "rygel-content-directory.c"
+#line 471 "rygel-content-directory.c"
 	rygel_content_directory_get_search_capabilities_cb (self, _sender, action);
 }
 
 
 #line 266 "rygel-content-directory.vala"
 static void _rygel_content_directory_query_search_capabilities_gupnp_service_query_variable (RygelContentDirectory* _sender, const char* variable, GValue* value, gpointer self) {
-#line 477 "rygel-content-directory.c"
+#line 478 "rygel-content-directory.c"
 	rygel_content_directory_query_search_capabilities (self, _sender, variable, value);
 }
 
 
 #line 275 "rygel-content-directory.vala"
 static void _rygel_content_directory_get_sort_capabilities_cb_gupnp_service_action_invoked (RygelContentDirectory* _sender, GUPnPServiceAction* action, gpointer self) {
-#line 484 "rygel-content-directory.c"
+#line 485 "rygel-content-directory.c"
 	rygel_content_directory_get_sort_capabilities_cb (self, _sender, action);
 }
 
 
 #line 284 "rygel-content-directory.vala"
 static void _rygel_content_directory_query_sort_capabilities_gupnp_service_query_variable (RygelContentDirectory* _sender, const char* variable, GValue* value, gpointer self) {
-#line 491 "rygel-content-directory.c"
+#line 492 "rygel-content-directory.c"
 	rygel_content_directory_query_sort_capabilities (self, _sender, variable, value);
 }
 
 
 #line 293 "rygel-content-directory.vala"
 static void _rygel_content_directory_get_feature_list_cb_gupnp_service_action_invoked (RygelContentDirectory* _sender, GUPnPServiceAction* action, gpointer self) {
-#line 498 "rygel-content-directory.c"
+#line 499 "rygel-content-directory.c"
 	rygel_content_directory_get_feature_list_cb (self, _sender, action);
 }
 
 
 #line 302 "rygel-content-directory.vala"
 static void _rygel_content_directory_query_feature_list_gupnp_service_query_variable (RygelContentDirectory* _sender, const char* variable, GValue* value, gpointer self) {
-#line 505 "rygel-content-directory.c"
+#line 506 "rygel-content-directory.c"
 	rygel_content_directory_query_feature_list (self, _sender, variable, value);
 }
 
 
 #line 76 "rygel-content-directory.vala"
 static void rygel_content_directory_real_constructed (GObject* base) {
-#line 512 "rygel-content-directory.c"
+#line 513 "rygel-content-directory.c"
 	RygelContentDirectory * self;
 	GError * _inner_error_;
 	GCancellable* _tmp0_;
@@ -523,38 +524,37 @@ static void rygel_content_directory_real_constructed (GObject* base) {
 	self->cancellable = (_tmp0_ = g_cancellable_new (), _g_object_unref0 (self->cancellable), _tmp0_);
 #line 79 "rygel-content-directory.vala"
 	self->root_container = (_tmp1_ = rygel_content_directory_create_root_container (self), _g_object_unref0 (self->root_container), _tmp1_);
-#line 527 "rygel-content-directory.c"
+#line 528 "rygel-content-directory.c"
 	{
 		RygelHTTPServer* _tmp2_;
 		RygelHTTPServer* _tmp3_;
 #line 82 "rygel-content-directory.vala"
 		_tmp2_ = rygel_http_server_new (self, g_type_name (G_TYPE_FROM_INSTANCE ((GObject*) self)), &_inner_error_);
-#line 533 "rygel-content-directory.c"
+#line 534 "rygel-content-directory.c"
 		if (_inner_error_ != NULL) {
-			goto __catch24_g_error;
+			goto __catch25_g_error;
 		}
 #line 82 "rygel-content-directory.vala"
 		self->http_server = (_tmp3_ = _tmp2_, _g_object_unref0 (self->http_server), _tmp3_);
-#line 539 "rygel-content-directory.c"
+#line 540 "rygel-content-directory.c"
 	}
-	goto __finally24;
-	__catch24_g_error:
+	goto __finally25;
+	__catch25_g_error:
 	{
 		GError * err;
 		err = _inner_error_;
 		_inner_error_ = NULL;
 		{
 #line 84 "rygel-content-directory.vala"
-			g_critical ("rygel-content-directory.vala:84: Failed to create HTTP server for %s: " \
-"%s", g_type_name (G_TYPE_FROM_INSTANCE ((GObject*) self)), err->message);
-#line 550 "rygel-content-directory.c"
+			g_critical (_ ("Failed to create HTTP server for %s: %s"), g_type_name (G_TYPE_FROM_INSTANCE ((GObject*) self)), err->message);
+#line 551 "rygel-content-directory.c"
 			_g_error_free0 (err);
 #line 87 "rygel-content-directory.vala"
 			return;
-#line 554 "rygel-content-directory.c"
+#line 555 "rygel-content-directory.c"
 		}
 	}
-	__finally24:
+	__finally25:
 	if (_inner_error_ != NULL) {
 		g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
 		g_clear_error (&_inner_error_);
@@ -604,13 +604,13 @@ static void rygel_content_directory_real_constructed (GObject* base) {
 	g_signal_connect_object ((GUPnPService*) self, "query-variable::FeatureList", (GCallback) _rygel_content_directory_query_feature_list_gupnp_service_query_variable, self, 0);
 #line 138 "rygel-content-directory.vala"
 	rygel_state_machine_run ((RygelStateMachine*) self->http_server, NULL, NULL);
-#line 607 "rygel-content-directory.c"
+#line 608 "rygel-content-directory.c"
 }
 
 
 #line 147 "rygel-content-directory.vala"
 static void rygel_content_directory_browse_cb (RygelContentDirectory* self, RygelContentDirectory* content_dir, GUPnPServiceAction* action) {
-#line 613 "rygel-content-directory.c"
+#line 614 "rygel-content-directory.c"
 	RygelBrowse* browse;
 #line 147 "rygel-content-directory.vala"
 	g_return_if_fail (self != NULL);
@@ -622,14 +622,14 @@ static void rygel_content_directory_browse_cb (RygelContentDirectory* self, Ryge
 	browse = rygel_browse_new (self, action);
 #line 151 "rygel-content-directory.vala"
 	rygel_state_machine_run ((RygelStateMachine*) browse, NULL, NULL);
-#line 625 "rygel-content-directory.c"
+#line 626 "rygel-content-directory.c"
 	_g_object_unref0 (browse);
 }
 
 
 #line 155 "rygel-content-directory.vala"
 static void rygel_content_directory_search_cb (RygelContentDirectory* self, RygelContentDirectory* content_dir, GUPnPServiceAction* action) {
-#line 632 "rygel-content-directory.c"
+#line 633 "rygel-content-directory.c"
 	RygelSearch* search;
 #line 155 "rygel-content-directory.vala"
 	g_return_if_fail (self != NULL);
@@ -641,14 +641,14 @@ static void rygel_content_directory_search_cb (RygelContentDirectory* self, Ryge
 	search = rygel_search_new (self, action);
 #line 159 "rygel-content-directory.vala"
 	rygel_state_machine_run ((RygelStateMachine*) search, NULL, NULL);
-#line 644 "rygel-content-directory.c"
+#line 645 "rygel-content-directory.c"
 	_g_object_unref0 (search);
 }
 
 
 #line 163 "rygel-content-directory.vala"
 static void rygel_content_directory_create_object_cb (RygelContentDirectory* self, RygelContentDirectory* content_dir, GUPnPServiceAction* action) {
-#line 651 "rygel-content-directory.c"
+#line 652 "rygel-content-directory.c"
 	RygelItemCreator* creator;
 #line 163 "rygel-content-directory.vala"
 	g_return_if_fail (self != NULL);
@@ -660,21 +660,21 @@ static void rygel_content_directory_create_object_cb (RygelContentDirectory* sel
 	creator = rygel_item_creator_new (self, action);
 #line 167 "rygel-content-directory.vala"
 	rygel_state_machine_run ((RygelStateMachine*) creator, NULL, NULL);
-#line 663 "rygel-content-directory.c"
+#line 664 "rygel-content-directory.c"
 	_g_object_unref0 (creator);
 }
 
 
 #line 381 "rygel-content-directory.vala"
 static void _rygel_content_directory_on_import_completed_rygel_state_machine_completed (RygelImportResource* _sender, gpointer self) {
-#line 670 "rygel-content-directory.c"
+#line 671 "rygel-content-directory.c"
 	rygel_content_directory_on_import_completed (self, _sender);
 }
 
 
 #line 171 "rygel-content-directory.vala"
 static void rygel_content_directory_import_resource_cb (RygelContentDirectory* self, RygelContentDirectory* content_dir, GUPnPServiceAction* action) {
-#line 677 "rygel-content-directory.c"
+#line 678 "rygel-content-directory.c"
 	RygelImportResource* import;
 	char* _tmp0_;
 #line 171 "rygel-content-directory.vala"
@@ -693,7 +693,7 @@ static void rygel_content_directory_import_resource_cb (RygelContentDirectory* s
 	rygel_state_machine_run ((RygelStateMachine*) import, NULL, NULL);
 #line 180 "rygel-content-directory.vala"
 	gupnp_service_notify ((GUPnPService*) self, "TransferIDs", G_TYPE_STRING, _tmp0_ = rygel_content_directory_create_transfer_ids (self), NULL);
-#line 696 "rygel-content-directory.c"
+#line 697 "rygel-content-directory.c"
 	_g_free0 (_tmp0_);
 	_g_object_unref0 (import);
 }
@@ -701,7 +701,7 @@ static void rygel_content_directory_import_resource_cb (RygelContentDirectory* s
 
 #line 186 "rygel-content-directory.vala"
 static void rygel_content_directory_query_transfer_ids (RygelContentDirectory* self, RygelContentDirectory* content_dir, const char* variable, GValue* value) {
-#line 704 "rygel-content-directory.c"
+#line 705 "rygel-content-directory.c"
 	char* _tmp0_;
 #line 186 "rygel-content-directory.vala"
 	g_return_if_fail (self != NULL);
@@ -713,14 +713,14 @@ static void rygel_content_directory_query_transfer_ids (RygelContentDirectory* s
 	g_value_init (value, G_TYPE_STRING);
 #line 190 "rygel-content-directory.vala"
 	g_value_set_string (value, _tmp0_ = rygel_content_directory_create_transfer_ids (self));
-#line 716 "rygel-content-directory.c"
+#line 717 "rygel-content-directory.c"
 	_g_free0 (_tmp0_);
 }
 
 
 #line 194 "rygel-content-directory.vala"
 static void rygel_content_directory_get_transfer_progress_cb (RygelContentDirectory* self, RygelContentDirectory* content_dir, GUPnPServiceAction* action) {
-#line 723 "rygel-content-directory.c"
+#line 724 "rygel-content-directory.c"
 	RygelImportResource* import;
 #line 194 "rygel-content-directory.vala"
 	g_return_if_fail (self != NULL);
@@ -736,11 +736,11 @@ static void rygel_content_directory_get_transfer_progress_cb (RygelContentDirect
 		gupnp_service_action_set (action, "TransferStatus", G_TYPE_STRING, rygel_import_resource_get_status_as_string (import), "TransferLength", G_TYPE_INT64, import->bytes_copied, "TransferTotal", G_TYPE_INT64, import->bytes_total, NULL);
 #line 208 "rygel-content-directory.vala"
 		gupnp_service_action_return (action);
-#line 739 "rygel-content-directory.c"
+#line 740 "rygel-content-directory.c"
 	} else {
 #line 210 "rygel-content-directory.vala"
-		gupnp_service_action_return_error (action, (guint) 717, "No such file transfer");
-#line 743 "rygel-content-directory.c"
+		gupnp_service_action_return_error (action, (guint) 717, _ ("No such file transfer"));
+#line 744 "rygel-content-directory.c"
 	}
 	_g_object_unref0 (import);
 }
@@ -748,7 +748,7 @@ static void rygel_content_directory_get_transfer_progress_cb (RygelContentDirect
 
 #line 215 "rygel-content-directory.vala"
 static void rygel_content_directory_stop_transfer_resource_cb (RygelContentDirectory* self, RygelContentDirectory* content_dir, GUPnPServiceAction* action) {
-#line 751 "rygel-content-directory.c"
+#line 752 "rygel-content-directory.c"
 	RygelImportResource* import;
 #line 215 "rygel-content-directory.vala"
 	g_return_if_fail (self != NULL);
@@ -764,11 +764,11 @@ static void rygel_content_directory_stop_transfer_resource_cb (RygelContentDirec
 		g_cancellable_cancel (rygel_state_machine_get_cancellable ((RygelStateMachine*) import));
 #line 221 "rygel-content-directory.vala"
 		gupnp_service_action_return (action);
-#line 767 "rygel-content-directory.c"
+#line 768 "rygel-content-directory.c"
 	} else {
 #line 223 "rygel-content-directory.vala"
-		gupnp_service_action_return_error (action, (guint) 717, "No such file transfer");
-#line 771 "rygel-content-directory.c"
+		gupnp_service_action_return_error (action, (guint) 717, _ ("No such file transfer"));
+#line 772 "rygel-content-directory.c"
 	}
 	_g_object_unref0 (import);
 }
@@ -786,7 +786,7 @@ static void rygel_content_directory_get_system_update_id_cb (RygelContentDirecto
 	gupnp_service_action_set (action, "Id", G_TYPE_UINT, self->system_update_id, NULL);
 #line 233 "rygel-content-directory.vala"
 	gupnp_service_action_return (action);
-#line 789 "rygel-content-directory.c"
+#line 790 "rygel-content-directory.c"
 }
 
 
@@ -802,13 +802,13 @@ static void rygel_content_directory_query_system_update_id (RygelContentDirector
 	g_value_init (value, G_TYPE_UINT);
 #line 242 "rygel-content-directory.vala"
 	g_value_set_uint (value, (guint) self->system_update_id);
-#line 805 "rygel-content-directory.c"
+#line 806 "rygel-content-directory.c"
 }
 
 
 #line 246 "rygel-content-directory.vala"
 static void rygel_content_directory_query_container_update_ids (RygelContentDirectory* self, RygelContentDirectory* content_dir, const char* variable, GValue* value) {
-#line 811 "rygel-content-directory.c"
+#line 812 "rygel-content-directory.c"
 	char* update_ids;
 #line 246 "rygel-content-directory.vala"
 	g_return_if_fail (self != NULL);
@@ -822,7 +822,7 @@ static void rygel_content_directory_query_container_update_ids (RygelContentDire
 	g_value_init (value, G_TYPE_STRING);
 #line 253 "rygel-content-directory.vala"
 	g_value_set_string (value, update_ids);
-#line 825 "rygel-content-directory.c"
+#line 826 "rygel-content-directory.c"
 	_g_free0 (update_ids);
 }
 
@@ -839,7 +839,7 @@ static void rygel_content_directory_get_search_capabilities_cb (RygelContentDire
 	gupnp_service_action_set (action, "SearchCaps", G_TYPE_STRING, RYGEL_CONTENT_DIRECTORY_SEARCH_CAPS, NULL);
 #line 262 "rygel-content-directory.vala"
 	gupnp_service_action_return (action);
-#line 842 "rygel-content-directory.c"
+#line 843 "rygel-content-directory.c"
 }
 
 
@@ -855,7 +855,7 @@ static void rygel_content_directory_query_search_capabilities (RygelContentDirec
 	g_value_init (value, G_TYPE_STRING);
 #line 271 "rygel-content-directory.vala"
 	g_value_set_string (value, RYGEL_CONTENT_DIRECTORY_SEARCH_CAPS);
-#line 858 "rygel-content-directory.c"
+#line 859 "rygel-content-directory.c"
 }
 
 
@@ -871,7 +871,7 @@ static void rygel_content_directory_get_sort_capabilities_cb (RygelContentDirect
 	gupnp_service_action_set (action, "SortCaps", G_TYPE_STRING, self->sort_caps, NULL);
 #line 280 "rygel-content-directory.vala"
 	gupnp_service_action_return (action);
-#line 874 "rygel-content-directory.c"
+#line 875 "rygel-content-directory.c"
 }
 
 
@@ -887,7 +887,7 @@ static void rygel_content_directory_query_sort_capabilities (RygelContentDirecto
 	g_value_init (value, G_TYPE_STRING);
 #line 289 "rygel-content-directory.vala"
 	g_value_set_string (value, self->sort_caps);
-#line 890 "rygel-content-directory.c"
+#line 891 "rygel-content-directory.c"
 }
 
 
@@ -903,7 +903,7 @@ static void rygel_content_directory_get_feature_list_cb (RygelContentDirectory* 
 	gupnp_service_action_set (action, "FeatureList", G_TYPE_STRING, self->feature_list, NULL);
 #line 298 "rygel-content-directory.vala"
 	gupnp_service_action_return (action);
-#line 906 "rygel-content-directory.c"
+#line 907 "rygel-content-directory.c"
 }
 
 
@@ -919,26 +919,26 @@ static void rygel_content_directory_query_feature_list (RygelContentDirectory* s
 	g_value_init (value, G_TYPE_STRING);
 #line 307 "rygel-content-directory.vala"
 	g_value_set_string (value, self->feature_list);
-#line 922 "rygel-content-directory.c"
+#line 923 "rygel-content-directory.c"
 }
 
 
 #line 310 "rygel-content-directory.vala"
 static char* rygel_content_directory_create_container_update_ids (RygelContentDirectory* self) {
-#line 928 "rygel-content-directory.c"
+#line 929 "rygel-content-directory.c"
 	char* result = NULL;
 	char* update_ids;
 #line 310 "rygel-content-directory.vala"
 	g_return_val_if_fail (self != NULL, NULL);
 #line 311 "rygel-content-directory.vala"
 	update_ids = g_strdup ("");
-#line 935 "rygel-content-directory.c"
+#line 936 "rygel-content-directory.c"
 	{
 		GeeIterator* _container_it;
 		_container_it = gee_abstract_collection_iterator ((GeeAbstractCollection*) self->priv->updated_containers);
 #line 313 "rygel-content-directory.vala"
 		while (TRUE) {
-#line 941 "rygel-content-directory.c"
+#line 942 "rygel-content-directory.c"
 			RygelMediaContainer* container;
 			char* _tmp4_;
 			char* _tmp3_;
@@ -948,21 +948,21 @@ static char* rygel_content_directory_create_container_update_ids (RygelContentDi
 			if (!gee_iterator_next (_container_it)) {
 #line 313 "rygel-content-directory.vala"
 				break;
-#line 951 "rygel-content-directory.c"
+#line 952 "rygel-content-directory.c"
 			}
 #line 313 "rygel-content-directory.vala"
 			container = (RygelMediaContainer*) gee_iterator_get (_container_it);
 #line 314 "rygel-content-directory.vala"
 			if (_vala_strcmp0 (update_ids, "") != 0) {
-#line 957 "rygel-content-directory.c"
+#line 958 "rygel-content-directory.c"
 				char* _tmp0_;
 #line 315 "rygel-content-directory.vala"
 				update_ids = (_tmp0_ = g_strconcat (update_ids, ",", NULL), _g_free0 (update_ids), _tmp0_);
-#line 961 "rygel-content-directory.c"
+#line 962 "rygel-content-directory.c"
 			}
 #line 318 "rygel-content-directory.vala"
 			update_ids = (_tmp4_ = g_strconcat (update_ids, _tmp3_ = g_strconcat (_tmp1_ = g_strconcat (((RygelMediaObject*) container)->id, ",", NULL), _tmp2_ = g_strdup_printf ("%u", container->update_id), NULL), NULL), _g_free0 (update_ids), _tmp4_);
-#line 965 "rygel-content-directory.c"
+#line 966 "rygel-content-directory.c"
 			_g_free0 (_tmp3_);
 			_g_free0 (_tmp2_);
 			_g_free0 (_tmp1_);
@@ -973,13 +973,13 @@ static char* rygel_content_directory_create_container_update_ids (RygelContentDi
 	result = update_ids;
 #line 321 "rygel-content-directory.vala"
 	return result;
-#line 976 "rygel-content-directory.c"
+#line 977 "rygel-content-directory.c"
 }
 
 
 #line 353 "rygel-content-directory.vala"
 static gboolean _rygel_content_directory_update_notify_gsource_func (gpointer self) {
-#line 982 "rygel-content-directory.c"
+#line 983 "rygel-content-directory.c"
 	return rygel_content_directory_update_notify (self);
 }
 
@@ -1000,7 +1000,7 @@ static void rygel_content_directory_on_container_updated (RygelContentDirectory*
 		gee_abstract_collection_clear ((GeeAbstractCollection*) self->priv->updated_containers);
 #line 341 "rygel-content-directory.vala"
 		self->priv->clear_updated_containers = FALSE;
-#line 1003 "rygel-content-directory.c"
+#line 1004 "rygel-content-directory.c"
 	}
 #line 345 "rygel-content-directory.vala"
 	gee_abstract_collection_remove ((GeeAbstractCollection*) self->priv->updated_containers, updated_container);
@@ -1010,14 +1010,14 @@ static void rygel_content_directory_on_container_updated (RygelContentDirectory*
 	if (self->priv->update_notify_id == 0) {
 #line 349 "rygel-content-directory.vala"
 		self->priv->update_notify_id = g_timeout_add_full (G_PRIORITY_DEFAULT, (guint) 200, _rygel_content_directory_update_notify_gsource_func, g_object_ref (self), g_object_unref);
-#line 1013 "rygel-content-directory.c"
+#line 1014 "rygel-content-directory.c"
 	}
 }
 
 
 #line 353 "rygel-content-directory.vala"
 static gboolean rygel_content_directory_update_notify (RygelContentDirectory* self) {
-#line 1020 "rygel-content-directory.c"
+#line 1021 "rygel-content-directory.c"
 	gboolean result = FALSE;
 	char* update_ids;
 #line 353 "rygel-content-directory.vala"
@@ -1032,56 +1032,56 @@ static gboolean rygel_content_directory_update_notify (RygelContentDirectory* se
 	self->priv->clear_updated_containers = TRUE;
 #line 360 "rygel-content-directory.vala"
 	self->priv->update_notify_id = (guint) 0;
-#line 1035 "rygel-content-directory.c"
+#line 1036 "rygel-content-directory.c"
 	result = FALSE;
 	_g_free0 (update_ids);
 #line 362 "rygel-content-directory.vala"
 	return result;
-#line 1040 "rygel-content-directory.c"
+#line 1041 "rygel-content-directory.c"
 }
 
 
 #line 365 "rygel-content-directory.vala"
 static char* rygel_content_directory_create_transfer_ids (RygelContentDirectory* self) {
-#line 1046 "rygel-content-directory.c"
+#line 1047 "rygel-content-directory.c"
 	char* result = NULL;
 	char* ids;
 #line 365 "rygel-content-directory.vala"
 	g_return_val_if_fail (self != NULL, NULL);
 #line 366 "rygel-content-directory.vala"
 	ids = g_strdup ("");
-#line 1053 "rygel-content-directory.c"
+#line 1054 "rygel-content-directory.c"
 	{
 		GeeIterator* _import_it;
 		_import_it = gee_abstract_collection_iterator ((GeeAbstractCollection*) self->priv->active_imports);
 #line 368 "rygel-content-directory.vala"
 		while (TRUE) {
-#line 1059 "rygel-content-directory.c"
+#line 1060 "rygel-content-directory.c"
 			RygelImportResource* import;
 #line 368 "rygel-content-directory.vala"
 			if (!gee_iterator_next (_import_it)) {
 #line 368 "rygel-content-directory.vala"
 				break;
-#line 1065 "rygel-content-directory.c"
+#line 1066 "rygel-content-directory.c"
 			}
 #line 368 "rygel-content-directory.vala"
 			import = (RygelImportResource*) gee_iterator_get (_import_it);
 #line 369 "rygel-content-directory.vala"
 			if (import->status != RYGEL_TRANSFER_STATUS_COMPLETED) {
-#line 1071 "rygel-content-directory.c"
+#line 1072 "rygel-content-directory.c"
 				char* _tmp2_;
 				char* _tmp1_;
 #line 370 "rygel-content-directory.vala"
 				if (_vala_strcmp0 (ids, "") != 0) {
-#line 1076 "rygel-content-directory.c"
+#line 1077 "rygel-content-directory.c"
 					char* _tmp0_;
 #line 371 "rygel-content-directory.vala"
 					ids = (_tmp0_ = g_strconcat (ids, ",", NULL), _g_free0 (ids), _tmp0_);
-#line 1080 "rygel-content-directory.c"
+#line 1081 "rygel-content-directory.c"
 				}
 #line 374 "rygel-content-directory.vala"
 				ids = (_tmp2_ = g_strconcat (ids, _tmp1_ = g_strdup_printf ("%u", import->transfer_id), NULL), _g_free0 (ids), _tmp2_);
-#line 1084 "rygel-content-directory.c"
+#line 1085 "rygel-content-directory.c"
 				_g_free0 (_tmp1_);
 			}
 			_g_object_unref0 (import);
@@ -1091,30 +1091,30 @@ static char* rygel_content_directory_create_transfer_ids (RygelContentDirectory*
 	result = ids;
 #line 378 "rygel-content-directory.vala"
 	return result;
-#line 1094 "rygel-content-directory.c"
+#line 1095 "rygel-content-directory.c"
 }
 
 
 #line 388 "rygel-content-directory.vala"
-static gboolean _lambda8_ (Block1Data* _data1_) {
-#line 1100 "rygel-content-directory.c"
+static gboolean _lambda7_ (Block1Data* _data1_) {
+#line 1101 "rygel-content-directory.c"
 	RygelContentDirectory * self;
 	gboolean result = FALSE;
 	self = _data1_->self;
 #line 389 "rygel-content-directory.vala"
 	gee_abstract_collection_remove ((GeeAbstractCollection*) self->priv->active_imports, _data1_->import);
-#line 1106 "rygel-content-directory.c"
+#line 1107 "rygel-content-directory.c"
 	result = FALSE;
 #line 391 "rygel-content-directory.vala"
 	return result;
-#line 1110 "rygel-content-directory.c"
+#line 1111 "rygel-content-directory.c"
 }
 
 
 #line 388 "rygel-content-directory.vala"
-static gboolean __lambda8__gsource_func (gpointer self) {
-#line 1116 "rygel-content-directory.c"
-	return _lambda8_ (self);
+static gboolean __lambda7__gsource_func (gpointer self) {
+#line 1117 "rygel-content-directory.c"
+	return _lambda7_ (self);
 }
 
 
@@ -1140,32 +1140,32 @@ static void block1_data_unref (Block1Data* _data1_) {
 
 #line 381 "rygel-content-directory.vala"
 static void rygel_content_directory_on_import_completed (RygelContentDirectory* self, RygelImportResource* import) {
-#line 1143 "rygel-content-directory.c"
+#line 1144 "rygel-content-directory.c"
 	Block1Data* _data1_;
 	char* _tmp0_;
 #line 381 "rygel-content-directory.vala"
 	g_return_if_fail (self != NULL);
 #line 381 "rygel-content-directory.vala"
 	g_return_if_fail (import != NULL);
-#line 1150 "rygel-content-directory.c"
+#line 1151 "rygel-content-directory.c"
 	_data1_ = g_slice_new0 (Block1Data);
 	_data1_->_ref_count_ = 1;
 	_data1_->self = g_object_ref (self);
 	_data1_->import = _g_object_ref0 (import);
 #line 382 "rygel-content-directory.vala"
 	gupnp_service_notify ((GUPnPService*) self, "TransferIDs", G_TYPE_STRING, _tmp0_ = rygel_content_directory_create_transfer_ids (self), NULL);
-#line 1157 "rygel-content-directory.c"
+#line 1158 "rygel-content-directory.c"
 	_g_free0 (_tmp0_);
 #line 388 "rygel-content-directory.vala"
-	g_timeout_add_seconds_full (G_PRIORITY_DEFAULT, (guint) 30, __lambda8__gsource_func, block1_data_ref (_data1_), block1_data_unref);
-#line 1161 "rygel-content-directory.c"
+	g_timeout_add_seconds_full (G_PRIORITY_DEFAULT, (guint) 30, __lambda7__gsource_func, block1_data_ref (_data1_), block1_data_unref);
+#line 1162 "rygel-content-directory.c"
 	block1_data_unref (_data1_);
 }
 
 
 #line 395 "rygel-content-directory.vala"
 static RygelImportResource* rygel_content_directory_find_import_for_action (RygelContentDirectory* self, GUPnPServiceAction* action) {
-#line 1168 "rygel-content-directory.c"
+#line 1169 "rygel-content-directory.c"
 	RygelImportResource* result = NULL;
 	RygelImportResource* ret;
 	guint32 transfer_id = 0U;
@@ -1177,33 +1177,33 @@ static RygelImportResource* rygel_content_directory_find_import_for_action (Ryge
 	ret = NULL;
 #line 399 "rygel-content-directory.vala"
 	gupnp_service_action_get (action, "TransferID", G_TYPE_UINT, &transfer_id, NULL);
-#line 1180 "rygel-content-directory.c"
+#line 1181 "rygel-content-directory.c"
 	{
 		GeeIterator* _import_it;
 		_import_it = gee_abstract_collection_iterator ((GeeAbstractCollection*) self->priv->active_imports);
 #line 403 "rygel-content-directory.vala"
 		while (TRUE) {
-#line 1186 "rygel-content-directory.c"
+#line 1187 "rygel-content-directory.c"
 			RygelImportResource* import;
 #line 403 "rygel-content-directory.vala"
 			if (!gee_iterator_next (_import_it)) {
 #line 403 "rygel-content-directory.vala"
 				break;
-#line 1192 "rygel-content-directory.c"
+#line 1193 "rygel-content-directory.c"
 			}
 #line 403 "rygel-content-directory.vala"
 			import = (RygelImportResource*) gee_iterator_get (_import_it);
 #line 404 "rygel-content-directory.vala"
 			if (import->transfer_id == transfer_id) {
-#line 1198 "rygel-content-directory.c"
+#line 1199 "rygel-content-directory.c"
 				RygelImportResource* _tmp0_;
 #line 405 "rygel-content-directory.vala"
 				ret = (_tmp0_ = _g_object_ref0 (import), _g_object_unref0 (ret), _tmp0_);
-#line 1202 "rygel-content-directory.c"
+#line 1203 "rygel-content-directory.c"
 				_g_object_unref0 (import);
 #line 407 "rygel-content-directory.vala"
 				break;
-#line 1206 "rygel-content-directory.c"
+#line 1207 "rygel-content-directory.c"
 			}
 			_g_object_unref0 (import);
 		}
@@ -1212,13 +1212,13 @@ static RygelImportResource* rygel_content_directory_find_import_for_action (Ryge
 	result = ret;
 #line 411 "rygel-content-directory.vala"
 	return result;
-#line 1215 "rygel-content-directory.c"
+#line 1216 "rygel-content-directory.c"
 }
 
 
 #line 43 "rygel-content-directory.vala"
 RygelContentDirectory* rygel_content_directory_construct (GType object_type) {
-#line 1221 "rygel-content-directory.c"
+#line 1222 "rygel-content-directory.c"
 	RygelContentDirectory * self;
 	self = g_object_newv (object_type, 0, NULL);
 	return self;
@@ -1229,7 +1229,7 @@ RygelContentDirectory* rygel_content_directory_construct (GType object_type) {
 RygelContentDirectory* rygel_content_directory_new (void) {
 #line 43 "rygel-content-directory.vala"
 	return rygel_content_directory_construct (RYGEL_TYPE_CONTENT_DIRECTORY);
-#line 1232 "rygel-content-directory.c"
+#line 1233 "rygel-content-directory.c"
 }
 
 
@@ -1253,7 +1253,7 @@ static void rygel_content_directory_finalize (GObject* obj) {
 	{
 #line 143 "rygel-content-directory.vala"
 		g_cancellable_cancel (self->cancellable);
-#line 1256 "rygel-content-directory.c"
+#line 1257 "rygel-content-directory.c"
 	}
 	_g_free0 (self->feature_list);
 	_g_free0 (self->sort_caps);

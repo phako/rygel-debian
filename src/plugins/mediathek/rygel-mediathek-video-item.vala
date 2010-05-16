@@ -35,7 +35,7 @@ public class Rygel.MediathekVideoItem : Rygel.MediaItem {
              MediaItem.VIDEO_CLASS);
 
         this.mime_type = "video/x-ms-wmv";
-        this.author = "ZDF - Zweites Deutsches Fernsehen";
+        this.author = _("ZDF - Second German TV Channel Streams");
     }
 
     private static bool namespace_ok(Xml.Node* node) {
@@ -61,12 +61,12 @@ public class Rygel.MediathekVideoItem : Rygel.MediaItem {
             }
             else {
                 throw new MediathekVideoItemError.XML_PARSE_ERROR (
-                                                "group node has url property");
+                                        _("group node has no 'url' property"));
             }
         }
         else {
             throw new MediathekVideoItemError.XML_PARSE_ERROR (
-                                                "invalid or no namespace");
+                                        _("invalid or no namespace"));
         }
 
         return asx;
@@ -99,8 +99,9 @@ public class Rygel.MediathekVideoItem : Rygel.MediaItem {
                         }
                     }
                     else {
-                        throw new MediathekVideoItemError.XML_PARSE_ERROR (
-                                      "invalid or no namespace on group node");
+                        var msg = _("Invalid or no namespace on group node");
+
+                        throw new MediathekVideoItemError.XML_PARSE_ERROR (msg);
                     }
                     break;
                 default:
@@ -110,13 +111,13 @@ public class Rygel.MediathekVideoItem : Rygel.MediaItem {
         }
         if (title == null) {
             throw new MediathekVideoItemError.XML_PARSE_ERROR (
-                                                       "Could not find title");
+                                        _("Could not find title"));
         }
 
 
         if (asx == null) {
             throw new MediathekVideoItemError.XML_PARSE_ERROR (
-                                                       "Could not find uris");
+                                        _("Could not find URIs"));
         }
 
         video_item = new MediathekVideoItem (parent, title);

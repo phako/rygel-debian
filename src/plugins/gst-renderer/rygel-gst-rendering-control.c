@@ -35,6 +35,7 @@
 #include <string.h>
 #include <float.h>
 #include <math.h>
+#include <glib/gi18n-lib.h>
 #include <gobject/gvaluecollector.h>
 
 
@@ -186,56 +187,56 @@ static int _vala_strcmp0 (const char * str1, const char * str2);
 
 #line 100 "rygel-gst-rendering-control.vala"
 static void _rygel_gst_rendering_control_query_last_change_cb_gupnp_service_query_variable (GUPnPService* _sender, const char* variable, GValue* value, gpointer self) {
-#line 190 "rygel-gst-rendering-control.c"
+#line 191 "rygel-gst-rendering-control.c"
 	rygel_gst_rendering_control_query_last_change_cb (self, _sender, variable, value);
 }
 
 
 #line 127 "rygel-gst-rendering-control.vala"
 static void _rygel_gst_rendering_control_list_presets_cb_gupnp_service_action_invoked (GUPnPService* _sender, GUPnPServiceAction* action, gpointer self) {
-#line 197 "rygel-gst-rendering-control.c"
+#line 198 "rygel-gst-rendering-control.c"
 	rygel_gst_rendering_control_list_presets_cb (self, _sender, action);
 }
 
 
 #line 140 "rygel-gst-rendering-control.vala"
 static void _rygel_gst_rendering_control_select_preset_cb_gupnp_service_action_invoked (GUPnPService* _sender, GUPnPServiceAction* action, gpointer self) {
-#line 204 "rygel-gst-rendering-control.c"
+#line 205 "rygel-gst-rendering-control.c"
 	rygel_gst_rendering_control_select_preset_cb (self, _sender, action);
 }
 
 
 #line 172 "rygel-gst-rendering-control.vala"
 static void _rygel_gst_rendering_control_get_mute_cb_gupnp_service_action_invoked (GUPnPService* _sender, GUPnPServiceAction* action, gpointer self) {
-#line 211 "rygel-gst-rendering-control.c"
+#line 212 "rygel-gst-rendering-control.c"
 	rygel_gst_rendering_control_get_mute_cb (self, _sender, action);
 }
 
 
 #line 187 "rygel-gst-rendering-control.vala"
 static void _rygel_gst_rendering_control_set_mute_cb_gupnp_service_action_invoked (GUPnPService* _sender, GUPnPServiceAction* action, gpointer self) {
-#line 218 "rygel-gst-rendering-control.c"
+#line 219 "rygel-gst-rendering-control.c"
 	rygel_gst_rendering_control_set_mute_cb (self, _sender, action);
 }
 
 
 #line 206 "rygel-gst-rendering-control.vala"
 static void _rygel_gst_rendering_control_get_volume_cb_gupnp_service_action_invoked (GUPnPService* _sender, GUPnPServiceAction* action, gpointer self) {
-#line 225 "rygel-gst-rendering-control.c"
+#line 226 "rygel-gst-rendering-control.c"
 	rygel_gst_rendering_control_get_volume_cb (self, _sender, action);
 }
 
 
 #line 221 "rygel-gst-rendering-control.vala"
 static void _rygel_gst_rendering_control_set_volume_cb_gupnp_service_action_invoked (GUPnPService* _sender, GUPnPServiceAction* action, gpointer self) {
-#line 232 "rygel-gst-rendering-control.c"
+#line 233 "rygel-gst-rendering-control.c"
 	rygel_gst_rendering_control_set_volume_cb (self, _sender, action);
 }
 
 
 #line 84 "rygel-gst-rendering-control.vala"
 static void rygel_gst_rendering_control_real_constructed (GObject* base) {
-#line 239 "rygel-gst-rendering-control.c"
+#line 240 "rygel-gst-rendering-control.c"
 	RygelGstRenderingControl * self;
 	RygelGstChangeLog* _tmp0_;
 	RygelGstPlayer* _tmp1_;
@@ -260,13 +261,13 @@ static void rygel_gst_rendering_control_real_constructed (GObject* base) {
 	g_signal_connect_object ((GUPnPService*) self, "action-invoked::SetVolume", (GCallback) _rygel_gst_rendering_control_set_volume_cb_gupnp_service_action_invoked, self, 0);
 #line 97 "rygel-gst-rendering-control.vala"
 	self->priv->_volume = volume_to_percentage (rygel_gst_player_get_volume (self->priv->player));
-#line 264 "rygel-gst-rendering-control.c"
+#line 265 "rygel-gst-rendering-control.c"
 }
 
 
 #line 100 "rygel-gst-rendering-control.vala"
 static void rygel_gst_rendering_control_query_last_change_cb (RygelGstRenderingControl* self, GUPnPService* service, const char* variable, GValue* value) {
-#line 270 "rygel-gst-rendering-control.c"
+#line 271 "rygel-gst-rendering-control.c"
 	RygelGstChangeLog* log;
 	const char* _tmp0_;
 	char* _tmp1_;
@@ -279,29 +280,29 @@ static void rygel_gst_rendering_control_query_last_change_cb (RygelGstRenderingC
 	g_return_if_fail (variable != NULL);
 #line 104 "rygel-gst-rendering-control.vala"
 	log = rygel_gst_change_log_new (NULL, RYGEL_GST_RENDERING_CONTROL_LAST_CHANGE_NS);
-#line 283 "rygel-gst-rendering-control.c"
+#line 284 "rygel-gst-rendering-control.c"
 	_tmp0_ = NULL;
 #line 106 "rygel-gst-rendering-control.vala"
 	if (rygel_gst_rendering_control_get_mute (self)) {
 #line 106 "rygel-gst-rendering-control.vala"
 		_tmp0_ = "1";
-#line 289 "rygel-gst-rendering-control.c"
+#line 290 "rygel-gst-rendering-control.c"
 	} else {
 #line 106 "rygel-gst-rendering-control.vala"
 		_tmp0_ = "0";
-#line 293 "rygel-gst-rendering-control.c"
+#line 294 "rygel-gst-rendering-control.c"
 	}
 #line 106 "rygel-gst-rendering-control.vala"
 	rygel_gst_change_log_log_with_channel (log, "Mute", _tmp0_, "Master");
 #line 107 "rygel-gst-rendering-control.vala"
 	rygel_gst_change_log_log_with_channel (log, "Volume", _tmp1_ = g_strdup_printf ("%u", rygel_gst_rendering_control_get_volume (self)), "Master");
-#line 299 "rygel-gst-rendering-control.c"
+#line 300 "rygel-gst-rendering-control.c"
 	_g_free0 (_tmp1_);
 #line 109 "rygel-gst-rendering-control.vala"
 	g_value_init (value, G_TYPE_STRING);
 #line 110 "rygel-gst-rendering-control.vala"
 	g_value_set_string (value, _tmp2_ = rygel_gst_change_log_finish (log));
-#line 305 "rygel-gst-rendering-control.c"
+#line 306 "rygel-gst-rendering-control.c"
 	_g_free0 (_tmp2_);
 	_g_object_unref0 (log);
 }
@@ -309,7 +310,7 @@ static void rygel_gst_rendering_control_query_last_change_cb (RygelGstRenderingC
 
 #line 114 "rygel-gst-rendering-control.vala"
 static gboolean rygel_gst_rendering_control_check_instance_id (RygelGstRenderingControl* self, GUPnPServiceAction* action) {
-#line 313 "rygel-gst-rendering-control.c"
+#line 314 "rygel-gst-rendering-control.c"
 	gboolean result = FALSE;
 	guint instance_id = 0U;
 #line 114 "rygel-gst-rendering-control.vala"
@@ -321,17 +322,17 @@ static gboolean rygel_gst_rendering_control_check_instance_id (RygelGstRendering
 #line 118 "rygel-gst-rendering-control.vala"
 	if (instance_id != 0) {
 #line 119 "rygel-gst-rendering-control.vala"
-		gupnp_service_action_return_error (action, (guint) 702, "Invalid InstanceID");
-#line 326 "rygel-gst-rendering-control.c"
+		gupnp_service_action_return_error (action, (guint) 702, _ ("Invalid InstanceID"));
+#line 327 "rygel-gst-rendering-control.c"
 		result = FALSE;
 #line 121 "rygel-gst-rendering-control.vala"
 		return result;
-#line 330 "rygel-gst-rendering-control.c"
+#line 331 "rygel-gst-rendering-control.c"
 	}
 	result = TRUE;
 #line 124 "rygel-gst-rendering-control.vala"
 	return result;
-#line 335 "rygel-gst-rendering-control.c"
+#line 336 "rygel-gst-rendering-control.c"
 }
 
 
@@ -347,19 +348,19 @@ static void rygel_gst_rendering_control_list_presets_cb (RygelGstRenderingContro
 	if (!rygel_gst_rendering_control_check_instance_id (self, action)) {
 #line 130 "rygel-gst-rendering-control.vala"
 		return;
-#line 351 "rygel-gst-rendering-control.c"
+#line 352 "rygel-gst-rendering-control.c"
 	}
 #line 133 "rygel-gst-rendering-control.vala"
 	gupnp_service_action_set (action, "CurrentPresetNameList", G_TYPE_STRING, self->priv->preset_name_list, NULL);
 #line 137 "rygel-gst-rendering-control.vala"
 	gupnp_service_action_return (action);
-#line 357 "rygel-gst-rendering-control.c"
+#line 358 "rygel-gst-rendering-control.c"
 }
 
 
 #line 140 "rygel-gst-rendering-control.vala"
 static void rygel_gst_rendering_control_select_preset_cb (RygelGstRenderingControl* self, GUPnPService* service, GUPnPServiceAction* action) {
-#line 363 "rygel-gst-rendering-control.c"
+#line 364 "rygel-gst-rendering-control.c"
 	char* preset_name;
 #line 140 "rygel-gst-rendering-control.vala"
 	g_return_if_fail (self != NULL);
@@ -371,7 +372,7 @@ static void rygel_gst_rendering_control_select_preset_cb (RygelGstRenderingContr
 	if (!rygel_gst_rendering_control_check_instance_id (self, action)) {
 #line 143 "rygel-gst-rendering-control.vala"
 		return;
-#line 375 "rygel-gst-rendering-control.c"
+#line 376 "rygel-gst-rendering-control.c"
 	}
 	preset_name = NULL;
 #line 148 "rygel-gst-rendering-control.vala"
@@ -379,49 +380,49 @@ static void rygel_gst_rendering_control_select_preset_cb (RygelGstRenderingContr
 #line 149 "rygel-gst-rendering-control.vala"
 	if (_vala_strcmp0 (preset_name, "") != 0) {
 #line 150 "rygel-gst-rendering-control.vala"
-		gupnp_service_action_return_error (action, (guint) 701, "Invalid Name");
-#line 384 "rygel-gst-rendering-control.c"
+		gupnp_service_action_return_error (action, (guint) 701, _ ("Invalid Name"));
+#line 385 "rygel-gst-rendering-control.c"
 		_g_free0 (preset_name);
 #line 152 "rygel-gst-rendering-control.vala"
 		return;
-#line 388 "rygel-gst-rendering-control.c"
+#line 389 "rygel-gst-rendering-control.c"
 	}
 #line 155 "rygel-gst-rendering-control.vala"
 	gupnp_service_action_return (action);
-#line 392 "rygel-gst-rendering-control.c"
+#line 393 "rygel-gst-rendering-control.c"
 	_g_free0 (preset_name);
 }
 
 
 #line 159 "rygel-gst-rendering-control.vala"
 static gboolean rygel_gst_rendering_control_check_channel (RygelGstRenderingControl* self, GUPnPServiceAction* action) {
-#line 399 "rygel-gst-rendering-control.c"
+#line 400 "rygel-gst-rendering-control.c"
 	gboolean result = FALSE;
 	char* channel;
 #line 159 "rygel-gst-rendering-control.vala"
 	g_return_val_if_fail (self != NULL, FALSE);
 #line 159 "rygel-gst-rendering-control.vala"
 	g_return_val_if_fail (action != NULL, FALSE);
-#line 406 "rygel-gst-rendering-control.c"
+#line 407 "rygel-gst-rendering-control.c"
 	channel = NULL;
 #line 162 "rygel-gst-rendering-control.vala"
 	gupnp_service_action_get (action, "Channel", G_TYPE_STRING, &channel, NULL);
 #line 163 "rygel-gst-rendering-control.vala"
 	if (_vala_strcmp0 (channel, "Master") != 0) {
 #line 164 "rygel-gst-rendering-control.vala"
-		gupnp_service_action_return_error (action, (guint) 501, "Action Failed");
-#line 414 "rygel-gst-rendering-control.c"
+		gupnp_service_action_return_error (action, (guint) 501, _ ("Action Failed"));
+#line 415 "rygel-gst-rendering-control.c"
 		result = FALSE;
 		_g_free0 (channel);
 #line 166 "rygel-gst-rendering-control.vala"
 		return result;
-#line 419 "rygel-gst-rendering-control.c"
+#line 420 "rygel-gst-rendering-control.c"
 	}
 	result = TRUE;
 	_g_free0 (channel);
 #line 169 "rygel-gst-rendering-control.vala"
 	return result;
-#line 425 "rygel-gst-rendering-control.c"
+#line 426 "rygel-gst-rendering-control.c"
 }
 
 
@@ -437,25 +438,25 @@ static void rygel_gst_rendering_control_get_mute_cb (RygelGstRenderingControl* s
 	if (!rygel_gst_rendering_control_check_instance_id (self, action)) {
 #line 175 "rygel-gst-rendering-control.vala"
 		return;
-#line 441 "rygel-gst-rendering-control.c"
+#line 442 "rygel-gst-rendering-control.c"
 	}
 #line 178 "rygel-gst-rendering-control.vala"
 	if (!rygel_gst_rendering_control_check_channel (self, action)) {
 #line 179 "rygel-gst-rendering-control.vala"
 		return;
-#line 447 "rygel-gst-rendering-control.c"
+#line 448 "rygel-gst-rendering-control.c"
 	}
 #line 182 "rygel-gst-rendering-control.vala"
 	gupnp_service_action_set (action, "CurrentMute", G_TYPE_BOOLEAN, rygel_gst_rendering_control_get_mute (self), NULL);
 #line 184 "rygel-gst-rendering-control.vala"
 	gupnp_service_action_return (action);
-#line 453 "rygel-gst-rendering-control.c"
+#line 454 "rygel-gst-rendering-control.c"
 }
 
 
 #line 187 "rygel-gst-rendering-control.vala"
 static void rygel_gst_rendering_control_set_mute_cb (RygelGstRenderingControl* self, GUPnPService* service, GUPnPServiceAction* action) {
-#line 459 "rygel-gst-rendering-control.c"
+#line 460 "rygel-gst-rendering-control.c"
 	gboolean mute = FALSE;
 #line 187 "rygel-gst-rendering-control.vala"
 	g_return_if_fail (self != NULL);
@@ -467,13 +468,13 @@ static void rygel_gst_rendering_control_set_mute_cb (RygelGstRenderingControl* s
 	if (!rygel_gst_rendering_control_check_instance_id (self, action)) {
 #line 190 "rygel-gst-rendering-control.vala"
 		return;
-#line 471 "rygel-gst-rendering-control.c"
+#line 472 "rygel-gst-rendering-control.c"
 	}
 #line 193 "rygel-gst-rendering-control.vala"
 	if (!rygel_gst_rendering_control_check_channel (self, action)) {
 #line 194 "rygel-gst-rendering-control.vala"
 		return;
-#line 477 "rygel-gst-rendering-control.c"
+#line 478 "rygel-gst-rendering-control.c"
 	}
 #line 199 "rygel-gst-rendering-control.vala"
 	gupnp_service_action_get (action, "DesiredMute", G_TYPE_BOOLEAN, &mute, NULL);
@@ -481,7 +482,7 @@ static void rygel_gst_rendering_control_set_mute_cb (RygelGstRenderingControl* s
 	rygel_gst_rendering_control_set_mute (self, mute);
 #line 203 "rygel-gst-rendering-control.vala"
 	gupnp_service_action_return (action);
-#line 485 "rygel-gst-rendering-control.c"
+#line 486 "rygel-gst-rendering-control.c"
 }
 
 
@@ -497,25 +498,25 @@ static void rygel_gst_rendering_control_get_volume_cb (RygelGstRenderingControl*
 	if (!rygel_gst_rendering_control_check_instance_id (self, action)) {
 #line 209 "rygel-gst-rendering-control.vala"
 		return;
-#line 501 "rygel-gst-rendering-control.c"
+#line 502 "rygel-gst-rendering-control.c"
 	}
 #line 212 "rygel-gst-rendering-control.vala"
 	if (!rygel_gst_rendering_control_check_channel (self, action)) {
 #line 213 "rygel-gst-rendering-control.vala"
 		return;
-#line 507 "rygel-gst-rendering-control.c"
+#line 508 "rygel-gst-rendering-control.c"
 	}
 #line 216 "rygel-gst-rendering-control.vala"
 	gupnp_service_action_set (action, "CurrentVolume", G_TYPE_UINT, rygel_gst_rendering_control_get_volume (self), NULL);
 #line 218 "rygel-gst-rendering-control.vala"
 	gupnp_service_action_return (action);
-#line 513 "rygel-gst-rendering-control.c"
+#line 514 "rygel-gst-rendering-control.c"
 }
 
 
 #line 221 "rygel-gst-rendering-control.vala"
 static void rygel_gst_rendering_control_set_volume_cb (RygelGstRenderingControl* self, GUPnPService* service, GUPnPServiceAction* action) {
-#line 519 "rygel-gst-rendering-control.c"
+#line 520 "rygel-gst-rendering-control.c"
 	guint volume = 0U;
 #line 221 "rygel-gst-rendering-control.vala"
 	g_return_if_fail (self != NULL);
@@ -527,35 +528,35 @@ static void rygel_gst_rendering_control_set_volume_cb (RygelGstRenderingControl*
 	if (!rygel_gst_rendering_control_check_instance_id (self, action)) {
 #line 224 "rygel-gst-rendering-control.vala"
 		return;
-#line 531 "rygel-gst-rendering-control.c"
+#line 532 "rygel-gst-rendering-control.c"
 	}
 #line 227 "rygel-gst-rendering-control.vala"
 	if (!rygel_gst_rendering_control_check_channel (self, action)) {
 #line 228 "rygel-gst-rendering-control.vala"
 		return;
-#line 537 "rygel-gst-rendering-control.c"
+#line 538 "rygel-gst-rendering-control.c"
 	}
 #line 233 "rygel-gst-rendering-control.vala"
 	gupnp_service_action_get (action, "DesiredVolume", G_TYPE_UINT, &volume, NULL);
 #line 234 "rygel-gst-rendering-control.vala"
 	if (volume > 100) {
 #line 235 "rygel-gst-rendering-control.vala"
-		gupnp_service_action_return_error (action, (guint) 501, "Action Failed");
+		gupnp_service_action_return_error (action, (guint) 501, _ ("Action Failed"));
 #line 237 "rygel-gst-rendering-control.vala"
 		return;
-#line 547 "rygel-gst-rendering-control.c"
+#line 548 "rygel-gst-rendering-control.c"
 	}
 #line 240 "rygel-gst-rendering-control.vala"
 	rygel_gst_rendering_control_set_volume (self, volume);
 #line 242 "rygel-gst-rendering-control.vala"
 	gupnp_service_action_return (action);
-#line 553 "rygel-gst-rendering-control.c"
+#line 554 "rygel-gst-rendering-control.c"
 }
 
 
 #line 31 "rygel-gst-rendering-control.vala"
 RygelGstRenderingControl* rygel_gst_rendering_control_construct (GType object_type) {
-#line 559 "rygel-gst-rendering-control.c"
+#line 560 "rygel-gst-rendering-control.c"
 	RygelGstRenderingControl * self;
 	self = g_object_newv (object_type, 0, NULL);
 	return self;
@@ -566,7 +567,7 @@ RygelGstRenderingControl* rygel_gst_rendering_control_construct (GType object_ty
 RygelGstRenderingControl* rygel_gst_rendering_control_new (void) {
 #line 31 "rygel-gst-rendering-control.vala"
 	return rygel_gst_rendering_control_construct (RYGEL_TYPE_GST_RENDERING_CONTROL);
-#line 570 "rygel-gst-rendering-control.c"
+#line 571 "rygel-gst-rendering-control.c"
 }
 
 
@@ -576,7 +577,7 @@ gboolean rygel_gst_rendering_control_get_mute (RygelGstRenderingControl* self) {
 	result = self->priv->_mute;
 #line 42 "rygel-gst-rendering-control.vala"
 	return result;
-#line 580 "rygel-gst-rendering-control.c"
+#line 581 "rygel-gst-rendering-control.c"
 }
 
 
@@ -589,26 +590,26 @@ void rygel_gst_rendering_control_set_mute (RygelGstRenderingControl* self, gbool
 	if (self->priv->_mute) {
 #line 49 "rygel-gst-rendering-control.vala"
 		rygel_gst_player_set_volume (self->priv->player, (double) 0);
-#line 593 "rygel-gst-rendering-control.c"
+#line 594 "rygel-gst-rendering-control.c"
 	} else {
 #line 51 "rygel-gst-rendering-control.vala"
 		rygel_gst_player_set_volume (self->priv->player, volume_from_percentage (rygel_gst_rendering_control_get_volume (self)));
-#line 597 "rygel-gst-rendering-control.c"
+#line 598 "rygel-gst-rendering-control.c"
 	}
 	_tmp0_ = NULL;
 #line 55 "rygel-gst-rendering-control.vala"
 	if (rygel_gst_rendering_control_get_mute (self)) {
 #line 55 "rygel-gst-rendering-control.vala"
 		_tmp0_ = "1";
-#line 604 "rygel-gst-rendering-control.c"
+#line 605 "rygel-gst-rendering-control.c"
 	} else {
 #line 55 "rygel-gst-rendering-control.vala"
 		_tmp0_ = "0";
-#line 608 "rygel-gst-rendering-control.c"
+#line 609 "rygel-gst-rendering-control.c"
 	}
 #line 54 "rygel-gst-rendering-control.vala"
 	rygel_gst_change_log_log_with_channel (self->priv->changelog, "Mute", _tmp0_, "Master");
-#line 612 "rygel-gst-rendering-control.c"
+#line 613 "rygel-gst-rendering-control.c"
 	g_object_notify ((GObject *) self, "mute");
 }
 
@@ -619,7 +620,7 @@ guint rygel_gst_rendering_control_get_volume (RygelGstRenderingControl* self) {
 	result = self->priv->_volume;
 #line 63 "rygel-gst-rendering-control.vala"
 	return result;
-#line 623 "rygel-gst-rendering-control.c"
+#line 624 "rygel-gst-rendering-control.c"
 }
 
 
@@ -632,11 +633,11 @@ void rygel_gst_rendering_control_set_volume (RygelGstRenderingControl* self, gui
 	if (!rygel_gst_rendering_control_get_mute (self)) {
 #line 70 "rygel-gst-rendering-control.vala"
 		rygel_gst_player_set_volume (self->priv->player, volume_from_percentage (rygel_gst_rendering_control_get_volume (self)));
-#line 636 "rygel-gst-rendering-control.c"
+#line 637 "rygel-gst-rendering-control.c"
 	}
 #line 73 "rygel-gst-rendering-control.vala"
 	rygel_gst_change_log_log_with_channel (self->priv->changelog, "Volume", _tmp0_ = g_strdup_printf ("%u", rygel_gst_rendering_control_get_volume (self)), "Master");
-#line 640 "rygel-gst-rendering-control.c"
+#line 641 "rygel-gst-rendering-control.c"
 	_g_free0 (_tmp0_);
 	g_object_notify ((GObject *) self, "volume");
 }
@@ -720,29 +721,29 @@ static void rygel_gst_rendering_control_set_property (GObject * object, guint pr
 
 #line 249 "rygel-gst-rendering-control.vala"
 double volume_from_percentage (guint percentage) {
-#line 724 "rygel-gst-rendering-control.c"
+#line 725 "rygel-gst-rendering-control.c"
 	double result = 0.0;
 	result = ((double) percentage) / 100.0;
 #line 250 "rygel-gst-rendering-control.vala"
 	return result;
-#line 729 "rygel-gst-rendering-control.c"
+#line 730 "rygel-gst-rendering-control.c"
 }
 
 
 #line 253 "rygel-gst-rendering-control.vala"
 guint volume_to_percentage (double volume) {
-#line 735 "rygel-gst-rendering-control.c"
+#line 736 "rygel-gst-rendering-control.c"
 	guint result = 0U;
 	result = (guint) (volume * 100.0);
 #line 254 "rygel-gst-rendering-control.vala"
 	return result;
-#line 740 "rygel-gst-rendering-control.c"
+#line 741 "rygel-gst-rendering-control.c"
 }
 
 
 #line 248 "rygel-gst-rendering-control.vala"
 Volume* volume_construct (GType object_type) {
-#line 746 "rygel-gst-rendering-control.c"
+#line 747 "rygel-gst-rendering-control.c"
 	Volume* self;
 	self = (Volume*) g_type_create_instance (object_type);
 	return self;
@@ -753,7 +754,7 @@ Volume* volume_construct (GType object_type) {
 Volume* volume_new (void) {
 #line 248 "rygel-gst-rendering-control.vala"
 	return volume_construct (TYPE_VOLUME);
-#line 757 "rygel-gst-rendering-control.c"
+#line 758 "rygel-gst-rendering-control.c"
 }
 
 

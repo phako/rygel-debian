@@ -64,9 +64,9 @@ internal class Rygel.ItemCreator: GLib.Object, Rygel.StateMachine {
             });
             this.didl_parser.parse_didl (this.elements);
             if (this.didl_item == null) {
-                throw new ItemCreatorError.PARSE ("Failed to find any item " +
-                                                  "in DIDL-Lite from client: " +
-                                                  this.elements);
+                var message = _("No items in DIDL-Lite from client: '%s'");
+
+                throw new ItemCreatorError.PARSE (message, this.elements);
             }
 
             this.item = new MediaItem (didl_item.id,
@@ -93,7 +93,8 @@ internal class Rygel.ItemCreator: GLib.Object, Rygel.StateMachine {
 
         if (this.container_id == null || this.elements == null) {
             // Sorry we can't do anything without ContainerID
-            throw new ContentDirectoryError.NO_SUCH_OBJECT ("No such object");
+            throw new ContentDirectoryError.NO_SUCH_OBJECT (
+                                        _("No such object"));
         }
     }
 
@@ -102,7 +103,8 @@ internal class Rygel.ItemCreator: GLib.Object, Rygel.StateMachine {
                                         this.container_id,
                                         this.cancellable);
         if (media_object == null || !(media_object is MediaContainer)) {
-            throw new ContentDirectoryError.NO_SUCH_OBJECT ("No such object");
+            throw new ContentDirectoryError.NO_SUCH_OBJECT (
+                                        _("No such object"));
         }
 
         return media_object as MediaContainer;
@@ -127,7 +129,7 @@ internal class Rygel.ItemCreator: GLib.Object, Rygel.StateMachine {
             this.action.return_error (701, error.message);
         }
 
-        warning ("Failed to create item under '%s': %s",
+        warning (_("Failed to create item under '%s': %s"),
                  this.container_id,
                  error.message);
 

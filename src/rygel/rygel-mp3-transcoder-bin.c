@@ -29,6 +29,7 @@
 #include <gst/gst.h>
 #include <stdlib.h>
 #include <string.h>
+#include <glib/gi18n-lib.h>
 
 
 #define RYGEL_TYPE_MP3_LAYER (rygel_mp3_layer_get_type ())
@@ -85,7 +86,6 @@ typedef struct _RygelMediaObjectClass RygelMediaObjectClass;
 typedef struct _RygelMediaItem RygelMediaItem;
 typedef struct _RygelMediaItemClass RygelMediaItemClass;
 #define _g_error_free0(var) ((var == NULL) ? NULL : (var = (g_error_free (var), NULL)))
-#define _g_free0(var) (var = (g_free (var), NULL))
 
 typedef enum  {
 	RYGEL_MP3_LAYER_TWO = 1,
@@ -132,8 +132,8 @@ static void rygel_mp3_transcoder_bin_decodebin_pad_added (RygelMP3TranscoderBin*
 static void _rygel_mp3_transcoder_bin_decodebin_pad_added_gst_element_pad_added (GstElement* _sender, GstPad* pad, gpointer self);
 RygelMP3TranscoderBin* rygel_mp3_transcoder_bin_new (RygelMediaItem* item, GstElement* src, RygelMP3Transcoder* transcoder, GError** error);
 RygelMP3TranscoderBin* rygel_mp3_transcoder_bin_construct (GType object_type, RygelMediaItem* item, GstElement* src, RygelMP3Transcoder* transcoder, GError** error);
-void rygel_gst_utils_post_error (GstElement* dest, GError* _error_);
 GQuark rygel_gst_error_quark (void);
+void rygel_gst_utils_post_error (GstElement* dest, GError* _error_);
 static void rygel_mp3_transcoder_bin_finalize (GObject* obj);
 
 
@@ -251,21 +251,17 @@ static void rygel_mp3_transcoder_bin_decodebin_pad_added (RygelMP3TranscoderBin*
 #line 68 "rygel-mp3-transcoder-bin.vala"
 	if (gst_pad_link (new_pad, enc_pad) != GST_PAD_LINK_OK) {
 #line 254 "rygel-mp3-transcoder-bin.c"
-		GError* _tmp3_;
-		char* _tmp2_;
-		char* _tmp1_;
-		char* _tmp0_;
+		GError* _error_;
 #line 69 "rygel-mp3-transcoder-bin.vala"
-		rygel_gst_utils_post_error ((GstElement*) self, _tmp3_ = g_error_new_literal (RYGEL_GST_ERROR, RYGEL_GST_ERROR_LINK, _tmp2_ = g_strconcat (_tmp1_ = g_strconcat (_tmp0_ = g_strconcat ("Failed to link pad ", gst_object_get_name ((GstObject*) new_pad), NULL), " to ", NULL), gst_object_get_name ((GstObject*) enc_pad), NULL)));
-#line 261 "rygel-mp3-transcoder-bin.c"
-		_g_error_free0 (_tmp3_);
-		_g_free0 (_tmp2_);
-		_g_free0 (_tmp1_);
-		_g_free0 (_tmp0_);
+		_error_ = g_error_new (RYGEL_GST_ERROR, RYGEL_GST_ERROR_LINK, _ ("Failed to link pad %s to %s"), gst_object_get_name ((GstObject*) new_pad), gst_object_get_name ((GstObject*) enc_pad));
+#line 72 "rygel-mp3-transcoder-bin.vala"
+		rygel_gst_utils_post_error ((GstElement*) self, _error_);
+#line 260 "rygel-mp3-transcoder-bin.c"
+		_g_error_free0 (_error_);
 		_gst_object_unref0 (enc_pad);
 #line 74 "rygel-mp3-transcoder-bin.vala"
 		return;
-#line 269 "rygel-mp3-transcoder-bin.c"
+#line 265 "rygel-mp3-transcoder-bin.c"
 	}
 	_gst_object_unref0 (enc_pad);
 }

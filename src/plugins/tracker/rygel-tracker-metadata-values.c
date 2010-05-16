@@ -32,6 +32,7 @@
 #include <dbus/dbus-glib-lowlevel.h>
 #include <dbus/dbus-glib.h>
 #include <gio/gio.h>
+#include <glib/gi18n-lib.h>
 #include <gee.h>
 
 
@@ -373,7 +374,7 @@ static char** _vala_array_dup1 (char** self, int length) {
 
 #line 53 "rygel-tracker-metadata-values.vala"
 RygelTrackerMetadataValues* rygel_tracker_metadata_values_construct (GType object_type, const char* id, RygelMediaContainer* parent, const char* title, RygelTrackerItemFactory* item_factory, char** key_chain, int key_chain_length1, RygelTrackerMetadataValuesIDFunc id_func, void* id_func_target, RygelTrackerMetadataValuesIDFunc title_func, void* title_func_target, RygelTrackerMetadataValuesFilterFunc filter_func, void* filter_func_target) {
-#line 377 "rygel-tracker-metadata-values.c"
+#line 378 "rygel-tracker-metadata-values.c"
 	GError * _inner_error_;
 	RygelTrackerMetadataValues * self;
 	RygelTrackerItemFactory* _tmp0_;
@@ -390,7 +391,7 @@ RygelTrackerMetadataValues* rygel_tracker_metadata_values_construct (GType objec
 	g_return_val_if_fail (title != NULL, NULL);
 #line 53 "rygel-tracker-metadata-values.vala"
 	g_return_val_if_fail (item_factory != NULL, NULL);
-#line 394 "rygel-tracker-metadata-values.c"
+#line 395 "rygel-tracker-metadata-values.c"
 	_inner_error_ = NULL;
 #line 64 "rygel-tracker-metadata-values.vala"
 	self = (RygelTrackerMetadataValues*) rygel_simple_container_construct (object_type, id, parent, title);
@@ -399,16 +400,16 @@ RygelTrackerMetadataValues* rygel_tracker_metadata_values_construct (GType objec
 #line 67 "rygel-tracker-metadata-values.vala"
 	self->key_chain = (_tmp2_ = (_tmp1_ = key_chain, (_tmp1_ == NULL) ? ((gpointer) _tmp1_) : _vala_array_dup1 (_tmp1_, key_chain_length1)), self->key_chain = (_vala_array_free (self->key_chain, self->key_chain_length1, (GDestroyNotify) g_free), NULL), self->key_chain_length1 = key_chain_length1, _tmp2_);
 #line 68 "rygel-tracker-metadata-values.vala"
-	self->id_func = (_tmp3_ = id_func, ((self->id_func_target_destroy_notify == NULL) ? NULL : self->id_func_target_destroy_notify (self->id_func_target), self->id_func = NULL, self->id_func_target = NULL, self->id_func_target_destroy_notify = NULL), self->id_func_target = id_func_target, self->id_func_target_destroy_notify = NULL, _tmp3_);
+	self->id_func = (_tmp3_ = id_func, ((self->id_func_target_destroy_notify == NULL) ? NULL : (self->id_func_target_destroy_notify (self->id_func_target), NULL), self->id_func = NULL, self->id_func_target = NULL, self->id_func_target_destroy_notify = NULL), self->id_func_target = id_func_target, self->id_func_target_destroy_notify = NULL, _tmp3_);
 #line 69 "rygel-tracker-metadata-values.vala"
-	self->title_func = (_tmp4_ = title_func, ((self->title_func_target_destroy_notify == NULL) ? NULL : self->title_func_target_destroy_notify (self->title_func_target), self->title_func = NULL, self->title_func_target = NULL, self->title_func_target_destroy_notify = NULL), self->title_func_target = title_func_target, self->title_func_target_destroy_notify = NULL, _tmp4_);
+	self->title_func = (_tmp4_ = title_func, ((self->title_func_target_destroy_notify == NULL) ? NULL : (self->title_func_target_destroy_notify (self->title_func_target), NULL), self->title_func = NULL, self->title_func_target = NULL, self->title_func_target_destroy_notify = NULL), self->title_func_target = title_func_target, self->title_func_target_destroy_notify = NULL, _tmp4_);
 #line 70 "rygel-tracker-metadata-values.vala"
-	self->filter_func = (_tmp5_ = filter_func, ((self->filter_func_target_destroy_notify == NULL) ? NULL : self->filter_func_target_destroy_notify (self->filter_func_target), self->filter_func = NULL, self->filter_func_target = NULL, self->filter_func_target_destroy_notify = NULL), self->filter_func_target = filter_func_target, self->filter_func_target_destroy_notify = NULL, _tmp5_);
-#line 408 "rygel-tracker-metadata-values.c"
+	self->filter_func = (_tmp5_ = filter_func, ((self->filter_func_target_destroy_notify == NULL) ? NULL : (self->filter_func_target_destroy_notify (self->filter_func_target), NULL), self->filter_func = NULL, self->filter_func_target = NULL, self->filter_func_target_destroy_notify = NULL), self->filter_func_target = filter_func_target, self->filter_func_target_destroy_notify = NULL, _tmp5_);
+#line 409 "rygel-tracker-metadata-values.c"
 	{
 #line 73 "rygel-tracker-metadata-values.vala"
 		rygel_tracker_metadata_values_create_proxies (self, &_inner_error_);
-#line 412 "rygel-tracker-metadata-values.c"
+#line 413 "rygel-tracker-metadata-values.c"
 		if (_inner_error_ != NULL) {
 			if (_inner_error_->domain == DBUS_GERROR) {
 				goto __catch1_dbus_gerror;
@@ -426,13 +427,12 @@ RygelTrackerMetadataValues* rygel_tracker_metadata_values_construct (GType objec
 		_inner_error_ = NULL;
 		{
 #line 75 "rygel-tracker-metadata-values.vala"
-			g_critical ("rygel-tracker-metadata-values.vala:75: Failed to create to Session bus" \
-": %s\n", _error_->message);
-#line 431 "rygel-tracker-metadata-values.c"
+			g_critical (_ ("Failed to connect to session bus: %s"), _error_->message);
+#line 432 "rygel-tracker-metadata-values.c"
 			_g_error_free0 (_error_);
-#line 78 "rygel-tracker-metadata-values.vala"
+#line 77 "rygel-tracker-metadata-values.vala"
 			return self;
-#line 435 "rygel-tracker-metadata-values.c"
+#line 436 "rygel-tracker-metadata-values.c"
 		}
 	}
 	__finally1:
@@ -441,11 +441,11 @@ RygelTrackerMetadataValues* rygel_tracker_metadata_values_construct (GType objec
 		g_clear_error (&_inner_error_);
 		return NULL;
 	}
-#line 81 "rygel-tracker-metadata-values.vala"
+#line 80 "rygel-tracker-metadata-values.vala"
 	rygel_tracker_metadata_values_fetch_metadata_values (self, NULL, NULL);
-#line 83 "rygel-tracker-metadata-values.vala"
+#line 82 "rygel-tracker-metadata-values.vala"
 	rygel_tracker_metadata_values_hook_to_changes (self);
-#line 448 "rygel-tracker-metadata-values.c"
+#line 449 "rygel-tracker-metadata-values.c"
 	return self;
 }
 
@@ -454,7 +454,7 @@ RygelTrackerMetadataValues* rygel_tracker_metadata_values_construct (GType objec
 RygelTrackerMetadataValues* rygel_tracker_metadata_values_new (const char* id, RygelMediaContainer* parent, const char* title, RygelTrackerItemFactory* item_factory, char** key_chain, int key_chain_length1, RygelTrackerMetadataValuesIDFunc id_func, void* id_func_target, RygelTrackerMetadataValuesIDFunc title_func, void* title_func_target, RygelTrackerMetadataValuesFilterFunc filter_func, void* filter_func_target) {
 #line 53 "rygel-tracker-metadata-values.vala"
 	return rygel_tracker_metadata_values_construct (RYGEL_TYPE_TRACKER_METADATA_VALUES, id, parent, title, item_factory, key_chain, key_chain_length1, id_func, id_func_target, title_func, title_func_target, filter_func, filter_func_target);
-#line 457 "rygel-tracker-metadata-values.c"
+#line 458 "rygel-tracker-metadata-values.c"
 }
 
 
@@ -492,7 +492,7 @@ static void rygel_tracker_metadata_values_fetch_metadata_values_ready (GObject* 
 
 #line 1052 "glib-2.0.vapi"
 static char* string_replace (const char* self, const char* old, const char* replacement) {
-#line 495 "rygel-tracker-metadata-values.c"
+#line 496 "rygel-tracker-metadata-values.c"
 	char* result = NULL;
 	GError * _inner_error_;
 #line 1052 "glib-2.0.vapi"
@@ -501,7 +501,7 @@ static char* string_replace (const char* self, const char* old, const char* repl
 	g_return_val_if_fail (old != NULL, NULL);
 #line 1052 "glib-2.0.vapi"
 	g_return_val_if_fail (replacement != NULL, NULL);
-#line 504 "rygel-tracker-metadata-values.c"
+#line 505 "rygel-tracker-metadata-values.c"
 	_inner_error_ = NULL;
 	{
 		char* _tmp0_;
@@ -510,7 +510,7 @@ static char* string_replace (const char* self, const char* old, const char* repl
 		char* _tmp2_;
 #line 1054 "glib-2.0.vapi"
 		regex = (_tmp1_ = g_regex_new (_tmp0_ = g_regex_escape_string (old, -1), 0, 0, &_inner_error_), _g_free0 (_tmp0_), _tmp1_);
-#line 513 "rygel-tracker-metadata-values.c"
+#line 514 "rygel-tracker-metadata-values.c"
 		if (_inner_error_ != NULL) {
 			if (_inner_error_->domain == G_REGEX_ERROR) {
 				goto __catch2_g_regex_error;
@@ -521,7 +521,7 @@ static char* string_replace (const char* self, const char* old, const char* repl
 		}
 #line 1055 "glib-2.0.vapi"
 		_tmp2_ = g_regex_replace_literal (regex, self, (gssize) (-1), 0, replacement, 0, &_inner_error_);
-#line 524 "rygel-tracker-metadata-values.c"
+#line 525 "rygel-tracker-metadata-values.c"
 		if (_inner_error_ != NULL) {
 			_g_regex_unref0 (regex);
 			if (_inner_error_->domain == G_REGEX_ERROR) {
@@ -536,7 +536,7 @@ static char* string_replace (const char* self, const char* old, const char* repl
 		_g_regex_unref0 (regex);
 #line 1055 "glib-2.0.vapi"
 		return result;
-#line 539 "rygel-tracker-metadata-values.c"
+#line 540 "rygel-tracker-metadata-values.c"
 	}
 	goto __finally2;
 	__catch2_g_regex_error:
@@ -547,7 +547,7 @@ static char* string_replace (const char* self, const char* old, const char* repl
 		{
 #line 1057 "glib-2.0.vapi"
 			g_assert_not_reached ();
-#line 550 "rygel-tracker-metadata-values.c"
+#line 551 "rygel-tracker-metadata-values.c"
 			_g_error_free0 (e);
 		}
 	}
@@ -571,63 +571,63 @@ static gboolean rygel_tracker_metadata_values_fetch_metadata_values_co (RygelTra
 	}
 	_state_0:
 	{
-#line 88 "rygel-tracker-metadata-values.vala"
+#line 87 "rygel-tracker-metadata-values.vala"
 		rygel_simple_container_clear ((RygelSimpleContainer*) data->self);
-#line 576 "rygel-tracker-metadata-values.c"
+#line 577 "rygel-tracker-metadata-values.c"
 		data->mandatory = rygel_tracker_query_triplets_new ();
 		data->num_keys = data->self->key_chain_length1 - 1;
 		data->variables = (data->_tmp0_ = g_new0 (char*, data->num_keys + 1), data->variables_length1 = data->num_keys, data->_variables_size_ = data->variables_length1, data->_tmp0_);
 		{
-#line 96 "rygel-tracker-metadata-values.vala"
+#line 95 "rygel-tracker-metadata-values.vala"
 			data->i = 0;
-#line 583 "rygel-tracker-metadata-values.c"
+#line 584 "rygel-tracker-metadata-values.c"
 			data->_tmp1_ = TRUE;
-#line 96 "rygel-tracker-metadata-values.vala"
+#line 95 "rygel-tracker-metadata-values.vala"
 			while (TRUE) {
-#line 96 "rygel-tracker-metadata-values.vala"
+#line 95 "rygel-tracker-metadata-values.vala"
 				if (!data->_tmp1_) {
-#line 96 "rygel-tracker-metadata-values.vala"
+#line 95 "rygel-tracker-metadata-values.vala"
 					data->i++;
-#line 591 "rygel-tracker-metadata-values.c"
+#line 592 "rygel-tracker-metadata-values.c"
 				}
-#line 96 "rygel-tracker-metadata-values.vala"
+#line 95 "rygel-tracker-metadata-values.vala"
 				data->_tmp1_ = FALSE;
-#line 96 "rygel-tracker-metadata-values.vala"
+#line 95 "rygel-tracker-metadata-values.vala"
 				if (!(data->i < data->num_keys)) {
-#line 96 "rygel-tracker-metadata-values.vala"
+#line 95 "rygel-tracker-metadata-values.vala"
 					break;
-#line 599 "rygel-tracker-metadata-values.c"
+#line 600 "rygel-tracker-metadata-values.c"
 				}
-#line 97 "rygel-tracker-metadata-values.vala"
+#line 96 "rygel-tracker-metadata-values.vala"
 				data->variables[data->i] = (data->_tmp3_ = g_strconcat ("?", data->_tmp2_ = string_replace (data->self->key_chain[data->i], ":", "_"), NULL), _g_free0 (data->variables[data->i]), data->_tmp3_);
-#line 603 "rygel-tracker-metadata-values.c"
+#line 604 "rygel-tracker-metadata-values.c"
 				_g_free0 (data->_tmp2_);
-#line 100 "rygel-tracker-metadata-values.vala"
+#line 99 "rygel-tracker-metadata-values.vala"
 				if (data->i == 0) {
-#line 101 "rygel-tracker-metadata-values.vala"
+#line 100 "rygel-tracker-metadata-values.vala"
 					data->subject = (data->_tmp4_ = NULL, _g_free0 (data->subject), data->_tmp4_);
-#line 609 "rygel-tracker-metadata-values.c"
+#line 610 "rygel-tracker-metadata-values.c"
 				} else {
-#line 103 "rygel-tracker-metadata-values.vala"
+#line 102 "rygel-tracker-metadata-values.vala"
 					data->subject = (data->_tmp5_ = g_strdup (data->variables[data->i - 1]), _g_free0 (data->subject), data->_tmp5_);
-#line 613 "rygel-tracker-metadata-values.c"
+#line 614 "rygel-tracker-metadata-values.c"
 				}
-#line 106 "rygel-tracker-metadata-values.vala"
+#line 105 "rygel-tracker-metadata-values.vala"
 				gee_abstract_collection_add ((GeeAbstractCollection*) data->mandatory, data->_tmp6_ = rygel_tracker_query_triplet_new (data->subject, data->self->key_chain[data->i], data->variables[data->i], FALSE));
-#line 617 "rygel-tracker-metadata-values.c"
+#line 618 "rygel-tracker-metadata-values.c"
 				_rygel_tracker_query_triplet_unref0 (data->_tmp6_);
 				_g_free0 (data->subject);
 			}
 		}
-#line 112 "rygel-tracker-metadata-values.vala"
+#line 111 "rygel-tracker-metadata-values.vala"
 		gee_abstract_list_insert ((GeeAbstractList*) data->mandatory, 0, data->_tmp7_ = rygel_tracker_query_triplet_new (RYGEL_TRACKER_METADATA_VALUES_ITEM_VARIABLE, "a", data->self->priv->item_factory->category, FALSE));
-#line 624 "rygel-tracker-metadata-values.c"
+#line 625 "rygel-tracker-metadata-values.c"
 		_rygel_tracker_query_triplet_unref0 (data->_tmp7_);
 		data->selected = gee_array_list_new (G_TYPE_STRING, (GBoxedCopyFunc) g_strdup, g_free, NULL);
 		data->last_variable = g_strdup (data->variables[data->num_keys - 1]);
-#line 122 "rygel-tracker-metadata-values.vala"
+#line 121 "rygel-tracker-metadata-values.vala"
 		gee_abstract_collection_add ((GeeAbstractCollection*) data->selected, data->_tmp8_ = g_strconcat ("DISTINCT ", data->last_variable, NULL));
-#line 630 "rygel-tracker-metadata-values.c"
+#line 631 "rygel-tracker-metadata-values.c"
 		_g_free0 (data->_tmp8_);
 		data->query = rygel_tracker_selection_query_new (data->selected, data->mandatory, NULL, NULL, data->last_variable, 0, -1);
 		{
@@ -635,9 +635,9 @@ static gboolean rygel_tracker_metadata_values_fetch_metadata_values_co (RygelTra
 			rygel_tracker_query_execute ((RygelTrackerQuery*) data->query, data->self->priv->resources, rygel_tracker_metadata_values_fetch_metadata_values_ready, data);
 			return FALSE;
 			_state_1:
-#line 131 "rygel-tracker-metadata-values.vala"
+#line 130 "rygel-tracker-metadata-values.vala"
 			rygel_tracker_query_execute_finish ((RygelTrackerQuery*) data->query, data->_res_, &data->_inner_error_);
-#line 640 "rygel-tracker-metadata-values.c"
+#line 641 "rygel-tracker-metadata-values.c"
 			if (data->_inner_error_ != NULL) {
 				if (data->_inner_error_->domain == DBUS_GERROR) {
 					goto __catch3_dbus_gerror;
@@ -658,10 +658,9 @@ static gboolean rygel_tracker_metadata_values_fetch_metadata_values_co (RygelTra
 			data->_error_ = data->_inner_error_;
 			data->_inner_error_ = NULL;
 			{
-#line 133 "rygel-tracker-metadata-values.vala"
-				g_critical ("rygel-tracker-metadata-values.vala:133: error getting all values for '" \
-"%s': %s", data->_tmp9_ = g_strjoinv (" -> ", data->self->key_chain), data->_error_->message);
-#line 663 "rygel-tracker-metadata-values.c"
+#line 132 "rygel-tracker-metadata-values.vala"
+				g_critical (_ ("Error getting all values for '%s': %s"), data->_tmp9_ = g_strjoinv (" -> ", data->self->key_chain), data->_error_->message);
+#line 664 "rygel-tracker-metadata-values.c"
 				_g_free0 (data->_tmp9_);
 				_g_error_free0 (data->_error_);
 				_g_object_unref0 (data->mandatory);
@@ -693,56 +692,56 @@ static gboolean rygel_tracker_metadata_values_fetch_metadata_values_co (RygelTra
 			return FALSE;
 		}
 		{
-#line 141 "rygel-tracker-metadata-values.vala"
+#line 140 "rygel-tracker-metadata-values.vala"
 			data->i = 0;
-#line 697 "rygel-tracker-metadata-values.c"
+#line 698 "rygel-tracker-metadata-values.c"
 			data->_tmp10_ = TRUE;
-#line 141 "rygel-tracker-metadata-values.vala"
+#line 140 "rygel-tracker-metadata-values.vala"
 			while (TRUE) {
-#line 141 "rygel-tracker-metadata-values.vala"
+#line 140 "rygel-tracker-metadata-values.vala"
 				if (!data->_tmp10_) {
-#line 141 "rygel-tracker-metadata-values.vala"
+#line 140 "rygel-tracker-metadata-values.vala"
 					data->i++;
-#line 705 "rygel-tracker-metadata-values.c"
+#line 706 "rygel-tracker-metadata-values.c"
 				}
-#line 141 "rygel-tracker-metadata-values.vala"
+#line 140 "rygel-tracker-metadata-values.vala"
 				data->_tmp10_ = FALSE;
-#line 141 "rygel-tracker-metadata-values.vala"
+#line 140 "rygel-tracker-metadata-values.vala"
 				if (!(data->i < data->query->result_length1)) {
-#line 141 "rygel-tracker-metadata-values.vala"
+#line 140 "rygel-tracker-metadata-values.vala"
 					break;
-#line 713 "rygel-tracker-metadata-values.c"
+#line 714 "rygel-tracker-metadata-values.c"
 				}
 				data->value = g_strdup (data->query->result[(data->i * data->query->result_length2) + 0]);
-#line 144 "rygel-tracker-metadata-values.vala"
+#line 143 "rygel-tracker-metadata-values.vala"
 				if (_vala_strcmp0 (data->value, "") == 0) {
-#line 718 "rygel-tracker-metadata-values.c"
+#line 719 "rygel-tracker-metadata-values.c"
 					_g_free0 (data->value);
-#line 145 "rygel-tracker-metadata-values.vala"
+#line 144 "rygel-tracker-metadata-values.vala"
 					continue;
-#line 722 "rygel-tracker-metadata-values.c"
+#line 723 "rygel-tracker-metadata-values.c"
 				}
 				data->id = data->self->id_func (data->value, data->self->id_func_target);
-#line 149 "rygel-tracker-metadata-values.vala"
+#line 148 "rygel-tracker-metadata-values.vala"
 				if (!rygel_tracker_metadata_values_is_child_id_unique (data->self, data->id)) {
-#line 727 "rygel-tracker-metadata-values.c"
+#line 728 "rygel-tracker-metadata-values.c"
 					_g_free0 (data->value);
 					_g_free0 (data->id);
-#line 150 "rygel-tracker-metadata-values.vala"
+#line 149 "rygel-tracker-metadata-values.vala"
 					continue;
-#line 732 "rygel-tracker-metadata-values.c"
+#line 733 "rygel-tracker-metadata-values.c"
 				}
 				data->title = data->self->title_func (data->value, data->self->title_func_target);
 				data->child_mandatory = rygel_tracker_query_triplets_new_clone (data->mandatory);
 				data->filters = gee_array_list_new (G_TYPE_STRING, (GBoxedCopyFunc) g_strdup, g_free, NULL);
 				data->filter = (data->_tmp12_ = data->self->filter_func ((data->_tmp11_ = (RygelTrackerQueryTriplet*) gee_abstract_list_last ((GeeAbstractList*) data->child_mandatory))->obj, data->value, data->self->filter_func_target), _rygel_tracker_query_triplet_unref0 (data->_tmp11_), data->_tmp12_);
-#line 162 "rygel-tracker-metadata-values.vala"
+#line 161 "rygel-tracker-metadata-values.vala"
 				gee_abstract_collection_add ((GeeAbstractCollection*) data->filters, data->filter);
-#line 740 "rygel-tracker-metadata-values.c"
+#line 741 "rygel-tracker-metadata-values.c"
 				data->container = rygel_tracker_search_container_new (data->id, (RygelMediaContainer*) data->self, data->title, data->self->priv->item_factory, data->child_mandatory, data->filters);
-#line 171 "rygel-tracker-metadata-values.vala"
+#line 170 "rygel-tracker-metadata-values.vala"
 				rygel_simple_container_add_child ((RygelSimpleContainer*) data->self, (RygelMediaObject*) data->container);
-#line 744 "rygel-tracker-metadata-values.c"
+#line 745 "rygel-tracker-metadata-values.c"
 				_g_free0 (data->value);
 				_g_free0 (data->id);
 				_g_free0 (data->title);
@@ -752,9 +751,9 @@ static gboolean rygel_tracker_metadata_values_fetch_metadata_values_co (RygelTra
 				_g_object_unref0 (data->container);
 			}
 		}
-#line 174 "rygel-tracker-metadata-values.vala"
+#line 173 "rygel-tracker-metadata-values.vala"
 		rygel_media_container_updated ((RygelMediaContainer*) data->self);
-#line 756 "rygel-tracker-metadata-values.c"
+#line 757 "rygel-tracker-metadata-values.c"
 		_g_object_unref0 (data->mandatory);
 		data->variables = (_vala_array_free (data->variables, data->variables_length1, (GDestroyNotify) g_free), NULL);
 		_g_object_unref0 (data->selected);
@@ -773,53 +772,53 @@ static gboolean rygel_tracker_metadata_values_fetch_metadata_values_co (RygelTra
 }
 
 
-#line 177 "rygel-tracker-metadata-values.vala"
+#line 176 "rygel-tracker-metadata-values.vala"
 char* rygel_tracker_metadata_values_default_id_func (const char* value) {
-#line 777 "rygel-tracker-metadata-values.c"
+#line 778 "rygel-tracker-metadata-values.c"
 	char* result = NULL;
-#line 177 "rygel-tracker-metadata-values.vala"
+#line 176 "rygel-tracker-metadata-values.vala"
 	g_return_val_if_fail (value != NULL, NULL);
-#line 781 "rygel-tracker-metadata-values.c"
+#line 782 "rygel-tracker-metadata-values.c"
 	result = g_strdup (value);
-#line 178 "rygel-tracker-metadata-values.vala"
+#line 177 "rygel-tracker-metadata-values.vala"
 	return result;
-#line 785 "rygel-tracker-metadata-values.c"
+#line 786 "rygel-tracker-metadata-values.c"
 }
 
 
-#line 181 "rygel-tracker-metadata-values.vala"
+#line 180 "rygel-tracker-metadata-values.vala"
 char* rygel_tracker_metadata_values_default_filter_func (const char* variable, const char* value) {
-#line 791 "rygel-tracker-metadata-values.c"
+#line 792 "rygel-tracker-metadata-values.c"
 	char* result = NULL;
 	char* _tmp1_;
 	char* _tmp0_;
 	char* _tmp2_;
-#line 181 "rygel-tracker-metadata-values.vala"
+#line 180 "rygel-tracker-metadata-values.vala"
 	g_return_val_if_fail (variable != NULL, NULL);
-#line 181 "rygel-tracker-metadata-values.vala"
+#line 180 "rygel-tracker-metadata-values.vala"
 	g_return_val_if_fail (value != NULL, NULL);
-#line 800 "rygel-tracker-metadata-values.c"
+#line 801 "rygel-tracker-metadata-values.c"
 	result = (_tmp2_ = g_strconcat (_tmp1_ = g_strconcat (_tmp0_ = g_strconcat (variable, " = \"", NULL), value, NULL), "\"", NULL), _g_free0 (_tmp1_), _g_free0 (_tmp0_), _tmp2_);
-#line 182 "rygel-tracker-metadata-values.vala"
+#line 181 "rygel-tracker-metadata-values.vala"
 	return result;
-#line 804 "rygel-tracker-metadata-values.c"
+#line 805 "rygel-tracker-metadata-values.c"
 }
 
 
-#line 185 "rygel-tracker-metadata-values.vala"
+#line 184 "rygel-tracker-metadata-values.vala"
 static void rygel_tracker_metadata_values_create_proxies (RygelTrackerMetadataValues* self, GError** error) {
-#line 810 "rygel-tracker-metadata-values.c"
+#line 811 "rygel-tracker-metadata-values.c"
 	GError * _inner_error_;
 	DBusGConnection* connection;
 	RygelTrackerResourcesIface* _tmp0_;
 	RygelTrackerResourcesClassIface* _tmp1_;
-#line 185 "rygel-tracker-metadata-values.vala"
+#line 184 "rygel-tracker-metadata-values.vala"
 	g_return_if_fail (self != NULL);
-#line 817 "rygel-tracker-metadata-values.c"
+#line 818 "rygel-tracker-metadata-values.c"
 	_inner_error_ = NULL;
-#line 186 "rygel-tracker-metadata-values.vala"
+#line 185 "rygel-tracker-metadata-values.vala"
 	connection = dbus_g_bus_get (DBUS_BUS_SESSION, &_inner_error_);
-#line 821 "rygel-tracker-metadata-values.c"
+#line 822 "rygel-tracker-metadata-values.c"
 	if (_inner_error_ != NULL) {
 		if (_inner_error_->domain == DBUS_GERROR) {
 			g_propagate_error (error, _inner_error_);
@@ -830,119 +829,119 @@ static void rygel_tracker_metadata_values_create_proxies (RygelTrackerMetadataVa
 			return;
 		}
 	}
-#line 188 "rygel-tracker-metadata-values.vala"
+#line 187 "rygel-tracker-metadata-values.vala"
 	self->priv->resources = (_tmp0_ = rygel_tracker_resources_iface_dbus_proxy_new (connection, RYGEL_TRACKER_METADATA_VALUES_TRACKER_SERVICE, RYGEL_TRACKER_METADATA_VALUES_RESOURCES_PATH), _g_object_unref0 (self->priv->resources), _tmp0_);
-#line 191 "rygel-tracker-metadata-values.vala"
+#line 190 "rygel-tracker-metadata-values.vala"
 	self->priv->resources_class = (_tmp1_ = rygel_tracker_resources_class_iface_dbus_proxy_new (connection, RYGEL_TRACKER_METADATA_VALUES_TRACKER_SERVICE, self->priv->item_factory->resources_class_path), _g_object_unref0 (self->priv->resources_class), _tmp1_);
-#line 836 "rygel-tracker-metadata-values.c"
+#line 837 "rygel-tracker-metadata-values.c"
 	_dbus_g_connection_unref0 (connection);
 }
 
 
-#line 199 "rygel-tracker-metadata-values.vala"
+#line 198 "rygel-tracker-metadata-values.vala"
 static void _lambda0_ (char** subjects, int subjects_length1, RygelTrackerMetadataValues* self) {
-#line 200 "rygel-tracker-metadata-values.vala"
+#line 199 "rygel-tracker-metadata-values.vala"
 	rygel_tracker_metadata_values_fetch_metadata_values (self, NULL, NULL);
-#line 845 "rygel-tracker-metadata-values.c"
+#line 846 "rygel-tracker-metadata-values.c"
 }
 
 
-#line 199 "rygel-tracker-metadata-values.vala"
+#line 198 "rygel-tracker-metadata-values.vala"
 static void __lambda0__rygel_tracker_resources_class_iface_subjects_added (RygelTrackerResourcesClassIface* _sender, char** subjects, int subjects_length1, gpointer self) {
-#line 851 "rygel-tracker-metadata-values.c"
+#line 852 "rygel-tracker-metadata-values.c"
 	_lambda0_ (subjects, subjects_length1, self);
 }
 
 
-#line 202 "rygel-tracker-metadata-values.vala"
+#line 201 "rygel-tracker-metadata-values.vala"
 static void _lambda1_ (char** subjects, int subjects_length1, RygelTrackerMetadataValues* self) {
-#line 203 "rygel-tracker-metadata-values.vala"
+#line 202 "rygel-tracker-metadata-values.vala"
 	rygel_tracker_metadata_values_fetch_metadata_values (self, NULL, NULL);
-#line 860 "rygel-tracker-metadata-values.c"
+#line 861 "rygel-tracker-metadata-values.c"
 }
 
 
-#line 202 "rygel-tracker-metadata-values.vala"
+#line 201 "rygel-tracker-metadata-values.vala"
 static void __lambda1__rygel_tracker_resources_class_iface_subjects_removed (RygelTrackerResourcesClassIface* _sender, char** subjects, int subjects_length1, gpointer self) {
-#line 866 "rygel-tracker-metadata-values.c"
+#line 867 "rygel-tracker-metadata-values.c"
 	_lambda1_ (subjects, subjects_length1, self);
 }
 
 
-#line 205 "rygel-tracker-metadata-values.vala"
+#line 204 "rygel-tracker-metadata-values.vala"
 static void _lambda2_ (char** before, int before_length1, char** after, int after_length1, RygelTrackerMetadataValues* self) {
-#line 206 "rygel-tracker-metadata-values.vala"
+#line 205 "rygel-tracker-metadata-values.vala"
 	rygel_tracker_metadata_values_fetch_metadata_values (self, NULL, NULL);
-#line 875 "rygel-tracker-metadata-values.c"
+#line 876 "rygel-tracker-metadata-values.c"
 }
 
 
-#line 205 "rygel-tracker-metadata-values.vala"
+#line 204 "rygel-tracker-metadata-values.vala"
 static void __lambda2__rygel_tracker_resources_class_iface_subjects_changed (RygelTrackerResourcesClassIface* _sender, char** before, int before_length1, char** after, int after_length1, gpointer self) {
-#line 881 "rygel-tracker-metadata-values.c"
+#line 882 "rygel-tracker-metadata-values.c"
 	_lambda2_ (before, before_length1, after, after_length1, self);
 }
 
 
-#line 197 "rygel-tracker-metadata-values.vala"
+#line 196 "rygel-tracker-metadata-values.vala"
 static void rygel_tracker_metadata_values_hook_to_changes (RygelTrackerMetadataValues* self) {
-#line 197 "rygel-tracker-metadata-values.vala"
+#line 196 "rygel-tracker-metadata-values.vala"
 	g_return_if_fail (self != NULL);
-#line 199 "rygel-tracker-metadata-values.vala"
+#line 198 "rygel-tracker-metadata-values.vala"
 	g_signal_connect_object (self->priv->resources_class, "subjects-added", (GCallback) __lambda0__rygel_tracker_resources_class_iface_subjects_added, self, 0);
-#line 202 "rygel-tracker-metadata-values.vala"
+#line 201 "rygel-tracker-metadata-values.vala"
 	g_signal_connect_object (self->priv->resources_class, "subjects-removed", (GCallback) __lambda1__rygel_tracker_resources_class_iface_subjects_removed, self, 0);
-#line 205 "rygel-tracker-metadata-values.vala"
+#line 204 "rygel-tracker-metadata-values.vala"
 	g_signal_connect_object (self->priv->resources_class, "subjects-changed", (GCallback) __lambda2__rygel_tracker_resources_class_iface_subjects_changed, self, 0);
-#line 896 "rygel-tracker-metadata-values.c"
+#line 897 "rygel-tracker-metadata-values.c"
 }
 
 
-#line 210 "rygel-tracker-metadata-values.vala"
+#line 209 "rygel-tracker-metadata-values.vala"
 static gboolean rygel_tracker_metadata_values_is_child_id_unique (RygelTrackerMetadataValues* self, const char* child_id) {
-#line 902 "rygel-tracker-metadata-values.c"
+#line 903 "rygel-tracker-metadata-values.c"
 	gboolean result = FALSE;
 	gboolean unique;
-#line 210 "rygel-tracker-metadata-values.vala"
+#line 209 "rygel-tracker-metadata-values.vala"
 	g_return_val_if_fail (self != NULL, FALSE);
-#line 210 "rygel-tracker-metadata-values.vala"
+#line 209 "rygel-tracker-metadata-values.vala"
 	g_return_val_if_fail (child_id != NULL, FALSE);
-#line 211 "rygel-tracker-metadata-values.vala"
+#line 210 "rygel-tracker-metadata-values.vala"
 	unique = TRUE;
-#line 911 "rygel-tracker-metadata-values.c"
+#line 912 "rygel-tracker-metadata-values.c"
 	{
 		GeeIterator* _child_it;
 		_child_it = gee_abstract_collection_iterator ((GeeAbstractCollection*) ((RygelSimpleContainer*) self)->children);
-#line 213 "rygel-tracker-metadata-values.vala"
+#line 212 "rygel-tracker-metadata-values.vala"
 		while (TRUE) {
-#line 917 "rygel-tracker-metadata-values.c"
+#line 918 "rygel-tracker-metadata-values.c"
 			RygelMediaObject* child;
-#line 213 "rygel-tracker-metadata-values.vala"
+#line 212 "rygel-tracker-metadata-values.vala"
 			if (!gee_iterator_next (_child_it)) {
-#line 213 "rygel-tracker-metadata-values.vala"
+#line 212 "rygel-tracker-metadata-values.vala"
 				break;
-#line 923 "rygel-tracker-metadata-values.c"
+#line 924 "rygel-tracker-metadata-values.c"
 			}
-#line 213 "rygel-tracker-metadata-values.vala"
+#line 212 "rygel-tracker-metadata-values.vala"
 			child = (RygelMediaObject*) gee_iterator_get (_child_it);
-#line 214 "rygel-tracker-metadata-values.vala"
+#line 213 "rygel-tracker-metadata-values.vala"
 			if (_vala_strcmp0 (child->id, child_id) == 0) {
-#line 215 "rygel-tracker-metadata-values.vala"
+#line 214 "rygel-tracker-metadata-values.vala"
 				unique = FALSE;
-#line 931 "rygel-tracker-metadata-values.c"
+#line 932 "rygel-tracker-metadata-values.c"
 				_g_object_unref0 (child);
-#line 217 "rygel-tracker-metadata-values.vala"
+#line 216 "rygel-tracker-metadata-values.vala"
 				break;
-#line 935 "rygel-tracker-metadata-values.c"
+#line 936 "rygel-tracker-metadata-values.c"
 			}
 			_g_object_unref0 (child);
 		}
 		_g_object_unref0 (_child_it);
 	}
 	result = unique;
-#line 221 "rygel-tracker-metadata-values.vala"
+#line 220 "rygel-tracker-metadata-values.vala"
 	return result;
-#line 944 "rygel-tracker-metadata-values.c"
+#line 945 "rygel-tracker-metadata-values.c"
 }
 
 
@@ -963,15 +962,15 @@ static void rygel_tracker_metadata_values_finalize (GObject* obj) {
 	self = RYGEL_TRACKER_METADATA_VALUES (obj);
 	_rygel_tracker_item_factory_unref0 (self->priv->item_factory);
 	self->key_chain = (_vala_array_free (self->key_chain, self->key_chain_length1, (GDestroyNotify) g_free), NULL);
-	(self->id_func_target_destroy_notify == NULL) ? NULL : self->id_func_target_destroy_notify (self->id_func_target);
+	(self->id_func_target_destroy_notify == NULL) ? NULL : (self->id_func_target_destroy_notify (self->id_func_target), NULL);
 	self->id_func = NULL;
 	self->id_func_target = NULL;
 	self->id_func_target_destroy_notify = NULL;
-	(self->title_func_target_destroy_notify == NULL) ? NULL : self->title_func_target_destroy_notify (self->title_func_target);
+	(self->title_func_target_destroy_notify == NULL) ? NULL : (self->title_func_target_destroy_notify (self->title_func_target), NULL);
 	self->title_func = NULL;
 	self->title_func_target = NULL;
 	self->title_func_target_destroy_notify = NULL;
-	(self->filter_func_target_destroy_notify == NULL) ? NULL : self->filter_func_target_destroy_notify (self->filter_func_target);
+	(self->filter_func_target_destroy_notify == NULL) ? NULL : (self->filter_func_target_destroy_notify (self->filter_func_target), NULL);
 	self->filter_func = NULL;
 	self->filter_func_target = NULL;
 	self->filter_func_target_destroy_notify = NULL;

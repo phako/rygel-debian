@@ -33,6 +33,7 @@
 #include <libgupnp/gupnp.h>
 #include <stdlib.h>
 #include <string.h>
+#include <glib/gi18n-lib.h>
 
 
 #define RYGEL_TYPE_GST_AV_TRANSPORT (rygel_gst_av_transport_get_type ())
@@ -178,112 +179,112 @@ static int _vala_strcmp0 (const char * str1, const char * str2);
 
 #line 167 "rygel-gst-av-transport.vala"
 static void _rygel_gst_av_transport_query_last_change_cb_gupnp_service_query_variable (GUPnPService* _sender, const char* variable, GValue* value, gpointer self) {
-#line 182 "rygel-gst-av-transport.c"
+#line 183 "rygel-gst-av-transport.c"
 	rygel_gst_av_transport_query_last_change_cb (self, _sender, variable, value);
 }
 
 
 #line 211 "rygel-gst-av-transport.vala"
 static void _rygel_gst_av_transport_set_av_transport_uri_cb_gupnp_service_action_invoked (GUPnPService* _sender, GUPnPServiceAction* action, gpointer self) {
-#line 189 "rygel-gst-av-transport.c"
+#line 190 "rygel-gst-av-transport.c"
 	rygel_gst_av_transport_set_av_transport_uri_cb (self, _sender, action);
 }
 
 
 #line 228 "rygel-gst-av-transport.vala"
 static void _rygel_gst_av_transport_get_media_info_cb_gupnp_service_action_invoked (GUPnPService* _sender, GUPnPServiceAction* action, gpointer self) {
-#line 196 "rygel-gst-av-transport.c"
+#line 197 "rygel-gst-av-transport.c"
 	rygel_gst_av_transport_get_media_info_cb (self, _sender, action);
 }
 
 
 #line 266 "rygel-gst-av-transport.vala"
 static void _rygel_gst_av_transport_get_transport_info_cb_gupnp_service_action_invoked (GUPnPService* _sender, GUPnPServiceAction* action, gpointer self) {
-#line 203 "rygel-gst-av-transport.c"
+#line 204 "rygel-gst-av-transport.c"
 	rygel_gst_av_transport_get_transport_info_cb (self, _sender, action);
 }
 
 
 #line 285 "rygel-gst-av-transport.vala"
 static void _rygel_gst_av_transport_get_position_info_cb_gupnp_service_action_invoked (GUPnPService* _sender, GUPnPServiceAction* action, gpointer self) {
-#line 210 "rygel-gst-av-transport.c"
+#line 211 "rygel-gst-av-transport.c"
 	rygel_gst_av_transport_get_position_info_cb (self, _sender, action);
 }
 
 
 #line 319 "rygel-gst-av-transport.vala"
 static void _rygel_gst_av_transport_get_device_capabilities_cb_gupnp_service_action_invoked (GUPnPService* _sender, GUPnPServiceAction* action, gpointer self) {
-#line 217 "rygel-gst-av-transport.c"
+#line 218 "rygel-gst-av-transport.c"
 	rygel_gst_av_transport_get_device_capabilities_cb (self, _sender, action);
 }
 
 
 #line 332 "rygel-gst-av-transport.vala"
 static void _rygel_gst_av_transport_get_transport_settings_cb_gupnp_service_action_invoked (GUPnPService* _sender, GUPnPServiceAction* action, gpointer self) {
-#line 224 "rygel-gst-av-transport.c"
+#line 225 "rygel-gst-av-transport.c"
 	rygel_gst_av_transport_get_transport_settings_cb (self, _sender, action);
 }
 
 
 #line 344 "rygel-gst-av-transport.vala"
 static void _rygel_gst_av_transport_stop_cb_gupnp_service_action_invoked (GUPnPService* _sender, GUPnPServiceAction* action, gpointer self) {
-#line 231 "rygel-gst-av-transport.c"
+#line 232 "rygel-gst-av-transport.c"
 	rygel_gst_av_transport_stop_cb (self, _sender, action);
 }
 
 
 #line 354 "rygel-gst-av-transport.vala"
 static void _rygel_gst_av_transport_play_cb_gupnp_service_action_invoked (GUPnPService* _sender, GUPnPServiceAction* action, gpointer self) {
-#line 238 "rygel-gst-av-transport.c"
+#line 239 "rygel-gst-av-transport.c"
 	rygel_gst_av_transport_play_cb (self, _sender, action);
 }
 
 
 #line 373 "rygel-gst-av-transport.vala"
 static void _rygel_gst_av_transport_pause_cb_gupnp_service_action_invoked (GUPnPService* _sender, GUPnPServiceAction* action, gpointer self) {
-#line 245 "rygel-gst-av-transport.c"
+#line 246 "rygel-gst-av-transport.c"
 	rygel_gst_av_transport_pause_cb (self, _sender, action);
 }
 
 
 #line 383 "rygel-gst-av-transport.vala"
 static void _rygel_gst_av_transport_seek_cb_gupnp_service_action_invoked (GUPnPService* _sender, GUPnPServiceAction* action, gpointer self) {
-#line 252 "rygel-gst-av-transport.c"
+#line 253 "rygel-gst-av-transport.c"
 	rygel_gst_av_transport_seek_cb (self, _sender, action);
 }
 
 
 #line 411 "rygel-gst-av-transport.vala"
 static void _rygel_gst_av_transport_next_cb_gupnp_service_action_invoked (GUPnPService* _sender, GUPnPServiceAction* action, gpointer self) {
-#line 259 "rygel-gst-av-transport.c"
+#line 260 "rygel-gst-av-transport.c"
 	rygel_gst_av_transport_next_cb (self, _sender, action);
 }
 
 
 #line 415 "rygel-gst-av-transport.vala"
 static void _rygel_gst_av_transport_previous_cb_gupnp_service_action_invoked (GUPnPService* _sender, GUPnPServiceAction* action, gpointer self) {
-#line 266 "rygel-gst-av-transport.c"
+#line 267 "rygel-gst-av-transport.c"
 	rygel_gst_av_transport_previous_cb (self, _sender, action);
 }
 
 
 #line 419 "rygel-gst-av-transport.vala"
 static void _rygel_gst_av_transport_notify_state_cb_g_object_notify (GObject* _sender, GParamSpec* pspec, gpointer self) {
-#line 273 "rygel-gst-av-transport.c"
+#line 274 "rygel-gst-av-transport.c"
 	rygel_gst_av_transport_notify_state_cb (self, _sender, pspec);
 }
 
 
 #line 424 "rygel-gst-av-transport.vala"
 static void _rygel_gst_av_transport_notify_duration_cb_g_object_notify (GObject* _sender, GParamSpec* pspec, gpointer self) {
-#line 280 "rygel-gst-av-transport.c"
+#line 281 "rygel-gst-av-transport.c"
 	rygel_gst_av_transport_notify_duration_cb (self, _sender, pspec);
 }
 
 
 #line 141 "rygel-gst-av-transport.vala"
 static void rygel_gst_av_transport_real_constructed (GObject* base) {
-#line 287 "rygel-gst-av-transport.c"
+#line 288 "rygel-gst-av-transport.c"
 	RygelGstAVTransport * self;
 	RygelGstChangeLog* _tmp0_;
 	RygelGstPlayer* _tmp1_;
@@ -322,13 +323,13 @@ static void rygel_gst_av_transport_real_constructed (GObject* base) {
 	g_signal_connect_object ((GObject*) self->priv->player, "notify::playback-state", (GCallback) _rygel_gst_av_transport_notify_state_cb_g_object_notify, self, 0);
 #line 164 "rygel-gst-av-transport.vala"
 	g_signal_connect_object ((GObject*) self->priv->player, "notify::duration", (GCallback) _rygel_gst_av_transport_notify_duration_cb_g_object_notify, self, 0);
-#line 326 "rygel-gst-av-transport.c"
+#line 327 "rygel-gst-av-transport.c"
 }
 
 
 #line 167 "rygel-gst-av-transport.vala"
 static void rygel_gst_av_transport_query_last_change_cb (RygelGstAVTransport* self, GUPnPService* service, const char* variable, GValue* value) {
-#line 332 "rygel-gst-av-transport.c"
+#line 333 "rygel-gst-av-transport.c"
 	RygelGstChangeLog* log;
 	char* _tmp0_;
 	char* _tmp1_;
@@ -370,31 +371,31 @@ static void rygel_gst_av_transport_query_last_change_cb (RygelGstAVTransport* se
 	rygel_gst_change_log_log (log, "PossibleRecordQualityMode", "NOT_IMPLEMENTED");
 #line 184 "rygel-gst-av-transport.vala"
 	rygel_gst_change_log_log (log, "NumberOfTracks", _tmp0_ = g_strdup_printf ("%u", rygel_gst_av_transport_get_n_tracks (self)));
-#line 374 "rygel-gst-av-transport.c"
+#line 375 "rygel-gst-av-transport.c"
 	_g_free0 (_tmp0_);
 #line 185 "rygel-gst-av-transport.vala"
 	rygel_gst_change_log_log (log, "CurrentTrack", _tmp1_ = g_strdup_printf ("%u", rygel_gst_av_transport_get_track (self)));
-#line 378 "rygel-gst-av-transport.c"
+#line 379 "rygel-gst-av-transport.c"
 	_g_free0 (_tmp1_);
 #line 186 "rygel-gst-av-transport.vala"
 	rygel_gst_change_log_log (log, "CurrentTrackDuration", _tmp2_ = rygel_gst_player_get_duration (self->priv->player));
-#line 382 "rygel-gst-av-transport.c"
+#line 383 "rygel-gst-av-transport.c"
 	_g_free0 (_tmp2_);
 #line 187 "rygel-gst-av-transport.vala"
 	rygel_gst_change_log_log (log, "CurrentMediaDuration", _tmp3_ = rygel_gst_player_get_duration (self->priv->player));
-#line 386 "rygel-gst-av-transport.c"
+#line 387 "rygel-gst-av-transport.c"
 	_g_free0 (_tmp3_);
 #line 188 "rygel-gst-av-transport.vala"
 	rygel_gst_change_log_log (log, "CurrentTrackMetadata", _tmp4_ = rygel_gst_av_transport_get_metadata (self));
-#line 390 "rygel-gst-av-transport.c"
+#line 391 "rygel-gst-av-transport.c"
 	_g_free0 (_tmp4_);
 #line 189 "rygel-gst-av-transport.vala"
 	rygel_gst_change_log_log (log, "CurrentTrackURI", _tmp5_ = rygel_gst_av_transport_get_uri (self));
-#line 394 "rygel-gst-av-transport.c"
+#line 395 "rygel-gst-av-transport.c"
 	_g_free0 (_tmp5_);
 #line 190 "rygel-gst-av-transport.vala"
 	rygel_gst_change_log_log (log, "AVTransportURI", _tmp6_ = rygel_gst_av_transport_get_uri (self));
-#line 398 "rygel-gst-av-transport.c"
+#line 399 "rygel-gst-av-transport.c"
 	_g_free0 (_tmp6_);
 #line 191 "rygel-gst-av-transport.vala"
 	rygel_gst_change_log_log (log, "NextAVTransportURI", "NOT_IMPLEMENTED");
@@ -402,7 +403,7 @@ static void rygel_gst_av_transport_query_last_change_cb (RygelGstAVTransport* se
 	g_value_init (value, G_TYPE_STRING);
 #line 194 "rygel-gst-av-transport.vala"
 	g_value_set_string (value, _tmp7_ = rygel_gst_change_log_finish (log));
-#line 406 "rygel-gst-av-transport.c"
+#line 407 "rygel-gst-av-transport.c"
 	_g_free0 (_tmp7_);
 	_g_object_unref0 (log);
 }
@@ -410,7 +411,7 @@ static void rygel_gst_av_transport_query_last_change_cb (RygelGstAVTransport* se
 
 #line 198 "rygel-gst-av-transport.vala"
 static gboolean rygel_gst_av_transport_check_instance_id (RygelGstAVTransport* self, GUPnPServiceAction* action) {
-#line 414 "rygel-gst-av-transport.c"
+#line 415 "rygel-gst-av-transport.c"
 	gboolean result = FALSE;
 	guint instance_id = 0U;
 #line 198 "rygel-gst-av-transport.vala"
@@ -422,23 +423,23 @@ static gboolean rygel_gst_av_transport_check_instance_id (RygelGstAVTransport* s
 #line 202 "rygel-gst-av-transport.vala"
 	if (instance_id != 0) {
 #line 203 "rygel-gst-av-transport.vala"
-		gupnp_service_action_return_error (action, (guint) 718, "Invalid InstanceID");
-#line 427 "rygel-gst-av-transport.c"
+		gupnp_service_action_return_error (action, (guint) 718, _ ("Invalid InstanceID"));
+#line 428 "rygel-gst-av-transport.c"
 		result = FALSE;
 #line 205 "rygel-gst-av-transport.vala"
 		return result;
-#line 431 "rygel-gst-av-transport.c"
+#line 432 "rygel-gst-av-transport.c"
 	}
 	result = TRUE;
 #line 208 "rygel-gst-av-transport.vala"
 	return result;
-#line 436 "rygel-gst-av-transport.c"
+#line 437 "rygel-gst-av-transport.c"
 }
 
 
 #line 211 "rygel-gst-av-transport.vala"
 static void rygel_gst_av_transport_set_av_transport_uri_cb (RygelGstAVTransport* self, GUPnPService* service, GUPnPServiceAction* action) {
-#line 442 "rygel-gst-av-transport.c"
+#line 443 "rygel-gst-av-transport.c"
 	char* _uri;
 	char* _metadata;
 #line 211 "rygel-gst-av-transport.vala"
@@ -451,7 +452,7 @@ static void rygel_gst_av_transport_set_av_transport_uri_cb (RygelGstAVTransport*
 	if (!rygel_gst_av_transport_check_instance_id (self, action)) {
 #line 214 "rygel-gst-av-transport.vala"
 		return;
-#line 455 "rygel-gst-av-transport.c"
+#line 456 "rygel-gst-av-transport.c"
 	}
 	_uri = NULL;
 	_metadata = NULL;
@@ -463,7 +464,7 @@ static void rygel_gst_av_transport_set_av_transport_uri_cb (RygelGstAVTransport*
 	rygel_gst_av_transport_set_metadata (self, _metadata);
 #line 225 "rygel-gst-av-transport.vala"
 	gupnp_service_action_return (action);
-#line 467 "rygel-gst-av-transport.c"
+#line 468 "rygel-gst-av-transport.c"
 	_g_free0 (_uri);
 	_g_free0 (_metadata);
 }
@@ -471,7 +472,7 @@ static void rygel_gst_av_transport_set_av_transport_uri_cb (RygelGstAVTransport*
 
 #line 228 "rygel-gst-av-transport.vala"
 static void rygel_gst_av_transport_get_media_info_cb (RygelGstAVTransport* self, GUPnPService* service, GUPnPServiceAction* action) {
-#line 475 "rygel-gst-av-transport.c"
+#line 476 "rygel-gst-av-transport.c"
 	char* _tmp2_;
 	char* _tmp1_;
 	char* _tmp0_;
@@ -485,17 +486,17 @@ static void rygel_gst_av_transport_get_media_info_cb (RygelGstAVTransport* self,
 	if (!rygel_gst_av_transport_check_instance_id (self, action)) {
 #line 231 "rygel-gst-av-transport.vala"
 		return;
-#line 489 "rygel-gst-av-transport.c"
+#line 490 "rygel-gst-av-transport.c"
 	}
 #line 235 "rygel-gst-av-transport.vala"
 	gupnp_service_action_set (action, "NrTracks", G_TYPE_UINT, rygel_gst_av_transport_get_n_tracks (self), "MediaDuration", G_TYPE_STRING, _tmp0_ = rygel_gst_player_get_duration (self->priv->player), "CurrentURI", G_TYPE_STRING, _tmp1_ = rygel_gst_av_transport_get_uri (self), "CurrentURIMetaData", G_TYPE_STRING, _tmp2_ = rygel_gst_av_transport_get_metadata (self), "NextURI", G_TYPE_STRING, "NOT_IMPLEMENTED", "NextURIMetaData", G_TYPE_STRING, "NOT_IMPLEMENTED", "PlayMedium", G_TYPE_STRING, "NOT_IMPLEMENTED", "RecordMedium", G_TYPE_STRING, "NOT_IMPLEMENTED", "WriteStatus", G_TYPE_STRING, "NOT_IMPLEMENTED", NULL);
-#line 493 "rygel-gst-av-transport.c"
+#line 494 "rygel-gst-av-transport.c"
 	_g_free0 (_tmp2_);
 	_g_free0 (_tmp1_);
 	_g_free0 (_tmp0_);
 #line 263 "rygel-gst-av-transport.vala"
 	gupnp_service_action_return (action);
-#line 499 "rygel-gst-av-transport.c"
+#line 500 "rygel-gst-av-transport.c"
 }
 
 
@@ -511,19 +512,19 @@ static void rygel_gst_av_transport_get_transport_info_cb (RygelGstAVTransport* s
 	if (!rygel_gst_av_transport_check_instance_id (self, action)) {
 #line 269 "rygel-gst-av-transport.vala"
 		return;
-#line 515 "rygel-gst-av-transport.c"
+#line 516 "rygel-gst-av-transport.c"
 	}
 #line 272 "rygel-gst-av-transport.vala"
 	gupnp_service_action_set (action, "CurrentTransportState", G_TYPE_STRING, rygel_gst_player_get_playback_state (self->priv->player), "CurrentTransportStatus", G_TYPE_STRING, rygel_gst_av_transport_get_status (self), "CurrentSpeed", G_TYPE_STRING, rygel_gst_av_transport_get_speed (self), NULL);
 #line 282 "rygel-gst-av-transport.vala"
 	gupnp_service_action_return (action);
-#line 521 "rygel-gst-av-transport.c"
+#line 522 "rygel-gst-av-transport.c"
 }
 
 
 #line 285 "rygel-gst-av-transport.vala"
 static void rygel_gst_av_transport_get_position_info_cb (RygelGstAVTransport* self, GUPnPService* service, GUPnPServiceAction* action) {
-#line 527 "rygel-gst-av-transport.c"
+#line 528 "rygel-gst-av-transport.c"
 	char* _tmp4_;
 	char* _tmp3_;
 	char* _tmp2_;
@@ -539,11 +540,11 @@ static void rygel_gst_av_transport_get_position_info_cb (RygelGstAVTransport* se
 	if (!rygel_gst_av_transport_check_instance_id (self, action)) {
 #line 288 "rygel-gst-av-transport.vala"
 		return;
-#line 543 "rygel-gst-av-transport.c"
+#line 544 "rygel-gst-av-transport.c"
 	}
 #line 291 "rygel-gst-av-transport.vala"
 	gupnp_service_action_set (action, "Track", G_TYPE_UINT, rygel_gst_av_transport_get_track (self), "TrackDuration", G_TYPE_STRING, _tmp0_ = rygel_gst_player_get_duration (self->priv->player), "TrackMetaData", G_TYPE_STRING, _tmp1_ = rygel_gst_av_transport_get_metadata (self), "TrackURI", G_TYPE_STRING, _tmp2_ = rygel_gst_av_transport_get_uri (self), "RelTime", G_TYPE_STRING, _tmp3_ = rygel_gst_player_get_position (self->priv->player), "AbsTime", G_TYPE_STRING, _tmp4_ = rygel_gst_player_get_position (self->priv->player), "RelCount", G_TYPE_INT, G_MAXINT, "AbsCount", G_TYPE_INT, G_MAXINT, NULL);
-#line 547 "rygel-gst-av-transport.c"
+#line 548 "rygel-gst-av-transport.c"
 	_g_free0 (_tmp4_);
 	_g_free0 (_tmp3_);
 	_g_free0 (_tmp2_);
@@ -551,7 +552,7 @@ static void rygel_gst_av_transport_get_position_info_cb (RygelGstAVTransport* se
 	_g_free0 (_tmp0_);
 #line 316 "rygel-gst-av-transport.vala"
 	gupnp_service_action_return (action);
-#line 555 "rygel-gst-av-transport.c"
+#line 556 "rygel-gst-av-transport.c"
 }
 
 
@@ -567,13 +568,13 @@ static void rygel_gst_av_transport_get_device_capabilities_cb (RygelGstAVTranspo
 	if (!rygel_gst_av_transport_check_instance_id (self, action)) {
 #line 322 "rygel-gst-av-transport.vala"
 		return;
-#line 571 "rygel-gst-av-transport.c"
+#line 572 "rygel-gst-av-transport.c"
 	}
 #line 325 "rygel-gst-av-transport.vala"
 	gupnp_service_action_set (action, "PlayMedia", G_TYPE_STRING, "NOT_IMPLEMENTED", "RecMedia", G_TYPE_STRING, "NOT_IMPLEMENTED", "RecQualityModes", G_TYPE_STRING, "NOT_IMPLEMENTED", NULL);
 #line 329 "rygel-gst-av-transport.vala"
 	gupnp_service_action_return (action);
-#line 577 "rygel-gst-av-transport.c"
+#line 578 "rygel-gst-av-transport.c"
 }
 
 
@@ -589,13 +590,13 @@ static void rygel_gst_av_transport_get_transport_settings_cb (RygelGstAVTranspor
 	if (!rygel_gst_av_transport_check_instance_id (self, action)) {
 #line 335 "rygel-gst-av-transport.vala"
 		return;
-#line 593 "rygel-gst-av-transport.c"
+#line 594 "rygel-gst-av-transport.c"
 	}
 #line 338 "rygel-gst-av-transport.vala"
 	gupnp_service_action_set (action, "PlayMode", G_TYPE_STRING, rygel_gst_av_transport_get_mode (self), "RecQualityMode", G_TYPE_STRING, "NOT_IMPLEMENTED", NULL);
 #line 341 "rygel-gst-av-transport.vala"
 	gupnp_service_action_return (action);
-#line 599 "rygel-gst-av-transport.c"
+#line 600 "rygel-gst-av-transport.c"
 }
 
 
@@ -611,19 +612,19 @@ static void rygel_gst_av_transport_stop_cb (RygelGstAVTransport* self, GUPnPServ
 	if (!rygel_gst_av_transport_check_instance_id (self, action)) {
 #line 346 "rygel-gst-av-transport.vala"
 		return;
-#line 615 "rygel-gst-av-transport.c"
+#line 616 "rygel-gst-av-transport.c"
 	}
 #line 349 "rygel-gst-av-transport.vala"
 	rygel_gst_player_set_playback_state (self->priv->player, "STOPPED");
 #line 351 "rygel-gst-av-transport.vala"
 	gupnp_service_action_return (action);
-#line 621 "rygel-gst-av-transport.c"
+#line 622 "rygel-gst-av-transport.c"
 }
 
 
 #line 354 "rygel-gst-av-transport.vala"
 static void rygel_gst_av_transport_play_cb (RygelGstAVTransport* self, GUPnPService* service, GUPnPServiceAction* action) {
-#line 627 "rygel-gst-av-transport.c"
+#line 628 "rygel-gst-av-transport.c"
 	char* speed;
 #line 354 "rygel-gst-av-transport.vala"
 	g_return_if_fail (self != NULL);
@@ -635,7 +636,7 @@ static void rygel_gst_av_transport_play_cb (RygelGstAVTransport* self, GUPnPServ
 	if (!rygel_gst_av_transport_check_instance_id (self, action)) {
 #line 356 "rygel-gst-av-transport.vala"
 		return;
-#line 639 "rygel-gst-av-transport.c"
+#line 640 "rygel-gst-av-transport.c"
 	}
 	speed = NULL;
 #line 361 "rygel-gst-av-transport.vala"
@@ -643,18 +644,18 @@ static void rygel_gst_av_transport_play_cb (RygelGstAVTransport* self, GUPnPServ
 #line 362 "rygel-gst-av-transport.vala"
 	if (_vala_strcmp0 (speed, "1") != 0) {
 #line 363 "rygel-gst-av-transport.vala"
-		gupnp_service_action_return_error (action, (guint) 717, "Play speed not supported");
-#line 648 "rygel-gst-av-transport.c"
+		gupnp_service_action_return_error (action, (guint) 717, _ ("Play speed not supported"));
+#line 649 "rygel-gst-av-transport.c"
 		_g_free0 (speed);
 #line 365 "rygel-gst-av-transport.vala"
 		return;
-#line 652 "rygel-gst-av-transport.c"
+#line 653 "rygel-gst-av-transport.c"
 	}
 #line 368 "rygel-gst-av-transport.vala"
 	rygel_gst_player_set_playback_state (self->priv->player, "PLAYING");
 #line 370 "rygel-gst-av-transport.vala"
 	gupnp_service_action_return (action);
-#line 658 "rygel-gst-av-transport.c"
+#line 659 "rygel-gst-av-transport.c"
 	_g_free0 (speed);
 }
 
@@ -671,19 +672,19 @@ static void rygel_gst_av_transport_pause_cb (RygelGstAVTransport* self, GUPnPSer
 	if (!rygel_gst_av_transport_check_instance_id (self, action)) {
 #line 375 "rygel-gst-av-transport.vala"
 		return;
-#line 675 "rygel-gst-av-transport.c"
+#line 676 "rygel-gst-av-transport.c"
 	}
 #line 378 "rygel-gst-av-transport.vala"
 	rygel_gst_player_set_playback_state (self->priv->player, "PAUSED_PLAYBACK");
 #line 380 "rygel-gst-av-transport.vala"
 	gupnp_service_action_return (action);
-#line 681 "rygel-gst-av-transport.c"
+#line 682 "rygel-gst-av-transport.c"
 }
 
 
 #line 383 "rygel-gst-av-transport.vala"
 static void rygel_gst_av_transport_seek_cb (RygelGstAVTransport* self, GUPnPService* service, GUPnPServiceAction* action) {
-#line 687 "rygel-gst-av-transport.c"
+#line 688 "rygel-gst-av-transport.c"
 	char* unit;
 	char* target;
 	GQuark _tmp1_;
@@ -700,13 +701,13 @@ static void rygel_gst_av_transport_seek_cb (RygelGstAVTransport* self, GUPnPServ
 	if (!rygel_gst_av_transport_check_instance_id (self, action)) {
 #line 385 "rygel-gst-av-transport.vala"
 		return;
-#line 704 "rygel-gst-av-transport.c"
+#line 705 "rygel-gst-av-transport.c"
 	}
 	unit = NULL;
 	target = NULL;
 #line 390 "rygel-gst-av-transport.vala"
 	gupnp_service_action_get (action, "Unit", G_TYPE_STRING, &unit, "Target", G_TYPE_STRING, &target, NULL);
-#line 710 "rygel-gst-av-transport.c"
+#line 711 "rygel-gst-av-transport.c"
 	_tmp0_ = unit;
 	_tmp1_ = (NULL == _tmp0_) ? 0 : g_quark_from_string (_tmp0_);
 	if ((_tmp1_ == ((0 != _tmp1__label0) ? _tmp1__label0 : (_tmp1__label0 = g_quark_from_static_string ("ABS_TIME")))) || (_tmp1_ == ((0 != _tmp1__label1) ? _tmp1__label1 : (_tmp1__label1 = g_quark_from_static_string ("REL_TIME")))))
@@ -716,35 +717,35 @@ static void rygel_gst_av_transport_seek_cb (RygelGstAVTransport* self, GUPnPServ
 #line 395 "rygel-gst-av-transport.vala"
 			if (!rygel_gst_player_seek (self->priv->player, target)) {
 #line 396 "rygel-gst-av-transport.vala"
-				gupnp_service_action_return_error (action, (guint) 710, "Seek mode not supported");
-#line 721 "rygel-gst-av-transport.c"
+				gupnp_service_action_return_error (action, (guint) 710, _ ("Seek mode not supported"));
+#line 722 "rygel-gst-av-transport.c"
 				_g_free0 (unit);
 				_g_free0 (target);
 #line 398 "rygel-gst-av-transport.vala"
 				return;
-#line 726 "rygel-gst-av-transport.c"
+#line 727 "rygel-gst-av-transport.c"
 			}
 #line 401 "rygel-gst-av-transport.vala"
 			gupnp_service_action_return (action);
-#line 730 "rygel-gst-av-transport.c"
+#line 731 "rygel-gst-av-transport.c"
 			_g_free0 (unit);
 			_g_free0 (target);
 #line 403 "rygel-gst-av-transport.vala"
 			return;
-#line 735 "rygel-gst-av-transport.c"
+#line 736 "rygel-gst-av-transport.c"
 		}
 	} else
 	switch (0) {
 		default:
 		{
 #line 405 "rygel-gst-av-transport.vala"
-			gupnp_service_action_return_error (action, (guint) 710, "Seek mode not supported");
-#line 743 "rygel-gst-av-transport.c"
+			gupnp_service_action_return_error (action, (guint) 710, _ ("Seek mode not supported"));
+#line 744 "rygel-gst-av-transport.c"
 			_g_free0 (unit);
 			_g_free0 (target);
 #line 407 "rygel-gst-av-transport.vala"
 			return;
-#line 748 "rygel-gst-av-transport.c"
+#line 749 "rygel-gst-av-transport.c"
 		}
 	}
 	_g_free0 (unit);
@@ -761,8 +762,8 @@ static void rygel_gst_av_transport_next_cb (RygelGstAVTransport* self, GUPnPServ
 #line 411 "rygel-gst-av-transport.vala"
 	g_return_if_fail (action != NULL);
 #line 412 "rygel-gst-av-transport.vala"
-	gupnp_service_action_return_error (action, (guint) 701, "Transition not available");
-#line 766 "rygel-gst-av-transport.c"
+	gupnp_service_action_return_error (action, (guint) 701, _ ("Transition not available"));
+#line 767 "rygel-gst-av-transport.c"
 }
 
 
@@ -775,8 +776,8 @@ static void rygel_gst_av_transport_previous_cb (RygelGstAVTransport* self, GUPnP
 #line 415 "rygel-gst-av-transport.vala"
 	g_return_if_fail (action != NULL);
 #line 416 "rygel-gst-av-transport.vala"
-	gupnp_service_action_return_error (action, (guint) 701, "Transition not available");
-#line 780 "rygel-gst-av-transport.c"
+	gupnp_service_action_return_error (action, (guint) 701, _ ("Transition not available"));
+#line 781 "rygel-gst-av-transport.c"
 }
 
 
@@ -790,13 +791,13 @@ static void rygel_gst_av_transport_notify_state_cb (RygelGstAVTransport* self, G
 	g_return_if_fail (p != NULL);
 #line 421 "rygel-gst-av-transport.vala"
 	rygel_gst_change_log_log (self->priv->changelog, "TransportState", rygel_gst_player_get_playback_state (self->priv->player));
-#line 794 "rygel-gst-av-transport.c"
+#line 795 "rygel-gst-av-transport.c"
 }
 
 
 #line 424 "rygel-gst-av-transport.vala"
 static void rygel_gst_av_transport_notify_duration_cb (RygelGstAVTransport* self, GObject* window, GParamSpec* p) {
-#line 800 "rygel-gst-av-transport.c"
+#line 801 "rygel-gst-av-transport.c"
 	char* _tmp0_;
 	char* _tmp1_;
 #line 424 "rygel-gst-av-transport.vala"
@@ -807,18 +808,18 @@ static void rygel_gst_av_transport_notify_duration_cb (RygelGstAVTransport* self
 	g_return_if_fail (p != NULL);
 #line 426 "rygel-gst-av-transport.vala"
 	rygel_gst_change_log_log (self->priv->changelog, "CurrentTrackDuration", _tmp0_ = rygel_gst_player_get_duration (self->priv->player));
-#line 811 "rygel-gst-av-transport.c"
+#line 812 "rygel-gst-av-transport.c"
 	_g_free0 (_tmp0_);
 #line 427 "rygel-gst-av-transport.vala"
 	rygel_gst_change_log_log (self->priv->changelog, "CurrentMediaDuration", _tmp1_ = rygel_gst_player_get_duration (self->priv->player));
-#line 815 "rygel-gst-av-transport.c"
+#line 816 "rygel-gst-av-transport.c"
 	_g_free0 (_tmp1_);
 }
 
 
 #line 30 "rygel-gst-av-transport.vala"
 RygelGstAVTransport* rygel_gst_av_transport_construct (GType object_type) {
-#line 822 "rygel-gst-av-transport.c"
+#line 823 "rygel-gst-av-transport.c"
 	RygelGstAVTransport * self;
 	self = g_object_newv (object_type, 0, NULL);
 	return self;
@@ -829,7 +830,7 @@ RygelGstAVTransport* rygel_gst_av_transport_construct (GType object_type) {
 RygelGstAVTransport* rygel_gst_av_transport_new (void) {
 #line 30 "rygel-gst-av-transport.vala"
 	return rygel_gst_av_transport_construct (RYGEL_TYPE_GST_AV_TRANSPORT);
-#line 833 "rygel-gst-av-transport.c"
+#line 834 "rygel-gst-av-transport.c"
 }
 
 
@@ -839,7 +840,7 @@ guint rygel_gst_av_transport_get_n_tracks (RygelGstAVTransport* self) {
 	result = self->priv->_n_tracks;
 #line 42 "rygel-gst-av-transport.vala"
 	return result;
-#line 843 "rygel-gst-av-transport.c"
+#line 844 "rygel-gst-av-transport.c"
 }
 
 
@@ -850,7 +851,7 @@ void rygel_gst_av_transport_set_n_tracks (RygelGstAVTransport* self, guint value
 	self->priv->_n_tracks = value;
 #line 48 "rygel-gst-av-transport.vala"
 	rygel_gst_change_log_log (self->priv->changelog, "NumberOfTracks", _tmp0_ = g_strdup_printf ("%u", self->priv->_n_tracks));
-#line 854 "rygel-gst-av-transport.c"
+#line 855 "rygel-gst-av-transport.c"
 	_g_free0 (_tmp0_);
 	g_object_notify ((GObject *) self, "n-tracks");
 }
@@ -862,7 +863,7 @@ guint rygel_gst_av_transport_get_track (RygelGstAVTransport* self) {
 	result = self->priv->_track;
 #line 55 "rygel-gst-av-transport.vala"
 	return result;
-#line 866 "rygel-gst-av-transport.c"
+#line 867 "rygel-gst-av-transport.c"
 }
 
 
@@ -873,7 +874,7 @@ void rygel_gst_av_transport_set_track (RygelGstAVTransport* self, guint value) {
 	self->priv->_track = value;
 #line 61 "rygel-gst-av-transport.vala"
 	rygel_gst_change_log_log (self->priv->changelog, "CurrentTrack", _tmp0_ = g_strdup_printf ("%u", self->priv->_track));
-#line 877 "rygel-gst-av-transport.c"
+#line 878 "rygel-gst-av-transport.c"
 	_g_free0 (_tmp0_);
 	g_object_notify ((GObject *) self, "track");
 }
@@ -884,16 +885,16 @@ char* rygel_gst_av_transport_get_metadata (RygelGstAVTransport* self) {
 	g_return_val_if_fail (self != NULL, NULL);
 #line 68 "rygel-gst-av-transport.vala"
 	if (self->priv->_metadata != NULL) {
-#line 888 "rygel-gst-av-transport.c"
+#line 889 "rygel-gst-av-transport.c"
 		result = g_markup_escape_text (self->priv->_metadata, -1);
 #line 69 "rygel-gst-av-transport.vala"
 		return result;
-#line 892 "rygel-gst-av-transport.c"
+#line 893 "rygel-gst-av-transport.c"
 	} else {
 		result = g_strdup ("");
 #line 71 "rygel-gst-av-transport.vala"
 		return result;
-#line 897 "rygel-gst-av-transport.c"
+#line 898 "rygel-gst-av-transport.c"
 	}
 }
 
@@ -906,7 +907,7 @@ void rygel_gst_av_transport_set_metadata (RygelGstAVTransport* self, const char*
 	self->priv->_metadata = (_tmp0_ = g_strdup (value), _g_free0 (self->priv->_metadata), _tmp0_);
 #line 78 "rygel-gst-av-transport.vala"
 	rygel_gst_change_log_log (self->priv->changelog, "CurrentTrackMetadata", _tmp1_ = rygel_gst_av_transport_get_metadata (self));
-#line 910 "rygel-gst-av-transport.c"
+#line 911 "rygel-gst-av-transport.c"
 	_g_free0 (_tmp1_);
 	g_object_notify ((GObject *) self, "metadata");
 }
@@ -917,16 +918,16 @@ char* rygel_gst_av_transport_get_uri (RygelGstAVTransport* self) {
 	g_return_val_if_fail (self != NULL, NULL);
 #line 84 "rygel-gst-av-transport.vala"
 	if (rygel_gst_player_get_uri (self->priv->player) != NULL) {
-#line 921 "rygel-gst-av-transport.c"
+#line 922 "rygel-gst-av-transport.c"
 		result = g_markup_escape_text (rygel_gst_player_get_uri (self->priv->player), -1);
 #line 85 "rygel-gst-av-transport.vala"
 		return result;
-#line 925 "rygel-gst-av-transport.c"
+#line 926 "rygel-gst-av-transport.c"
 	} else {
 		result = g_strdup ("");
 #line 87 "rygel-gst-av-transport.vala"
 		return result;
-#line 930 "rygel-gst-av-transport.c"
+#line 931 "rygel-gst-av-transport.c"
 	}
 }
 
@@ -939,11 +940,11 @@ void rygel_gst_av_transport_set_uri (RygelGstAVTransport* self, const char* valu
 	rygel_gst_player_set_uri (self->priv->player, value);
 #line 94 "rygel-gst-av-transport.vala"
 	rygel_gst_change_log_log (self->priv->changelog, "CurrentTrackURI", _tmp0_ = rygel_gst_av_transport_get_uri (self));
-#line 943 "rygel-gst-av-transport.c"
+#line 944 "rygel-gst-av-transport.c"
 	_g_free0 (_tmp0_);
 #line 95 "rygel-gst-av-transport.vala"
 	rygel_gst_change_log_log (self->priv->changelog, "AVTransportURI", _tmp1_ = rygel_gst_av_transport_get_uri (self));
-#line 947 "rygel-gst-av-transport.c"
+#line 948 "rygel-gst-av-transport.c"
 	_g_free0 (_tmp1_);
 	g_object_notify ((GObject *) self, "uri");
 }
@@ -955,7 +956,7 @@ const char* rygel_gst_av_transport_get_status (RygelGstAVTransport* self) {
 	result = self->priv->_status;
 #line 102 "rygel-gst-av-transport.vala"
 	return result;
-#line 959 "rygel-gst-av-transport.c"
+#line 960 "rygel-gst-av-transport.c"
 }
 
 
@@ -966,7 +967,7 @@ void rygel_gst_av_transport_set_status (RygelGstAVTransport* self, const char* v
 	self->priv->_status = (_tmp0_ = g_strdup (value), _g_free0 (self->priv->_status), _tmp0_);
 #line 108 "rygel-gst-av-transport.vala"
 	rygel_gst_change_log_log (self->priv->changelog, "TransportStatus", self->priv->_status);
-#line 970 "rygel-gst-av-transport.c"
+#line 971 "rygel-gst-av-transport.c"
 	g_object_notify ((GObject *) self, "status");
 }
 
@@ -977,7 +978,7 @@ const char* rygel_gst_av_transport_get_speed (RygelGstAVTransport* self) {
 	result = self->priv->_speed;
 #line 115 "rygel-gst-av-transport.vala"
 	return result;
-#line 981 "rygel-gst-av-transport.c"
+#line 982 "rygel-gst-av-transport.c"
 }
 
 
@@ -988,7 +989,7 @@ void rygel_gst_av_transport_set_speed (RygelGstAVTransport* self, const char* va
 	self->priv->_speed = (_tmp0_ = g_strdup (value), _g_free0 (self->priv->_speed), _tmp0_);
 #line 121 "rygel-gst-av-transport.vala"
 	rygel_gst_change_log_log (self->priv->changelog, "TransportPlaySpeed", self->priv->_speed);
-#line 992 "rygel-gst-av-transport.c"
+#line 993 "rygel-gst-av-transport.c"
 	g_object_notify ((GObject *) self, "speed");
 }
 
@@ -999,7 +1000,7 @@ const char* rygel_gst_av_transport_get_mode (RygelGstAVTransport* self) {
 	result = self->priv->_mode;
 #line 128 "rygel-gst-av-transport.vala"
 	return result;
-#line 1003 "rygel-gst-av-transport.c"
+#line 1004 "rygel-gst-av-transport.c"
 }
 
 
@@ -1010,7 +1011,7 @@ void rygel_gst_av_transport_set_mode (RygelGstAVTransport* self, const char* val
 	self->priv->_mode = (_tmp0_ = g_strdup (value), _g_free0 (self->priv->_mode), _tmp0_);
 #line 134 "rygel-gst-av-transport.vala"
 	rygel_gst_change_log_log (self->priv->changelog, "CurrentPlayMode", self->priv->_mode);
-#line 1014 "rygel-gst-av-transport.c"
+#line 1015 "rygel-gst-av-transport.c"
 	g_object_notify ((GObject *) self, "mode");
 }
 

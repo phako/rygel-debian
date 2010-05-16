@@ -61,6 +61,17 @@ typedef struct _RygelCmdlineConfig RygelCmdlineConfig;
 typedef struct _RygelCmdlineConfigClass RygelCmdlineConfigClass;
 typedef struct _RygelCmdlineConfigPrivate RygelCmdlineConfigPrivate;
 
+#define RYGEL_TYPE_ENVIRONMENT_CONFIG (rygel_environment_config_get_type ())
+#define RYGEL_ENVIRONMENT_CONFIG(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_ENVIRONMENT_CONFIG, RygelEnvironmentConfig))
+#define RYGEL_ENVIRONMENT_CONFIG_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TYPE_ENVIRONMENT_CONFIG, RygelEnvironmentConfigClass))
+#define RYGEL_IS_ENVIRONMENT_CONFIG(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TYPE_ENVIRONMENT_CONFIG))
+#define RYGEL_IS_ENVIRONMENT_CONFIG_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_TYPE_ENVIRONMENT_CONFIG))
+#define RYGEL_ENVIRONMENT_CONFIG_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_TYPE_ENVIRONMENT_CONFIG, RygelEnvironmentConfigClass))
+
+typedef struct _RygelEnvironmentConfig RygelEnvironmentConfig;
+typedef struct _RygelEnvironmentConfigClass RygelEnvironmentConfigClass;
+typedef struct _RygelEnvironmentConfigPrivate RygelEnvironmentConfigPrivate;
+
 #define RYGEL_TYPE_CONTENT_DIRECTORY (rygel_content_directory_get_type ())
 #define RYGEL_CONTENT_DIRECTORY(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_CONTENT_DIRECTORY, RygelContentDirectory))
 #define RYGEL_CONTENT_DIRECTORY_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TYPE_CONTENT_DIRECTORY, RygelContentDirectoryClass))
@@ -267,52 +278,6 @@ typedef struct _RygelLogicalExpression RygelLogicalExpression;
 typedef struct _RygelLogicalExpressionClass RygelLogicalExpressionClass;
 typedef struct _RygelLogicalExpressionPrivate RygelLogicalExpressionPrivate;
 
-#define RYGEL_TYPE_MEDIA_DB_OBJECT_TYPE (rygel_media_db_object_type_get_type ())
-
-#define RYGEL_TYPE_MEDIA_DB (rygel_media_db_get_type ())
-#define RYGEL_MEDIA_DB(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_MEDIA_DB, RygelMediaDB))
-#define RYGEL_MEDIA_DB_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TYPE_MEDIA_DB, RygelMediaDBClass))
-#define RYGEL_IS_MEDIA_DB(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TYPE_MEDIA_DB))
-#define RYGEL_IS_MEDIA_DB_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_TYPE_MEDIA_DB))
-#define RYGEL_MEDIA_DB_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_TYPE_MEDIA_DB, RygelMediaDBClass))
-
-typedef struct _RygelMediaDB RygelMediaDB;
-typedef struct _RygelMediaDBClass RygelMediaDBClass;
-typedef struct _RygelMediaDBPrivate RygelMediaDBPrivate;
-
-#define RYGEL_TYPE_MEDIA_DB_OBJECT_FACTORY (rygel_media_db_object_factory_get_type ())
-#define RYGEL_MEDIA_DB_OBJECT_FACTORY(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_MEDIA_DB_OBJECT_FACTORY, RygelMediaDBObjectFactory))
-#define RYGEL_MEDIA_DB_OBJECT_FACTORY_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TYPE_MEDIA_DB_OBJECT_FACTORY, RygelMediaDBObjectFactoryClass))
-#define RYGEL_IS_MEDIA_DB_OBJECT_FACTORY(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TYPE_MEDIA_DB_OBJECT_FACTORY))
-#define RYGEL_IS_MEDIA_DB_OBJECT_FACTORY_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_TYPE_MEDIA_DB_OBJECT_FACTORY))
-#define RYGEL_MEDIA_DB_OBJECT_FACTORY_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_TYPE_MEDIA_DB_OBJECT_FACTORY, RygelMediaDBObjectFactoryClass))
-
-typedef struct _RygelMediaDBObjectFactory RygelMediaDBObjectFactory;
-typedef struct _RygelMediaDBObjectFactoryClass RygelMediaDBObjectFactoryClass;
-
-#define RYGEL_TYPE_METADATA_EXTRACTOR (rygel_metadata_extractor_get_type ())
-#define RYGEL_METADATA_EXTRACTOR(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_METADATA_EXTRACTOR, RygelMetadataExtractor))
-#define RYGEL_METADATA_EXTRACTOR_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TYPE_METADATA_EXTRACTOR, RygelMetadataExtractorClass))
-#define RYGEL_IS_METADATA_EXTRACTOR(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TYPE_METADATA_EXTRACTOR))
-#define RYGEL_IS_METADATA_EXTRACTOR_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_TYPE_METADATA_EXTRACTOR))
-#define RYGEL_METADATA_EXTRACTOR_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_TYPE_METADATA_EXTRACTOR, RygelMetadataExtractorClass))
-
-typedef struct _RygelMetadataExtractor RygelMetadataExtractor;
-typedef struct _RygelMetadataExtractorClass RygelMetadataExtractorClass;
-typedef struct _RygelMetadataExtractorPrivate RygelMetadataExtractorPrivate;
-
-#define RYGEL_TYPE_MEDIA_DB_CONTAINER (rygel_media_db_container_get_type ())
-#define RYGEL_MEDIA_DB_CONTAINER(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_MEDIA_DB_CONTAINER, RygelMediaDBContainer))
-#define RYGEL_MEDIA_DB_CONTAINER_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TYPE_MEDIA_DB_CONTAINER, RygelMediaDBContainerClass))
-#define RYGEL_IS_MEDIA_DB_CONTAINER(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TYPE_MEDIA_DB_CONTAINER))
-#define RYGEL_IS_MEDIA_DB_CONTAINER_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_TYPE_MEDIA_DB_CONTAINER))
-#define RYGEL_MEDIA_DB_CONTAINER_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_TYPE_MEDIA_DB_CONTAINER, RygelMediaDBContainerClass))
-
-typedef struct _RygelMediaDBContainer RygelMediaDBContainer;
-typedef struct _RygelMediaDBContainerClass RygelMediaDBContainerClass;
-typedef struct _RygelMediaDBContainerPrivate RygelMediaDBContainerPrivate;
-typedef struct _RygelMediaDBObjectFactoryPrivate RygelMediaDBObjectFactoryPrivate;
-
 #define RYGEL_TYPE_MEDIA_RECEIVER_REGISTRAR (rygel_media_receiver_registrar_get_type ())
 #define RYGEL_MEDIA_RECEIVER_REGISTRAR(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_MEDIA_RECEIVER_REGISTRAR, RygelMediaReceiverRegistrar))
 #define RYGEL_MEDIA_RECEIVER_REGISTRAR_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TYPE_MEDIA_RECEIVER_REGISTRAR, RygelMediaReceiverRegistrarClass))
@@ -394,6 +359,7 @@ struct _RygelConfigurationIface {
 	gboolean (*get_lpcm_transcoder) (RygelConfiguration* self, GError** error);
 	gboolean (*get_wmv_transcoder) (RygelConfiguration* self, GError** error);
 	RygelLogLevel (*get_log_level) (RygelConfiguration* self, GError** error);
+	char* (*get_plugin_path) (RygelConfiguration* self, GError** error);
 	gboolean (*get_enabled) (RygelConfiguration* self, const char* section, GError** error);
 	char* (*get_title) (RygelConfiguration* self, const char* section, GError** error);
 	char* (*get_string) (RygelConfiguration* self, const char* section, const char* key, GError** error);
@@ -432,6 +398,15 @@ struct _RygelCmdlineConfig {
 };
 
 struct _RygelCmdlineConfigClass {
+	GObjectClass parent_class;
+};
+
+struct _RygelEnvironmentConfig {
+	GObject parent_instance;
+	RygelEnvironmentConfigPrivate * priv;
+};
+
+struct _RygelEnvironmentConfigClass {
 	GObjectClass parent_class;
 };
 
@@ -524,9 +499,11 @@ struct _RygelPlugin {
 	RygelPluginPrivate * priv;
 	char* name;
 	char* title;
+	char* description;
 	char* desc_path;
 	GeeArrayList* resource_infos;
 	GeeArrayList* icon_infos;
+	GeeArrayList* default_icons;
 };
 
 struct _RygelPluginClass {
@@ -678,62 +655,6 @@ struct _RygelLogicalExpressionClass {
 	RygelSearchExpressionClass parent_class;
 };
 
-typedef enum  {
-	RYGEL_MEDIA_DB_ERROR_SQLITE_ERROR,
-	RYGEL_MEDIA_DB_ERROR_GENERAL_ERROR,
-	RYGEL_MEDIA_DB_ERROR_INVALID_TYPE,
-	RYGEL_MEDIA_DB_ERROR_UNSUPPORTED
-} RygelMediaDBError;
-#define RYGEL_MEDIA_DB_ERROR rygel_media_db_error_quark ()
-typedef enum  {
-	RYGEL_MEDIA_DB_OBJECT_TYPE_CONTAINER,
-	RYGEL_MEDIA_DB_OBJECT_TYPE_ITEM
-} RygelMediaDBObjectType;
-
-struct _RygelMediaDB {
-	GObject parent_instance;
-	RygelMediaDBPrivate * priv;
-};
-
-struct _RygelMediaDBClass {
-	GObjectClass parent_class;
-};
-
-typedef enum  {
-	RYGEL_DATABASE_ERROR_IO_ERROR,
-	RYGEL_DATABASE_ERROR_SQLITE_ERROR
-} RygelDatabaseError;
-#define RYGEL_DATABASE_ERROR rygel_database_error_quark ()
-struct _RygelMetadataExtractor {
-	GObject parent_instance;
-	RygelMetadataExtractorPrivate * priv;
-};
-
-struct _RygelMetadataExtractorClass {
-	GObjectClass parent_class;
-};
-
-struct _RygelMediaDBContainer {
-	RygelMediaContainer parent_instance;
-	RygelMediaDBContainerPrivate * priv;
-	RygelMediaDB* media_db;
-};
-
-struct _RygelMediaDBContainerClass {
-	RygelMediaContainerClass parent_class;
-};
-
-struct _RygelMediaDBObjectFactory {
-	GObject parent_instance;
-	RygelMediaDBObjectFactoryPrivate * priv;
-};
-
-struct _RygelMediaDBObjectFactoryClass {
-	GObjectClass parent_class;
-	RygelMediaContainer* (*get_container) (RygelMediaDBObjectFactory* self, RygelMediaDB* media_db, const char* id, const char* title, guint child_count);
-	RygelMediaItem* (*get_item) (RygelMediaDBObjectFactory* self, RygelMediaDB* media_db, RygelMediaContainer* parent, const char* id, const char* title, const char* upnp_class);
-};
-
 struct _RygelMediaReceiverRegistrar {
 	GUPnPService parent_instance;
 	RygelMediaReceiverRegistrarPrivate * priv;
@@ -799,6 +720,7 @@ gboolean rygel_configuration_get_mp2ts_transcoder (RygelConfiguration* self, GEr
 gboolean rygel_configuration_get_lpcm_transcoder (RygelConfiguration* self, GError** error);
 gboolean rygel_configuration_get_wmv_transcoder (RygelConfiguration* self, GError** error);
 RygelLogLevel rygel_configuration_get_log_level (RygelConfiguration* self, GError** error);
+char* rygel_configuration_get_plugin_path (RygelConfiguration* self, GError** error);
 gboolean rygel_configuration_get_enabled (RygelConfiguration* self, const char* section, GError** error);
 char* rygel_configuration_get_title (RygelConfiguration* self, const char* section, GError** error);
 char* rygel_configuration_get_string (RygelConfiguration* self, const char* section, const char* key, GError** error);
@@ -818,6 +740,7 @@ GType rygel_user_config_get_type (void);
 #define RYGEL_USER_CONFIG_LPCM_TRANSCODER_KEY "enable-lpcm-transcoder"
 #define RYGEL_USER_CONFIG_WMV_TRANSCODER_KEY "enable-wmv-transcoder"
 #define RYGEL_USER_CONFIG_LOG_LEVEL_KEY "log-level"
+#define RYGEL_USER_CONFIG_PLUGIN_PATH_KEY "plugin-path"
 void rygel_user_config_set_upnp_enabled (RygelUserConfig* self, gboolean value);
 void rygel_user_config_set_interface (RygelUserConfig* self, const char* value);
 void rygel_user_config_set_port (RygelUserConfig* self, gint value);
@@ -844,6 +767,10 @@ RygelCmdlineConfig* rygel_cmdline_config_get_default (void);
 void rygel_cmdline_config_parse_args (char*** args, int* args_length1, GError** error);
 RygelCmdlineConfig* rygel_cmdline_config_new (void);
 RygelCmdlineConfig* rygel_cmdline_config_construct (GType object_type);
+GType rygel_environment_config_get_type (void);
+RygelEnvironmentConfig* rygel_environment_config_get_default (void);
+RygelEnvironmentConfig* rygel_environment_config_new (void);
+RygelEnvironmentConfig* rygel_environment_config_construct (GType object_type);
 GQuark rygel_content_directory_error_quark (void);
 GType rygel_content_directory_get_type (void);
 GType rygel_media_object_get_type (void);
@@ -890,10 +817,10 @@ GType rygel_icon_info_get_type (void);
 RygelIconInfo* rygel_icon_info_new (const char* mime_type);
 RygelIconInfo* rygel_icon_info_construct (GType object_type, const char* mime_type);
 GType rygel_plugin_get_type (void);
-RygelPlugin* rygel_plugin_new (const char* desc_path, const char* name, const char* title);
-RygelPlugin* rygel_plugin_construct (GType object_type, const char* desc_path, const char* name, const char* title);
-RygelPlugin* rygel_plugin_new_MediaServer (const char* name, const char* title, GType content_dir_type);
-RygelPlugin* rygel_plugin_construct_MediaServer (GType object_type, const char* name, const char* title, GType content_dir_type);
+RygelPlugin* rygel_plugin_new (const char* desc_path, const char* name, const char* title, const char* description);
+RygelPlugin* rygel_plugin_construct (GType object_type, const char* desc_path, const char* name, const char* title, const char* description);
+RygelPlugin* rygel_plugin_new_MediaServer (const char* name, const char* title, GType content_dir_type, const char* description);
+RygelPlugin* rygel_plugin_construct_MediaServer (GType object_type, const char* name, const char* title, GType content_dir_type, const char* description);
 void rygel_plugin_add_resource (RygelPlugin* self, RygelResourceInfo* resource_info);
 void rygel_plugin_add_icon (RygelPlugin* self, RygelIconInfo* icon_info);
 gboolean rygel_plugin_get_available (RygelPlugin* self);
@@ -970,50 +897,6 @@ GType rygel_logical_operator_get_type (void);
 GType rygel_logical_expression_get_type (void);
 RygelLogicalExpression* rygel_logical_expression_new (void);
 RygelLogicalExpression* rygel_logical_expression_construct (GType object_type);
-GQuark rygel_media_db_error_quark (void);
-GType rygel_media_db_object_type_get_type (void);
-GType rygel_media_db_get_type (void);
-GQuark rygel_database_error_quark (void);
-void rygel_media_db_remove_by_id (RygelMediaDB* self, const char* id, GError** error);
-void rygel_media_db_remove_object (RygelMediaDB* self, RygelMediaObject* object, GError** error);
-void rygel_media_db_save_container (RygelMediaDB* self, RygelMediaContainer* container, GError** error);
-void rygel_media_db_save_item (RygelMediaDB* self, RygelMediaItem* item, GError** error);
-void rygel_media_db_update_object (RygelMediaDB* self, RygelMediaObject* object, GError** error);
-RygelMediaObject* rygel_media_db_get_object (RygelMediaDB* self, const char* object_id, GError** error);
-RygelMediaItem* rygel_media_db_get_item (RygelMediaDB* self, const char* item_id, GError** error);
-RygelMediaContainer* rygel_media_db_get_container (RygelMediaDB* self, const char* container_id, GError** error);
-gint rygel_media_db_get_child_count (RygelMediaDB* self, const char* container_id, GError** error);
-gboolean rygel_media_db_exists (RygelMediaDB* self, const char* object_id, gint64* timestamp, GError** error);
-GeeArrayList* rygel_media_db_get_children (RygelMediaDB* self, const char* container_id, glong offset, glong max_count, GError** error);
-GeeList* rygel_media_db_get_objects_by_search_expression (RygelMediaDB* self, RygelSearchExpression* expression, const char* container_id, guint offset, guint max_count, GError** error);
-GeeArrayList* rygel_media_db_get_objects_by_filter (RygelMediaDB* self, const char* filter, GValueArray* args, const char* container_id, glong offset, glong max_count, GError** error);
-RygelMediaDB* rygel_media_db_new (const char* name, GError** error);
-RygelMediaDB* rygel_media_db_construct (GType object_type, const char* name, GError** error);
-GType rygel_media_db_object_factory_get_type (void);
-RygelMediaDB* rygel_media_db_new_with_factory (const char* name, RygelMediaDBObjectFactory* factory, GError** error);
-RygelMediaDB* rygel_media_db_construct_with_factory (GType object_type, const char* name, RygelMediaDBObjectFactory* factory, GError** error);
-GeeArrayList* rygel_media_db_get_child_ids (RygelMediaDB* self, const char* container_id, GError** error);
-GeeList* rygel_media_db_get_meta_data_column_by_filter (RygelMediaDB* self, const char* column, const char* filter, GValueArray* args, glong offset, glong max_count, GError** error);
-GeeList* rygel_media_db_get_object_attribute_by_search_expression (RygelMediaDB* self, const char* attribute, RygelSearchExpression* expression, glong offset, glong max_count, GError** error);
-GType rygel_metadata_extractor_get_type (void);
-#define RYGEL_METADATA_EXTRACTOR_TAG_RYGEL_SIZE "rygel-size"
-#define RYGEL_METADATA_EXTRACTOR_TAG_RYGEL_DURATION "rygel-duration"
-#define RYGEL_METADATA_EXTRACTOR_TAG_RYGEL_MIME "rygel-mime"
-#define RYGEL_METADATA_EXTRACTOR_TAG_RYGEL_CHANNELS "rygel-channels"
-#define RYGEL_METADATA_EXTRACTOR_TAG_RYGEL_RATE "rygel-rate"
-#define RYGEL_METADATA_EXTRACTOR_TAG_RYGEL_WIDTH "rygel-width"
-#define RYGEL_METADATA_EXTRACTOR_TAG_RYGEL_HEIGHT "rygel-height"
-#define RYGEL_METADATA_EXTRACTOR_TAG_RYGEL_DEPTH "rygel-depth"
-#define RYGEL_METADATA_EXTRACTOR_TAG_RYGEL_MTIME "rygel-mtime"
-RygelMetadataExtractor* rygel_metadata_extractor_create (void);
-void rygel_metadata_extractor_extract (RygelMetadataExtractor* self, GFile* file);
-GType rygel_media_db_container_get_type (void);
-RygelMediaDBContainer* rygel_media_db_container_new (RygelMediaDB* media_db, const char* id, const char* title);
-RygelMediaDBContainer* rygel_media_db_container_construct (GType object_type, RygelMediaDB* media_db, const char* id, const char* title);
-RygelMediaContainer* rygel_media_db_object_factory_get_container (RygelMediaDBObjectFactory* self, RygelMediaDB* media_db, const char* id, const char* title, guint child_count);
-RygelMediaItem* rygel_media_db_object_factory_get_item (RygelMediaDBObjectFactory* self, RygelMediaDB* media_db, RygelMediaContainer* parent, const char* id, const char* title, const char* upnp_class);
-RygelMediaDBObjectFactory* rygel_media_db_object_factory_new (void);
-RygelMediaDBObjectFactory* rygel_media_db_object_factory_construct (GType object_type);
 GType rygel_media_receiver_registrar_get_type (void);
 #define RYGEL_MEDIA_RECEIVER_REGISTRAR_UPNP_ID "urn:microsoft.com:serviceId:X_MS_MediaReceiverRegistrar"
 #define RYGEL_MEDIA_RECEIVER_REGISTRAR_UPNP_TYPE "urn:microsoft.com:service:X_MS_MediaReceiverRegistrar:1"

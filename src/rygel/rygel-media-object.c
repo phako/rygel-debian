@@ -319,7 +319,7 @@ static char* string_replace (const char* self, const char* old, const char* repl
 #line 320 "rygel-media-object.c"
 		if (_inner_error_ != NULL) {
 			if (_inner_error_->domain == G_REGEX_ERROR) {
-				goto __catch41_g_regex_error;
+				goto __catch43_g_regex_error;
 			}
 			g_critical ("file %s: line %d: unexpected error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
 			g_clear_error (&_inner_error_);
@@ -331,7 +331,7 @@ static char* string_replace (const char* self, const char* old, const char* repl
 		if (_inner_error_ != NULL) {
 			_g_regex_unref0 (regex);
 			if (_inner_error_->domain == G_REGEX_ERROR) {
-				goto __catch41_g_regex_error;
+				goto __catch43_g_regex_error;
 			}
 			_g_regex_unref0 (regex);
 			g_critical ("file %s: line %d: unexpected error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
@@ -344,8 +344,8 @@ static char* string_replace (const char* self, const char* old, const char* repl
 		return result;
 #line 346 "rygel-media-object.c"
 	}
-	goto __finally41;
-	__catch41_g_regex_error:
+	goto __finally43;
+	__catch43_g_regex_error:
 	{
 		GError * e;
 		e = _inner_error_;
@@ -357,7 +357,7 @@ static char* string_replace (const char* self, const char* old, const char* repl
 			_g_error_free0 (e);
 		}
 	}
-	__finally41:
+	__finally43:
 	if (_inner_error_ != NULL) {
 		g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
 		g_clear_error (&_inner_error_);

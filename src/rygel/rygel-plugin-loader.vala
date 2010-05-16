@@ -47,7 +47,15 @@ public class Rygel.PluginLoader : Object {
     public void load_plugins () {
         assert (Module.supported());
 
-        File dir = File.new_for_path (BuildConfig.PLUGIN_DIR);
+        string path;
+        try {
+            var config = MetaConfig.get_default ();
+            path = config.get_plugin_path ();
+        } catch (Error error) {
+            path = BuildConfig.PLUGIN_DIR;
+        }
+
+        File dir = File.new_for_path (path);
         assert (dir != null && is_dir (dir));
 
         this.load_modules_from_dir.begin (dir);
@@ -61,11 +69,11 @@ public class Rygel.PluginLoader : Object {
         } catch (GLib.Error err) {}
 
         if (enabled) {
-            message ("New plugin '%s' available", plugin.name);
+            message (_("New plugin '%s' available"), plugin.name);
             this.plugin_hash.set (plugin.name, plugin);
             this.plugin_available (plugin);
         } else {
-            debug ("Plugin '%s' disabled in user configuration, ignoring..",
+            debug (_("Plugin '%s' disabled in user configuration, ignoring.."),
                    plugin.name);
         }
     }
@@ -97,7 +105,7 @@ public class Rygel.PluginLoader : Object {
                                                        Priority.DEFAULT,
                                                        null);
         } catch (Error error) {
-            critical ("Error listing contents of directory '%s': %s\n",
+            critical (_("Error listing contents of folder '%s': %s"),
                       dir.get_path (),
                       error.message);
 
@@ -126,7 +134,7 @@ public class Rygel.PluginLoader : Object {
     private void load_module_from_file (string file_path) {
         Module module = Module.open (file_path, ModuleFlags.BIND_LOCAL);
         if (module == null) {
-            warning ("Failed to load module from path '%s' : %s\n",
+            warning (_("Failed to load module from path '%s' : %s"),
                      file_path,
                      Module.error ());
 
@@ -136,8 +144,8 @@ public class Rygel.PluginLoader : Object {
         void* function;
 
         if (!module.symbol("module_init", out function)) {
-            warning ("Failed to find entry point function 'module_init'" +
-                     " in module loaded from path '%s': %s\n",
+            warning (_("Failed to find entry point function '%s' in '%s': %s"),
+                     "module_init",
                      file_path,
                      Module.error ());
 
@@ -152,7 +160,7 @@ public class Rygel.PluginLoader : Object {
 
         module_init (this);
 
-        debug ("Loaded module source: '%s'\n", module.name());
+        debug (_("Loaded module source: '%s'"), module.name());
     }
 
     private static bool is_dir (File file) {
@@ -163,7 +171,7 @@ public class Rygel.PluginLoader : Object {
                                          FileQueryInfoFlags.NONE,
                                          null);
         } catch (Error error) {
-            critical ("Failed to query content type for '%s'\n",
+            critical (_("Failed to query content type for '%s'"),
                       file.get_path ());
 
             return false;

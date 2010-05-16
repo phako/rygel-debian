@@ -21,7 +21,7 @@
 using Gee;
 using GUPnP;
 
-internal class Rygel.MediaExportQueryContainer : Rygel.MediaDBContainer {
+internal class Rygel.MediaExportQueryContainer : Rygel.MediaExportDBContainer {
     public static const string PREFIX = "virtual-container:";
     private string attribute;
     private SearchExpression expression;
@@ -44,20 +44,20 @@ internal class Rygel.MediaExportQueryContainer : Rygel.MediaDBContainer {
         var args = id.split(",");
 
         if ((args.length % 2) != 0) {
-            warning ("Id does not contain pairs");
+            warning (_("ID does not contain pairs"));
 
             return false;
         }
 
         for (int i = 0; i < args.length; i += 2) {
             if (args[i] == "" || args[i + 1] == "") {
-                warning ("Empty part not allowed in virtual id");
+                warning (_("Empty part not allowed in virtual ID"));
 
                 return false;
             }
 
             if (args[i] == "?") {
-                warning ("Placeholder can only be on second place");
+                warning (_("Placeholder can only be on second place"));
 
                 return false;
             }
@@ -66,9 +66,9 @@ internal class Rygel.MediaExportQueryContainer : Rygel.MediaDBContainer {
         return true;
     }
 
-    public MediaExportQueryContainer (MediaDB media_db,
-                                      string  id,
-                                      string  name = "") {
+    public MediaExportQueryContainer (MediaExportMediaCache media_db,
+                                      string                id,
+                                      string                name = "") {
         // parse the id
         // Following the schema:
         // virtual-folder:<class>,? -> get all of that class (eg. Albums)
@@ -91,7 +91,7 @@ internal class Rygel.MediaExportQueryContainer : Rygel.MediaDBContainer {
         base (media_db, id, name);
 
         this.plaintext_id = get_virtual_container_definition (id);
-        debug ("plaintext id is: %s", this.plaintext_id);
+        debug ("plaintext ID is: %s", this.plaintext_id);
         var args = this.plaintext_id.split(",");
 
         if ((args.length % 2) != 0) {
@@ -115,7 +115,10 @@ internal class Rygel.MediaExportQueryContainer : Rygel.MediaDBContainer {
             i += 2;
         }
         this.child_count = this.count_children ();
-        debug ("We have %u children", this.child_count);
+        debug (ngettext ("We have %u child.",
+                         "We have %u children.",
+                         this.child_count),
+                         this.child_count);
     }
 
     private int count_children () {
@@ -235,7 +238,7 @@ internal class Rygel.MediaExportQueryContainer : Rygel.MediaDBContainer {
         }
         if (!virtual_container_map.has_key (md5)) {
             virtual_container_map[md5] = id;
-            debug ("registering %s for %s", md5, id);
+            debug (_("Registering %s for %s"), md5, id);
         }
 
         id = PREFIX + md5;

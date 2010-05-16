@@ -24,8 +24,8 @@ using GUPnP;
 /**
  * Represents the root container.
  */
-public class Rygel.MediaExportRootContainer : Rygel.MediaDBContainer {
-    private MetadataExtractor extractor;
+public class Rygel.MediaExportRootContainer : Rygel.MediaExportDBContainer {
+    private MediaExportMetadataExtractor extractor;
     private HashMap<File, MediaExportHarvester> harvester;
     private MediaExportRecursiveFileMonitor monitor;
     private MediaExportDBusService service;
@@ -47,7 +47,7 @@ public class Rygel.MediaExportRootContainer : Rygel.MediaDBContainer {
 
         // either an error occured or the gconf key is not set
         if (uris.size == 0) {
-            debug("Nothing configured, using XDG special directories");
+            debug(_("Nothing configured, using XDG special folders"));
             UserDirectory[] xdg_directories = { UserDirectory.MUSIC,
                                                 UserDirectory.PICTURES,
                                                 UserDirectory.VIDEOS };
@@ -73,7 +73,7 @@ public class Rygel.MediaExportRootContainer : Rygel.MediaDBContainer {
                 MediaExportRootContainer.instance =
                                              new MediaExportRootContainer ();
             } catch (Error error) {
-                warning("Failed to create instance of database");
+                warning(_("Failed to create instance of database"));
                 MediaExportRootContainer.instance = new NullContainer ();
             }
         }
@@ -94,7 +94,7 @@ public class Rygel.MediaExportRootContainer : Rygel.MediaDBContainer {
         try {
             this.media_db.remove_by_id (id);
         } catch (Error error) {
-            warning ("Failed to remove uri: %s", error.message);
+            warning (_("Failed to remove URI: %s"), error.message);
         }
     }
 
@@ -109,7 +109,7 @@ public class Rygel.MediaExportRootContainer : Rygel.MediaDBContainer {
 
                     return new MediaExportQueryContainer (this.media_db,
                                                           id,
-                                                          "Albums");
+                                                          _("Albums"));
 
                 case "object.container.person.musicArtist":
                     string id = "virtual-container:dc:creator,?,upnp:album,?";
@@ -117,7 +117,7 @@ public class Rygel.MediaExportRootContainer : Rygel.MediaDBContainer {
 
                     return new MediaExportQueryContainer (this.media_db,
                                                           id,
-                                                          "Artists");
+                                                          _("Artists"));
                 default:
                     return null;
             }
@@ -284,11 +284,12 @@ public class Rygel.MediaExportRootContainer : Rygel.MediaDBContainer {
      */
     private MediaExportRootContainer () throws Error {
         var object_factory = new MediaExportObjectFactory ();
-        var db = new MediaDB.with_factory ("media-export", object_factory);
+        var db = new MediaExportMediaCache.with_factory ("media-export",
+                                                         object_factory);
 
         base (db, "0", "MediaExportRoot");
 
-        this.extractor = MetadataExtractor.create ();
+        this.extractor = MediaExportMetadataExtractor.create ();
 
         this.harvester = new HashMap<File, MediaExportHarvester> (file_hash,
                                                                   file_equal);
@@ -300,7 +301,7 @@ public class Rygel.MediaExportRootContainer : Rygel.MediaDBContainer {
         try {
             this.service = new MediaExportDBusService (this);
         } catch (Error err) {
-            warning ("Failed to create MediaExport DBus service: %s",
+            warning (_("Failed to create MediaExport DBus service: %s"),
                      err.message);
         }
         this.dynamic_elements = new MediaExportDynamicContainer (db, this);
@@ -343,7 +344,7 @@ public class Rygel.MediaExportRootContainer : Rygel.MediaDBContainer {
                 var info = container.split ("=");
                 var id = MediaExportQueryContainer.PREFIX + info[1];
                 if (!MediaExportQueryContainer.validate_virtual_id (id)) {
-                    warning ("%s is not a valid virtual id", id);
+                    warning (_("%s is not a valid virtual ID"), id);
 
                     continue;
                 }
@@ -361,7 +362,7 @@ public class Rygel.MediaExportRootContainer : Rygel.MediaDBContainer {
                 ids.remove (id);
             }
         } catch (Error error) {
-            warning ("Got error while trying to find virtual folders: %s",
+            warning (_("Got error while trying to find virtual folders: %s"),
                      error.message);
         }
 
@@ -370,11 +371,11 @@ public class Rygel.MediaExportRootContainer : Rygel.MediaDBContainer {
                 continue;
             }
 
-            debug ("Id %s no longer in config, deleting...", id);
+            debug (_("ID %s no longer in config, deleting..."), id);
             try {
                 this.media_db.remove_by_id (id);
             } catch (DatabaseError error) {
-                warning ("Failed to remove entry: %s", error.message);
+                warning (_("Failed to remove entry: %s"), error.message);
             }
         }
 
@@ -383,7 +384,7 @@ public class Rygel.MediaExportRootContainer : Rygel.MediaDBContainer {
 
     private void on_file_harvested (MediaExportHarvester harvester,
                                     File                 file) {
-        message ("'%s' harvested", file.get_uri ());
+        message (_("'%s' harvested"), file.get_uri ());
 
         this.harvester.remove (file);
     }
@@ -395,13 +396,13 @@ public class Rygel.MediaExportRootContainer : Rygel.MediaDBContainer {
 
     private void harvest (File file, MediaContainer parent = this) {
         if (this.extractor == null) {
-            warning ("No Metadata extractor available. Will not crawl");
+            warning (_("No Metadata extractor available. Will not crawl"));
 
             return;
         }
 
         if (this.harvester.contains (file)) {
-            debug ("Already harvesting; cancelling");
+            debug (_("Already harvesting; cancelling"));
             var harvester = this.harvester[file];
             harvester.harvested.disconnect (this.on_file_harvested);
             harvester.cancellable.cancel ();
@@ -424,8 +425,9 @@ public class Rygel.MediaExportRootContainer : Rygel.MediaDBContainer {
         switch (event) {
             case FileMonitorEvent.CREATED:
             case FileMonitorEvent.CHANGES_DONE_HINT:
-                debug ("Trying to harvest %s because of %d", file.get_uri (),
-                        event);
+                debug (_("Trying to harvest %s because of %d"),
+                       file.get_uri (),
+                       event);
                 var parent = file.get_parent ();
                 var id = Checksum.compute_for_string (ChecksumType.MD5,
                                                       parent.get_uri ());
@@ -436,8 +438,8 @@ public class Rygel.MediaExportRootContainer : Rygel.MediaDBContainer {
 
                     this.harvest (file, parent_container);
                 } catch (Rygel.DatabaseError error) {
-                    warning ("Error while getting parent container for " +
-                             "filesystem event: %s",
+                    warning (_("Error fetching object '%s' from database: %s"),
+                             id,
                              error.message);
                 }
                 break;
@@ -460,7 +462,7 @@ public class Rygel.MediaExportRootContainer : Rygel.MediaDBContainer {
                         }
                     }
                 } catch (Error error) {
-                    warning ("Error removing object from database: %s",
+                    warning (_("Error removing object from database: %s"),
                              error.message);
                 }
                 break;

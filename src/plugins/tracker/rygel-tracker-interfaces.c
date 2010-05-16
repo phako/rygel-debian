@@ -269,17 +269,17 @@ static const _DBusObjectVTable _rygel_tracker_miner_iface_dbus_vtable = {rygel_t
 static void g_cclosure_user_marshal_VOID__BOXED_INT (GClosure * closure, GValue * return_value, guint n_param_values, const GValue * param_values, gpointer invocation_hint, gpointer marshal_data);
 static void g_cclosure_user_marshal_VOID__BOXED_INT_BOXED_INT (GClosure * closure, GValue * return_value, guint n_param_values, const GValue * param_values, gpointer invocation_hint, gpointer marshal_data);
 
-#line 50 "rygel-tracker-plugin-factory.vala"
+#line 49 "rygel-tracker-plugin-factory.vala"
 void rygel_tracker_stats_iface_get_statistics (RygelTrackerStatsIface* self, GAsyncReadyCallback _callback_, gpointer _user_data_) {
-#line 50 "rygel-tracker-plugin-factory.vala"
+#line 49 "rygel-tracker-plugin-factory.vala"
 	RYGEL_TRACKER_STATS_IFACE_GET_INTERFACE (self)->get_statistics (self, _callback_, _user_data_);
 #line 277 "rygel-tracker-interfaces.c"
 }
 
 
-#line 50 "rygel-tracker-plugin-factory.vala"
+#line 49 "rygel-tracker-plugin-factory.vala"
 char** rygel_tracker_stats_iface_get_statistics_finish (RygelTrackerStatsIface* self, GAsyncResult* _res_, int* result_length1, int* result_length2, GError** error) {
-#line 50 "rygel-tracker-plugin-factory.vala"
+#line 49 "rygel-tracker-plugin-factory.vala"
 	return RYGEL_TRACKER_STATS_IFACE_GET_INTERFACE (self)->get_statistics_finish (self, _res_, result_length1, result_length2, error);
 #line 285 "rygel-tracker-interfaces.c"
 }
@@ -810,33 +810,33 @@ static void rygel_tracker_stats_iface_dbus_proxy_set_property (GObject * object,
 }
 
 
-#line 50 "rygel-tracker-plugin-factory.vala"
+#line 49 "rygel-tracker-plugin-factory.vala"
 void rygel_tracker_resources_iface_sparql_query (RygelTrackerResourcesIface* self, const char* query, GAsyncReadyCallback _callback_, gpointer _user_data_) {
-#line 50 "rygel-tracker-plugin-factory.vala"
+#line 49 "rygel-tracker-plugin-factory.vala"
 	RYGEL_TRACKER_RESOURCES_IFACE_GET_INTERFACE (self)->sparql_query (self, query, _callback_, _user_data_);
 #line 818 "rygel-tracker-interfaces.c"
 }
 
 
-#line 50 "rygel-tracker-plugin-factory.vala"
+#line 49 "rygel-tracker-plugin-factory.vala"
 char** rygel_tracker_resources_iface_sparql_query_finish (RygelTrackerResourcesIface* self, GAsyncResult* _res_, int* result_length1, int* result_length2, GError** error) {
-#line 50 "rygel-tracker-plugin-factory.vala"
+#line 49 "rygel-tracker-plugin-factory.vala"
 	return RYGEL_TRACKER_RESOURCES_IFACE_GET_INTERFACE (self)->sparql_query_finish (self, _res_, result_length1, result_length2, error);
 #line 826 "rygel-tracker-interfaces.c"
 }
 
 
-#line 50 "rygel-tracker-plugin-factory.vala"
+#line 49 "rygel-tracker-plugin-factory.vala"
 void rygel_tracker_resources_iface_sparql_update_blank (RygelTrackerResourcesIface* self, const char* query, GAsyncReadyCallback _callback_, gpointer _user_data_) {
-#line 50 "rygel-tracker-plugin-factory.vala"
+#line 49 "rygel-tracker-plugin-factory.vala"
 	RYGEL_TRACKER_RESOURCES_IFACE_GET_INTERFACE (self)->sparql_update_blank (self, query, _callback_, _user_data_);
 #line 834 "rygel-tracker-interfaces.c"
 }
 
 
-#line 50 "rygel-tracker-plugin-factory.vala"
+#line 49 "rygel-tracker-plugin-factory.vala"
 GHashTable** rygel_tracker_resources_iface_sparql_update_blank_finish (RygelTrackerResourcesIface* self, GAsyncResult* _res_, int* result_length1, int* result_length2, GError** error) {
-#line 50 "rygel-tracker-plugin-factory.vala"
+#line 49 "rygel-tracker-plugin-factory.vala"
 	return RYGEL_TRACKER_RESOURCES_IFACE_GET_INTERFACE (self)->sparql_update_blank_finish (self, _res_, result_length1, result_length2, error);
 #line 842 "rygel-tracker-interfaces.c"
 }
@@ -2187,17 +2187,17 @@ static void rygel_tracker_resources_class_iface_dbus_proxy_set_property (GObject
 }
 
 
-#line 50 "rygel-tracker-plugin-factory.vala"
+#line 49 "rygel-tracker-plugin-factory.vala"
 void rygel_tracker_miner_iface_ignore_next_update (RygelTrackerMinerIface* self, char** urls, int urls_length1, GAsyncReadyCallback _callback_, gpointer _user_data_) {
-#line 50 "rygel-tracker-plugin-factory.vala"
+#line 49 "rygel-tracker-plugin-factory.vala"
 	RYGEL_TRACKER_MINER_IFACE_GET_INTERFACE (self)->ignore_next_update (self, urls, urls_length1, _callback_, _user_data_);
 #line 2195 "rygel-tracker-interfaces.c"
 }
 
 
-#line 50 "rygel-tracker-plugin-factory.vala"
+#line 49 "rygel-tracker-plugin-factory.vala"
 void rygel_tracker_miner_iface_ignore_next_update_finish (RygelTrackerMinerIface* self, GAsyncResult* _res_, GError** error) {
-#line 50 "rygel-tracker-plugin-factory.vala"
+#line 49 "rygel-tracker-plugin-factory.vala"
 	RYGEL_TRACKER_MINER_IFACE_GET_INTERFACE (self)->ignore_next_update_finish (self, _res_, error);
 #line 2203 "rygel-tracker-interfaces.c"
 }

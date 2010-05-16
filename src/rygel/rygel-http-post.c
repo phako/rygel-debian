@@ -30,6 +30,7 @@
 #include <glib-object.h>
 #include <gio/gio.h>
 #include <libsoup/soup.h>
+#include <glib/gi18n-lib.h>
 #include <stdlib.h>
 #include <string.h>
 #include <gee.h>
@@ -266,7 +267,7 @@ static void rygel_http_post_finalize (GObject* obj);
 
 #line 37 "rygel-http-post.vala"
 RygelHTTPPost* rygel_http_post_construct (GType object_type, RygelHTTPServer* http_server, SoupServer* server, SoupMessage* msg) {
-#line 270 "rygel-http-post.c"
+#line 271 "rygel-http-post.c"
 	RygelHTTPPost * self;
 #line 37 "rygel-http-post.vala"
 	g_return_val_if_fail (http_server != NULL, NULL);
@@ -276,7 +277,7 @@ RygelHTTPPost* rygel_http_post_construct (GType object_type, RygelHTTPServer* ht
 	g_return_val_if_fail (msg != NULL, NULL);
 #line 40 "rygel-http-post.vala"
 	self = (RygelHTTPPost*) rygel_http_request_construct (object_type, http_server, server, msg);
-#line 280 "rygel-http-post.c"
+#line 281 "rygel-http-post.c"
 	return self;
 }
 
@@ -285,7 +286,7 @@ RygelHTTPPost* rygel_http_post_construct (GType object_type, RygelHTTPServer* ht
 RygelHTTPPost* rygel_http_post_new (RygelHTTPServer* http_server, SoupServer* server, SoupMessage* msg) {
 #line 37 "rygel-http-post.vala"
 	return rygel_http_post_construct (RYGEL_TYPE_HTTP_POST, http_server, server, msg);
-#line 289 "rygel-http-post.c"
+#line 290 "rygel-http-post.c"
 }
 
 
@@ -325,21 +326,21 @@ static void rygel_http_post_handle_ready (GObject* source_object, GAsyncResult* 
 
 #line 85 "rygel-http-post.vala"
 static void _rygel_http_post_on_got_chunk_soup_message_got_chunk (SoupMessage* _sender, SoupBuffer* chunk, gpointer self) {
-#line 329 "rygel-http-post.c"
+#line 330 "rygel-http-post.c"
 	rygel_http_post_on_got_chunk (self, _sender, chunk);
 }
 
 
 #line 77 "rygel-http-post.vala"
 static void _rygel_http_post_on_got_body_soup_message_got_body (SoupMessage* _sender, gpointer self) {
-#line 336 "rygel-http-post.c"
+#line 337 "rygel-http-post.c"
 	rygel_http_post_on_got_body (self, _sender);
 }
 
 
 #line 43 "rygel-http-post.vala"
 static gboolean _rygel_http_post_real_handle_co_gsource_func (gpointer self) {
-#line 343 "rygel-http-post.c"
+#line 344 "rygel-http-post.c"
 	return rygel_http_post_real_handle_co (self);
 }
 
@@ -367,14 +368,14 @@ static gboolean rygel_http_post_real_handle_co (RygelHttpPostHandleData* data) {
 		g_signal_connect_object (((RygelHTTPRequest*) data->self)->msg, "got-body", (GCallback) _rygel_http_post_on_got_body_soup_message_got_body, data->self, 0);
 #line 47 "rygel-http-post.vala"
 		soup_server_pause_message (((RygelHTTPRequest*) data->self)->server, ((RygelHTTPRequest*) data->self)->msg);
-#line 371 "rygel-http-post.c"
+#line 372 "rygel-http-post.c"
 		data->_state_ = 8;
 		RYGEL_HTTP_REQUEST_CLASS (rygel_http_post_parent_class)->handle (RYGEL_HTTP_REQUEST (data->self), rygel_http_post_handle_ready, data);
 		return FALSE;
 		_state_8:
 #line 48 "rygel-http-post.vala"
 		RYGEL_HTTP_REQUEST_CLASS (rygel_http_post_parent_class)->handle_finish (RYGEL_HTTP_REQUEST (data->self), data->_res_);
-#line 378 "rygel-http-post.c"
+#line 379 "rygel-http-post.c"
 		{
 			data->_state_ = 9;
 			rygel_media_object_get_writable ((RygelMediaObject*) ((RygelHTTPRequest*) data->self)->item, rygel_state_machine_get_cancellable ((RygelStateMachine*) data->self), rygel_http_post_handle_ready, data);
@@ -382,16 +383,16 @@ static gboolean rygel_http_post_real_handle_co (RygelHttpPostHandleData* data) {
 			_state_9:
 			data->_tmp0_ = rygel_media_object_get_writable_finish ((RygelMediaObject*) ((RygelHTTPRequest*) data->self)->item, data->_res_, &data->_inner_error_);
 			if (data->_inner_error_ != NULL) {
-				goto __catch30_g_error;
+				goto __catch31_g_error;
 			}
 #line 51 "rygel-http-post.vala"
 			data->self->priv->file = (data->_tmp1_ = data->_tmp0_, _g_object_unref0 (data->self->priv->file), data->_tmp1_);
 #line 52 "rygel-http-post.vala"
 			if (data->self->priv->file == NULL) {
-#line 392 "rygel-http-post.c"
-				data->_inner_error_ = g_error_new (RYGEL_HTTP_REQUEST_ERROR, RYGEL_HTTP_REQUEST_ERROR_BAD_REQUEST, "No writable URI for %s available", ((RygelMediaObject*) ((RygelHTTPRequest*) data->self)->item)->id);
+#line 393 "rygel-http-post.c"
+				data->_inner_error_ = g_error_new (RYGEL_HTTP_REQUEST_ERROR, RYGEL_HTTP_REQUEST_ERROR_BAD_REQUEST, _ ("No writable URI for %s available"), ((RygelMediaObject*) ((RygelHTTPRequest*) data->self)->item)->id);
 				{
-					goto __catch30_g_error;
+					goto __catch31_g_error;
 				}
 			}
 			data->_state_ = 10;
@@ -400,14 +401,14 @@ static gboolean rygel_http_post_real_handle_co (RygelHttpPostHandleData* data) {
 			_state_10:
 			data->_tmp2_ = g_file_replace_finish (data->self->priv->file, data->_res_, &data->_inner_error_);
 			if (data->_inner_error_ != NULL) {
-				goto __catch30_g_error;
+				goto __catch31_g_error;
 			}
 #line 58 "rygel-http-post.vala"
 			data->self->priv->stream = (data->_tmp3_ = (GOutputStream*) data->_tmp2_, _g_object_unref0 (data->self->priv->stream), data->_tmp3_);
-#line 408 "rygel-http-post.c"
+#line 409 "rygel-http-post.c"
 		}
-		goto __finally30;
-		__catch30_g_error:
+		goto __finally31;
+		__catch31_g_error:
 		{
 			data->_error_ = data->_inner_error_;
 			data->_inner_error_ = NULL;
@@ -416,7 +417,7 @@ static gboolean rygel_http_post_real_handle_co (RygelHttpPostHandleData* data) {
 				soup_server_unpause_message (((RygelHTTPRequest*) data->self)->server, ((RygelHTTPRequest*) data->self)->msg);
 #line 66 "rygel-http-post.vala"
 				rygel_http_request_handle_error ((RygelHTTPRequest*) data->self, data->_error_);
-#line 420 "rygel-http-post.c"
+#line 421 "rygel-http-post.c"
 				_g_error_free0 (data->_error_);
 				{
 					if (data->_state_ == 0) {
@@ -430,7 +431,7 @@ static gboolean rygel_http_post_real_handle_co (RygelHttpPostHandleData* data) {
 				_g_error_free0 (data->_error_);
 			}
 		}
-		__finally30:
+		__finally31:
 		if (data->_inner_error_ != NULL) {
 			g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, data->_inner_error_->message, g_quark_to_string (data->_inner_error_->domain), data->_inner_error_->code);
 			g_clear_error (&data->_inner_error_);
@@ -439,8 +440,8 @@ static gboolean rygel_http_post_real_handle_co (RygelHttpPostHandleData* data) {
 #line 71 "rygel-http-post.vala"
 		soup_server_unpause_message (((RygelHTTPRequest*) data->self)->server, ((RygelHTTPRequest*) data->self)->msg);
 #line 72 "rygel-http-post.vala"
-		data->self->priv->handle_continue = (data->_tmp4_ = _rygel_http_post_real_handle_co_gsource_func, ((data->self->priv->handle_continue_target_destroy_notify == NULL) ? NULL : data->self->priv->handle_continue_target_destroy_notify (data->self->priv->handle_continue_target), data->self->priv->handle_continue = NULL, data->self->priv->handle_continue_target = NULL, data->self->priv->handle_continue_target_destroy_notify = NULL), data->self->priv->handle_continue_target = data, data->self->priv->handle_continue_target_destroy_notify = NULL, data->_tmp4_);
-#line 444 "rygel-http-post.c"
+		data->self->priv->handle_continue = (data->_tmp4_ = _rygel_http_post_real_handle_co_gsource_func, ((data->self->priv->handle_continue_target_destroy_notify == NULL) ? NULL : (data->self->priv->handle_continue_target_destroy_notify (data->self->priv->handle_continue_target), NULL), data->self->priv->handle_continue = NULL, data->self->priv->handle_continue_target = NULL, data->self->priv->handle_continue_target_destroy_notify = NULL), data->self->priv->handle_continue_target = data, data->self->priv->handle_continue_target_destroy_notify = NULL, data->_tmp4_);
+#line 445 "rygel-http-post.c"
 		data->_state_ = 11;
 		return FALSE;
 		_state_11:
@@ -470,7 +471,7 @@ static void rygel_http_post_on_got_body (RygelHTTPPost* self, SoupMessage* msg) 
 		rygel_http_request_end ((RygelHTTPRequest*) self, (guint) SOUP_STATUS_OK);
 #line 81 "rygel-http-post.vala"
 		self->priv->handle_continue (self->priv->handle_continue_target);
-#line 474 "rygel-http-post.c"
+#line 475 "rygel-http-post.c"
 	}
 }
 
@@ -485,7 +486,7 @@ static void rygel_http_post_on_got_chunk (RygelHTTPPost* self, SoupMessage* msg,
 	g_return_if_fail (chunk != NULL);
 #line 86 "rygel-http-post.vala"
 	rygel_http_post_write_chunk (self, chunk, NULL, NULL);
-#line 489 "rygel-http-post.c"
+#line 490 "rygel-http-post.c"
 }
 
 
@@ -540,13 +541,13 @@ static gboolean rygel_http_post_write_chunk_co (RygelHttpPostWriteChunkData* dat
 		{
 #line 91 "rygel-http-post.vala"
 			g_output_stream_write (data->self->priv->stream, data->chunk->data, data->chunk->length, rygel_state_machine_get_cancellable ((RygelStateMachine*) data->self), &data->_inner_error_);
-#line 544 "rygel-http-post.c"
+#line 545 "rygel-http-post.c"
 			if (data->_inner_error_ != NULL) {
-				goto __catch31_g_error;
+				goto __catch32_g_error;
 			}
 		}
-		goto __finally31;
-		__catch31_g_error:
+		goto __finally32;
+		__catch32_g_error:
 		{
 			data->_error_ = data->_inner_error_;
 			data->_inner_error_ = NULL;
@@ -555,11 +556,11 @@ static gboolean rygel_http_post_write_chunk_co (RygelHttpPostWriteChunkData* dat
 				rygel_http_request_handle_error ((RygelHTTPRequest*) data->self, data->_error_);
 #line 94 "rygel-http-post.vala"
 				data->self->priv->handle_continue (data->self->priv->handle_continue_target);
-#line 559 "rygel-http-post.c"
+#line 560 "rygel-http-post.c"
 				_g_error_free0 (data->_error_);
 			}
 		}
-		__finally31:
+		__finally32:
 		if (data->_inner_error_ != NULL) {
 			g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, data->_inner_error_->message, g_quark_to_string (data->_inner_error_->domain), data->_inner_error_->code);
 			g_clear_error (&data->_inner_error_);
@@ -595,7 +596,7 @@ static void rygel_http_post_instance_init (RygelHTTPPost * self) {
 static void rygel_http_post_finalize (GObject* obj) {
 	RygelHTTPPost * self;
 	self = RYGEL_HTTP_POST (obj);
-	(self->priv->handle_continue_target_destroy_notify == NULL) ? NULL : self->priv->handle_continue_target_destroy_notify (self->priv->handle_continue_target);
+	(self->priv->handle_continue_target_destroy_notify == NULL) ? NULL : (self->priv->handle_continue_target_destroy_notify (self->priv->handle_continue_target), NULL);
 	self->priv->handle_continue = NULL;
 	self->priv->handle_continue_target = NULL;
 	self->priv->handle_continue_target_destroy_notify = NULL;

@@ -175,7 +175,7 @@ RygelDBusService* rygel_dbus_service_construct (GType object_type, RygelMain* ma
 #line 44 "rygel-dbus-service.vala"
 	if (request_name_result != DBUS_REQUEST_NAME_REPLY_PRIMARY_OWNER) {
 #line 45 "rygel-dbus-service.vala"
-		g_warning ("rygel-dbus-service.vala:45: Failed to start D-Bus service, name '%s' a" \
+		g_warning ("rygel-dbus-service.vala:45: Failed to start D-Bus service  name '%s' a" \
 "lready taken", rygel_dbus_service_RYGEL_SERVICE);
 #line 180 "rygel-dbus-service.c"
 	} else {

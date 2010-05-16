@@ -1,15 +1,13 @@
 if UNINSTALLED
 shareddir = $(abs_top_builddir)/data
 desktopdir = $(shareddir)
+plugindir = $(abs_top_builddir)/src/plugins
+icondir = $(shareddir)/icons
 else
 shareddir = $(datadir)/rygel
 desktopdir = $(datadir)/applications
-endif
-
-if UNINSTALLED
-plugindir = $(abs_top_builddir)/src/plugins
-else
 plugindir = $(libdir)/rygel-1.0
+icondir = $(datadir)/icons/hicolor
 endif
 
 AM_CFLAGS = $(LIBGUPNP_CFLAGS) \
@@ -20,11 +18,10 @@ AM_CFLAGS = $(LIBGUPNP_CFLAGS) \
 	    $(UUID_CFLAGS) \
 	    $(LIBSOUP_CFLAGS) \
 	    $(LIBDBUS_GLIB_CFLAGS) \
-	    $(LIBSQLITE3_CFLAGS) \
 	    -I$(top_srcdir) \
 	    -DDATA_DIR='"$(shareddir)"' -DSYS_CONFIG_DIR='"$(sysconfdir)"'\
 	    -DPLUGIN_DIR='"$(plugindir)"' -DDESKTOP_DIR='"$(desktopdir)"'\
-	    -include config.h
+	    -DICON_DIR='"$(icondir)"' -include config.h
 
 librygelincdir = $(includedir)/rygel-1.0
 
@@ -40,13 +37,13 @@ rygel_SOURCES = $(VAPI_SOURCE_FILES) \
 		rygel-dbus-service.vala \
 		rygel-root-device.vala \
 		rygel-root-device-factory.vala \
-		rygel-database.vala \
 		rygel-main.vala
 
 VAPI_SOURCE_FILES = rygel-configuration.vala \
 		    rygel-user-config.vala \
 		    rygel-meta-config.vala \
 		    rygel-cmdline-config.vala \
+		    rygel-environment-config.vala \
 		    rygel-content-directory.vala \
 		    rygel-connection-manager.vala \
 		    rygel-source-connection-manager.vala \
@@ -99,17 +96,13 @@ VAPI_SOURCE_FILES = rygel-configuration.vala \
 		    rygel-wmv-transcoder.vala \
 		    rygel-wmv-transcoder-bin.vala \
 		    rygel-gst-utils.vala \
-		    rygel-media-db.vala \
-		    rygel-metadata-extractor.vala \
-		    rygel-media-db-container.vala \
-		    rygel-media-db-object-factory.vala \
 		    rygel-media-receiver-registrar.vala \
 		    rygel-log-handler.vala
 
 rygel_VALAFLAGS = \
 	-H rygel.h -C --library=rygel-1.0 --vapidir=$(srcdir) --thread \
 	--pkg cstuff --pkg gupnp-1.0 --pkg gupnp-av-1.0 --pkg dbus-glib-1 \
-	--pkg gstreamer-0.10 --pkg gio-2.0 --pkg gee-1.0 --pkg sqlite3 -g
+	--pkg gstreamer-0.10 --pkg gio-2.0 --pkg gee-1.0 -g
 
 rygel_LDADD = librygel-configuration.a \
 	      $(LIBGUPNP_LIBS) \
@@ -119,8 +112,7 @@ rygel_LDADD = librygel-configuration.a \
 	      $(GEE_LIBS) \
 	      $(UUID_LIBS) \
 	      $(LIBSOUP_LIBS) \
-	      $(LIBDBUS_GLIB_LIBS) \
-	      $(LIBSQLITE3_LIBS)
+	      $(LIBDBUS_GLIB_LIBS)
 
 rygel_LDFLAGS = -export-dynamic
 
@@ -137,6 +129,7 @@ librygel_configuration_a_SOURCES = rygel-configuration.c \
 				   rygel-user-config.c \
 				   rygel-meta-config.c \
 				   rygel-cmdline-config.c \
+				   rygel-environment-config.c \
 				   cstuff.c
 
 MAINTAINERCLEANFILES = Makefile.in $(BUILT_SOURCES)

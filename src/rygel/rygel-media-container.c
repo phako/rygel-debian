@@ -29,6 +29,7 @@
 #include <string.h>
 #include <gee.h>
 #include <gio/gio.h>
+#include <glib/gi18n-lib.h>
 #include <libgupnp-av/gupnp-av.h>
 
 
@@ -289,14 +290,14 @@ static void rygel_media_container_finalize (GObject* obj);
 
 #line 275 "rygel-media-container.vala"
 static void _rygel_media_container_on_container_updated_rygel_media_container_container_updated (RygelMediaContainer* _sender, RygelMediaContainer* container, gpointer self) {
-#line 293 "rygel-media-container.c"
+#line 294 "rygel-media-container.c"
 	rygel_media_container_on_container_updated (self, _sender, container);
 }
 
 
 #line 43 "rygel-media-container.vala"
 RygelMediaContainer* rygel_media_container_construct (GType object_type, const char* id, RygelMediaContainer* parent, const char* title, gint child_count) {
-#line 300 "rygel-media-container.c"
+#line 301 "rygel-media-container.c"
 	RygelMediaContainer * self;
 	char* _tmp0_;
 	char* _tmp1_;
@@ -320,20 +321,20 @@ RygelMediaContainer* rygel_media_container_construct (GType object_type, const c
 	((RygelMediaObject*) self)->upnp_class = (_tmp1_ = g_strdup ("object.container.storageFolder"), _g_free0 (((RygelMediaObject*) self)->upnp_class), _tmp1_);
 #line 54 "rygel-media-container.vala"
 	g_signal_connect_object (self, "container-updated", (GCallback) _rygel_media_container_on_container_updated_rygel_media_container_container_updated, self, 0);
-#line 324 "rygel-media-container.c"
+#line 325 "rygel-media-container.c"
 	return self;
 }
 
 
 #line 57 "rygel-media-container.vala"
 RygelMediaContainer* rygel_media_container_construct_root (GType object_type, const char* title, gint child_count) {
-#line 331 "rygel-media-container.c"
+#line 332 "rygel-media-container.c"
 	RygelMediaContainer * self;
 #line 57 "rygel-media-container.vala"
 	g_return_val_if_fail (title != NULL, NULL);
 #line 59 "rygel-media-container.vala"
 	self = (RygelMediaContainer*) rygel_media_container_construct (object_type, "0", NULL, title, child_count);
-#line 337 "rygel-media-container.c"
+#line 338 "rygel-media-container.c"
 	return self;
 }
 
@@ -342,7 +343,7 @@ RygelMediaContainer* rygel_media_container_construct_root (GType object_type, co
 void rygel_media_container_get_children (RygelMediaContainer* self, guint offset, guint max_count, GCancellable* cancellable, GAsyncReadyCallback _callback_, gpointer _user_data_) {
 #line 57 "rygel-media-container.vala"
 	RYGEL_MEDIA_CONTAINER_GET_CLASS (self)->get_children (self, offset, max_count, cancellable, _callback_, _user_data_);
-#line 346 "rygel-media-container.c"
+#line 347 "rygel-media-container.c"
 }
 
 
@@ -350,7 +351,7 @@ void rygel_media_container_get_children (RygelMediaContainer* self, guint offset
 GeeList* rygel_media_container_get_children_finish (RygelMediaContainer* self, GAsyncResult* _res_, GError** error) {
 #line 57 "rygel-media-container.vala"
 	return RYGEL_MEDIA_CONTAINER_GET_CLASS (self)->get_children_finish (self, _res_, error);
-#line 354 "rygel-media-container.c"
+#line 355 "rygel-media-container.c"
 }
 
 
@@ -449,21 +450,21 @@ static gboolean rygel_media_container_real_search_co (RygelMediaContainerSearchD
 		if (data->offset > 0) {
 #line 108 "rygel-media-container.vala"
 			data->_tmp0_ = TRUE;
-#line 453 "rygel-media-container.c"
+#line 454 "rygel-media-container.c"
 		} else {
 #line 108 "rygel-media-container.vala"
 			data->_tmp0_ = data->max_count > 0;
-#line 457 "rygel-media-container.c"
+#line 458 "rygel-media-container.c"
 		}
 #line 108 "rygel-media-container.vala"
 		if (data->_tmp0_) {
 #line 109 "rygel-media-container.vala"
 			data->limit = data->offset + data->max_count;
-#line 463 "rygel-media-container.c"
+#line 464 "rygel-media-container.c"
 		} else {
 #line 111 "rygel-media-container.vala"
 			data->limit = (guint) 0;
-#line 467 "rygel-media-container.c"
+#line 468 "rygel-media-container.c"
 		}
 		{
 			data->_child_it = gee_iterable_iterator ((GeeIterable*) data->children);
@@ -473,42 +474,42 @@ static gboolean rygel_media_container_real_search_co (RygelMediaContainerSearchD
 				if (!gee_iterator_next (data->_child_it)) {
 #line 115 "rygel-media-container.vala"
 					break;
-#line 477 "rygel-media-container.c"
+#line 478 "rygel-media-container.c"
 				}
 				data->child = (RygelMediaObject*) gee_iterator_get (data->_child_it);
 #line 116 "rygel-media-container.vala"
 				if (data->expression == NULL) {
 #line 116 "rygel-media-container.vala"
 					data->_tmp1_ = TRUE;
-#line 484 "rygel-media-container.c"
+#line 485 "rygel-media-container.c"
 				} else {
 #line 116 "rygel-media-container.vala"
 					data->_tmp1_ = rygel_search_expression_satisfied_by (data->expression, data->child);
-#line 488 "rygel-media-container.c"
+#line 489 "rygel-media-container.c"
 				}
 #line 116 "rygel-media-container.vala"
 				if (data->_tmp1_) {
 #line 117 "rygel-media-container.vala"
 					gee_abstract_collection_add ((GeeAbstractCollection*) data->_result_, data->child);
-#line 494 "rygel-media-container.c"
+#line 495 "rygel-media-container.c"
 				}
 #line 120 "rygel-media-container.vala"
 				if (data->limit > 0) {
 #line 120 "rygel-media-container.vala"
 					data->_tmp2_ = gee_collection_get_size ((GeeCollection*) data->_result_) >= data->limit;
-#line 500 "rygel-media-container.c"
+#line 501 "rygel-media-container.c"
 				} else {
 #line 120 "rygel-media-container.vala"
 					data->_tmp2_ = FALSE;
-#line 504 "rygel-media-container.c"
+#line 505 "rygel-media-container.c"
 				}
 #line 120 "rygel-media-container.vala"
 				if (data->_tmp2_) {
-#line 508 "rygel-media-container.c"
+#line 509 "rygel-media-container.c"
 					_g_object_unref0 (data->child);
 #line 121 "rygel-media-container.vala"
 					break;
-#line 512 "rygel-media-container.c"
+#line 513 "rygel-media-container.c"
 				}
 				_g_object_unref0 (data->child);
 			}
@@ -518,11 +519,11 @@ static gboolean rygel_media_container_real_search_co (RygelMediaContainerSearchD
 		if (data->limit == 0) {
 #line 125 "rygel-media-container.vala"
 			data->_tmp3_ = TRUE;
-#line 522 "rygel-media-container.c"
+#line 523 "rygel-media-container.c"
 		} else {
 #line 125 "rygel-media-container.vala"
 			data->_tmp3_ = gee_collection_get_size ((GeeCollection*) data->_result_) < data->limit;
-#line 526 "rygel-media-container.c"
+#line 527 "rygel-media-container.c"
 		}
 #line 125 "rygel-media-container.vala"
 		if (data->_tmp3_) {
@@ -530,11 +531,11 @@ static gboolean rygel_media_container_real_search_co (RygelMediaContainerSearchD
 			if (data->limit == 0) {
 #line 127 "rygel-media-container.vala"
 				data->_tmp4_ = (guint) 0;
-#line 534 "rygel-media-container.c"
+#line 535 "rygel-media-container.c"
 			} else {
 #line 127 "rygel-media-container.vala"
 				data->_tmp4_ = data->limit - gee_collection_get_size ((GeeCollection*) data->_result_);
-#line 538 "rygel-media-container.c"
+#line 539 "rygel-media-container.c"
 			}
 			data->child_limit = data->_tmp4_;
 			data->_state_ = 26;
@@ -559,18 +560,18 @@ static gboolean rygel_media_container_real_search_co (RygelMediaContainerSearchD
 			}
 #line 133 "rygel-media-container.vala"
 			gee_abstract_collection_add_all ((GeeAbstractCollection*) data->_result_, (GeeCollection*) data->child_results);
-#line 563 "rygel-media-container.c"
+#line 564 "rygel-media-container.c"
 			_g_object_unref0 (data->child_results);
 		}
 #line 137 "rygel-media-container.vala"
 		if (gee_collection_get_size ((GeeCollection*) data->_result_) > 0) {
 #line 137 "rygel-media-container.vala"
 			data->_tmp5_ = data->limit > 0;
-#line 570 "rygel-media-container.c"
+#line 571 "rygel-media-container.c"
 		} else {
 #line 137 "rygel-media-container.vala"
 			data->_tmp5_ = FALSE;
-#line 574 "rygel-media-container.c"
+#line 575 "rygel-media-container.c"
 		}
 #line 137 "rygel-media-container.vala"
 		if (data->_tmp5_) {
@@ -580,25 +581,25 @@ static gboolean rygel_media_container_real_search_co (RygelMediaContainerSearchD
 			if (data->max_count != 0) {
 #line 143 "rygel-media-container.vala"
 				data->_tmp6_ = (data->start + data->max_count) <= gee_collection_get_size ((GeeCollection*) data->_result_);
-#line 584 "rygel-media-container.c"
+#line 585 "rygel-media-container.c"
 			} else {
 #line 143 "rygel-media-container.vala"
 				data->_tmp6_ = FALSE;
-#line 588 "rygel-media-container.c"
+#line 589 "rygel-media-container.c"
 			}
 #line 143 "rygel-media-container.vala"
 			if (data->_tmp6_) {
 #line 144 "rygel-media-container.vala"
 				data->stop = data->start + data->max_count;
-#line 594 "rygel-media-container.c"
+#line 595 "rygel-media-container.c"
 			} else {
 #line 146 "rygel-media-container.vala"
 				data->stop = (guint) gee_collection_get_size ((GeeCollection*) data->_result_);
-#line 598 "rygel-media-container.c"
+#line 599 "rygel-media-container.c"
 			}
 #line 151 "rygel-media-container.vala"
 			data->total_matches = (guint) 0;
-#line 602 "rygel-media-container.c"
+#line 603 "rygel-media-container.c"
 			data->result = gee_abstract_list_slice ((GeeAbstractList*) data->_result_, (gint) data->start, (gint) data->stop);
 			_g_object_unref0 (data->_result_);
 			_g_object_unref0 (data->children);
@@ -614,7 +615,7 @@ static gboolean rygel_media_container_real_search_co (RygelMediaContainerSearchD
 		} else {
 #line 155 "rygel-media-container.vala"
 			data->total_matches = (guint) gee_collection_get_size ((GeeCollection*) data->_result_);
-#line 618 "rygel-media-container.c"
+#line 619 "rygel-media-container.c"
 			data->result = (GeeList*) data->_result_;
 			_g_object_unref0 (data->children);
 			{
@@ -646,7 +647,7 @@ static gboolean rygel_media_container_real_search_co (RygelMediaContainerSearchD
 void rygel_media_container_search (RygelMediaContainer* self, RygelSearchExpression* expression, guint offset, guint max_count, GCancellable* cancellable, GAsyncReadyCallback _callback_, gpointer _user_data_) {
 #line 92 "rygel-media-container.vala"
 	RYGEL_MEDIA_CONTAINER_GET_CLASS (self)->search (self, expression, offset, max_count, cancellable, _callback_, _user_data_);
-#line 650 "rygel-media-container.c"
+#line 651 "rygel-media-container.c"
 }
 
 
@@ -654,7 +655,7 @@ void rygel_media_container_search (RygelMediaContainer* self, RygelSearchExpress
 GeeList* rygel_media_container_search_finish (RygelMediaContainer* self, GAsyncResult* _res_, guint* total_matches, GError** error) {
 #line 92 "rygel-media-container.vala"
 	return RYGEL_MEDIA_CONTAINER_GET_CLASS (self)->search_finish (self, _res_, total_matches, error);
-#line 658 "rygel-media-container.c"
+#line 659 "rygel-media-container.c"
 }
 
 
@@ -730,8 +731,8 @@ static gboolean rygel_media_container_real_add_item_co (RygelMediaContainerAddIt
 		}
 #line 178 "rygel-media-container.vala"
 		if (data->dir == NULL) {
-#line 734 "rygel-media-container.c"
-			data->_inner_error_ = g_error_new (RYGEL_CONTENT_DIRECTORY_ERROR, RYGEL_CONTENT_DIRECTORY_ERROR_RESTRICTED_PARENT, "Object creation in %s no allowed", ((RygelMediaObject*) data->self)->id);
+#line 735 "rygel-media-container.c"
+			data->_inner_error_ = g_error_new (RYGEL_CONTENT_DIRECTORY_ERROR, RYGEL_CONTENT_DIRECTORY_ERROR_RESTRICTED_PARENT, _ ("Object creation in %s not allowed"), ((RygelMediaObject*) data->self)->id);
 			{
 				g_simple_async_result_set_from_error (data->_async_result, data->_inner_error_);
 				g_error_free (data->_inner_error_);
@@ -768,7 +769,7 @@ static gboolean rygel_media_container_real_add_item_co (RygelMediaContainerAddIt
 		_state_28:
 #line 185 "rygel-media-container.vala"
 		data->_tmp0_ = g_file_create_finish (data->file, data->_res_, &data->_inner_error_);
-#line 772 "rygel-media-container.c"
+#line 773 "rygel-media-container.c"
 		_g_object_unref0 (data->_tmp0_);
 		if (data->_inner_error_ != NULL) {
 			g_simple_async_result_set_from_error (data->_async_result, data->_inner_error_);
@@ -790,7 +791,7 @@ static gboolean rygel_media_container_real_add_item_co (RygelMediaContainerAddIt
 		((RygelMediaObject*) data->item)->id = (data->_tmp1_ = g_strdup (data->uri), _g_free0 (((RygelMediaObject*) data->item)->id), data->_tmp1_);
 #line 190 "rygel-media-container.vala"
 		gee_abstract_collection_add ((GeeAbstractCollection*) ((RygelMediaObject*) data->item)->uris, data->uri);
-#line 794 "rygel-media-container.c"
+#line 795 "rygel-media-container.c"
 		_g_object_unref0 (data->dir);
 		_g_object_unref0 (data->file);
 		_g_free0 (data->uri);
@@ -811,7 +812,7 @@ static gboolean rygel_media_container_real_add_item_co (RygelMediaContainerAddIt
 void rygel_media_container_add_item (RygelMediaContainer* self, RygelMediaItem* item, GCancellable* cancellable, GAsyncReadyCallback _callback_, gpointer _user_data_) {
 #line 174 "rygel-media-container.vala"
 	RYGEL_MEDIA_CONTAINER_GET_CLASS (self)->add_item (self, item, cancellable, _callback_, _user_data_);
-#line 815 "rygel-media-container.c"
+#line 816 "rygel-media-container.c"
 }
 
 
@@ -819,7 +820,7 @@ void rygel_media_container_add_item (RygelMediaContainer* self, RygelMediaItem* 
 void rygel_media_container_add_item_finish (RygelMediaContainer* self, GAsyncResult* _res_, GError** error) {
 #line 174 "rygel-media-container.vala"
 	RYGEL_MEDIA_CONTAINER_GET_CLASS (self)->add_item_finish (self, _res_, error);
-#line 823 "rygel-media-container.c"
+#line 824 "rygel-media-container.c"
 }
 
 
@@ -831,7 +832,7 @@ void rygel_media_container_updated (RygelMediaContainer* self) {
 	self->update_id++;
 #line 204 "rygel-media-container.vala"
 	g_signal_emit_by_name (self, "container-updated", self);
-#line 835 "rygel-media-container.c"
+#line 836 "rygel-media-container.c"
 }
 
 
@@ -897,7 +898,7 @@ static gboolean rygel_media_container_find_object_co (RygelMediaContainerFindObj
 		((RygelSearchExpression*) data->expression)->operand1 = (data->_tmp0_ = g_strdup ("@id"), _g_free0 (((RygelSearchExpression*) data->expression)->operand1), data->_tmp0_);
 #line 222 "rygel-media-container.vala"
 		((RygelSearchExpression*) data->expression)->operand2 = (data->_tmp1_ = g_strdup (data->id), _g_free0 (((RygelSearchExpression*) data->expression)->operand2), data->_tmp1_);
-#line 901 "rygel-media-container.c"
+#line 902 "rygel-media-container.c"
 		data->_state_ = 29;
 		rygel_media_container_search (data->self, (RygelSearchExpression*) data->expression, (guint) 0, (guint) 1, data->cancellable, rygel_media_container_find_object_ready, data);
 		return FALSE;
@@ -919,7 +920,7 @@ static gboolean rygel_media_container_find_object_co (RygelMediaContainerFindObj
 		}
 #line 230 "rygel-media-container.vala"
 		if (gee_collection_get_size ((GeeCollection*) data->results) > 0) {
-#line 923 "rygel-media-container.c"
+#line 924 "rygel-media-container.c"
 			data->result = (RygelMediaObject*) gee_list_get (data->results, 0);
 			_rygel_search_expression_unref0 (data->expression);
 			_g_object_unref0 (data->results);
@@ -1028,12 +1029,12 @@ static gboolean rygel_media_container_search_in_children_co (RygelMediaContainer
 				if (!gee_iterator_next (data->_child_it)) {
 #line 245 "rygel-media-container.vala"
 					break;
-#line 1032 "rygel-media-container.c"
+#line 1033 "rygel-media-container.c"
 				}
 				data->child = (RygelMediaObject*) gee_iterator_get (data->_child_it);
 #line 246 "rygel-media-container.vala"
 				if (RYGEL_IS_MEDIA_CONTAINER (data->child)) {
-#line 1037 "rygel-media-container.c"
+#line 1038 "rygel-media-container.c"
 					data->container = _g_object_ref0 ((data->_tmp0_ = data->child, RYGEL_IS_MEDIA_CONTAINER (data->_tmp0_) ? ((RygelMediaContainer*) data->_tmp0_) : NULL));
 					data->_state_ = 30;
 					rygel_media_container_search (data->container, data->expression, (guint) 0, data->limit, data->cancellable, rygel_media_container_search_in_children_ready, data);
@@ -1059,7 +1060,7 @@ static gboolean rygel_media_container_search_in_children_co (RygelMediaContainer
 					}
 #line 256 "rygel-media-container.vala"
 					gee_abstract_collection_add_all ((GeeAbstractCollection*) data->_result_, (GeeCollection*) data->child_result);
-#line 1063 "rygel-media-container.c"
+#line 1064 "rygel-media-container.c"
 					_g_object_unref0 (data->container);
 					_g_object_unref0 (data->child_result);
 				}
@@ -1067,19 +1068,19 @@ static gboolean rygel_media_container_search_in_children_co (RygelMediaContainer
 				if (data->limit > 0) {
 #line 259 "rygel-media-container.vala"
 					data->_tmp1_ = gee_collection_get_size ((GeeCollection*) data->_result_) >= data->limit;
-#line 1071 "rygel-media-container.c"
+#line 1072 "rygel-media-container.c"
 				} else {
 #line 259 "rygel-media-container.vala"
 					data->_tmp1_ = FALSE;
-#line 1075 "rygel-media-container.c"
+#line 1076 "rygel-media-container.c"
 				}
 #line 259 "rygel-media-container.vala"
 				if (data->_tmp1_) {
-#line 1079 "rygel-media-container.c"
+#line 1080 "rygel-media-container.c"
 					_g_object_unref0 (data->child);
 #line 260 "rygel-media-container.vala"
 					break;
-#line 1083 "rygel-media-container.c"
+#line 1084 "rygel-media-container.c"
 				}
 				_g_object_unref0 (data->child);
 			}
@@ -1121,7 +1122,7 @@ static void rygel_media_container_on_container_updated (RygelMediaContainer* sel
 	if (((RygelMediaObject*) self)->parent != NULL) {
 #line 278 "rygel-media-container.vala"
 		g_signal_emit_by_name (((RygelMediaObject*) self)->parent, "container-updated", updated_container);
-#line 1125 "rygel-media-container.c"
+#line 1126 "rygel-media-container.c"
 	}
 }
 

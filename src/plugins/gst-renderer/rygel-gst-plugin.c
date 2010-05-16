@@ -29,6 +29,7 @@
 #include <glib-object.h>
 #include <stdlib.h>
 #include <string.h>
+#include <glib/gi18n-lib.h>
 #include <rygel.h>
 #include <libgupnp/gupnp.h>
 
@@ -83,7 +84,7 @@ void module_init (RygelPluginLoader* loader);
 
 #line 30 "rygel-gst-plugin.vala"
 void module_init (RygelPluginLoader* loader) {
-#line 87 "rygel-gst-plugin.c"
+#line 88 "rygel-gst-plugin.c"
 	char* MEDIA_RENDERER_DESC_PATH;
 	RygelPlugin* plugin;
 	RygelResourceInfo* _tmp0_;
@@ -94,22 +95,22 @@ void module_init (RygelPluginLoader* loader) {
 #line 31 "rygel-gst-plugin.vala"
 	MEDIA_RENDERER_DESC_PATH = g_strdup (DATA_DIR "/xml/MediaRenderer2.xml");
 #line 34 "rygel-gst-plugin.vala"
-	plugin = rygel_plugin_new (MEDIA_RENDERER_DESC_PATH, "GstRenderer", "GStreamer Renderer");
+	plugin = rygel_plugin_new (MEDIA_RENDERER_DESC_PATH, "GstRenderer", _ ("GStreamer Renderer"), NULL);
 #line 38 "rygel-gst-plugin.vala"
 	rygel_plugin_add_resource (plugin, _tmp0_ = rygel_resource_info_new (RYGEL_CONNECTION_MANAGER_UPNP_ID, RYGEL_CONNECTION_MANAGER_UPNP_TYPE, RYGEL_CONNECTION_MANAGER_DESCRIPTION_PATH, RYGEL_TYPE_GST_CONNECTION_MANAGER));
-#line 101 "rygel-gst-plugin.c"
+#line 102 "rygel-gst-plugin.c"
 	_rygel_resource_info_unref0 (_tmp0_);
 #line 42 "rygel-gst-plugin.vala"
 	rygel_plugin_add_resource (plugin, _tmp1_ = rygel_resource_info_new (RYGEL_GST_AV_TRANSPORT_UPNP_ID, RYGEL_GST_AV_TRANSPORT_UPNP_TYPE, RYGEL_GST_AV_TRANSPORT_DESCRIPTION_PATH, RYGEL_TYPE_GST_AV_TRANSPORT));
-#line 105 "rygel-gst-plugin.c"
+#line 106 "rygel-gst-plugin.c"
 	_rygel_resource_info_unref0 (_tmp1_);
 #line 46 "rygel-gst-plugin.vala"
 	rygel_plugin_add_resource (plugin, _tmp2_ = rygel_resource_info_new (RYGEL_GST_RENDERING_CONTROL_UPNP_ID, RYGEL_GST_RENDERING_CONTROL_UPNP_TYPE, RYGEL_GST_RENDERING_CONTROL_DESCRIPTION_PATH, RYGEL_TYPE_GST_RENDERING_CONTROL));
-#line 109 "rygel-gst-plugin.c"
+#line 110 "rygel-gst-plugin.c"
 	_rygel_resource_info_unref0 (_tmp2_);
 #line 51 "rygel-gst-plugin.vala"
 	rygel_plugin_loader_add_plugin (loader, plugin);
-#line 113 "rygel-gst-plugin.c"
+#line 114 "rygel-gst-plugin.c"
 	_g_free0 (MEDIA_RENDERER_DESC_PATH);
 	_g_object_unref0 (plugin);
 }

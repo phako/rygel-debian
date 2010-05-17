@@ -1,6 +1,7 @@
 rygel (0.6.0-1) unstable; urgency=low
 
   * Imported Upstream version 0.6.0
+  * Add build-dependency on intltool
   * install new rygel icons
 
  -- Andreas Henriksson <andreas@fatal.se>  Mon, 17 May 2010 20:55:24 +0200

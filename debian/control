@@ -4,6 +4,7 @@ Priority: extra
 Maintainer: Debian Rygel Maintainers <ah-rygel@debian.org>
 Uploaders: Marc-André Lureau <marcandre.lureau@gmail.com>, Andreas Henriksson <andreas@fatal.se>
 Build-Depends: quilt, debhelper (>= 7), autotools-dev,
+    intltool,
     libgupnp-1.0-dev (>= 0.13.3),
     libgupnp-av-1.0-dev (>= 0.5.5),
     libdbus-glib-1-dev (>= 0.74),

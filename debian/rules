@@ -23,6 +23,7 @@ endif
 	./configure $(CROSS) --prefix=/usr --mandir=\$${prefix}/share/man \
 		--sysconfdir=/etc \
 		--enable-mediathek-plugin \
+		--enable-gst-launch-plugin \
 		CFLAGS="$(CFLAGS)"
 
 build: build-arch build-indep

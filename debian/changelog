@@ -1,3 +1,20 @@
+rygel (0.7.1-1) experimental; urgency=low
+
+  [ Andreas Henriksson ]
+  * Make rygel-tracker depend on tracker >= 0.8
+
+  [ Yann Leboulanger ]
+  * Add rygel-gst-launch plugin
+
+  [ Andreas Henriksson ]
+  * Imported Upstream version 0.7.1
+  * Fix debian/control syntax error for tracker dependency
+  * Temporarily disable installing rygel-preferences
+    (since we don't have gtk+ 2.90.x)
+  * Bump libgupnp-av-1.0-dev dependency to >= 0.5.7
+
+ -- Andreas Henriksson <andreas@fatal.se>  Sat, 26 Jun 2010 23:16:19 +0200
+
 rygel (0.6.0-1) unstable; urgency=low
 
   * Imported Upstream version 0.6.0

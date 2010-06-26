@@ -1,9 +1,9 @@
 if UNINSTALLED
 shareddir = $(abs_top_builddir)/data
-icondir = $(shareddir)/icons
+icondir = $(shareddir)/icons/32x32
 else
 shareddir = $(datadir)/rygel
-icondir = $(datadir)/icons/hicolor
+icondir = $(datadir)/icons/hicolor/32x32/apps
 endif
 
 rygeldir = $(top_srcdir)/src/rygel
@@ -33,9 +33,9 @@ rygel_preferences_SOURCES = \
 rygel.stamp: $(rygel_preferences_VALASOURCES)
 rygel_preferences_VALAFLAGS = \
 	--vapidir=$(rygeldir) --thread \
-	--pkg rygel-1.0 --pkg cstuff --pkg gupnp-1.0 --pkg gupnp-av-1.0 \
-	--pkg dbus-glib-1 --pkg gconf-2.0 --pkg gstreamer-0.10 \
-	--pkg gio-2.0 --pkg gee-1.0 --pkg gtk+-2.0 -g
+	--pkg rygel-1.0 --pkg rygel-build-config --pkg gupnp-1.0 \
+	--pkg gupnp-av-1.0 --pkg dbus-glib-1 --pkg gconf-2.0 \
+	--pkg gstreamer-0.10 --pkg gio-2.0 --pkg gee-1.0 --pkg gtk+-3.0 -g
 
 rygel_preferences_LDADD = \
 		$(abs_top_builddir)/src/rygel/librygel-configuration.a \

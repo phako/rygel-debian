@@ -113,6 +113,7 @@ GType tracker_plugin_factory_get_type (void);
 TrackerPluginFactory* tracker_plugin_factory_new (RygelPluginLoader* loader, GError** error);
 TrackerPluginFactory* tracker_plugin_factory_construct (GType object_type, RygelPluginLoader* loader, GError** error);
 void module_init (RygelPluginLoader* loader);
+RygelTrackerStatsIface* rygel_tracker_stats_iface_dbus_proxy_new (DBusGConnection* connection, const char* name, const char* path);
 GType rygel_tracker_stats_iface_get_type (void);
 #define TRACKER_PLUGIN_FACTORY_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), TYPE_TRACKER_PLUGIN_FACTORY, TrackerPluginFactoryPrivate))
 enum  {
@@ -129,20 +130,20 @@ static void tracker_plugin_factory_finalize (TrackerPluginFactory* obj);
 
 
 
-#line 32 "rygel-tracker-plugin-factory.vala"
+#line 30 "rygel-tracker-plugin-factory.vala"
 void module_init (RygelPluginLoader* loader) {
-#line 135 "rygel-tracker-plugin-factory.c"
+#line 136 "rygel-tracker-plugin-factory.c"
 	GError * _inner_error_;
-#line 32 "rygel-tracker-plugin-factory.vala"
+#line 30 "rygel-tracker-plugin-factory.vala"
 	g_return_if_fail (loader != NULL);
-#line 139 "rygel-tracker-plugin-factory.c"
+#line 140 "rygel-tracker-plugin-factory.c"
 	_inner_error_ = NULL;
 	{
 		TrackerPluginFactory* _tmp0_;
 		TrackerPluginFactory* _tmp1_;
-#line 34 "rygel-tracker-plugin-factory.vala"
+#line 32 "rygel-tracker-plugin-factory.vala"
 		_tmp0_ = tracker_plugin_factory_new (loader, &_inner_error_);
-#line 146 "rygel-tracker-plugin-factory.c"
+#line 147 "rygel-tracker-plugin-factory.c"
 		if (_inner_error_ != NULL) {
 			if (_inner_error_->domain == DBUS_GERROR) {
 				goto __catch10_dbus_gerror;
@@ -151,9 +152,9 @@ void module_init (RygelPluginLoader* loader) {
 			g_clear_error (&_inner_error_);
 			return;
 		}
-#line 34 "rygel-tracker-plugin-factory.vala"
+#line 32 "rygel-tracker-plugin-factory.vala"
 		plugin_factory = (_tmp1_ = _tmp0_, _tracker_plugin_factory_unref0 (plugin_factory), _tmp1_);
-#line 157 "rygel-tracker-plugin-factory.c"
+#line 158 "rygel-tracker-plugin-factory.c"
 	}
 	goto __finally10;
 	__catch10_dbus_gerror:
@@ -163,9 +164,9 @@ void module_init (RygelPluginLoader* loader) {
 		_inner_error_ = NULL;
 		{
 			char* _tmp2_;
-#line 36 "rygel-tracker-plugin-factory.vala"
-			g_warning ("rygel-tracker-plugin-factory.vala:36: %s", _tmp2_ = g_strconcat (_ ("Failed to start Tracker service: %s. Plugin disabled."), err->message, NULL));
-#line 169 "rygel-tracker-plugin-factory.c"
+#line 34 "rygel-tracker-plugin-factory.vala"
+			g_warning ("rygel-tracker-plugin-factory.vala:34: %s", _tmp2_ = g_strconcat (_ ("Failed to start Tracker service: %s. Plugin disabled."), err->message, NULL));
+#line 170 "rygel-tracker-plugin-factory.c"
 			_g_free0 (_tmp2_);
 			_g_error_free0 (err);
 		}
@@ -184,23 +185,23 @@ static gpointer _g_object_ref0 (gpointer self) {
 }
 
 
-#line 49 "rygel-tracker-plugin-factory.vala"
+#line 47 "rygel-tracker-plugin-factory.vala"
 TrackerPluginFactory* tracker_plugin_factory_construct (GType object_type, RygelPluginLoader* loader, GError** error) {
-#line 190 "rygel-tracker-plugin-factory.c"
+#line 191 "rygel-tracker-plugin-factory.c"
 	GError * _inner_error_;
 	TrackerPluginFactory* self;
 	DBusGConnection* connection;
 	RygelTrackerStatsIface* _tmp0_;
 	RygelPluginLoader* _tmp1_;
 	RygelTrackerPlugin* _tmp2_;
-#line 49 "rygel-tracker-plugin-factory.vala"
+#line 47 "rygel-tracker-plugin-factory.vala"
 	g_return_val_if_fail (loader != NULL, NULL);
-#line 199 "rygel-tracker-plugin-factory.c"
+#line 200 "rygel-tracker-plugin-factory.c"
 	_inner_error_ = NULL;
 	self = (TrackerPluginFactory*) g_type_create_instance (object_type);
-#line 50 "rygel-tracker-plugin-factory.vala"
+#line 48 "rygel-tracker-plugin-factory.vala"
 	connection = dbus_g_bus_get (DBUS_BUS_SESSION, &_inner_error_);
-#line 204 "rygel-tracker-plugin-factory.c"
+#line 205 "rygel-tracker-plugin-factory.c"
 	if (_inner_error_ != NULL) {
 		if (_inner_error_->domain == DBUS_GERROR) {
 			g_propagate_error (error, _inner_error_);
@@ -212,26 +213,26 @@ TrackerPluginFactory* tracker_plugin_factory_construct (GType object_type, Rygel
 			return NULL;
 		}
 	}
-#line 52 "rygel-tracker-plugin-factory.vala"
+#line 50 "rygel-tracker-plugin-factory.vala"
 	self->priv->stats = (_tmp0_ = rygel_tracker_stats_iface_dbus_proxy_new (connection, TRACKER_PLUGIN_FACTORY_TRACKER_SERVICE, TRACKER_PLUGIN_FACTORY_STATISTICS_OBJECT), _g_object_unref0 (self->priv->stats), _tmp0_);
-#line 55 "rygel-tracker-plugin-factory.vala"
+#line 53 "rygel-tracker-plugin-factory.vala"
 	self->priv->loader = (_tmp1_ = _g_object_ref0 (loader), _g_object_unref0 (self->priv->loader), _tmp1_);
-#line 57 "rygel-tracker-plugin-factory.vala"
+#line 55 "rygel-tracker-plugin-factory.vala"
 	rygel_tracker_stats_iface_get_statistics (self->priv->stats, NULL, NULL);
-#line 59 "rygel-tracker-plugin-factory.vala"
+#line 57 "rygel-tracker-plugin-factory.vala"
 	rygel_plugin_loader_add_plugin (self->priv->loader, (RygelPlugin*) (_tmp2_ = rygel_tracker_plugin_new ()));
-#line 224 "rygel-tracker-plugin-factory.c"
+#line 225 "rygel-tracker-plugin-factory.c"
 	_g_object_unref0 (_tmp2_);
 	_dbus_g_connection_unref0 (connection);
 	return self;
 }
 
 
-#line 49 "rygel-tracker-plugin-factory.vala"
+#line 47 "rygel-tracker-plugin-factory.vala"
 TrackerPluginFactory* tracker_plugin_factory_new (RygelPluginLoader* loader, GError** error) {
-#line 49 "rygel-tracker-plugin-factory.vala"
+#line 47 "rygel-tracker-plugin-factory.vala"
 	return tracker_plugin_factory_construct (TYPE_TRACKER_PLUGIN_FACTORY, loader, error);
-#line 235 "rygel-tracker-plugin-factory.c"
+#line 236 "rygel-tracker-plugin-factory.c"
 }
 
 

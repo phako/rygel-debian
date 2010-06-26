@@ -67,18 +67,22 @@ namespace Rygel {
 	}
 	[CCode (cheader_filename = "rygel.h")]
 	public class Main : GLib.Object {
-		public bool restart;
+		public bool need_restart;
 		public void exit (int exit_code);
+		public void restart ();
 	}
 	[CCode (cheader_filename = "rygel.h")]
 	public abstract class MediaContainer : Rygel.MediaObject {
 		public int child_count;
+		public Gee.ArrayList<string> create_classes;
 		public uint32 update_id;
 		public MediaContainer (string id, Rygel.MediaContainer? parent, string title, int child_count);
 		public virtual async void add_item (Rygel.MediaItem item, GLib.Cancellable? cancellable) throws GLib.Error;
+		public virtual async Rygel.MediaObject? find_object (string id, GLib.Cancellable? cancellable) throws GLib.Error;
 		public abstract async Gee.List<Rygel.MediaObject>? get_children (uint offset, uint max_count, GLib.Cancellable? cancellable) throws GLib.Error;
 		public MediaContainer.root (string title, int child_count);
 		public virtual async Gee.List<Rygel.MediaObject>? search (Rygel.SearchExpression expression, uint offset, uint max_count, out uint total_matches, GLib.Cancellable? cancellable) throws GLib.Error;
+		public void set_uri (string uri, Gee.ArrayList<string>? create_classes = null);
 		public void updated ();
 		public signal void container_updated (Rygel.MediaContainer container);
 	}
@@ -191,6 +195,12 @@ namespace Rygel {
 		public abstract string to_string ();
 	}
 	[CCode (cheader_filename = "rygel.h")]
+	public class SignalHandler : GLib.Object {
+		public SignalHandler ();
+		public static void cleanup ();
+		public static void setup (Rygel.Main _main);
+	}
+	[CCode (cheader_filename = "rygel.h")]
 	public class SimpleContainer : Rygel.MediaContainer {
 		public Gee.ArrayList<Rygel.MediaObject> children;
 		public SimpleContainer (string id, Rygel.MediaContainer? parent, string title);
@@ -249,6 +259,11 @@ namespace Rygel {
 		public void set_upnp_enabled (bool value);
 		public void set_wmv_transcoder (bool value);
 	}
+	[CCode (ref_function = "rygel_xml_utils_ref", unref_function = "rygel_xml_utils_unref", cheader_filename = "rygel.h")]
+	public class XMLUtils {
+		public XMLUtils ();
+		public static Xml.Node* get_element (Xml.Node* node, ...);
+	}
 	[CCode (cheader_filename = "rygel.h")]
 	public interface Configuration : GLib.Object {
 		public abstract bool get_bool (string section, string key) throws GLib.Error;
@@ -302,6 +317,7 @@ namespace Rygel {
 	[CCode (cprefix = "RYGEL_CONTENT_DIRECTORY_ERROR_", cheader_filename = "rygel.h")]
 	public errordomain ContentDirectoryError {
 		NO_SUCH_OBJECT,
+		BAD_METADATA,
 		RESTRICTED_PARENT,
 		CANT_PROCESS,
 		INVALID_ARGS,
@@ -311,3 +327,7 @@ namespace Rygel {
 public errordomain RootDeviceFactoryError {
 	XML_PARSE,
 }
+[CCode (cheader_filename = "uuid/uuid.h")]
+public static void uuid_generate ([CCode (array_length = false)] uchar[] uuid);
+[CCode (cheader_filename = "uuid/uuid.h")]
+public static void uuid_unparse ([CCode (array_length = false)] uchar[] uuid, [CCode (array_length = false)] uchar[] output);

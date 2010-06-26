@@ -132,6 +132,7 @@ void rygel_value_set_tracker_query (GValue* value, gpointer v_object);
 void rygel_value_take_tracker_query (GValue* value, gpointer v_object);
 gpointer rygel_value_get_tracker_query (const GValue* value);
 GType rygel_tracker_query_get_type (void);
+RygelTrackerResourcesIface* rygel_tracker_resources_iface_dbus_proxy_new (DBusGConnection* connection, const char* name, const char* path);
 GType rygel_tracker_resources_iface_get_type (void);
 GType rygel_tracker_query_triplets_get_type (void);
 enum  {
@@ -164,27 +165,27 @@ static gpointer _g_object_ref0 (gpointer self) {
 
 #line 32 "rygel-tracker-query.vala"
 RygelTrackerQuery* rygel_tracker_query_construct (GType object_type, RygelTrackerQueryTriplets* mandatory, RygelTrackerQueryTriplets* optional) {
-#line 168 "rygel-tracker-query.c"
+#line 169 "rygel-tracker-query.c"
 	RygelTrackerQuery* self;
 	RygelTrackerQueryTriplets* _tmp0_;
 #line 32 "rygel-tracker-query.vala"
 	g_return_val_if_fail (mandatory != NULL, NULL);
-#line 173 "rygel-tracker-query.c"
+#line 174 "rygel-tracker-query.c"
 	self = (RygelTrackerQuery*) g_type_create_instance (object_type);
 #line 34 "rygel-tracker-query.vala"
 	self->mandatory = (_tmp0_ = _g_object_ref0 (mandatory), _g_object_unref0 (self->mandatory), _tmp0_);
 #line 36 "rygel-tracker-query.vala"
 	if (optional != NULL) {
-#line 179 "rygel-tracker-query.c"
+#line 180 "rygel-tracker-query.c"
 		RygelTrackerQueryTriplets* _tmp1_;
 #line 37 "rygel-tracker-query.vala"
 		self->optional = (_tmp1_ = _g_object_ref0 (optional), _g_object_unref0 (self->optional), _tmp1_);
-#line 183 "rygel-tracker-query.c"
+#line 184 "rygel-tracker-query.c"
 	} else {
 		RygelTrackerQueryTriplets* _tmp2_;
 #line 39 "rygel-tracker-query.vala"
 		self->optional = (_tmp2_ = rygel_tracker_query_triplets_new (), _g_object_unref0 (self->optional), _tmp2_);
-#line 188 "rygel-tracker-query.c"
+#line 189 "rygel-tracker-query.c"
 	}
 	return self;
 }
@@ -194,7 +195,7 @@ RygelTrackerQuery* rygel_tracker_query_construct (GType object_type, RygelTracke
 void rygel_tracker_query_execute (RygelTrackerQuery* self, RygelTrackerResourcesIface* resources, GAsyncReadyCallback _callback_, gpointer _user_data_) {
 #line 32 "rygel-tracker-query.vala"
 	RYGEL_TRACKER_QUERY_GET_CLASS (self)->execute (self, resources, _callback_, _user_data_);
-#line 198 "rygel-tracker-query.c"
+#line 199 "rygel-tracker-query.c"
 }
 
 
@@ -202,13 +203,13 @@ void rygel_tracker_query_execute (RygelTrackerQuery* self, RygelTrackerResources
 void rygel_tracker_query_execute_finish (RygelTrackerQuery* self, GAsyncResult* _res_, GError** error) {
 #line 32 "rygel-tracker-query.vala"
 	RYGEL_TRACKER_QUERY_GET_CLASS (self)->execute_finish (self, _res_, error);
-#line 206 "rygel-tracker-query.c"
+#line 207 "rygel-tracker-query.c"
 }
 
 
 #line 48 "rygel-tracker-query.vala"
 static char* rygel_tracker_query_real_to_string (RygelTrackerQuery* self) {
-#line 212 "rygel-tracker-query.c"
+#line 213 "rygel-tracker-query.c"
 	char* result = NULL;
 	char* _tmp2_;
 	char* _tmp1_;
@@ -216,11 +217,11 @@ static char* rygel_tracker_query_real_to_string (RygelTrackerQuery* self) {
 	char* _tmp3_;
 #line 48 "rygel-tracker-query.vala"
 	g_return_val_if_fail (self != NULL, NULL);
-#line 220 "rygel-tracker-query.c"
+#line 221 "rygel-tracker-query.c"
 	result = (_tmp3_ = g_strconcat (_tmp1_ = g_strconcat (_tmp0_ = rygel_tracker_query_serialize_triplets (self, self->mandatory), " . ", NULL), _tmp2_ = rygel_tracker_query_serialize_triplets (self, self->optional), NULL), _g_free0 (_tmp2_), _g_free0 (_tmp1_), _g_free0 (_tmp0_), _tmp3_);
 #line 49 "rygel-tracker-query.vala"
 	return result;
-#line 224 "rygel-tracker-query.c"
+#line 225 "rygel-tracker-query.c"
 }
 
 
@@ -228,13 +229,13 @@ static char* rygel_tracker_query_real_to_string (RygelTrackerQuery* self) {
 char* rygel_tracker_query_to_string (RygelTrackerQuery* self) {
 #line 48 "rygel-tracker-query.vala"
 	return RYGEL_TRACKER_QUERY_GET_CLASS (self)->to_string (self);
-#line 232 "rygel-tracker-query.c"
+#line 233 "rygel-tracker-query.c"
 }
 
 
 #line 54 "rygel-tracker-query.vala"
 static char* rygel_tracker_query_serialize_triplets (RygelTrackerQuery* self, RygelTrackerQueryTriplets* triplets) {
-#line 238 "rygel-tracker-query.c"
+#line 239 "rygel-tracker-query.c"
 	char* result = NULL;
 	char* str;
 #line 54 "rygel-tracker-query.vala"
@@ -243,19 +244,19 @@ static char* rygel_tracker_query_serialize_triplets (RygelTrackerQuery* self, Ry
 	g_return_val_if_fail (triplets != NULL, NULL);
 #line 55 "rygel-tracker-query.vala"
 	str = g_strdup ("");
-#line 247 "rygel-tracker-query.c"
+#line 248 "rygel-tracker-query.c"
 	{
 		gint i;
 #line 57 "rygel-tracker-query.vala"
 		i = 0;
-#line 252 "rygel-tracker-query.c"
+#line 253 "rygel-tracker-query.c"
 		{
 			gboolean _tmp0_;
 #line 57 "rygel-tracker-query.vala"
 			_tmp0_ = TRUE;
 #line 57 "rygel-tracker-query.vala"
 			while (TRUE) {
-#line 259 "rygel-tracker-query.c"
+#line 260 "rygel-tracker-query.c"
 				char* _tmp3_;
 				char* _tmp2_;
 				RygelTrackerQueryTriplet* _tmp1_;
@@ -263,7 +264,7 @@ static char* rygel_tracker_query_serialize_triplets (RygelTrackerQuery* self, Ry
 				if (!_tmp0_) {
 #line 57 "rygel-tracker-query.vala"
 					i++;
-#line 267 "rygel-tracker-query.c"
+#line 268 "rygel-tracker-query.c"
 				}
 #line 57 "rygel-tracker-query.vala"
 				_tmp0_ = FALSE;
@@ -271,30 +272,30 @@ static char* rygel_tracker_query_serialize_triplets (RygelTrackerQuery* self, Ry
 				if (!(i < gee_collection_get_size ((GeeCollection*) triplets))) {
 #line 57 "rygel-tracker-query.vala"
 					break;
-#line 275 "rygel-tracker-query.c"
+#line 276 "rygel-tracker-query.c"
 				}
 #line 58 "rygel-tracker-query.vala"
 				str = (_tmp3_ = g_strconcat (str, _tmp2_ = rygel_tracker_query_triplet_to_string (_tmp1_ = (RygelTrackerQueryTriplet*) gee_abstract_list_get ((GeeAbstractList*) triplets, i)), NULL), _g_free0 (str), _tmp3_);
-#line 279 "rygel-tracker-query.c"
+#line 280 "rygel-tracker-query.c"
 				_g_free0 (_tmp2_);
 				_rygel_tracker_query_triplet_unref0 (_tmp1_);
 #line 60 "rygel-tracker-query.vala"
 				if (i < (gee_collection_get_size ((GeeCollection*) triplets) - 1)) {
-#line 284 "rygel-tracker-query.c"
+#line 285 "rygel-tracker-query.c"
 					RygelTrackerQueryTriplet* _tmp4_;
 					gboolean _tmp5_;
 #line 61 "rygel-tracker-query.vala"
 					if ((_tmp5_ = (_tmp4_ = (RygelTrackerQueryTriplet*) gee_abstract_list_get ((GeeAbstractList*) triplets, i + 1))->subject != NULL, _rygel_tracker_query_triplet_unref0 (_tmp4_), _tmp5_)) {
-#line 289 "rygel-tracker-query.c"
+#line 290 "rygel-tracker-query.c"
 						char* _tmp6_;
 #line 62 "rygel-tracker-query.vala"
 						str = (_tmp6_ = g_strconcat (str, " . ", NULL), _g_free0 (str), _tmp6_);
-#line 293 "rygel-tracker-query.c"
+#line 294 "rygel-tracker-query.c"
 					} else {
 						char* _tmp7_;
 #line 66 "rygel-tracker-query.vala"
 						str = (_tmp7_ = g_strconcat (str, " ; ", NULL), _g_free0 (str), _tmp7_);
-#line 298 "rygel-tracker-query.c"
+#line 299 "rygel-tracker-query.c"
 					}
 				}
 			}
@@ -303,7 +304,7 @@ static char* rygel_tracker_query_serialize_triplets (RygelTrackerQuery* self, Ry
 	result = str;
 #line 71 "rygel-tracker-query.vala"
 	return result;
-#line 307 "rygel-tracker-query.c"
+#line 308 "rygel-tracker-query.c"
 }
 
 

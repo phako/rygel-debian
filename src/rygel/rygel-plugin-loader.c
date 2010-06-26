@@ -169,19 +169,20 @@ struct _RygelPluginLoaderLoadModulesFromDirData {
 	GSimpleAsyncResult* _async_result;
 	RygelPluginLoader* self;
 	GFile* dir;
+	char* _tmp0_;
 	char* attributes;
 	GList* infos;
 	GFileEnumerator* enumerator;
-	GFileEnumerator* _tmp0_;
 	GFileEnumerator* _tmp1_;
-	GList* _tmp2_;
+	GFileEnumerator* _tmp2_;
 	GList* _tmp3_;
-	char* _tmp4_;
+	GList* _tmp4_;
+	char* _tmp5_;
 	GError * _error_;
 	char* file_name;
 	char* file_path;
-	char* _tmp5_;
 	char* _tmp6_;
+	char* _tmp7_;
 	GFile* file;
 	GFileType file_type;
 	char* content_type;
@@ -189,6 +190,7 @@ struct _RygelPluginLoaderLoadModulesFromDirData {
 	GList* info_collection;
 	GList* info_it;
 	GFileInfo* info;
+	char* _tmp8_;
 	GError * _inner_error_;
 };
 
@@ -241,58 +243,58 @@ static int _vala_strcmp0 (const char * str1, const char * str2);
 
 
 
-#line 42 "rygel-plugin-loader.vala"
+#line 41 "rygel-plugin-loader.vala"
 RygelPluginLoader* rygel_plugin_loader_construct (GType object_type) {
-#line 247 "rygel-plugin-loader.c"
+#line 249 "rygel-plugin-loader.c"
 	RygelPluginLoader * self;
 	GeeHashMap* _tmp0_;
-#line 42 "rygel-plugin-loader.vala"
+#line 41 "rygel-plugin-loader.vala"
 	self = (RygelPluginLoader*) g_object_new (object_type, NULL);
-#line 43 "rygel-plugin-loader.vala"
+#line 42 "rygel-plugin-loader.vala"
 	self->priv->plugin_hash = (_tmp0_ = gee_hash_map_new (G_TYPE_STRING, (GBoxedCopyFunc) g_strdup, g_free, RYGEL_TYPE_PLUGIN, (GBoxedCopyFunc) g_object_ref, g_object_unref, g_str_hash, g_str_equal, NULL), _g_object_unref0 (self->priv->plugin_hash), _tmp0_);
-#line 254 "rygel-plugin-loader.c"
+#line 256 "rygel-plugin-loader.c"
 	return self;
 }
 
 
-#line 42 "rygel-plugin-loader.vala"
+#line 41 "rygel-plugin-loader.vala"
 RygelPluginLoader* rygel_plugin_loader_new (void) {
-#line 42 "rygel-plugin-loader.vala"
+#line 41 "rygel-plugin-loader.vala"
 	return rygel_plugin_loader_construct (RYGEL_TYPE_PLUGIN_LOADER);
-#line 263 "rygel-plugin-loader.c"
+#line 265 "rygel-plugin-loader.c"
 }
 
 
-#line 47 "rygel-plugin-loader.vala"
+#line 46 "rygel-plugin-loader.vala"
 void rygel_plugin_loader_load_plugins (RygelPluginLoader* self) {
-#line 269 "rygel-plugin-loader.c"
+#line 271 "rygel-plugin-loader.c"
 	GError * _inner_error_;
 	char* path;
 	GFile* dir;
-#line 47 "rygel-plugin-loader.vala"
+#line 46 "rygel-plugin-loader.vala"
 	g_return_if_fail (self != NULL);
-#line 275 "rygel-plugin-loader.c"
+#line 277 "rygel-plugin-loader.c"
 	_inner_error_ = NULL;
-#line 48 "rygel-plugin-loader.vala"
+#line 47 "rygel-plugin-loader.vala"
 	g_assert (g_module_supported ());
-#line 279 "rygel-plugin-loader.c"
+#line 281 "rygel-plugin-loader.c"
 	path = NULL;
 	{
 		RygelMetaConfig* config;
 		char* _tmp0_;
 		char* _tmp1_;
-#line 52 "rygel-plugin-loader.vala"
+#line 51 "rygel-plugin-loader.vala"
 		config = rygel_meta_config_get_default ();
-#line 53 "rygel-plugin-loader.vala"
+#line 52 "rygel-plugin-loader.vala"
 		_tmp0_ = rygel_configuration_get_plugin_path ((RygelConfiguration*) config, &_inner_error_);
-#line 289 "rygel-plugin-loader.c"
+#line 291 "rygel-plugin-loader.c"
 		if (_inner_error_ != NULL) {
 			_g_object_unref0 (config);
 			goto __catch39_g_error;
 		}
-#line 53 "rygel-plugin-loader.vala"
+#line 52 "rygel-plugin-loader.vala"
 		path = (_tmp1_ = _tmp0_, _g_free0 (path), _tmp1_);
-#line 296 "rygel-plugin-loader.c"
+#line 298 "rygel-plugin-loader.c"
 		_g_object_unref0 (config);
 	}
 	goto __finally39;
@@ -303,9 +305,9 @@ void rygel_plugin_loader_load_plugins (RygelPluginLoader* self) {
 		_inner_error_ = NULL;
 		{
 			char* _tmp2_;
-#line 55 "rygel-plugin-loader.vala"
+#line 54 "rygel-plugin-loader.vala"
 			path = (_tmp2_ = g_strdup (PLUGIN_DIR), _g_free0 (path), _tmp2_);
-#line 309 "rygel-plugin-loader.c"
+#line 311 "rygel-plugin-loader.c"
 			_g_error_free0 (_error_);
 		}
 	}
@@ -316,47 +318,47 @@ void rygel_plugin_loader_load_plugins (RygelPluginLoader* self) {
 		g_clear_error (&_inner_error_);
 		return;
 	}
-#line 58 "rygel-plugin-loader.vala"
+#line 57 "rygel-plugin-loader.vala"
 	dir = g_file_new_for_path (path);
-#line 59 "rygel-plugin-loader.vala"
+#line 58 "rygel-plugin-loader.vala"
 	g_assert ((dir != NULL) && rygel_plugin_loader_is_dir (dir));
-#line 61 "rygel-plugin-loader.vala"
+#line 60 "rygel-plugin-loader.vala"
 	rygel_plugin_loader_load_modules_from_dir (self, dir, NULL, NULL);
-#line 326 "rygel-plugin-loader.c"
+#line 328 "rygel-plugin-loader.c"
 	_g_free0 (path);
 	_g_object_unref0 (dir);
 }
 
 
-#line 64 "rygel-plugin-loader.vala"
+#line 63 "rygel-plugin-loader.vala"
 void rygel_plugin_loader_add_plugin (RygelPluginLoader* self, RygelPlugin* plugin) {
-#line 334 "rygel-plugin-loader.c"
+#line 336 "rygel-plugin-loader.c"
 	GError * _inner_error_;
 	gboolean enabled;
-#line 64 "rygel-plugin-loader.vala"
+#line 63 "rygel-plugin-loader.vala"
 	g_return_if_fail (self != NULL);
-#line 64 "rygel-plugin-loader.vala"
+#line 63 "rygel-plugin-loader.vala"
 	g_return_if_fail (plugin != NULL);
-#line 341 "rygel-plugin-loader.c"
+#line 343 "rygel-plugin-loader.c"
 	_inner_error_ = NULL;
-#line 65 "rygel-plugin-loader.vala"
+#line 64 "rygel-plugin-loader.vala"
 	enabled = TRUE;
-#line 345 "rygel-plugin-loader.c"
+#line 347 "rygel-plugin-loader.c"
 	{
 		RygelMetaConfig* config;
 		gboolean _tmp0_;
-#line 67 "rygel-plugin-loader.vala"
+#line 66 "rygel-plugin-loader.vala"
 		config = rygel_meta_config_get_default ();
-#line 68 "rygel-plugin-loader.vala"
+#line 67 "rygel-plugin-loader.vala"
 		_tmp0_ = rygel_configuration_get_enabled ((RygelConfiguration*) config, plugin->name, &_inner_error_);
-#line 353 "rygel-plugin-loader.c"
+#line 355 "rygel-plugin-loader.c"
 		if (_inner_error_ != NULL) {
 			_g_object_unref0 (config);
 			goto __catch40_g_error;
 		}
-#line 68 "rygel-plugin-loader.vala"
+#line 67 "rygel-plugin-loader.vala"
 		enabled = _tmp0_;
-#line 360 "rygel-plugin-loader.c"
+#line 362 "rygel-plugin-loader.c"
 		_g_object_unref0 (config);
 	}
 	goto __finally40;
@@ -375,50 +377,50 @@ void rygel_plugin_loader_add_plugin (RygelPluginLoader* self, RygelPlugin* plugi
 		g_clear_error (&_inner_error_);
 		return;
 	}
-#line 71 "rygel-plugin-loader.vala"
+#line 70 "rygel-plugin-loader.vala"
 	if (enabled) {
-#line 72 "rygel-plugin-loader.vala"
+#line 71 "rygel-plugin-loader.vala"
 		g_message (_ ("New plugin '%s' available"), plugin->name);
-#line 73 "rygel-plugin-loader.vala"
+#line 72 "rygel-plugin-loader.vala"
 		gee_abstract_map_set ((GeeAbstractMap*) self->priv->plugin_hash, plugin->name, plugin);
-#line 74 "rygel-plugin-loader.vala"
+#line 73 "rygel-plugin-loader.vala"
 		g_signal_emit_by_name (self, "plugin-available", plugin);
-#line 387 "rygel-plugin-loader.c"
+#line 389 "rygel-plugin-loader.c"
 	} else {
-#line 76 "rygel-plugin-loader.vala"
+#line 75 "rygel-plugin-loader.vala"
 		g_debug (_ ("Plugin '%s' disabled in user configuration, ignoring.."), plugin->name);
-#line 391 "rygel-plugin-loader.c"
+#line 393 "rygel-plugin-loader.c"
 	}
 }
 
 
-#line 81 "rygel-plugin-loader.vala"
+#line 80 "rygel-plugin-loader.vala"
 RygelPlugin* rygel_plugin_loader_get_plugin_by_name (RygelPluginLoader* self, const char* name) {
-#line 398 "rygel-plugin-loader.c"
+#line 400 "rygel-plugin-loader.c"
 	RygelPlugin* result = NULL;
-#line 81 "rygel-plugin-loader.vala"
+#line 80 "rygel-plugin-loader.vala"
 	g_return_val_if_fail (self != NULL, NULL);
-#line 81 "rygel-plugin-loader.vala"
+#line 80 "rygel-plugin-loader.vala"
 	g_return_val_if_fail (name != NULL, NULL);
-#line 404 "rygel-plugin-loader.c"
+#line 406 "rygel-plugin-loader.c"
 	result = (RygelPlugin*) gee_abstract_map_get ((GeeAbstractMap*) self->priv->plugin_hash, name);
-#line 82 "rygel-plugin-loader.vala"
+#line 81 "rygel-plugin-loader.vala"
 	return result;
-#line 408 "rygel-plugin-loader.c"
+#line 410 "rygel-plugin-loader.c"
 }
 
 
-#line 85 "rygel-plugin-loader.vala"
+#line 84 "rygel-plugin-loader.vala"
 GeeCollection* rygel_plugin_loader_list_plugins (RygelPluginLoader* self) {
-#line 414 "rygel-plugin-loader.c"
+#line 416 "rygel-plugin-loader.c"
 	GeeCollection* result = NULL;
-#line 85 "rygel-plugin-loader.vala"
+#line 84 "rygel-plugin-loader.vala"
 	g_return_val_if_fail (self != NULL, NULL);
-#line 418 "rygel-plugin-loader.c"
+#line 420 "rygel-plugin-loader.c"
 	result = gee_map_get_values ((GeeMap*) self->priv->plugin_hash);
-#line 86 "rygel-plugin-loader.vala"
+#line 85 "rygel-plugin-loader.vala"
 	return result;
-#line 422 "rygel-plugin-loader.c"
+#line 424 "rygel-plugin-loader.c"
 }
 
 
@@ -480,30 +482,34 @@ static gboolean rygel_plugin_loader_load_modules_from_dir_co (RygelPluginLoaderL
 	}
 	_state_0:
 	{
+#line 89 "rygel-plugin-loader.vala"
+		g_debug (_ ("Searching for modules in folder '%s' .."), data->_tmp0_ = g_file_get_path (data->dir));
+#line 488 "rygel-plugin-loader.c"
+		_g_free0 (data->_tmp0_);
 		data->attributes = g_strdup (G_FILE_ATTRIBUTE_STANDARD_NAME "," G_FILE_ATTRIBUTE_STANDARD_TYPE "," G_FILE_ATTRIBUTE_STANDARD_CONTENT_TYPE);
 		{
 			data->_state_ = 22;
 			g_file_enumerate_children_async (data->dir, data->attributes, G_FILE_QUERY_INFO_NONE, G_PRIORITY_DEFAULT, NULL, rygel_plugin_loader_load_modules_from_dir_ready, data);
 			return FALSE;
 			_state_22:
-			data->_tmp0_ = g_file_enumerate_children_finish (data->dir, data->_res_, &data->_inner_error_);
+			data->_tmp1_ = g_file_enumerate_children_finish (data->dir, data->_res_, &data->_inner_error_);
 			if (data->_inner_error_ != NULL) {
 				goto __catch41_g_error;
 			}
-#line 98 "rygel-plugin-loader.vala"
-			data->enumerator = (data->_tmp1_ = data->_tmp0_, _g_object_unref0 (data->enumerator), data->_tmp1_);
-#line 496 "rygel-plugin-loader.c"
+#line 99 "rygel-plugin-loader.vala"
+			data->enumerator = (data->_tmp2_ = data->_tmp1_, _g_object_unref0 (data->enumerator), data->_tmp2_);
+#line 502 "rygel-plugin-loader.c"
 			data->_state_ = 23;
 			g_file_enumerator_next_files_async (data->enumerator, G_MAXINT, G_PRIORITY_DEFAULT, NULL, rygel_plugin_loader_load_modules_from_dir_ready, data);
 			return FALSE;
 			_state_23:
-			data->_tmp2_ = g_file_enumerator_next_files_finish (data->enumerator, data->_res_, &data->_inner_error_);
+			data->_tmp3_ = g_file_enumerator_next_files_finish (data->enumerator, data->_res_, &data->_inner_error_);
 			if (data->_inner_error_ != NULL) {
 				goto __catch41_g_error;
 			}
-#line 104 "rygel-plugin-loader.vala"
-			data->infos = (data->_tmp3_ = data->_tmp2_, __g_list_free_g_object_unref0 (data->infos), data->_tmp3_);
-#line 507 "rygel-plugin-loader.c"
+#line 105 "rygel-plugin-loader.vala"
+			data->infos = (data->_tmp4_ = data->_tmp3_, __g_list_free_g_object_unref0 (data->infos), data->_tmp4_);
+#line 513 "rygel-plugin-loader.c"
 		}
 		goto __finally41;
 		__catch41_g_error:
@@ -511,10 +517,10 @@ static gboolean rygel_plugin_loader_load_modules_from_dir_co (RygelPluginLoaderL
 			data->_error_ = data->_inner_error_;
 			data->_inner_error_ = NULL;
 			{
-#line 108 "rygel-plugin-loader.vala"
-				g_critical (_ ("Error listing contents of folder '%s': %s"), data->_tmp4_ = g_file_get_path (data->dir), data->_error_->message);
-#line 517 "rygel-plugin-loader.c"
-				_g_free0 (data->_tmp4_);
+#line 109 "rygel-plugin-loader.vala"
+				g_critical (_ ("Error listing contents of folder '%s': %s"), data->_tmp5_ = g_file_get_path (data->dir), data->_error_->message);
+#line 523 "rygel-plugin-loader.c"
+				_g_free0 (data->_tmp5_);
 				_g_error_free0 (data->_error_);
 				_g_free0 (data->attributes);
 				__g_list_free_g_object_unref0 (data->infos);
@@ -546,22 +552,22 @@ static gboolean rygel_plugin_loader_load_modules_from_dir_co (RygelPluginLoaderL
 				data->info = _g_object_ref0 ((GFileInfo*) data->info_it->data);
 				{
 					data->file_name = g_strdup (g_file_info_get_name (data->info));
-					data->file_path = (data->_tmp6_ = g_build_filename (data->_tmp5_ = g_file_get_path (data->dir), data->file_name, NULL), _g_free0 (data->_tmp5_), data->_tmp6_);
+					data->file_path = (data->_tmp7_ = g_build_filename (data->_tmp6_ = g_file_get_path (data->dir), data->file_name, NULL), _g_free0 (data->_tmp6_), data->_tmp7_);
 					data->file = g_file_new_for_path (data->file_path);
 					data->file_type = g_file_info_get_file_type (data->info);
 					data->content_type = g_strdup (g_file_info_get_content_type (data->info));
 					data->mime = g_content_type_get_mime_type (data->content_type);
-#line 124 "rygel-plugin-loader.vala"
+#line 125 "rygel-plugin-loader.vala"
 					if (data->file_type == G_FILE_TYPE_DIRECTORY) {
-#line 126 "rygel-plugin-loader.vala"
-						rygel_plugin_loader_load_modules_from_dir (data->self, data->file, NULL, NULL);
-#line 559 "rygel-plugin-loader.c"
-					} else {
 #line 127 "rygel-plugin-loader.vala"
-						if (_vala_strcmp0 (data->mime, "application/x-sharedlib") == 0) {
-#line 129 "rygel-plugin-loader.vala"
-							rygel_plugin_loader_load_module_from_file (data->self, data->file_path);
+						rygel_plugin_loader_load_modules_from_dir (data->self, data->file, NULL, NULL);
 #line 565 "rygel-plugin-loader.c"
+					} else {
+#line 128 "rygel-plugin-loader.vala"
+						if (_vala_strcmp0 (data->mime, "application/x-sharedlib") == 0) {
+#line 130 "rygel-plugin-loader.vala"
+							rygel_plugin_loader_load_module_from_file (data->self, data->file_path);
+#line 571 "rygel-plugin-loader.c"
 						}
 					}
 					_g_object_unref0 (data->info);
@@ -572,6 +578,10 @@ static gboolean rygel_plugin_loader_load_modules_from_dir_co (RygelPluginLoaderL
 				}
 			}
 		}
+#line 134 "rygel-plugin-loader.vala"
+		g_debug (_ ("Finished searching for modules in folder '%s'"), data->_tmp8_ = g_file_get_path (data->dir));
+#line 584 "rygel-plugin-loader.c"
+		_g_free0 (data->_tmp8_);
 		_g_free0 (data->attributes);
 		__g_list_free_g_object_unref0 (data->infos);
 		_g_object_unref0 (data->enumerator);
@@ -588,51 +598,51 @@ static gboolean rygel_plugin_loader_load_modules_from_dir_co (RygelPluginLoaderL
 }
 
 
-#line 134 "rygel-plugin-loader.vala"
+#line 138 "rygel-plugin-loader.vala"
 static void rygel_plugin_loader_load_module_from_file (RygelPluginLoader* self, const char* file_path) {
-#line 594 "rygel-plugin-loader.c"
+#line 604 "rygel-plugin-loader.c"
 	GModule* module;
 	void* function = NULL;
 	RygelPluginLoaderModuleInitFunc _tmp0_;
 	GDestroyNotify module_init_target_destroy_notify = NULL;
 	void* module_init_target = NULL;
 	RygelPluginLoaderModuleInitFunc module_init;
-#line 134 "rygel-plugin-loader.vala"
+#line 138 "rygel-plugin-loader.vala"
 	g_return_if_fail (self != NULL);
-#line 134 "rygel-plugin-loader.vala"
+#line 138 "rygel-plugin-loader.vala"
 	g_return_if_fail (file_path != NULL);
-#line 135 "rygel-plugin-loader.vala"
+#line 139 "rygel-plugin-loader.vala"
 	module = g_module_open (file_path, G_MODULE_BIND_LOCAL);
-#line 136 "rygel-plugin-loader.vala"
+#line 140 "rygel-plugin-loader.vala"
 	if (module == NULL) {
-#line 137 "rygel-plugin-loader.vala"
-		g_warning (_ ("Failed to load module from path '%s' : %s"), file_path, g_module_error ());
-#line 611 "rygel-plugin-loader.c"
-		_g_module_close0 (module);
 #line 141 "rygel-plugin-loader.vala"
-		return;
-#line 615 "rygel-plugin-loader.c"
-	}
-#line 146 "rygel-plugin-loader.vala"
-	if (!g_module_symbol (module, "module_init", &function)) {
-#line 147 "rygel-plugin-loader.vala"
-		g_warning (_ ("Failed to find entry point function '%s' in '%s': %s"), "module_init", file_path, g_module_error ());
+		g_warning (_ ("Failed to load module from path '%s' : %s"), file_path, g_module_error ());
 #line 621 "rygel-plugin-loader.c"
 		_g_module_close0 (module);
-#line 152 "rygel-plugin-loader.vala"
+#line 145 "rygel-plugin-loader.vala"
 		return;
 #line 625 "rygel-plugin-loader.c"
 	}
-	module_init = (_tmp0_ = (RygelPluginLoaderModuleInitFunc) function, module_init_target = NULL, module_init_target_destroy_notify = NULL, _tmp0_);
+#line 150 "rygel-plugin-loader.vala"
+	if (!g_module_symbol (module, "module_init", &function)) {
+#line 151 "rygel-plugin-loader.vala"
+		g_warning (_ ("Failed to find entry point function '%s' in '%s': %s"), "module_init", file_path, g_module_error ());
+#line 631 "rygel-plugin-loader.c"
+		_g_module_close0 (module);
 #line 156 "rygel-plugin-loader.vala"
+		return;
+#line 635 "rygel-plugin-loader.c"
+	}
+	module_init = (_tmp0_ = (RygelPluginLoaderModuleInitFunc) function, module_init_target = NULL, module_init_target_destroy_notify = NULL, _tmp0_);
+#line 160 "rygel-plugin-loader.vala"
 	g_assert (module_init != NULL);
-#line 159 "rygel-plugin-loader.vala"
-	g_module_make_resident (module);
-#line 161 "rygel-plugin-loader.vala"
-	module_init (self, module_init_target);
 #line 163 "rygel-plugin-loader.vala"
+	g_module_make_resident (module);
+#line 165 "rygel-plugin-loader.vala"
+	module_init (self, module_init_target);
+#line 167 "rygel-plugin-loader.vala"
 	g_debug (_ ("Loaded module source: '%s'"), g_module_name (module));
-#line 636 "rygel-plugin-loader.c"
+#line 646 "rygel-plugin-loader.c"
 	_g_module_close0 (module);
 	(module_init_target_destroy_notify == NULL) ? NULL : (module_init_target_destroy_notify (module_init_target), NULL);
 	module_init = NULL;
@@ -641,29 +651,29 @@ static void rygel_plugin_loader_load_module_from_file (RygelPluginLoader* self, 
 }
 
 
-#line 166 "rygel-plugin-loader.vala"
+#line 170 "rygel-plugin-loader.vala"
 static gboolean rygel_plugin_loader_is_dir (GFile* file) {
-#line 647 "rygel-plugin-loader.c"
+#line 657 "rygel-plugin-loader.c"
 	gboolean result = FALSE;
 	GError * _inner_error_;
 	GFileInfo* file_info;
-#line 166 "rygel-plugin-loader.vala"
+#line 170 "rygel-plugin-loader.vala"
 	g_return_val_if_fail (file != NULL, FALSE);
-#line 653 "rygel-plugin-loader.c"
+#line 663 "rygel-plugin-loader.c"
 	_inner_error_ = NULL;
 	file_info = NULL;
 	{
 		GFileInfo* _tmp0_;
 		GFileInfo* _tmp1_;
-#line 170 "rygel-plugin-loader.vala"
+#line 174 "rygel-plugin-loader.vala"
 		_tmp0_ = g_file_query_info (file, G_FILE_ATTRIBUTE_STANDARD_TYPE, G_FILE_QUERY_INFO_NONE, NULL, &_inner_error_);
-#line 661 "rygel-plugin-loader.c"
+#line 671 "rygel-plugin-loader.c"
 		if (_inner_error_ != NULL) {
 			goto __catch42_g_error;
 		}
-#line 170 "rygel-plugin-loader.vala"
+#line 174 "rygel-plugin-loader.vala"
 		file_info = (_tmp1_ = _tmp0_, _g_object_unref0 (file_info), _tmp1_);
-#line 667 "rygel-plugin-loader.c"
+#line 677 "rygel-plugin-loader.c"
 	}
 	goto __finally42;
 	__catch42_g_error:
@@ -673,16 +683,16 @@ static gboolean rygel_plugin_loader_is_dir (GFile* file) {
 		_inner_error_ = NULL;
 		{
 			char* _tmp2_;
-#line 174 "rygel-plugin-loader.vala"
+#line 178 "rygel-plugin-loader.vala"
 			g_critical (_ ("Failed to query content type for '%s'"), _tmp2_ = g_file_get_path (file));
-#line 679 "rygel-plugin-loader.c"
+#line 689 "rygel-plugin-loader.c"
 			_g_free0 (_tmp2_);
 			result = FALSE;
 			_g_error_free0 (_error_);
 			_g_object_unref0 (file_info);
-#line 177 "rygel-plugin-loader.vala"
+#line 181 "rygel-plugin-loader.vala"
 			return result;
-#line 686 "rygel-plugin-loader.c"
+#line 696 "rygel-plugin-loader.c"
 		}
 	}
 	__finally42:
@@ -694,9 +704,9 @@ static gboolean rygel_plugin_loader_is_dir (GFile* file) {
 	}
 	result = g_file_info_get_file_type (file_info) == G_FILE_TYPE_DIRECTORY;
 	_g_object_unref0 (file_info);
-#line 180 "rygel-plugin-loader.vala"
+#line 184 "rygel-plugin-loader.vala"
 	return result;
-#line 700 "rygel-plugin-loader.c"
+#line 710 "rygel-plugin-loader.c"
 }
 
 

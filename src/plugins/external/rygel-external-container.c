@@ -3,7 +3,7 @@
 
 /*
  * Copyright (C) 2009 Zeeshan Ali (Khattak) <zeeshanak@gnome.org>.
- * Copyright (C) 2009 Nokia Corporation.
+ * Copyright (C) 2009,2010 Nokia Corporation.
  *
  * Author: Zeeshan Ali (Khattak) <zeeshanak@gnome.org>
  *                               <zeeshan.ali@nokia.com>
@@ -32,9 +32,8 @@
 #include <dbus/dbus-glib.h>
 #include <stdlib.h>
 #include <string.h>
-#include <gee.h>
 #include <gio/gio.h>
-#include <libgupnp-av/gupnp-av.h>
+#include <gee.h>
 
 
 #define RYGEL_TYPE_EXTERNAL_CONTAINER (rygel_external_container_get_type ())
@@ -63,10 +62,6 @@ typedef struct _RygelExternalMediaObjectIface RygelExternalMediaObjectIface;
 
 typedef struct _RygelExternalMediaContainer RygelExternalMediaContainer;
 typedef struct _RygelExternalMediaContainerIface RygelExternalMediaContainerIface;
-#define _g_object_unref0(var) ((var == NULL) ? NULL : (var = (g_object_unref (var), NULL)))
-#define _g_free0(var) (var = (g_free (var), NULL))
-#define _dbus_g_connection_unref0(var) ((var == NULL) ? NULL : (var = (dbus_g_connection_unref (var), NULL)))
-#define _g_error_free0(var) ((var == NULL) ? NULL : (var = (g_error_free (var), NULL)))
 
 #define RYGEL_TYPE_EXTERNAL_ITEM_FACTORY (rygel_external_item_factory_get_type ())
 #define RYGEL_EXTERNAL_ITEM_FACTORY(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_EXTERNAL_ITEM_FACTORY, RygelExternalItemFactory))
@@ -77,10 +72,37 @@ typedef struct _RygelExternalMediaContainerIface RygelExternalMediaContainerIfac
 
 typedef struct _RygelExternalItemFactory RygelExternalItemFactory;
 typedef struct _RygelExternalItemFactoryClass RygelExternalItemFactoryClass;
+#define _g_object_unref0(var) ((var == NULL) ? NULL : (var = (g_object_unref (var), NULL)))
+#define _g_free0(var) (var = (g_free (var), NULL))
 #define _rygel_external_item_factory_unref0(var) ((var == NULL) ? NULL : (var = (rygel_external_item_factory_unref (var), NULL)))
+#define _dbus_g_connection_unref0(var) ((var == NULL) ? NULL : (var = (dbus_g_connection_unref (var), NULL)))
+#define _g_error_free0(var) ((var == NULL) ? NULL : (var = (g_error_free (var), NULL)))
 typedef struct _RygelExternalContainerGetChildrenData RygelExternalContainerGetChildrenData;
 #define _rygel_search_expression_unref0(var) ((var == NULL) ? NULL : (var = (rygel_search_expression_unref (var), NULL)))
 typedef struct _RygelExternalContainerSearchData RygelExternalContainerSearchData;
+
+#define RYGEL_TYPE_EXTERNAL_DUMMY_CONTAINER (rygel_external_dummy_container_get_type ())
+#define RYGEL_EXTERNAL_DUMMY_CONTAINER(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_EXTERNAL_DUMMY_CONTAINER, RygelExternalDummyContainer))
+#define RYGEL_EXTERNAL_DUMMY_CONTAINER_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TYPE_EXTERNAL_DUMMY_CONTAINER, RygelExternalDummyContainerClass))
+#define RYGEL_IS_EXTERNAL_DUMMY_CONTAINER(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TYPE_EXTERNAL_DUMMY_CONTAINER))
+#define RYGEL_IS_EXTERNAL_DUMMY_CONTAINER_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_TYPE_EXTERNAL_DUMMY_CONTAINER))
+#define RYGEL_EXTERNAL_DUMMY_CONTAINER_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_TYPE_EXTERNAL_DUMMY_CONTAINER, RygelExternalDummyContainerClass))
+
+typedef struct _RygelExternalDummyContainer RygelExternalDummyContainer;
+typedef struct _RygelExternalDummyContainerClass RygelExternalDummyContainerClass;
+
+#define FREE_DESKTOP_TYPE_PROPERTIES (free_desktop_properties_get_type ())
+#define FREE_DESKTOP_PROPERTIES(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), FREE_DESKTOP_TYPE_PROPERTIES, FreeDesktopProperties))
+#define FREE_DESKTOP_IS_PROPERTIES(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), FREE_DESKTOP_TYPE_PROPERTIES))
+#define FREE_DESKTOP_PROPERTIES_GET_INTERFACE(obj) (G_TYPE_INSTANCE_GET_INTERFACE ((obj), FREE_DESKTOP_TYPE_PROPERTIES, FreeDesktopPropertiesIface))
+
+typedef struct _FreeDesktopProperties FreeDesktopProperties;
+typedef struct _FreeDesktopPropertiesIface FreeDesktopPropertiesIface;
+#define _g_hash_table_unref0(var) ((var == NULL) ? NULL : (var = (g_hash_table_unref (var), NULL)))
+typedef struct _RygelExternalContainerFindObjectData RygelExternalContainerFindObjectData;
+typedef struct _RygelExternalContainerCreateMediaObjectsData RygelExternalContainerCreateMediaObjectsData;
+typedef struct _RygelExternalContainerRefreshChildContainersData RygelExternalContainerRefreshChildContainersData;
+typedef struct _RygelExternalContainerUpdateContainerData RygelExternalContainerUpdateContainerData;
 
 struct _RygelExternalMediaObjectIface {
 	GTypeInterface parent_iface;
@@ -88,18 +110,28 @@ struct _RygelExternalMediaObjectIface {
 	void (*set_parent) (RygelExternalMediaObject* self, const char* value);
 	char* (*get_display_name) (RygelExternalMediaObject* self);
 	void (*set_display_name) (RygelExternalMediaObject* self, const char* value);
+	char* (*get_object_type) (RygelExternalMediaObject* self);
+	void (*set_object_type) (RygelExternalMediaObject* self, const char* value);
 };
 
 struct _RygelExternalMediaContainerIface {
 	GTypeInterface parent_iface;
-	char** (*get_items) (RygelExternalMediaContainer* self, int* result_length1);
-	void (*set_items) (RygelExternalMediaContainer* self, char** value, int value_length1);
-	char** (*get_containers) (RygelExternalMediaContainer* self, int* result_length1);
-	void (*set_containers) (RygelExternalMediaContainer* self, char** value, int value_length1);
+	void (*list_children) (RygelExternalMediaContainer* self, guint offset, guint max_count, char** filter, int filter_length1, GAsyncReadyCallback _callback_, gpointer _user_data_);
+	GHashTable** (*list_children_finish) (RygelExternalMediaContainer* self, GAsyncResult* _res_, int* result_length1, GError** error);
+	void (*list_containers) (RygelExternalMediaContainer* self, guint offset, guint max_count, char** filter, int filter_length1, GAsyncReadyCallback _callback_, gpointer _user_data_);
+	GHashTable** (*list_containers_finish) (RygelExternalMediaContainer* self, GAsyncResult* _res_, int* result_length1, GError** error);
+	void (*list_items) (RygelExternalMediaContainer* self, guint offset, guint max_count, char** filter, int filter_length1, GAsyncReadyCallback _callback_, gpointer _user_data_);
+	GHashTable** (*list_items_finish) (RygelExternalMediaContainer* self, GAsyncResult* _res_, int* result_length1, GError** error);
+	void (*search_objects) (RygelExternalMediaContainer* self, const char* query, guint offset, guint max_count, char** filter, int filter_length1, GAsyncReadyCallback _callback_, gpointer _user_data_);
+	GHashTable** (*search_objects_finish) (RygelExternalMediaContainer* self, GAsyncResult* _res_, int* result_length1, GError** error);
+	guint (*get_child_count) (RygelExternalMediaContainer* self);
+	void (*set_child_count) (RygelExternalMediaContainer* self, guint value);
 	guint (*get_item_count) (RygelExternalMediaContainer* self);
 	void (*set_item_count) (RygelExternalMediaContainer* self, guint value);
 	guint (*get_container_count) (RygelExternalMediaContainer* self);
 	void (*set_container_count) (RygelExternalMediaContainer* self, guint value);
+	gboolean (*get_searchable) (RygelExternalMediaContainer* self);
+	void (*set_searchable) (RygelExternalMediaContainer* self, gboolean value);
 	char* (*get_icon) (RygelExternalMediaContainer* self);
 	void (*set_icon) (RygelExternalMediaContainer* self, const char* value);
 };
@@ -117,8 +149,10 @@ struct _RygelExternalContainerClass {
 };
 
 struct _RygelExternalContainerPrivate {
-	char* object_path;
+	RygelExternalItemFactory* item_factory;
 	GeeArrayList* containers;
+	DBusGConnection* connection;
+	gboolean searchable;
 };
 
 struct _RygelExternalContainerGetChildrenData {
@@ -130,20 +164,25 @@ struct _RygelExternalContainerGetChildrenData {
 	guint max_count;
 	GCancellable* cancellable;
 	GeeList* result;
-	GeeArrayList* media_objects;
-	char** obj_paths;
-	gint _tmp0_;
+	char** filter;
+	char** _tmp0_;
 	char** _tmp1_;
-	gint _obj_paths_size_;
-	gint obj_paths_length1;
-	RygelExternalItemFactory* factory;
-	RygelMediaItem* item;
-	GError * err;
-	char** obj_path_collection;
-	int obj_path_collection_length1;
-	int obj_path_it;
-	char* obj_path;
-	guint stop;
+	gint _filter_size_;
+	gint filter_length1;
+	const char** object_prop_collection;
+	int object_prop_collection_length1;
+	int object_prop_it;
+	const char* object_prop;
+	const char** item_prop_collection;
+	int item_prop_collection_length1;
+	int item_prop_it;
+	const char* item_prop;
+	GHashTable** children_props;
+	gint _tmp2_;
+	GHashTable** _tmp3_;
+	gint _children_props_size_;
+	gint children_props_length1;
+	GeeList* _tmp4_;
 	GError * _inner_error_;
 };
 
@@ -158,19 +197,144 @@ struct _RygelExternalContainerSearchData {
 	guint total_matches;
 	GCancellable* cancellable;
 	GeeList* result;
-	GeeArrayList* results;
-	gboolean _tmp0_;
-	GeeList* _tmp1_;
-	RygelRelationalExpression* rel_expression;
-	RygelSearchExpression* _tmp2_;
+	GeeList* _tmp0_;
+	char** filter;
+	char** _tmp1_;
+	char** _tmp2_;
+	gint _filter_size_;
+	gint filter_length1;
+	const char** object_prop_collection;
+	int object_prop_collection_length1;
+	int object_prop_it;
+	const char* object_prop;
+	const char** container_prop_collection;
+	int container_prop_collection_length1;
+	int container_prop_it;
+	const char* container_prop;
+	const char** item_prop_collection;
+	int item_prop_collection_length1;
+	int item_prop_it;
+	const char* item_prop;
+	RygelSearchExpression* ext_expression;
+	GHashTable** _result_;
+	gint _tmp4_;
+	char* _tmp3_;
+	GHashTable** _tmp5_;
+	GHashTable** _tmp6_;
+	gint __result__size_;
+	gint _result__length1;
+	GeeList* _tmp7_;
+	GError * _inner_error_;
+};
+
+struct _FreeDesktopPropertiesIface {
+	GTypeInterface parent_iface;
+	void (*get_all) (FreeDesktopProperties* self, const char* iface, GAsyncReadyCallback _callback_, gpointer _user_data_);
+	GHashTable* (*get_all_finish) (FreeDesktopProperties* self, GAsyncResult* _res_, GError** error);
+};
+
+struct _RygelExternalContainerFindObjectData {
+	int _state_;
+	GAsyncResult* _res_;
+	GSimpleAsyncResult* _async_result;
+	RygelExternalContainer* self;
 	char* id;
-	gboolean _tmp3_;
-	gboolean _tmp4_;
-	GeeList* _tmp5_;
-	RygelExternalItemFactory* factory;
-	RygelMediaItem* media_object;
+	GCancellable* cancellable;
+	RygelMediaObject* result;
+	RygelMediaObject* media_object;
+	RygelExternalMediaObject* actual_object;
+	RygelMediaObject* _tmp2_;
 	GeeIterator* _container_it;
 	RygelExternalContainer* container;
+	RygelMediaObject* _tmp3_;
+	RygelMediaObject* _tmp4_;
+	RygelExternalDummyContainer* parent_container;
+	char* _tmp5_;
+	RygelExternalDummyContainer* _tmp6_;
+	FreeDesktopProperties* props_iface;
+	GHashTable* props;
+	RygelMediaItem* _tmp10_;
+	char* _tmp8_;
+	char* _tmp7_;
+	RygelMediaItem* _tmp9_;
+	RygelMediaObject* _tmp11_;
+	char* _tmp0_;
+	gboolean _tmp1_;
+	GError * _inner_error_;
+};
+
+struct _RygelExternalContainerCreateMediaObjectsData {
+	int _state_;
+	GAsyncResult* _res_;
+	GSimpleAsyncResult* _async_result;
+	RygelExternalContainer* self;
+	GHashTable** all_props;
+	gint all_props_length1;
+	RygelMediaContainer* parent;
+	GeeList* result;
+	GeeArrayList* media_objects;
+	char* id;
+	char* type;
+	RygelMediaContainer* parent_container;
+	RygelMediaContainer* _tmp0_;
+	char* parent_id;
+	RygelMediaContainer* _tmp1_;
+	RygelMediaObject* media_object;
+	RygelMediaObject* _tmp2_;
+	char* title;
+	guint child_count;
+	RygelMediaObject* _tmp3_;
+	RygelMediaItem* _tmp4_;
+	RygelMediaObject* _tmp5_;
+	GHashTable** props_collection;
+	int props_collection_length1;
+	int props_it;
+	GHashTable* props;
+	GError * _inner_error_;
+};
+
+struct _RygelExternalContainerRefreshChildContainersData {
+	int _state_;
+	GAsyncResult* _res_;
+	GSimpleAsyncResult* _async_result;
+	RygelExternalContainer* self;
+	char** filter;
+	char** _tmp0_;
+	char** _tmp1_;
+	gint _filter_size_;
+	gint filter_length1;
+	const char** object_prop_collection;
+	int object_prop_collection_length1;
+	int object_prop_it;
+	const char* object_prop;
+	const char** container_prop_collection;
+	int container_prop_collection_length1;
+	int container_prop_it;
+	const char* container_prop;
+	GHashTable** children_props;
+	gint _tmp2_;
+	GHashTable** _tmp3_;
+	gint _children_props_size_;
+	gint children_props_length1;
+	char* id;
+	char* title;
+	guint child_count;
+	gboolean searchable;
+	RygelExternalContainer* container;
+	GHashTable** props_collection;
+	int props_collection_length1;
+	int props_it;
+	GHashTable* props;
+	GError * _inner_error_;
+};
+
+struct _RygelExternalContainerUpdateContainerData {
+	int _state_;
+	GAsyncResult* _res_;
+	GSimpleAsyncResult* _async_result;
+	RygelExternalContainer* self;
+	gboolean connect_signal;
+	GError * err;
 	GError * _inner_error_;
 };
 
@@ -179,23 +343,9 @@ static gpointer rygel_external_container_parent_class = NULL;
 
 GType rygel_external_container_get_type (void);
 GType rygel_external_media_object_get_type (void);
+RygelExternalMediaObject* rygel_external_media_object_dbus_proxy_new (DBusGConnection* connection, const char* name, const char* path);
+RygelExternalMediaContainer* rygel_external_media_container_dbus_proxy_new (DBusGConnection* connection, const char* name, const char* path);
 GType rygel_external_media_container_get_type (void);
-#define RYGEL_EXTERNAL_CONTAINER_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), RYGEL_TYPE_EXTERNAL_CONTAINER, RygelExternalContainerPrivate))
-enum  {
-	RYGEL_EXTERNAL_CONTAINER_DUMMY_PROPERTY
-};
-char* rygel_external_media_object_get_display_name (RygelExternalMediaObject* self);
-static void rygel_external_container_update_container (RygelExternalContainer* self, GError** error);
-static void rygel_external_container_on_updated (RygelExternalContainer* self, RygelExternalMediaContainer* actual_container);
-static void _rygel_external_container_on_updated_rygel_external_media_container_updated (RygelExternalMediaContainer* _sender, gpointer self);
-RygelExternalContainer* rygel_external_container_new (const char* id, const char* service_name, const char* object_path, const char* host_ip, RygelExternalContainer* parent);
-RygelExternalContainer* rygel_external_container_construct (GType object_type, const char* id, const char* service_name, const char* object_path, const char* host_ip, RygelExternalContainer* parent);
-static void rygel_external_container_real_get_children_data_free (gpointer _data);
-static void rygel_external_container_real_get_children (RygelMediaContainer* base, guint offset, guint max_count, GCancellable* cancellable, GAsyncReadyCallback _callback_, gpointer _user_data_);
-static void rygel_external_container_get_children_ready (GObject* source_object, GAsyncResult* _res_, gpointer _user_data_);
-char** rygel_external_media_container_get_items (RygelExternalMediaContainer* self, int* result_length1);
-RygelExternalItemFactory* rygel_external_item_factory_new (void);
-RygelExternalItemFactory* rygel_external_item_factory_construct (GType object_type);
 gpointer rygel_external_item_factory_ref (gpointer instance);
 void rygel_external_item_factory_unref (gpointer instance);
 GParamSpec* rygel_param_spec_external_item_factory (const gchar* name, const gchar* nick, const gchar* blurb, GType object_type, GParamFlags flags);
@@ -203,90 +353,126 @@ void rygel_value_set_external_item_factory (GValue* value, gpointer v_object);
 void rygel_value_take_external_item_factory (GValue* value, gpointer v_object);
 gpointer rygel_value_get_external_item_factory (const GValue* value);
 GType rygel_external_item_factory_get_type (void);
-void rygel_external_item_factory_create_for_path (RygelExternalItemFactory* self, const char* object_path, RygelExternalContainer* parent, GAsyncReadyCallback _callback_, gpointer _user_data_);
-RygelMediaItem* rygel_external_item_factory_create_for_path_finish (RygelExternalItemFactory* self, GAsyncResult* _res_, GError** error);
+#define RYGEL_EXTERNAL_CONTAINER_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), RYGEL_TYPE_EXTERNAL_CONTAINER, RygelExternalContainerPrivate))
+enum  {
+	RYGEL_EXTERNAL_CONTAINER_DUMMY_PROPERTY
+};
+RygelExternalItemFactory* rygel_external_item_factory_new (void);
+RygelExternalItemFactory* rygel_external_item_factory_construct (GType object_type);
+static void rygel_external_container_update_container (RygelExternalContainer* self, gboolean connect_signal, GAsyncReadyCallback _callback_, gpointer _user_data_);
+static void rygel_external_container_update_container_finish (RygelExternalContainer* self, GAsyncResult* _res_);
+RygelExternalContainer* rygel_external_container_new (const char* id, const char* title, guint child_count, gboolean searchable, const char* service_name, const char* host_ip, RygelExternalContainer* parent);
+RygelExternalContainer* rygel_external_container_construct (GType object_type, const char* id, const char* title, guint child_count, gboolean searchable, const char* service_name, const char* host_ip, RygelExternalContainer* parent);
+static void rygel_external_container_real_get_children_data_free (gpointer _data);
+static void rygel_external_container_real_get_children (RygelMediaContainer* base, guint offset, guint max_count, GCancellable* cancellable, GAsyncReadyCallback _callback_, gpointer _user_data_);
+static void rygel_external_container_get_children_ready (GObject* source_object, GAsyncResult* _res_, gpointer _user_data_);
+static void _vala_array_add1 (char*** array, int* length, int* size, char* value);
+static void _vala_array_add2 (char*** array, int* length, int* size, char* value);
+void rygel_external_media_container_list_children (RygelExternalMediaContainer* self, guint offset, guint max_count, char** filter, int filter_length1, GAsyncReadyCallback _callback_, gpointer _user_data_);
+GHashTable** rygel_external_media_container_list_children_finish (RygelExternalMediaContainer* self, GAsyncResult* _res_, int* result_length1, GError** error);
+static void rygel_external_container_create_media_objects (RygelExternalContainer* self, GHashTable** all_props, int all_props_length1, RygelMediaContainer* parent, GAsyncReadyCallback _callback_, gpointer _user_data_);
+static GeeList* rygel_external_container_create_media_objects_finish (RygelExternalContainer* self, GAsyncResult* _res_, GError** error);
 static gboolean rygel_external_container_real_get_children_co (RygelExternalContainerGetChildrenData* data);
 static void rygel_external_container_real_search_data_free (gpointer _data);
 static void rygel_external_container_real_search (RygelMediaContainer* base, RygelSearchExpression* expression, guint offset, guint max_count, GCancellable* cancellable, GAsyncReadyCallback _callback_, gpointer _user_data_);
 static void rygel_external_container_search_ready (GObject* source_object, GAsyncResult* _res_, gpointer _user_data_);
-static gboolean rygel_external_container_is_direct_child (RygelExternalContainer* self, const char* id);
-gboolean rygel_external_item_factory_id_valid (const char* id);
-void rygel_external_item_factory_create_for_id (RygelExternalItemFactory* self, const char* id, RygelExternalContainer* parent, GAsyncReadyCallback _callback_, gpointer _user_data_);
-RygelMediaItem* rygel_external_item_factory_create_for_id_finish (RygelExternalItemFactory* self, GAsyncResult* _res_, GError** error);
+static void _vala_array_add3 (char*** array, int* length, int* size, char* value);
+static void _vala_array_add4 (char*** array, int* length, int* size, char* value);
+static void _vala_array_add5 (char*** array, int* length, int* size, char* value);
+static RygelSearchExpression* rygel_external_container_translate_expression (RygelExternalContainer* self, RygelSearchExpression* upnp_expression);
+void rygel_external_media_container_search_objects (RygelExternalMediaContainer* self, const char* query, guint offset, guint max_count, char** filter, int filter_length1, GAsyncReadyCallback _callback_, gpointer _user_data_);
+GHashTable** rygel_external_media_container_search_objects_finish (RygelExternalMediaContainer* self, GAsyncResult* _res_, int* result_length1, GError** error);
 static gboolean rygel_external_container_real_search_co (RygelExternalContainerSearchData* data);
-char** rygel_external_media_container_get_containers (RygelExternalMediaContainer* self, int* result_length1);
-guint rygel_external_media_container_get_item_count (RygelExternalMediaContainer* self);
+static void rygel_external_container_real_find_object_data_free (gpointer _data);
+static void rygel_external_container_real_find_object (RygelMediaContainer* base, const char* id, GCancellable* cancellable, GAsyncReadyCallback _callback_, gpointer _user_data_);
+static void rygel_external_container_find_object_ready (GObject* source_object, GAsyncResult* _res_, gpointer _user_data_);
+char* rygel_external_media_object_get_object_type (RygelExternalMediaObject* self);
+static RygelMediaContainer* rygel_external_container_find_container_by_id (RygelExternalContainer* self, const char* id);
+char* rygel_external_media_object_get_parent (RygelExternalMediaObject* self);
+RygelExternalDummyContainer* rygel_external_dummy_container_new (const char* id, const char* title, guint child_coult, RygelMediaContainer* parent);
+RygelExternalDummyContainer* rygel_external_dummy_container_construct (GType object_type, const char* id, const char* title, guint child_coult, RygelMediaContainer* parent);
+GType rygel_external_dummy_container_get_type (void);
+FreeDesktopProperties* free_desktop_properties_dbus_proxy_new (DBusGConnection* connection, const char* name, const char* path);
+GType free_desktop_properties_get_type (void);
+void free_desktop_properties_get_all (FreeDesktopProperties* self, const char* iface, GAsyncReadyCallback _callback_, gpointer _user_data_);
+GHashTable* free_desktop_properties_get_all_finish (FreeDesktopProperties* self, GAsyncResult* _res_, GError** error);
+#define RYGEL_EXTERNAL_MEDIA_ITEM_IFACE "org.gnome.UPnP.MediaItem2"
+void rygel_external_item_factory_create (RygelExternalItemFactory* self, const char* id, const char* type, const char* title, GHashTable* props, const char* service_name, const char* host_ip, RygelMediaContainer* parent, GAsyncReadyCallback _callback_, gpointer _user_data_);
+RygelMediaItem* rygel_external_item_factory_create_finish (RygelExternalItemFactory* self, GAsyncResult* _res_, GError** error);
+char* rygel_external_media_object_get_display_name (RygelExternalMediaObject* self);
+static gboolean rygel_external_container_real_find_object_co (RygelExternalContainerFindObjectData* data);
+static void rygel_external_container_create_media_objects_data_free (gpointer _data);
+static GHashTable** _vala_array_dup1 (GHashTable** self, int length);
+static void rygel_external_container_create_media_objects_ready (GObject* source_object, GAsyncResult* _res_, gpointer _user_data_);
+static gboolean rygel_external_container_create_media_objects_co (RygelExternalContainerCreateMediaObjectsData* data);
+static void rygel_external_container_refresh_child_containers_data_free (gpointer _data);
+static void rygel_external_container_refresh_child_containers_ready (GObject* source_object, GAsyncResult* _res_, gpointer _user_data_);
+static void _vala_array_add6 (char*** array, int* length, int* size, char* value);
+static void _vala_array_add7 (char*** array, int* length, int* size, char* value);
+void rygel_external_media_container_list_containers (RygelExternalMediaContainer* self, guint offset, guint max_count, char** filter, int filter_length1, GAsyncReadyCallback _callback_, gpointer _user_data_);
+GHashTable** rygel_external_media_container_list_containers_finish (RygelExternalMediaContainer* self, GAsyncResult* _res_, int* result_length1, GError** error);
+static void rygel_external_container_refresh_child_containers (RygelExternalContainer* self, GAsyncReadyCallback _callback_, gpointer _user_data_);
+static void rygel_external_container_refresh_child_containers_finish (RygelExternalContainer* self, GAsyncResult* _res_, GError** error);
+static gboolean rygel_external_container_refresh_child_containers_co (RygelExternalContainerRefreshChildContainersData* data);
+static void rygel_external_container_update_container_data_free (gpointer _data);
+static void rygel_external_container_update_container_ready (GObject* source_object, GAsyncResult* _res_, gpointer _user_data_);
+static void rygel_external_container_on_updated (RygelExternalContainer* self, RygelExternalMediaContainer* actual_container);
+static void _rygel_external_container_on_updated_rygel_external_media_container_updated (RygelExternalMediaContainer* _sender, gpointer self);
+static gboolean rygel_external_container_update_container_co (RygelExternalContainerUpdateContainerData* data);
+char* rygel_external_container_translate_property (RygelExternalContainer* self, const char* property);
 static void rygel_external_container_finalize (GObject* obj);
 static void _vala_array_destroy (gpointer array, gint array_length, GDestroyNotify destroy_func);
 static void _vala_array_free (gpointer array, gint array_length, GDestroyNotify destroy_func);
 static int _vala_strcmp0 (const char * str1, const char * str2);
 
+extern const char* RYGEL_EXTERNAL_MEDIA_OBJECT_PROPERTIES[4];
+extern const char* RYGEL_EXTERNAL_MEDIA_ITEM_PROPERTIES[18];
+extern const char* RYGEL_EXTERNAL_MEDIA_CONTAINER_PROPERTIES[2];
 
 
-#line 188 "rygel-external-container.vala"
-static void _rygel_external_container_on_updated_rygel_external_media_container_updated (RygelExternalMediaContainer* _sender, gpointer self) {
-#line 229 "rygel-external-container.c"
-	rygel_external_container_on_updated (self, _sender);
-}
-
-
-#line 42 "rygel-external-container.vala"
-RygelExternalContainer* rygel_external_container_construct (GType object_type, const char* id, const char* service_name, const char* object_path, const char* host_ip, RygelExternalContainer* parent) {
-#line 236 "rygel-external-container.c"
+#line 45 "rygel-external-container.vala"
+RygelExternalContainer* rygel_external_container_construct (GType object_type, const char* id, const char* title, guint child_count, gboolean searchable, const char* service_name, const char* host_ip, RygelExternalContainer* parent) {
+#line 436 "rygel-external-container.c"
 	GError * _inner_error_;
 	RygelExternalContainer * self;
 	char* _tmp0_;
 	char* _tmp1_;
-	char* _tmp2_;
+	RygelExternalItemFactory* _tmp2_;
 	GeeArrayList* _tmp3_;
-#line 42 "rygel-external-container.vala"
+	RygelExternalMediaContainer* _tmp6_;
+#line 45 "rygel-external-container.vala"
 	g_return_val_if_fail (id != NULL, NULL);
-#line 42 "rygel-external-container.vala"
+#line 45 "rygel-external-container.vala"
+	g_return_val_if_fail (title != NULL, NULL);
+#line 45 "rygel-external-container.vala"
 	g_return_val_if_fail (service_name != NULL, NULL);
-#line 42 "rygel-external-container.vala"
-	g_return_val_if_fail (object_path != NULL, NULL);
-#line 42 "rygel-external-container.vala"
+#line 45 "rygel-external-container.vala"
 	g_return_val_if_fail (host_ip != NULL, NULL);
-#line 251 "rygel-external-container.c"
+#line 452 "rygel-external-container.c"
 	_inner_error_ = NULL;
-#line 47 "rygel-external-container.vala"
-	self = (RygelExternalContainer*) rygel_media_container_construct (object_type, id, (RygelMediaContainer*) parent, "Uknown", 0);
-#line 49 "rygel-external-container.vala"
+#line 52 "rygel-external-container.vala"
+	self = (RygelExternalContainer*) rygel_media_container_construct (object_type, id, (RygelMediaContainer*) parent, title, (gint) child_count);
+#line 54 "rygel-external-container.vala"
 	self->service_name = (_tmp0_ = g_strdup (service_name), _g_free0 (self->service_name), _tmp0_);
-#line 50 "rygel-external-container.vala"
-	self->priv->object_path = (_tmp1_ = g_strdup (object_path), _g_free0 (self->priv->object_path), _tmp1_);
-#line 51 "rygel-external-container.vala"
-	self->host_ip = (_tmp2_ = g_strdup (host_ip), _g_free0 (self->host_ip), _tmp2_);
-#line 53 "rygel-external-container.vala"
-	self->priv->containers = (_tmp3_ = gee_array_list_new (RYGEL_TYPE_EXTERNAL_CONTAINER, (GBoxedCopyFunc) g_object_ref, g_object_unref, NULL), _g_object_unref0 (self->priv->containers), _tmp3_);
-#line 263 "rygel-external-container.c"
-	{
-		DBusGConnection* connection;
-		RygelExternalMediaContainer* _tmp4_;
-		char* _tmp5_;
+#line 55 "rygel-external-container.vala"
+	self->host_ip = (_tmp1_ = g_strdup (host_ip), _g_free0 (self->host_ip), _tmp1_);
 #line 56 "rygel-external-container.vala"
-		connection = dbus_g_bus_get (DBUS_BUS_SESSION, &_inner_error_);
-#line 270 "rygel-external-container.c"
+	self->priv->item_factory = (_tmp2_ = rygel_external_item_factory_new (), _rygel_external_item_factory_unref0 (self->priv->item_factory), _tmp2_);
+#line 57 "rygel-external-container.vala"
+	self->priv->containers = (_tmp3_ = gee_array_list_new (RYGEL_TYPE_EXTERNAL_CONTAINER, (GBoxedCopyFunc) g_object_ref, g_object_unref, NULL), _g_object_unref0 (self->priv->containers), _tmp3_);
+#line 464 "rygel-external-container.c"
+	{
+		DBusGConnection* _tmp4_;
+		DBusGConnection* _tmp5_;
+#line 60 "rygel-external-container.vala"
+		_tmp4_ = dbus_g_bus_get (DBUS_BUS_SESSION, &_inner_error_);
+#line 470 "rygel-external-container.c"
 		if (_inner_error_ != NULL) {
 			goto __catch0_g_error;
 		}
-#line 59 "rygel-external-container.vala"
-		self->actual_container = (_tmp4_ = rygel_external_media_container_dbus_proxy_new (connection, service_name, object_path), _g_object_unref0 (self->actual_container), _tmp4_);
-#line 63 "rygel-external-container.vala"
-		rygel_media_object_set_title ((RygelMediaObject*) self, _tmp5_ = rygel_external_media_object_get_display_name ((RygelExternalMediaObject*) self->actual_container));
-#line 278 "rygel-external-container.c"
-		_g_free0 (_tmp5_);
-#line 65 "rygel-external-container.vala"
-		rygel_external_container_update_container (self, &_inner_error_);
-#line 282 "rygel-external-container.c"
-		if (_inner_error_ != NULL) {
-			_dbus_g_connection_unref0 (connection);
-			goto __catch0_g_error;
-		}
-#line 67 "rygel-external-container.vala"
-		g_signal_connect_object (self->actual_container, "updated", (GCallback) _rygel_external_container_on_updated_rygel_external_media_container_updated, self, 0);
-#line 289 "rygel-external-container.c"
-		_dbus_g_connection_unref0 (connection);
+#line 60 "rygel-external-container.vala"
+		self->priv->connection = (_tmp5_ = _tmp4_, _dbus_g_connection_unref0 (self->priv->connection), _tmp5_);
+#line 476 "rygel-external-container.c"
 	}
 	goto __finally0;
 	__catch0_g_error:
@@ -295,10 +481,9 @@ RygelExternalContainer* rygel_external_container_construct (GType object_type, c
 		err = _inner_error_;
 		_inner_error_ = NULL;
 		{
-#line 69 "rygel-external-container.vala"
-			g_critical ("rygel-external-container.vala:69: Failed to fetch information about co" \
-"ntainer '%s': %s\n", ((RygelMediaObject*) self)->id, err->message);
-#line 301 "rygel-external-container.c"
+#line 62 "rygel-external-container.vala"
+			g_critical ("rygel-external-container.vala:62: Failed to connect to session bus: %s", err->message);
+#line 487 "rygel-external-container.c"
 			_g_error_free0 (err);
 		}
 	}
@@ -308,15 +493,20 @@ RygelExternalContainer* rygel_external_container_construct (GType object_type, c
 		g_clear_error (&_inner_error_);
 		return NULL;
 	}
+#line 66 "rygel-external-container.vala"
+	self->actual_container = (_tmp6_ = rygel_external_media_container_dbus_proxy_new (self->priv->connection, self->service_name, id), _g_object_unref0 (self->actual_container), _tmp6_);
+#line 70 "rygel-external-container.vala"
+	rygel_external_container_update_container (self, TRUE, NULL, NULL);
+#line 501 "rygel-external-container.c"
 	return self;
 }
 
 
-#line 42 "rygel-external-container.vala"
-RygelExternalContainer* rygel_external_container_new (const char* id, const char* service_name, const char* object_path, const char* host_ip, RygelExternalContainer* parent) {
-#line 42 "rygel-external-container.vala"
-	return rygel_external_container_construct (RYGEL_TYPE_EXTERNAL_CONTAINER, id, service_name, object_path, host_ip, parent);
-#line 319 "rygel-external-container.c"
+#line 45 "rygel-external-container.vala"
+RygelExternalContainer* rygel_external_container_new (const char* id, const char* title, guint child_count, gboolean searchable, const char* service_name, const char* host_ip, RygelExternalContainer* parent) {
+#line 45 "rygel-external-container.vala"
+	return rygel_external_container_construct (RYGEL_TYPE_EXTERNAL_CONTAINER, id, title, child_count, searchable, service_name, host_ip, parent);
+#line 510 "rygel-external-container.c"
 }
 
 
@@ -371,86 +561,107 @@ static void rygel_external_container_get_children_ready (GObject* source_object,
 }
 
 
+static void _vala_array_add1 (char*** array, int* length, int* size, char* value) {
+	if ((*length) == (*size)) {
+		*size = (*size) ? (2 * (*size)) : 4;
+		*array = g_renew (char*, *array, (*size) + 1);
+	}
+	(*array)[(*length)++] = value;
+	(*array)[*length] = NULL;
+}
+
+
+static void _vala_array_add2 (char*** array, int* length, int* size, char* value) {
+	if ((*length) == (*size)) {
+		*size = (*size) ? (2 * (*size)) : 4;
+		*array = g_renew (char*, *array, (*size) + 1);
+	}
+	(*array)[(*length)++] = value;
+	(*array)[*length] = NULL;
+}
+
+
 static gboolean rygel_external_container_real_get_children_co (RygelExternalContainerGetChildrenData* data) {
 	switch (data->_state_) {
 		case 0:
 		goto _state_0;
 		case 1:
 		goto _state_1;
+		case 2:
+		goto _state_2;
 		default:
 		g_assert_not_reached ();
 	}
 	_state_0:
 	{
-		data->media_objects = gee_array_list_new (RYGEL_TYPE_MEDIA_OBJECT, (GBoxedCopyFunc) g_object_ref, g_object_unref, NULL);
-#line 83 "rygel-external-container.vala"
-		gee_abstract_collection_add_all ((GeeAbstractCollection*) data->media_objects, (GeeCollection*) data->self->priv->containers);
-#line 388 "rygel-external-container.c"
-		data->obj_paths = (data->_tmp1_ = rygel_external_media_container_get_items (data->self->actual_container, &data->_tmp0_), data->obj_paths_length1 = data->_tmp0_, data->_obj_paths_size_ = data->obj_paths_length1, data->_tmp1_);
-		data->factory = rygel_external_item_factory_new ();
+		data->_tmp0_ = NULL;
+		data->filter = (data->_tmp1_ = (data->_tmp0_ = g_new0 (char*, 0 + 1), data->_tmp0_), data->filter_length1 = 0, data->_filter_size_ = data->filter_length1, data->_tmp1_);
 		{
-			data->obj_path_collection = data->obj_paths;
-			data->obj_path_collection_length1 = data->obj_paths_length1;
-			for (data->obj_path_it = 0; data->obj_path_it < data->obj_paths_length1; data->obj_path_it = data->obj_path_it + 1) {
-				data->obj_path = g_strdup (data->obj_path_collection[data->obj_path_it]);
+			data->object_prop_collection = RYGEL_EXTERNAL_MEDIA_OBJECT_PROPERTIES;
+			data->object_prop_collection_length1 = G_N_ELEMENTS (RYGEL_EXTERNAL_MEDIA_OBJECT_PROPERTIES);
+			for (data->object_prop_it = 0; data->object_prop_it < G_N_ELEMENTS (RYGEL_EXTERNAL_MEDIA_OBJECT_PROPERTIES); data->object_prop_it = data->object_prop_it + 1) {
+				data->object_prop = data->object_prop_collection[data->object_prop_it];
 				{
-					{
-						data->_state_ = 1;
-						rygel_external_item_factory_create_for_path (data->factory, data->obj_path, data->self, rygel_external_container_get_children_ready, data);
-						return FALSE;
-						_state_1:
-						data->item = rygel_external_item_factory_create_for_path_finish (data->factory, data->_res_, &data->_inner_error_);
-						if (data->_inner_error_ != NULL) {
-							goto __catch1_g_error;
-						}
-#line 92 "rygel-external-container.vala"
-						gee_abstract_collection_add ((GeeAbstractCollection*) data->media_objects, (RygelMediaObject*) data->item);
-#line 408 "rygel-external-container.c"
-						_g_object_unref0 (data->item);
-					}
-					goto __finally1;
-					__catch1_g_error:
-					{
-						data->err = data->_inner_error_;
-						data->_inner_error_ = NULL;
-						{
-#line 94 "rygel-external-container.vala"
-							g_warning ("rygel-external-container.vala:94: Error initializable item at '%s': %s" \
-". Ignoring..", data->obj_path, data->err->message);
-#line 419 "rygel-external-container.c"
-							_g_error_free0 (data->err);
-						}
-					}
-					__finally1:
-					if (data->_inner_error_ != NULL) {
-						g_simple_async_result_set_from_error (data->_async_result, data->_inner_error_);
-						g_error_free (data->_inner_error_);
-						_g_free0 (data->obj_path);
-						_g_object_unref0 (data->media_objects);
-						data->obj_paths = (_vala_array_free (data->obj_paths, data->obj_paths_length1, (GDestroyNotify) g_free), NULL);
-						_rygel_external_item_factory_unref0 (data->factory);
-						{
-							if (data->_state_ == 0) {
-								g_simple_async_result_complete_in_idle (data->_async_result);
-							} else {
-								g_simple_async_result_complete (data->_async_result);
-							}
-							g_object_unref (data->_async_result);
-							return FALSE;
-						}
-					}
-					_g_free0 (data->obj_path);
+#line 81 "rygel-external-container.vala"
+					_vala_array_add1 (&data->filter, &data->filter_length1, &data->_filter_size_, g_strdup (data->object_prop));
+#line 608 "rygel-external-container.c"
 				}
 			}
 		}
-		data->stop = data->offset + data->max_count;
-#line 101 "rygel-external-container.vala"
-		data->stop = CLAMP (data->stop, (guint) 0, (guint) gee_collection_get_size ((GeeCollection*) data->media_objects));
-#line 448 "rygel-external-container.c"
-		data->result = gee_abstract_list_slice ((GeeAbstractList*) data->media_objects, (gint) data->offset, (gint) data->stop);
-		_g_object_unref0 (data->media_objects);
-		data->obj_paths = (_vala_array_free (data->obj_paths, data->obj_paths_length1, (GDestroyNotify) g_free), NULL);
-		_rygel_external_item_factory_unref0 (data->factory);
+		{
+			data->item_prop_collection = RYGEL_EXTERNAL_MEDIA_ITEM_PROPERTIES;
+			data->item_prop_collection_length1 = G_N_ELEMENTS (RYGEL_EXTERNAL_MEDIA_ITEM_PROPERTIES);
+			for (data->item_prop_it = 0; data->item_prop_it < G_N_ELEMENTS (RYGEL_EXTERNAL_MEDIA_ITEM_PROPERTIES); data->item_prop_it = data->item_prop_it + 1) {
+				data->item_prop = data->item_prop_collection[data->item_prop_it];
+				{
+#line 85 "rygel-external-container.vala"
+					_vala_array_add2 (&data->filter, &data->filter_length1, &data->_filter_size_, g_strdup (data->item_prop));
+#line 620 "rygel-external-container.c"
+				}
+			}
+		}
+		data->_state_ = 1;
+		rygel_external_media_container_list_children (data->self->actual_container, data->offset, data->max_count, data->filter, data->filter_length1, rygel_external_container_get_children_ready, data);
+		return FALSE;
+		_state_1:
+		data->children_props = (data->_tmp3_ = rygel_external_media_container_list_children_finish (data->self->actual_container, data->_res_, &data->_tmp2_, &data->_inner_error_), data->children_props_length1 = data->_tmp2_, data->_children_props_size_ = data->children_props_length1, data->_tmp3_);
+		if (data->_inner_error_ != NULL) {
+			g_simple_async_result_set_from_error (data->_async_result, data->_inner_error_);
+			g_error_free (data->_inner_error_);
+			data->filter = (_vala_array_free (data->filter, data->filter_length1, (GDestroyNotify) g_free), NULL);
+			{
+				if (data->_state_ == 0) {
+					g_simple_async_result_complete_in_idle (data->_async_result);
+				} else {
+					g_simple_async_result_complete (data->_async_result);
+				}
+				g_object_unref (data->_async_result);
+				return FALSE;
+			}
+		}
+		data->_state_ = 2;
+		rygel_external_container_create_media_objects (data->self, data->children_props, data->children_props_length1, (RygelMediaContainer*) data->self, rygel_external_container_get_children_ready, data);
+		return FALSE;
+		_state_2:
+		data->_tmp4_ = rygel_external_container_create_media_objects_finish (data->self, data->_res_, &data->_inner_error_);
+		if (data->_inner_error_ != NULL) {
+			g_simple_async_result_set_from_error (data->_async_result, data->_inner_error_);
+			g_error_free (data->_inner_error_);
+			data->filter = (_vala_array_free (data->filter, data->filter_length1, (GDestroyNotify) g_free), NULL);
+			data->children_props = (_vala_array_free (data->children_props, data->children_props_length1, (GDestroyNotify) g_hash_table_unref), NULL);
+			{
+				if (data->_state_ == 0) {
+					g_simple_async_result_complete_in_idle (data->_async_result);
+				} else {
+					g_simple_async_result_complete (data->_async_result);
+				}
+				g_object_unref (data->_async_result);
+				return FALSE;
+			}
+		}
+		data->result = data->_tmp4_;
+		data->filter = (_vala_array_free (data->filter, data->filter_length1, (GDestroyNotify) g_free), NULL);
+		data->children_props = (_vala_array_free (data->children_props, data->children_props_length1, (GDestroyNotify) g_hash_table_unref), NULL);
 		{
 			if (data->_state_ == 0) {
 				g_simple_async_result_complete_in_idle (data->_async_result);
@@ -460,9 +671,8 @@ static gboolean rygel_external_container_real_get_children_co (RygelExternalCont
 			g_object_unref (data->_async_result);
 			return FALSE;
 		}
-		_g_object_unref0 (data->media_objects);
-		data->obj_paths = (_vala_array_free (data->obj_paths, data->obj_paths_length1, (GDestroyNotify) g_free), NULL);
-		_rygel_external_item_factory_unref0 (data->factory);
+		data->filter = (_vala_array_free (data->filter, data->filter_length1, (GDestroyNotify) g_free), NULL);
+		data->children_props = (_vala_array_free (data->children_props, data->children_props_length1, (GDestroyNotify) g_hash_table_unref), NULL);
 	}
 	{
 		if (data->_state_ == 0) {
@@ -516,7 +726,6 @@ static GeeList* rygel_external_container_real_search_finish (RygelMediaContainer
 	}
 	_data_ = g_simple_async_result_get_op_res_gpointer (G_SIMPLE_ASYNC_RESULT (_res_));
 	*total_matches = _data_->total_matches;
-	_data_->total_matches = NULL;
 	result = _data_->result;
 	_data_->result = NULL;
 	return result;
@@ -531,102 +740,62 @@ static void rygel_external_container_search_ready (GObject* source_object, GAsyn
 }
 
 
+static void _vala_array_add3 (char*** array, int* length, int* size, char* value) {
+	if ((*length) == (*size)) {
+		*size = (*size) ? (2 * (*size)) : 4;
+		*array = g_renew (char*, *array, (*size) + 1);
+	}
+	(*array)[(*length)++] = value;
+	(*array)[*length] = NULL;
+}
+
+
+static void _vala_array_add4 (char*** array, int* length, int* size, char* value) {
+	if ((*length) == (*size)) {
+		*size = (*size) ? (2 * (*size)) : 4;
+		*array = g_renew (char*, *array, (*size) + 1);
+	}
+	(*array)[(*length)++] = value;
+	(*array)[*length] = NULL;
+}
+
+
+static void _vala_array_add5 (char*** array, int* length, int* size, char* value) {
+	if ((*length) == (*size)) {
+		*size = (*size) ? (2 * (*size)) : 4;
+		*array = g_renew (char*, *array, (*size) + 1);
+	}
+	(*array)[(*length)++] = value;
+	(*array)[*length] = NULL;
+}
+
+
 static gboolean rygel_external_container_real_search_co (RygelExternalContainerSearchData* data) {
 	switch (data->_state_) {
 		case 0:
 		goto _state_0;
-		case 2:
-		goto _state_2;
 		case 3:
 		goto _state_3;
 		case 4:
 		goto _state_4;
+		case 5:
+		goto _state_5;
 		default:
 		g_assert_not_reached ();
 	}
 	_state_0:
 	{
-		data->results = gee_array_list_new (RYGEL_TYPE_MEDIA_OBJECT, (GBoxedCopyFunc) g_object_ref, g_object_unref, NULL);
-#line 116 "rygel-external-container.vala"
-		if (data->expression == NULL) {
-#line 116 "rygel-external-container.vala"
-			data->_tmp0_ = TRUE;
-#line 553 "rygel-external-container.c"
-		} else {
-#line 116 "rygel-external-container.vala"
-			data->_tmp0_ = !RYGEL_IS_RELATIONAL_EXPRESSION (data->expression);
-#line 557 "rygel-external-container.c"
-		}
-#line 116 "rygel-external-container.vala"
-		if (data->_tmp0_) {
-#line 561 "rygel-external-container.c"
-			data->_state_ = 2;
-			RYGEL_MEDIA_CONTAINER_CLASS (rygel_external_container_parent_class)->search (RYGEL_MEDIA_CONTAINER (data->self), data->expression, data->offset, data->max_count, data->cancellable, rygel_external_container_search_ready, data);
-			return FALSE;
-			_state_2:
-			data->_tmp1_ = RYGEL_MEDIA_CONTAINER_CLASS (rygel_external_container_parent_class)->search_finish (RYGEL_MEDIA_CONTAINER (data->self), data->_res_, &data->total_matches, &data->_inner_error_);
-			if (data->_inner_error_ != NULL) {
-				g_simple_async_result_set_from_error (data->_async_result, data->_inner_error_);
-				g_error_free (data->_inner_error_);
-				_g_object_unref0 (data->results);
-				{
-					if (data->_state_ == 0) {
-						g_simple_async_result_complete_in_idle (data->_async_result);
-					} else {
-						g_simple_async_result_complete (data->_async_result);
-					}
-					g_object_unref (data->_async_result);
-					return FALSE;
-				}
-			}
-			data->result = data->_tmp1_;
-			_g_object_unref0 (data->results);
-			{
-				if (data->_state_ == 0) {
-					g_simple_async_result_complete_in_idle (data->_async_result);
-				} else {
-					g_simple_async_result_complete (data->_async_result);
-				}
-				g_object_unref (data->_async_result);
-				return FALSE;
-			}
-		}
-		data->rel_expression = _rygel_search_expression_ref0 ((data->_tmp2_ = data->expression, RYGEL_IS_RELATIONAL_EXPRESSION (data->_tmp2_) ? ((RygelRelationalExpression*) data->_tmp2_) : NULL));
-		data->id = g_strdup ((const char*) ((RygelSearchExpression*) data->rel_expression)->operand2);
-#line 128 "rygel-external-container.vala"
-		if (_vala_strcmp0 ((const char*) ((RygelSearchExpression*) data->rel_expression)->operand1, "@id") != 0) {
-#line 128 "rygel-external-container.vala"
-			data->_tmp4_ = TRUE;
-#line 599 "rygel-external-container.c"
-		} else {
-#line 129 "rygel-external-container.vala"
-			data->_tmp4_ = GPOINTER_TO_INT (((RygelSearchExpression*) data->rel_expression)->op) != GUPNP_SEARCH_CRITERIA_OP_EQ;
-#line 603 "rygel-external-container.c"
-		}
-#line 128 "rygel-external-container.vala"
-		if (data->_tmp4_) {
-#line 128 "rygel-external-container.vala"
-			data->_tmp3_ = TRUE;
-#line 609 "rygel-external-container.c"
-		} else {
-#line 130 "rygel-external-container.vala"
-			data->_tmp3_ = !rygel_external_container_is_direct_child (data->self, data->id);
-#line 613 "rygel-external-container.c"
-		}
-#line 128 "rygel-external-container.vala"
-		if (data->_tmp3_) {
-#line 617 "rygel-external-container.c"
+#line 103 "rygel-external-container.vala"
+		if (!data->self->priv->searchable) {
+#line 791 "rygel-external-container.c"
 			data->_state_ = 3;
 			RYGEL_MEDIA_CONTAINER_CLASS (rygel_external_container_parent_class)->search (RYGEL_MEDIA_CONTAINER (data->self), data->expression, data->offset, data->max_count, data->cancellable, rygel_external_container_search_ready, data);
 			return FALSE;
 			_state_3:
-			data->_tmp5_ = RYGEL_MEDIA_CONTAINER_CLASS (rygel_external_container_parent_class)->search_finish (RYGEL_MEDIA_CONTAINER (data->self), data->_res_, &data->total_matches, &data->_inner_error_);
+			data->_tmp0_ = RYGEL_MEDIA_CONTAINER_CLASS (rygel_external_container_parent_class)->search_finish (RYGEL_MEDIA_CONTAINER (data->self), data->_res_, &data->total_matches, &data->_inner_error_);
 			if (data->_inner_error_ != NULL) {
 				g_simple_async_result_set_from_error (data->_async_result, data->_inner_error_);
 				g_error_free (data->_inner_error_);
-				_g_object_unref0 (data->results);
-				_rygel_search_expression_unref0 (data->rel_expression);
-				_g_free0 (data->id);
 				{
 					if (data->_state_ == 0) {
 						g_simple_async_result_complete_in_idle (data->_async_result);
@@ -637,10 +806,7 @@ static gboolean rygel_external_container_real_search_co (RygelExternalContainerS
 					return FALSE;
 				}
 			}
-			data->result = data->_tmp5_;
-			_g_object_unref0 (data->results);
-			_rygel_search_expression_unref0 (data->rel_expression);
-			_g_free0 (data->id);
+			data->result = data->_tmp0_;
 			{
 				if (data->_state_ == 0) {
 					g_simple_async_result_complete_in_idle (data->_async_result);
@@ -651,66 +817,93 @@ static gboolean rygel_external_container_real_search_co (RygelExternalContainerS
 				return FALSE;
 			}
 		}
-		data->factory = rygel_external_item_factory_new ();
-#line 140 "rygel-external-container.vala"
-		if (rygel_external_item_factory_id_valid (data->id)) {
-#line 656 "rygel-external-container.c"
-			data->_state_ = 4;
-			rygel_external_item_factory_create_for_id (data->factory, data->id, data->self, rygel_external_container_search_ready, data);
-			return FALSE;
-			_state_4:
-			data->media_object = rygel_external_item_factory_create_for_id_finish (data->factory, data->_res_, &data->_inner_error_);
-			if (data->_inner_error_ != NULL) {
-				g_simple_async_result_set_from_error (data->_async_result, data->_inner_error_);
-				g_error_free (data->_inner_error_);
-				_g_object_unref0 (data->results);
-				_rygel_search_expression_unref0 (data->rel_expression);
-				_g_free0 (data->id);
-				_rygel_external_item_factory_unref0 (data->factory);
+		data->_tmp1_ = NULL;
+		data->filter = (data->_tmp2_ = (data->_tmp1_ = g_new0 (char*, 0 + 1), data->_tmp1_), data->filter_length1 = 0, data->_filter_size_ = data->filter_length1, data->_tmp2_);
+		{
+			data->object_prop_collection = RYGEL_EXTERNAL_MEDIA_OBJECT_PROPERTIES;
+			data->object_prop_collection_length1 = G_N_ELEMENTS (RYGEL_EXTERNAL_MEDIA_OBJECT_PROPERTIES);
+			for (data->object_prop_it = 0; data->object_prop_it < G_N_ELEMENTS (RYGEL_EXTERNAL_MEDIA_OBJECT_PROPERTIES); data->object_prop_it = data->object_prop_it + 1) {
+				data->object_prop = data->object_prop_collection[data->object_prop_it];
 				{
-					if (data->_state_ == 0) {
-						g_simple_async_result_complete_in_idle (data->_async_result);
-					} else {
-						g_simple_async_result_complete (data->_async_result);
-					}
-					g_object_unref (data->_async_result);
-					return FALSE;
+#line 114 "rygel-external-container.vala"
+					_vala_array_add3 (&data->filter, &data->filter_length1, &data->_filter_size_, g_strdup (data->object_prop));
+#line 831 "rygel-external-container.c"
 				}
-			}
-#line 142 "rygel-external-container.vala"
-			gee_abstract_collection_add ((GeeAbstractCollection*) data->results, (RygelMediaObject*) data->media_object);
-#line 681 "rygel-external-container.c"
-			_g_object_unref0 (data->media_object);
-		} else {
-			{
-				data->_container_it = gee_abstract_collection_iterator ((GeeAbstractCollection*) data->self->priv->containers);
-#line 144 "rygel-external-container.vala"
-				while (TRUE) {
-#line 144 "rygel-external-container.vala"
-					if (!gee_iterator_next (data->_container_it)) {
-#line 144 "rygel-external-container.vala"
-						break;
-#line 692 "rygel-external-container.c"
-					}
-					data->container = (RygelExternalContainer*) gee_iterator_get (data->_container_it);
-#line 145 "rygel-external-container.vala"
-					if (_vala_strcmp0 (((RygelMediaObject*) data->container)->id, data->id) == 0) {
-#line 146 "rygel-external-container.vala"
-						gee_abstract_collection_add ((GeeAbstractCollection*) data->results, (RygelMediaObject*) data->container);
-#line 699 "rygel-external-container.c"
-					}
-					_g_object_unref0 (data->container);
-				}
-				_g_object_unref0 (data->_container_it);
 			}
 		}
-#line 151 "rygel-external-container.vala"
-		data->total_matches = (guint) gee_collection_get_size ((GeeCollection*) data->results);
-#line 708 "rygel-external-container.c"
-		data->result = (GeeList*) data->results;
-		_rygel_search_expression_unref0 (data->rel_expression);
-		_g_free0 (data->id);
-		_rygel_external_item_factory_unref0 (data->factory);
+		{
+			data->container_prop_collection = RYGEL_EXTERNAL_MEDIA_CONTAINER_PROPERTIES;
+			data->container_prop_collection_length1 = G_N_ELEMENTS (RYGEL_EXTERNAL_MEDIA_CONTAINER_PROPERTIES);
+			for (data->container_prop_it = 0; data->container_prop_it < G_N_ELEMENTS (RYGEL_EXTERNAL_MEDIA_CONTAINER_PROPERTIES); data->container_prop_it = data->container_prop_it + 1) {
+				data->container_prop = data->container_prop_collection[data->container_prop_it];
+				{
+#line 118 "rygel-external-container.vala"
+					_vala_array_add4 (&data->filter, &data->filter_length1, &data->_filter_size_, g_strdup (data->container_prop));
+#line 843 "rygel-external-container.c"
+				}
+			}
+		}
+		{
+			data->item_prop_collection = RYGEL_EXTERNAL_MEDIA_ITEM_PROPERTIES;
+			data->item_prop_collection_length1 = G_N_ELEMENTS (RYGEL_EXTERNAL_MEDIA_ITEM_PROPERTIES);
+			for (data->item_prop_it = 0; data->item_prop_it < G_N_ELEMENTS (RYGEL_EXTERNAL_MEDIA_ITEM_PROPERTIES); data->item_prop_it = data->item_prop_it + 1) {
+				data->item_prop = data->item_prop_collection[data->item_prop_it];
+				{
+#line 122 "rygel-external-container.vala"
+					_vala_array_add5 (&data->filter, &data->filter_length1, &data->_filter_size_, g_strdup (data->item_prop));
+#line 855 "rygel-external-container.c"
+				}
+			}
+		}
+		data->ext_expression = rygel_external_container_translate_expression (data->self, data->expression);
+		data->_state_ = 4;
+		rygel_external_media_container_search_objects (data->self->actual_container, data->_tmp3_ = rygel_search_expression_to_string (data->ext_expression), data->offset, data->max_count, data->filter, data->filter_length1, rygel_external_container_search_ready, data);
+		return FALSE;
+		_state_4:
+		data->_result_ = (data->_tmp6_ = (data->_tmp5_ = rygel_external_media_container_search_objects_finish (data->self->actual_container, data->_res_, &data->_tmp4_, &data->_inner_error_), _g_free0 (data->_tmp3_), data->_tmp5_), data->_result__length1 = data->_tmp4_, data->__result__size_ = data->_result__length1, data->_tmp6_);
+		if (data->_inner_error_ != NULL) {
+			g_simple_async_result_set_from_error (data->_async_result, data->_inner_error_);
+			g_error_free (data->_inner_error_);
+			data->filter = (_vala_array_free (data->filter, data->filter_length1, (GDestroyNotify) g_free), NULL);
+			_rygel_search_expression_unref0 (data->ext_expression);
+			{
+				if (data->_state_ == 0) {
+					g_simple_async_result_complete_in_idle (data->_async_result);
+				} else {
+					g_simple_async_result_complete (data->_async_result);
+				}
+				g_object_unref (data->_async_result);
+				return FALSE;
+			}
+		}
+#line 131 "rygel-external-container.vala"
+		data->total_matches = (guint) data->_result__length1;
+#line 882 "rygel-external-container.c"
+		data->_state_ = 5;
+		rygel_external_container_create_media_objects (data->self, data->_result_, data->_result__length1, NULL, rygel_external_container_search_ready, data);
+		return FALSE;
+		_state_5:
+		data->_tmp7_ = rygel_external_container_create_media_objects_finish (data->self, data->_res_, &data->_inner_error_);
+		if (data->_inner_error_ != NULL) {
+			g_simple_async_result_set_from_error (data->_async_result, data->_inner_error_);
+			g_error_free (data->_inner_error_);
+			data->filter = (_vala_array_free (data->filter, data->filter_length1, (GDestroyNotify) g_free), NULL);
+			_rygel_search_expression_unref0 (data->ext_expression);
+			data->_result_ = (_vala_array_free (data->_result_, data->_result__length1, (GDestroyNotify) g_hash_table_unref), NULL);
+			{
+				if (data->_state_ == 0) {
+					g_simple_async_result_complete_in_idle (data->_async_result);
+				} else {
+					g_simple_async_result_complete (data->_async_result);
+				}
+				g_object_unref (data->_async_result);
+				return FALSE;
+			}
+		}
+		data->result = data->_tmp7_;
+		data->filter = (_vala_array_free (data->filter, data->filter_length1, (GDestroyNotify) g_free), NULL);
+		_rygel_search_expression_unref0 (data->ext_expression);
+		data->_result_ = (_vala_array_free (data->_result_, data->_result__length1, (GDestroyNotify) g_hash_table_unref), NULL);
 		{
 			if (data->_state_ == 0) {
 				g_simple_async_result_complete_in_idle (data->_async_result);
@@ -720,10 +913,9 @@ static gboolean rygel_external_container_real_search_co (RygelExternalContainerS
 			g_object_unref (data->_async_result);
 			return FALSE;
 		}
-		_g_object_unref0 (data->results);
-		_rygel_search_expression_unref0 (data->rel_expression);
-		_g_free0 (data->id);
-		_rygel_external_item_factory_unref0 (data->factory);
+		data->filter = (_vala_array_free (data->filter, data->filter_length1, (GDestroyNotify) g_free), NULL);
+		_rygel_search_expression_unref0 (data->ext_expression);
+		data->_result_ = (_vala_array_free (data->_result_, data->_result__length1, (GDestroyNotify) g_hash_table_unref), NULL);
 	}
 	{
 		if (data->_state_ == 0) {
@@ -737,146 +929,832 @@ static gboolean rygel_external_container_real_search_co (RygelExternalContainerS
 }
 
 
-#line 156 "rygel-external-container.vala"
-static gboolean rygel_external_container_is_direct_child (RygelExternalContainer* self, const char* id) {
-#line 741 "rygel-external-container.c"
-	gboolean result = FALSE;
-#line 156 "rygel-external-container.vala"
-	g_return_val_if_fail (self != NULL, FALSE);
-#line 156 "rygel-external-container.vala"
-	g_return_val_if_fail (id != NULL, FALSE);
-#line 157 "rygel-external-container.vala"
-	if (rygel_external_item_factory_id_valid (id)) {
-#line 749 "rygel-external-container.c"
-		result = TRUE;
-#line 158 "rygel-external-container.vala"
-		return result;
-#line 753 "rygel-external-container.c"
-	} else {
-		{
-			GeeIterator* _container_it;
-			_container_it = gee_abstract_collection_iterator ((GeeAbstractCollection*) self->priv->containers);
-#line 160 "rygel-external-container.vala"
-			while (TRUE) {
-#line 760 "rygel-external-container.c"
-				RygelExternalContainer* container;
-#line 160 "rygel-external-container.vala"
-				if (!gee_iterator_next (_container_it)) {
-#line 160 "rygel-external-container.vala"
-					break;
-#line 766 "rygel-external-container.c"
+static void rygel_external_container_real_find_object_data_free (gpointer _data) {
+	RygelExternalContainerFindObjectData* data;
+	data = _data;
+	_g_free0 (data->id);
+	_g_object_unref0 (data->cancellable);
+	_g_object_unref0 (data->result);
+	g_object_unref (data->self);
+	g_slice_free (RygelExternalContainerFindObjectData, data);
+}
+
+
+static void rygel_external_container_real_find_object (RygelMediaContainer* base, const char* id, GCancellable* cancellable, GAsyncReadyCallback _callback_, gpointer _user_data_) {
+	RygelExternalContainer * self;
+	RygelExternalContainerFindObjectData* _data_;
+	self = (RygelExternalContainer*) base;
+	_data_ = g_slice_new0 (RygelExternalContainerFindObjectData);
+	_data_->_async_result = g_simple_async_result_new (G_OBJECT (self), _callback_, _user_data_, rygel_external_container_real_find_object);
+	g_simple_async_result_set_op_res_gpointer (_data_->_async_result, _data_, rygel_external_container_real_find_object_data_free);
+	_data_->self = g_object_ref (self);
+	_data_->id = g_strdup (id);
+	_data_->cancellable = _g_object_ref0 (cancellable);
+	rygel_external_container_real_find_object_co (_data_);
+}
+
+
+static RygelMediaObject* rygel_external_container_real_find_object_finish (RygelMediaContainer* base, GAsyncResult* _res_, GError** error) {
+	RygelMediaObject* result;
+	RygelExternalContainerFindObjectData* _data_;
+	if (g_simple_async_result_propagate_error (G_SIMPLE_ASYNC_RESULT (_res_), error)) {
+		return NULL;
+	}
+	_data_ = g_simple_async_result_get_op_res_gpointer (G_SIMPLE_ASYNC_RESULT (_res_));
+	result = _data_->result;
+	_data_->result = NULL;
+	return result;
+}
+
+
+static void rygel_external_container_find_object_ready (GObject* source_object, GAsyncResult* _res_, gpointer _user_data_) {
+	RygelExternalContainerFindObjectData* data;
+	data = _user_data_;
+	data->_res_ = _res_;
+	rygel_external_container_real_find_object_co (data);
+}
+
+
+static gboolean rygel_external_container_real_find_object_co (RygelExternalContainerFindObjectData* data) {
+	switch (data->_state_) {
+		case 0:
+		goto _state_0;
+		case 6:
+		goto _state_6;
+		case 7:
+		goto _state_7;
+		case 8:
+		goto _state_8;
+		default:
+		g_assert_not_reached ();
+	}
+	_state_0:
+	{
+		data->media_object = NULL;
+		data->actual_object = rygel_external_media_object_dbus_proxy_new (data->self->priv->connection, data->self->service_name, data->id);
+#line 145 "rygel-external-container.vala"
+		if ((data->_tmp1_ = _vala_strcmp0 (data->_tmp0_ = rygel_external_media_object_get_object_type (data->actual_object), "container") == 0, _g_free0 (data->_tmp0_), data->_tmp1_)) {
+#line 146 "rygel-external-container.vala"
+			data->media_object = (data->_tmp2_ = (RygelMediaObject*) rygel_external_container_find_container_by_id (data->self, data->id), _g_object_unref0 (data->media_object), data->_tmp2_);
+#line 148 "rygel-external-container.vala"
+			if (data->media_object == NULL) {
+#line 1002 "rygel-external-container.c"
+				{
+					data->_container_it = gee_abstract_collection_iterator ((GeeAbstractCollection*) data->self->priv->containers);
+#line 150 "rygel-external-container.vala"
+					while (TRUE) {
+#line 150 "rygel-external-container.vala"
+						if (!gee_iterator_next (data->_container_it)) {
+#line 150 "rygel-external-container.vala"
+							break;
+#line 1011 "rygel-external-container.c"
+						}
+						data->container = (RygelExternalContainer*) gee_iterator_get (data->_container_it);
+						data->_state_ = 6;
+						rygel_media_container_find_object ((RygelMediaContainer*) data->container, data->id, data->cancellable, rygel_external_container_find_object_ready, data);
+						return FALSE;
+						_state_6:
+						data->_tmp3_ = rygel_media_container_find_object_finish ((RygelMediaContainer*) data->container, data->_res_, &data->_inner_error_);
+						if (data->_inner_error_ != NULL) {
+							g_simple_async_result_set_from_error (data->_async_result, data->_inner_error_);
+							g_error_free (data->_inner_error_);
+							_g_object_unref0 (data->container);
+							_g_object_unref0 (data->_container_it);
+							_g_object_unref0 (data->media_object);
+							_g_object_unref0 (data->actual_object);
+							{
+								if (data->_state_ == 0) {
+									g_simple_async_result_complete_in_idle (data->_async_result);
+								} else {
+									g_simple_async_result_complete (data->_async_result);
+								}
+								g_object_unref (data->_async_result);
+								return FALSE;
+							}
+						}
+#line 151 "rygel-external-container.vala"
+						data->media_object = (data->_tmp4_ = data->_tmp3_, _g_object_unref0 (data->media_object), data->_tmp4_);
+#line 154 "rygel-external-container.vala"
+						if (data->media_object != NULL) {
+#line 1040 "rygel-external-container.c"
+							_g_object_unref0 (data->container);
+#line 155 "rygel-external-container.vala"
+							break;
+#line 1044 "rygel-external-container.c"
+						}
+						_g_object_unref0 (data->container);
+					}
+					_g_object_unref0 (data->_container_it);
 				}
-#line 160 "rygel-external-container.vala"
-				container = (RygelExternalContainer*) gee_iterator_get (_container_it);
-#line 161 "rygel-external-container.vala"
-				if (_vala_strcmp0 (((RygelMediaObject*) container)->id, id) == 0) {
-#line 772 "rygel-external-container.c"
-					result = TRUE;
-					_g_object_unref0 (container);
-					_g_object_unref0 (_container_it);
-#line 162 "rygel-external-container.vala"
-					return result;
-#line 778 "rygel-external-container.c"
-				}
-				_g_object_unref0 (container);
 			}
-			_g_object_unref0 (_container_it);
+		} else {
+			data->parent_container = (data->_tmp6_ = rygel_external_dummy_container_new (data->_tmp5_ = (char*) rygel_external_media_object_get_parent (data->actual_object), "LaLaLa", (guint) 0, NULL), _g_free0 (data->_tmp5_), data->_tmp6_);
+			data->props_iface = free_desktop_properties_dbus_proxy_new (data->self->priv->connection, data->self->service_name, data->id);
+			data->_state_ = 7;
+			free_desktop_properties_get_all (data->props_iface, RYGEL_EXTERNAL_MEDIA_ITEM_IFACE, rygel_external_container_find_object_ready, data);
+			return FALSE;
+			_state_7:
+			data->props = free_desktop_properties_get_all_finish (data->props_iface, data->_res_, &data->_inner_error_);
+			if (data->_inner_error_ != NULL) {
+				g_simple_async_result_set_from_error (data->_async_result, data->_inner_error_);
+				g_error_free (data->_inner_error_);
+				_g_object_unref0 (data->parent_container);
+				_g_object_unref0 (data->props_iface);
+				_g_object_unref0 (data->media_object);
+				_g_object_unref0 (data->actual_object);
+				{
+					if (data->_state_ == 0) {
+						g_simple_async_result_complete_in_idle (data->_async_result);
+					} else {
+						g_simple_async_result_complete (data->_async_result);
+					}
+					g_object_unref (data->_async_result);
+					return FALSE;
+				}
+			}
+			data->_state_ = 8;
+			rygel_external_item_factory_create (data->self->priv->item_factory, data->id, data->_tmp7_ = rygel_external_media_object_get_object_type (data->actual_object), data->_tmp8_ = rygel_external_media_object_get_display_name (data->actual_object), data->props, data->self->service_name, data->self->host_ip, (RygelMediaContainer*) data->parent_container, rygel_external_container_find_object_ready, data);
+			return FALSE;
+			_state_8:
+			data->_tmp10_ = (data->_tmp9_ = rygel_external_item_factory_create_finish (data->self->priv->item_factory, data->_res_, &data->_inner_error_), _g_free0 (data->_tmp8_), _g_free0 (data->_tmp7_), data->_tmp9_);
+			if (data->_inner_error_ != NULL) {
+				g_simple_async_result_set_from_error (data->_async_result, data->_inner_error_);
+				g_error_free (data->_inner_error_);
+				_g_object_unref0 (data->parent_container);
+				_g_object_unref0 (data->props_iface);
+				_g_hash_table_unref0 (data->props);
+				_g_object_unref0 (data->media_object);
+				_g_object_unref0 (data->actual_object);
+				{
+					if (data->_state_ == 0) {
+						g_simple_async_result_complete_in_idle (data->_async_result);
+					} else {
+						g_simple_async_result_complete (data->_async_result);
+					}
+					g_object_unref (data->_async_result);
+					return FALSE;
+				}
+			}
+#line 172 "rygel-external-container.vala"
+			data->media_object = (data->_tmp11_ = (RygelMediaObject*) data->_tmp10_, _g_object_unref0 (data->media_object), data->_tmp11_);
+#line 1101 "rygel-external-container.c"
+			_g_object_unref0 (data->parent_container);
+			_g_object_unref0 (data->props_iface);
+			_g_hash_table_unref0 (data->props);
 		}
-		result = FALSE;
-#line 166 "rygel-external-container.vala"
-		return result;
-#line 787 "rygel-external-container.c"
+		data->result = data->media_object;
+		_g_object_unref0 (data->actual_object);
+		{
+			if (data->_state_ == 0) {
+				g_simple_async_result_complete_in_idle (data->_async_result);
+			} else {
+				g_simple_async_result_complete (data->_async_result);
+			}
+			g_object_unref (data->_async_result);
+			return FALSE;
+		}
+		_g_object_unref0 (data->media_object);
+		_g_object_unref0 (data->actual_object);
+	}
+	{
+		if (data->_state_ == 0) {
+			g_simple_async_result_complete_in_idle (data->_async_result);
+		} else {
+			g_simple_async_result_complete (data->_async_result);
+		}
+		g_object_unref (data->_async_result);
+		return FALSE;
 	}
 }
 
 
-#line 170 "rygel-external-container.vala"
-static void rygel_external_container_update_container (RygelExternalContainer* self, GError** error) {
-#line 794 "rygel-external-container.c"
-	char** _tmp1_;
-	gint _obj_paths_size_;
-	gint obj_paths_length1;
-	gint _tmp0_;
-	char** obj_paths;
-#line 170 "rygel-external-container.vala"
-	g_return_if_fail (self != NULL);
-#line 171 "rygel-external-container.vala"
-	gee_abstract_collection_clear ((GeeAbstractCollection*) self->priv->containers);
-#line 804 "rygel-external-container.c"
-	obj_paths = (_tmp1_ = rygel_external_media_container_get_containers (self->actual_container, &_tmp0_), obj_paths_length1 = _tmp0_, _obj_paths_size_ = obj_paths_length1, _tmp1_);
-	{
-		char** obj_path_collection;
-		int obj_path_collection_length1;
-		int obj_path_it;
-#line 174 "rygel-external-container.vala"
-		obj_path_collection = obj_paths;
-#line 812 "rygel-external-container.c"
-		obj_path_collection_length1 = obj_paths_length1;
-		for (obj_path_it = 0; obj_path_it < obj_paths_length1; obj_path_it = obj_path_it + 1) {
-			char* obj_path;
-			obj_path = g_strdup (obj_path_collection[obj_path_it]);
-			{
-				char* _tmp2_;
-				RygelExternalContainer* _tmp3_;
-				RygelExternalContainer* container;
-#line 175 "rygel-external-container.vala"
-				container = (_tmp3_ = rygel_external_container_new (_tmp2_ = g_strconcat ("container:", (const char*) obj_path, NULL), self->service_name, obj_path, self->host_ip, self), _g_free0 (_tmp2_), _tmp3_);
-#line 181 "rygel-external-container.vala"
-				gee_abstract_collection_add ((GeeAbstractCollection*) self->priv->containers, container);
-#line 825 "rygel-external-container.c"
-				_g_free0 (obj_path);
-				_g_object_unref0 (container);
-			}
-		}
-	}
-#line 184 "rygel-external-container.vala"
-	((RygelMediaContainer*) self)->child_count = gee_collection_get_size ((GeeCollection*) self->priv->containers) + ((gint) rygel_external_media_container_get_item_count (self->actual_container));
-#line 833 "rygel-external-container.c"
-	obj_paths = (_vala_array_free (obj_paths, obj_paths_length1, (GDestroyNotify) g_free), NULL);
+static void rygel_external_container_create_media_objects_data_free (gpointer _data) {
+	RygelExternalContainerCreateMediaObjectsData* data;
+	data = _data;
+	data->all_props = (_vala_array_free (data->all_props, data->all_props_length1, (GDestroyNotify) g_hash_table_unref), NULL);
+	_g_object_unref0 (data->parent);
+	_g_object_unref0 (data->result);
+	g_object_unref (data->self);
+	g_slice_free (RygelExternalContainerCreateMediaObjectsData, data);
 }
 
 
-#line 188 "rygel-external-container.vala"
-static void rygel_external_container_on_updated (RygelExternalContainer* self, RygelExternalMediaContainer* actual_container) {
-#line 840 "rygel-external-container.c"
-	GError * _inner_error_;
-#line 188 "rygel-external-container.vala"
-	g_return_if_fail (self != NULL);
-#line 188 "rygel-external-container.vala"
-	g_return_if_fail (actual_container != NULL);
-#line 846 "rygel-external-container.c"
-	_inner_error_ = NULL;
-	{
-#line 191 "rygel-external-container.vala"
-		rygel_external_container_update_container (self, &_inner_error_);
-#line 851 "rygel-external-container.c"
-		if (_inner_error_ != NULL) {
-			goto __catch2_g_error;
-		}
+static gpointer _g_hash_table_ref0 (gpointer self) {
+	return self ? g_hash_table_ref (self) : NULL;
+}
+
+
+static GHashTable** _vala_array_dup1 (GHashTable** self, int length) {
+	GHashTable** result;
+	int i;
+	result = g_new0 (GHashTable*, length + 1);
+	for (i = 0; i < length; i++) {
+		result[i] = _g_hash_table_ref0 (self[i]);
 	}
-	goto __finally2;
-	__catch2_g_error:
+	return result;
+}
+
+
+static void rygel_external_container_create_media_objects (RygelExternalContainer* self, GHashTable** all_props, int all_props_length1, RygelMediaContainer* parent, GAsyncReadyCallback _callback_, gpointer _user_data_) {
+	RygelExternalContainerCreateMediaObjectsData* _data_;
+	GHashTable** _tmp0_;
+	_data_ = g_slice_new0 (RygelExternalContainerCreateMediaObjectsData);
+	_data_->_async_result = g_simple_async_result_new (G_OBJECT (self), _callback_, _user_data_, rygel_external_container_create_media_objects);
+	g_simple_async_result_set_op_res_gpointer (_data_->_async_result, _data_, rygel_external_container_create_media_objects_data_free);
+	_data_->self = g_object_ref (self);
+	_data_->all_props = (_tmp0_ = all_props, (_tmp0_ == NULL) ? ((gpointer) _tmp0_) : _vala_array_dup1 (_tmp0_, all_props_length1));
+	_data_->all_props_length1 = all_props_length1;
+	_data_->parent = _g_object_ref0 (parent);
+	rygel_external_container_create_media_objects_co (_data_);
+}
+
+
+static GeeList* rygel_external_container_create_media_objects_finish (RygelExternalContainer* self, GAsyncResult* _res_, GError** error) {
+	GeeList* result;
+	RygelExternalContainerCreateMediaObjectsData* _data_;
+	if (g_simple_async_result_propagate_error (G_SIMPLE_ASYNC_RESULT (_res_), error)) {
+		return NULL;
+	}
+	_data_ = g_simple_async_result_get_op_res_gpointer (G_SIMPLE_ASYNC_RESULT (_res_));
+	result = _data_->result;
+	_data_->result = NULL;
+	return result;
+}
+
+
+static void rygel_external_container_create_media_objects_ready (GObject* source_object, GAsyncResult* _res_, gpointer _user_data_) {
+	RygelExternalContainerCreateMediaObjectsData* data;
+	data = _user_data_;
+	data->_res_ = _res_;
+	rygel_external_container_create_media_objects_co (data);
+}
+
+
+static gboolean rygel_external_container_create_media_objects_co (RygelExternalContainerCreateMediaObjectsData* data) {
+	switch (data->_state_) {
+		case 0:
+		goto _state_0;
+		case 9:
+		goto _state_9;
+		default:
+		g_assert_not_reached ();
+	}
+	_state_0:
 	{
-		GError * err;
-		err = _inner_error_;
-		_inner_error_ = NULL;
+		data->media_objects = gee_array_list_new (RYGEL_TYPE_MEDIA_OBJECT, (GBoxedCopyFunc) g_object_ref, g_object_unref, NULL);
 		{
-#line 193 "rygel-external-container.vala"
-			g_warning ("rygel-external-container.vala:193: Failed to update information about " \
-"container '%s': %s\n", ((RygelMediaObject*) self)->id, err->message);
-#line 865 "rygel-external-container.c"
-			_g_error_free0 (err);
+			data->props_collection = data->all_props;
+			data->props_collection_length1 = data->all_props_length1;
+			for (data->props_it = 0; data->props_it < data->all_props_length1; data->props_it = data->props_it + 1) {
+				data->props = _g_hash_table_ref0 (data->props_collection[data->props_it]);
+				{
+					data->id = g_strdup (g_value_get_string ((GValue*) g_hash_table_lookup (data->props, "Path")));
+					data->type = g_strdup (g_value_get_string ((GValue*) g_hash_table_lookup (data->props, "Type")));
+#line 196 "rygel-external-container.vala"
+					if (data->parent != NULL) {
+#line 197 "rygel-external-container.vala"
+						data->parent_container = (data->_tmp0_ = _g_object_ref0 (data->parent), _g_object_unref0 (data->parent_container), data->_tmp0_);
+#line 1218 "rygel-external-container.c"
+					} else {
+						data->parent_id = g_strdup (g_value_get_string ((GValue*) g_hash_table_lookup (data->props, "Parent")));
+#line 201 "rygel-external-container.vala"
+						data->parent_container = (data->_tmp1_ = (RygelMediaContainer*) rygel_external_dummy_container_new (data->parent_id, "LaLaLa", (guint) 0, NULL), _g_object_unref0 (data->parent_container), data->_tmp1_);
+#line 1223 "rygel-external-container.c"
+						_g_free0 (data->parent_id);
+					}
+					data->media_object = NULL;
+#line 208 "rygel-external-container.vala"
+					if (_vala_strcmp0 (data->type, "container") == 0) {
+#line 209 "rygel-external-container.vala"
+						data->media_object = (data->_tmp2_ = (RygelMediaObject*) rygel_external_container_find_container_by_id (data->self, data->id), _g_object_unref0 (data->media_object), data->_tmp2_);
+#line 1231 "rygel-external-container.c"
+					}
+#line 212 "rygel-external-container.vala"
+					if (data->media_object == NULL) {
+#line 1235 "rygel-external-container.c"
+						data->title = g_strdup (g_value_get_string ((GValue*) g_hash_table_lookup (data->props, "DisplayName")));
+#line 215 "rygel-external-container.vala"
+						if (_vala_strcmp0 (data->type, "container") == 0) {
+#line 1239 "rygel-external-container.c"
+							data->child_count = g_value_get_uint ((GValue*) g_hash_table_lookup (data->props, "ChildCount"));
+#line 218 "rygel-external-container.vala"
+							data->media_object = (data->_tmp3_ = (RygelMediaObject*) rygel_external_dummy_container_new (data->id, data->title, data->child_count, data->parent_container), _g_object_unref0 (data->media_object), data->_tmp3_);
+#line 1243 "rygel-external-container.c"
+						} else {
+							data->_state_ = 9;
+							rygel_external_item_factory_create (data->self->priv->item_factory, data->id, data->type, data->title, data->props, data->self->service_name, data->self->host_ip, data->parent_container, rygel_external_container_create_media_objects_ready, data);
+							return FALSE;
+							_state_9:
+							data->_tmp4_ = rygel_external_item_factory_create_finish (data->self->priv->item_factory, data->_res_, &data->_inner_error_);
+							if (data->_inner_error_ != NULL) {
+								g_simple_async_result_set_from_error (data->_async_result, data->_inner_error_);
+								g_error_free (data->_inner_error_);
+								_g_free0 (data->title);
+								_g_hash_table_unref0 (data->props);
+								_g_free0 (data->id);
+								_g_free0 (data->type);
+								_g_object_unref0 (data->parent_container);
+								_g_object_unref0 (data->media_object);
+								_g_object_unref0 (data->media_objects);
+								{
+									if (data->_state_ == 0) {
+										g_simple_async_result_complete_in_idle (data->_async_result);
+									} else {
+										g_simple_async_result_complete (data->_async_result);
+									}
+									g_object_unref (data->_async_result);
+									return FALSE;
+								}
+							}
+#line 225 "rygel-external-container.vala"
+							data->media_object = (data->_tmp5_ = (RygelMediaObject*) data->_tmp4_, _g_object_unref0 (data->media_object), data->_tmp5_);
+#line 1272 "rygel-external-container.c"
+						}
+						_g_free0 (data->title);
+					}
+#line 236 "rygel-external-container.vala"
+					gee_abstract_collection_add ((GeeAbstractCollection*) data->media_objects, data->media_object);
+#line 1278 "rygel-external-container.c"
+					_g_hash_table_unref0 (data->props);
+					_g_free0 (data->id);
+					_g_free0 (data->type);
+					_g_object_unref0 (data->parent_container);
+					_g_object_unref0 (data->media_object);
+				}
+			}
 		}
+		data->result = (GeeList*) data->media_objects;
+		{
+			if (data->_state_ == 0) {
+				g_simple_async_result_complete_in_idle (data->_async_result);
+			} else {
+				g_simple_async_result_complete (data->_async_result);
+			}
+			g_object_unref (data->_async_result);
+			return FALSE;
+		}
+		_g_object_unref0 (data->media_objects);
 	}
-	__finally2:
-	if (_inner_error_ != NULL) {
-		g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
-		g_clear_error (&_inner_error_);
+	{
+		if (data->_state_ == 0) {
+			g_simple_async_result_complete_in_idle (data->_async_result);
+		} else {
+			g_simple_async_result_complete (data->_async_result);
+		}
+		g_object_unref (data->_async_result);
+		return FALSE;
+	}
+}
+
+
+static void rygel_external_container_refresh_child_containers_data_free (gpointer _data) {
+	RygelExternalContainerRefreshChildContainersData* data;
+	data = _data;
+	g_object_unref (data->self);
+	g_slice_free (RygelExternalContainerRefreshChildContainersData, data);
+}
+
+
+static void rygel_external_container_refresh_child_containers (RygelExternalContainer* self, GAsyncReadyCallback _callback_, gpointer _user_data_) {
+	RygelExternalContainerRefreshChildContainersData* _data_;
+	_data_ = g_slice_new0 (RygelExternalContainerRefreshChildContainersData);
+	_data_->_async_result = g_simple_async_result_new (G_OBJECT (self), _callback_, _user_data_, rygel_external_container_refresh_child_containers);
+	g_simple_async_result_set_op_res_gpointer (_data_->_async_result, _data_, rygel_external_container_refresh_child_containers_data_free);
+	_data_->self = g_object_ref (self);
+	rygel_external_container_refresh_child_containers_co (_data_);
+}
+
+
+static void rygel_external_container_refresh_child_containers_finish (RygelExternalContainer* self, GAsyncResult* _res_, GError** error) {
+	RygelExternalContainerRefreshChildContainersData* _data_;
+	if (g_simple_async_result_propagate_error (G_SIMPLE_ASYNC_RESULT (_res_), error)) {
 		return;
 	}
-#line 199 "rygel-external-container.vala"
-	rygel_media_container_updated ((RygelMediaContainer*) self);
-#line 877 "rygel-external-container.c"
+	_data_ = g_simple_async_result_get_op_res_gpointer (G_SIMPLE_ASYNC_RESULT (_res_));
+}
+
+
+static void rygel_external_container_refresh_child_containers_ready (GObject* source_object, GAsyncResult* _res_, gpointer _user_data_) {
+	RygelExternalContainerRefreshChildContainersData* data;
+	data = _user_data_;
+	data->_res_ = _res_;
+	rygel_external_container_refresh_child_containers_co (data);
+}
+
+
+static void _vala_array_add6 (char*** array, int* length, int* size, char* value) {
+	if ((*length) == (*size)) {
+		*size = (*size) ? (2 * (*size)) : 4;
+		*array = g_renew (char*, *array, (*size) + 1);
+	}
+	(*array)[(*length)++] = value;
+	(*array)[*length] = NULL;
+}
+
+
+static void _vala_array_add7 (char*** array, int* length, int* size, char* value) {
+	if ((*length) == (*size)) {
+		*size = (*size) ? (2 * (*size)) : 4;
+		*array = g_renew (char*, *array, (*size) + 1);
+	}
+	(*array)[(*length)++] = value;
+	(*array)[*length] = NULL;
+}
+
+
+static gboolean rygel_external_container_refresh_child_containers_co (RygelExternalContainerRefreshChildContainersData* data) {
+	switch (data->_state_) {
+		case 0:
+		goto _state_0;
+		case 10:
+		goto _state_10;
+		default:
+		g_assert_not_reached ();
+	}
+	_state_0:
+	{
+		data->_tmp0_ = NULL;
+		data->filter = (data->_tmp1_ = (data->_tmp0_ = g_new0 (char*, 0 + 1), data->_tmp0_), data->filter_length1 = 0, data->_filter_size_ = data->filter_length1, data->_tmp1_);
+		{
+			data->object_prop_collection = RYGEL_EXTERNAL_MEDIA_OBJECT_PROPERTIES;
+			data->object_prop_collection_length1 = G_N_ELEMENTS (RYGEL_EXTERNAL_MEDIA_OBJECT_PROPERTIES);
+			for (data->object_prop_it = 0; data->object_prop_it < G_N_ELEMENTS (RYGEL_EXTERNAL_MEDIA_OBJECT_PROPERTIES); data->object_prop_it = data->object_prop_it + 1) {
+				data->object_prop = data->object_prop_collection[data->object_prop_it];
+				{
+#line 246 "rygel-external-container.vala"
+					_vala_array_add6 (&data->filter, &data->filter_length1, &data->_filter_size_, g_strdup (data->object_prop));
+#line 1387 "rygel-external-container.c"
+				}
+			}
+		}
+		{
+			data->container_prop_collection = RYGEL_EXTERNAL_MEDIA_CONTAINER_PROPERTIES;
+			data->container_prop_collection_length1 = G_N_ELEMENTS (RYGEL_EXTERNAL_MEDIA_CONTAINER_PROPERTIES);
+			for (data->container_prop_it = 0; data->container_prop_it < G_N_ELEMENTS (RYGEL_EXTERNAL_MEDIA_CONTAINER_PROPERTIES); data->container_prop_it = data->container_prop_it + 1) {
+				data->container_prop = data->container_prop_collection[data->container_prop_it];
+				{
+#line 250 "rygel-external-container.vala"
+					_vala_array_add7 (&data->filter, &data->filter_length1, &data->_filter_size_, g_strdup (data->container_prop));
+#line 1399 "rygel-external-container.c"
+				}
+			}
+		}
+		data->_state_ = 10;
+		rygel_external_media_container_list_containers (data->self->actual_container, (guint) 0, (guint) 0, data->filter, data->filter_length1, rygel_external_container_refresh_child_containers_ready, data);
+		return FALSE;
+		_state_10:
+		data->children_props = (data->_tmp3_ = rygel_external_media_container_list_containers_finish (data->self->actual_container, data->_res_, &data->_tmp2_, &data->_inner_error_), data->children_props_length1 = data->_tmp2_, data->_children_props_size_ = data->children_props_length1, data->_tmp3_);
+		if (data->_inner_error_ != NULL) {
+			g_simple_async_result_set_from_error (data->_async_result, data->_inner_error_);
+			g_error_free (data->_inner_error_);
+			data->filter = (_vala_array_free (data->filter, data->filter_length1, (GDestroyNotify) g_free), NULL);
+			{
+				if (data->_state_ == 0) {
+					g_simple_async_result_complete_in_idle (data->_async_result);
+				} else {
+					g_simple_async_result_complete (data->_async_result);
+				}
+				g_object_unref (data->_async_result);
+				return FALSE;
+			}
+		}
+#line 257 "rygel-external-container.vala"
+		gee_abstract_collection_clear ((GeeAbstractCollection*) data->self->priv->containers);
+#line 1424 "rygel-external-container.c"
+		{
+			data->props_collection = data->children_props;
+			data->props_collection_length1 = data->children_props_length1;
+			for (data->props_it = 0; data->props_it < data->children_props_length1; data->props_it = data->props_it + 1) {
+				data->props = _g_hash_table_ref0 (data->props_collection[data->props_it]);
+				{
+					data->id = g_strdup (g_value_get_string ((GValue*) g_hash_table_lookup (data->props, "Path")));
+					data->title = g_strdup (g_value_get_string ((GValue*) g_hash_table_lookup (data->props, "DisplayName")));
+					data->child_count = g_value_get_uint ((GValue*) g_hash_table_lookup (data->props, "ChildCount"));
+					data->searchable = g_value_get_boolean ((GValue*) g_hash_table_lookup (data->props, "Searchable"));
+					data->container = rygel_external_container_new (data->id, data->title, data->child_count, data->searchable, data->self->service_name, data->self->host_ip, data->self);
+#line 272 "rygel-external-container.vala"
+					gee_abstract_collection_add ((GeeAbstractCollection*) data->self->priv->containers, data->container);
+#line 1438 "rygel-external-container.c"
+					_g_hash_table_unref0 (data->props);
+					_g_free0 (data->id);
+					_g_free0 (data->title);
+					_g_object_unref0 (data->container);
+				}
+			}
+		}
+		data->filter = (_vala_array_free (data->filter, data->filter_length1, (GDestroyNotify) g_free), NULL);
+		data->children_props = (_vala_array_free (data->children_props, data->children_props_length1, (GDestroyNotify) g_hash_table_unref), NULL);
+	}
+	{
+		if (data->_state_ == 0) {
+			g_simple_async_result_complete_in_idle (data->_async_result);
+		} else {
+			g_simple_async_result_complete (data->_async_result);
+		}
+		g_object_unref (data->_async_result);
+		return FALSE;
+	}
+}
+
+
+static void rygel_external_container_update_container_data_free (gpointer _data) {
+	RygelExternalContainerUpdateContainerData* data;
+	data = _data;
+	g_object_unref (data->self);
+	g_slice_free (RygelExternalContainerUpdateContainerData, data);
+}
+
+
+static void rygel_external_container_update_container (RygelExternalContainer* self, gboolean connect_signal, GAsyncReadyCallback _callback_, gpointer _user_data_) {
+	RygelExternalContainerUpdateContainerData* _data_;
+	_data_ = g_slice_new0 (RygelExternalContainerUpdateContainerData);
+	_data_->_async_result = g_simple_async_result_new (G_OBJECT (self), _callback_, _user_data_, rygel_external_container_update_container);
+	g_simple_async_result_set_op_res_gpointer (_data_->_async_result, _data_, rygel_external_container_update_container_data_free);
+	_data_->self = g_object_ref (self);
+	_data_->connect_signal = connect_signal;
+	rygel_external_container_update_container_co (_data_);
+}
+
+
+static void rygel_external_container_update_container_finish (RygelExternalContainer* self, GAsyncResult* _res_) {
+	RygelExternalContainerUpdateContainerData* _data_;
+	_data_ = g_simple_async_result_get_op_res_gpointer (G_SIMPLE_ASYNC_RESULT (_res_));
+}
+
+
+static void rygel_external_container_update_container_ready (GObject* source_object, GAsyncResult* _res_, gpointer _user_data_) {
+	RygelExternalContainerUpdateContainerData* data;
+	data = _user_data_;
+	data->_res_ = _res_;
+	rygel_external_container_update_container_co (data);
+}
+
+
+#line 294 "rygel-external-container.vala"
+static void _rygel_external_container_on_updated_rygel_external_media_container_updated (RygelExternalMediaContainer* _sender, gpointer self) {
+#line 1496 "rygel-external-container.c"
+	rygel_external_container_on_updated (self, _sender);
+}
+
+
+static gboolean rygel_external_container_update_container_co (RygelExternalContainerUpdateContainerData* data) {
+	switch (data->_state_) {
+		case 0:
+		goto _state_0;
+		case 11:
+		goto _state_11;
+		default:
+		g_assert_not_reached ();
+	}
+	_state_0:
+	{
+		{
+			data->_state_ = 11;
+			rygel_external_container_refresh_child_containers (data->self, rygel_external_container_update_container_ready, data);
+			return FALSE;
+			_state_11:
+#line 279 "rygel-external-container.vala"
+			rygel_external_container_refresh_child_containers_finish (data->self, data->_res_, &data->_inner_error_);
+#line 1519 "rygel-external-container.c"
+			if (data->_inner_error_ != NULL) {
+				goto __catch1_g_error;
+			}
+		}
+		goto __finally1;
+		__catch1_g_error:
+		{
+			data->err = data->_inner_error_;
+			data->_inner_error_ = NULL;
+			{
+#line 281 "rygel-external-container.vala"
+				g_warning ("rygel-external-container.vala:281: Failed to update information about " \
+"container '%s': %s", dbus_g_proxy_get_path ((DBusGProxy*) data->self->actual_container), data->err->message);
+#line 1532 "rygel-external-container.c"
+				_g_error_free0 (data->err);
+			}
+		}
+		__finally1:
+		if (data->_inner_error_ != NULL) {
+			g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, data->_inner_error_->message, g_quark_to_string (data->_inner_error_->domain), data->_inner_error_->code);
+			g_clear_error (&data->_inner_error_);
+			return FALSE;
+		}
+#line 287 "rygel-external-container.vala"
+		rygel_media_container_updated ((RygelMediaContainer*) data->self);
+#line 289 "rygel-external-container.vala"
+		if (data->connect_signal) {
+#line 290 "rygel-external-container.vala"
+			g_signal_connect_object (data->self->actual_container, "updated", (GCallback) _rygel_external_container_on_updated_rygel_external_media_container_updated, data->self, 0);
+#line 1548 "rygel-external-container.c"
+		}
+	}
+	{
+		if (data->_state_ == 0) {
+			g_simple_async_result_complete_in_idle (data->_async_result);
+		} else {
+			g_simple_async_result_complete (data->_async_result);
+		}
+		g_object_unref (data->_async_result);
+		return FALSE;
+	}
+}
+
+
+#line 294 "rygel-external-container.vala"
+static void rygel_external_container_on_updated (RygelExternalContainer* self, RygelExternalMediaContainer* actual_container) {
+#line 294 "rygel-external-container.vala"
+	g_return_if_fail (self != NULL);
+#line 294 "rygel-external-container.vala"
+	g_return_if_fail (actual_container != NULL);
+#line 295 "rygel-external-container.vala"
+	rygel_external_container_update_container (self, FALSE, NULL, NULL);
+#line 1571 "rygel-external-container.c"
+}
+
+
+#line 298 "rygel-external-container.vala"
+static RygelMediaContainer* rygel_external_container_find_container_by_id (RygelExternalContainer* self, const char* id) {
+#line 1577 "rygel-external-container.c"
+	RygelMediaContainer* result = NULL;
+	RygelMediaContainer* target;
+#line 298 "rygel-external-container.vala"
+	g_return_val_if_fail (self != NULL, NULL);
+#line 298 "rygel-external-container.vala"
+	g_return_val_if_fail (id != NULL, NULL);
+#line 299 "rygel-external-container.vala"
+	target = NULL;
+#line 1586 "rygel-external-container.c"
+	{
+		GeeIterator* _container_it;
+		_container_it = gee_abstract_collection_iterator ((GeeAbstractCollection*) self->priv->containers);
+#line 301 "rygel-external-container.vala"
+		while (TRUE) {
+#line 1592 "rygel-external-container.c"
+			RygelExternalContainer* container;
+#line 301 "rygel-external-container.vala"
+			if (!gee_iterator_next (_container_it)) {
+#line 301 "rygel-external-container.vala"
+				break;
+#line 1598 "rygel-external-container.c"
+			}
+#line 301 "rygel-external-container.vala"
+			container = (RygelExternalContainer*) gee_iterator_get (_container_it);
+#line 302 "rygel-external-container.vala"
+			if (_vala_strcmp0 (((RygelMediaObject*) container)->id, id) == 0) {
+#line 1604 "rygel-external-container.c"
+				RygelMediaContainer* _tmp0_;
+#line 303 "rygel-external-container.vala"
+				target = (_tmp0_ = _g_object_ref0 ((RygelMediaContainer*) container), _g_object_unref0 (target), _tmp0_);
+#line 1608 "rygel-external-container.c"
+				_g_object_unref0 (container);
+#line 305 "rygel-external-container.vala"
+				break;
+#line 1612 "rygel-external-container.c"
+			}
+			_g_object_unref0 (container);
+		}
+		_g_object_unref0 (_container_it);
+	}
+	result = target;
+#line 309 "rygel-external-container.vala"
+	return result;
+#line 1621 "rygel-external-container.c"
+}
+
+
+#line 312 "rygel-external-container.vala"
+static RygelSearchExpression* rygel_external_container_translate_expression (RygelExternalContainer* self, RygelSearchExpression* upnp_expression) {
+#line 1627 "rygel-external-container.c"
+	RygelSearchExpression* result = NULL;
+#line 312 "rygel-external-container.vala"
+	g_return_val_if_fail (self != NULL, NULL);
+#line 312 "rygel-external-container.vala"
+	g_return_val_if_fail (upnp_expression != NULL, NULL);
+#line 314 "rygel-external-container.vala"
+	if (RYGEL_IS_RELATIONAL_EXPRESSION (upnp_expression)) {
+#line 1635 "rygel-external-container.c"
+		RygelSearchExpression* _tmp0_;
+		RygelRelationalExpression* expression;
+		RygelRelationalExpression* ext_expression;
+		char* _tmp1_;
+		char* _tmp2_;
+#line 315 "rygel-external-container.vala"
+		expression = _rygel_search_expression_ref0 ((_tmp0_ = upnp_expression, RYGEL_IS_RELATIONAL_EXPRESSION (_tmp0_) ? ((RygelRelationalExpression*) _tmp0_) : NULL));
+#line 316 "rygel-external-container.vala"
+		ext_expression = rygel_relational_expression_new ();
+#line 317 "rygel-external-container.vala"
+		((RygelSearchExpression*) ext_expression)->op = GINT_TO_POINTER (GPOINTER_TO_INT (((RygelSearchExpression*) expression)->op));
+#line 318 "rygel-external-container.vala"
+		((RygelSearchExpression*) ext_expression)->operand1 = (_tmp1_ = rygel_external_container_translate_property (self, (const char*) ((RygelSearchExpression*) expression)->operand1), _g_free0 (((RygelSearchExpression*) ext_expression)->operand1), _tmp1_);
+#line 320 "rygel-external-container.vala"
+		((RygelSearchExpression*) ext_expression)->operand2 = (_tmp2_ = g_strdup ((const char*) ((RygelSearchExpression*) expression)->operand2), _g_free0 (((RygelSearchExpression*) ext_expression)->operand2), _tmp2_);
+#line 1651 "rygel-external-container.c"
+		result = (RygelSearchExpression*) ext_expression;
+		_rygel_search_expression_unref0 (expression);
+#line 322 "rygel-external-container.vala"
+		return result;
+#line 1656 "rygel-external-container.c"
+	} else {
+		RygelSearchExpression* _tmp3_;
+		RygelLogicalExpression* expression;
+		RygelLogicalExpression* ext_expression;
+		RygelSearchExpression* _tmp4_;
+		RygelSearchExpression* _tmp5_;
+#line 324 "rygel-external-container.vala"
+		expression = _rygel_search_expression_ref0 ((_tmp3_ = upnp_expression, RYGEL_IS_LOGICAL_EXPRESSION (_tmp3_) ? ((RygelLogicalExpression*) _tmp3_) : NULL));
+#line 325 "rygel-external-container.vala"
+		ext_expression = rygel_logical_expression_new ();
+#line 327 "rygel-external-container.vala"
+		((RygelSearchExpression*) ext_expression)->op = GINT_TO_POINTER (GPOINTER_TO_INT (((RygelSearchExpression*) expression)->op));
+#line 328 "rygel-external-container.vala"
+		((RygelSearchExpression*) ext_expression)->operand1 = (_tmp4_ = rygel_external_container_translate_expression (self, (RygelSearchExpression*) ((RygelSearchExpression*) expression)->operand1), _rygel_search_expression_unref0 (((RygelSearchExpression*) ext_expression)->operand1), _tmp4_);
+#line 330 "rygel-external-container.vala"
+		((RygelSearchExpression*) ext_expression)->operand2 = (_tmp5_ = rygel_external_container_translate_expression (self, (RygelSearchExpression*) ((RygelSearchExpression*) expression)->operand2), _rygel_search_expression_unref0 (((RygelSearchExpression*) ext_expression)->operand2), _tmp5_);
+#line 1673 "rygel-external-container.c"
+		result = (RygelSearchExpression*) ext_expression;
+		_rygel_search_expression_unref0 (expression);
+#line 333 "rygel-external-container.vala"
+		return result;
+#line 1678 "rygel-external-container.c"
+	}
+}
+
+
+#line 337 "rygel-external-container.vala"
+char* rygel_external_container_translate_property (RygelExternalContainer* self, const char* property) {
+#line 1685 "rygel-external-container.c"
+	char* result = NULL;
+	GQuark _tmp1_;
+	const char* _tmp0_;
+	static GQuark _tmp1__label0 = 0;
+	static GQuark _tmp1__label1 = 0;
+	static GQuark _tmp1__label2 = 0;
+	static GQuark _tmp1__label3 = 0;
+	static GQuark _tmp1__label4 = 0;
+	static GQuark _tmp1__label5 = 0;
+	static GQuark _tmp1__label6 = 0;
+#line 337 "rygel-external-container.vala"
+	g_return_val_if_fail (self != NULL, NULL);
+#line 337 "rygel-external-container.vala"
+	g_return_val_if_fail (property != NULL, NULL);
+#line 1700 "rygel-external-container.c"
+	_tmp0_ = property;
+	_tmp1_ = (NULL == _tmp0_) ? 0 : g_quark_from_string (_tmp0_);
+	if (_tmp1_ == ((0 != _tmp1__label0) ? _tmp1__label0 : (_tmp1__label0 = g_quark_from_static_string ("@id"))))
+	switch (0) {
+		default:
+		{
+			result = g_strdup ("Path");
+#line 340 "rygel-external-container.vala"
+			return result;
+#line 1710 "rygel-external-container.c"
+		}
+	} else if (_tmp1_ == ((0 != _tmp1__label1) ? _tmp1__label1 : (_tmp1__label1 = g_quark_from_static_string ("@parentID"))))
+	switch (0) {
+		default:
+		{
+			result = g_strdup ("Parent");
+#line 342 "rygel-external-container.vala"
+			return result;
+#line 1719 "rygel-external-container.c"
+		}
+	} else if (_tmp1_ == ((0 != _tmp1__label2) ? _tmp1__label2 : (_tmp1__label2 = g_quark_from_static_string ("dc:title"))))
+	switch (0) {
+		default:
+		{
+			result = g_strdup ("DisplayName");
+#line 344 "rygel-external-container.vala"
+			return result;
+#line 1728 "rygel-external-container.c"
+		}
+	} else if (((_tmp1_ == ((0 != _tmp1__label3) ? _tmp1__label3 : (_tmp1__label3 = g_quark_from_static_string ("dc:creator")))) || (_tmp1_ == ((0 != _tmp1__label4) ? _tmp1__label4 : (_tmp1__label4 = g_quark_from_static_string ("upnp:artist"))))) || (_tmp1_ == ((0 != _tmp1__label5) ? _tmp1__label5 : (_tmp1__label5 = g_quark_from_static_string ("upnp:author")))))
+	switch (0) {
+		default:
+		{
+			result = g_strdup ("Artist");
+#line 348 "rygel-external-container.vala"
+			return result;
+#line 1737 "rygel-external-container.c"
+		}
+	} else if (_tmp1_ == ((0 != _tmp1__label6) ? _tmp1__label6 : (_tmp1__label6 = g_quark_from_static_string ("upnp:album"))))
+	switch (0) {
+		default:
+		{
+			result = g_strdup ("Album");
+#line 350 "rygel-external-container.vala"
+			return result;
+#line 1746 "rygel-external-container.c"
+		}
+	} else
+	switch (0) {
+		default:
+		{
+			result = g_strdup (property);
+#line 352 "rygel-external-container.vala"
+			return result;
+#line 1755 "rygel-external-container.c"
+		}
+	}
 }
 
 
@@ -887,6 +1765,8 @@ static void rygel_external_container_class_init (RygelExternalContainerClass * k
 	RYGEL_MEDIA_CONTAINER_CLASS (klass)->get_children_finish = rygel_external_container_real_get_children_finish;
 	RYGEL_MEDIA_CONTAINER_CLASS (klass)->search = rygel_external_container_real_search;
 	RYGEL_MEDIA_CONTAINER_CLASS (klass)->search_finish = rygel_external_container_real_search_finish;
+	RYGEL_MEDIA_CONTAINER_CLASS (klass)->find_object = rygel_external_container_real_find_object;
+	RYGEL_MEDIA_CONTAINER_CLASS (klass)->find_object_finish = rygel_external_container_real_find_object_finish;
 	G_OBJECT_CLASS (klass)->finalize = rygel_external_container_finalize;
 }
 
@@ -902,8 +1782,9 @@ static void rygel_external_container_finalize (GObject* obj) {
 	_g_object_unref0 (self->actual_container);
 	_g_free0 (self->host_ip);
 	_g_free0 (self->service_name);
-	_g_free0 (self->priv->object_path);
+	_rygel_external_item_factory_unref0 (self->priv->item_factory);
 	_g_object_unref0 (self->priv->containers);
+	_dbus_g_connection_unref0 (self->priv->connection);
 	G_OBJECT_CLASS (rygel_external_container_parent_class)->finalize (obj);
 }
 

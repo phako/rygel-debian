@@ -175,39 +175,39 @@ static gpointer _g_object_ref0 (gpointer self) {
 }
 
 
-#line 48 "rygel-environment-config.vala"
+#line 47 "rygel-environment-config.vala"
 RygelEnvironmentConfig* rygel_environment_config_get_default (void) {
 #line 181 "rygel-environment-config.c"
 	RygelEnvironmentConfig* result = NULL;
-#line 49 "rygel-environment-config.vala"
+#line 48 "rygel-environment-config.vala"
 	if (rygel_environment_config_config == NULL) {
 #line 185 "rygel-environment-config.c"
 		RygelEnvironmentConfig* _tmp0_;
-#line 50 "rygel-environment-config.vala"
+#line 49 "rygel-environment-config.vala"
 		rygel_environment_config_config = (_tmp0_ = rygel_environment_config_new (), _g_object_unref0 (rygel_environment_config_config), _tmp0_);
 #line 189 "rygel-environment-config.c"
 	}
 	result = _g_object_ref0 (rygel_environment_config_config);
-#line 53 "rygel-environment-config.vala"
+#line 52 "rygel-environment-config.vala"
 	return result;
 #line 194 "rygel-environment-config.c"
 }
 
 
-#line 57 "rygel-environment-config.vala"
+#line 56 "rygel-environment-config.vala"
 static gboolean rygel_environment_config_real_get_upnp_enabled (RygelConfiguration* base, GError** error) {
 #line 200 "rygel-environment-config.c"
 	RygelEnvironmentConfig * self;
 	gboolean result = FALSE;
 	self = (RygelEnvironmentConfig*) base;
 	result = TRUE;
-#line 58 "rygel-environment-config.vala"
+#line 57 "rygel-environment-config.vala"
 	return result;
 #line 207 "rygel-environment-config.c"
 }
 
 
-#line 61 "rygel-environment-config.vala"
+#line 60 "rygel-environment-config.vala"
 static char* rygel_environment_config_real_get_interface (RygelConfiguration* base, GError** error) {
 #line 213 "rygel-environment-config.c"
 	RygelEnvironmentConfig * self;
@@ -216,7 +216,7 @@ static char* rygel_environment_config_real_get_interface (RygelConfiguration* ba
 	char* _tmp0_;
 	self = (RygelEnvironmentConfig*) base;
 	_inner_error_ = NULL;
-#line 62 "rygel-environment-config.vala"
+#line 61 "rygel-environment-config.vala"
 	_tmp0_ = rygel_environment_config_get_string_variable (self, rygel_environment_config_INTERFACE_ENV, &_inner_error_);
 #line 222 "rygel-environment-config.c"
 	if (_inner_error_ != NULL) {
@@ -224,13 +224,13 @@ static char* rygel_environment_config_real_get_interface (RygelConfiguration* ba
 		return NULL;
 	}
 	result = _tmp0_;
-#line 62 "rygel-environment-config.vala"
+#line 61 "rygel-environment-config.vala"
 	return result;
 #line 230 "rygel-environment-config.c"
 }
 
 
-#line 65 "rygel-environment-config.vala"
+#line 64 "rygel-environment-config.vala"
 static gint rygel_environment_config_real_get_port (RygelConfiguration* base, GError** error) {
 #line 236 "rygel-environment-config.c"
 	RygelEnvironmentConfig * self;
@@ -239,7 +239,7 @@ static gint rygel_environment_config_real_get_port (RygelConfiguration* base, GE
 	gint _tmp0_;
 	self = (RygelEnvironmentConfig*) base;
 	_inner_error_ = NULL;
-#line 66 "rygel-environment-config.vala"
+#line 65 "rygel-environment-config.vala"
 	_tmp0_ = rygel_environment_config_get_int_variable (self, rygel_environment_config_PORT_ENV, 0, (gint) G_MAXINT16, &_inner_error_);
 #line 245 "rygel-environment-config.c"
 	if (_inner_error_ != NULL) {
@@ -247,13 +247,13 @@ static gint rygel_environment_config_real_get_port (RygelConfiguration* base, GE
 		return 0;
 	}
 	result = _tmp0_;
-#line 66 "rygel-environment-config.vala"
+#line 65 "rygel-environment-config.vala"
 	return result;
 #line 253 "rygel-environment-config.c"
 }
 
 
-#line 69 "rygel-environment-config.vala"
+#line 68 "rygel-environment-config.vala"
 static gboolean rygel_environment_config_real_get_transcoding (RygelConfiguration* base, GError** error) {
 #line 259 "rygel-environment-config.c"
 	RygelEnvironmentConfig * self;
@@ -262,7 +262,7 @@ static gboolean rygel_environment_config_real_get_transcoding (RygelConfiguratio
 	gboolean _tmp0_;
 	self = (RygelEnvironmentConfig*) base;
 	_inner_error_ = NULL;
-#line 70 "rygel-environment-config.vala"
+#line 69 "rygel-environment-config.vala"
 	_tmp0_ = rygel_environment_config_get_bool_variable (self, rygel_environment_config_TRANSCODING_ENV, &_inner_error_);
 #line 268 "rygel-environment-config.c"
 	if (_inner_error_ != NULL) {
@@ -270,13 +270,13 @@ static gboolean rygel_environment_config_real_get_transcoding (RygelConfiguratio
 		return FALSE;
 	}
 	result = _tmp0_;
-#line 70 "rygel-environment-config.vala"
+#line 69 "rygel-environment-config.vala"
 	return result;
 #line 276 "rygel-environment-config.c"
 }
 
 
-#line 73 "rygel-environment-config.vala"
+#line 72 "rygel-environment-config.vala"
 static gboolean rygel_environment_config_real_get_mp3_transcoder (RygelConfiguration* base, GError** error) {
 #line 282 "rygel-environment-config.c"
 	RygelEnvironmentConfig * self;
@@ -285,7 +285,7 @@ static gboolean rygel_environment_config_real_get_mp3_transcoder (RygelConfigura
 	gboolean _tmp0_;
 	self = (RygelEnvironmentConfig*) base;
 	_inner_error_ = NULL;
-#line 74 "rygel-environment-config.vala"
+#line 73 "rygel-environment-config.vala"
 	_tmp0_ = rygel_environment_config_get_bool_variable (self, rygel_environment_config_MP3_TRANSCODING_ENV, &_inner_error_);
 #line 291 "rygel-environment-config.c"
 	if (_inner_error_ != NULL) {
@@ -293,13 +293,13 @@ static gboolean rygel_environment_config_real_get_mp3_transcoder (RygelConfigura
 		return FALSE;
 	}
 	result = _tmp0_;
-#line 74 "rygel-environment-config.vala"
+#line 73 "rygel-environment-config.vala"
 	return result;
 #line 299 "rygel-environment-config.c"
 }
 
 
-#line 77 "rygel-environment-config.vala"
+#line 76 "rygel-environment-config.vala"
 static gboolean rygel_environment_config_real_get_mp2ts_transcoder (RygelConfiguration* base, GError** error) {
 #line 305 "rygel-environment-config.c"
 	RygelEnvironmentConfig * self;
@@ -308,7 +308,7 @@ static gboolean rygel_environment_config_real_get_mp2ts_transcoder (RygelConfigu
 	gboolean _tmp0_;
 	self = (RygelEnvironmentConfig*) base;
 	_inner_error_ = NULL;
-#line 78 "rygel-environment-config.vala"
+#line 77 "rygel-environment-config.vala"
 	_tmp0_ = rygel_environment_config_get_bool_variable (self, rygel_environment_config_MP2TS_TRANSCODING_ENV, &_inner_error_);
 #line 314 "rygel-environment-config.c"
 	if (_inner_error_ != NULL) {
@@ -316,13 +316,13 @@ static gboolean rygel_environment_config_real_get_mp2ts_transcoder (RygelConfigu
 		return FALSE;
 	}
 	result = _tmp0_;
-#line 78 "rygel-environment-config.vala"
+#line 77 "rygel-environment-config.vala"
 	return result;
 #line 322 "rygel-environment-config.c"
 }
 
 
-#line 81 "rygel-environment-config.vala"
+#line 80 "rygel-environment-config.vala"
 static gboolean rygel_environment_config_real_get_wmv_transcoder (RygelConfiguration* base, GError** error) {
 #line 328 "rygel-environment-config.c"
 	RygelEnvironmentConfig * self;
@@ -331,7 +331,7 @@ static gboolean rygel_environment_config_real_get_wmv_transcoder (RygelConfigura
 	gboolean _tmp0_;
 	self = (RygelEnvironmentConfig*) base;
 	_inner_error_ = NULL;
-#line 82 "rygel-environment-config.vala"
+#line 81 "rygel-environment-config.vala"
 	_tmp0_ = rygel_environment_config_get_bool_variable (self, rygel_environment_config_WMV_TRANSCODING_ENV, &_inner_error_);
 #line 337 "rygel-environment-config.c"
 	if (_inner_error_ != NULL) {
@@ -339,13 +339,13 @@ static gboolean rygel_environment_config_real_get_wmv_transcoder (RygelConfigura
 		return FALSE;
 	}
 	result = _tmp0_;
-#line 82 "rygel-environment-config.vala"
+#line 81 "rygel-environment-config.vala"
 	return result;
 #line 345 "rygel-environment-config.c"
 }
 
 
-#line 85 "rygel-environment-config.vala"
+#line 84 "rygel-environment-config.vala"
 static gboolean rygel_environment_config_real_get_lpcm_transcoder (RygelConfiguration* base, GError** error) {
 #line 351 "rygel-environment-config.c"
 	RygelEnvironmentConfig * self;
@@ -354,7 +354,7 @@ static gboolean rygel_environment_config_real_get_lpcm_transcoder (RygelConfigur
 	gboolean _tmp0_;
 	self = (RygelEnvironmentConfig*) base;
 	_inner_error_ = NULL;
-#line 86 "rygel-environment-config.vala"
+#line 85 "rygel-environment-config.vala"
 	_tmp0_ = rygel_environment_config_get_bool_variable (self, rygel_environment_config_LPCM_TRANSCODING_ENV, &_inner_error_);
 #line 360 "rygel-environment-config.c"
 	if (_inner_error_ != NULL) {
@@ -362,13 +362,13 @@ static gboolean rygel_environment_config_real_get_lpcm_transcoder (RygelConfigur
 		return FALSE;
 	}
 	result = _tmp0_;
-#line 86 "rygel-environment-config.vala"
+#line 85 "rygel-environment-config.vala"
 	return result;
 #line 368 "rygel-environment-config.c"
 }
 
 
-#line 89 "rygel-environment-config.vala"
+#line 88 "rygel-environment-config.vala"
 static RygelLogLevel rygel_environment_config_real_get_log_level (RygelConfiguration* base, GError** error) {
 #line 374 "rygel-environment-config.c"
 	RygelEnvironmentConfig * self;
@@ -377,7 +377,7 @@ static RygelLogLevel rygel_environment_config_real_get_log_level (RygelConfigura
 	gint _tmp0_;
 	self = (RygelEnvironmentConfig*) base;
 	_inner_error_ = NULL;
-#line 90 "rygel-environment-config.vala"
+#line 89 "rygel-environment-config.vala"
 	_tmp0_ = rygel_environment_config_get_int_variable (self, rygel_environment_config_LOG_LEVEL_ENV, (gint) RYGEL_LOG_LEVEL_CRITICAL, (gint) RYGEL_LOG_LEVEL_DEBUG, &_inner_error_);
 #line 383 "rygel-environment-config.c"
 	if (_inner_error_ != NULL) {
@@ -385,13 +385,13 @@ static RygelLogLevel rygel_environment_config_real_get_log_level (RygelConfigura
 		return 0;
 	}
 	result = (RygelLogLevel) _tmp0_;
-#line 90 "rygel-environment-config.vala"
+#line 89 "rygel-environment-config.vala"
 	return result;
 #line 391 "rygel-environment-config.c"
 }
 
 
-#line 95 "rygel-environment-config.vala"
+#line 94 "rygel-environment-config.vala"
 static char* rygel_environment_config_real_get_plugin_path (RygelConfiguration* base, GError** error) {
 #line 397 "rygel-environment-config.c"
 	RygelEnvironmentConfig * self;
@@ -400,7 +400,7 @@ static char* rygel_environment_config_real_get_plugin_path (RygelConfiguration* 
 	char* _tmp0_;
 	self = (RygelEnvironmentConfig*) base;
 	_inner_error_ = NULL;
-#line 96 "rygel-environment-config.vala"
+#line 95 "rygel-environment-config.vala"
 	_tmp0_ = rygel_environment_config_get_string_variable (self, rygel_environment_config_PLUGIN_PATH_ENV, &_inner_error_);
 #line 406 "rygel-environment-config.c"
 	if (_inner_error_ != NULL) {
@@ -408,13 +408,13 @@ static char* rygel_environment_config_real_get_plugin_path (RygelConfiguration* 
 		return NULL;
 	}
 	result = _tmp0_;
-#line 96 "rygel-environment-config.vala"
+#line 95 "rygel-environment-config.vala"
 	return result;
 #line 414 "rygel-environment-config.c"
 }
 
 
-#line 99 "rygel-environment-config.vala"
+#line 98 "rygel-environment-config.vala"
 static gboolean rygel_environment_config_real_get_enabled (RygelConfiguration* base, const char* section, GError** error) {
 #line 420 "rygel-environment-config.c"
 	RygelEnvironmentConfig * self;
@@ -422,11 +422,11 @@ static gboolean rygel_environment_config_real_get_enabled (RygelConfiguration* b
 	GError * _inner_error_;
 	gboolean _tmp0_;
 	self = (RygelEnvironmentConfig*) base;
-#line 99 "rygel-environment-config.vala"
+#line 98 "rygel-environment-config.vala"
 	g_return_val_if_fail (section != NULL, FALSE);
 #line 428 "rygel-environment-config.c"
 	_inner_error_ = NULL;
-#line 100 "rygel-environment-config.vala"
+#line 99 "rygel-environment-config.vala"
 	_tmp0_ = rygel_configuration_get_bool ((RygelConfiguration*) self, section, rygel_environment_config_ENABLED_KEY, &_inner_error_);
 #line 432 "rygel-environment-config.c"
 	if (_inner_error_ != NULL) {
@@ -434,13 +434,13 @@ static gboolean rygel_environment_config_real_get_enabled (RygelConfiguration* b
 		return FALSE;
 	}
 	result = _tmp0_;
-#line 100 "rygel-environment-config.vala"
+#line 99 "rygel-environment-config.vala"
 	return result;
 #line 440 "rygel-environment-config.c"
 }
 
 
-#line 103 "rygel-environment-config.vala"
+#line 102 "rygel-environment-config.vala"
 static char* rygel_environment_config_real_get_title (RygelConfiguration* base, const char* section, GError** error) {
 #line 446 "rygel-environment-config.c"
 	RygelEnvironmentConfig * self;
@@ -451,11 +451,11 @@ static char* rygel_environment_config_real_get_title (RygelConfiguration* base, 
 	char* _tmp2_;
 	char* _tmp3_;
 	self = (RygelEnvironmentConfig*) base;
-#line 103 "rygel-environment-config.vala"
+#line 102 "rygel-environment-config.vala"
 	g_return_val_if_fail (section != NULL, NULL);
 #line 457 "rygel-environment-config.c"
 	_inner_error_ = NULL;
-#line 104 "rygel-environment-config.vala"
+#line 103 "rygel-environment-config.vala"
 	_tmp3_ = (_tmp2_ = rygel_configuration_get_string ((RygelConfiguration*) self, _tmp1_ = g_strconcat (_tmp0_ = g_strconcat (rygel_environment_config_RYGEL_PREFIX, "_", NULL), section, NULL), rygel_environment_config_TITLE_KEY, &_inner_error_), _g_free0 (_tmp1_), _g_free0 (_tmp0_), _tmp2_);
 #line 461 "rygel-environment-config.c"
 	if (_inner_error_ != NULL) {
@@ -463,13 +463,13 @@ static char* rygel_environment_config_real_get_title (RygelConfiguration* base, 
 		return NULL;
 	}
 	result = _tmp3_;
-#line 104 "rygel-environment-config.vala"
+#line 103 "rygel-environment-config.vala"
 	return result;
 #line 469 "rygel-environment-config.c"
 }
 
 
-#line 107 "rygel-environment-config.vala"
+#line 106 "rygel-environment-config.vala"
 static char* rygel_environment_config_real_get_string (RygelConfiguration* base, const char* section, const char* key, GError** error) {
 #line 475 "rygel-environment-config.c"
 	RygelEnvironmentConfig * self;
@@ -483,13 +483,13 @@ static char* rygel_environment_config_real_get_string (RygelConfiguration* base,
 	char* _tmp5_;
 	char* _tmp6_;
 	self = (RygelEnvironmentConfig*) base;
-#line 107 "rygel-environment-config.vala"
+#line 106 "rygel-environment-config.vala"
 	g_return_val_if_fail (section != NULL, NULL);
-#line 107 "rygel-environment-config.vala"
+#line 106 "rygel-environment-config.vala"
 	g_return_val_if_fail (key != NULL, NULL);
 #line 491 "rygel-environment-config.c"
 	_inner_error_ = NULL;
-#line 109 "rygel-environment-config.vala"
+#line 108 "rygel-environment-config.vala"
 	_tmp6_ = (_tmp5_ = rygel_environment_config_get_string_variable (self, _tmp4_ = g_strconcat (_tmp3_ = g_strconcat (_tmp2_ = g_strconcat (_tmp0_ = g_strconcat (rygel_environment_config_RYGEL_PREFIX, "_", NULL), _tmp1_ = g_utf8_strup (section, -1), NULL), "_", NULL), key, NULL), &_inner_error_), _g_free0 (_tmp4_), _g_free0 (_tmp3_), _g_free0 (_tmp2_), _g_free0 (_tmp1_), _g_free0 (_tmp0_), _tmp5_);
 #line 495 "rygel-environment-config.c"
 	if (_inner_error_ != NULL) {
@@ -497,13 +497,13 @@ static char* rygel_environment_config_real_get_string (RygelConfiguration* base,
 		return NULL;
 	}
 	result = _tmp6_;
-#line 109 "rygel-environment-config.vala"
+#line 108 "rygel-environment-config.vala"
 	return result;
 #line 503 "rygel-environment-config.c"
 }
 
 
-#line 114 "rygel-environment-config.vala"
+#line 113 "rygel-environment-config.vala"
 static GeeArrayList* rygel_environment_config_real_get_string_list (RygelConfiguration* base, const char* section, const char* key, GError** error) {
 #line 509 "rygel-environment-config.c"
 	RygelEnvironmentConfig * self;
@@ -512,20 +512,20 @@ static GeeArrayList* rygel_environment_config_real_get_string_list (RygelConfigu
 	char* str;
 	GeeArrayList* value;
 	self = (RygelEnvironmentConfig*) base;
-#line 114 "rygel-environment-config.vala"
+#line 113 "rygel-environment-config.vala"
 	g_return_val_if_fail (section != NULL, NULL);
-#line 114 "rygel-environment-config.vala"
+#line 113 "rygel-environment-config.vala"
 	g_return_val_if_fail (key != NULL, NULL);
 #line 520 "rygel-environment-config.c"
 	_inner_error_ = NULL;
-#line 117 "rygel-environment-config.vala"
+#line 116 "rygel-environment-config.vala"
 	str = rygel_configuration_get_string ((RygelConfiguration*) self, section, key, &_inner_error_);
 #line 524 "rygel-environment-config.c"
 	if (_inner_error_ != NULL) {
 		g_propagate_error (error, _inner_error_);
 		return NULL;
 	}
-#line 118 "rygel-environment-config.vala"
+#line 117 "rygel-environment-config.vala"
 	value = gee_array_list_new (G_TYPE_STRING, (GBoxedCopyFunc) g_strdup, g_free, NULL);
 #line 531 "rygel-environment-config.c"
 	{
@@ -533,7 +533,7 @@ static GeeArrayList* rygel_environment_config_real_get_string_list (RygelConfigu
 		char** token_collection;
 		int token_collection_length1;
 		int token_it;
-#line 119 "rygel-environment-config.vala"
+#line 118 "rygel-environment-config.vala"
 		token_collection = _tmp0_ = g_strsplit (str, ",", -1);
 #line 539 "rygel-environment-config.c"
 		token_collection_length1 = _vala_array_length (_tmp0_);
@@ -541,25 +541,25 @@ static GeeArrayList* rygel_environment_config_real_get_string_list (RygelConfigu
 			char* token;
 			token = g_strdup (token_collection[token_it]);
 			{
-#line 120 "rygel-environment-config.vala"
+#line 119 "rygel-environment-config.vala"
 				gee_abstract_collection_add ((GeeAbstractCollection*) value, token);
 #line 547 "rygel-environment-config.c"
 				_g_free0 (token);
 			}
 		}
-#line 119 "rygel-environment-config.vala"
+#line 118 "rygel-environment-config.vala"
 		token_collection = (_vala_array_free (token_collection, token_collection_length1, (GDestroyNotify) g_free), NULL);
 #line 553 "rygel-environment-config.c"
 	}
 	result = value;
 	_g_free0 (str);
-#line 123 "rygel-environment-config.vala"
+#line 122 "rygel-environment-config.vala"
 	return result;
 #line 559 "rygel-environment-config.c"
 }
 
 
-#line 126 "rygel-environment-config.vala"
+#line 125 "rygel-environment-config.vala"
 static gint rygel_environment_config_real_get_int (RygelConfiguration* base, const char* section, const char* key, gint min, gint max, GError** error) {
 #line 565 "rygel-environment-config.c"
 	RygelEnvironmentConfig * self;
@@ -573,13 +573,13 @@ static gint rygel_environment_config_real_get_int (RygelConfiguration* base, con
 	gint _tmp5_;
 	gint _tmp6_;
 	self = (RygelEnvironmentConfig*) base;
-#line 126 "rygel-environment-config.vala"
+#line 125 "rygel-environment-config.vala"
 	g_return_val_if_fail (section != NULL, 0);
-#line 126 "rygel-environment-config.vala"
+#line 125 "rygel-environment-config.vala"
 	g_return_val_if_fail (key != NULL, 0);
 #line 581 "rygel-environment-config.c"
 	_inner_error_ = NULL;
-#line 131 "rygel-environment-config.vala"
+#line 130 "rygel-environment-config.vala"
 	_tmp6_ = (_tmp5_ = rygel_environment_config_get_int_variable (self, _tmp4_ = g_strconcat (_tmp3_ = g_strconcat (_tmp2_ = g_strconcat (_tmp0_ = g_strconcat (rygel_environment_config_RYGEL_PREFIX, "_", NULL), _tmp1_ = g_utf8_strup (section, -1), NULL), "_", NULL), key, NULL), min, max, &_inner_error_), _g_free0 (_tmp4_), _g_free0 (_tmp3_), _g_free0 (_tmp2_), _g_free0 (_tmp1_), _g_free0 (_tmp0_), _tmp5_);
 #line 585 "rygel-environment-config.c"
 	if (_inner_error_ != NULL) {
@@ -587,13 +587,13 @@ static gint rygel_environment_config_real_get_int (RygelConfiguration* base, con
 		return 0;
 	}
 	result = _tmp6_;
-#line 131 "rygel-environment-config.vala"
+#line 130 "rygel-environment-config.vala"
 	return result;
 #line 593 "rygel-environment-config.c"
 }
 
 
-#line 137 "rygel-environment-config.vala"
+#line 136 "rygel-environment-config.vala"
 static GeeArrayList* rygel_environment_config_real_get_int_list (RygelConfiguration* base, const char* section, const char* key, GError** error) {
 #line 599 "rygel-environment-config.c"
 	RygelEnvironmentConfig * self;
@@ -602,20 +602,20 @@ static GeeArrayList* rygel_environment_config_real_get_int_list (RygelConfigurat
 	char* str;
 	GeeArrayList* value;
 	self = (RygelEnvironmentConfig*) base;
-#line 137 "rygel-environment-config.vala"
+#line 136 "rygel-environment-config.vala"
 	g_return_val_if_fail (section != NULL, NULL);
-#line 137 "rygel-environment-config.vala"
+#line 136 "rygel-environment-config.vala"
 	g_return_val_if_fail (key != NULL, NULL);
 #line 610 "rygel-environment-config.c"
 	_inner_error_ = NULL;
-#line 140 "rygel-environment-config.vala"
+#line 139 "rygel-environment-config.vala"
 	str = rygel_configuration_get_string ((RygelConfiguration*) self, section, key, &_inner_error_);
 #line 614 "rygel-environment-config.c"
 	if (_inner_error_ != NULL) {
 		g_propagate_error (error, _inner_error_);
 		return NULL;
 	}
-#line 141 "rygel-environment-config.vala"
+#line 140 "rygel-environment-config.vala"
 	value = gee_array_list_new (G_TYPE_INT, NULL, NULL, NULL);
 #line 621 "rygel-environment-config.c"
 	{
@@ -623,7 +623,7 @@ static GeeArrayList* rygel_environment_config_real_get_int_list (RygelConfigurat
 		char** token_collection;
 		int token_collection_length1;
 		int token_it;
-#line 142 "rygel-environment-config.vala"
+#line 141 "rygel-environment-config.vala"
 		token_collection = _tmp0_ = g_strsplit (str, ",", -1);
 #line 629 "rygel-environment-config.c"
 		token_collection_length1 = _vala_array_length (_tmp0_);
@@ -631,25 +631,25 @@ static GeeArrayList* rygel_environment_config_real_get_int_list (RygelConfigurat
 			char* token;
 			token = g_strdup (token_collection[token_it]);
 			{
-#line 143 "rygel-environment-config.vala"
+#line 142 "rygel-environment-config.vala"
 				gee_abstract_collection_add ((GeeAbstractCollection*) value, GINT_TO_POINTER (atoi (token)));
 #line 637 "rygel-environment-config.c"
 				_g_free0 (token);
 			}
 		}
-#line 142 "rygel-environment-config.vala"
+#line 141 "rygel-environment-config.vala"
 		token_collection = (_vala_array_free (token_collection, token_collection_length1, (GDestroyNotify) g_free), NULL);
 #line 643 "rygel-environment-config.c"
 	}
 	result = value;
 	_g_free0 (str);
-#line 146 "rygel-environment-config.vala"
+#line 145 "rygel-environment-config.vala"
 	return result;
 #line 649 "rygel-environment-config.c"
 }
 
 
-#line 149 "rygel-environment-config.vala"
+#line 148 "rygel-environment-config.vala"
 static gboolean rygel_environment_config_real_get_bool (RygelConfiguration* base, const char* section, const char* key, GError** error) {
 #line 655 "rygel-environment-config.c"
 	RygelEnvironmentConfig * self;
@@ -663,13 +663,13 @@ static gboolean rygel_environment_config_real_get_bool (RygelConfiguration* base
 	gboolean _tmp5_;
 	gboolean _tmp6_;
 	self = (RygelEnvironmentConfig*) base;
-#line 149 "rygel-environment-config.vala"
+#line 148 "rygel-environment-config.vala"
 	g_return_val_if_fail (section != NULL, FALSE);
-#line 149 "rygel-environment-config.vala"
+#line 148 "rygel-environment-config.vala"
 	g_return_val_if_fail (key != NULL, FALSE);
 #line 671 "rygel-environment-config.c"
 	_inner_error_ = NULL;
-#line 152 "rygel-environment-config.vala"
+#line 151 "rygel-environment-config.vala"
 	_tmp6_ = (_tmp5_ = rygel_environment_config_get_bool_variable (self, _tmp4_ = g_strconcat (_tmp3_ = g_strconcat (_tmp2_ = g_strconcat (_tmp0_ = g_strconcat (rygel_environment_config_RYGEL_PREFIX, "_", NULL), _tmp1_ = g_utf8_strup (section, -1), NULL), "_", NULL), key, NULL), &_inner_error_), _g_free0 (_tmp4_), _g_free0 (_tmp3_), _g_free0 (_tmp2_), _g_free0 (_tmp1_), _g_free0 (_tmp0_), _tmp5_);
 #line 675 "rygel-environment-config.c"
 	if (_inner_error_ != NULL) {
@@ -677,27 +677,27 @@ static gboolean rygel_environment_config_real_get_bool (RygelConfiguration* base
 		return FALSE;
 	}
 	result = _tmp6_;
-#line 152 "rygel-environment-config.vala"
+#line 151 "rygel-environment-config.vala"
 	return result;
 #line 683 "rygel-environment-config.c"
 }
 
 
-#line 157 "rygel-environment-config.vala"
+#line 156 "rygel-environment-config.vala"
 static char* rygel_environment_config_get_string_variable (RygelEnvironmentConfig* self, const char* variable, GError** error) {
 #line 689 "rygel-environment-config.c"
 	char* result = NULL;
 	GError * _inner_error_;
 	char* str;
-#line 157 "rygel-environment-config.vala"
+#line 156 "rygel-environment-config.vala"
 	g_return_val_if_fail (self != NULL, NULL);
-#line 157 "rygel-environment-config.vala"
+#line 156 "rygel-environment-config.vala"
 	g_return_val_if_fail (variable != NULL, NULL);
 #line 697 "rygel-environment-config.c"
 	_inner_error_ = NULL;
-#line 158 "rygel-environment-config.vala"
+#line 157 "rygel-environment-config.vala"
 	str = g_strdup (g_getenv (variable));
-#line 159 "rygel-environment-config.vala"
+#line 158 "rygel-environment-config.vala"
 	if (str == NULL) {
 #line 703 "rygel-environment-config.c"
 		_inner_error_ = g_error_new_literal (RYGEL_CONFIGURATION_ERROR, RYGEL_CONFIGURATION_ERROR_NO_VALUE_SET, "No value available");
@@ -708,27 +708,27 @@ static char* rygel_environment_config_get_string_variable (RygelEnvironmentConfi
 		}
 	}
 	result = str;
-#line 163 "rygel-environment-config.vala"
+#line 162 "rygel-environment-config.vala"
 	return result;
 #line 714 "rygel-environment-config.c"
 }
 
 
-#line 166 "rygel-environment-config.vala"
+#line 165 "rygel-environment-config.vala"
 static gint rygel_environment_config_get_int_variable (RygelEnvironmentConfig* self, const char* variable, gint min, gint max, GError** error) {
 #line 720 "rygel-environment-config.c"
 	gint result = 0;
 	GError * _inner_error_;
 	char* val;
-#line 166 "rygel-environment-config.vala"
+#line 165 "rygel-environment-config.vala"
 	g_return_val_if_fail (self != NULL, 0);
-#line 166 "rygel-environment-config.vala"
+#line 165 "rygel-environment-config.vala"
 	g_return_val_if_fail (variable != NULL, 0);
 #line 728 "rygel-environment-config.c"
 	_inner_error_ = NULL;
-#line 169 "rygel-environment-config.vala"
+#line 168 "rygel-environment-config.vala"
 	val = g_strdup (g_getenv (variable));
-#line 170 "rygel-environment-config.vala"
+#line 169 "rygel-environment-config.vala"
 	if (val == NULL) {
 #line 734 "rygel-environment-config.c"
 		_inner_error_ = g_error_new_literal (RYGEL_CONFIGURATION_ERROR, RYGEL_CONFIGURATION_ERROR_NO_VALUE_SET, "No value available");
@@ -740,49 +740,49 @@ static gint rygel_environment_config_get_int_variable (RygelEnvironmentConfig* s
 	}
 	result = CLAMP (atoi (val), min, max);
 	_g_free0 (val);
-#line 174 "rygel-environment-config.vala"
+#line 173 "rygel-environment-config.vala"
 	return result;
 #line 746 "rygel-environment-config.c"
 }
 
 
-#line 952 "glib-2.0.vapi"
+#line 1048 "glib-2.0.vapi"
 static gboolean string_to_bool (const char* self) {
 #line 752 "rygel-environment-config.c"
 	gboolean result = FALSE;
-#line 952 "glib-2.0.vapi"
+#line 1048 "glib-2.0.vapi"
 	g_return_val_if_fail (self != NULL, FALSE);
-#line 953 "glib-2.0.vapi"
+#line 1049 "glib-2.0.vapi"
 	if (_vala_strcmp0 (self, "true") == 0) {
 #line 758 "rygel-environment-config.c"
 		result = TRUE;
-#line 954 "glib-2.0.vapi"
+#line 1050 "glib-2.0.vapi"
 		return result;
 #line 762 "rygel-environment-config.c"
 	} else {
 		result = FALSE;
-#line 956 "glib-2.0.vapi"
+#line 1052 "glib-2.0.vapi"
 		return result;
 #line 767 "rygel-environment-config.c"
 	}
 }
 
 
-#line 177 "rygel-environment-config.vala"
+#line 176 "rygel-environment-config.vala"
 static gboolean rygel_environment_config_get_bool_variable (RygelEnvironmentConfig* self, const char* variable, GError** error) {
 #line 774 "rygel-environment-config.c"
 	gboolean result = FALSE;
 	GError * _inner_error_;
 	char* enabled;
-#line 177 "rygel-environment-config.vala"
+#line 176 "rygel-environment-config.vala"
 	g_return_val_if_fail (self != NULL, FALSE);
-#line 177 "rygel-environment-config.vala"
+#line 176 "rygel-environment-config.vala"
 	g_return_val_if_fail (variable != NULL, FALSE);
 #line 782 "rygel-environment-config.c"
 	_inner_error_ = NULL;
-#line 178 "rygel-environment-config.vala"
+#line 177 "rygel-environment-config.vala"
 	enabled = g_strdup (g_getenv (variable));
-#line 179 "rygel-environment-config.vala"
+#line 178 "rygel-environment-config.vala"
 	if (enabled == NULL) {
 #line 788 "rygel-environment-config.c"
 		_inner_error_ = g_error_new_literal (RYGEL_CONFIGURATION_ERROR, RYGEL_CONFIGURATION_ERROR_NO_VALUE_SET, "No value available");
@@ -794,26 +794,26 @@ static gboolean rygel_environment_config_get_bool_variable (RygelEnvironmentConf
 	}
 	result = string_to_bool (enabled);
 	_g_free0 (enabled);
-#line 183 "rygel-environment-config.vala"
+#line 182 "rygel-environment-config.vala"
 	return result;
 #line 800 "rygel-environment-config.c"
 }
 
 
-#line 31 "rygel-environment-config.vala"
+#line 30 "rygel-environment-config.vala"
 RygelEnvironmentConfig* rygel_environment_config_construct (GType object_type) {
 #line 806 "rygel-environment-config.c"
 	RygelEnvironmentConfig * self;
-#line 31 "rygel-environment-config.vala"
+#line 30 "rygel-environment-config.vala"
 	self = (RygelEnvironmentConfig*) g_object_new (object_type, NULL);
 #line 810 "rygel-environment-config.c"
 	return self;
 }
 
 
-#line 31 "rygel-environment-config.vala"
+#line 30 "rygel-environment-config.vala"
 RygelEnvironmentConfig* rygel_environment_config_new (void) {
-#line 31 "rygel-environment-config.vala"
+#line 30 "rygel-environment-config.vala"
 	return rygel_environment_config_construct (RYGEL_TYPE_ENVIRONMENT_CONFIG);
 #line 819 "rygel-environment-config.c"
 }

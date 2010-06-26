@@ -22,7 +22,6 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-using CStuff;
 using Gee;
 
 public errordomain Rygel.CmdlineConfigError {
@@ -173,7 +172,11 @@ public class Rygel.CmdlineConfig : GLib.Object, Configuration {
     }
 
     public bool get_wmv_transcoder () throws GLib.Error {
-        return !no_wmv_trans;
+        if (!no_wmv_trans) {
+            throw new ConfigurationError.NO_VALUE_SET (_("No value available"));
+        } else {
+            return false;
+        }
     }
 
     public LogLevel get_log_level () throws GLib.Error {

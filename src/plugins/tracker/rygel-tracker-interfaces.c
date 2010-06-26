@@ -41,6 +41,7 @@
 
 typedef struct _RygelTrackerStatsIface RygelTrackerStatsIface;
 typedef struct _RygelTrackerStatsIfaceIface RygelTrackerStatsIfaceIface;
+typedef struct _DBusObjectVTable _DBusObjectVTable;
 typedef struct _RygelTrackerStatsIfaceDBusProxy RygelTrackerStatsIfaceDBusProxy;
 typedef DBusGProxyClass RygelTrackerStatsIfaceDBusProxyClass;
 typedef struct _RygelTrackerStatsIfaceDBusProxyGetStatisticsData RygelTrackerStatsIfaceDBusProxyGetStatisticsData;
@@ -78,12 +79,15 @@ typedef struct _RygelTrackerMinerIfaceIface RygelTrackerMinerIfaceIface;
 typedef struct _RygelTrackerMinerIfaceDBusProxy RygelTrackerMinerIfaceDBusProxy;
 typedef DBusGProxyClass RygelTrackerMinerIfaceDBusProxyClass;
 typedef struct _RygelTrackerMinerIfaceDBusProxyIgnoreNextUpdateData RygelTrackerMinerIfaceDBusProxyIgnoreNextUpdateData;
-typedef struct _DBusObjectVTable _DBusObjectVTable;
 
 struct _RygelTrackerStatsIfaceIface {
 	GTypeInterface parent_iface;
 	void (*get_statistics) (RygelTrackerStatsIface* self, GAsyncReadyCallback _callback_, gpointer _user_data_);
 	char** (*get_statistics_finish) (RygelTrackerStatsIface* self, GAsyncResult* _res_, int* result_length1, int* result_length2, GError** error);
+};
+
+struct _DBusObjectVTable {
+	void (*register_object) (DBusConnection*, const char*, void*);
 };
 
 struct _RygelTrackerStatsIfaceDBusProxy {
@@ -148,15 +152,14 @@ struct _RygelTrackerMinerIfaceDBusProxyIgnoreNextUpdateData {
 	DBusPendingCall* pending;
 };
 
-struct _DBusObjectVTable {
-	void (*register_object) (DBusConnection*, const char*, void*);
-};
 
 
-
+RygelTrackerStatsIface* rygel_tracker_stats_iface_dbus_proxy_new (DBusGConnection* connection, const char* name, const char* path);
 GType rygel_tracker_stats_iface_get_type (void);
 void rygel_tracker_stats_iface_get_statistics (RygelTrackerStatsIface* self, GAsyncReadyCallback _callback_, gpointer _user_data_);
 char** rygel_tracker_stats_iface_get_statistics_finish (RygelTrackerStatsIface* self, GAsyncResult* _res_, int* result_length1, int* result_length2, GError** error);
+static void _vala_dbus_register_object (DBusConnection* connection, const char* path, void* object);
+static void _vala_dbus_unregister_object (gpointer connection, GObject* object);
 void rygel_tracker_stats_iface_dbus_register_object (DBusConnection* connection, const char* path, void* object);
 void _rygel_tracker_stats_iface_dbus_unregister (DBusConnection* connection, void* _user_data_);
 DBusHandlerResult rygel_tracker_stats_iface_dbus_message (DBusConnection* connection, DBusMessage* message, void* object);
@@ -165,7 +168,6 @@ static DBusHandlerResult _dbus_rygel_tracker_stats_iface_property_get_all (Rygel
 static DBusHandlerResult _dbus_rygel_tracker_stats_iface_get_statistics (RygelTrackerStatsIface* self, DBusConnection* connection, DBusMessage* message);
 static void _dbus_rygel_tracker_stats_iface_get_statistics_ready (GObject * source_object, GAsyncResult * _res_, gpointer * _user_data_);
 GType rygel_tracker_stats_iface_dbus_proxy_get_type (void);
-RygelTrackerStatsIface* rygel_tracker_stats_iface_dbus_proxy_new (DBusGConnection* connection, const char* name, const char* path);
 DBusHandlerResult rygel_tracker_stats_iface_dbus_proxy_filter (DBusConnection* connection, DBusMessage* message, void* user_data);
 enum  {
 	RYGEL_TRACKER_STATS_IFACE_DBUS_PROXY_DUMMY_PROPERTY
@@ -176,6 +178,7 @@ static char** rygel_tracker_stats_iface_dbus_proxy_get_statistics_finish (RygelT
 static void rygel_tracker_stats_iface_dbus_proxy_rygel_tracker_stats_iface__interface_init (RygelTrackerStatsIfaceIface* iface);
 static void rygel_tracker_stats_iface_dbus_proxy_get_property (GObject * object, guint property_id, GValue * value, GParamSpec * pspec);
 static void rygel_tracker_stats_iface_dbus_proxy_set_property (GObject * object, guint property_id, const GValue * value, GParamSpec * pspec);
+RygelTrackerResourcesIface* rygel_tracker_resources_iface_dbus_proxy_new (DBusGConnection* connection, const char* name, const char* path);
 GType rygel_tracker_resources_iface_get_type (void);
 void rygel_tracker_resources_iface_sparql_query (RygelTrackerResourcesIface* self, const char* query, GAsyncReadyCallback _callback_, gpointer _user_data_);
 char** rygel_tracker_resources_iface_sparql_query_finish (RygelTrackerResourcesIface* self, GAsyncResult* _res_, int* result_length1, int* result_length2, GError** error);
@@ -191,7 +194,6 @@ static void _dbus_rygel_tracker_resources_iface_sparql_query_ready (GObject * so
 static DBusHandlerResult _dbus_rygel_tracker_resources_iface_sparql_update_blank (RygelTrackerResourcesIface* self, DBusConnection* connection, DBusMessage* message);
 static void _dbus_rygel_tracker_resources_iface_sparql_update_blank_ready (GObject * source_object, GAsyncResult * _res_, gpointer * _user_data_);
 GType rygel_tracker_resources_iface_dbus_proxy_get_type (void);
-RygelTrackerResourcesIface* rygel_tracker_resources_iface_dbus_proxy_new (DBusGConnection* connection, const char* name, const char* path);
 DBusHandlerResult rygel_tracker_resources_iface_dbus_proxy_filter (DBusConnection* connection, DBusMessage* message, void* user_data);
 enum  {
 	RYGEL_TRACKER_RESOURCES_IFACE_DBUS_PROXY_DUMMY_PROPERTY
@@ -206,6 +208,7 @@ static void rygel_tracker_resources_iface_dbus_proxy_rygel_tracker_resources_ifa
 static void rygel_tracker_resources_iface_dbus_proxy_get_property (GObject * object, guint property_id, GValue * value, GParamSpec * pspec);
 static void rygel_tracker_resources_iface_dbus_proxy_set_property (GObject * object, guint property_id, const GValue * value, GParamSpec * pspec);
 GType rygel_tracker_resources_class_iface_get_type (void);
+RygelTrackerResourcesClassIface* rygel_tracker_resources_class_iface_dbus_proxy_new (DBusGConnection* connection, const char* name, const char* path);
 void rygel_tracker_resources_class_iface_dbus_register_object (DBusConnection* connection, const char* path, void* object);
 void _rygel_tracker_resources_class_iface_dbus_unregister (DBusConnection* connection, void* _user_data_);
 DBusHandlerResult rygel_tracker_resources_class_iface_dbus_message (DBusConnection* connection, DBusMessage* message, void* object);
@@ -215,7 +218,6 @@ static void _dbus_rygel_tracker_resources_class_iface_subjects_added (GObject* _
 static void _dbus_rygel_tracker_resources_class_iface_subjects_removed (GObject* _sender, char** subjects, int subjects_length1, DBusConnection* _connection);
 static void _dbus_rygel_tracker_resources_class_iface_subjects_changed (GObject* _sender, char** before, int before_length1, char** after, int after_length1, DBusConnection* _connection);
 GType rygel_tracker_resources_class_iface_dbus_proxy_get_type (void);
-RygelTrackerResourcesClassIface* rygel_tracker_resources_class_iface_dbus_proxy_new (DBusGConnection* connection, const char* name, const char* path);
 static void _dbus_handle_rygel_tracker_resources_class_iface_subjects_added (RygelTrackerResourcesClassIface* self, DBusConnection* connection, DBusMessage* message);
 static void _dbus_handle_rygel_tracker_resources_class_iface_subjects_removed (RygelTrackerResourcesClassIface* self, DBusConnection* connection, DBusMessage* message);
 static void _dbus_handle_rygel_tracker_resources_class_iface_subjects_changed (RygelTrackerResourcesClassIface* self, DBusConnection* connection, DBusMessage* message);
@@ -226,6 +228,7 @@ enum  {
 static void rygel_tracker_resources_class_iface_dbus_proxy_rygel_tracker_resources_class_iface__interface_init (RygelTrackerResourcesClassIfaceIface* iface);
 static void rygel_tracker_resources_class_iface_dbus_proxy_get_property (GObject * object, guint property_id, GValue * value, GParamSpec * pspec);
 static void rygel_tracker_resources_class_iface_dbus_proxy_set_property (GObject * object, guint property_id, const GValue * value, GParamSpec * pspec);
+RygelTrackerMinerIface* rygel_tracker_miner_iface_dbus_proxy_new (DBusGConnection* connection, const char* name, const char* path);
 GType rygel_tracker_miner_iface_get_type (void);
 void rygel_tracker_miner_iface_ignore_next_update (RygelTrackerMinerIface* self, char** urls, int urls_length1, GAsyncReadyCallback _callback_, gpointer _user_data_);
 void rygel_tracker_miner_iface_ignore_next_update_finish (RygelTrackerMinerIface* self, GAsyncResult* _res_, GError** error);
@@ -237,7 +240,6 @@ static DBusHandlerResult _dbus_rygel_tracker_miner_iface_property_get_all (Rygel
 static DBusHandlerResult _dbus_rygel_tracker_miner_iface_ignore_next_update (RygelTrackerMinerIface* self, DBusConnection* connection, DBusMessage* message);
 static void _dbus_rygel_tracker_miner_iface_ignore_next_update_ready (GObject * source_object, GAsyncResult * _res_, gpointer * _user_data_);
 GType rygel_tracker_miner_iface_dbus_proxy_get_type (void);
-RygelTrackerMinerIface* rygel_tracker_miner_iface_dbus_proxy_new (DBusGConnection* connection, const char* name, const char* path);
 DBusHandlerResult rygel_tracker_miner_iface_dbus_proxy_filter (DBusConnection* connection, DBusMessage* message, void* user_data);
 enum  {
 	RYGEL_TRACKER_MINER_IFACE_DBUS_PROXY_DUMMY_PROPERTY
@@ -254,8 +256,6 @@ static void rygel_tracker_miner_iface_dbus_proxy_set_property (GObject * object,
 #define RYGEL_PHOTO_RESOURCES_CLASS_PATH RYGEL_RESOURCES_CLASS_PATH "nfo/Image"
 static void _vala_array_destroy (gpointer array, gint array_length, GDestroyNotify destroy_func);
 static void _vala_array_free (gpointer array, gint array_length, GDestroyNotify destroy_func);
-static void _vala_dbus_register_object (DBusConnection* connection, const char* path, void* object);
-static void _vala_dbus_unregister_object (gpointer connection, GObject* object);
 
 static const DBusObjectPathVTable _rygel_tracker_stats_iface_dbus_path_vtable = {_rygel_tracker_stats_iface_dbus_unregister, rygel_tracker_stats_iface_dbus_message};
 static const _DBusObjectVTable _rygel_tracker_stats_iface_dbus_vtable = {rygel_tracker_stats_iface_dbus_register_object};
@@ -269,19 +269,38 @@ static const _DBusObjectVTable _rygel_tracker_miner_iface_dbus_vtable = {rygel_t
 static void g_cclosure_user_marshal_VOID__BOXED_INT (GClosure * closure, GValue * return_value, guint n_param_values, const GValue * param_values, gpointer invocation_hint, gpointer marshal_data);
 static void g_cclosure_user_marshal_VOID__BOXED_INT_BOXED_INT (GClosure * closure, GValue * return_value, guint n_param_values, const GValue * param_values, gpointer invocation_hint, gpointer marshal_data);
 
-#line 49 "rygel-tracker-plugin-factory.vala"
+#line 47 "rygel-tracker-plugin-factory.vala"
 void rygel_tracker_stats_iface_get_statistics (RygelTrackerStatsIface* self, GAsyncReadyCallback _callback_, gpointer _user_data_) {
-#line 49 "rygel-tracker-plugin-factory.vala"
+#line 47 "rygel-tracker-plugin-factory.vala"
 	RYGEL_TRACKER_STATS_IFACE_GET_INTERFACE (self)->get_statistics (self, _callback_, _user_data_);
 #line 277 "rygel-tracker-interfaces.c"
 }
 
 
-#line 49 "rygel-tracker-plugin-factory.vala"
+#line 47 "rygel-tracker-plugin-factory.vala"
 char** rygel_tracker_stats_iface_get_statistics_finish (RygelTrackerStatsIface* self, GAsyncResult* _res_, int* result_length1, int* result_length2, GError** error) {
-#line 49 "rygel-tracker-plugin-factory.vala"
+#line 47 "rygel-tracker-plugin-factory.vala"
 	return RYGEL_TRACKER_STATS_IFACE_GET_INTERFACE (self)->get_statistics_finish (self, _res_, result_length1, result_length2, error);
 #line 285 "rygel-tracker-interfaces.c"
+}
+
+
+static void _vala_dbus_register_object (DBusConnection* connection, const char* path, void* object) {
+	const _DBusObjectVTable * vtable;
+	vtable = g_type_get_qdata (G_TYPE_FROM_INSTANCE (object), g_quark_from_static_string ("DBusObjectVTable"));
+	if (vtable) {
+		vtable->register_object (connection, path, object);
+	} else {
+		g_warning ("Object does not implement any D-Bus interface");
+	}
+}
+
+
+static void _vala_dbus_unregister_object (gpointer connection, GObject* object) {
+	char* path;
+	path = g_object_steal_data ((GObject*) object, "dbus_object_path");
+	dbus_connection_unregister_object_path (connection, path);
+	g_free (path);
 }
 
 
@@ -359,7 +378,7 @@ static DBusHandlerResult _dbus_rygel_tracker_stats_iface_get_statistics (RygelTr
 	_user_data_ = g_new0 (gpointer, 2);
 	_user_data_[0] = dbus_connection_ref (connection);
 	_user_data_[1] = dbus_message_ref (message);
-	rygel_tracker_stats_iface_get_statistics (self, _dbus_rygel_tracker_stats_iface_get_statistics_ready, _user_data_);
+	rygel_tracker_stats_iface_get_statistics (self, (GAsyncReadyCallback) _dbus_rygel_tracker_stats_iface_get_statistics_ready, _user_data_);
 	return DBUS_HANDLER_RESULT_HANDLED;
 }
 
@@ -381,7 +400,7 @@ static void _dbus_rygel_tracker_stats_iface_get_statistics_ready (GObject * sour
 	error = NULL;
 	result_length1 = 0;
 	result_length2 = 0;
-	result = rygel_tracker_stats_iface_get_statistics_finish (source_object, _res_, &result_length1, &result_length2, &error);
+	result = rygel_tracker_stats_iface_get_statistics_finish ((RygelTrackerStatsIface*) source_object, _res_, &result_length1, &result_length2, &error);
 	if (error) {
 		if (error->domain == DBUS_GERROR) {
 			switch (error->code) {
@@ -810,35 +829,35 @@ static void rygel_tracker_stats_iface_dbus_proxy_set_property (GObject * object,
 }
 
 
-#line 49 "rygel-tracker-plugin-factory.vala"
+#line 47 "rygel-tracker-plugin-factory.vala"
 void rygel_tracker_resources_iface_sparql_query (RygelTrackerResourcesIface* self, const char* query, GAsyncReadyCallback _callback_, gpointer _user_data_) {
-#line 49 "rygel-tracker-plugin-factory.vala"
+#line 47 "rygel-tracker-plugin-factory.vala"
 	RYGEL_TRACKER_RESOURCES_IFACE_GET_INTERFACE (self)->sparql_query (self, query, _callback_, _user_data_);
-#line 818 "rygel-tracker-interfaces.c"
+#line 837 "rygel-tracker-interfaces.c"
 }
 
 
-#line 49 "rygel-tracker-plugin-factory.vala"
+#line 47 "rygel-tracker-plugin-factory.vala"
 char** rygel_tracker_resources_iface_sparql_query_finish (RygelTrackerResourcesIface* self, GAsyncResult* _res_, int* result_length1, int* result_length2, GError** error) {
-#line 49 "rygel-tracker-plugin-factory.vala"
+#line 47 "rygel-tracker-plugin-factory.vala"
 	return RYGEL_TRACKER_RESOURCES_IFACE_GET_INTERFACE (self)->sparql_query_finish (self, _res_, result_length1, result_length2, error);
-#line 826 "rygel-tracker-interfaces.c"
+#line 845 "rygel-tracker-interfaces.c"
 }
 
 
-#line 49 "rygel-tracker-plugin-factory.vala"
+#line 47 "rygel-tracker-plugin-factory.vala"
 void rygel_tracker_resources_iface_sparql_update_blank (RygelTrackerResourcesIface* self, const char* query, GAsyncReadyCallback _callback_, gpointer _user_data_) {
-#line 49 "rygel-tracker-plugin-factory.vala"
+#line 47 "rygel-tracker-plugin-factory.vala"
 	RYGEL_TRACKER_RESOURCES_IFACE_GET_INTERFACE (self)->sparql_update_blank (self, query, _callback_, _user_data_);
-#line 834 "rygel-tracker-interfaces.c"
+#line 853 "rygel-tracker-interfaces.c"
 }
 
 
-#line 49 "rygel-tracker-plugin-factory.vala"
+#line 47 "rygel-tracker-plugin-factory.vala"
 GHashTable** rygel_tracker_resources_iface_sparql_update_blank_finish (RygelTrackerResourcesIface* self, GAsyncResult* _res_, int* result_length1, int* result_length2, GError** error) {
-#line 49 "rygel-tracker-plugin-factory.vala"
+#line 47 "rygel-tracker-plugin-factory.vala"
 	return RYGEL_TRACKER_RESOURCES_IFACE_GET_INTERFACE (self)->sparql_update_blank_finish (self, _res_, result_length1, result_length2, error);
-#line 842 "rygel-tracker-interfaces.c"
+#line 861 "rygel-tracker-interfaces.c"
 }
 
 
@@ -921,7 +940,7 @@ static DBusHandlerResult _dbus_rygel_tracker_resources_iface_sparql_query (Rygel
 	_user_data_ = g_new0 (gpointer, 2);
 	_user_data_[0] = dbus_connection_ref (connection);
 	_user_data_[1] = dbus_message_ref (message);
-	rygel_tracker_resources_iface_sparql_query (self, query, _dbus_rygel_tracker_resources_iface_sparql_query_ready, _user_data_);
+	rygel_tracker_resources_iface_sparql_query (self, query, (GAsyncReadyCallback) _dbus_rygel_tracker_resources_iface_sparql_query_ready, _user_data_);
 	_g_free0 (query);
 	return DBUS_HANDLER_RESULT_HANDLED;
 }
@@ -944,7 +963,7 @@ static void _dbus_rygel_tracker_resources_iface_sparql_query_ready (GObject * so
 	error = NULL;
 	result_length1 = 0;
 	result_length2 = 0;
-	result = rygel_tracker_resources_iface_sparql_query_finish (source_object, _res_, &result_length1, &result_length2, &error);
+	result = rygel_tracker_resources_iface_sparql_query_finish ((RygelTrackerResourcesIface*) source_object, _res_, &result_length1, &result_length2, &error);
 	if (error) {
 		if (error->domain == DBUS_GERROR) {
 			switch (error->code) {
@@ -1094,7 +1113,7 @@ static DBusHandlerResult _dbus_rygel_tracker_resources_iface_sparql_update_blank
 	_user_data_ = g_new0 (gpointer, 2);
 	_user_data_[0] = dbus_connection_ref (connection);
 	_user_data_[1] = dbus_message_ref (message);
-	rygel_tracker_resources_iface_sparql_update_blank (self, query, _dbus_rygel_tracker_resources_iface_sparql_update_blank_ready, _user_data_);
+	rygel_tracker_resources_iface_sparql_update_blank (self, query, (GAsyncReadyCallback) _dbus_rygel_tracker_resources_iface_sparql_update_blank_ready, _user_data_);
 	_g_free0 (query);
 	return DBUS_HANDLER_RESULT_HANDLED;
 }
@@ -1117,7 +1136,7 @@ static void _dbus_rygel_tracker_resources_iface_sparql_update_blank_ready (GObje
 	error = NULL;
 	result_length1 = 0;
 	result_length2 = 0;
-	result = rygel_tracker_resources_iface_sparql_update_blank_finish (source_object, _res_, &result_length1, &result_length2, &error);
+	result = rygel_tracker_resources_iface_sparql_update_blank_finish ((RygelTrackerResourcesIface*) source_object, _res_, &result_length1, &result_length2, &error);
 	if (error) {
 		if (error->domain == DBUS_GERROR) {
 			switch (error->code) {
@@ -2187,19 +2206,19 @@ static void rygel_tracker_resources_class_iface_dbus_proxy_set_property (GObject
 }
 
 
-#line 49 "rygel-tracker-plugin-factory.vala"
+#line 47 "rygel-tracker-plugin-factory.vala"
 void rygel_tracker_miner_iface_ignore_next_update (RygelTrackerMinerIface* self, char** urls, int urls_length1, GAsyncReadyCallback _callback_, gpointer _user_data_) {
-#line 49 "rygel-tracker-plugin-factory.vala"
+#line 47 "rygel-tracker-plugin-factory.vala"
 	RYGEL_TRACKER_MINER_IFACE_GET_INTERFACE (self)->ignore_next_update (self, urls, urls_length1, _callback_, _user_data_);
-#line 2195 "rygel-tracker-interfaces.c"
+#line 2214 "rygel-tracker-interfaces.c"
 }
 
 
-#line 49 "rygel-tracker-plugin-factory.vala"
+#line 47 "rygel-tracker-plugin-factory.vala"
 void rygel_tracker_miner_iface_ignore_next_update_finish (RygelTrackerMinerIface* self, GAsyncResult* _res_, GError** error) {
-#line 49 "rygel-tracker-plugin-factory.vala"
+#line 47 "rygel-tracker-plugin-factory.vala"
 	RYGEL_TRACKER_MINER_IFACE_GET_INTERFACE (self)->ignore_next_update_finish (self, _res_, error);
-#line 2203 "rygel-tracker-interfaces.c"
+#line 2222 "rygel-tracker-interfaces.c"
 }
 
 
@@ -2304,7 +2323,7 @@ static DBusHandlerResult _dbus_rygel_tracker_miner_iface_ignore_next_update (Ryg
 	_user_data_ = g_new0 (gpointer, 2);
 	_user_data_[0] = dbus_connection_ref (connection);
 	_user_data_[1] = dbus_message_ref (message);
-	rygel_tracker_miner_iface_ignore_next_update (self, urls, urls_length1, _dbus_rygel_tracker_miner_iface_ignore_next_update_ready, _user_data_);
+	rygel_tracker_miner_iface_ignore_next_update (self, urls, urls_length1, (GAsyncReadyCallback) _dbus_rygel_tracker_miner_iface_ignore_next_update_ready, _user_data_);
 	urls = (_vala_array_free (urls, urls_length1, (GDestroyNotify) g_free), NULL);
 	return DBUS_HANDLER_RESULT_HANDLED;
 }
@@ -2319,7 +2338,7 @@ static void _dbus_rygel_tracker_miner_iface_ignore_next_update_ready (GObject * 
 	connection = _user_data_[0];
 	message = _user_data_[1];
 	error = NULL;
-	rygel_tracker_miner_iface_ignore_next_update_finish (source_object, _res_, &error);
+	rygel_tracker_miner_iface_ignore_next_update_finish ((RygelTrackerMinerIface*) source_object, _res_, &error);
 	if (error) {
 		if (error->domain == DBUS_GERROR) {
 			switch (error->code) {
@@ -2719,25 +2738,6 @@ static void _vala_array_destroy (gpointer array, gint array_length, GDestroyNoti
 static void _vala_array_free (gpointer array, gint array_length, GDestroyNotify destroy_func) {
 	_vala_array_destroy (array, array_length, destroy_func);
 	g_free (array);
-}
-
-
-static void _vala_dbus_register_object (DBusConnection* connection, const char* path, void* object) {
-	const _DBusObjectVTable * vtable;
-	vtable = g_type_get_qdata (G_TYPE_FROM_INSTANCE (object), g_quark_from_static_string ("DBusObjectVTable"));
-	if (vtable) {
-		vtable->register_object (connection, path, object);
-	} else {
-		g_warning ("Object does not implement any D-Bus interface");
-	}
-}
-
-
-static void _vala_dbus_unregister_object (gpointer connection, GObject* object) {
-	char* path;
-	path = g_object_steal_data ((GObject*) object, "dbus_object_path");
-	dbus_connection_unregister_object_path (connection, path);
-	g_free (path);
 }
 
 

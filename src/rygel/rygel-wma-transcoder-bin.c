@@ -218,7 +218,7 @@ static void rygel_wma_transcoder_bin_decodebin_pad_added (RygelWMATranscoderBin*
 #line 51 "rygel-wma-transcoder-bin.vala"
 	g_return_if_fail (new_pad != NULL);
 #line 52 "rygel-wma-transcoder-bin.vala"
-	enc_pad = _gst_object_ref0 (gst_element_get_pad (self->priv->audio_enc, RYGEL_WMA_TRANSCODER_BIN_AUDIO_SINK_PAD));
+	enc_pad = gst_element_get_pad (self->priv->audio_enc, RYGEL_WMA_TRANSCODER_BIN_AUDIO_SINK_PAD);
 #line 53 "rygel-wma-transcoder-bin.vala"
 	if (!gst_pad_can_link (new_pad, enc_pad)) {
 #line 225 "rygel-wma-transcoder-bin.c"

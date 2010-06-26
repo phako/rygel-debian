@@ -1,9 +1,11 @@
 /*
- * Copyright (C) 2008 Nokia Corporation.
+ * Copyright (C) 2008-2010 Nokia Corporation.
  * Copyright (C) 2008 Zeeshan Ali (Khattak) <zeeshanak@gnome.org>.
+ * Copyright (C) 2007 OpenedHand Ltd.
  *
- * Author: Zeeshan Ali (Khattak) <zeeshanak@gnome.org>
- *                               <zeeshan.ali@nokia.com>
+ * Authors: Zeeshan Ali (Khattak) <zeeshanak@gnome.org>
+ *                                <zeeshan.ali@nokia.com>
+ *          Jorn Baayen <jorn@openedhand.com>
  *
  * This file is part of Rygel.
  *
@@ -23,7 +25,15 @@
  */
 
 using GUPnP;
-using CStuff;
+
+[CCode (cname = "uuid_generate", cheader_filename = "uuid/uuid.h")]
+public extern static void uuid_generate ([CCode (array_length = false)]
+                                         uchar[] uuid);
+[CCode (cname = "uuid_unparse", cheader_filename = "uuid/uuid.h")]
+public extern static void uuid_unparse ([CCode (array_length = false)]
+                                        uchar[] uuid,
+                                        [CCode (array_length = false)]
+                                        uchar[] output);
 
 public errordomain RootDeviceFactoryError {
     XML_PARSE,
@@ -94,10 +104,10 @@ internal class Rygel.RootDeviceFactory {
     private void prepare_desc_for_plugin (XMLDoc doc, Plugin plugin) {
         Xml.Node *device_element;
 
-        device_element = Utils.get_xml_element ((Xml.Node *) doc.doc,
-                                                "root",
-                                                "device",
-                                                null);
+        device_element = XMLUtils.get_element ((Xml.Node *) doc.doc,
+                                               "root",
+                                               "device",
+                                               null);
         if (device_element == null) {
             warning (_("XML node '%s' not found."), "/root/device");
 
@@ -128,9 +138,9 @@ internal class Rygel.RootDeviceFactory {
                                             string    plugin_name,
                                             string    plugin_title) {
         /* friendlyName */
-        Xml.Node *element = Utils.get_xml_element (device_element,
-                                                   "friendlyName",
-                                                   null);
+        Xml.Node *element = XMLUtils.get_element (device_element,
+                                                  "friendlyName",
+                                                  null);
         if (element == null) {
             warning (_("XML node '%s' not found."),
                        "/root/device/friendlyName");
@@ -152,7 +162,7 @@ internal class Rygel.RootDeviceFactory {
         element->set_content (title);
 
         /* UDN */
-        element = Utils.get_xml_element (device_element, "UDN");
+        element = XMLUtils.get_element (device_element, "UDN");
         if (element == null) {
             warning (_("XML node '%s' not found."), "/root/device/UDN");
 
@@ -161,7 +171,7 @@ internal class Rygel.RootDeviceFactory {
 
         var udn = element->get_content ();
         if (udn == null || udn == "") {
-            udn = Utils.generate_random_udn ();
+            udn = this.generate_random_udn ();
 
             element->set_content (udn);
         }
@@ -169,9 +179,9 @@ internal class Rygel.RootDeviceFactory {
 
     private void set_description (Xml.Node *device_element,
                                   string    description) {
-        Xml.Node *element = Utils.get_xml_element (device_element,
-                                                   "modelDescription",
-                                                   null);
+        Xml.Node *element = XMLUtils.get_element (device_element,
+                                                  "modelDescription",
+                                                  null);
         if (element == null) {
             warning (_("XML node '%s' not found."),
                        "/root/device/modelDescription");
@@ -184,9 +194,9 @@ internal class Rygel.RootDeviceFactory {
 
     private void add_services_to_desc (Xml.Node *device_element,
                                        Plugin    plugin) {
-        Xml.Node *service_list_node = Utils.get_xml_element (device_element,
-                                                             "serviceList",
-                                                             null);
+        Xml.Node *service_list_node = XMLUtils.get_element (device_element,
+                                                            "serviceList",
+                                                            null);
         if (service_list_node == null) {
             warning (_("XML node '%s' not found."), "/root/device/serviceList");
 
@@ -237,9 +247,9 @@ internal class Rygel.RootDeviceFactory {
             icons = plugin.default_icons;
         }
 
-        Xml.Node *icon_list_node = Utils.get_xml_element (device_element,
-                                                          "iconList",
-                                                          null);
+        Xml.Node *icon_list_node = XMLUtils.get_element (device_element,
+                                                         "iconList",
+                                                         null);
         if (icon_list_node == null) {
             icon_list_node = device_element->new_child (null, "iconList", null);
         } else {
@@ -312,6 +322,17 @@ internal class Rygel.RootDeviceFactory {
 
             file.make_directory (null);
         }
+    }
+
+    private string generate_random_udn () {
+        var udn = new uchar[50];
+        var id = new uchar[16];
+
+        /* Generate new UUID */
+        uuid_generate (id);
+        uuid_unparse (id, udn);
+
+        return "uuid:" + (string) udn;
     }
 }
 

@@ -21,7 +21,7 @@
 using Gee;
 using GUPnP;
 
-internal class Rygel.MediaExportQueryContainer : Rygel.MediaExportDBContainer {
+internal class Rygel.MediaExport.QueryContainer : DBContainer {
     public static const string PREFIX = "virtual-container:";
     private string attribute;
     private SearchExpression expression;
@@ -66,9 +66,9 @@ internal class Rygel.MediaExportQueryContainer : Rygel.MediaExportDBContainer {
         return true;
     }
 
-    public MediaExportQueryContainer (MediaExportMediaCache media_db,
-                                      string                id,
-                                      string                name = "") {
+    public QueryContainer (MediaCache media_db,
+                           string     id,
+                           string     name = "") {
         // parse the id
         // Following the schema:
         // virtual-folder:<class>,? -> get all of that class (eg. Albums)
@@ -115,21 +115,16 @@ internal class Rygel.MediaExportQueryContainer : Rygel.MediaExportDBContainer {
             i += 2;
         }
         this.child_count = this.count_children ();
-        debug (ngettext ("We have %u child.",
-                         "We have %u children.",
-                         this.child_count),
-                         this.child_count);
     }
 
     private int count_children () {
         try {
             if (this.pattern == "") {
-                var children = this.media_db.get_objects_by_search_expression (
+                return (int) this.media_db.get_object_count_by_search_expression (
                                         this.expression,
                                         "0",
                                         0,
                                         -1);
-                return children.size;
             } else {
                 int retval = 0;
                 var data = this.media_db.get_object_attribute_by_search_expression (
@@ -169,12 +164,11 @@ internal class Rygel.MediaExportQueryContainer : Rygel.MediaExportDBContainer {
         }
 
         var children = this.media_db.get_objects_by_search_expression (
-                                                          combined_expression,
-                                                          "0",
-                                                          offset,
-                                                          max_objects);
-
-        total_matches = children.size;
+                                        combined_expression,
+                                        "0",
+                                        offset,
+                                        max_objects,
+                                        out total_matches);
 
         return children;
     }
@@ -217,9 +211,9 @@ internal class Rygel.MediaExportQueryContainer : Rygel.MediaExportDBContainer {
                 // contain '%' chars which will makes sprintf crash
                 new_id = this.pattern.replace ("%s", new_id);
                 register_id (ref new_id);
-                var container = new MediaExportQueryContainer (this.media_db,
-                                                               new_id,
-                                                               meta_data);
+                var container = new QueryContainer (this.media_db,
+                                                    new_id,
+                                                    meta_data);
                 children.add (container);
             }
         }
@@ -238,7 +232,7 @@ internal class Rygel.MediaExportQueryContainer : Rygel.MediaExportDBContainer {
         }
         if (!virtual_container_map.has_key (md5)) {
             virtual_container_map[md5] = id;
-            debug (_("Registering %s for %s"), md5, id);
+            debug ("Registering %s for %s", md5, id);
         }
 
         id = PREFIX + md5;

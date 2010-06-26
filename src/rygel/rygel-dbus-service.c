@@ -88,6 +88,8 @@ enum  {
 	RYGEL_DBUS_SERVICE_DUMMY_PROPERTY
 };
 static guint _dynamic_request_name2 (DBusGProxy* self, const char* param1, guint param2, GError** error);
+static void _vala_dbus_register_object (DBusConnection* connection, const char* path, void* object);
+static void _vala_dbus_unregister_object (gpointer connection, GObject* object);
 RygelDBusService* rygel_dbus_service_new (RygelMain* main, GError** error);
 RygelDBusService* rygel_dbus_service_construct (GType object_type, RygelMain* main, GError** error);
 void rygel_main_exit (RygelMain* self, gint exit_code);
@@ -99,8 +101,6 @@ static DBusHandlerResult _dbus_rygel_dbus_service_introspect (RygelDBusService* 
 static DBusHandlerResult _dbus_rygel_dbus_service_property_get_all (RygelDBusService* self, DBusConnection* connection, DBusMessage* message);
 static DBusHandlerResult _dbus_rygel_dbus_service_Shutdown (RygelDBusService* self, DBusConnection* connection, DBusMessage* message);
 static void rygel_dbus_service_finalize (GObject* obj);
-static void _vala_dbus_register_object (DBusConnection* connection, const char* path, void* object);
-static void _vala_dbus_unregister_object (gpointer connection, GObject* object);
 
 static const DBusObjectPathVTable _rygel_dbus_service_dbus_path_vtable = {_rygel_dbus_service_dbus_unregister, rygel_dbus_service_dbus_message};
 static const _DBusObjectVTable _rygel_dbus_service_dbus_vtable = {rygel_dbus_service_dbus_register_object};
@@ -121,9 +121,28 @@ static guint _dynamic_request_name2 (DBusGProxy* self, const char* param1, guint
 }
 
 
+static void _vala_dbus_register_object (DBusConnection* connection, const char* path, void* object) {
+	const _DBusObjectVTable * vtable;
+	vtable = g_type_get_qdata (G_TYPE_FROM_INSTANCE (object), g_quark_from_static_string ("DBusObjectVTable"));
+	if (vtable) {
+		vtable->register_object (connection, path, object);
+	} else {
+		g_warning ("Object does not implement any D-Bus interface");
+	}
+}
+
+
+static void _vala_dbus_unregister_object (gpointer connection, GObject* object) {
+	char* path;
+	path = g_object_steal_data ((GObject*) object, "dbus_object_path");
+	dbus_connection_unregister_object_path (connection, path);
+	g_free (path);
+}
+
+
 #line 31 "rygel-dbus-service.vala"
 RygelDBusService* rygel_dbus_service_construct (GType object_type, RygelMain* main, GError** error) {
-#line 127 "rygel-dbus-service.c"
+#line 146 "rygel-dbus-service.c"
 	GError * _inner_error_;
 	RygelDBusService * self;
 	RygelMain* _tmp0_;
@@ -132,7 +151,7 @@ RygelDBusService* rygel_dbus_service_construct (GType object_type, RygelMain* ma
 	guint request_name_result;
 #line 31 "rygel-dbus-service.vala"
 	g_return_val_if_fail (main != NULL, NULL);
-#line 136 "rygel-dbus-service.c"
+#line 155 "rygel-dbus-service.c"
 	_inner_error_ = NULL;
 #line 31 "rygel-dbus-service.vala"
 	self = (RygelDBusService*) g_object_new (object_type, NULL);
@@ -140,7 +159,7 @@ RygelDBusService* rygel_dbus_service_construct (GType object_type, RygelMain* ma
 	self->priv->main = (_tmp0_ = _g_object_ref0 (main), _g_object_unref0 (self->priv->main), _tmp0_);
 #line 34 "rygel-dbus-service.vala"
 	conn = dbus_g_bus_get (DBUS_BUS_SESSION, &_inner_error_);
-#line 144 "rygel-dbus-service.c"
+#line 163 "rygel-dbus-service.c"
 	if (_inner_error_ != NULL) {
 		if (_inner_error_->domain == DBUS_GERROR) {
 			g_propagate_error (error, _inner_error_);
@@ -156,7 +175,7 @@ RygelDBusService* rygel_dbus_service_construct (GType object_type, RygelMain* ma
 	bus = dbus_g_proxy_new_for_name (conn, "org.freedesktop.DBus", "/org/freedesktop/DBus", "org.freedesktop.DBus");
 #line 41 "rygel-dbus-service.vala"
 	request_name_result = _dynamic_request_name2 (bus, rygel_dbus_service_RYGEL_SERVICE, (guint) 0, &_inner_error_);
-#line 160 "rygel-dbus-service.c"
+#line 179 "rygel-dbus-service.c"
 	if (_inner_error_ != NULL) {
 		if (_inner_error_->domain == DBUS_GERROR) {
 			g_propagate_error (error, _inner_error_);
@@ -177,11 +196,11 @@ RygelDBusService* rygel_dbus_service_construct (GType object_type, RygelMain* ma
 #line 45 "rygel-dbus-service.vala"
 		g_warning ("rygel-dbus-service.vala:45: Failed to start D-Bus service  name '%s' a" \
 "lready taken", rygel_dbus_service_RYGEL_SERVICE);
-#line 180 "rygel-dbus-service.c"
+#line 199 "rygel-dbus-service.c"
 	} else {
 #line 48 "rygel-dbus-service.vala"
 		_vala_dbus_register_object (dbus_g_connection_get_connection (conn), rygel_dbus_service_RYGEL_PATH, (GObject*) self);
-#line 184 "rygel-dbus-service.c"
+#line 203 "rygel-dbus-service.c"
 	}
 	_dbus_g_connection_unref0 (conn);
 	_g_object_unref0 (bus);
@@ -193,7 +212,7 @@ RygelDBusService* rygel_dbus_service_construct (GType object_type, RygelMain* ma
 RygelDBusService* rygel_dbus_service_new (RygelMain* main, GError** error) {
 #line 31 "rygel-dbus-service.vala"
 	return rygel_dbus_service_construct (RYGEL_TYPE_DBUS_SERVICE, main, error);
-#line 196 "rygel-dbus-service.c"
+#line 215 "rygel-dbus-service.c"
 }
 
 
@@ -203,7 +222,7 @@ void rygel_dbus_service_Shutdown (RygelDBusService* self) {
 	g_return_if_fail (self != NULL);
 #line 53 "rygel-dbus-service.vala"
 	rygel_main_exit (self->priv->main, 0);
-#line 206 "rygel-dbus-service.c"
+#line 225 "rygel-dbus-service.c"
 }
 
 
@@ -352,25 +371,6 @@ GType rygel_dbus_service_get_type (void) {
 		g_once_init_leave (&rygel_dbus_service_type_id__volatile, rygel_dbus_service_type_id);
 	}
 	return rygel_dbus_service_type_id__volatile;
-}
-
-
-static void _vala_dbus_register_object (DBusConnection* connection, const char* path, void* object) {
-	const _DBusObjectVTable * vtable;
-	vtable = g_type_get_qdata (G_TYPE_FROM_INSTANCE (object), g_quark_from_static_string ("DBusObjectVTable"));
-	if (vtable) {
-		vtable->register_object (connection, path, object);
-	} else {
-		g_warning ("Object does not implement any D-Bus interface");
-	}
-}
-
-
-static void _vala_dbus_unregister_object (gpointer connection, GObject* object) {
-	char* path;
-	path = g_object_steal_data ((GObject*) object, "dbus_object_path");
-	dbus_connection_unregister_object_path (connection, path);
-	g_free (path);
 }
 
 

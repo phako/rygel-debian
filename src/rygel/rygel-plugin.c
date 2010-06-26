@@ -213,7 +213,7 @@ static void rygel_plugin_set_property (GObject * object, guint property_id, cons
 
 
 
-#line 63 "rygel-plugin.vala"
+#line 62 "rygel-plugin.vala"
 RygelPlugin* rygel_plugin_construct (GType object_type, const char* desc_path, const char* name, const char* title, const char* description) {
 #line 219 "rygel-plugin.c"
 	RygelPlugin * self;
@@ -228,59 +228,59 @@ RygelPlugin* rygel_plugin_construct (GType object_type, const char* desc_path, c
 	char* _tmp8_;
 	RygelIconInfo* _tmp9_;
 	char* _tmp10_;
-#line 63 "rygel-plugin.vala"
+#line 62 "rygel-plugin.vala"
 	g_return_val_if_fail (desc_path != NULL, NULL);
-#line 63 "rygel-plugin.vala"
+#line 62 "rygel-plugin.vala"
 	g_return_val_if_fail (name != NULL, NULL);
 #line 236 "rygel-plugin.c"
 	self = g_object_newv (object_type, 0, NULL);
-#line 67 "rygel-plugin.vala"
+#line 66 "rygel-plugin.vala"
 	self->desc_path = (_tmp0_ = g_strdup (desc_path), _g_free0 (self->desc_path), _tmp0_);
-#line 68 "rygel-plugin.vala"
+#line 67 "rygel-plugin.vala"
 	self->name = (_tmp1_ = g_strdup (name), _g_free0 (self->name), _tmp1_);
-#line 69 "rygel-plugin.vala"
+#line 68 "rygel-plugin.vala"
 	self->title = (_tmp2_ = g_strdup (title), _g_free0 (self->title), _tmp2_);
-#line 70 "rygel-plugin.vala"
+#line 69 "rygel-plugin.vala"
 	self->description = (_tmp3_ = g_strdup (description), _g_free0 (self->description), _tmp3_);
-#line 72 "rygel-plugin.vala"
+#line 71 "rygel-plugin.vala"
 	rygel_plugin_set_available (self, TRUE);
-#line 74 "rygel-plugin.vala"
+#line 73 "rygel-plugin.vala"
 	if (title == NULL) {
 #line 250 "rygel-plugin.c"
 		char* _tmp4_;
-#line 75 "rygel-plugin.vala"
+#line 74 "rygel-plugin.vala"
 		self->title = (_tmp4_ = g_strdup (name), _g_free0 (self->title), _tmp4_);
 #line 254 "rygel-plugin.c"
 	}
-#line 78 "rygel-plugin.vala"
+#line 77 "rygel-plugin.vala"
 	self->resource_infos = (_tmp5_ = gee_array_list_new (RYGEL_TYPE_RESOURCE_INFO, (GBoxedCopyFunc) rygel_resource_info_ref, rygel_resource_info_unref, NULL), _g_object_unref0 (self->resource_infos), _tmp5_);
-#line 79 "rygel-plugin.vala"
+#line 78 "rygel-plugin.vala"
 	self->icon_infos = (_tmp6_ = gee_array_list_new (RYGEL_TYPE_ICON_INFO, (GBoxedCopyFunc) rygel_icon_info_ref, rygel_icon_info_unref, NULL), _g_object_unref0 (self->icon_infos), _tmp6_);
-#line 80 "rygel-plugin.vala"
+#line 79 "rygel-plugin.vala"
 	self->default_icons = (_tmp7_ = gee_array_list_new (RYGEL_TYPE_ICON_INFO, (GBoxedCopyFunc) rygel_icon_info_ref, rygel_icon_info_unref, NULL), _g_object_unref0 (self->default_icons), _tmp7_);
-#line 82 "rygel-plugin.vala"
+#line 81 "rygel-plugin.vala"
 	icon = rygel_icon_info_new (RYGEL_PLUGIN_ICON_MIME);
-#line 83 "rygel-plugin.vala"
+#line 82 "rygel-plugin.vala"
 	icon->uri = (_tmp8_ = g_strdup (RYGEL_PLUGIN_ICON_BIG), _g_free0 (icon->uri), _tmp8_);
-#line 84 "rygel-plugin.vala"
+#line 83 "rygel-plugin.vala"
 	icon->width = RYGEL_PLUGIN_ICON_BIG_WIDTH;
-#line 85 "rygel-plugin.vala"
+#line 84 "rygel-plugin.vala"
 	icon->height = RYGEL_PLUGIN_ICON_BIG_HEIGHT;
+#line 85 "rygel-plugin.vala"
+	icon->depth = RYGEL_PLUGIN_ICON_DEPTH;
 #line 86 "rygel-plugin.vala"
-	icon->depth = RYGEL_PLUGIN_ICON_DEPTH;
-#line 87 "rygel-plugin.vala"
 	gee_abstract_collection_add ((GeeAbstractCollection*) self->default_icons, icon);
-#line 89 "rygel-plugin.vala"
+#line 88 "rygel-plugin.vala"
 	icon = (_tmp9_ = rygel_icon_info_new (RYGEL_PLUGIN_ICON_MIME), _rygel_icon_info_unref0 (icon), _tmp9_);
-#line 90 "rygel-plugin.vala"
+#line 89 "rygel-plugin.vala"
 	icon->uri = (_tmp10_ = g_strdup (RYGEL_PLUGIN_ICON_SMALL), _g_free0 (icon->uri), _tmp10_);
-#line 91 "rygel-plugin.vala"
+#line 90 "rygel-plugin.vala"
 	icon->width = RYGEL_PLUGIN_ICON_SMALL_WIDTH;
-#line 92 "rygel-plugin.vala"
+#line 91 "rygel-plugin.vala"
 	icon->height = RYGEL_PLUGIN_ICON_SMALL_HEIGHT;
-#line 93 "rygel-plugin.vala"
+#line 92 "rygel-plugin.vala"
 	icon->depth = RYGEL_PLUGIN_ICON_DEPTH;
-#line 94 "rygel-plugin.vala"
+#line 93 "rygel-plugin.vala"
 	gee_abstract_collection_add ((GeeAbstractCollection*) self->default_icons, icon);
 #line 286 "rygel-plugin.c"
 	_rygel_icon_info_unref0 (icon);
@@ -288,36 +288,36 @@ RygelPlugin* rygel_plugin_construct (GType object_type, const char* desc_path, c
 }
 
 
-#line 63 "rygel-plugin.vala"
+#line 62 "rygel-plugin.vala"
 RygelPlugin* rygel_plugin_new (const char* desc_path, const char* name, const char* title, const char* description) {
-#line 63 "rygel-plugin.vala"
+#line 62 "rygel-plugin.vala"
 	return rygel_plugin_construct (RYGEL_TYPE_PLUGIN, desc_path, name, title, description);
 #line 296 "rygel-plugin.c"
 }
 
 
-#line 97 "rygel-plugin.vala"
+#line 96 "rygel-plugin.vala"
 RygelPlugin* rygel_plugin_construct_MediaServer (GType object_type, const char* name, const char* title, GType content_dir_type, const char* description) {
 #line 302 "rygel-plugin.c"
 	RygelPlugin * self;
 	RygelResourceInfo* resource_info;
 	RygelResourceInfo* _tmp0_;
 	RygelResourceInfo* _tmp1_;
-#line 97 "rygel-plugin.vala"
+#line 96 "rygel-plugin.vala"
 	g_return_val_if_fail (name != NULL, NULL);
-#line 101 "rygel-plugin.vala"
+#line 100 "rygel-plugin.vala"
 	self = (RygelPlugin*) rygel_plugin_construct (object_type, RYGEL_PLUGIN_MEDIA_SERVER_DESC_PATH, name, title, description);
-#line 104 "rygel-plugin.vala"
+#line 103 "rygel-plugin.vala"
 	resource_info = rygel_resource_info_new (RYGEL_CONTENT_DIRECTORY_UPNP_ID, RYGEL_CONTENT_DIRECTORY_UPNP_TYPE, RYGEL_CONTENT_DIRECTORY_DESCRIPTION_PATH, content_dir_type);
-#line 108 "rygel-plugin.vala"
+#line 107 "rygel-plugin.vala"
 	rygel_plugin_add_resource (self, resource_info);
-#line 111 "rygel-plugin.vala"
+#line 110 "rygel-plugin.vala"
 	resource_info = (_tmp0_ = rygel_resource_info_new (RYGEL_CONNECTION_MANAGER_UPNP_ID, RYGEL_CONNECTION_MANAGER_UPNP_TYPE, RYGEL_CONNECTION_MANAGER_DESCRIPTION_PATH, RYGEL_TYPE_SOURCE_CONNECTION_MANAGER), _rygel_resource_info_unref0 (resource_info), _tmp0_);
-#line 116 "rygel-plugin.vala"
+#line 115 "rygel-plugin.vala"
 	rygel_plugin_add_resource (self, resource_info);
-#line 117 "rygel-plugin.vala"
+#line 116 "rygel-plugin.vala"
 	resource_info = (_tmp1_ = rygel_resource_info_new (RYGEL_MEDIA_RECEIVER_REGISTRAR_UPNP_ID, RYGEL_MEDIA_RECEIVER_REGISTRAR_UPNP_TYPE, RYGEL_MEDIA_RECEIVER_REGISTRAR_DESCRIPTION_PATH, RYGEL_TYPE_MEDIA_RECEIVER_REGISTRAR), _rygel_resource_info_unref0 (resource_info), _tmp1_);
-#line 122 "rygel-plugin.vala"
+#line 121 "rygel-plugin.vala"
 	rygel_plugin_add_resource (self, resource_info);
 #line 323 "rygel-plugin.c"
 	_rygel_resource_info_unref0 (resource_info);
@@ -325,35 +325,35 @@ RygelPlugin* rygel_plugin_construct_MediaServer (GType object_type, const char* 
 }
 
 
-#line 97 "rygel-plugin.vala"
+#line 96 "rygel-plugin.vala"
 RygelPlugin* rygel_plugin_new_MediaServer (const char* name, const char* title, GType content_dir_type, const char* description) {
-#line 97 "rygel-plugin.vala"
+#line 96 "rygel-plugin.vala"
 	return rygel_plugin_construct_MediaServer (RYGEL_TYPE_PLUGIN, name, title, content_dir_type, description);
 #line 333 "rygel-plugin.c"
 }
 
 
-#line 125 "rygel-plugin.vala"
+#line 124 "rygel-plugin.vala"
 void rygel_plugin_add_resource (RygelPlugin* self, RygelResourceInfo* resource_info) {
-#line 125 "rygel-plugin.vala"
+#line 124 "rygel-plugin.vala"
 	g_return_if_fail (self != NULL);
-#line 125 "rygel-plugin.vala"
+#line 124 "rygel-plugin.vala"
 	g_return_if_fail (resource_info != NULL);
-#line 126 "rygel-plugin.vala"
+#line 125 "rygel-plugin.vala"
 	gee_abstract_collection_add ((GeeAbstractCollection*) self->resource_infos, resource_info);
-#line 127 "rygel-plugin.vala"
+#line 126 "rygel-plugin.vala"
 	gupnp_resource_factory_register_resource_type ((GUPnPResourceFactory*) self, resource_info->upnp_type, resource_info->type);
 #line 347 "rygel-plugin.c"
 }
 
 
-#line 131 "rygel-plugin.vala"
+#line 130 "rygel-plugin.vala"
 void rygel_plugin_add_icon (RygelPlugin* self, RygelIconInfo* icon_info) {
-#line 131 "rygel-plugin.vala"
+#line 130 "rygel-plugin.vala"
 	g_return_if_fail (self != NULL);
-#line 131 "rygel-plugin.vala"
+#line 130 "rygel-plugin.vala"
 	g_return_if_fail (icon_info != NULL);
-#line 132 "rygel-plugin.vala"
+#line 131 "rygel-plugin.vala"
 	gee_abstract_collection_add ((GeeAbstractCollection*) self->icon_infos, icon_info);
 #line 359 "rygel-plugin.c"
 }
@@ -363,7 +363,7 @@ gboolean rygel_plugin_get_available (RygelPlugin* self) {
 	gboolean result;
 	g_return_val_if_fail (self != NULL, FALSE);
 	result = self->priv->_available;
-#line 56 "rygel-plugin.vala"
+#line 55 "rygel-plugin.vala"
 	return result;
 #line 369 "rygel-plugin.c"
 }

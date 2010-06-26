@@ -23,6 +23,7 @@ librygel_media_export_la_SOURCES = rygel-media-export-plugin.vala \
 				   rygel-media-export-db-container.vala \
 				   rygel-media-export-db-object-factory.vala \
 				   rygel-media-export-media-cache.vala \
+				   rygel-media-export-media-cache-upgrader.vala \
 				   rygel-media-export-metadata-extractor.vala \
 				   rygel-media-export-null-container.vala \
 				   rygel-media-export-dummy-container.vala \
@@ -32,7 +33,6 @@ librygel_media_export_la_SOURCES = rygel-media-export-plugin.vala \
 				   rygel-media-export-dbus-service.vala \
 				   rygel-media-export-recursive-file-monitor.vala \
 				   rygel-media-export-harvester.vala \
-				   rygel-media-export-file-queue-entry.vala \
 				   rygel-media-export-item.vala \
 				   rygel-media-export-writable-container.vala \
 				   rygel-media-export-object-factory.vala
@@ -40,7 +40,6 @@ librygel_media_export_la_SOURCES = rygel-media-export-plugin.vala \
 librygel_media_export_la_VALAFLAGS = --vapidir=$(top_srcdir)/src/rygel \
 				     --pkg dbus-glib-1 \
                                      --pkg rygel-1.0 \
-                                     --pkg cstuff \
                                      --pkg gupnp-1.0 \
                                      --pkg gupnp-av-1.0 \
                                      --pkg libsoup-2.4 \

@@ -43,8 +43,8 @@ DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in \
 	rygel-media-export-dbus-service.c \
 	rygel-media-export-dummy-container.c \
 	rygel-media-export-dynamic-container.c \
-	rygel-media-export-file-queue-entry.c \
 	rygel-media-export-harvester.c rygel-media-export-item.c \
+	rygel-media-export-media-cache-upgrader.c \
 	rygel-media-export-media-cache.c \
 	rygel-media-export-metadata-extractor.c \
 	rygel-media-export-null-container.c \
@@ -98,6 +98,7 @@ am_librygel_media_export_la_OBJECTS = rygel-media-export-plugin.lo \
 	rygel-media-export-db-container.lo \
 	rygel-media-export-db-object-factory.lo \
 	rygel-media-export-media-cache.lo \
+	rygel-media-export-media-cache-upgrader.lo \
 	rygel-media-export-metadata-extractor.lo \
 	rygel-media-export-null-container.lo \
 	rygel-media-export-dummy-container.lo \
@@ -106,9 +107,7 @@ am_librygel_media_export_la_OBJECTS = rygel-media-export-plugin.lo \
 	rygel-media-export-query-container.lo \
 	rygel-media-export-dbus-service.lo \
 	rygel-media-export-recursive-file-monitor.lo \
-	rygel-media-export-harvester.lo \
-	rygel-media-export-file-queue-entry.lo \
-	rygel-media-export-item.lo \
+	rygel-media-export-harvester.lo rygel-media-export-item.lo \
 	rygel-media-export-writable-container.lo \
 	rygel-media-export-object-factory.lo
 librygel_media_export_la_OBJECTS =  \
@@ -341,6 +340,7 @@ librygel_media_export_la_SOURCES = rygel-media-export-plugin.vala \
 				   rygel-media-export-db-container.vala \
 				   rygel-media-export-db-object-factory.vala \
 				   rygel-media-export-media-cache.vala \
+				   rygel-media-export-media-cache-upgrader.vala \
 				   rygel-media-export-metadata-extractor.vala \
 				   rygel-media-export-null-container.vala \
 				   rygel-media-export-dummy-container.vala \
@@ -350,7 +350,6 @@ librygel_media_export_la_SOURCES = rygel-media-export-plugin.vala \
 				   rygel-media-export-dbus-service.vala \
 				   rygel-media-export-recursive-file-monitor.vala \
 				   rygel-media-export-harvester.vala \
-				   rygel-media-export-file-queue-entry.vala \
 				   rygel-media-export-item.vala \
 				   rygel-media-export-writable-container.vala \
 				   rygel-media-export-object-factory.vala
@@ -358,7 +357,6 @@ librygel_media_export_la_SOURCES = rygel-media-export-plugin.vala \
 librygel_media_export_la_VALAFLAGS = --vapidir=$(top_srcdir)/src/rygel \
 				     --pkg dbus-glib-1 \
                                      --pkg rygel-1.0 \
-                                     --pkg cstuff \
                                      --pkg gupnp-1.0 \
                                      --pkg gupnp-av-1.0 \
                                      --pkg libsoup-2.4 \
@@ -456,9 +454,9 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-media-export-dbus-service.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-media-export-dummy-container.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-media-export-dynamic-container.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-media-export-file-queue-entry.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-media-export-harvester.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-media-export-item.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-media-export-media-cache-upgrader.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-media-export-media-cache.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-media-export-metadata-extractor.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-media-export-null-container.Plo@am__quote@
@@ -517,6 +515,11 @@ $(srcdir)/rygel-media-export-media-cache.c: $(srcdir)/librygel_media_export_la_v
 	  rm -f $(srcdir)/librygel_media_export_la_vala.stamp; \
 	  $(am__cd) $(srcdir) && $(MAKE) $(AM_MAKEFLAGS) librygel_media_export_la_vala.stamp; \
 	fi
+$(srcdir)/rygel-media-export-media-cache-upgrader.c: $(srcdir)/librygel_media_export_la_vala.stamp
+	@if test -f $@; then :; else \
+	  rm -f $(srcdir)/librygel_media_export_la_vala.stamp; \
+	  $(am__cd) $(srcdir) && $(MAKE) $(AM_MAKEFLAGS) librygel_media_export_la_vala.stamp; \
+	fi
 $(srcdir)/rygel-media-export-metadata-extractor.c: $(srcdir)/librygel_media_export_la_vala.stamp
 	@if test -f $@; then :; else \
 	  rm -f $(srcdir)/librygel_media_export_la_vala.stamp; \
@@ -558,11 +561,6 @@ $(srcdir)/rygel-media-export-recursive-file-monitor.c: $(srcdir)/librygel_media_
 	  $(am__cd) $(srcdir) && $(MAKE) $(AM_MAKEFLAGS) librygel_media_export_la_vala.stamp; \
 	fi
 $(srcdir)/rygel-media-export-harvester.c: $(srcdir)/librygel_media_export_la_vala.stamp
-	@if test -f $@; then :; else \
-	  rm -f $(srcdir)/librygel_media_export_la_vala.stamp; \
-	  $(am__cd) $(srcdir) && $(MAKE) $(AM_MAKEFLAGS) librygel_media_export_la_vala.stamp; \
-	fi
-$(srcdir)/rygel-media-export-file-queue-entry.c: $(srcdir)/librygel_media_export_la_vala.stamp
 	@if test -f $@; then :; else \
 	  rm -f $(srcdir)/librygel_media_export_la_vala.stamp; \
 	  $(am__cd) $(srcdir) && $(MAKE) $(AM_MAKEFLAGS) librygel_media_export_la_vala.stamp; \
@@ -713,9 +711,9 @@ maintainer-clean-generic:
 	-rm -f rygel-media-export-dbus-service.c
 	-rm -f rygel-media-export-dummy-container.c
 	-rm -f rygel-media-export-dynamic-container.c
-	-rm -f rygel-media-export-file-queue-entry.c
 	-rm -f rygel-media-export-harvester.c
 	-rm -f rygel-media-export-item.c
+	-rm -f rygel-media-export-media-cache-upgrader.c
 	-rm -f rygel-media-export-media-cache.c
 	-rm -f rygel-media-export-metadata-extractor.c
 	-rm -f rygel-media-export-null-container.c

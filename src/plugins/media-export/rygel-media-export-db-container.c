@@ -32,23 +32,23 @@
 #include <gee.h>
 
 
-#define RYGEL_TYPE_MEDIA_EXPORT_DB_CONTAINER (rygel_media_export_db_container_get_type ())
-#define RYGEL_MEDIA_EXPORT_DB_CONTAINER(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_MEDIA_EXPORT_DB_CONTAINER, RygelMediaExportDBContainer))
-#define RYGEL_MEDIA_EXPORT_DB_CONTAINER_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TYPE_MEDIA_EXPORT_DB_CONTAINER, RygelMediaExportDBContainerClass))
-#define RYGEL_IS_MEDIA_EXPORT_DB_CONTAINER(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TYPE_MEDIA_EXPORT_DB_CONTAINER))
-#define RYGEL_IS_MEDIA_EXPORT_DB_CONTAINER_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_TYPE_MEDIA_EXPORT_DB_CONTAINER))
-#define RYGEL_MEDIA_EXPORT_DB_CONTAINER_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_TYPE_MEDIA_EXPORT_DB_CONTAINER, RygelMediaExportDBContainerClass))
+#define RYGEL_MEDIA_EXPORT_TYPE_DB_CONTAINER (rygel_media_export_db_container_get_type ())
+#define RYGEL_MEDIA_EXPORT_DB_CONTAINER(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_MEDIA_EXPORT_TYPE_DB_CONTAINER, RygelMediaExportDBContainer))
+#define RYGEL_MEDIA_EXPORT_DB_CONTAINER_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_MEDIA_EXPORT_TYPE_DB_CONTAINER, RygelMediaExportDBContainerClass))
+#define RYGEL_MEDIA_EXPORT_IS_DB_CONTAINER(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_MEDIA_EXPORT_TYPE_DB_CONTAINER))
+#define RYGEL_MEDIA_EXPORT_IS_DB_CONTAINER_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_MEDIA_EXPORT_TYPE_DB_CONTAINER))
+#define RYGEL_MEDIA_EXPORT_DB_CONTAINER_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_MEDIA_EXPORT_TYPE_DB_CONTAINER, RygelMediaExportDBContainerClass))
 
 typedef struct _RygelMediaExportDBContainer RygelMediaExportDBContainer;
 typedef struct _RygelMediaExportDBContainerClass RygelMediaExportDBContainerClass;
 typedef struct _RygelMediaExportDBContainerPrivate RygelMediaExportDBContainerPrivate;
 
-#define RYGEL_TYPE_MEDIA_EXPORT_MEDIA_CACHE (rygel_media_export_media_cache_get_type ())
-#define RYGEL_MEDIA_EXPORT_MEDIA_CACHE(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_MEDIA_EXPORT_MEDIA_CACHE, RygelMediaExportMediaCache))
-#define RYGEL_MEDIA_EXPORT_MEDIA_CACHE_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TYPE_MEDIA_EXPORT_MEDIA_CACHE, RygelMediaExportMediaCacheClass))
-#define RYGEL_IS_MEDIA_EXPORT_MEDIA_CACHE(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TYPE_MEDIA_EXPORT_MEDIA_CACHE))
-#define RYGEL_IS_MEDIA_EXPORT_MEDIA_CACHE_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_TYPE_MEDIA_EXPORT_MEDIA_CACHE))
-#define RYGEL_MEDIA_EXPORT_MEDIA_CACHE_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_TYPE_MEDIA_EXPORT_MEDIA_CACHE, RygelMediaExportMediaCacheClass))
+#define RYGEL_MEDIA_EXPORT_TYPE_MEDIA_CACHE (rygel_media_export_media_cache_get_type ())
+#define RYGEL_MEDIA_EXPORT_MEDIA_CACHE(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_MEDIA_EXPORT_TYPE_MEDIA_CACHE, RygelMediaExportMediaCache))
+#define RYGEL_MEDIA_EXPORT_MEDIA_CACHE_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_MEDIA_EXPORT_TYPE_MEDIA_CACHE, RygelMediaExportMediaCacheClass))
+#define RYGEL_MEDIA_EXPORT_IS_MEDIA_CACHE(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_MEDIA_EXPORT_TYPE_MEDIA_CACHE))
+#define RYGEL_MEDIA_EXPORT_IS_MEDIA_CACHE_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_MEDIA_EXPORT_TYPE_MEDIA_CACHE))
+#define RYGEL_MEDIA_EXPORT_MEDIA_CACHE_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_MEDIA_EXPORT_TYPE_MEDIA_CACHE, RygelMediaExportMediaCacheClass))
 
 typedef struct _RygelMediaExportMediaCache RygelMediaExportMediaCache;
 typedef struct _RygelMediaExportMediaCacheClass RygelMediaExportMediaCacheClass;
@@ -69,10 +69,10 @@ struct _RygelMediaExportDBContainerClass {
 };
 
 typedef enum  {
-	RYGEL_DATABASE_ERROR_IO_ERROR,
-	RYGEL_DATABASE_ERROR_SQLITE_ERROR
-} RygelDatabaseError;
-#define RYGEL_DATABASE_ERROR rygel_database_error_quark ()
+	RYGEL_MEDIA_EXPORT_DATABASE_ERROR_IO_ERROR,
+	RYGEL_MEDIA_EXPORT_DATABASE_ERROR_SQLITE_ERROR
+} RygelMediaExportDatabaseError;
+#define RYGEL_MEDIA_EXPORT_DATABASE_ERROR rygel_media_export_database_error_quark ()
 struct _RygelMediaExportDbContainerGetChildrenData {
 	int _state_;
 	GAsyncResult* _res_;
@@ -112,7 +112,7 @@ GType rygel_media_export_media_cache_get_type (void);
 enum  {
 	RYGEL_MEDIA_EXPORT_DB_CONTAINER_DUMMY_PROPERTY
 };
-GQuark rygel_database_error_quark (void);
+GQuark rygel_media_export_database_error_quark (void);
 gint rygel_media_export_media_cache_get_child_count (RygelMediaExportMediaCache* self, const char* container_id, GError** error);
 static void rygel_media_export_db_container_on_db_container_updated (RygelMediaExportDBContainer* self, RygelMediaContainer* container, RygelMediaContainer* container_updated);
 static void _rygel_media_export_db_container_on_db_container_updated_rygel_media_container_container_updated (RygelMediaContainer* _sender, RygelMediaContainer* container, gpointer self);
@@ -126,7 +126,7 @@ static gboolean rygel_media_export_db_container_real_get_children_co (RygelMedia
 static void rygel_media_export_db_container_real_search_data_free (gpointer _data);
 static void rygel_media_export_db_container_real_search (RygelMediaContainer* base, RygelSearchExpression* expression, guint offset, guint max_count, GCancellable* cancellable, GAsyncReadyCallback _callback_, gpointer _user_data_);
 static void rygel_media_export_db_container_search_ready (GObject* source_object, GAsyncResult* _res_, gpointer _user_data_);
-GeeList* rygel_media_export_media_cache_get_objects_by_search_expression (RygelMediaExportMediaCache* self, RygelSearchExpression* expression, const char* container_id, guint offset, guint max_count, GError** error);
+GeeList* rygel_media_export_media_cache_get_objects_by_search_expression (RygelMediaExportMediaCache* self, RygelSearchExpression* expression, const char* container_id, guint offset, guint max_count, guint* total_matches, GError** error);
 static gboolean rygel_media_export_db_container_real_search_co (RygelMediaExportDbContainerSearchData* data);
 static void rygel_media_export_db_container_finalize (GObject* obj);
 
@@ -165,8 +165,8 @@ RygelMediaExportDBContainer* rygel_media_export_db_container_construct (GType ob
 		_tmp0_ = rygel_media_export_media_cache_get_child_count (media_db, id, &_inner_error_);
 #line 167 "rygel-media-export-db-container.c"
 		if (_inner_error_ != NULL) {
-			if (_inner_error_->domain == RYGEL_DATABASE_ERROR) {
-				goto __catch0_rygel_database_error;
+			if (_inner_error_->domain == RYGEL_MEDIA_EXPORT_DATABASE_ERROR) {
+				goto __catch0_rygel_media_export_database_error;
 			}
 			g_critical ("file %s: line %d: unexpected error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
 			g_clear_error (&_inner_error_);
@@ -177,7 +177,7 @@ RygelMediaExportDBContainer* rygel_media_export_db_container_construct (GType ob
 #line 178 "rygel-media-export-db-container.c"
 	}
 	goto __finally0;
-	__catch0_rygel_database_error:
+	__catch0_rygel_media_export_database_error:
 	{
 		GError * e;
 		e = _inner_error_;
@@ -212,7 +212,7 @@ RygelMediaExportDBContainer* rygel_media_export_db_container_construct (GType ob
 #line 27 "rygel-media-export-db-container.vala"
 RygelMediaExportDBContainer* rygel_media_export_db_container_new (RygelMediaExportMediaCache* media_db, const char* id, const char* title) {
 #line 27 "rygel-media-export-db-container.vala"
-	return rygel_media_export_db_container_construct (RYGEL_TYPE_MEDIA_EXPORT_DB_CONTAINER, media_db, id, title);
+	return rygel_media_export_db_container_construct (RYGEL_MEDIA_EXPORT_TYPE_DB_CONTAINER, media_db, id, title);
 #line 216 "rygel-media-export-db-container.c"
 }
 
@@ -235,8 +235,8 @@ static void rygel_media_export_db_container_on_db_container_updated (RygelMediaE
 		_tmp0_ = rygel_media_export_media_cache_get_child_count (self->media_db, ((RygelMediaObject*) self)->id, &_inner_error_);
 #line 236 "rygel-media-export-db-container.c"
 		if (_inner_error_ != NULL) {
-			if (_inner_error_->domain == RYGEL_DATABASE_ERROR) {
-				goto __catch1_rygel_database_error;
+			if (_inner_error_->domain == RYGEL_MEDIA_EXPORT_DATABASE_ERROR) {
+				goto __catch1_rygel_media_export_database_error;
 			}
 			g_critical ("file %s: line %d: unexpected error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
 			g_clear_error (&_inner_error_);
@@ -247,7 +247,7 @@ static void rygel_media_export_db_container_on_db_container_updated (RygelMediaE
 #line 247 "rygel-media-export-db-container.c"
 	}
 	goto __finally1;
-	__catch1_rygel_database_error:
+	__catch1_rygel_media_export_database_error:
 	{
 		GError * e;
 		e = _inner_error_;
@@ -422,7 +422,6 @@ static GeeList* rygel_media_export_db_container_real_search_finish (RygelMediaCo
 	}
 	_data_ = g_simple_async_result_get_op_res_gpointer (G_SIMPLE_ASYNC_RESULT (_res_));
 	*total_matches = _data_->total_matches;
-	_data_->total_matches = NULL;
 	result = _data_->result;
 	_data_->result = NULL;
 	return result;
@@ -451,9 +450,9 @@ static gboolean rygel_media_export_db_container_real_search_co (RygelMediaExport
 		if (data->max_objects == 0) {
 #line 77 "rygel-media-export-db-container.vala"
 			data->max_objects = (guint) (-1);
-#line 453 "rygel-media-export-db-container.c"
+#line 452 "rygel-media-export-db-container.c"
 		}
-		data->children = rygel_media_export_media_cache_get_objects_by_search_expression (data->self->media_db, data->expression, ((RygelMediaObject*) data->self)->id, data->offset, data->max_objects, &data->_inner_error_);
+		data->children = rygel_media_export_media_cache_get_objects_by_search_expression (data->self->media_db, data->expression, ((RygelMediaObject*) data->self)->id, data->offset, data->max_objects, &data->total_matches, &data->_inner_error_);
 		if (data->_inner_error_ != NULL) {
 			g_simple_async_result_set_from_error (data->_async_result, data->_inner_error_);
 			g_error_free (data->_inner_error_);
@@ -467,9 +466,6 @@ static gboolean rygel_media_export_db_container_real_search_co (RygelMediaExport
 				return FALSE;
 			}
 		}
-#line 86 "rygel-media-export-db-container.vala"
-		data->total_matches = (guint) gee_collection_get_size ((GeeCollection*) data->children);
-#line 471 "rygel-media-export-db-container.c"
 		data->result = data->children;
 		{
 			if (data->_state_ == 0) {

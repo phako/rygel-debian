@@ -41,16 +41,16 @@ typedef struct _RygelNullContainer RygelNullContainer;
 typedef struct _RygelNullContainerClass RygelNullContainerClass;
 typedef struct _RygelNullContainerPrivate RygelNullContainerPrivate;
 
-#define RYGEL_TYPE_DUMMY_CONTAINER (rygel_dummy_container_get_type ())
-#define RYGEL_DUMMY_CONTAINER(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_DUMMY_CONTAINER, RygelDummyContainer))
-#define RYGEL_DUMMY_CONTAINER_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TYPE_DUMMY_CONTAINER, RygelDummyContainerClass))
-#define RYGEL_IS_DUMMY_CONTAINER(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TYPE_DUMMY_CONTAINER))
-#define RYGEL_IS_DUMMY_CONTAINER_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_TYPE_DUMMY_CONTAINER))
-#define RYGEL_DUMMY_CONTAINER_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_TYPE_DUMMY_CONTAINER, RygelDummyContainerClass))
+#define RYGEL_MEDIA_EXPORT_TYPE_DUMMY_CONTAINER (rygel_media_export_dummy_container_get_type ())
+#define RYGEL_MEDIA_EXPORT_DUMMY_CONTAINER(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_MEDIA_EXPORT_TYPE_DUMMY_CONTAINER, RygelMediaExportDummyContainer))
+#define RYGEL_MEDIA_EXPORT_DUMMY_CONTAINER_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_MEDIA_EXPORT_TYPE_DUMMY_CONTAINER, RygelMediaExportDummyContainerClass))
+#define RYGEL_MEDIA_EXPORT_IS_DUMMY_CONTAINER(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_MEDIA_EXPORT_TYPE_DUMMY_CONTAINER))
+#define RYGEL_MEDIA_EXPORT_IS_DUMMY_CONTAINER_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_MEDIA_EXPORT_TYPE_DUMMY_CONTAINER))
+#define RYGEL_MEDIA_EXPORT_DUMMY_CONTAINER_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_MEDIA_EXPORT_TYPE_DUMMY_CONTAINER, RygelMediaExportDummyContainerClass))
 
-typedef struct _RygelDummyContainer RygelDummyContainer;
-typedef struct _RygelDummyContainerClass RygelDummyContainerClass;
-typedef struct _RygelDummyContainerPrivate RygelDummyContainerPrivate;
+typedef struct _RygelMediaExportDummyContainer RygelMediaExportDummyContainer;
+typedef struct _RygelMediaExportDummyContainerClass RygelMediaExportDummyContainerClass;
+typedef struct _RygelMediaExportDummyContainerPrivate RygelMediaExportDummyContainerPrivate;
 #define _g_object_unref0(var) ((var == NULL) ? NULL : (var = (g_object_unref (var), NULL)))
 #define _g_free0(var) (var = (g_free (var), NULL))
 
@@ -63,31 +63,31 @@ struct _RygelNullContainerClass {
 	RygelMediaContainerClass parent_class;
 };
 
-struct _RygelDummyContainer {
+struct _RygelMediaExportDummyContainer {
 	RygelNullContainer parent_instance;
-	RygelDummyContainerPrivate * priv;
+	RygelMediaExportDummyContainerPrivate * priv;
 	GFile* file;
 	GeeArrayList* seen_children;
 };
 
-struct _RygelDummyContainerClass {
+struct _RygelMediaExportDummyContainerClass {
 	RygelNullContainerClass parent_class;
 };
 
 
-static gpointer rygel_dummy_container_parent_class = NULL;
+static gpointer rygel_media_export_dummy_container_parent_class = NULL;
 
 GType rygel_null_container_get_type (void);
-GType rygel_dummy_container_get_type (void);
+GType rygel_media_export_dummy_container_get_type (void);
 enum  {
-	RYGEL_DUMMY_CONTAINER_DUMMY_PROPERTY
+	RYGEL_MEDIA_EXPORT_DUMMY_CONTAINER_DUMMY_PROPERTY
 };
 RygelNullContainer* rygel_null_container_new (void);
 RygelNullContainer* rygel_null_container_construct (GType object_type);
-RygelDummyContainer* rygel_dummy_container_new (GFile* file, RygelMediaContainer* parent);
-RygelDummyContainer* rygel_dummy_container_construct (GType object_type, GFile* file, RygelMediaContainer* parent);
-void rygel_dummy_container_seen (RygelDummyContainer* self, const char* id);
-static void rygel_dummy_container_finalize (GObject* obj);
+RygelMediaExportDummyContainer* rygel_media_export_dummy_container_new (GFile* file, RygelMediaContainer* parent);
+RygelMediaExportDummyContainer* rygel_media_export_dummy_container_construct (GType object_type, GFile* file, RygelMediaContainer* parent);
+void rygel_media_export_dummy_container_seen (RygelMediaExportDummyContainer* self, const char* id);
+static void rygel_media_export_dummy_container_finalize (GObject* obj);
 
 
 
@@ -97,9 +97,9 @@ static gpointer _g_object_ref0 (gpointer self) {
 
 
 #line 26 "rygel-media-export-dummy-container.vala"
-RygelDummyContainer* rygel_dummy_container_construct (GType object_type, GFile* file, RygelMediaContainer* parent) {
+RygelMediaExportDummyContainer* rygel_media_export_dummy_container_construct (GType object_type, GFile* file, RygelMediaContainer* parent) {
 #line 102 "rygel-media-export-dummy-container.c"
-	RygelDummyContainer * self;
+	RygelMediaExportDummyContainer * self;
 	char* _tmp0_;
 	char* _tmp1_;
 	char* id;
@@ -113,7 +113,7 @@ RygelDummyContainer* rygel_dummy_container_construct (GType object_type, GFile* 
 #line 26 "rygel-media-export-dummy-container.vala"
 	g_return_val_if_fail (parent != NULL, NULL);
 #line 26 "rygel-media-export-dummy-container.vala"
-	self = (RygelDummyContainer*) rygel_null_container_construct (object_type);
+	self = (RygelMediaExportDummyContainer*) rygel_null_container_construct (object_type);
 #line 27 "rygel-media-export-dummy-container.vala"
 	id = (_tmp1_ = g_compute_checksum_for_string (G_CHECKSUM_MD5, _tmp0_ = g_file_get_uri (file), -1), _g_free0 (_tmp0_), _tmp1_);
 #line 29 "rygel-media-export-dummy-container.vala"
@@ -131,7 +131,7 @@ RygelDummyContainer* rygel_dummy_container_construct (GType object_type, GFile* 
 #line 34 "rygel-media-export-dummy-container.vala"
 	self->file = (_tmp4_ = _g_object_ref0 (file), _g_object_unref0 (self->file), _tmp4_);
 #line 35 "rygel-media-export-dummy-container.vala"
-	gee_abstract_collection_add ((GeeAbstractCollection*) ((RygelMediaObject*) self)->uris, _tmp5_ = g_file_get_uri (file));
+	rygel_media_container_set_uri ((RygelMediaContainer*) self, _tmp5_ = g_file_get_uri (file), NULL);
 #line 136 "rygel-media-export-dummy-container.c"
 	_g_free0 (_tmp5_);
 #line 36 "rygel-media-export-dummy-container.vala"
@@ -143,15 +143,15 @@ RygelDummyContainer* rygel_dummy_container_construct (GType object_type, GFile* 
 
 
 #line 26 "rygel-media-export-dummy-container.vala"
-RygelDummyContainer* rygel_dummy_container_new (GFile* file, RygelMediaContainer* parent) {
+RygelMediaExportDummyContainer* rygel_media_export_dummy_container_new (GFile* file, RygelMediaContainer* parent) {
 #line 26 "rygel-media-export-dummy-container.vala"
-	return rygel_dummy_container_construct (RYGEL_TYPE_DUMMY_CONTAINER, file, parent);
+	return rygel_media_export_dummy_container_construct (RYGEL_MEDIA_EXPORT_TYPE_DUMMY_CONTAINER, file, parent);
 #line 150 "rygel-media-export-dummy-container.c"
 }
 
 
 #line 39 "rygel-media-export-dummy-container.vala"
-void rygel_dummy_container_seen (RygelDummyContainer* self, const char* id) {
+void rygel_media_export_dummy_container_seen (RygelMediaExportDummyContainer* self, const char* id) {
 #line 39 "rygel-media-export-dummy-container.vala"
 	g_return_if_fail (self != NULL);
 #line 39 "rygel-media-export-dummy-container.vala"
@@ -162,34 +162,34 @@ void rygel_dummy_container_seen (RygelDummyContainer* self, const char* id) {
 }
 
 
-static void rygel_dummy_container_class_init (RygelDummyContainerClass * klass) {
-	rygel_dummy_container_parent_class = g_type_class_peek_parent (klass);
-	G_OBJECT_CLASS (klass)->finalize = rygel_dummy_container_finalize;
+static void rygel_media_export_dummy_container_class_init (RygelMediaExportDummyContainerClass * klass) {
+	rygel_media_export_dummy_container_parent_class = g_type_class_peek_parent (klass);
+	G_OBJECT_CLASS (klass)->finalize = rygel_media_export_dummy_container_finalize;
 }
 
 
-static void rygel_dummy_container_instance_init (RygelDummyContainer * self) {
+static void rygel_media_export_dummy_container_instance_init (RygelMediaExportDummyContainer * self) {
 }
 
 
-static void rygel_dummy_container_finalize (GObject* obj) {
-	RygelDummyContainer * self;
-	self = RYGEL_DUMMY_CONTAINER (obj);
+static void rygel_media_export_dummy_container_finalize (GObject* obj) {
+	RygelMediaExportDummyContainer * self;
+	self = RYGEL_MEDIA_EXPORT_DUMMY_CONTAINER (obj);
 	_g_object_unref0 (self->file);
 	_g_object_unref0 (self->seen_children);
-	G_OBJECT_CLASS (rygel_dummy_container_parent_class)->finalize (obj);
+	G_OBJECT_CLASS (rygel_media_export_dummy_container_parent_class)->finalize (obj);
 }
 
 
-GType rygel_dummy_container_get_type (void) {
-	static volatile gsize rygel_dummy_container_type_id__volatile = 0;
-	if (g_once_init_enter (&rygel_dummy_container_type_id__volatile)) {
-		static const GTypeInfo g_define_type_info = { sizeof (RygelDummyContainerClass), (GBaseInitFunc) NULL, (GBaseFinalizeFunc) NULL, (GClassInitFunc) rygel_dummy_container_class_init, (GClassFinalizeFunc) NULL, NULL, sizeof (RygelDummyContainer), 0, (GInstanceInitFunc) rygel_dummy_container_instance_init, NULL };
-		GType rygel_dummy_container_type_id;
-		rygel_dummy_container_type_id = g_type_register_static (RYGEL_TYPE_NULL_CONTAINER, "RygelDummyContainer", &g_define_type_info, 0);
-		g_once_init_leave (&rygel_dummy_container_type_id__volatile, rygel_dummy_container_type_id);
+GType rygel_media_export_dummy_container_get_type (void) {
+	static volatile gsize rygel_media_export_dummy_container_type_id__volatile = 0;
+	if (g_once_init_enter (&rygel_media_export_dummy_container_type_id__volatile)) {
+		static const GTypeInfo g_define_type_info = { sizeof (RygelMediaExportDummyContainerClass), (GBaseInitFunc) NULL, (GBaseFinalizeFunc) NULL, (GClassInitFunc) rygel_media_export_dummy_container_class_init, (GClassFinalizeFunc) NULL, NULL, sizeof (RygelMediaExportDummyContainer), 0, (GInstanceInitFunc) rygel_media_export_dummy_container_instance_init, NULL };
+		GType rygel_media_export_dummy_container_type_id;
+		rygel_media_export_dummy_container_type_id = g_type_register_static (RYGEL_TYPE_NULL_CONTAINER, "RygelMediaExportDummyContainer", &g_define_type_info, 0);
+		g_once_init_leave (&rygel_media_export_dummy_container_type_id__volatile, rygel_media_export_dummy_container_type_id);
 	}
-	return rygel_dummy_container_type_id__volatile;
+	return rygel_media_export_dummy_container_type_id__volatile;
 }
 
 

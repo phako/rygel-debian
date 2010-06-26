@@ -239,7 +239,7 @@ static void rygel_mp3_transcoder_bin_decodebin_pad_added (RygelMP3TranscoderBin*
 #line 62 "rygel-mp3-transcoder-bin.vala"
 	g_return_if_fail (new_pad != NULL);
 #line 63 "rygel-mp3-transcoder-bin.vala"
-	enc_pad = _gst_object_ref0 (gst_element_get_pad (self->priv->audio_enc, RYGEL_MP3_TRANSCODER_BIN_AUDIO_SINK_PAD));
+	enc_pad = gst_element_get_pad (self->priv->audio_enc, RYGEL_MP3_TRANSCODER_BIN_AUDIO_SINK_PAD);
 #line 64 "rygel-mp3-transcoder-bin.vala"
 	if (!gst_pad_can_link (new_pad, enc_pad)) {
 #line 246 "rygel-mp3-transcoder-bin.c"

@@ -40,6 +40,9 @@ public abstract class Rygel.MediaContainer : MediaObject {
     public int child_count;
     public uint32 update_id;
 
+    // List of classes that an object in this container could be created of
+    public ArrayList<string> create_classes;
+
     public MediaContainer (string          id,
                            MediaContainer? parent,
                            string          title,
@@ -50,8 +53,9 @@ public abstract class Rygel.MediaContainer : MediaObject {
         this.child_count = child_count;
         this.update_id = 0;
         this.upnp_class = "object.container.storageFolder";
+        this.create_classes = new ArrayList<string> ();
 
-        this.container_updated += on_container_updated;
+        this.container_updated.connect (on_container_updated);
     }
 
     public MediaContainer.root (string title,
@@ -159,6 +163,37 @@ public abstract class Rygel.MediaContainer : MediaObject {
     }
 
     /**
+     * Recursively searches for media object with the given id in this
+     * container.
+     *
+     * @param id ID of the media object to search for
+     * @param cancellable optional cancellable for this operation
+     * @param callback function to call when result is ready
+     *
+     * return the found media object.
+     */
+    public virtual async MediaObject? find_object (string       id,
+                                                   Cancellable? cancellable)
+                                                   throws Error {
+        var expression = new RelationalExpression ();
+        expression.op = SearchCriteriaOp.EQ;
+        expression.operand1 = "@id";
+        expression.operand2 = id;
+
+        uint total_matches;
+        var results = yield this.search (expression,
+                                         0,
+                                         1,
+                                         out total_matches,
+                                         cancellable);
+        if (results.size > 0) {
+            return results[0];
+        } else {
+            return null;
+        }
+    }
+
+    /**
      * Add a new item directly under this container.
      *
      * @param didl_item The item to add to this container.
@@ -204,33 +239,24 @@ public abstract class Rygel.MediaContainer : MediaObject {
         this.container_updated (this);
     }
 
-   /**
-    * Recursively searches for media object with the given id in this container.
-    *
-    * @param id ID of the media object to search for
-    * @param cancellable optional cancellable for this operation
-    * @param callback function to call when result is ready
-    *
-    * return the found media object.
-    */
-    internal async MediaObject? find_object (string       id,
-                                             Cancellable? cancellable)
-                                             throws Error {
-        var expression = new RelationalExpression ();
-        expression.op = SearchCriteriaOp.EQ;
-        expression.operand1 = "@id";
-        expression.operand2 = id;
+    /**
+     * Sets the URI of this container and optionally the create_classes.
+     *
+     * @param uri the URI to set.
+     * @param create_classes list of item classes.
+     */
+    public void set_uri (string uri, ArrayList<string>? create_classes = null) {
+        this.uris.clear ();
+        this.uris.add (uri);
 
-        uint total_matches;
-        var results = yield this.search (expression,
-                                         0,
-                                         1,
-                                         out total_matches,
-                                         cancellable);
-        if (results.size > 0) {
-            return results[0];
+        this.create_classes.clear ();
+
+        if (create_classes != null) {
+            this.create_classes.add_all (create_classes);
         } else {
-            return null;
+            this.create_classes.add (MediaItem.IMAGE_CLASS);
+            this.create_classes.add (MediaItem.VIDEO_CLASS);
+            this.create_classes.add (MediaItem.AUDIO_CLASS);
         }
     }
 

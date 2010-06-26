@@ -14,6 +14,7 @@
 #include <gst/gst.h>
 #include <dbus/dbus-glib-lowlevel.h>
 #include <dbus/dbus-glib.h>
+#include <libxml/tree.h>
 
 G_BEGIN_DECLS
 
@@ -331,6 +332,28 @@ typedef struct _RygelMainClass RygelMainClass;
 typedef struct _RygelRootDevice RygelRootDevice;
 typedef struct _RygelRootDeviceClass RygelRootDeviceClass;
 typedef struct _RygelRootDevicePrivate RygelRootDevicePrivate;
+
+#define RYGEL_TYPE_XML_UTILS (rygel_xml_utils_get_type ())
+#define RYGEL_XML_UTILS(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_XML_UTILS, RygelXMLUtils))
+#define RYGEL_XML_UTILS_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TYPE_XML_UTILS, RygelXMLUtilsClass))
+#define RYGEL_IS_XML_UTILS(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TYPE_XML_UTILS))
+#define RYGEL_IS_XML_UTILS_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_TYPE_XML_UTILS))
+#define RYGEL_XML_UTILS_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_TYPE_XML_UTILS, RygelXMLUtilsClass))
+
+typedef struct _RygelXMLUtils RygelXMLUtils;
+typedef struct _RygelXMLUtilsClass RygelXMLUtilsClass;
+typedef struct _RygelXMLUtilsPrivate RygelXMLUtilsPrivate;
+
+#define RYGEL_TYPE_SIGNAL_HANDLER (rygel_signal_handler_get_type ())
+#define RYGEL_SIGNAL_HANDLER(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_SIGNAL_HANDLER, RygelSignalHandler))
+#define RYGEL_SIGNAL_HANDLER_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TYPE_SIGNAL_HANDLER, RygelSignalHandlerClass))
+#define RYGEL_IS_SIGNAL_HANDLER(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TYPE_SIGNAL_HANDLER))
+#define RYGEL_IS_SIGNAL_HANDLER_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_TYPE_SIGNAL_HANDLER))
+#define RYGEL_SIGNAL_HANDLER_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_TYPE_SIGNAL_HANDLER, RygelSignalHandlerClass))
+
+typedef struct _RygelSignalHandler RygelSignalHandler;
+typedef struct _RygelSignalHandlerClass RygelSignalHandlerClass;
+typedef struct _RygelSignalHandlerPrivate RygelSignalHandlerPrivate;
 typedef struct _RygelMainPrivate RygelMainPrivate;
 
 typedef enum  {
@@ -412,6 +435,7 @@ struct _RygelEnvironmentConfigClass {
 
 typedef enum  {
 	RYGEL_CONTENT_DIRECTORY_ERROR_NO_SUCH_OBJECT = 701,
+	RYGEL_CONTENT_DIRECTORY_ERROR_BAD_METADATA = 712,
 	RYGEL_CONTENT_DIRECTORY_ERROR_RESTRICTED_PARENT = 713,
 	RYGEL_CONTENT_DIRECTORY_ERROR_CANT_PROCESS = 720,
 	RYGEL_CONTENT_DIRECTORY_ERROR_INVALID_ARGS = 402
@@ -538,6 +562,7 @@ struct _RygelMediaContainer {
 	RygelMediaContainerPrivate * priv;
 	gint child_count;
 	guint32 update_id;
+	GeeArrayList* create_classes;
 };
 
 struct _RygelMediaContainerClass {
@@ -546,6 +571,8 @@ struct _RygelMediaContainerClass {
 	GeeList* (*get_children_finish) (RygelMediaContainer* self, GAsyncResult* _res_, GError** error);
 	void (*search) (RygelMediaContainer* self, RygelSearchExpression* expression, guint offset, guint max_count, GCancellable* cancellable, GAsyncReadyCallback _callback_, gpointer _user_data_);
 	GeeList* (*search_finish) (RygelMediaContainer* self, GAsyncResult* _res_, guint* total_matches, GError** error);
+	void (*find_object) (RygelMediaContainer* self, const char* id, GCancellable* cancellable, GAsyncReadyCallback _callback_, gpointer _user_data_);
+	RygelMediaObject* (*find_object_finish) (RygelMediaContainer* self, GAsyncResult* _res_, GError** error);
 	void (*add_item) (RygelMediaContainer* self, RygelMediaItem* item, GCancellable* cancellable, GAsyncReadyCallback _callback_, gpointer _user_data_);
 	void (*add_item_finish) (RygelMediaContainer* self, GAsyncResult* _res_, GError** error);
 };
@@ -697,10 +724,30 @@ typedef enum  {
 	ROOT_DEVICE_FACTORY_ERROR_XML_PARSE
 } RootDeviceFactoryError;
 #define ROOT_DEVICE_FACTORY_ERROR root_device_factory_error_quark ()
+struct _RygelXMLUtils {
+	GTypeInstance parent_instance;
+	volatile int ref_count;
+	RygelXMLUtilsPrivate * priv;
+};
+
+struct _RygelXMLUtilsClass {
+	GTypeClass parent_class;
+	void (*finalize) (RygelXMLUtils *self);
+};
+
+struct _RygelSignalHandler {
+	GObject parent_instance;
+	RygelSignalHandlerPrivate * priv;
+};
+
+struct _RygelSignalHandlerClass {
+	GObjectClass parent_class;
+};
+
 struct _RygelMain {
 	GObject parent_instance;
 	RygelMainPrivate * priv;
-	gboolean restart;
+	gboolean need_restart;
 };
 
 struct _RygelMainClass {
@@ -853,9 +900,12 @@ void rygel_media_container_get_children (RygelMediaContainer* self, guint offset
 GeeList* rygel_media_container_get_children_finish (RygelMediaContainer* self, GAsyncResult* _res_, GError** error);
 void rygel_media_container_search (RygelMediaContainer* self, RygelSearchExpression* expression, guint offset, guint max_count, GCancellable* cancellable, GAsyncReadyCallback _callback_, gpointer _user_data_);
 GeeList* rygel_media_container_search_finish (RygelMediaContainer* self, GAsyncResult* _res_, guint* total_matches, GError** error);
+void rygel_media_container_find_object (RygelMediaContainer* self, const char* id, GCancellable* cancellable, GAsyncReadyCallback _callback_, gpointer _user_data_);
+RygelMediaObject* rygel_media_container_find_object_finish (RygelMediaContainer* self, GAsyncResult* _res_, GError** error);
 void rygel_media_container_add_item (RygelMediaContainer* self, RygelMediaItem* item, GCancellable* cancellable, GAsyncReadyCallback _callback_, gpointer _user_data_);
 void rygel_media_container_add_item_finish (RygelMediaContainer* self, GAsyncResult* _res_, GError** error);
 void rygel_media_container_updated (RygelMediaContainer* self);
+void rygel_media_container_set_uri (RygelMediaContainer* self, const char* uri, GeeArrayList* create_classes);
 GType rygel_simple_container_get_type (void);
 RygelSimpleContainer* rygel_simple_container_new (const char* id, RygelMediaContainer* parent, const char* title);
 RygelSimpleContainer* rygel_simple_container_construct (GType object_type, const char* id, RygelMediaContainer* parent, const char* title);
@@ -913,8 +963,26 @@ void rygel_dbus_service_Shutdown (RygelDBusService* self);
 GType rygel_root_device_get_type (void);
 RygelRootDevice* rygel_root_device_new (GUPnPContext* context, RygelPlugin* plugin, GUPnPXMLDoc* description_doc, const char* description_path, const char* description_dir);
 RygelRootDevice* rygel_root_device_construct (GType object_type, GUPnPContext* context, RygelPlugin* plugin, GUPnPXMLDoc* description_doc, const char* description_path, const char* description_dir);
+void uuid_generate (guchar* uuid);
+void uuid_unparse (guchar* uuid, guchar* output);
 GQuark root_device_factory_error_quark (void);
+gpointer rygel_xml_utils_ref (gpointer instance);
+void rygel_xml_utils_unref (gpointer instance);
+GParamSpec* rygel_param_spec_xml_utils (const gchar* name, const gchar* nick, const gchar* blurb, GType object_type, GParamFlags flags);
+void rygel_value_set_xml_utils (GValue* value, gpointer v_object);
+void rygel_value_take_xml_utils (GValue* value, gpointer v_object);
+gpointer rygel_value_get_xml_utils (const GValue* value);
+GType rygel_xml_utils_get_type (void);
+xmlNode* rygel_xml_utils_get_element (xmlNode* node, ...);
+RygelXMLUtils* rygel_xml_utils_new (void);
+RygelXMLUtils* rygel_xml_utils_construct (GType object_type);
+GType rygel_signal_handler_get_type (void);
+void rygel_signal_handler_setup (RygelMain* _main);
+void rygel_signal_handler_cleanup (void);
+RygelSignalHandler* rygel_signal_handler_new (void);
+RygelSignalHandler* rygel_signal_handler_construct (GType object_type);
 void rygel_main_exit (RygelMain* self, gint exit_code);
+void rygel_main_restart (RygelMain* self);
 
 
 G_END_DECLS

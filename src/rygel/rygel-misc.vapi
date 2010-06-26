@@ -1,5 +1,7 @@
 /*
- * Copyright (C) 2010 Jens Georg <mail@jensge.org>.
+ * Copyright (C) 2010 Nokia Corporation.
+ *
+ * Author: Zeeshan Ali (Khattak) <zeeshanak@gnome.org>
  *
  * This file is part of Rygel.
  *
@@ -18,12 +20,12 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-internal class Rygel.FileQueueEntry  {
-    public File file;
-    public bool update;
-
-    public FileQueueEntry (File file, bool update) {
-        this.file = file;
-        this.update = update;
+namespace Rygel.Misc {
+    namespace Posix {
+        [CCode (cname = "execvp", cheader_filename = "unistd.h")]
+        public int execvp (string file,
+                           [CCode (array_length = false,
+                                   array_null_terminated = true)]
+                           string[] argv);
     }
 }

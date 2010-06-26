@@ -109,8 +109,8 @@ typedef struct _RygelTrackerQueryTriplets RygelTrackerQueryTriplets;
 typedef struct _RygelTrackerQueryTripletsClass RygelTrackerQueryTripletsClass;
 #define _g_free0(var) (var = (g_free (var), NULL))
 typedef struct _RygelTrackerItemFactoryPrivate RygelTrackerItemFactoryPrivate;
-#define _g_error_free0(var) ((var == NULL) ? NULL : (var = (g_error_free (var), NULL)))
 #define _g_object_unref0(var) ((var == NULL) ? NULL : (var = (g_object_unref (var), NULL)))
+#define _g_error_free0(var) ((var == NULL) ? NULL : (var = (g_error_free (var), NULL)))
 
 #define RYGEL_TYPE_TRACKER_ITEM_CREATION (rygel_tracker_item_creation_get_type ())
 #define RYGEL_TRACKER_ITEM_CREATION(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_TRACKER_ITEM_CREATION, RygelTrackerItemCreation))
@@ -237,9 +237,10 @@ RygelTrackerCategoryAllContainer* rygel_tracker_category_all_container_construct
 	_g_free0 (_tmp0_);
 	{
 		char* uri;
+		GeeArrayList* create_classes;
 #line 35 "rygel-tracker-category-all-container.vala"
 		uri = g_filename_to_uri (((RygelTrackerSearchContainer*) self)->item_factory->upload_dir, NULL, &_inner_error_);
-#line 243 "rygel-tracker-category-all-container.c"
+#line 244 "rygel-tracker-category-all-container.c"
 		if (_inner_error_ != NULL) {
 			if (_inner_error_->domain == G_CONVERT_ERROR) {
 				goto __catch7_g_convert_error;
@@ -249,9 +250,14 @@ RygelTrackerCategoryAllContainer* rygel_tracker_category_all_container_construct
 			return NULL;
 		}
 #line 36 "rygel-tracker-category-all-container.vala"
-		gee_abstract_collection_add ((GeeAbstractCollection*) ((RygelMediaObject*) self)->uris, uri);
-#line 254 "rygel-tracker-category-all-container.c"
+		create_classes = gee_array_list_new (G_TYPE_STRING, (GBoxedCopyFunc) g_strdup, g_free, NULL);
+#line 38 "rygel-tracker-category-all-container.vala"
+		gee_abstract_collection_add ((GeeAbstractCollection*) create_classes, ((RygelTrackerSearchContainer*) self)->item_factory->upnp_class);
+#line 39 "rygel-tracker-category-all-container.vala"
+		rygel_media_container_set_uri ((RygelMediaContainer*) self, uri, create_classes);
+#line 259 "rygel-tracker-category-all-container.c"
 		_g_free0 (uri);
+		_g_object_unref0 (create_classes);
 	}
 	goto __finally7;
 	__catch7_g_convert_error:
@@ -260,9 +266,9 @@ RygelTrackerCategoryAllContainer* rygel_tracker_category_all_container_construct
 		_error_ = _inner_error_;
 		_inner_error_ = NULL;
 		{
-#line 38 "rygel-tracker-category-all-container.vala"
+#line 41 "rygel-tracker-category-all-container.vala"
 			g_warning (_ ("Failed to construct URI for folder '%s': %s"), ((RygelTrackerSearchContainer*) self)->item_factory->upload_dir, _error_->message);
-#line 266 "rygel-tracker-category-all-container.c"
+#line 272 "rygel-tracker-category-all-container.c"
 			_g_error_free0 (_error_);
 		}
 	}
@@ -280,7 +286,7 @@ RygelTrackerCategoryAllContainer* rygel_tracker_category_all_container_construct
 RygelTrackerCategoryAllContainer* rygel_tracker_category_all_container_new (RygelTrackerCategoryContainer* parent) {
 #line 31 "rygel-tracker-category-all-container.vala"
 	return rygel_tracker_category_all_container_construct (RYGEL_TYPE_TRACKER_CATEGORY_ALL_CONTAINER, parent);
-#line 284 "rygel-tracker-category-all-container.c"
+#line 290 "rygel-tracker-category-all-container.c"
 }
 
 
@@ -346,9 +352,9 @@ static gboolean rygel_tracker_category_all_container_real_add_item_co (RygelTrac
 	}
 	_state_0:
 	{
-#line 47 "rygel-tracker-category-all-container.vala"
+#line 50 "rygel-tracker-category-all-container.vala"
 		g_assert (gee_collection_get_size ((GeeCollection*) ((RygelMediaObject*) data->self)->uris) > 0);
-#line 352 "rygel-tracker-category-all-container.c"
+#line 358 "rygel-tracker-category-all-container.c"
 		data->creation = rygel_tracker_item_creation_new (data->item, data->self, data->cancellable, &data->_inner_error_);
 		if (data->_inner_error_ != NULL) {
 			g_simple_async_result_set_from_error (data->_async_result, data->_inner_error_);
@@ -367,11 +373,11 @@ static gboolean rygel_tracker_category_all_container_real_add_item_co (RygelTrac
 		rygel_state_machine_run ((RygelStateMachine*) data->creation, rygel_tracker_category_all_container_add_item_ready, data);
 		return FALSE;
 		_state_6:
-#line 50 "rygel-tracker-category-all-container.vala"
+#line 53 "rygel-tracker-category-all-container.vala"
 		rygel_state_machine_run_finish ((RygelStateMachine*) data->creation, data->_res_);
-#line 51 "rygel-tracker-category-all-container.vala"
+#line 54 "rygel-tracker-category-all-container.vala"
 		if (rygel_tracker_item_creation_get_error (data->creation) != NULL) {
-#line 375 "rygel-tracker-category-all-container.c"
+#line 381 "rygel-tracker-category-all-container.c"
 			data->_inner_error_ = _g_error_copy0 (rygel_tracker_item_creation_get_error (data->creation));
 			{
 				g_simple_async_result_set_from_error (data->_async_result, data->_inner_error_);

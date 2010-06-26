@@ -21,11 +21,12 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-using CStuff;
 using Gee;
 using GUPnP;
 
 public class Rygel.Main : Object {
+    private static int PLUGIN_TIMEOUT = 5;
+
     private PluginLoader plugin_loader;
     private ContextManager context_manager;
     private ArrayList <RootDeviceFactory> factories;
@@ -37,7 +38,7 @@ public class Rygel.Main : Object {
     private MainLoop main_loop;
 
     private int exit_code;
-    public bool restart;
+    public bool need_restart;
 
     private Main () throws GLib.Error {
         Environment.set_application_name (_(BuildConfig.PACKAGE_NAME));
@@ -52,29 +53,42 @@ public class Rygel.Main : Object {
 
         this.exit_code = 0;
 
-        this.plugin_loader.plugin_available += this.on_plugin_loaded;
+        this.plugin_loader.plugin_available.connect (this.on_plugin_loaded);
 
-        Utils.on_application_exit (this.application_exit_cb);
+        SignalHandler.setup (this);
     }
 
     public void exit (int exit_code) {
         this.exit_code = exit_code;
 
         this.main_loop.quit ();
+
+        SignalHandler.cleanup ();
+    }
+
+    public void restart () {
+        this.need_restart = true;
+
+        this.exit (0);
     }
 
     private int run () {
         this.plugin_loader.load_plugins ();
 
+        Timeout.add_seconds (PLUGIN_TIMEOUT, () => {
+            if (this.plugin_loader.list_plugins ().size == 0) {
+                warning (_("No plugins found in %d seconds, giving up.."),
+                         PLUGIN_TIMEOUT);
+
+                this.exit (-82);
+            }
+
+            return false;
+        });
+
         this.main_loop.run ();
 
         return this.exit_code;
-    }
-
-    private void application_exit_cb (bool restart) {
-        this.restart = restart;
-
-        this.exit (0);
     }
 
     private void on_plugin_loaded (PluginLoader plugin_loader,
@@ -171,7 +185,7 @@ public class Rygel.Main : Object {
 
             this.root_devices.add (device);
 
-            plugin.notify["available"] += this.on_plugin_notify;
+            plugin.notify["available"].connect (this.on_plugin_notify);
         } catch (GLib.Error error) {
             warning (_("Failed to create RootDevice for %s. Reason: %s"),
                      plugin.name,
@@ -179,8 +193,10 @@ public class Rygel.Main : Object {
         }
     }
 
-    private void on_plugin_notify (Plugin    plugin,
+    private void on_plugin_notify (Object    obj,
                                    ParamSpec spec) {
+        var plugin = obj as Plugin;
+
         foreach (var device in this.root_devices) {
             if (device.resource_factory == plugin) {
                 device.available = plugin.available;
@@ -216,8 +232,8 @@ public class Rygel.Main : Object {
 
         int exit_code = main.run ();
 
-        if (main.restart) {
-            Utils.restart_application (original_args);
+        if (main.need_restart) {
+            Misc.Posix.execvp (original_args[0], original_args);
         }
 
         return exit_code;

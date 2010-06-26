@@ -29,33 +29,33 @@
 #include <gee.h>
 
 
-#define RYGEL_TYPE_MEDIA_EXPORT_DB_CONTAINER (rygel_media_export_db_container_get_type ())
-#define RYGEL_MEDIA_EXPORT_DB_CONTAINER(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_MEDIA_EXPORT_DB_CONTAINER, RygelMediaExportDBContainer))
-#define RYGEL_MEDIA_EXPORT_DB_CONTAINER_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TYPE_MEDIA_EXPORT_DB_CONTAINER, RygelMediaExportDBContainerClass))
-#define RYGEL_IS_MEDIA_EXPORT_DB_CONTAINER(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TYPE_MEDIA_EXPORT_DB_CONTAINER))
-#define RYGEL_IS_MEDIA_EXPORT_DB_CONTAINER_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_TYPE_MEDIA_EXPORT_DB_CONTAINER))
-#define RYGEL_MEDIA_EXPORT_DB_CONTAINER_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_TYPE_MEDIA_EXPORT_DB_CONTAINER, RygelMediaExportDBContainerClass))
+#define RYGEL_MEDIA_EXPORT_TYPE_DB_CONTAINER (rygel_media_export_db_container_get_type ())
+#define RYGEL_MEDIA_EXPORT_DB_CONTAINER(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_MEDIA_EXPORT_TYPE_DB_CONTAINER, RygelMediaExportDBContainer))
+#define RYGEL_MEDIA_EXPORT_DB_CONTAINER_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_MEDIA_EXPORT_TYPE_DB_CONTAINER, RygelMediaExportDBContainerClass))
+#define RYGEL_MEDIA_EXPORT_IS_DB_CONTAINER(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_MEDIA_EXPORT_TYPE_DB_CONTAINER))
+#define RYGEL_MEDIA_EXPORT_IS_DB_CONTAINER_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_MEDIA_EXPORT_TYPE_DB_CONTAINER))
+#define RYGEL_MEDIA_EXPORT_DB_CONTAINER_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_MEDIA_EXPORT_TYPE_DB_CONTAINER, RygelMediaExportDBContainerClass))
 
 typedef struct _RygelMediaExportDBContainer RygelMediaExportDBContainer;
 typedef struct _RygelMediaExportDBContainerClass RygelMediaExportDBContainerClass;
 typedef struct _RygelMediaExportDBContainerPrivate RygelMediaExportDBContainerPrivate;
 
-#define RYGEL_TYPE_MEDIA_EXPORT_MEDIA_CACHE (rygel_media_export_media_cache_get_type ())
-#define RYGEL_MEDIA_EXPORT_MEDIA_CACHE(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_MEDIA_EXPORT_MEDIA_CACHE, RygelMediaExportMediaCache))
-#define RYGEL_MEDIA_EXPORT_MEDIA_CACHE_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TYPE_MEDIA_EXPORT_MEDIA_CACHE, RygelMediaExportMediaCacheClass))
-#define RYGEL_IS_MEDIA_EXPORT_MEDIA_CACHE(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TYPE_MEDIA_EXPORT_MEDIA_CACHE))
-#define RYGEL_IS_MEDIA_EXPORT_MEDIA_CACHE_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_TYPE_MEDIA_EXPORT_MEDIA_CACHE))
-#define RYGEL_MEDIA_EXPORT_MEDIA_CACHE_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_TYPE_MEDIA_EXPORT_MEDIA_CACHE, RygelMediaExportMediaCacheClass))
+#define RYGEL_MEDIA_EXPORT_TYPE_MEDIA_CACHE (rygel_media_export_media_cache_get_type ())
+#define RYGEL_MEDIA_EXPORT_MEDIA_CACHE(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_MEDIA_EXPORT_TYPE_MEDIA_CACHE, RygelMediaExportMediaCache))
+#define RYGEL_MEDIA_EXPORT_MEDIA_CACHE_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_MEDIA_EXPORT_TYPE_MEDIA_CACHE, RygelMediaExportMediaCacheClass))
+#define RYGEL_MEDIA_EXPORT_IS_MEDIA_CACHE(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_MEDIA_EXPORT_TYPE_MEDIA_CACHE))
+#define RYGEL_MEDIA_EXPORT_IS_MEDIA_CACHE_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_MEDIA_EXPORT_TYPE_MEDIA_CACHE))
+#define RYGEL_MEDIA_EXPORT_MEDIA_CACHE_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_MEDIA_EXPORT_TYPE_MEDIA_CACHE, RygelMediaExportMediaCacheClass))
 
 typedef struct _RygelMediaExportMediaCache RygelMediaExportMediaCache;
 typedef struct _RygelMediaExportMediaCacheClass RygelMediaExportMediaCacheClass;
 
-#define RYGEL_TYPE_MEDIA_EXPORT_DYNAMIC_CONTAINER (rygel_media_export_dynamic_container_get_type ())
-#define RYGEL_MEDIA_EXPORT_DYNAMIC_CONTAINER(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_MEDIA_EXPORT_DYNAMIC_CONTAINER, RygelMediaExportDynamicContainer))
-#define RYGEL_MEDIA_EXPORT_DYNAMIC_CONTAINER_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TYPE_MEDIA_EXPORT_DYNAMIC_CONTAINER, RygelMediaExportDynamicContainerClass))
-#define RYGEL_IS_MEDIA_EXPORT_DYNAMIC_CONTAINER(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TYPE_MEDIA_EXPORT_DYNAMIC_CONTAINER))
-#define RYGEL_IS_MEDIA_EXPORT_DYNAMIC_CONTAINER_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_TYPE_MEDIA_EXPORT_DYNAMIC_CONTAINER))
-#define RYGEL_MEDIA_EXPORT_DYNAMIC_CONTAINER_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_TYPE_MEDIA_EXPORT_DYNAMIC_CONTAINER, RygelMediaExportDynamicContainerClass))
+#define RYGEL_MEDIA_EXPORT_TYPE_DYNAMIC_CONTAINER (rygel_media_export_dynamic_container_get_type ())
+#define RYGEL_MEDIA_EXPORT_DYNAMIC_CONTAINER(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_MEDIA_EXPORT_TYPE_DYNAMIC_CONTAINER, RygelMediaExportDynamicContainer))
+#define RYGEL_MEDIA_EXPORT_DYNAMIC_CONTAINER_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_MEDIA_EXPORT_TYPE_DYNAMIC_CONTAINER, RygelMediaExportDynamicContainerClass))
+#define RYGEL_MEDIA_EXPORT_IS_DYNAMIC_CONTAINER(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_MEDIA_EXPORT_TYPE_DYNAMIC_CONTAINER))
+#define RYGEL_MEDIA_EXPORT_IS_DYNAMIC_CONTAINER_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_MEDIA_EXPORT_TYPE_DYNAMIC_CONTAINER))
+#define RYGEL_MEDIA_EXPORT_DYNAMIC_CONTAINER_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_MEDIA_EXPORT_TYPE_DYNAMIC_CONTAINER, RygelMediaExportDynamicContainerClass))
 
 typedef struct _RygelMediaExportDynamicContainer RygelMediaExportDynamicContainer;
 typedef struct _RygelMediaExportDynamicContainerClass RygelMediaExportDynamicContainerClass;
@@ -109,9 +109,9 @@ RygelMediaExportDynamicContainer* rygel_media_export_dynamic_container_construct
 	g_return_val_if_fail (media_db != NULL, NULL);
 #line 25 "rygel-media-export-dynamic-container.vala"
 	g_return_val_if_fail (parent != NULL, NULL);
-#line 27 "rygel-media-export-dynamic-container.vala"
+#line 26 "rygel-media-export-dynamic-container.vala"
 	self = (RygelMediaExportDynamicContainer*) rygel_media_export_db_container_construct (object_type, media_db, RYGEL_MEDIA_EXPORT_DYNAMIC_CONTAINER_ID, "Dynamic");
-#line 28 "rygel-media-export-dynamic-container.vala"
+#line 27 "rygel-media-export-dynamic-container.vala"
 	((RygelMediaObject*) self)->parent = parent;
 #line 117 "rygel-media-export-dynamic-container.c"
 	return self;
@@ -121,51 +121,51 @@ RygelMediaExportDynamicContainer* rygel_media_export_dynamic_container_construct
 #line 25 "rygel-media-export-dynamic-container.vala"
 RygelMediaExportDynamicContainer* rygel_media_export_dynamic_container_new (RygelMediaExportMediaCache* media_db, RygelMediaContainer* parent) {
 #line 25 "rygel-media-export-dynamic-container.vala"
-	return rygel_media_export_dynamic_container_construct (RYGEL_TYPE_MEDIA_EXPORT_DYNAMIC_CONTAINER, media_db, parent);
+	return rygel_media_export_dynamic_container_construct (RYGEL_MEDIA_EXPORT_TYPE_DYNAMIC_CONTAINER, media_db, parent);
 #line 126 "rygel-media-export-dynamic-container.c"
 }
 
 
-#line 31 "rygel-media-export-dynamic-container.vala"
+#line 30 "rygel-media-export-dynamic-container.vala"
 GeeList* rygel_media_export_dynamic_container_get_uris (RygelMediaExportDynamicContainer* self) {
 #line 132 "rygel-media-export-dynamic-container.c"
 	GeeList* result = NULL;
 	GError * _inner_error_;
 	GeeArrayList* _result_;
-#line 31 "rygel-media-export-dynamic-container.vala"
+#line 30 "rygel-media-export-dynamic-container.vala"
 	g_return_val_if_fail (self != NULL, NULL);
 #line 138 "rygel-media-export-dynamic-container.c"
 	_inner_error_ = NULL;
-#line 32 "rygel-media-export-dynamic-container.vala"
+#line 31 "rygel-media-export-dynamic-container.vala"
 	_result_ = gee_array_list_new (G_TYPE_STRING, (GBoxedCopyFunc) g_strdup, g_free, NULL);
 #line 142 "rygel-media-export-dynamic-container.c"
 	{
 		GeeArrayList* children;
-#line 35 "rygel-media-export-dynamic-container.vala"
+#line 34 "rygel-media-export-dynamic-container.vala"
 		children = rygel_media_export_media_cache_get_children (((RygelMediaExportDBContainer*) self)->media_db, ((RygelMediaObject*) self)->id, (glong) (-1), (glong) (-1), &_inner_error_);
 #line 147 "rygel-media-export-dynamic-container.c"
 		if (_inner_error_ != NULL) {
-			goto __catch15_g_error;
+			goto __catch14_g_error;
 		}
-#line 36 "rygel-media-export-dynamic-container.vala"
+#line 35 "rygel-media-export-dynamic-container.vala"
 		if (children != NULL) {
 #line 153 "rygel-media-export-dynamic-container.c"
 			{
 				GeeIterator* _child_it;
 				_child_it = gee_abstract_collection_iterator ((GeeAbstractCollection*) children);
-#line 37 "rygel-media-export-dynamic-container.vala"
+#line 36 "rygel-media-export-dynamic-container.vala"
 				while (TRUE) {
 #line 159 "rygel-media-export-dynamic-container.c"
 					RygelMediaObject* child;
-#line 37 "rygel-media-export-dynamic-container.vala"
+#line 36 "rygel-media-export-dynamic-container.vala"
 					if (!gee_iterator_next (_child_it)) {
-#line 37 "rygel-media-export-dynamic-container.vala"
+#line 36 "rygel-media-export-dynamic-container.vala"
 						break;
 #line 165 "rygel-media-export-dynamic-container.c"
 					}
-#line 37 "rygel-media-export-dynamic-container.vala"
+#line 36 "rygel-media-export-dynamic-container.vala"
 					child = (RygelMediaObject*) gee_iterator_get (_child_it);
-#line 38 "rygel-media-export-dynamic-container.vala"
+#line 37 "rygel-media-export-dynamic-container.vala"
 					gee_abstract_collection_add_all ((GeeAbstractCollection*) _result_, (GeeCollection*) child->uris);
 #line 171 "rygel-media-export-dynamic-container.c"
 					_g_object_unref0 (child);
@@ -175,8 +175,8 @@ GeeList* rygel_media_export_dynamic_container_get_uris (RygelMediaExportDynamicC
 		}
 		_g_object_unref0 (children);
 	}
-	goto __finally15;
-	__catch15_g_error:
+	goto __finally14;
+	__catch14_g_error:
 	{
 		GError * err;
 		err = _inner_error_;
@@ -185,7 +185,7 @@ GeeList* rygel_media_export_dynamic_container_get_uris (RygelMediaExportDynamicC
 			_g_error_free0 (err);
 		}
 	}
-	__finally15:
+	__finally14:
 	if (_inner_error_ != NULL) {
 		_g_object_unref0 (_result_);
 		g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
@@ -193,7 +193,7 @@ GeeList* rygel_media_export_dynamic_container_get_uris (RygelMediaExportDynamicC
 		return NULL;
 	}
 	result = (GeeList*) _result_;
-#line 43 "rygel-media-export-dynamic-container.vala"
+#line 42 "rygel-media-export-dynamic-container.vala"
 	return result;
 #line 199 "rygel-media-export-dynamic-container.c"
 }
@@ -213,7 +213,7 @@ GType rygel_media_export_dynamic_container_get_type (void) {
 	if (g_once_init_enter (&rygel_media_export_dynamic_container_type_id__volatile)) {
 		static const GTypeInfo g_define_type_info = { sizeof (RygelMediaExportDynamicContainerClass), (GBaseInitFunc) NULL, (GBaseFinalizeFunc) NULL, (GClassInitFunc) rygel_media_export_dynamic_container_class_init, (GClassFinalizeFunc) NULL, NULL, sizeof (RygelMediaExportDynamicContainer), 0, (GInstanceInitFunc) rygel_media_export_dynamic_container_instance_init, NULL };
 		GType rygel_media_export_dynamic_container_type_id;
-		rygel_media_export_dynamic_container_type_id = g_type_register_static (RYGEL_TYPE_MEDIA_EXPORT_DB_CONTAINER, "RygelMediaExportDynamicContainer", &g_define_type_info, 0);
+		rygel_media_export_dynamic_container_type_id = g_type_register_static (RYGEL_MEDIA_EXPORT_TYPE_DB_CONTAINER, "RygelMediaExportDynamicContainer", &g_define_type_info, 0);
 		g_once_init_leave (&rygel_media_export_dynamic_container_type_id__volatile, rygel_media_export_dynamic_container_type_id);
 	}
 	return rygel_media_export_dynamic_container_type_id__volatile;

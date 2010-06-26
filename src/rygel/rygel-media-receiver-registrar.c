@@ -60,10 +60,10 @@ enum  {
 #define RYGEL_MEDIA_RECEIVER_REGISTRAR_UPNP_ID "urn:microsoft.com:serviceId:X_MS_MediaReceiverRegistrar"
 #define RYGEL_MEDIA_RECEIVER_REGISTRAR_UPNP_TYPE "urn:microsoft.com:service:X_MS_MediaReceiverRegistrar:1"
 #define RYGEL_MEDIA_RECEIVER_REGISTRAR_DESCRIPTION_PATH "xml/X_MS_MediaReceiverRegistrar1.xml"
-static void rygel_media_receiver_registrar_is_authorized_cb (RygelMediaReceiverRegistrar* self, RygelMediaReceiverRegistrar* registrar, GUPnPServiceAction* action);
-static void _rygel_media_receiver_registrar_is_authorized_cb_gupnp_service_action_invoked (RygelMediaReceiverRegistrar* _sender, GUPnPServiceAction* action, gpointer self);
-static void rygel_media_receiver_registrar_register_device_cb (RygelMediaReceiverRegistrar* self, RygelMediaReceiverRegistrar* registrar, GUPnPServiceAction* action);
-static void _rygel_media_receiver_registrar_register_device_cb_gupnp_service_action_invoked (RygelMediaReceiverRegistrar* _sender, GUPnPServiceAction* action, gpointer self);
+static void rygel_media_receiver_registrar_is_authorized_cb (RygelMediaReceiverRegistrar* self, GUPnPService* registrar, GUPnPServiceAction* action);
+static void _rygel_media_receiver_registrar_is_authorized_cb_gupnp_service_action_invoked (GUPnPService* _sender, GUPnPServiceAction* action, gpointer self);
+static void rygel_media_receiver_registrar_register_device_cb (RygelMediaReceiverRegistrar* self, GUPnPService* registrar, GUPnPServiceAction* action);
+static void _rygel_media_receiver_registrar_register_device_cb_gupnp_service_action_invoked (GUPnPService* _sender, GUPnPServiceAction* action, gpointer self);
 static void rygel_media_receiver_registrar_real_constructed (GObject* base);
 RygelMediaReceiverRegistrar* rygel_media_receiver_registrar_new (void);
 RygelMediaReceiverRegistrar* rygel_media_receiver_registrar_construct (GType object_type);
@@ -71,14 +71,14 @@ RygelMediaReceiverRegistrar* rygel_media_receiver_registrar_construct (GType obj
 
 
 #line 43 "rygel-media-receiver-registrar.vala"
-static void _rygel_media_receiver_registrar_is_authorized_cb_gupnp_service_action_invoked (RygelMediaReceiverRegistrar* _sender, GUPnPServiceAction* action, gpointer self) {
+static void _rygel_media_receiver_registrar_is_authorized_cb_gupnp_service_action_invoked (GUPnPService* _sender, GUPnPServiceAction* action, gpointer self) {
 #line 76 "rygel-media-receiver-registrar.c"
 	rygel_media_receiver_registrar_is_authorized_cb (self, _sender, action);
 }
 
 
 #line 50 "rygel-media-receiver-registrar.vala"
-static void _rygel_media_receiver_registrar_register_device_cb_gupnp_service_action_invoked (RygelMediaReceiverRegistrar* _sender, GUPnPServiceAction* action, gpointer self) {
+static void _rygel_media_receiver_registrar_register_device_cb_gupnp_service_action_invoked (GUPnPService* _sender, GUPnPServiceAction* action, gpointer self) {
 #line 83 "rygel-media-receiver-registrar.c"
 	rygel_media_receiver_registrar_register_device_cb (self, _sender, action);
 }
@@ -100,7 +100,7 @@ static void rygel_media_receiver_registrar_real_constructed (GObject* base) {
 
 
 #line 43 "rygel-media-receiver-registrar.vala"
-static void rygel_media_receiver_registrar_is_authorized_cb (RygelMediaReceiverRegistrar* self, RygelMediaReceiverRegistrar* registrar, GUPnPServiceAction* action) {
+static void rygel_media_receiver_registrar_is_authorized_cb (RygelMediaReceiverRegistrar* self, GUPnPService* registrar, GUPnPServiceAction* action) {
 #line 43 "rygel-media-receiver-registrar.vala"
 	g_return_if_fail (self != NULL);
 #line 43 "rygel-media-receiver-registrar.vala"
@@ -116,7 +116,7 @@ static void rygel_media_receiver_registrar_is_authorized_cb (RygelMediaReceiverR
 
 
 #line 50 "rygel-media-receiver-registrar.vala"
-static void rygel_media_receiver_registrar_register_device_cb (RygelMediaReceiverRegistrar* self, RygelMediaReceiverRegistrar* registrar, GUPnPServiceAction* action) {
+static void rygel_media_receiver_registrar_register_device_cb (RygelMediaReceiverRegistrar* self, GUPnPService* registrar, GUPnPServiceAction* action) {
 #line 50 "rygel-media-receiver-registrar.vala"
 	g_return_if_fail (self != NULL);
 #line 50 "rygel-media-receiver-registrar.vala"

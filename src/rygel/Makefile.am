@@ -37,6 +37,8 @@ rygel_SOURCES = $(VAPI_SOURCE_FILES) \
 		rygel-dbus-service.vala \
 		rygel-root-device.vala \
 		rygel-root-device-factory.vala \
+		rygel-xml-utils.vala \
+		rygel-signal-handler.vala \
 		rygel-main.vala
 
 VAPI_SOURCE_FILES = rygel-configuration.vala \
@@ -101,8 +103,9 @@ VAPI_SOURCE_FILES = rygel-configuration.vala \
 
 rygel_VALAFLAGS = \
 	-H rygel.h -C --library=rygel-1.0 --vapidir=$(srcdir) --thread \
-	--pkg cstuff --pkg gupnp-1.0 --pkg gupnp-av-1.0 --pkg dbus-glib-1 \
-	--pkg gstreamer-0.10 --pkg gio-2.0 --pkg gee-1.0 -g
+	--pkg rygel-build-config --pkg rygel-misc --pkg gupnp-1.0 \
+	--pkg gupnp-av-1.0 --pkg dbus-glib-1 --pkg gstreamer-0.10 \
+	--pkg gio-2.0 --pkg gee-1.0 --pkg posix -g
 
 rygel_LDADD = librygel-configuration.a \
 	      $(LIBGUPNP_LIBS) \
@@ -129,11 +132,11 @@ librygel_configuration_a_SOURCES = rygel-configuration.c \
 				   rygel-user-config.c \
 				   rygel-meta-config.c \
 				   rygel-cmdline-config.c \
-				   rygel-environment-config.c \
-				   cstuff.c
+				   rygel-environment-config.c
 
 MAINTAINERCLEANFILES = Makefile.in $(BUILT_SOURCES)
-EXTRA_DIST = cstuff.vapi \
+EXTRA_DIST = rygel-build-config.vapi \
+             rygel-misc.vapi \
              $(VAPI_FILES) \
              $(DEPS_FILES) \
-             $(BUILT_SOURCES) cstuff.h
+             $(BUILT_SOURCES)

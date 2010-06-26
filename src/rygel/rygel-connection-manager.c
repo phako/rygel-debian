@@ -67,18 +67,18 @@ enum  {
 #define RYGEL_CONNECTION_MANAGER_UPNP_ID "urn:upnp-org:serviceId:ConnectionManager"
 #define RYGEL_CONNECTION_MANAGER_UPNP_TYPE "urn:schemas-upnp-org:service:ConnectionManager:2"
 #define RYGEL_CONNECTION_MANAGER_DESCRIPTION_PATH "xml/ConnectionManager.xml"
-static void rygel_connection_manager_query_source_protocol_info_cb (RygelConnectionManager* self, RygelConnectionManager* cm, const char* var, GValue* val);
-static void _rygel_connection_manager_query_source_protocol_info_cb_gupnp_service_query_variable (RygelConnectionManager* _sender, const char* variable, GValue* value, gpointer self);
-static void rygel_connection_manager_query_sink_protocol_info_cb (RygelConnectionManager* self, RygelConnectionManager* cm, const char* var, GValue* val);
-static void _rygel_connection_manager_query_sink_protocol_info_cb_gupnp_service_query_variable (RygelConnectionManager* _sender, const char* variable, GValue* value, gpointer self);
-static void rygel_connection_manager_query_current_connection_ids_cb (RygelConnectionManager* self, RygelConnectionManager* cm, const char* var, GValue* val);
-static void _rygel_connection_manager_query_current_connection_ids_cb_gupnp_service_query_variable (RygelConnectionManager* _sender, const char* variable, GValue* value, gpointer self);
-static void rygel_connection_manager_get_protocol_info_cb (RygelConnectionManager* self, RygelConnectionManager* cm, GUPnPServiceAction* action);
-static void _rygel_connection_manager_get_protocol_info_cb_gupnp_service_action_invoked (RygelConnectionManager* _sender, GUPnPServiceAction* action, gpointer self);
-static void rygel_connection_manager_get_current_connection_ids_cb (RygelConnectionManager* self, RygelConnectionManager* cm, GUPnPServiceAction* action);
-static void _rygel_connection_manager_get_current_connection_ids_cb_gupnp_service_action_invoked (RygelConnectionManager* _sender, GUPnPServiceAction* action, gpointer self);
-static void rygel_connection_manager_get_current_connection_info_cb (RygelConnectionManager* self, RygelConnectionManager* cm, GUPnPServiceAction* action);
-static void _rygel_connection_manager_get_current_connection_info_cb_gupnp_service_action_invoked (RygelConnectionManager* _sender, GUPnPServiceAction* action, gpointer self);
+static void rygel_connection_manager_query_source_protocol_info_cb (RygelConnectionManager* self, GUPnPService* cm, const char* var, GValue* val);
+static void _rygel_connection_manager_query_source_protocol_info_cb_gupnp_service_query_variable (GUPnPService* _sender, const char* variable, GValue* value, gpointer self);
+static void rygel_connection_manager_query_sink_protocol_info_cb (RygelConnectionManager* self, GUPnPService* cm, const char* var, GValue* val);
+static void _rygel_connection_manager_query_sink_protocol_info_cb_gupnp_service_query_variable (GUPnPService* _sender, const char* variable, GValue* value, gpointer self);
+static void rygel_connection_manager_query_current_connection_ids_cb (RygelConnectionManager* self, GUPnPService* cm, const char* var, GValue* val);
+static void _rygel_connection_manager_query_current_connection_ids_cb_gupnp_service_query_variable (GUPnPService* _sender, const char* variable, GValue* value, gpointer self);
+static void rygel_connection_manager_get_protocol_info_cb (RygelConnectionManager* self, GUPnPService* cm, GUPnPServiceAction* action);
+static void _rygel_connection_manager_get_protocol_info_cb_gupnp_service_action_invoked (GUPnPService* _sender, GUPnPServiceAction* action, gpointer self);
+static void rygel_connection_manager_get_current_connection_ids_cb (RygelConnectionManager* self, GUPnPService* cm, GUPnPServiceAction* action);
+static void _rygel_connection_manager_get_current_connection_ids_cb_gupnp_service_action_invoked (GUPnPService* _sender, GUPnPServiceAction* action, gpointer self);
+static void rygel_connection_manager_get_current_connection_info_cb (RygelConnectionManager* self, GUPnPService* cm, GUPnPServiceAction* action);
+static void _rygel_connection_manager_get_current_connection_info_cb_gupnp_service_action_invoked (GUPnPService* _sender, GUPnPServiceAction* action, gpointer self);
 static void rygel_connection_manager_real_constructed (GObject* base);
 RygelConnectionManager* rygel_connection_manager_new (void);
 RygelConnectionManager* rygel_connection_manager_construct (GType object_type);
@@ -86,43 +86,43 @@ static void rygel_connection_manager_finalize (GObject* obj);
 
 
 
-#line 60 "rygel-connection-manager.vala"
-static void _rygel_connection_manager_query_source_protocol_info_cb_gupnp_service_query_variable (RygelConnectionManager* _sender, const char* variable, GValue* value, gpointer self) {
+#line 61 "rygel-connection-manager.vala"
+static void _rygel_connection_manager_query_source_protocol_info_cb_gupnp_service_query_variable (GUPnPService* _sender, const char* variable, GValue* value, gpointer self) {
 #line 92 "rygel-connection-manager.c"
 	rygel_connection_manager_query_source_protocol_info_cb (self, _sender, variable, value);
 }
 
 
-#line 67 "rygel-connection-manager.vala"
-static void _rygel_connection_manager_query_sink_protocol_info_cb_gupnp_service_query_variable (RygelConnectionManager* _sender, const char* variable, GValue* value, gpointer self) {
+#line 68 "rygel-connection-manager.vala"
+static void _rygel_connection_manager_query_sink_protocol_info_cb_gupnp_service_query_variable (GUPnPService* _sender, const char* variable, GValue* value, gpointer self) {
 #line 99 "rygel-connection-manager.c"
 	rygel_connection_manager_query_sink_protocol_info_cb (self, _sender, variable, value);
 }
 
 
-#line 74 "rygel-connection-manager.vala"
-static void _rygel_connection_manager_query_current_connection_ids_cb_gupnp_service_query_variable (RygelConnectionManager* _sender, const char* variable, GValue* value, gpointer self) {
+#line 75 "rygel-connection-manager.vala"
+static void _rygel_connection_manager_query_current_connection_ids_cb_gupnp_service_query_variable (GUPnPService* _sender, const char* variable, GValue* value, gpointer self) {
 #line 106 "rygel-connection-manager.c"
 	rygel_connection_manager_query_current_connection_ids_cb (self, _sender, variable, value);
 }
 
 
-#line 81 "rygel-connection-manager.vala"
-static void _rygel_connection_manager_get_protocol_info_cb_gupnp_service_action_invoked (RygelConnectionManager* _sender, GUPnPServiceAction* action, gpointer self) {
+#line 82 "rygel-connection-manager.vala"
+static void _rygel_connection_manager_get_protocol_info_cb_gupnp_service_action_invoked (GUPnPService* _sender, GUPnPServiceAction* action, gpointer self) {
 #line 113 "rygel-connection-manager.c"
 	rygel_connection_manager_get_protocol_info_cb (self, _sender, action);
 }
 
 
-#line 89 "rygel-connection-manager.vala"
-static void _rygel_connection_manager_get_current_connection_ids_cb_gupnp_service_action_invoked (RygelConnectionManager* _sender, GUPnPServiceAction* action, gpointer self) {
+#line 90 "rygel-connection-manager.vala"
+static void _rygel_connection_manager_get_current_connection_ids_cb_gupnp_service_action_invoked (GUPnPService* _sender, GUPnPServiceAction* action, gpointer self) {
 #line 120 "rygel-connection-manager.c"
 	rygel_connection_manager_get_current_connection_ids_cb (self, _sender, action);
 }
 
 
-#line 96 "rygel-connection-manager.vala"
-static void _rygel_connection_manager_get_current_connection_info_cb_gupnp_service_action_invoked (RygelConnectionManager* _sender, GUPnPServiceAction* action, gpointer self) {
+#line 97 "rygel-connection-manager.vala"
+static void _rygel_connection_manager_get_current_connection_info_cb_gupnp_service_action_invoked (GUPnPService* _sender, GUPnPServiceAction* action, gpointer self) {
 #line 127 "rygel-connection-manager.c"
 	rygel_connection_manager_get_current_connection_info_cb (self, _sender, action);
 }
@@ -150,117 +150,117 @@ static void rygel_connection_manager_real_constructed (GObject* base) {
 	g_signal_connect_object ((GUPnPService*) self, "query-variable::CurrentConnectionIDs", (GCallback) _rygel_connection_manager_query_current_connection_ids_cb_gupnp_service_query_variable, self, 0);
 #line 53 "rygel-connection-manager.vala"
 	g_signal_connect_object ((GUPnPService*) self, "action-invoked::GetProtocolInfo", (GCallback) _rygel_connection_manager_get_protocol_info_cb_gupnp_service_action_invoked, self, 0);
-#line 54 "rygel-connection-manager.vala"
+#line 55 "rygel-connection-manager.vala"
 	g_signal_connect_object ((GUPnPService*) self, "action-invoked::GetCurrentConnectionIDs", (GCallback) _rygel_connection_manager_get_current_connection_ids_cb_gupnp_service_action_invoked, self, 0);
-#line 56 "rygel-connection-manager.vala"
+#line 57 "rygel-connection-manager.vala"
 	g_signal_connect_object ((GUPnPService*) self, "action-invoked::GetCurrentConnectionInfo", (GCallback) _rygel_connection_manager_get_current_connection_info_cb_gupnp_service_action_invoked, self, 0);
 #line 158 "rygel-connection-manager.c"
 }
 
 
-#line 60 "rygel-connection-manager.vala"
-static void rygel_connection_manager_query_source_protocol_info_cb (RygelConnectionManager* self, RygelConnectionManager* cm, const char* var, GValue* val) {
-#line 60 "rygel-connection-manager.vala"
+#line 61 "rygel-connection-manager.vala"
+static void rygel_connection_manager_query_source_protocol_info_cb (RygelConnectionManager* self, GUPnPService* cm, const char* var, GValue* val) {
+#line 61 "rygel-connection-manager.vala"
 	g_return_if_fail (self != NULL);
-#line 60 "rygel-connection-manager.vala"
+#line 61 "rygel-connection-manager.vala"
 	g_return_if_fail (cm != NULL);
-#line 60 "rygel-connection-manager.vala"
+#line 61 "rygel-connection-manager.vala"
 	g_return_if_fail (var != NULL);
-#line 63 "rygel-connection-manager.vala"
-	g_value_init (val, G_TYPE_STRING);
 #line 64 "rygel-connection-manager.vala"
+	g_value_init (val, G_TYPE_STRING);
+#line 65 "rygel-connection-manager.vala"
 	g_value_set_string (val, self->source_protocol_info);
 #line 174 "rygel-connection-manager.c"
 }
 
 
-#line 67 "rygel-connection-manager.vala"
-static void rygel_connection_manager_query_sink_protocol_info_cb (RygelConnectionManager* self, RygelConnectionManager* cm, const char* var, GValue* val) {
-#line 67 "rygel-connection-manager.vala"
+#line 68 "rygel-connection-manager.vala"
+static void rygel_connection_manager_query_sink_protocol_info_cb (RygelConnectionManager* self, GUPnPService* cm, const char* var, GValue* val) {
+#line 68 "rygel-connection-manager.vala"
 	g_return_if_fail (self != NULL);
-#line 67 "rygel-connection-manager.vala"
+#line 68 "rygel-connection-manager.vala"
 	g_return_if_fail (cm != NULL);
-#line 67 "rygel-connection-manager.vala"
+#line 68 "rygel-connection-manager.vala"
 	g_return_if_fail (var != NULL);
-#line 70 "rygel-connection-manager.vala"
-	g_value_init (val, G_TYPE_STRING);
 #line 71 "rygel-connection-manager.vala"
+	g_value_init (val, G_TYPE_STRING);
+#line 72 "rygel-connection-manager.vala"
 	g_value_set_string (val, self->sink_protocol_info);
 #line 190 "rygel-connection-manager.c"
 }
 
 
-#line 74 "rygel-connection-manager.vala"
-static void rygel_connection_manager_query_current_connection_ids_cb (RygelConnectionManager* self, RygelConnectionManager* cm, const char* var, GValue* val) {
-#line 74 "rygel-connection-manager.vala"
+#line 75 "rygel-connection-manager.vala"
+static void rygel_connection_manager_query_current_connection_ids_cb (RygelConnectionManager* self, GUPnPService* cm, const char* var, GValue* val) {
+#line 75 "rygel-connection-manager.vala"
 	g_return_if_fail (self != NULL);
-#line 74 "rygel-connection-manager.vala"
+#line 75 "rygel-connection-manager.vala"
 	g_return_if_fail (cm != NULL);
-#line 74 "rygel-connection-manager.vala"
+#line 75 "rygel-connection-manager.vala"
 	g_return_if_fail (var != NULL);
-#line 77 "rygel-connection-manager.vala"
-	g_value_init (val, G_TYPE_STRING);
 #line 78 "rygel-connection-manager.vala"
+	g_value_init (val, G_TYPE_STRING);
+#line 79 "rygel-connection-manager.vala"
 	g_value_set_string (val, self->connection_ids);
 #line 206 "rygel-connection-manager.c"
 }
 
 
-#line 81 "rygel-connection-manager.vala"
-static void rygel_connection_manager_get_protocol_info_cb (RygelConnectionManager* self, RygelConnectionManager* cm, GUPnPServiceAction* action) {
-#line 81 "rygel-connection-manager.vala"
+#line 82 "rygel-connection-manager.vala"
+static void rygel_connection_manager_get_protocol_info_cb (RygelConnectionManager* self, GUPnPService* cm, GUPnPServiceAction* action) {
+#line 82 "rygel-connection-manager.vala"
 	g_return_if_fail (self != NULL);
-#line 81 "rygel-connection-manager.vala"
+#line 82 "rygel-connection-manager.vala"
 	g_return_if_fail (cm != NULL);
-#line 81 "rygel-connection-manager.vala"
+#line 82 "rygel-connection-manager.vala"
 	g_return_if_fail (action != NULL);
-#line 83 "rygel-connection-manager.vala"
+#line 84 "rygel-connection-manager.vala"
 	gupnp_service_action_set (action, "Source", G_TYPE_STRING, self->source_protocol_info, "Sink", G_TYPE_STRING, self->sink_protocol_info, NULL);
-#line 86 "rygel-connection-manager.vala"
+#line 87 "rygel-connection-manager.vala"
 	gupnp_service_action_return (action);
 #line 222 "rygel-connection-manager.c"
 }
 
 
-#line 89 "rygel-connection-manager.vala"
-static void rygel_connection_manager_get_current_connection_ids_cb (RygelConnectionManager* self, RygelConnectionManager* cm, GUPnPServiceAction* action) {
-#line 89 "rygel-connection-manager.vala"
+#line 90 "rygel-connection-manager.vala"
+static void rygel_connection_manager_get_current_connection_ids_cb (RygelConnectionManager* self, GUPnPService* cm, GUPnPServiceAction* action) {
+#line 90 "rygel-connection-manager.vala"
 	g_return_if_fail (self != NULL);
-#line 89 "rygel-connection-manager.vala"
+#line 90 "rygel-connection-manager.vala"
 	g_return_if_fail (cm != NULL);
-#line 89 "rygel-connection-manager.vala"
+#line 90 "rygel-connection-manager.vala"
 	g_return_if_fail (action != NULL);
-#line 91 "rygel-connection-manager.vala"
+#line 92 "rygel-connection-manager.vala"
 	gupnp_service_action_set (action, "ConnectionIDs", G_TYPE_STRING, self->connection_ids, NULL);
-#line 93 "rygel-connection-manager.vala"
+#line 94 "rygel-connection-manager.vala"
 	gupnp_service_action_return (action);
 #line 238 "rygel-connection-manager.c"
 }
 
 
-#line 96 "rygel-connection-manager.vala"
-static void rygel_connection_manager_get_current_connection_info_cb (RygelConnectionManager* self, RygelConnectionManager* cm, GUPnPServiceAction* action) {
+#line 97 "rygel-connection-manager.vala"
+static void rygel_connection_manager_get_current_connection_info_cb (RygelConnectionManager* self, GUPnPService* cm, GUPnPServiceAction* action) {
 #line 244 "rygel-connection-manager.c"
 	gint connection_id = 0;
-#line 96 "rygel-connection-manager.vala"
+#line 97 "rygel-connection-manager.vala"
 	g_return_if_fail (self != NULL);
-#line 96 "rygel-connection-manager.vala"
+#line 97 "rygel-connection-manager.vala"
 	g_return_if_fail (cm != NULL);
-#line 96 "rygel-connection-manager.vala"
+#line 97 "rygel-connection-manager.vala"
 	g_return_if_fail (action != NULL);
-#line 100 "rygel-connection-manager.vala"
-	gupnp_service_action_get (action, "ConnectionID", G_TYPE_INT, &connection_id, NULL);
 #line 101 "rygel-connection-manager.vala"
-	if (connection_id != 0) {
+	gupnp_service_action_get (action, "ConnectionID", G_TYPE_INT, &connection_id, NULL);
 #line 102 "rygel-connection-manager.vala"
+	if (connection_id != 0) {
+#line 103 "rygel-connection-manager.vala"
 		gupnp_service_action_return_error (action, (guint) 706, _ ("Invalid connection reference"));
-#line 104 "rygel-connection-manager.vala"
+#line 105 "rygel-connection-manager.vala"
 		return;
 #line 260 "rygel-connection-manager.c"
 	}
-#line 107 "rygel-connection-manager.vala"
+#line 108 "rygel-connection-manager.vala"
 	gupnp_service_action_set (action, "RcsID", G_TYPE_INT, -1, "AVTransportID", G_TYPE_INT, -1, "ProtocolInfo", G_TYPE_STRING, "", "PeerConnectionManager", G_TYPE_STRING, "", "PeerConnectionID", G_TYPE_INT, -1, "Direction", G_TYPE_STRING, "Input", "Status", G_TYPE_STRING, "Unknown", NULL);
-#line 115 "rygel-connection-manager.vala"
+#line 116 "rygel-connection-manager.vala"
 	gupnp_service_action_return (action);
 #line 266 "rygel-connection-manager.c"
 }

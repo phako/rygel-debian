@@ -27,9 +27,9 @@
 
 #include <glib.h>
 #include <glib-object.h>
+#include <gio/gio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <gio/gio.h>
 #include <rygel.h>
 #include <dbus/dbus-glib-lowlevel.h>
 #include <dbus/dbus-glib.h>
@@ -117,8 +117,6 @@ struct _RygelParamSpecExternalThumbnailFactory {
 };
 
 
-static char* rygel_external_thumbnail_factory_ITEM_IFACE;
-static char* rygel_external_thumbnail_factory_ITEM_IFACE = NULL;
 static gpointer rygel_external_thumbnail_factory_parent_class = NULL;
 
 gpointer rygel_external_thumbnail_factory_ref (gpointer instance);
@@ -133,9 +131,11 @@ enum  {
 };
 static void rygel_external_thumbnail_factory_create_data_free (gpointer _data);
 static void rygel_external_thumbnail_factory_create_ready (GObject* source_object, GAsyncResult* _res_, gpointer _user_data_);
+FreeDesktopProperties* free_desktop_properties_dbus_proxy_new (DBusGConnection* connection, const char* name, const char* path);
 GType free_desktop_properties_get_type (void);
 void free_desktop_properties_get_all (FreeDesktopProperties* self, const char* iface, GAsyncReadyCallback _callback_, gpointer _user_data_);
 GHashTable* free_desktop_properties_get_all_finish (FreeDesktopProperties* self, GAsyncResult* _res_, GError** error);
+#define RYGEL_EXTERNAL_MEDIA_ITEM_IFACE "org.gnome.UPnP.MediaItem2"
 static GValue* _g_value_dup (GValue* self);
 void rygel_external_thumbnail_factory_create (RygelExternalThumbnailFactory* self, const char* service_name, const char* object_path, const char* host_ip, GAsyncReadyCallback _callback_, gpointer _user_data_);
 RygelThumbnail* rygel_external_thumbnail_factory_create_finish (RygelExternalThumbnailFactory* self, GAsyncResult* _res_, GError** error);
@@ -202,16 +202,16 @@ static gpointer __g_value_dup0 (gpointer self) {
 }
 
 
-#line 1052 "glib-2.0.vapi"
+#line 1148 "glib-2.0.vapi"
 static char* string_replace (const char* self, const char* old, const char* replacement) {
 #line 208 "rygel-external-thumbnail-factory.c"
 	char* result = NULL;
 	GError * _inner_error_;
-#line 1052 "glib-2.0.vapi"
+#line 1148 "glib-2.0.vapi"
 	g_return_val_if_fail (self != NULL, NULL);
-#line 1052 "glib-2.0.vapi"
+#line 1148 "glib-2.0.vapi"
 	g_return_val_if_fail (old != NULL, NULL);
-#line 1052 "glib-2.0.vapi"
+#line 1148 "glib-2.0.vapi"
 	g_return_val_if_fail (replacement != NULL, NULL);
 #line 217 "rygel-external-thumbnail-factory.c"
 	_inner_error_ = NULL;
@@ -220,24 +220,24 @@ static char* string_replace (const char* self, const char* old, const char* repl
 		GRegex* _tmp1_;
 		GRegex* regex;
 		char* _tmp2_;
-#line 1054 "glib-2.0.vapi"
+#line 1150 "glib-2.0.vapi"
 		regex = (_tmp1_ = g_regex_new (_tmp0_ = g_regex_escape_string (old, -1), 0, 0, &_inner_error_), _g_free0 (_tmp0_), _tmp1_);
 #line 226 "rygel-external-thumbnail-factory.c"
 		if (_inner_error_ != NULL) {
 			if (_inner_error_->domain == G_REGEX_ERROR) {
-				goto __catch4_g_regex_error;
+				goto __catch3_g_regex_error;
 			}
 			g_critical ("file %s: line %d: unexpected error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
 			g_clear_error (&_inner_error_);
 			return NULL;
 		}
-#line 1055 "glib-2.0.vapi"
+#line 1151 "glib-2.0.vapi"
 		_tmp2_ = g_regex_replace_literal (regex, self, (gssize) (-1), 0, replacement, 0, &_inner_error_);
 #line 237 "rygel-external-thumbnail-factory.c"
 		if (_inner_error_ != NULL) {
 			_g_regex_unref0 (regex);
 			if (_inner_error_->domain == G_REGEX_ERROR) {
-				goto __catch4_g_regex_error;
+				goto __catch3_g_regex_error;
 			}
 			_g_regex_unref0 (regex);
 			g_critical ("file %s: line %d: unexpected error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
@@ -246,24 +246,24 @@ static char* string_replace (const char* self, const char* old, const char* repl
 		}
 		result = _tmp2_;
 		_g_regex_unref0 (regex);
-#line 1055 "glib-2.0.vapi"
+#line 1151 "glib-2.0.vapi"
 		return result;
 #line 252 "rygel-external-thumbnail-factory.c"
 	}
-	goto __finally4;
-	__catch4_g_regex_error:
+	goto __finally3;
+	__catch3_g_regex_error:
 	{
 		GError * e;
 		e = _inner_error_;
 		_inner_error_ = NULL;
 		{
-#line 1057 "glib-2.0.vapi"
+#line 1153 "glib-2.0.vapi"
 			g_assert_not_reached ();
 #line 263 "rygel-external-thumbnail-factory.c"
 			_g_error_free0 (e);
 		}
 	}
-	__finally4:
+	__finally3:
 	if (_inner_error_ != NULL) {
 		g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
 		g_clear_error (&_inner_error_);
@@ -276,8 +276,8 @@ static gboolean rygel_external_thumbnail_factory_create_co (RygelExternalThumbna
 	switch (data->_state_) {
 		case 0:
 		goto _state_0;
-		case 10:
-		goto _state_10;
+		case 13:
+		goto _state_13;
 		default:
 		g_assert_not_reached ();
 	}
@@ -298,10 +298,10 @@ static gboolean rygel_external_thumbnail_factory_create_co (RygelExternalThumbna
 			}
 		}
 		data->props = free_desktop_properties_dbus_proxy_new (data->connection, data->service_name, data->object_path);
-		data->_state_ = 10;
-		free_desktop_properties_get_all (data->props, rygel_external_thumbnail_factory_ITEM_IFACE, rygel_external_thumbnail_factory_create_ready, data);
+		data->_state_ = 13;
+		free_desktop_properties_get_all (data->props, RYGEL_EXTERNAL_MEDIA_ITEM_IFACE, rygel_external_thumbnail_factory_create_ready, data);
 		return FALSE;
-		_state_10:
+		_state_13:
 		data->item_props = free_desktop_properties_get_all_finish (data->props, data->_res_, &data->_inner_error_);
 		if (data->_inner_error_ != NULL) {
 			g_simple_async_result_set_from_error (data->_async_result, data->_inner_error_);
@@ -320,65 +320,65 @@ static gboolean rygel_external_thumbnail_factory_create_co (RygelExternalThumbna
 		}
 		data->thumbnail = rygel_thumbnail_new ("image/jpeg", "JPEG_TN");
 		data->value = __g_value_dup0 ((GValue*) g_hash_table_lookup (data->item_props, "MIMEType"));
-#line 49 "rygel-external-thumbnail-factory.vala"
+#line 47 "rygel-external-thumbnail-factory.vala"
 		((RygelIconInfo*) data->thumbnail)->mime_type = (data->_tmp0_ = g_strdup (g_value_get_string (data->value)), _g_free0 (((RygelIconInfo*) data->thumbnail)->mime_type), data->_tmp0_);
-#line 51 "rygel-external-thumbnail-factory.vala"
+#line 49 "rygel-external-thumbnail-factory.vala"
 		data->value = (data->_tmp1_ = __g_value_dup0 ((GValue*) g_hash_table_lookup (data->item_props, "URLs")), _g_free0 (data->value), data->_tmp1_);
 #line 328 "rygel-external-thumbnail-factory.c"
 		data->uris = (data->_tmp2_ = (char**) g_value_get_boxed (data->value), data->uris_length1 = -1, data->_uris_size_ = data->uris_length1, data->_tmp2_);
-#line 53 "rygel-external-thumbnail-factory.vala"
+#line 51 "rygel-external-thumbnail-factory.vala"
 		if (data->uris != NULL) {
-#line 53 "rygel-external-thumbnail-factory.vala"
+#line 51 "rygel-external-thumbnail-factory.vala"
 			data->_tmp3_ = data->uris[0] != NULL;
 #line 334 "rygel-external-thumbnail-factory.c"
 		} else {
-#line 53 "rygel-external-thumbnail-factory.vala"
+#line 51 "rygel-external-thumbnail-factory.vala"
 			data->_tmp3_ = FALSE;
 #line 338 "rygel-external-thumbnail-factory.c"
 		}
-#line 53 "rygel-external-thumbnail-factory.vala"
+#line 51 "rygel-external-thumbnail-factory.vala"
 		if (data->_tmp3_) {
-#line 54 "rygel-external-thumbnail-factory.vala"
+#line 52 "rygel-external-thumbnail-factory.vala"
 			((RygelIconInfo*) data->thumbnail)->uri = (data->_tmp4_ = string_replace (data->uris[0], "@ADDRESS@", data->host_ip), _g_free0 (((RygelIconInfo*) data->thumbnail)->uri), data->_tmp4_);
 #line 344 "rygel-external-thumbnail-factory.c"
 		}
-#line 57 "rygel-external-thumbnail-factory.vala"
+#line 55 "rygel-external-thumbnail-factory.vala"
 		data->value = (data->_tmp5_ = __g_value_dup0 ((GValue*) g_hash_table_lookup (data->item_props, "DLNAProfile")), _g_free0 (data->value), data->_tmp5_);
-#line 58 "rygel-external-thumbnail-factory.vala"
+#line 56 "rygel-external-thumbnail-factory.vala"
 		if (data->value != NULL) {
-#line 59 "rygel-external-thumbnail-factory.vala"
+#line 57 "rygel-external-thumbnail-factory.vala"
 			data->thumbnail->dlna_profile = (data->_tmp6_ = g_strdup (g_value_get_string (data->value)), _g_free0 (data->thumbnail->dlna_profile), data->_tmp6_);
 #line 352 "rygel-external-thumbnail-factory.c"
 		}
-#line 62 "rygel-external-thumbnail-factory.vala"
+#line 60 "rygel-external-thumbnail-factory.vala"
 		data->value = (data->_tmp7_ = __g_value_dup0 ((GValue*) g_hash_table_lookup (data->item_props, "Size")), _g_free0 (data->value), data->_tmp7_);
-#line 63 "rygel-external-thumbnail-factory.vala"
+#line 61 "rygel-external-thumbnail-factory.vala"
 		if (data->value != NULL) {
-#line 64 "rygel-external-thumbnail-factory.vala"
+#line 62 "rygel-external-thumbnail-factory.vala"
 			((RygelIconInfo*) data->thumbnail)->size = (glong) g_value_get_int (data->value);
 #line 360 "rygel-external-thumbnail-factory.c"
 		}
-#line 67 "rygel-external-thumbnail-factory.vala"
+#line 65 "rygel-external-thumbnail-factory.vala"
 		data->value = (data->_tmp8_ = __g_value_dup0 ((GValue*) g_hash_table_lookup (data->item_props, "Width")), _g_free0 (data->value), data->_tmp8_);
-#line 68 "rygel-external-thumbnail-factory.vala"
+#line 66 "rygel-external-thumbnail-factory.vala"
 		if (data->value != NULL) {
-#line 69 "rygel-external-thumbnail-factory.vala"
+#line 67 "rygel-external-thumbnail-factory.vala"
 			((RygelIconInfo*) data->thumbnail)->width = g_value_get_int (data->value);
 #line 368 "rygel-external-thumbnail-factory.c"
 		}
-#line 72 "rygel-external-thumbnail-factory.vala"
+#line 70 "rygel-external-thumbnail-factory.vala"
 		data->value = (data->_tmp9_ = __g_value_dup0 ((GValue*) g_hash_table_lookup (data->item_props, "Height")), _g_free0 (data->value), data->_tmp9_);
-#line 73 "rygel-external-thumbnail-factory.vala"
+#line 71 "rygel-external-thumbnail-factory.vala"
 		if (data->value != NULL) {
-#line 74 "rygel-external-thumbnail-factory.vala"
+#line 72 "rygel-external-thumbnail-factory.vala"
 			((RygelIconInfo*) data->thumbnail)->height = g_value_get_int (data->value);
 #line 376 "rygel-external-thumbnail-factory.c"
 		}
-#line 77 "rygel-external-thumbnail-factory.vala"
+#line 75 "rygel-external-thumbnail-factory.vala"
 		data->value = (data->_tmp10_ = __g_value_dup0 ((GValue*) g_hash_table_lookup (data->item_props, "ColorDepth")), _g_free0 (data->value), data->_tmp10_);
-#line 78 "rygel-external-thumbnail-factory.vala"
+#line 76 "rygel-external-thumbnail-factory.vala"
 		if (data->value != NULL) {
-#line 79 "rygel-external-thumbnail-factory.vala"
+#line 77 "rygel-external-thumbnail-factory.vala"
 			((RygelIconInfo*) data->thumbnail)->depth = g_value_get_int (data->value);
 #line 384 "rygel-external-thumbnail-factory.c"
 		}
@@ -544,7 +544,6 @@ void rygel_value_take_external_thumbnail_factory (GValue* value, gpointer v_obje
 static void rygel_external_thumbnail_factory_class_init (RygelExternalThumbnailFactoryClass * klass) {
 	rygel_external_thumbnail_factory_parent_class = g_type_class_peek_parent (klass);
 	RYGEL_EXTERNAL_THUMBNAIL_FACTORY_CLASS (klass)->finalize = rygel_external_thumbnail_factory_finalize;
-	rygel_external_thumbnail_factory_ITEM_IFACE = g_strdup ("org.gnome.UPnP.MediaItem1");
 }
 
 

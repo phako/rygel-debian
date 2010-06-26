@@ -30,6 +30,8 @@ private errordomain Rygel.ItemCreatorError {
  * CreateObject action implementation.
  */
 internal class Rygel.ItemCreator: GLib.Object, Rygel.StateMachine {
+    private static PatternSpec comment_pattern = new PatternSpec ("*<!--*-->*");
+
     // In arguments
     public string container_id;
     public string elements;
@@ -57,8 +59,6 @@ internal class Rygel.ItemCreator: GLib.Object, Rygel.StateMachine {
         try {
             this.parse_args ();
 
-            var container = yield this.fetch_container ();
-
             this.didl_parser.item_available.connect ((didl_item) => {
                     this.didl_item = didl_item;
             });
@@ -68,6 +68,8 @@ internal class Rygel.ItemCreator: GLib.Object, Rygel.StateMachine {
 
                 throw new ItemCreatorError.PARSE (message, this.elements);
             }
+
+            var container = yield this.fetch_container ();
 
             this.item = new MediaItem (didl_item.id,
                                        container,
@@ -91,7 +93,15 @@ internal class Rygel.ItemCreator: GLib.Object, Rygel.StateMachine {
         this.action.get ("ContainerID", typeof (string), out this.container_id,
                          "Elements", typeof (string), out this.elements);
 
-        if (this.container_id == null || this.elements == null) {
+        if (this.elements == null) {
+            throw new ContentDirectoryError.BAD_METADATA (
+                                        _("'Elements' argument missing."));
+        } else if (comment_pattern.match_string (this.elements)) {
+            throw new ContentDirectoryError.BAD_METADATA (
+                                        _("Comments not allowed in XML"));
+        }
+
+        if (this.container_id == null) {
             // Sorry we can't do anything without ContainerID
             throw new ContentDirectoryError.NO_SUCH_OBJECT (
                                         _("No such object"));
@@ -99,9 +109,32 @@ internal class Rygel.ItemCreator: GLib.Object, Rygel.StateMachine {
     }
 
     private async MediaContainer fetch_container () throws Error {
-        var media_object = yield this.content_dir.root_container.find_object (
+        MediaObject media_object = null;
+
+        if (this.container_id == "DLNA.ORG_AnyContainer") {
+            var expression = new RelationalExpression ();
+            expression.op = SearchCriteriaOp.DERIVED_FROM;
+            expression.operand1 = "upnp:createClass";
+            expression.operand2 = didl_item.upnp_class;
+
+            uint total_matches;
+
+            var result = yield this.content_dir.root_container.search (
+                                        expression,
+                                        0,
+                                        1,
+                                        out total_matches,
+                                        this.cancellable);
+            if (result.size > 0) {
+                media_object = result[0];
+                this.container_id = media_object.id;
+            }
+        } else {
+            media_object = yield this.content_dir.root_container.find_object (
                                         this.container_id,
                                         this.cancellable);
+        }
+
         if (media_object == null || !(media_object is MediaContainer)) {
             throw new ContentDirectoryError.NO_SUCH_OBJECT (
                                         _("No such object"));

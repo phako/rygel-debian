@@ -1,9 +1,7 @@
 /*
- * Copyright (C) 2008 Zeeshan Ali.
- * Copyright (C) 2007 OpenedHand Ltd.
+ * Copyright (C) 2008 Zeeshan Ali (Khattak) <zeeshanak@gnome.org>.
  *
  * Author: Zeeshan Ali (Khattak) <zeeshanak@gnome.org>
- * Author: Jorn Baayen <jorn@openedhand.com>
  *
  * This file is part of Rygel.
  *
@@ -22,29 +20,31 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-#ifndef __CSTUFF_H__
-#define __CSTUFF_H__
+/**
+  * Holds constants defined by build system.
+  */
+public class Rygel.BuildConfig {
+    [CCode (cname = "DATA_DIR")]
+    public static const string DATA_DIR;
 
-#include <libxml/tree.h>
-#include <glib.h>
-#include <uuid/uuid.h>
+    [CCode (cname = "SYS_CONFIG_DIR")]
+    public static const string SYS_CONFIG_DIR;
 
-typedef void (* ApplicationExitCb)      (gboolean restart,
-                                         gpointer user_data);
+    [CCode (cname = "DESKTOP_DIR")]
+    public static const string DESKTOP_DIR;
 
-G_GNUC_INTERNAL xmlNode *
-get_xml_element                         (xmlNode *node,
-                                         ...);
+    [CCode (cname = "PLUGIN_DIR")]
+    public static const string PLUGIN_DIR;
 
-G_GNUC_INTERNAL char *
-generate_random_udn                     (void);
+    [CCode (cname = "ICON_DIR")]
+    public static const string ICON_DIR;
 
-G_GNUC_INTERNAL void
-on_application_exit                     (ApplicationExitCb app_exit_cb,
-                                         gpointer          user_data);
+    [CCode (cname = "PACKAGE_NAME")]
+    public static const string PACKAGE_NAME;
 
-G_GNUC_INTERNAL void
-restart_application                     (const char **args);
+    [CCode (cname = "PACKAGE_VERSION")]
+    public static const string PACKAGE_VERSION;
 
-#endif /* __CSTUFF_H__ */
-
+    [CCode (cname = "PACKAGE_STRING")]
+    public static const string PACKAGE_STRING;
+}

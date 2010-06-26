@@ -27,12 +27,12 @@
 #include <glib/gi18n-lib.h>
 
 
-#define RYGEL_TYPE_MEDIA_EXPORT_CONTENT_DIR (rygel_media_export_content_dir_get_type ())
-#define RYGEL_MEDIA_EXPORT_CONTENT_DIR(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_MEDIA_EXPORT_CONTENT_DIR, RygelMediaExportContentDir))
-#define RYGEL_MEDIA_EXPORT_CONTENT_DIR_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TYPE_MEDIA_EXPORT_CONTENT_DIR, RygelMediaExportContentDirClass))
-#define RYGEL_IS_MEDIA_EXPORT_CONTENT_DIR(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TYPE_MEDIA_EXPORT_CONTENT_DIR))
-#define RYGEL_IS_MEDIA_EXPORT_CONTENT_DIR_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_TYPE_MEDIA_EXPORT_CONTENT_DIR))
-#define RYGEL_MEDIA_EXPORT_CONTENT_DIR_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_TYPE_MEDIA_EXPORT_CONTENT_DIR, RygelMediaExportContentDirClass))
+#define RYGEL_MEDIA_EXPORT_TYPE_CONTENT_DIR (rygel_media_export_content_dir_get_type ())
+#define RYGEL_MEDIA_EXPORT_CONTENT_DIR(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_MEDIA_EXPORT_TYPE_CONTENT_DIR, RygelMediaExportContentDir))
+#define RYGEL_MEDIA_EXPORT_CONTENT_DIR_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_MEDIA_EXPORT_TYPE_CONTENT_DIR, RygelMediaExportContentDirClass))
+#define RYGEL_MEDIA_EXPORT_IS_CONTENT_DIR(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_MEDIA_EXPORT_TYPE_CONTENT_DIR))
+#define RYGEL_MEDIA_EXPORT_IS_CONTENT_DIR_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_MEDIA_EXPORT_TYPE_CONTENT_DIR))
+#define RYGEL_MEDIA_EXPORT_CONTENT_DIR_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_MEDIA_EXPORT_TYPE_CONTENT_DIR, RygelMediaExportContentDirClass))
 
 typedef struct _RygelMediaExportContentDir RygelMediaExportContentDir;
 typedef struct _RygelMediaExportContentDirClass RygelMediaExportContentDirClass;
@@ -63,49 +63,49 @@ RygelMediaExportContentDir* rygel_media_export_content_dir_construct (GType obje
 
 
 
-#line 31 "rygel-media-export-plugin.vala"
+#line 30 "rygel-media-export-plugin.vala"
 void module_init (RygelPluginLoader* loader) {
 #line 69 "rygel-media-export-plugin.c"
 	RygelPlugin* plugin;
-#line 31 "rygel-media-export-plugin.vala"
+#line 30 "rygel-media-export-plugin.vala"
 	g_return_if_fail (loader != NULL);
-#line 32 "rygel-media-export-plugin.vala"
-	plugin = rygel_plugin_new_MediaServer ("MediaExport", _ ("@REALNAME@'s media"), RYGEL_TYPE_MEDIA_EXPORT_CONTENT_DIR, NULL);
-#line 35 "rygel-media-export-plugin.vala"
+#line 31 "rygel-media-export-plugin.vala"
+	plugin = rygel_plugin_new_MediaServer ("MediaExport", _ ("@REALNAME@'s media"), RYGEL_MEDIA_EXPORT_TYPE_CONTENT_DIR, NULL);
+#line 34 "rygel-media-export-plugin.vala"
 	rygel_plugin_loader_add_plugin (loader, plugin);
 #line 77 "rygel-media-export-plugin.c"
 	_g_object_unref0 (plugin);
 }
 
 
-#line 39 "rygel-media-export-plugin.vala"
+#line 38 "rygel-media-export-plugin.vala"
 static RygelMediaContainer* rygel_media_export_content_dir_real_create_root_container (RygelContentDirectory* base) {
 #line 84 "rygel-media-export-plugin.c"
 	RygelMediaExportContentDir * self;
 	RygelMediaContainer* result = NULL;
 	self = (RygelMediaExportContentDir*) base;
 	result = rygel_media_export_root_container_get_instance ();
-#line 40 "rygel-media-export-plugin.vala"
+#line 39 "rygel-media-export-plugin.vala"
 	return result;
 #line 91 "rygel-media-export-plugin.c"
 }
 
 
-#line 38 "rygel-media-export-plugin.vala"
+#line 37 "rygel-media-export-plugin.vala"
 RygelMediaExportContentDir* rygel_media_export_content_dir_construct (GType object_type) {
 #line 97 "rygel-media-export-plugin.c"
 	RygelMediaExportContentDir * self;
-#line 38 "rygel-media-export-plugin.vala"
+#line 37 "rygel-media-export-plugin.vala"
 	self = (RygelMediaExportContentDir*) rygel_content_directory_construct (object_type);
 #line 101 "rygel-media-export-plugin.c"
 	return self;
 }
 
 
-#line 38 "rygel-media-export-plugin.vala"
+#line 37 "rygel-media-export-plugin.vala"
 RygelMediaExportContentDir* rygel_media_export_content_dir_new (void) {
-#line 38 "rygel-media-export-plugin.vala"
-	return rygel_media_export_content_dir_construct (RYGEL_TYPE_MEDIA_EXPORT_CONTENT_DIR);
+#line 37 "rygel-media-export-plugin.vala"
+	return rygel_media_export_content_dir_construct (RYGEL_MEDIA_EXPORT_TYPE_CONTENT_DIR);
 #line 110 "rygel-media-export-plugin.c"
 }
 

@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2009 Zeeshan Ali (Khattak) <zeeshanak@gnome.org>.
- * Copyright (C) 2009 Nokia Corporation.
+ * Copyright (C) 2009,2010 Nokia Corporation.
  *
  * Author: Zeeshan Ali (Khattak) <zeeshanak@gnome.org>
  *                               <zeeshan.ali@nokia.com>
@@ -35,8 +35,10 @@ public class Rygel.ExternalContentDir : Rygel.ContentDirectory {
         var plugin = (ExternalPlugin) this.root_device.resource_factory;
 
         return new ExternalContainer ("0",
+                                      plugin.title,
+                                      plugin.child_count,
+                                      plugin.searchable,
                                       plugin.service_name,
-                                      plugin.root_object,
                                       this.context.host_ip,
                                       null);
     }

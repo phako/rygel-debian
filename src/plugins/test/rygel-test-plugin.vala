@@ -24,9 +24,7 @@
 
 using Rygel;
 using Gee;
-using CStuff;
 
-[ModuleInit]
 public void module_init (PluginLoader loader) {
     var plugin = new Plugin.MediaServer ("Test",
                                          "Test Streams",

@@ -279,7 +279,9 @@ static RygelStateMachineIface* rygel_tracker_item_creation_rygel_state_machine_p
 GType rygel_tracker_item_creation_get_type (void);
 GType rygel_tracker_search_container_get_type (void);
 GType rygel_tracker_category_all_container_get_type (void);
+RygelTrackerResourcesIface* rygel_tracker_resources_iface_dbus_proxy_new (DBusGConnection* connection, const char* name, const char* path);
 GType rygel_tracker_resources_iface_get_type (void);
+RygelTrackerMinerIface* rygel_tracker_miner_iface_dbus_proxy_new (DBusGConnection* connection, const char* name, const char* path);
 GType rygel_tracker_miner_iface_get_type (void);
 #define RYGEL_TRACKER_ITEM_CREATION_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), RYGEL_TYPE_TRACKER_ITEM_CREATION, RygelTrackerItemCreationPrivate))
 enum  {
@@ -349,7 +351,7 @@ static gpointer _g_object_ref0 (gpointer self) {
 
 #line 44 "rygel-tracker-item-creation.vala"
 RygelTrackerItemCreation* rygel_tracker_item_creation_construct (GType object_type, RygelMediaItem* item, RygelTrackerCategoryAllContainer* container, GCancellable* cancellable, GError** error) {
-#line 353 "rygel-tracker-item-creation.c"
+#line 355 "rygel-tracker-item-creation.c"
 	GError * _inner_error_;
 	RygelTrackerItemCreation * self;
 	RygelMediaItem* _tmp0_;
@@ -358,7 +360,7 @@ RygelTrackerItemCreation* rygel_tracker_item_creation_construct (GType object_ty
 	g_return_val_if_fail (item != NULL, NULL);
 #line 44 "rygel-tracker-item-creation.vala"
 	g_return_val_if_fail (container != NULL, NULL);
-#line 362 "rygel-tracker-item-creation.c"
+#line 364 "rygel-tracker-item-creation.c"
 	_inner_error_ = NULL;
 #line 44 "rygel-tracker-item-creation.vala"
 	self = (RygelTrackerItemCreation*) g_object_new (object_type, NULL);
@@ -370,7 +372,7 @@ RygelTrackerItemCreation* rygel_tracker_item_creation_construct (GType object_ty
 	rygel_state_machine_set_cancellable ((RygelStateMachine*) self, cancellable);
 #line 51 "rygel-tracker-item-creation.vala"
 	rygel_tracker_item_creation_create_proxies (self, &_inner_error_);
-#line 374 "rygel-tracker-item-creation.c"
+#line 376 "rygel-tracker-item-creation.c"
 	if (_inner_error_ != NULL) {
 		g_propagate_error (error, _inner_error_);
 		g_object_unref (self);
@@ -384,7 +386,7 @@ RygelTrackerItemCreation* rygel_tracker_item_creation_construct (GType object_ty
 RygelTrackerItemCreation* rygel_tracker_item_creation_new (RygelMediaItem* item, RygelTrackerCategoryAllContainer* container, GCancellable* cancellable, GError** error) {
 #line 44 "rygel-tracker-item-creation.vala"
 	return rygel_tracker_item_creation_construct (RYGEL_TYPE_TRACKER_ITEM_CREATION, item, container, cancellable, error);
-#line 388 "rygel-tracker-item-creation.c"
+#line 390 "rygel-tracker-item-creation.c"
 }
 
 
@@ -465,7 +467,7 @@ static gboolean rygel_tracker_item_creation_real_run_co (RygelTrackerItemCreatio
 			_state_11:
 #line 61 "rygel-tracker-item-creation.vala"
 			rygel_tracker_miner_iface_ignore_next_update_finish (data->self->priv->miner, data->_res_, &data->_inner_error_);
-#line 469 "rygel-tracker-item-creation.c"
+#line 471 "rygel-tracker-item-creation.c"
 			if (data->_inner_error_ != NULL) {
 				_g_object_unref0 (data->file);
 				_g_free0 (data->urn);
@@ -478,7 +480,7 @@ static gboolean rygel_tracker_item_creation_real_run_co (RygelTrackerItemCreatio
 			_state_12:
 #line 62 "rygel-tracker-item-creation.vala"
 			data->_tmp2_ = g_file_create_finish (data->file, data->_res_, &data->_inner_error_);
-#line 482 "rygel-tracker-item-creation.c"
+#line 484 "rygel-tracker-item-creation.c"
 			_g_object_unref0 (data->_tmp2_);
 			if (data->_inner_error_ != NULL) {
 				_g_object_unref0 (data->file);
@@ -490,7 +492,7 @@ static gboolean rygel_tracker_item_creation_real_run_co (RygelTrackerItemCreatio
 			((RygelMediaObject*) data->self->priv->item)->id = (data->_tmp3_ = rygel_tracker_search_container_create_child_id_for_urn ((RygelTrackerSearchContainer*) data->self->priv->container, data->urn), _g_free0 (((RygelMediaObject*) data->self->priv->item)->id), data->_tmp3_);
 #line 67 "rygel-tracker-item-creation.vala"
 			((RygelMediaObject*) data->self->priv->item)->parent = (RygelMediaContainer*) data->self->priv->container;
-#line 494 "rygel-tracker-item-creation.c"
+#line 496 "rygel-tracker-item-creation.c"
 			_g_object_unref0 (data->file);
 			_g_free0 (data->urn);
 			data->uris = (_vala_array_free (data->uris, data->uris_length1, (GDestroyNotify) g_free), NULL);
@@ -503,7 +505,7 @@ static gboolean rygel_tracker_item_creation_real_run_co (RygelTrackerItemCreatio
 			{
 #line 69 "rygel-tracker-item-creation.vala"
 				rygel_tracker_item_creation_set_error (data->self, data->_error_);
-#line 507 "rygel-tracker-item-creation.c"
+#line 509 "rygel-tracker-item-creation.c"
 				_g_error_free0 (data->_error_);
 			}
 		}
@@ -597,7 +599,7 @@ static gboolean rygel_tracker_item_creation_prepare_file_co (RygelTrackerItemCre
 		}
 #line 75 "rygel-tracker-item-creation.vala"
 		if (data->dir == NULL) {
-#line 601 "rygel-tracker-item-creation.c"
+#line 603 "rygel-tracker-item-creation.c"
 			data->_inner_error_ = g_error_new (RYGEL_CONTENT_DIRECTORY_ERROR, RYGEL_CONTENT_DIRECTORY_ERROR_RESTRICTED_PARENT, _ ("Object creation in %s not allowed"), ((RygelMediaObject*) data->self->priv->container)->id);
 			{
 				g_simple_async_result_set_from_error (data->_async_result, data->_inner_error_);
@@ -631,7 +633,7 @@ static gboolean rygel_tracker_item_creation_prepare_file_co (RygelTrackerItemCre
 		}
 #line 83 "rygel-tracker-item-creation.vala"
 		gee_abstract_collection_add ((GeeAbstractCollection*) ((RygelMediaObject*) data->self->priv->item)->uris, data->_tmp0_ = g_file_get_uri (data->file));
-#line 635 "rygel-tracker-item-creation.c"
+#line 637 "rygel-tracker-item-creation.c"
 		_g_free0 (data->_tmp0_);
 		data->result = data->file;
 		_g_object_unref0 (data->dir);
@@ -718,7 +720,7 @@ static gboolean rygel_tracker_item_creation_create_entry_in_store_co (RygelTrack
 		_state_14:
 #line 92 "rygel-tracker-item-creation.vala"
 		rygel_tracker_query_execute_finish ((RygelTrackerQuery*) data->query, data->_res_, &data->_inner_error_);
-#line 722 "rygel-tracker-item-creation.c"
+#line 724 "rygel-tracker-item-creation.c"
 		if (data->_inner_error_ != NULL) {
 			g_simple_async_result_set_from_error (data->_async_result, data->_inner_error_);
 			g_error_free (data->_inner_error_);
@@ -763,18 +765,18 @@ static gboolean rygel_tracker_item_creation_create_entry_in_store_co (RygelTrack
 
 #line 97 "rygel-tracker-item-creation.vala"
 static void rygel_tracker_item_creation_create_proxies (RygelTrackerItemCreation* self, GError** error) {
-#line 767 "rygel-tracker-item-creation.c"
+#line 769 "rygel-tracker-item-creation.c"
 	GError * _inner_error_;
 	DBusGConnection* connection;
 	RygelTrackerResourcesIface* _tmp0_;
 	RygelTrackerMinerIface* _tmp1_;
 #line 97 "rygel-tracker-item-creation.vala"
 	g_return_if_fail (self != NULL);
-#line 774 "rygel-tracker-item-creation.c"
+#line 776 "rygel-tracker-item-creation.c"
 	_inner_error_ = NULL;
 #line 98 "rygel-tracker-item-creation.vala"
 	connection = dbus_g_bus_get (DBUS_BUS_SESSION, &_inner_error_);
-#line 778 "rygel-tracker-item-creation.c"
+#line 780 "rygel-tracker-item-creation.c"
 	if (_inner_error_ != NULL) {
 		if (_inner_error_->domain == DBUS_GERROR) {
 			g_propagate_error (error, _inner_error_);
@@ -789,7 +791,7 @@ static void rygel_tracker_item_creation_create_proxies (RygelTrackerItemCreation
 	self->priv->resources = (_tmp0_ = rygel_tracker_resources_iface_dbus_proxy_new (connection, RYGEL_TRACKER_ITEM_CREATION_TRACKER_SERVICE, RYGEL_TRACKER_ITEM_CREATION_RESOURCES_PATH), _g_object_unref0 (self->priv->resources), _tmp0_);
 #line 103 "rygel-tracker-item-creation.vala"
 	self->priv->miner = (_tmp1_ = rygel_tracker_miner_iface_dbus_proxy_new (connection, RYGEL_TRACKER_ITEM_CREATION_MINER_SERVICE, RYGEL_TRACKER_ITEM_CREATION_MINER_PATH), _g_object_unref0 (self->priv->miner), _tmp1_);
-#line 793 "rygel-tracker-item-creation.c"
+#line 795 "rygel-tracker-item-creation.c"
 	_dbus_g_connection_unref0 (connection);
 }
 
@@ -801,7 +803,7 @@ static GCancellable* rygel_tracker_item_creation_real_get_cancellable (RygelStat
 	result = self->priv->_cancellable;
 #line 36 "rygel-tracker-item-creation.vala"
 	return result;
-#line 805 "rygel-tracker-item-creation.c"
+#line 807 "rygel-tracker-item-creation.c"
 }
 
 
@@ -820,7 +822,7 @@ GError* rygel_tracker_item_creation_get_error (RygelTrackerItemCreation* self) {
 	result = self->priv->_error;
 #line 37 "rygel-tracker-item-creation.vala"
 	return result;
-#line 824 "rygel-tracker-item-creation.c"
+#line 826 "rygel-tracker-item-creation.c"
 }
 
 

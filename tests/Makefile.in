@@ -37,23 +37,33 @@ check_PROGRAMS = rygel-http-item-uri-test$(EXEEXT) \
 	rygel-live-response-test$(EXEEXT) \
 	rygel-seekable-response-test$(EXEEXT) \
 	rygel-http-byte-seek-test$(EXEEXT) \
-	rygel-http-time-seek-test$(EXEEXT)
+	rygel-http-time-seek-test$(EXEEXT) \
+	rygel-http-get-test$(EXEEXT) rygel-http-post-test$(EXEEXT)
 subdir = tests
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in \
 	rygel-gst-utils.c rygel-http-byte-seek-test.c \
-	rygel-http-byte-seek.c rygel-http-item-uri-test.c \
-	rygel-http-item-uri.c rygel-http-response-test_live-response.c \
+	rygel-http-byte-seek.c rygel-http-byte-seek_http-get.c \
+	rygel-http-get-test.c rygel-http-get.c \
+	rygel-http-item-uri-test.c rygel-http-item-uri.c \
+	rygel-http-item-uri_http-get.c rygel-http-item-uri_http-post.c \
+	rygel-http-post-test.c rygel-http-post.c \
+	rygel-http-request_http-get.c rygel-http-request_http-post.c \
+	rygel-http-response-test_live-response.c \
 	rygel-http-response-test_seekable-response.c \
 	rygel-http-response_live-response.c \
 	rygel-http-response_seekable-response.c rygel-http-seek.c \
-	rygel-http-seek_live-response.c rygel-http-seek_time-seek.c \
-	rygel-http-time-seek-test.c rygel-http-time-seek.c \
+	rygel-http-seek_http-get.c rygel-http-seek_live-response.c \
+	rygel-http-seek_time-seek.c rygel-http-time-seek-test.c \
+	rygel-http-time-seek.c rygel-http-time-seek_http-get.c \
 	rygel-live-response-test.c rygel-live-response.c \
 	rygel-seekable-response-test.c rygel-seekable-response.c \
+	rygel-state-machine_http-get.c rygel-state-machine_http-post.c \
 	rygel-state-machine_live-response.c \
 	rygel-state-machine_seekable-response.c \
 	rygel_http_byte_seek_test_vala.stamp \
+	rygel_http_get_test_vala.stamp \
 	rygel_http_item_uri_test_vala.stamp \
+	rygel_http_post_test_vala.stamp \
 	rygel_http_time_seek_test_vala.stamp \
 	rygel_live_response_test_vala.stamp \
 	rygel_seekable_response_test_vala.stamp
@@ -82,6 +92,19 @@ rygel_http_byte_seek_test_DEPENDENCIES = $(am__DEPENDENCIES_1) \
 AM_V_lt = $(am__v_lt_$(V))
 am__v_lt_ = $(am__v_lt_$(AM_DEFAULT_VERBOSITY))
 am__v_lt_0 = --silent
+am_rygel_http_get_test_OBJECTS = rygel-http-get-test.$(OBJEXT) \
+	rygel-http-get.$(OBJEXT) rygel-http-request_http-get.$(OBJEXT) \
+	rygel-http-item-uri_http-get.$(OBJEXT) \
+	rygel-state-machine_http-get.$(OBJEXT) \
+	rygel-http-time-seek_http-get.$(OBJEXT) \
+	rygel-http-byte-seek_http-get.$(OBJEXT) \
+	rygel-http-seek_http-get.$(OBJEXT)
+rygel_http_get_test_OBJECTS = $(am_rygel_http_get_test_OBJECTS)
+rygel_http_get_test_LDADD = $(LDADD)
+rygel_http_get_test_DEPENDENCIES = $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_rygel_http_item_uri_test_OBJECTS =  \
 	rygel-http-item-uri-test.$(OBJEXT) \
 	rygel-http-item-uri.$(OBJEXT)
@@ -89,6 +112,17 @@ rygel_http_item_uri_test_OBJECTS =  \
 	$(am_rygel_http_item_uri_test_OBJECTS)
 rygel_http_item_uri_test_LDADD = $(LDADD)
 rygel_http_item_uri_test_DEPENDENCIES = $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
+am_rygel_http_post_test_OBJECTS = rygel-http-post-test.$(OBJEXT) \
+	rygel-http-post.$(OBJEXT) \
+	rygel-http-request_http-post.$(OBJEXT) \
+	rygel-http-item-uri_http-post.$(OBJEXT) \
+	rygel-state-machine_http-post.$(OBJEXT)
+rygel_http_post_test_OBJECTS = $(am_rygel_http_post_test_OBJECTS)
+rygel_http_post_test_LDADD = $(LDADD)
+rygel_http_post_test_DEPENDENCIES = $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
@@ -165,12 +199,16 @@ AM_V_GEN = $(am__v_GEN_$(V))
 am__v_GEN_ = $(am__v_GEN_$(AM_DEFAULT_VERBOSITY))
 am__v_GEN_0 = @echo "  GEN   " $@;
 SOURCES = $(rygel_http_byte_seek_test_SOURCES) \
+	$(rygel_http_get_test_SOURCES) \
 	$(rygel_http_item_uri_test_SOURCES) \
+	$(rygel_http_post_test_SOURCES) \
 	$(rygel_http_time_seek_test_SOURCES) \
 	$(rygel_live_response_test_SOURCES) \
 	$(rygel_seekable_response_test_SOURCES)
 DIST_SOURCES = $(rygel_http_byte_seek_test_SOURCES) \
+	$(rygel_http_get_test_SOURCES) \
 	$(rygel_http_item_uri_test_SOURCES) \
+	$(rygel_http_post_test_SOURCES) \
 	$(rygel_http_time_seek_test_SOURCES) \
 	$(rygel_live_response_test_SOURCES) \
 	$(rygel_seekable_response_test_SOURCES)
@@ -396,6 +434,21 @@ rygel_http_time_seek_test_SOURCES = rygel-http-time-seek-test.vala \
 				    rygel-http-time-seek.vala \
 				    rygel-http-seek_time-seek.vala
 
+rygel_http_get_test_SOURCES = rygel-http-get-test.vala \
+			      rygel-http-get.vala \
+			      rygel-http-request_http-get.vala \
+			      rygel-http-item-uri_http-get.vala \
+			      rygel-state-machine_http-get.vala \
+			      rygel-http-time-seek_http-get.vala \
+			      rygel-http-byte-seek_http-get.vala \
+			      rygel-http-seek_http-get.vala
+
+rygel_http_post_test_SOURCES = rygel-http-post-test.vala \
+			       rygel-http-post.vala \
+			       rygel-http-request_http-post.vala \
+			       rygel-http-item-uri_http-post.vala \
+			       rygel-state-machine_http-post.vala
+
 all: all-am
 
 .SUFFIXES:
@@ -442,9 +495,15 @@ clean-checkPROGRAMS:
 rygel-http-byte-seek-test$(EXEEXT): $(rygel_http_byte_seek_test_OBJECTS) $(rygel_http_byte_seek_test_DEPENDENCIES) 
 	@rm -f rygel-http-byte-seek-test$(EXEEXT)
 	$(AM_V_CCLD)$(LINK) $(rygel_http_byte_seek_test_OBJECTS) $(rygel_http_byte_seek_test_LDADD) $(LIBS)
+rygel-http-get-test$(EXEEXT): $(rygel_http_get_test_OBJECTS) $(rygel_http_get_test_DEPENDENCIES) 
+	@rm -f rygel-http-get-test$(EXEEXT)
+	$(AM_V_CCLD)$(LINK) $(rygel_http_get_test_OBJECTS) $(rygel_http_get_test_LDADD) $(LIBS)
 rygel-http-item-uri-test$(EXEEXT): $(rygel_http_item_uri_test_OBJECTS) $(rygel_http_item_uri_test_DEPENDENCIES) 
 	@rm -f rygel-http-item-uri-test$(EXEEXT)
 	$(AM_V_CCLD)$(LINK) $(rygel_http_item_uri_test_OBJECTS) $(rygel_http_item_uri_test_LDADD) $(LIBS)
+rygel-http-post-test$(EXEEXT): $(rygel_http_post_test_OBJECTS) $(rygel_http_post_test_DEPENDENCIES) 
+	@rm -f rygel-http-post-test$(EXEEXT)
+	$(AM_V_CCLD)$(LINK) $(rygel_http_post_test_OBJECTS) $(rygel_http_post_test_LDADD) $(LIBS)
 rygel-http-time-seek-test$(EXEEXT): $(rygel_http_time_seek_test_OBJECTS) $(rygel_http_time_seek_test_DEPENDENCIES) 
 	@rm -f rygel-http-time-seek-test$(EXEEXT)
 	$(AM_V_CCLD)$(LINK) $(rygel_http_time_seek_test_OBJECTS) $(rygel_http_time_seek_test_LDADD) $(LIBS)
@@ -464,21 +523,34 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-gst-utils.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-http-byte-seek-test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-http-byte-seek.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-http-byte-seek_http-get.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-http-get-test.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-http-get.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-http-item-uri-test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-http-item-uri.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-http-item-uri_http-get.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-http-item-uri_http-post.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-http-post-test.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-http-post.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-http-request_http-get.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-http-request_http-post.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-http-response-test_live-response.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-http-response-test_seekable-response.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-http-response_live-response.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-http-response_seekable-response.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-http-seek.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-http-seek_http-get.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-http-seek_live-response.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-http-seek_time-seek.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-http-time-seek-test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-http-time-seek.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-http-time-seek_http-get.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-live-response-test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-live-response.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-seekable-response-test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-seekable-response.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-state-machine_http-get.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-state-machine_http-post.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-state-machine_live-response.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-state-machine_seekable-response.Po@am__quote@
 
@@ -551,6 +623,49 @@ $(srcdir)/rygel-state-machine_seekable-response.c: $(srcdir)/rygel_seekable_resp
 rygel_seekable_response_test_vala.stamp: $(rygel_seekable_response_test_SOURCES)
 	$(AM_V_VALAC)$(VALAC) $(AM_VALAFLAGS) $(VALAFLAGS) -C $(rygel_seekable_response_test_SOURCES)
 	$(AM_V_at)touch $@
+$(srcdir)/rygel-http-get-test.c: $(srcdir)/rygel_http_get_test_vala.stamp
+	@if test -f $@; then :; else \
+	  rm -f $(srcdir)/rygel_http_get_test_vala.stamp; \
+	  $(am__cd) $(srcdir) && $(MAKE) $(AM_MAKEFLAGS) rygel_http_get_test_vala.stamp; \
+	fi
+$(srcdir)/rygel-http-get.c: $(srcdir)/rygel_http_get_test_vala.stamp
+	@if test -f $@; then :; else \
+	  rm -f $(srcdir)/rygel_http_get_test_vala.stamp; \
+	  $(am__cd) $(srcdir) && $(MAKE) $(AM_MAKEFLAGS) rygel_http_get_test_vala.stamp; \
+	fi
+$(srcdir)/rygel-http-request_http-get.c: $(srcdir)/rygel_http_get_test_vala.stamp
+	@if test -f $@; then :; else \
+	  rm -f $(srcdir)/rygel_http_get_test_vala.stamp; \
+	  $(am__cd) $(srcdir) && $(MAKE) $(AM_MAKEFLAGS) rygel_http_get_test_vala.stamp; \
+	fi
+$(srcdir)/rygel-http-item-uri_http-get.c: $(srcdir)/rygel_http_get_test_vala.stamp
+	@if test -f $@; then :; else \
+	  rm -f $(srcdir)/rygel_http_get_test_vala.stamp; \
+	  $(am__cd) $(srcdir) && $(MAKE) $(AM_MAKEFLAGS) rygel_http_get_test_vala.stamp; \
+	fi
+$(srcdir)/rygel-state-machine_http-get.c: $(srcdir)/rygel_http_get_test_vala.stamp
+	@if test -f $@; then :; else \
+	  rm -f $(srcdir)/rygel_http_get_test_vala.stamp; \
+	  $(am__cd) $(srcdir) && $(MAKE) $(AM_MAKEFLAGS) rygel_http_get_test_vala.stamp; \
+	fi
+$(srcdir)/rygel-http-time-seek_http-get.c: $(srcdir)/rygel_http_get_test_vala.stamp
+	@if test -f $@; then :; else \
+	  rm -f $(srcdir)/rygel_http_get_test_vala.stamp; \
+	  $(am__cd) $(srcdir) && $(MAKE) $(AM_MAKEFLAGS) rygel_http_get_test_vala.stamp; \
+	fi
+$(srcdir)/rygel-http-byte-seek_http-get.c: $(srcdir)/rygel_http_get_test_vala.stamp
+	@if test -f $@; then :; else \
+	  rm -f $(srcdir)/rygel_http_get_test_vala.stamp; \
+	  $(am__cd) $(srcdir) && $(MAKE) $(AM_MAKEFLAGS) rygel_http_get_test_vala.stamp; \
+	fi
+$(srcdir)/rygel-http-seek_http-get.c: $(srcdir)/rygel_http_get_test_vala.stamp
+	@if test -f $@; then :; else \
+	  rm -f $(srcdir)/rygel_http_get_test_vala.stamp; \
+	  $(am__cd) $(srcdir) && $(MAKE) $(AM_MAKEFLAGS) rygel_http_get_test_vala.stamp; \
+	fi
+rygel_http_get_test_vala.stamp: $(rygel_http_get_test_SOURCES)
+	$(AM_V_VALAC)$(VALAC) $(AM_VALAFLAGS) $(VALAFLAGS) -C $(rygel_http_get_test_SOURCES)
+	$(AM_V_at)touch $@
 $(srcdir)/rygel-http-item-uri-test.c: $(srcdir)/rygel_http_item_uri_test_vala.stamp
 	@if test -f $@; then :; else \
 	  rm -f $(srcdir)/rygel_http_item_uri_test_vala.stamp; \
@@ -601,6 +716,34 @@ $(srcdir)/rygel-gst-utils.c: $(srcdir)/rygel_live_response_test_vala.stamp
 	fi
 rygel_live_response_test_vala.stamp: $(rygel_live_response_test_SOURCES)
 	$(AM_V_VALAC)$(VALAC) $(AM_VALAFLAGS) $(VALAFLAGS) -C $(rygel_live_response_test_SOURCES)
+	$(AM_V_at)touch $@
+$(srcdir)/rygel-http-post-test.c: $(srcdir)/rygel_http_post_test_vala.stamp
+	@if test -f $@; then :; else \
+	  rm -f $(srcdir)/rygel_http_post_test_vala.stamp; \
+	  $(am__cd) $(srcdir) && $(MAKE) $(AM_MAKEFLAGS) rygel_http_post_test_vala.stamp; \
+	fi
+$(srcdir)/rygel-http-post.c: $(srcdir)/rygel_http_post_test_vala.stamp
+	@if test -f $@; then :; else \
+	  rm -f $(srcdir)/rygel_http_post_test_vala.stamp; \
+	  $(am__cd) $(srcdir) && $(MAKE) $(AM_MAKEFLAGS) rygel_http_post_test_vala.stamp; \
+	fi
+$(srcdir)/rygel-http-request_http-post.c: $(srcdir)/rygel_http_post_test_vala.stamp
+	@if test -f $@; then :; else \
+	  rm -f $(srcdir)/rygel_http_post_test_vala.stamp; \
+	  $(am__cd) $(srcdir) && $(MAKE) $(AM_MAKEFLAGS) rygel_http_post_test_vala.stamp; \
+	fi
+$(srcdir)/rygel-http-item-uri_http-post.c: $(srcdir)/rygel_http_post_test_vala.stamp
+	@if test -f $@; then :; else \
+	  rm -f $(srcdir)/rygel_http_post_test_vala.stamp; \
+	  $(am__cd) $(srcdir) && $(MAKE) $(AM_MAKEFLAGS) rygel_http_post_test_vala.stamp; \
+	fi
+$(srcdir)/rygel-state-machine_http-post.c: $(srcdir)/rygel_http_post_test_vala.stamp
+	@if test -f $@; then :; else \
+	  rm -f $(srcdir)/rygel_http_post_test_vala.stamp; \
+	  $(am__cd) $(srcdir) && $(MAKE) $(AM_MAKEFLAGS) rygel_http_post_test_vala.stamp; \
+	fi
+rygel_http_post_test_vala.stamp: $(rygel_http_post_test_SOURCES)
+	$(AM_V_VALAC)$(VALAC) $(AM_VALAFLAGS) $(VALAFLAGS) -C $(rygel_http_post_test_SOURCES)
 	$(AM_V_at)touch $@
 $(srcdir)/rygel-http-byte-seek-test.c: $(srcdir)/rygel_http_byte_seek_test_vala.stamp
 	@if test -f $@; then :; else \
@@ -835,25 +978,40 @@ maintainer-clean-generic:
 	-rm -f rygel-gst-utils.c
 	-rm -f rygel-http-byte-seek-test.c
 	-rm -f rygel-http-byte-seek.c
+	-rm -f rygel-http-byte-seek_http-get.c
+	-rm -f rygel-http-get-test.c
+	-rm -f rygel-http-get.c
 	-rm -f rygel-http-item-uri-test.c
 	-rm -f rygel-http-item-uri.c
+	-rm -f rygel-http-item-uri_http-get.c
+	-rm -f rygel-http-item-uri_http-post.c
+	-rm -f rygel-http-post-test.c
+	-rm -f rygel-http-post.c
+	-rm -f rygel-http-request_http-get.c
+	-rm -f rygel-http-request_http-post.c
 	-rm -f rygel-http-response-test_live-response.c
 	-rm -f rygel-http-response-test_seekable-response.c
 	-rm -f rygel-http-response_live-response.c
 	-rm -f rygel-http-response_seekable-response.c
 	-rm -f rygel-http-seek.c
+	-rm -f rygel-http-seek_http-get.c
 	-rm -f rygel-http-seek_live-response.c
 	-rm -f rygel-http-seek_time-seek.c
 	-rm -f rygel-http-time-seek-test.c
 	-rm -f rygel-http-time-seek.c
+	-rm -f rygel-http-time-seek_http-get.c
 	-rm -f rygel-live-response-test.c
 	-rm -f rygel-live-response.c
 	-rm -f rygel-seekable-response-test.c
 	-rm -f rygel-seekable-response.c
+	-rm -f rygel-state-machine_http-get.c
+	-rm -f rygel-state-machine_http-post.c
 	-rm -f rygel-state-machine_live-response.c
 	-rm -f rygel-state-machine_seekable-response.c
 	-rm -f rygel_http_byte_seek_test_vala.stamp
+	-rm -f rygel_http_get_test_vala.stamp
 	-rm -f rygel_http_item_uri_test_vala.stamp
+	-rm -f rygel_http_post_test_vala.stamp
 	-rm -f rygel_http_time_seek_test_vala.stamp
 	-rm -f rygel_live_response_test_vala.stamp
 	-rm -f rygel_seekable_response_test_vala.stamp

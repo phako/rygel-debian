@@ -110,8 +110,8 @@ enum  {
 #define RYGEL_GENERAL_PREF_SECTION_MP2TS_CHECKBUTTON "mp2ts-checkbutton"
 #define RYGEL_GENERAL_PREF_SECTION_LPCM_CHECKBUTTON "lpcm-checkbutton"
 RygelPreferencesSection* rygel_preferences_section_construct (GType object_type, RygelUserConfig* config, const char* name);
-static void rygel_general_pref_section_on_trans_check_toggled (RygelGeneralPrefSection* self, GtkCheckButton* trans_check);
-static void _rygel_general_pref_section_on_trans_check_toggled_gtk_toggle_button_toggled (GtkCheckButton* _sender, gpointer self);
+static void rygel_general_pref_section_on_trans_check_toggled (RygelGeneralPrefSection* self, GtkToggleButton* trans_check);
+static void _rygel_general_pref_section_on_trans_check_toggled_gtk_toggle_button_toggled (GtkToggleButton* _sender, gpointer self);
 static void rygel_general_pref_section_on_context_available (RygelGeneralPrefSection* self, GUPnPContextManager* manager, GUPnPContext* context);
 static void _rygel_general_pref_section_on_context_available_gupnp_context_manager_context_available (GUPnPContextManager* _sender, GUPnPContext* p0, gpointer self);
 static void rygel_general_pref_section_on_context_unavailable (RygelGeneralPrefSection* self, GUPnPContextManager* manager, GUPnPContext* context);
@@ -131,7 +131,7 @@ static gpointer _g_object_ref0 (gpointer self) {
 
 
 #line 118 "rygel-general-pref-section.vala"
-static void _rygel_general_pref_section_on_trans_check_toggled_gtk_toggle_button_toggled (GtkCheckButton* _sender, gpointer self) {
+static void _rygel_general_pref_section_on_trans_check_toggled_gtk_toggle_button_toggled (GtkToggleButton* _sender, gpointer self) {
 #line 136 "rygel-general-pref-section.c"
 	rygel_general_pref_section_on_trans_check_toggled (self, _sender);
 }
@@ -413,7 +413,7 @@ RygelGeneralPrefSection* rygel_general_pref_section_construct (GType object_type
 #line 100 "rygel-general-pref-section.vala"
 	g_signal_connect_object (self->priv->context_manager, "context-unavailable", (GCallback) _rygel_general_pref_section_on_context_unavailable_gupnp_context_manager_context_unavailable, self, 0);
 #line 104 "rygel-general-pref-section.vala"
-	rygel_general_pref_section_on_trans_check_toggled (self, self->priv->trans_check);
+	rygel_general_pref_section_on_trans_check_toggled (self, (GtkToggleButton*) self->priv->trans_check);
 #line 418 "rygel-general-pref-section.c"
 	return self;
 }
@@ -451,13 +451,13 @@ static void rygel_general_pref_section_real_save (RygelPreferencesSection* base)
 
 
 #line 118 "rygel-general-pref-section.vala"
-static void rygel_general_pref_section_on_trans_check_toggled (RygelGeneralPrefSection* self, GtkCheckButton* trans_check) {
+static void rygel_general_pref_section_on_trans_check_toggled (RygelGeneralPrefSection* self, GtkToggleButton* trans_check) {
 #line 118 "rygel-general-pref-section.vala"
 	g_return_if_fail (self != NULL);
 #line 118 "rygel-general-pref-section.vala"
 	g_return_if_fail (trans_check != NULL);
 #line 119 "rygel-general-pref-section.vala"
-	gtk_widget_set_sensitive ((GtkWidget*) self->priv->mp3_check, (gtk_widget_set_sensitive ((GtkWidget*) self->priv->mp2ts_check, (gtk_widget_set_sensitive ((GtkWidget*) self->priv->lpcm_check, gtk_toggle_button_get_active ((GtkToggleButton*) trans_check)), gtk_widget_get_sensitive ((GtkWidget*) self->priv->lpcm_check))), gtk_widget_get_sensitive ((GtkWidget*) self->priv->mp2ts_check)));
+	gtk_widget_set_sensitive ((GtkWidget*) self->priv->mp3_check, (gtk_widget_set_sensitive ((GtkWidget*) self->priv->mp2ts_check, (gtk_widget_set_sensitive ((GtkWidget*) self->priv->lpcm_check, gtk_toggle_button_get_active (trans_check)), gtk_widget_get_sensitive ((GtkWidget*) self->priv->lpcm_check))), gtk_widget_get_sensitive ((GtkWidget*) self->priv->mp2ts_check)));
 #line 462 "rygel-general-pref-section.c"
 }
 

@@ -3,7 +3,7 @@
 
 /*
  * Copyright (C) 2009 Zeeshan Ali (Khattak) <zeeshanak@gnome.org>.
- * Copyright (C) 2009 Nokia Corporation.
+ * Copyright (C) 2009,2010 Nokia Corporation.
  *
  * Author: Zeeshan Ali (Khattak) <zeeshanak@gnome.org>
  *                               <zeeshan.ali@nokia.com>
@@ -81,6 +81,8 @@ struct _RygelExternalPlugin {
 	RygelExternalPluginPrivate * priv;
 	char* service_name;
 	char* root_object;
+	guint child_count;
+	gboolean searchable;
 };
 
 struct _RygelExternalPluginClass {
@@ -96,8 +98,8 @@ enum  {
 };
 GType rygel_external_plugin_get_type (void);
 GType rygel_external_container_get_type (void);
-RygelExternalContainer* rygel_external_container_new (const char* id, const char* service_name, const char* object_path, const char* host_ip, RygelExternalContainer* parent);
-RygelExternalContainer* rygel_external_container_construct (GType object_type, const char* id, const char* service_name, const char* object_path, const char* host_ip, RygelExternalContainer* parent);
+RygelExternalContainer* rygel_external_container_new (const char* id, const char* title, guint child_count, gboolean searchable, const char* service_name, const char* host_ip, RygelExternalContainer* parent);
+RygelExternalContainer* rygel_external_container_construct (GType object_type, const char* id, const char* title, guint child_count, gboolean searchable, const char* service_name, const char* host_ip, RygelExternalContainer* parent);
 static RygelMediaContainer* rygel_external_content_dir_real_create_root_container (RygelContentDirectory* base);
 RygelExternalContentDir* rygel_external_content_dir_new (void);
 RygelExternalContentDir* rygel_external_content_dir_construct (GType object_type);
@@ -111,7 +113,7 @@ static gpointer _g_object_ref0 (gpointer self) {
 
 #line 34 "rygel-external-content-dir.vala"
 static RygelMediaContainer* rygel_external_content_dir_real_create_root_container (RygelContentDirectory* base) {
-#line 115 "rygel-external-content-dir.c"
+#line 117 "rygel-external-content-dir.c"
 	RygelExternalContentDir * self;
 	RygelMediaContainer* result = NULL;
 	GUPnPRootDevice* _tmp1_;
@@ -121,22 +123,22 @@ static RygelMediaContainer* rygel_external_content_dir_real_create_root_containe
 	self = (RygelExternalContentDir*) base;
 #line 35 "rygel-external-content-dir.vala"
 	plugin = (_tmp2_ = _g_object_ref0 (RYGEL_EXTERNAL_PLUGIN (gupnp_device_info_get_resource_factory ((GUPnPDeviceInfo*) (_tmp1_ = (g_object_get ((GUPnPService*) self, "root-device", &_tmp0_, NULL), _tmp0_))))), _g_object_unref0 (_tmp1_), _tmp2_);
-#line 125 "rygel-external-content-dir.c"
-	result = (RygelMediaContainer*) rygel_external_container_new ("0", plugin->service_name, plugin->root_object, gssdp_client_get_host_ip ((GSSDPClient*) gupnp_service_info_get_context ((GUPnPServiceInfo*) self)), NULL);
+#line 127 "rygel-external-content-dir.c"
+	result = (RygelMediaContainer*) rygel_external_container_new ("0", ((RygelPlugin*) plugin)->title, plugin->child_count, plugin->searchable, plugin->service_name, gssdp_client_get_host_ip ((GSSDPClient*) gupnp_service_info_get_context ((GUPnPServiceInfo*) self)), NULL);
 	_g_object_unref0 (plugin);
 #line 37 "rygel-external-content-dir.vala"
 	return result;
-#line 130 "rygel-external-content-dir.c"
+#line 132 "rygel-external-content-dir.c"
 }
 
 
 #line 32 "rygel-external-content-dir.vala"
 RygelExternalContentDir* rygel_external_content_dir_construct (GType object_type) {
-#line 136 "rygel-external-content-dir.c"
+#line 138 "rygel-external-content-dir.c"
 	RygelExternalContentDir * self;
 #line 32 "rygel-external-content-dir.vala"
 	self = (RygelExternalContentDir*) rygel_content_directory_construct (object_type);
-#line 140 "rygel-external-content-dir.c"
+#line 142 "rygel-external-content-dir.c"
 	return self;
 }
 
@@ -145,7 +147,7 @@ RygelExternalContentDir* rygel_external_content_dir_construct (GType object_type
 RygelExternalContentDir* rygel_external_content_dir_new (void) {
 #line 32 "rygel-external-content-dir.vala"
 	return rygel_external_content_dir_construct (RYGEL_TYPE_EXTERNAL_CONTENT_DIR);
-#line 149 "rygel-external-content-dir.c"
+#line 151 "rygel-external-content-dir.c"
 }
 
 

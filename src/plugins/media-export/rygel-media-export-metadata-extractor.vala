@@ -40,9 +40,8 @@ private enum Gst.StreamType {
  * uri property, it will extact the metadata for you and emit signal
  * metadata_available for each key/value pair extracted.
  */
-public class Rygel.MediaExportMetadataExtractor: GLib.Object {
+public class Rygel.MediaExport.MetadataExtractor: GLib.Object {
     public const string TAG_RYGEL_SIZE = "rygel-size";
-    public const string TAG_RYGEL_DURATION = "rygel-duration";
     public const string TAG_RYGEL_MIME = "rygel-mime";
     public const string TAG_RYGEL_CHANNELS = "rygel-channels";
     public const string TAG_RYGEL_RATE = "rygel-rate";
@@ -80,53 +79,53 @@ public class Rygel.MediaExportMetadataExtractor: GLib.Object {
     }
 
     private void renew_playbin () {
-        // setup fake sinks
-        this.playbin = this.factory.create ("tag_reader");
+        if (this.factory != null) {
+            // setup fake sinks
+            this.playbin = this.factory.create ("tag_reader");
 
-        // increase reference count of sinks to workaround
-        // bug #596078
-        var sink = ElementFactory.make ("fakesink", null);
-        sink.ref ();
-        this.playbin.video_sink = sink;
+            // increase reference count of sinks to workaround
+            // bug #596078
+            var sink = ElementFactory.make ("fakesink", null);
+            sink.ref ();
+            this.playbin.video_sink = sink;
 
-        sink = ElementFactory.make ("fakesink", null);
-        sink.ref ();
-        this.playbin.audio_sink = sink;
+            sink = ElementFactory.make ("fakesink", null);
+            sink.ref ();
+            this.playbin.audio_sink = sink;
 
-        var bus = this.playbin.get_bus ();
-        bus.add_signal_watch ();
-        bus.message["tag"] += this.tag_cb;
-        bus.message["state-changed"] += this.state_changed_cb;
-        bus.message["error"] += this.error_cb;
-    }
-
-    public static MediaExportMetadataExtractor? create() {
-        if (MediaExportMetadataExtractor.factory == null) {
-            debug (_("Checking for gstreamer playbin..."));
-            var factory = ElementFactory.find("playbin2");
-            if (factory != null) {
-                debug (_("Using playbin2"));
+            var bus = this.playbin.get_bus ();
+            bus.add_signal_watch ();
+            bus.message["tag"].connect (this.tag_cb);
+            if (factory.get_element_type ().name () == "GstPlayBin2") {
+                bus.message["element"].connect (this.element_message_cb);
             } else {
-                debug (_("Could not create Playbin2, trying Playbin"));
-                factory = ElementFactory.find ("playbin");
-
-                if (factory != null) {
-                    debug (_("Using playbin"));
-                } else {
-                    critical (_("Could not find any playbin.") + " " +
-                              _("Please check your gstreamer setup"));
-                    return null;
-                }
+                bus.message["state-changed"].connect (this.state_changed_cb);
             }
-            MediaExportMetadataExtractor.factory = factory;
+            bus.message["error"].connect (this.error_cb);
         }
-
-        return new MediaExportMetadataExtractor ();
     }
 
-    MediaExportMetadataExtractor () {
+    private void create_playbin_factory () {
+        debug ("Checking for gstreamer element 'playbin'...");
+        var factory = ElementFactory.find ("playbin2");
+        if (factory != null) {
+            debug (_("Using playbin2"));
+        } else {
+            debug (_("Could not create Playbin2, trying Playbin"));
+            factory = ElementFactory.find ("playbin");
+
+            if (factory != null) {
+                debug (_("Using playbin"));
+            } else {
+                warning (_("Could not find any playbin.") + " " +
+                        _("Please check your gstreamer setup"));
+            }
+        }
+        MetadataExtractor.factory = factory;
+    }
+
+    public MetadataExtractor () {
         this.register_custom_tag (TAG_RYGEL_SIZE, typeof (int64));
-        this.register_custom_tag (TAG_RYGEL_DURATION, typeof (int64));
         this.register_custom_tag (TAG_RYGEL_MIME, typeof (string));
         this.register_custom_tag (TAG_RYGEL_CHANNELS, typeof (int));
         this.register_custom_tag (TAG_RYGEL_RATE, typeof (int));
@@ -137,6 +136,21 @@ public class Rygel.MediaExportMetadataExtractor: GLib.Object {
 
         this.file_queue = new GLib.Queue<File> ();
         this.tag_list = new Gst.TagList ();
+
+        var config = MetaConfig.get_default ();
+        bool extract_metadata;
+
+        try {
+            extract_metadata = config.get_bool ("MediaExport",
+                                                "extract-metadata");
+        } catch (Error error) {
+            extract_metadata = false;
+        }
+
+        // lazy-create factory
+        if (extract_metadata && factory == null) {
+            create_playbin_factory ();
+        }
     }
 
     public void extract (File file) {
@@ -157,29 +171,53 @@ public class Rygel.MediaExportMetadataExtractor: GLib.Object {
                     new IOChannelError.FAILED (message));
         this.file_queue.pop_head ();
         extract_next ();
+
         return false;
     }
 
     private void extract_next () {
-        if (this.timeout_id != 0)
+        if (this.timeout_id != 0) {
             Source.remove (this.timeout_id);
+        }
 
         if (this.file_queue.get_length () > 0) {
+            this.tag_list = new Gst.TagList ();
+            var item = this.file_queue.peek_head ();
             try {
-                var item = this.file_queue.peek_head ();
                 debug (_("Scheduling file %s for metadata extraction"),
                        item.get_uri ());
                 this.extract_mime_and_size ();
-                renew_playbin ();
-                this.playbin.uri = item.get_uri ();
-                this.timeout_id = Timeout.add_seconds_full (
-                                                         Priority.DEFAULT,
-                                                         5,
-                                                         on_harvesting_timeout);
-                this.playbin.set_state (State.PAUSED);
+                if (this.factory != null) {
+                    renew_playbin ();
+                    this.playbin.uri = item.get_uri ();
+                    this.timeout_id = Timeout.add_seconds_full (
+                                        Priority.DEFAULT,
+                                        5,
+                                        on_harvesting_timeout);
+                    this.playbin.set_state (State.PAUSED);
+                } else {
+                    Idle.add (() => {
+                        extraction_done (this.file_queue.pop_head (),
+                                         this.tag_list);
+                        this.extract_next ();
+
+                        return false;
+                    });
+                }
             } catch (Error error) {
+                // Translators: first parameter is file uri, second is error
+                // message
+                warning (_("Failed to extract metadata from %s: %s"),
+                         item.get_uri (),
+                         error.message);
+
                 // on error just move to the next uri in queue
-                this.extract_next ();
+                Idle.add (() => {
+                    this.error (this.file_queue.pop_head (), error);
+                    this.extract_next ();
+
+                    return false;
+                });
             }
         }
     }
@@ -194,11 +232,30 @@ public class Rygel.MediaExportMetadataExtractor: GLib.Object {
                                             TagMergeMode.REPLACE);
     }
 
+    private void element_message_cb (Gst.Bus bus,
+                                     Message message) {
+        if (message.src != this.playbin) {
+            return;
+        }
+
+        if (message.get_structure ().get_name () == "playbin2-stream-changed") {
+            this.extract_duration ();
+            this.extract_stream_info ();
+
+            /* No hopes of getting any tags after this point */
+            this.extraction_done (this.file_queue.peek_head (), tag_list);
+            this.playbin.set_state (State.NULL);
+            this.file_queue.pop_head ();
+            this.extract_next ();
+        }
+    }
+
     /* Callback for state-change in playbin */
     private void state_changed_cb (Gst.Bus     bus,
                                    Gst.Message message) {
-        if (message.src != this.playbin)
+        if (message.src != this.playbin) {
             return;
+        }
 
         State new_state;
         State old_state;
@@ -211,7 +268,6 @@ public class Rygel.MediaExportMetadataExtractor: GLib.Object {
             /* No hopes of getting any tags after this point */
             this.extraction_done (this.file_queue.peek_head (), tag_list);
             this.playbin.set_state (State.NULL);
-            this.tag_list = new Gst.TagList ();
             this.file_queue.pop_head ();
             this.extract_next ();
         }
@@ -221,7 +277,7 @@ public class Rygel.MediaExportMetadataExtractor: GLib.Object {
     private void error_cb (Gst.Bus     bus,
                            Gst.Message message) {
 
-        return_if_fail (this.file_queue.get_length() != 0);
+        return_if_fail (this.file_queue.get_length () != 0);
 
         Error error = null;
         string debug;
@@ -236,7 +292,6 @@ public class Rygel.MediaExportMetadataExtractor: GLib.Object {
 
         /* We have a list of URIs to harvest, so lets jump to next one */
         this.playbin.set_state (State.NULL);
-        this.tag_list = new Gst.TagList ();
         this.file_queue.pop_head ();
         this.extract_next ();
     }
@@ -245,22 +300,12 @@ public class Rygel.MediaExportMetadataExtractor: GLib.Object {
         var file = this.file_queue.peek_head ();
         FileInfo file_info;
 
-        try {
-            file_info = file.query_info (FILE_ATTRIBUTE_STANDARD_CONTENT_TYPE
-                                         + "," +
-                                         FILE_ATTRIBUTE_STANDARD_SIZE + "," +
-                                         FILE_ATTRIBUTE_TIME_MODIFIED,
-                                         FileQueryInfoFlags.NONE,
-                                         null);
-        } catch (Error error) {
-            warning (_("Failed to query content type for '%s'"),
-                     file.get_uri ());
-
-            // signal error to parent
-            this.error (file, error);
-
-            throw error;
-        }
+        file_info = file.query_info (FILE_ATTRIBUTE_STANDARD_CONTENT_TYPE
+                                     + "," +
+                                     FILE_ATTRIBUTE_STANDARD_SIZE + "," +
+                                     FILE_ATTRIBUTE_TIME_MODIFIED,
+                                     FileQueryInfoFlags.NONE,
+                                     null);
 
         weak string content_type = file_info.get_content_type ();
         weak string mime = g_content_type_get_mime_type (content_type);
@@ -276,7 +321,7 @@ public class Rygel.MediaExportMetadataExtractor: GLib.Object {
                            TAG_RYGEL_SIZE,
                            size);
 
-        var mtime = file_info.get_attribute_uint64(
+        var mtime = file_info.get_attribute_uint64 (
                                                 FILE_ATTRIBUTE_TIME_MODIFIED);
         this.tag_list.add (TagMergeMode.REPLACE,
                            TAG_RYGEL_MTIME,
@@ -289,7 +334,7 @@ public class Rygel.MediaExportMetadataExtractor: GLib.Object {
         Format format = Format.TIME;
         if (this.playbin.query_duration (ref format, out duration)) {
             this.tag_list.add (TagMergeMode.REPLACE,
-                               TAG_RYGEL_DURATION,
+                               TAG_DURATION,
                                duration);
         }
     }
@@ -337,12 +382,10 @@ public class Rygel.MediaExportMetadataExtractor: GLib.Object {
     private void extract_int_value (Structure structure,
                                     string key,
                                     string tag) {
-        int val;
+        int tag_value;
 
-        if (structure.get_int (key, out val)) {
-            tag_list.add (TagMergeMode.REPLACE,
-                          tag,
-                          val);
+        if (structure.get_int (key, out tag_value)) {
+            tag_list.add (TagMergeMode.REPLACE, tag, tag_value);
         }
     }
 }

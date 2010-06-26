@@ -23,7 +23,6 @@
 
 using Soup;
 using GUPnP;
-using CStuff;
 
 internal errordomain Rygel.XBoxHacksError {
     NA
@@ -81,24 +80,24 @@ internal class Rygel.XBoxHacks : GLib.Object {
     }
 
     private void modify_dms_desc (Xml.Doc doc) {
-        var element = Utils.get_xml_element ((Xml.Node *) doc,
-                                             "root",
-                                             "device",
-                                             "deviceType");
+        Xml.Node *element = XMLUtils.get_element ((Xml.Node *) doc,
+                                                  "root",
+                                                  "device",
+                                                  "deviceType");
         assert (element != null);
         element->set_content (DMS_V1);
 
-        element = Utils.get_xml_element ((Xml.Node *) doc,
-                                         "root",
-                                         "device",
-                                         "modelName");
+        element = XMLUtils.get_element ((Xml.Node *) doc,
+                                        "root",
+                                        "device",
+                                        "modelName");
         assert (element != null);
         element->set_content (MODEL_NAME);
 
-        element = Utils.get_xml_element ((Xml.Node *) doc,
-                                         "root",
-                                         "device",
-                                         "friendlyName");
+        element = XMLUtils.get_element ((Xml.Node *) doc,
+                                        "root",
+                                        "device",
+                                        "friendlyName");
         assert (element != null);
         element->add_content (FRIENDLY_NAME_POSTFIX);
 
@@ -108,10 +107,10 @@ internal class Rygel.XBoxHacks : GLib.Object {
     }
 
     private Xml.Node * find_cds_type_node (Xml.Node *doc_node) {
-        var element = Utils.get_xml_element (doc_node,
-                                             "root",
-                                             "device",
-                                             "serviceList");
+        Xml.Node *element = XMLUtils.get_element (doc_node,
+                                                  "root",
+                                                  "device",
+                                                  "serviceList");
         assert (element != null && element->children != null);
 
         Xml.Node *cds_type_node = null;

@@ -63,14 +63,14 @@ DIST_COMMON = $(librygelinc_HEADERS) $(srcdir)/Makefile.am \
 	rygel-root-device-factory.c rygel-root-device.c \
 	rygel-search-criteria-parser.c rygel-search-expression.c \
 	rygel-search.c rygel-seekable-response.c \
-	rygel-simple-container.c rygel-source-connection-manager.c \
-	rygel-state-machine.c rygel-subtitle-manager.c \
-	rygel-subtitle.c rygel-thumbnail.c rygel-thumbnailer.c \
-	rygel-transcode-manager.c rygel-transcoder.c \
-	rygel-user-config.c rygel-wma-transcoder-bin.c \
-	rygel-wma-transcoder.c rygel-wmv-transcoder-bin.c \
-	rygel-wmv-transcoder.c rygel-xbox-hacks.c rygel.h \
-	rygel_vala.stamp
+	rygel-signal-handler.c rygel-simple-container.c \
+	rygel-source-connection-manager.c rygel-state-machine.c \
+	rygel-subtitle-manager.c rygel-subtitle.c rygel-thumbnail.c \
+	rygel-thumbnailer.c rygel-transcode-manager.c \
+	rygel-transcoder.c rygel-user-config.c \
+	rygel-wma-transcoder-bin.c rygel-wma-transcoder.c \
+	rygel-wmv-transcoder-bin.c rygel-wmv-transcoder.c \
+	rygel-xbox-hacks.c rygel-xml-utils.c rygel.h rygel_vala.stamp
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/intltool.m4 \
 	$(top_srcdir)/m4/libtool.m4 $(top_srcdir)/m4/ltoptions.m4 \
@@ -95,7 +95,7 @@ librygel_configuration_a_LIBADD =
 am_librygel_configuration_a_OBJECTS = rygel-configuration.$(OBJEXT) \
 	rygel-user-config.$(OBJEXT) rygel-meta-config.$(OBJEXT) \
 	rygel-cmdline-config.$(OBJEXT) \
-	rygel-environment-config.$(OBJEXT) cstuff.$(OBJEXT)
+	rygel-environment-config.$(OBJEXT)
 librygel_configuration_a_OBJECTS =  \
 	$(am_librygel_configuration_a_OBJECTS)
 am__installdirs = "$(DESTDIR)$(bindir)" "$(DESTDIR)$(vapidir)" \
@@ -144,7 +144,8 @@ am__objects_1 = rygel-configuration.$(OBJEXT) \
 	rygel-log-handler.$(OBJEXT)
 am_rygel_OBJECTS = $(am__objects_1) rygel-http-item-uri.$(OBJEXT) \
 	rygel-dbus-service.$(OBJEXT) rygel-root-device.$(OBJEXT) \
-	rygel-root-device-factory.$(OBJEXT) rygel-main.$(OBJEXT)
+	rygel-root-device-factory.$(OBJEXT) rygel-xml-utils.$(OBJEXT) \
+	rygel-signal-handler.$(OBJEXT) rygel-main.$(OBJEXT)
 rygel_OBJECTS = $(am_rygel_OBJECTS)
 am__DEPENDENCIES_1 =
 rygel_DEPENDENCIES = librygel-configuration.a $(am__DEPENDENCIES_1) \
@@ -410,6 +411,8 @@ rygel_SOURCES = $(VAPI_SOURCE_FILES) \
 		rygel-dbus-service.vala \
 		rygel-root-device.vala \
 		rygel-root-device-factory.vala \
+		rygel-xml-utils.vala \
+		rygel-signal-handler.vala \
 		rygel-main.vala
 
 VAPI_SOURCE_FILES = rygel-configuration.vala \
@@ -474,8 +477,9 @@ VAPI_SOURCE_FILES = rygel-configuration.vala \
 
 rygel_VALAFLAGS = \
 	-H rygel.h -C --library=rygel-1.0 --vapidir=$(srcdir) --thread \
-	--pkg cstuff --pkg gupnp-1.0 --pkg gupnp-av-1.0 --pkg dbus-glib-1 \
-	--pkg gstreamer-0.10 --pkg gio-2.0 --pkg gee-1.0 -g
+	--pkg rygel-build-config --pkg rygel-misc --pkg gupnp-1.0 \
+	--pkg gupnp-av-1.0 --pkg dbus-glib-1 --pkg gstreamer-0.10 \
+	--pkg gio-2.0 --pkg gee-1.0 --pkg posix -g
 
 rygel_LDADD = librygel-configuration.a \
 	      $(LIBGUPNP_LIBS) \
@@ -497,14 +501,14 @@ librygel_configuration_a_SOURCES = rygel-configuration.c \
 				   rygel-user-config.c \
 				   rygel-meta-config.c \
 				   rygel-cmdline-config.c \
-				   rygel-environment-config.c \
-				   cstuff.c
+				   rygel-environment-config.c
 
 MAINTAINERCLEANFILES = Makefile.in $(BUILT_SOURCES)
-EXTRA_DIST = cstuff.vapi \
+EXTRA_DIST = rygel-build-config.vapi \
+             rygel-misc.vapi \
              $(VAPI_FILES) \
              $(DEPS_FILES) \
-             $(BUILT_SOURCES) cstuff.h
+             $(BUILT_SOURCES)
 
 all: $(BUILT_SOURCES)
 	$(MAKE) $(AM_MAKEFLAGS) all-am
@@ -601,7 +605,6 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/cstuff.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-browse.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-cmdline-config.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-configuration.Po@am__quote@
@@ -651,6 +654,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-search-expression.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-search.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-seekable-response.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-signal-handler.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-simple-container.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-source-connection-manager.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-state-machine.Po@am__quote@
@@ -666,6 +670,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-wmv-transcoder-bin.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-wmv-transcoder.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-xbox-hacks.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-xml-utils.Po@am__quote@
 
 .c.o:
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
@@ -1005,6 +1010,16 @@ $(srcdir)/rygel-root-device-factory.c: $(srcdir)/rygel_vala.stamp
 	  rm -f $(srcdir)/rygel_vala.stamp; \
 	  $(am__cd) $(srcdir) && $(MAKE) $(AM_MAKEFLAGS) rygel_vala.stamp; \
 	fi
+$(srcdir)/rygel-xml-utils.c: $(srcdir)/rygel_vala.stamp
+	@if test -f $@; then :; else \
+	  rm -f $(srcdir)/rygel_vala.stamp; \
+	  $(am__cd) $(srcdir) && $(MAKE) $(AM_MAKEFLAGS) rygel_vala.stamp; \
+	fi
+$(srcdir)/rygel-signal-handler.c: $(srcdir)/rygel_vala.stamp
+	@if test -f $@; then :; else \
+	  rm -f $(srcdir)/rygel_vala.stamp; \
+	  $(am__cd) $(srcdir) && $(MAKE) $(AM_MAKEFLAGS) rygel_vala.stamp; \
+	fi
 $(srcdir)/rygel-main.c: $(srcdir)/rygel_vala.stamp
 	@if test -f $@; then :; else \
 	  rm -f $(srcdir)/rygel_vala.stamp; \
@@ -1234,6 +1249,7 @@ maintainer-clean-generic:
 	-rm -f rygel-search-expression.c
 	-rm -f rygel-search.c
 	-rm -f rygel-seekable-response.c
+	-rm -f rygel-signal-handler.c
 	-rm -f rygel-simple-container.c
 	-rm -f rygel-source-connection-manager.c
 	-rm -f rygel-state-machine.c
@@ -1249,6 +1265,7 @@ maintainer-clean-generic:
 	-rm -f rygel-wmv-transcoder-bin.c
 	-rm -f rygel-wmv-transcoder.c
 	-rm -f rygel-xbox-hacks.c
+	-rm -f rygel-xml-utils.c
 	-rm -f rygel.h
 	-rm -f rygel_vala.stamp
 	-test -z "$(BUILT_SOURCES)" || rm -f $(BUILT_SOURCES)

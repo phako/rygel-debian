@@ -156,7 +156,9 @@ void rygel_gst_utils_post_error (GstElement* dest, GError* _error_) {
 #line 93 "rygel-gst-utils.vala"
 static gboolean _rygel_gst_utils_rtp_depay_filter_gst_plugin_feature_filter (GstPluginFeature* feature, gpointer self) {
 #line 159 "rygel-gst-utils.c"
-	return rygel_gst_utils_rtp_depay_filter (feature);
+	gboolean result;
+	result = rygel_gst_utils_rtp_depay_filter (feature);
+	return result;
 }
 
 
@@ -168,7 +170,7 @@ static void _g_list_free_gst_object_unref (GList* self) {
 
 #line 50 "rygel-gst-utils.vala"
 GstElement* rygel_gst_utils_get_rtp_depayloader (GstCaps* caps) {
-#line 172 "rygel-gst-utils.c"
+#line 174 "rygel-gst-utils.c"
 	GstElement* result = NULL;
 	GstRegistry* registry;
 	GList* features;
@@ -176,22 +178,22 @@ GstElement* rygel_gst_utils_get_rtp_depayloader (GstCaps* caps) {
 	g_return_val_if_fail (caps != NULL, NULL);
 #line 51 "rygel-gst-utils.vala"
 	if (!rygel_gst_utils_need_rtp_depayloader (caps)) {
-#line 180 "rygel-gst-utils.c"
+#line 182 "rygel-gst-utils.c"
 		result = NULL;
 #line 52 "rygel-gst-utils.vala"
 		return result;
-#line 184 "rygel-gst-utils.c"
+#line 186 "rygel-gst-utils.c"
 	}
 #line 55 "rygel-gst-utils.vala"
 	registry = gst_registry_get_default ();
 #line 56 "rygel-gst-utils.vala"
 	features = gst_registry_feature_filter (registry, _rygel_gst_utils_rtp_depay_filter_gst_plugin_feature_filter, FALSE, NULL);
-#line 190 "rygel-gst-utils.c"
+#line 192 "rygel-gst-utils.c"
 	result = rygel_gst_utils_get_best_depay (features, caps);
 	__g_list_free_gst_object_unref0 (features);
 #line 58 "rygel-gst-utils.vala"
 	return result;
-#line 195 "rygel-gst-utils.c"
+#line 197 "rygel-gst-utils.c"
 }
 
 
@@ -202,19 +204,19 @@ static gpointer _gst_structure_copy0 (gpointer self) {
 
 #line 61 "rygel-gst-utils.vala"
 static gboolean rygel_gst_utils_need_rtp_depayloader (GstCaps* caps) {
-#line 206 "rygel-gst-utils.c"
+#line 208 "rygel-gst-utils.c"
 	gboolean result = FALSE;
 	GstStructure* structure;
 #line 61 "rygel-gst-utils.vala"
 	g_return_val_if_fail (caps != NULL, FALSE);
 #line 62 "rygel-gst-utils.vala"
 	structure = _gst_structure_copy0 (gst_caps_get_structure (caps, (guint) 0));
-#line 213 "rygel-gst-utils.c"
+#line 215 "rygel-gst-utils.c"
 	result = _vala_strcmp0 (gst_structure_get_name (structure), "application/x-rtp") == 0;
 	_gst_structure_free0 (structure);
 #line 63 "rygel-gst-utils.vala"
 	return result;
-#line 218 "rygel-gst-utils.c"
+#line 220 "rygel-gst-utils.c"
 }
 
 
@@ -225,14 +227,16 @@ static gpointer _gst_object_ref0 (gpointer self) {
 
 #line 103 "rygel-gst-utils.vala"
 static gint _rygel_gst_utils_compare_factories_gcompare_func (void* a, void* b) {
-#line 229 "rygel-gst-utils.c"
-	return rygel_gst_utils_compare_factories (a, b);
+#line 231 "rygel-gst-utils.c"
+	gint result;
+	result = rygel_gst_utils_compare_factories (a, b);
+	return result;
 }
 
 
 #line 66 "rygel-gst-utils.vala"
 static GstElement* rygel_gst_utils_get_best_depay (GList* features, GstCaps* caps) {
-#line 236 "rygel-gst-utils.c"
+#line 240 "rygel-gst-utils.c"
 	GstElement* result = NULL;
 	GList* relevant_factories;
 	GstElementFactory* factory;
@@ -240,18 +244,18 @@ static GstElement* rygel_gst_utils_get_best_depay (GList* features, GstCaps* cap
 	g_return_val_if_fail (caps != NULL, NULL);
 #line 69 "rygel-gst-utils.vala"
 	relevant_factories = NULL;
-#line 244 "rygel-gst-utils.c"
+#line 248 "rygel-gst-utils.c"
 	{
 		GList* feature_collection;
 		GList* feature_it;
 #line 72 "rygel-gst-utils.vala"
 		feature_collection = features;
-#line 250 "rygel-gst-utils.c"
+#line 254 "rygel-gst-utils.c"
 		for (feature_it = feature_collection; feature_it != NULL; feature_it = feature_it->next) {
 			GstPluginFeature* feature;
 #line 72 "rygel-gst-utils.vala"
 			feature = _gst_object_ref0 ((GstPluginFeature*) feature_it->data);
-#line 255 "rygel-gst-utils.c"
+#line 259 "rygel-gst-utils.c"
 			{
 				GstElementFactory* factory;
 #line 73 "rygel-gst-utils.vala"
@@ -260,7 +264,7 @@ static GstElement* rygel_gst_utils_get_best_depay (GList* features, GstCaps* cap
 				if (gst_element_factory_can_sink_caps (factory, caps)) {
 #line 75 "rygel-gst-utils.vala"
 					relevant_factories = g_list_append (relevant_factories, _gst_object_ref0 (factory));
-#line 264 "rygel-gst-utils.c"
+#line 268 "rygel-gst-utils.c"
 				}
 				_gst_object_unref0 (feature);
 				_gst_object_unref0 (factory);
@@ -269,72 +273,72 @@ static GstElement* rygel_gst_utils_get_best_depay (GList* features, GstCaps* cap
 	}
 #line 79 "rygel-gst-utils.vala"
 	if (g_list_length (relevant_factories) == 0) {
-#line 273 "rygel-gst-utils.c"
+#line 277 "rygel-gst-utils.c"
 		result = NULL;
 		__g_list_free_gst_object_unref0 (relevant_factories);
 #line 81 "rygel-gst-utils.vala"
 		return result;
-#line 278 "rygel-gst-utils.c"
+#line 282 "rygel-gst-utils.c"
 	}
 #line 85 "rygel-gst-utils.vala"
 	relevant_factories = g_list_sort (relevant_factories, _rygel_gst_utils_compare_factories_gcompare_func);
 #line 88 "rygel-gst-utils.vala"
 	factory = _gst_object_ref0 ((GstElementFactory*) relevant_factories->data);
-#line 284 "rygel-gst-utils.c"
+#line 288 "rygel-gst-utils.c"
 	result = gst_element_factory_make (gst_plugin_feature_get_name ((GstPluginFeature*) factory), NULL);
 	__g_list_free_gst_object_unref0 (relevant_factories);
 	_gst_object_unref0 (factory);
 #line 90 "rygel-gst-utils.vala"
 	return result;
-#line 290 "rygel-gst-utils.c"
+#line 294 "rygel-gst-utils.c"
 }
 
 
-#line 1048 "glib-2.0.vapi"
+#line 1144 "glib-2.0.vapi"
 static gboolean string_contains (const char* self, const char* needle) {
-#line 296 "rygel-gst-utils.c"
+#line 300 "rygel-gst-utils.c"
 	gboolean result = FALSE;
-#line 1048 "glib-2.0.vapi"
+#line 1144 "glib-2.0.vapi"
 	g_return_val_if_fail (self != NULL, FALSE);
-#line 1048 "glib-2.0.vapi"
+#line 1144 "glib-2.0.vapi"
 	g_return_val_if_fail (needle != NULL, FALSE);
-#line 302 "rygel-gst-utils.c"
-	result = strstr (self, needle) != NULL;
-#line 1049 "glib-2.0.vapi"
-	return result;
 #line 306 "rygel-gst-utils.c"
+	result = strstr (self, needle) != NULL;
+#line 1145 "glib-2.0.vapi"
+	return result;
+#line 310 "rygel-gst-utils.c"
 }
 
 
 #line 93 "rygel-gst-utils.vala"
 static gboolean rygel_gst_utils_rtp_depay_filter (GstPluginFeature* feature) {
-#line 312 "rygel-gst-utils.c"
+#line 316 "rygel-gst-utils.c"
 	gboolean result = FALSE;
 	GstElementFactory* factory;
 #line 93 "rygel-gst-utils.vala"
 	g_return_val_if_fail (feature != NULL, FALSE);
 #line 94 "rygel-gst-utils.vala"
 	if (!g_type_is_a (G_TYPE_FROM_INSTANCE ((GObject*) feature), GST_TYPE_ELEMENT_FACTORY)) {
-#line 319 "rygel-gst-utils.c"
+#line 323 "rygel-gst-utils.c"
 		result = FALSE;
 #line 95 "rygel-gst-utils.vala"
 		return result;
-#line 323 "rygel-gst-utils.c"
+#line 327 "rygel-gst-utils.c"
 	}
 #line 98 "rygel-gst-utils.vala"
 	factory = _gst_object_ref0 (GST_ELEMENT_FACTORY (feature));
-#line 327 "rygel-gst-utils.c"
+#line 331 "rygel-gst-utils.c"
 	result = string_contains (gst_element_factory_get_klass (factory), "Depayloader");
 	_gst_object_unref0 (factory);
 #line 100 "rygel-gst-utils.vala"
 	return result;
-#line 332 "rygel-gst-utils.c"
+#line 336 "rygel-gst-utils.c"
 }
 
 
 #line 103 "rygel-gst-utils.vala"
 static gint rygel_gst_utils_compare_factories (void* a, void* b) {
-#line 338 "rygel-gst-utils.c"
+#line 342 "rygel-gst-utils.c"
 	gint result = 0;
 	GstElementFactory* factory_a;
 	GstElementFactory* factory_b;
@@ -342,19 +346,19 @@ static gint rygel_gst_utils_compare_factories (void* a, void* b) {
 	factory_a = _gst_object_ref0 (GST_ELEMENT_FACTORY (a));
 #line 105 "rygel-gst-utils.vala"
 	factory_b = _gst_object_ref0 (GST_ELEMENT_FACTORY (b));
-#line 346 "rygel-gst-utils.c"
+#line 350 "rygel-gst-utils.c"
 	result = (gint) (gst_plugin_feature_get_rank ((GstPluginFeature*) factory_b) - gst_plugin_feature_get_rank ((GstPluginFeature*) factory_a));
 	_gst_object_unref0 (factory_a);
 	_gst_object_unref0 (factory_b);
 #line 107 "rygel-gst-utils.vala"
 	return result;
-#line 352 "rygel-gst-utils.c"
+#line 356 "rygel-gst-utils.c"
 }
 
 
 #line 31 "rygel-gst-utils.vala"
 RygelGstUtils* rygel_gst_utils_construct (GType object_type) {
-#line 358 "rygel-gst-utils.c"
+#line 362 "rygel-gst-utils.c"
 	RygelGstUtils* self;
 	self = (RygelGstUtils*) g_type_create_instance (object_type);
 	return self;

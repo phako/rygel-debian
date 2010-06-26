@@ -2,7 +2,7 @@
  * generated from rygel-external-interfaces.vala, do not modify */
 
 /*
- * Copyright (C) 2009 Nokia Corporation.
+ * Copyright (C) 2009,2010 Nokia Corporation.
  *
  * Author: Zeeshan Ali (Khattak) <zeeshanak@gnome.org>
  *                               <zeeshan.ali@nokia.com>
@@ -30,8 +30,8 @@
 #include <dbus/dbus-glib.h>
 #include <stdlib.h>
 #include <string.h>
-#include <gio/gio.h>
 #include <dbus/dbus.h>
+#include <gio/gio.h>
 
 
 #define RYGEL_TYPE_EXTERNAL_MEDIA_OBJECT (rygel_external_media_object_get_type ())
@@ -41,6 +41,7 @@
 
 typedef struct _RygelExternalMediaObject RygelExternalMediaObject;
 typedef struct _RygelExternalMediaObjectIface RygelExternalMediaObjectIface;
+typedef struct _DBusObjectVTable _DBusObjectVTable;
 #define _g_free0(var) (var = (g_free (var), NULL))
 typedef struct _RygelExternalMediaObjectDBusProxy RygelExternalMediaObjectDBusProxy;
 typedef DBusGProxyClass RygelExternalMediaObjectDBusProxyClass;
@@ -54,6 +55,10 @@ typedef struct _RygelExternalMediaContainer RygelExternalMediaContainer;
 typedef struct _RygelExternalMediaContainerIface RygelExternalMediaContainerIface;
 typedef struct _RygelExternalMediaContainerDBusProxy RygelExternalMediaContainerDBusProxy;
 typedef DBusGProxyClass RygelExternalMediaContainerDBusProxyClass;
+typedef struct _RygelExternalMediaContainerDBusProxyListChildrenData RygelExternalMediaContainerDBusProxyListChildrenData;
+typedef struct _RygelExternalMediaContainerDBusProxyListContainersData RygelExternalMediaContainerDBusProxyListContainersData;
+typedef struct _RygelExternalMediaContainerDBusProxyListItemsData RygelExternalMediaContainerDBusProxyListItemsData;
+typedef struct _RygelExternalMediaContainerDBusProxySearchObjectsData RygelExternalMediaContainerDBusProxySearchObjectsData;
 
 #define RYGEL_TYPE_EXTERNAL_MEDIA_ITEM (rygel_external_media_item_get_type ())
 #define RYGEL_EXTERNAL_MEDIA_ITEM(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_EXTERNAL_MEDIA_ITEM, RygelExternalMediaItem))
@@ -88,7 +93,6 @@ typedef struct _FreeDesktopPropertiesIface FreeDesktopPropertiesIface;
 typedef struct _FreeDesktopPropertiesDBusProxy FreeDesktopPropertiesDBusProxy;
 typedef DBusGProxyClass FreeDesktopPropertiesDBusProxyClass;
 typedef struct _FreeDesktopPropertiesDBusProxyGetAllData FreeDesktopPropertiesDBusProxyGetAllData;
-typedef struct _DBusObjectVTable _DBusObjectVTable;
 
 struct _RygelExternalMediaObjectIface {
 	GTypeInterface parent_iface;
@@ -96,6 +100,12 @@ struct _RygelExternalMediaObjectIface {
 	void (*set_parent) (RygelExternalMediaObject* self, const char* value);
 	char* (*get_display_name) (RygelExternalMediaObject* self);
 	void (*set_display_name) (RygelExternalMediaObject* self, const char* value);
+	char* (*get_object_type) (RygelExternalMediaObject* self);
+	void (*set_object_type) (RygelExternalMediaObject* self, const char* value);
+};
+
+struct _DBusObjectVTable {
+	void (*register_object) (DBusConnection*, const char*, void*);
 };
 
 struct _RygelExternalMediaObjectDBusProxy {
@@ -105,14 +115,22 @@ struct _RygelExternalMediaObjectDBusProxy {
 
 struct _RygelExternalMediaContainerIface {
 	GTypeInterface parent_iface;
-	char** (*get_items) (RygelExternalMediaContainer* self, int* result_length1);
-	void (*set_items) (RygelExternalMediaContainer* self, char** value, int value_length1);
-	char** (*get_containers) (RygelExternalMediaContainer* self, int* result_length1);
-	void (*set_containers) (RygelExternalMediaContainer* self, char** value, int value_length1);
+	void (*list_children) (RygelExternalMediaContainer* self, guint offset, guint max_count, char** filter, int filter_length1, GAsyncReadyCallback _callback_, gpointer _user_data_);
+	GHashTable** (*list_children_finish) (RygelExternalMediaContainer* self, GAsyncResult* _res_, int* result_length1, GError** error);
+	void (*list_containers) (RygelExternalMediaContainer* self, guint offset, guint max_count, char** filter, int filter_length1, GAsyncReadyCallback _callback_, gpointer _user_data_);
+	GHashTable** (*list_containers_finish) (RygelExternalMediaContainer* self, GAsyncResult* _res_, int* result_length1, GError** error);
+	void (*list_items) (RygelExternalMediaContainer* self, guint offset, guint max_count, char** filter, int filter_length1, GAsyncReadyCallback _callback_, gpointer _user_data_);
+	GHashTable** (*list_items_finish) (RygelExternalMediaContainer* self, GAsyncResult* _res_, int* result_length1, GError** error);
+	void (*search_objects) (RygelExternalMediaContainer* self, const char* query, guint offset, guint max_count, char** filter, int filter_length1, GAsyncReadyCallback _callback_, gpointer _user_data_);
+	GHashTable** (*search_objects_finish) (RygelExternalMediaContainer* self, GAsyncResult* _res_, int* result_length1, GError** error);
+	guint (*get_child_count) (RygelExternalMediaContainer* self);
+	void (*set_child_count) (RygelExternalMediaContainer* self, guint value);
 	guint (*get_item_count) (RygelExternalMediaContainer* self);
 	void (*set_item_count) (RygelExternalMediaContainer* self, guint value);
 	guint (*get_container_count) (RygelExternalMediaContainer* self);
 	void (*set_container_count) (RygelExternalMediaContainer* self, guint value);
+	gboolean (*get_searchable) (RygelExternalMediaContainer* self);
+	void (*set_searchable) (RygelExternalMediaContainer* self, gboolean value);
 	char* (*get_icon) (RygelExternalMediaContainer* self);
 	void (*set_icon) (RygelExternalMediaContainer* self, const char* value);
 };
@@ -122,14 +140,36 @@ struct _RygelExternalMediaContainerDBusProxy {
 	gboolean disposed;
 };
 
+struct _RygelExternalMediaContainerDBusProxyListChildrenData {
+	GAsyncReadyCallback _callback_;
+	gpointer _user_data_;
+	DBusPendingCall* pending;
+};
+
+struct _RygelExternalMediaContainerDBusProxyListContainersData {
+	GAsyncReadyCallback _callback_;
+	gpointer _user_data_;
+	DBusPendingCall* pending;
+};
+
+struct _RygelExternalMediaContainerDBusProxyListItemsData {
+	GAsyncReadyCallback _callback_;
+	gpointer _user_data_;
+	DBusPendingCall* pending;
+};
+
+struct _RygelExternalMediaContainerDBusProxySearchObjectsData {
+	GAsyncReadyCallback _callback_;
+	gpointer _user_data_;
+	DBusPendingCall* pending;
+};
+
 struct _RygelExternalMediaItemIface {
 	GTypeInterface parent_iface;
 	char** (*get_urls) (RygelExternalMediaItem* self, int* result_length1);
 	void (*set_urls) (RygelExternalMediaItem* self, char** value, int value_length1);
 	char* (*get_mime_type) (RygelExternalMediaItem* self);
 	void (*set_mime_type) (RygelExternalMediaItem* self, const char* value);
-	char* (*get_media_type) (RygelExternalMediaItem* self);
-	void (*set_media_type) (RygelExternalMediaItem* self, const char* value);
 	gint (*get_size) (RygelExternalMediaItem* self);
 	void (*set_size) (RygelExternalMediaItem* self, gint value);
 	char* (*get_artist) (RygelExternalMediaItem* self);
@@ -209,17 +249,19 @@ struct _FreeDesktopPropertiesDBusProxyGetAllData {
 	DBusPendingCall* pending;
 };
 
-struct _DBusObjectVTable {
-	void (*register_object) (DBusConnection*, const char*, void*);
-};
-
 
 
 GType rygel_external_media_object_get_type (void);
+RygelExternalMediaObject* rygel_external_media_object_dbus_proxy_new (DBusGConnection* connection, const char* name, const char* path);
+#define RYGEL_EXTERNAL_MEDIA_OBJECT_IFACE "org.gnome.UPnP.MediaObject2"
 char* rygel_external_media_object_get_parent (RygelExternalMediaObject* self);
 void rygel_external_media_object_set_parent (RygelExternalMediaObject* self, const char* value);
 char* rygel_external_media_object_get_display_name (RygelExternalMediaObject* self);
 void rygel_external_media_object_set_display_name (RygelExternalMediaObject* self, const char* value);
+char* rygel_external_media_object_get_object_type (RygelExternalMediaObject* self);
+void rygel_external_media_object_set_object_type (RygelExternalMediaObject* self, const char* value);
+static void _vala_dbus_register_object (DBusConnection* connection, const char* path, void* object);
+static void _vala_dbus_unregister_object (gpointer connection, GObject* object);
 void rygel_external_media_object_dbus_register_object (DBusConnection* connection, const char* path, void* object);
 void _rygel_external_media_object_dbus_unregister (DBusConnection* connection, void* _user_data_);
 DBusHandlerResult rygel_external_media_object_dbus_message (DBusConnection* connection, DBusMessage* message, void* object);
@@ -228,29 +270,41 @@ static DBusHandlerResult _dbus_rygel_external_media_object_property_get (RygelEx
 static DBusHandlerResult _dbus_rygel_external_media_object_property_set (RygelExternalMediaObject* self, DBusConnection* connection, DBusMessage* message);
 static DBusHandlerResult _dbus_rygel_external_media_object_property_get_all (RygelExternalMediaObject* self, DBusConnection* connection, DBusMessage* message);
 GType rygel_external_media_object_dbus_proxy_get_type (void);
-RygelExternalMediaObject* rygel_external_media_object_dbus_proxy_new (DBusGConnection* connection, const char* name, const char* path);
 DBusHandlerResult rygel_external_media_object_dbus_proxy_filter (DBusConnection* connection, DBusMessage* message, void* user_data);
 enum  {
 	RYGEL_EXTERNAL_MEDIA_OBJECT_DBUS_PROXY_DUMMY_PROPERTY,
 	RYGEL_EXTERNAL_MEDIA_OBJECT_DBUS_PROXY_PARENT,
-	RYGEL_EXTERNAL_MEDIA_OBJECT_DBUS_PROXY_DISPLAY_NAME
+	RYGEL_EXTERNAL_MEDIA_OBJECT_DBUS_PROXY_DISPLAY_NAME,
+	RYGEL_EXTERNAL_MEDIA_OBJECT_DBUS_PROXY_OBJECT_TYPE
 };
 static char* rygel_external_media_object_dbus_proxy_get_parent (RygelExternalMediaObject* self);
 static void rygel_external_media_object_dbus_proxy_set_parent (RygelExternalMediaObject* self, const char* value);
 static char* rygel_external_media_object_dbus_proxy_get_display_name (RygelExternalMediaObject* self);
 static void rygel_external_media_object_dbus_proxy_set_display_name (RygelExternalMediaObject* self, const char* value);
+static char* rygel_external_media_object_dbus_proxy_get_object_type (RygelExternalMediaObject* self);
+static void rygel_external_media_object_dbus_proxy_set_object_type (RygelExternalMediaObject* self, const char* value);
 static void rygel_external_media_object_dbus_proxy_rygel_external_media_object__interface_init (RygelExternalMediaObjectIface* iface);
 static void rygel_external_media_object_dbus_proxy_get_property (GObject * object, guint property_id, GValue * value, GParamSpec * pspec);
 static void rygel_external_media_object_dbus_proxy_set_property (GObject * object, guint property_id, const GValue * value, GParamSpec * pspec);
+RygelExternalMediaContainer* rygel_external_media_container_dbus_proxy_new (DBusGConnection* connection, const char* name, const char* path);
 GType rygel_external_media_container_get_type (void);
-char** rygel_external_media_container_get_items (RygelExternalMediaContainer* self, int* result_length1);
-void rygel_external_media_container_set_items (RygelExternalMediaContainer* self, char** value, int value_length1);
-char** rygel_external_media_container_get_containers (RygelExternalMediaContainer* self, int* result_length1);
-void rygel_external_media_container_set_containers (RygelExternalMediaContainer* self, char** value, int value_length1);
+void rygel_external_media_container_list_children (RygelExternalMediaContainer* self, guint offset, guint max_count, char** filter, int filter_length1, GAsyncReadyCallback _callback_, gpointer _user_data_);
+GHashTable** rygel_external_media_container_list_children_finish (RygelExternalMediaContainer* self, GAsyncResult* _res_, int* result_length1, GError** error);
+void rygel_external_media_container_list_containers (RygelExternalMediaContainer* self, guint offset, guint max_count, char** filter, int filter_length1, GAsyncReadyCallback _callback_, gpointer _user_data_);
+GHashTable** rygel_external_media_container_list_containers_finish (RygelExternalMediaContainer* self, GAsyncResult* _res_, int* result_length1, GError** error);
+void rygel_external_media_container_list_items (RygelExternalMediaContainer* self, guint offset, guint max_count, char** filter, int filter_length1, GAsyncReadyCallback _callback_, gpointer _user_data_);
+GHashTable** rygel_external_media_container_list_items_finish (RygelExternalMediaContainer* self, GAsyncResult* _res_, int* result_length1, GError** error);
+void rygel_external_media_container_search_objects (RygelExternalMediaContainer* self, const char* query, guint offset, guint max_count, char** filter, int filter_length1, GAsyncReadyCallback _callback_, gpointer _user_data_);
+GHashTable** rygel_external_media_container_search_objects_finish (RygelExternalMediaContainer* self, GAsyncResult* _res_, int* result_length1, GError** error);
+#define RYGEL_EXTERNAL_MEDIA_CONTAINER_IFACE "org.gnome.UPnP.MediaContainer2"
+guint rygel_external_media_container_get_child_count (RygelExternalMediaContainer* self);
+void rygel_external_media_container_set_child_count (RygelExternalMediaContainer* self, guint value);
 guint rygel_external_media_container_get_item_count (RygelExternalMediaContainer* self);
 void rygel_external_media_container_set_item_count (RygelExternalMediaContainer* self, guint value);
 guint rygel_external_media_container_get_container_count (RygelExternalMediaContainer* self);
 void rygel_external_media_container_set_container_count (RygelExternalMediaContainer* self, guint value);
+gboolean rygel_external_media_container_get_searchable (RygelExternalMediaContainer* self);
+void rygel_external_media_container_set_searchable (RygelExternalMediaContainer* self, gboolean value);
 char* rygel_external_media_container_get_icon (RygelExternalMediaContainer* self);
 void rygel_external_media_container_set_icon (RygelExternalMediaContainer* self, const char* value);
 void rygel_external_media_container_dbus_register_object (DBusConnection* connection, const char* path, void* object);
@@ -260,44 +314,68 @@ static DBusHandlerResult _dbus_rygel_external_media_container_introspect (RygelE
 static DBusHandlerResult _dbus_rygel_external_media_container_property_get (RygelExternalMediaContainer* self, DBusConnection* connection, DBusMessage* message);
 static DBusHandlerResult _dbus_rygel_external_media_container_property_set (RygelExternalMediaContainer* self, DBusConnection* connection, DBusMessage* message);
 static DBusHandlerResult _dbus_rygel_external_media_container_property_get_all (RygelExternalMediaContainer* self, DBusConnection* connection, DBusMessage* message);
+static DBusHandlerResult _dbus_rygel_external_media_container_list_children (RygelExternalMediaContainer* self, DBusConnection* connection, DBusMessage* message);
+static void _dbus_rygel_external_media_container_list_children_ready (GObject * source_object, GAsyncResult * _res_, gpointer * _user_data_);
+static DBusHandlerResult _dbus_rygel_external_media_container_list_containers (RygelExternalMediaContainer* self, DBusConnection* connection, DBusMessage* message);
+static void _dbus_rygel_external_media_container_list_containers_ready (GObject * source_object, GAsyncResult * _res_, gpointer * _user_data_);
+static DBusHandlerResult _dbus_rygel_external_media_container_list_items (RygelExternalMediaContainer* self, DBusConnection* connection, DBusMessage* message);
+static void _dbus_rygel_external_media_container_list_items_ready (GObject * source_object, GAsyncResult * _res_, gpointer * _user_data_);
+static DBusHandlerResult _dbus_rygel_external_media_container_search_objects (RygelExternalMediaContainer* self, DBusConnection* connection, DBusMessage* message);
+static void _dbus_rygel_external_media_container_search_objects_ready (GObject * source_object, GAsyncResult * _res_, gpointer * _user_data_);
 static void _dbus_rygel_external_media_container_updated (GObject* _sender, DBusConnection* _connection);
 GType rygel_external_media_container_dbus_proxy_get_type (void);
-RygelExternalMediaContainer* rygel_external_media_container_dbus_proxy_new (DBusGConnection* connection, const char* name, const char* path);
 static void _dbus_handle_rygel_external_media_container_updated (RygelExternalMediaContainer* self, DBusConnection* connection, DBusMessage* message);
 DBusHandlerResult rygel_external_media_container_dbus_proxy_filter (DBusConnection* connection, DBusMessage* message, void* user_data);
 enum  {
 	RYGEL_EXTERNAL_MEDIA_CONTAINER_DBUS_PROXY_DUMMY_PROPERTY,
 	RYGEL_EXTERNAL_MEDIA_CONTAINER_DBUS_PROXY_PARENT,
 	RYGEL_EXTERNAL_MEDIA_CONTAINER_DBUS_PROXY_DISPLAY_NAME,
+	RYGEL_EXTERNAL_MEDIA_CONTAINER_DBUS_PROXY_OBJECT_TYPE,
+	RYGEL_EXTERNAL_MEDIA_CONTAINER_DBUS_PROXY_CHILD_COUNT,
 	RYGEL_EXTERNAL_MEDIA_CONTAINER_DBUS_PROXY_ITEM_COUNT,
 	RYGEL_EXTERNAL_MEDIA_CONTAINER_DBUS_PROXY_CONTAINER_COUNT,
+	RYGEL_EXTERNAL_MEDIA_CONTAINER_DBUS_PROXY_SEARCHABLE,
 	RYGEL_EXTERNAL_MEDIA_CONTAINER_DBUS_PROXY_ICON
 };
 static char* rygel_external_media_container_dbus_proxy_get_parent (RygelExternalMediaObject* self);
 static void rygel_external_media_container_dbus_proxy_set_parent (RygelExternalMediaObject* self, const char* value);
 static char* rygel_external_media_container_dbus_proxy_get_display_name (RygelExternalMediaObject* self);
 static void rygel_external_media_container_dbus_proxy_set_display_name (RygelExternalMediaObject* self, const char* value);
+static char* rygel_external_media_container_dbus_proxy_get_object_type (RygelExternalMediaObject* self);
+static void rygel_external_media_container_dbus_proxy_set_object_type (RygelExternalMediaObject* self, const char* value);
 static void rygel_external_media_container_dbus_proxy_rygel_external_media_object__interface_init (RygelExternalMediaObjectIface* iface);
-static char** rygel_external_media_container_dbus_proxy_get_items (RygelExternalMediaContainer* self, int* result_length1);
-static void rygel_external_media_container_dbus_proxy_set_items (RygelExternalMediaContainer* self, char** value, int value_length1);
-static char** rygel_external_media_container_dbus_proxy_get_containers (RygelExternalMediaContainer* self, int* result_length1);
-static void rygel_external_media_container_dbus_proxy_set_containers (RygelExternalMediaContainer* self, char** value, int value_length1);
+static void rygel_external_media_container_dbus_proxy_list_children_async (RygelExternalMediaContainer* self, guint offset, guint max_count, char** filter, int filter_length1, GAsyncReadyCallback _callback_, gpointer _user_data_);
+static void rygel_external_media_container_dbus_proxy_list_children_ready (DBusPendingCall* pending, void* user_data);
+static GHashTable** rygel_external_media_container_dbus_proxy_list_children_finish (RygelExternalMediaContainer* self, GAsyncResult* _res_, int* result_length1, GError** error);
+static void rygel_external_media_container_dbus_proxy_list_containers_async (RygelExternalMediaContainer* self, guint offset, guint max_count, char** filter, int filter_length1, GAsyncReadyCallback _callback_, gpointer _user_data_);
+static void rygel_external_media_container_dbus_proxy_list_containers_ready (DBusPendingCall* pending, void* user_data);
+static GHashTable** rygel_external_media_container_dbus_proxy_list_containers_finish (RygelExternalMediaContainer* self, GAsyncResult* _res_, int* result_length1, GError** error);
+static void rygel_external_media_container_dbus_proxy_list_items_async (RygelExternalMediaContainer* self, guint offset, guint max_count, char** filter, int filter_length1, GAsyncReadyCallback _callback_, gpointer _user_data_);
+static void rygel_external_media_container_dbus_proxy_list_items_ready (DBusPendingCall* pending, void* user_data);
+static GHashTable** rygel_external_media_container_dbus_proxy_list_items_finish (RygelExternalMediaContainer* self, GAsyncResult* _res_, int* result_length1, GError** error);
+static void rygel_external_media_container_dbus_proxy_search_objects_async (RygelExternalMediaContainer* self, const char* query, guint offset, guint max_count, char** filter, int filter_length1, GAsyncReadyCallback _callback_, gpointer _user_data_);
+static void rygel_external_media_container_dbus_proxy_search_objects_ready (DBusPendingCall* pending, void* user_data);
+static GHashTable** rygel_external_media_container_dbus_proxy_search_objects_finish (RygelExternalMediaContainer* self, GAsyncResult* _res_, int* result_length1, GError** error);
+static guint rygel_external_media_container_dbus_proxy_get_child_count (RygelExternalMediaContainer* self);
+static void rygel_external_media_container_dbus_proxy_set_child_count (RygelExternalMediaContainer* self, guint value);
 static guint rygel_external_media_container_dbus_proxy_get_item_count (RygelExternalMediaContainer* self);
 static void rygel_external_media_container_dbus_proxy_set_item_count (RygelExternalMediaContainer* self, guint value);
 static guint rygel_external_media_container_dbus_proxy_get_container_count (RygelExternalMediaContainer* self);
 static void rygel_external_media_container_dbus_proxy_set_container_count (RygelExternalMediaContainer* self, guint value);
+static gboolean rygel_external_media_container_dbus_proxy_get_searchable (RygelExternalMediaContainer* self);
+static void rygel_external_media_container_dbus_proxy_set_searchable (RygelExternalMediaContainer* self, gboolean value);
 static char* rygel_external_media_container_dbus_proxy_get_icon (RygelExternalMediaContainer* self);
 static void rygel_external_media_container_dbus_proxy_set_icon (RygelExternalMediaContainer* self, const char* value);
 static void rygel_external_media_container_dbus_proxy_rygel_external_media_container__interface_init (RygelExternalMediaContainerIface* iface);
 static void rygel_external_media_container_dbus_proxy_get_property (GObject * object, guint property_id, GValue * value, GParamSpec * pspec);
 static void rygel_external_media_container_dbus_proxy_set_property (GObject * object, guint property_id, const GValue * value, GParamSpec * pspec);
 GType rygel_external_media_item_get_type (void);
+RygelExternalMediaItem* rygel_external_media_item_dbus_proxy_new (DBusGConnection* connection, const char* name, const char* path);
+#define RYGEL_EXTERNAL_MEDIA_ITEM_IFACE "org.gnome.UPnP.MediaItem2"
 char** rygel_external_media_item_get_urls (RygelExternalMediaItem* self, int* result_length1);
 void rygel_external_media_item_set_urls (RygelExternalMediaItem* self, char** value, int value_length1);
 char* rygel_external_media_item_get_mime_type (RygelExternalMediaItem* self);
 void rygel_external_media_item_set_mime_type (RygelExternalMediaItem* self, const char* value);
-char* rygel_external_media_item_get_media_type (RygelExternalMediaItem* self);
-void rygel_external_media_item_set_media_type (RygelExternalMediaItem* self, const char* value);
 gint rygel_external_media_item_get_size (RygelExternalMediaItem* self);
 void rygel_external_media_item_set_size (RygelExternalMediaItem* self, gint value);
 char* rygel_external_media_item_get_artist (RygelExternalMediaItem* self);
@@ -336,15 +414,14 @@ static DBusHandlerResult _dbus_rygel_external_media_item_property_get (RygelExte
 static DBusHandlerResult _dbus_rygel_external_media_item_property_set (RygelExternalMediaItem* self, DBusConnection* connection, DBusMessage* message);
 static DBusHandlerResult _dbus_rygel_external_media_item_property_get_all (RygelExternalMediaItem* self, DBusConnection* connection, DBusMessage* message);
 GType rygel_external_media_item_dbus_proxy_get_type (void);
-RygelExternalMediaItem* rygel_external_media_item_dbus_proxy_new (DBusGConnection* connection, const char* name, const char* path);
 DBusHandlerResult rygel_external_media_item_dbus_proxy_filter (DBusConnection* connection, DBusMessage* message, void* user_data);
 enum  {
 	RYGEL_EXTERNAL_MEDIA_ITEM_DBUS_PROXY_DUMMY_PROPERTY,
 	RYGEL_EXTERNAL_MEDIA_ITEM_DBUS_PROXY_PARENT,
 	RYGEL_EXTERNAL_MEDIA_ITEM_DBUS_PROXY_DISPLAY_NAME,
+	RYGEL_EXTERNAL_MEDIA_ITEM_DBUS_PROXY_OBJECT_TYPE,
 	RYGEL_EXTERNAL_MEDIA_ITEM_DBUS_PROXY_URLS,
 	RYGEL_EXTERNAL_MEDIA_ITEM_DBUS_PROXY_MIME_TYPE,
-	RYGEL_EXTERNAL_MEDIA_ITEM_DBUS_PROXY_MEDIA_TYPE,
 	RYGEL_EXTERNAL_MEDIA_ITEM_DBUS_PROXY_SIZE,
 	RYGEL_EXTERNAL_MEDIA_ITEM_DBUS_PROXY_ARTIST,
 	RYGEL_EXTERNAL_MEDIA_ITEM_DBUS_PROXY_ALBUM,
@@ -365,13 +442,13 @@ static char* rygel_external_media_item_dbus_proxy_get_parent (RygelExternalMedia
 static void rygel_external_media_item_dbus_proxy_set_parent (RygelExternalMediaObject* self, const char* value);
 static char* rygel_external_media_item_dbus_proxy_get_display_name (RygelExternalMediaObject* self);
 static void rygel_external_media_item_dbus_proxy_set_display_name (RygelExternalMediaObject* self, const char* value);
+static char* rygel_external_media_item_dbus_proxy_get_object_type (RygelExternalMediaObject* self);
+static void rygel_external_media_item_dbus_proxy_set_object_type (RygelExternalMediaObject* self, const char* value);
 static void rygel_external_media_item_dbus_proxy_rygel_external_media_object__interface_init (RygelExternalMediaObjectIface* iface);
 static char** rygel_external_media_item_dbus_proxy_get_urls (RygelExternalMediaItem* self, int* result_length1);
 static void rygel_external_media_item_dbus_proxy_set_urls (RygelExternalMediaItem* self, char** value, int value_length1);
 static char* rygel_external_media_item_dbus_proxy_get_mime_type (RygelExternalMediaItem* self);
 static void rygel_external_media_item_dbus_proxy_set_mime_type (RygelExternalMediaItem* self, const char* value);
-static char* rygel_external_media_item_dbus_proxy_get_media_type (RygelExternalMediaItem* self);
-static void rygel_external_media_item_dbus_proxy_set_media_type (RygelExternalMediaItem* self, const char* value);
 static gint rygel_external_media_item_dbus_proxy_get_size (RygelExternalMediaItem* self);
 static void rygel_external_media_item_dbus_proxy_set_size (RygelExternalMediaItem* self, gint value);
 static char* rygel_external_media_item_dbus_proxy_get_artist (RygelExternalMediaItem* self);
@@ -405,6 +482,7 @@ static void rygel_external_media_item_dbus_proxy_set_album_art (RygelExternalMed
 static void rygel_external_media_item_dbus_proxy_rygel_external_media_item__interface_init (RygelExternalMediaItemIface* iface);
 static void rygel_external_media_item_dbus_proxy_get_property (GObject * object, guint property_id, GValue * value, GParamSpec * pspec);
 static void rygel_external_media_item_dbus_proxy_set_property (GObject * object, guint property_id, const GValue * value, GParamSpec * pspec);
+FreeDesktopDBusObject* free_desktop_dbus_object_dbus_proxy_new (DBusGConnection* connection, const char* name, const char* path);
 GType free_desktop_dbus_object_get_type (void);
 void free_desktop_dbus_object_list_names (FreeDesktopDBusObject* self, GAsyncReadyCallback _callback_, gpointer _user_data_);
 char** free_desktop_dbus_object_list_names_finish (FreeDesktopDBusObject* self, GAsyncResult* _res_, int* result_length1, GError** error);
@@ -421,7 +499,6 @@ static DBusHandlerResult _dbus_free_desktop_dbus_object_list_activatable_names (
 static void _dbus_free_desktop_dbus_object_list_activatable_names_ready (GObject * source_object, GAsyncResult * _res_, gpointer * _user_data_);
 static void _dbus_free_desktop_dbus_object_name_owner_changed (GObject* _sender, const char* name, const char* old_owner, const char* new_owner, DBusConnection* _connection);
 GType free_desktop_dbus_object_dbus_proxy_get_type (void);
-FreeDesktopDBusObject* free_desktop_dbus_object_dbus_proxy_new (DBusGConnection* connection, const char* name, const char* path);
 static void _dbus_handle_free_desktop_dbus_object_name_owner_changed (FreeDesktopDBusObject* self, DBusConnection* connection, DBusMessage* message);
 DBusHandlerResult free_desktop_dbus_object_dbus_proxy_filter (DBusConnection* connection, DBusMessage* message, void* user_data);
 enum  {
@@ -436,6 +513,7 @@ static char** free_desktop_dbus_object_dbus_proxy_list_activatable_names_finish 
 static void free_desktop_dbus_object_dbus_proxy_free_desktop_dbus_object__interface_init (FreeDesktopDBusObjectIface* iface);
 static void free_desktop_dbus_object_dbus_proxy_get_property (GObject * object, guint property_id, GValue * value, GParamSpec * pspec);
 static void free_desktop_dbus_object_dbus_proxy_set_property (GObject * object, guint property_id, const GValue * value, GParamSpec * pspec);
+FreeDesktopProperties* free_desktop_properties_dbus_proxy_new (DBusGConnection* connection, const char* name, const char* path);
 GType free_desktop_properties_get_type (void);
 void free_desktop_properties_get_all (FreeDesktopProperties* self, const char* iface, GAsyncReadyCallback _callback_, gpointer _user_data_);
 GHashTable* free_desktop_properties_get_all_finish (FreeDesktopProperties* self, GAsyncResult* _res_, GError** error);
@@ -447,7 +525,6 @@ static DBusHandlerResult _dbus_free_desktop_properties_property_get_all (FreeDes
 static DBusHandlerResult _dbus_free_desktop_properties_get_all (FreeDesktopProperties* self, DBusConnection* connection, DBusMessage* message);
 static void _dbus_free_desktop_properties_get_all_ready (GObject * source_object, GAsyncResult * _res_, gpointer * _user_data_);
 GType free_desktop_properties_dbus_proxy_get_type (void);
-FreeDesktopProperties* free_desktop_properties_dbus_proxy_new (DBusGConnection* connection, const char* name, const char* path);
 DBusHandlerResult free_desktop_properties_dbus_proxy_filter (DBusConnection* connection, DBusMessage* message, void* user_data);
 enum  {
 	FREE_DESKTOP_PROPERTIES_DBUS_PROXY_DUMMY_PROPERTY
@@ -460,13 +537,14 @@ static void free_desktop_properties_dbus_proxy_get_property (GObject * object, g
 static void free_desktop_properties_dbus_proxy_set_property (GObject * object, guint property_id, const GValue * value, GParamSpec * pspec);
 static void _vala_array_destroy (gpointer array, gint array_length, GDestroyNotify destroy_func);
 static void _vala_array_free (gpointer array, gint array_length, GDestroyNotify destroy_func);
-static void _vala_dbus_register_object (DBusConnection* connection, const char* path, void* object);
-static void _vala_dbus_unregister_object (gpointer connection, GObject* object);
 
+const char* RYGEL_EXTERNAL_MEDIA_OBJECT_PROPERTIES[4] = {"Parent", "Type", "Path", "DisplayName"};
 static const DBusObjectPathVTable _rygel_external_media_object_dbus_path_vtable = {_rygel_external_media_object_dbus_unregister, rygel_external_media_object_dbus_message};
 static const _DBusObjectVTable _rygel_external_media_object_dbus_vtable = {rygel_external_media_object_dbus_register_object};
+const char* RYGEL_EXTERNAL_MEDIA_CONTAINER_PROPERTIES[2] = {"ChildCount", "Searchable"};
 static const DBusObjectPathVTable _rygel_external_media_container_dbus_path_vtable = {_rygel_external_media_container_dbus_unregister, rygel_external_media_container_dbus_message};
 static const _DBusObjectVTable _rygel_external_media_container_dbus_vtable = {rygel_external_media_container_dbus_register_object};
+const char* RYGEL_EXTERNAL_MEDIA_ITEM_PROPERTIES[18] = {"URLs", "MIMEType", "DLNAProfile", "Size", "Artist", "Album", "Date", "Duration", "Bitrate", "SampleRate", "BitsPerSample", "Width", "Height", "ColorDepth", "PixelWidth", "PixelHeight", "Thumbnail", "AlbumArt"};
 static const DBusObjectPathVTable _rygel_external_media_item_dbus_path_vtable = {_rygel_external_media_item_dbus_unregister, rygel_external_media_item_dbus_message};
 static const _DBusObjectVTable _rygel_external_media_item_dbus_vtable = {rygel_external_media_item_dbus_register_object};
 static const DBusObjectPathVTable _free_desktop_dbus_object_dbus_path_vtable = {_free_desktop_dbus_object_dbus_unregister, free_desktop_dbus_object_dbus_message};
@@ -496,6 +574,35 @@ void rygel_external_media_object_set_display_name (RygelExternalMediaObject* sel
 }
 
 
+char* rygel_external_media_object_get_object_type (RygelExternalMediaObject* self) {
+	return RYGEL_EXTERNAL_MEDIA_OBJECT_GET_INTERFACE (self)->get_object_type (self);
+}
+
+
+void rygel_external_media_object_set_object_type (RygelExternalMediaObject* self, const char* value) {
+	RYGEL_EXTERNAL_MEDIA_OBJECT_GET_INTERFACE (self)->set_object_type (self, value);
+}
+
+
+static void _vala_dbus_register_object (DBusConnection* connection, const char* path, void* object) {
+	const _DBusObjectVTable * vtable;
+	vtable = g_type_get_qdata (G_TYPE_FROM_INSTANCE (object), g_quark_from_static_string ("DBusObjectVTable"));
+	if (vtable) {
+		vtable->register_object (connection, path, object);
+	} else {
+		g_warning ("Object does not implement any D-Bus interface");
+	}
+}
+
+
+static void _vala_dbus_unregister_object (gpointer connection, GObject* object) {
+	char* path;
+	path = g_object_steal_data ((GObject*) object, "dbus_object_path");
+	dbus_connection_unregister_object_path (connection, path);
+	g_free (path);
+}
+
+
 void _rygel_external_media_object_dbus_unregister (DBusConnection* connection, void* _user_data_) {
 }
 
@@ -509,7 +616,7 @@ static DBusHandlerResult _dbus_rygel_external_media_object_introspect (RygelExte
 	reply = dbus_message_new_method_return (message);
 	dbus_message_iter_init_append (reply, &iter);
 	xml_data = g_string_new ("<!DOCTYPE node PUBLIC \"-//freedesktop//DTD D-BUS Object Introspection 1.0//EN\" \"http://www.freedesktop.org/standards/dbus/1.0/introspect.dtd\">\n");
-	g_string_append (xml_data, "<node>\n<interface name=\"org.freedesktop.DBus.Introspectable\">\n  <method name=\"Introspect\">\n    <arg name=\"data\" direction=\"out\" type=\"s\"/>\n  </method>\n</interface>\n<interface name=\"org.freedesktop.DBus.Properties\">\n  <method name=\"Get\">\n    <arg name=\"interface\" direction=\"in\" type=\"s\"/>\n    <arg name=\"propname\" direction=\"in\" type=\"s\"/>\n    <arg name=\"value\" direction=\"out\" type=\"v\"/>\n  </method>\n  <method name=\"Set\">\n    <arg name=\"interface\" direction=\"in\" type=\"s\"/>\n    <arg name=\"propname\" direction=\"in\" type=\"s\"/>\n    <arg name=\"value\" direction=\"in\" type=\"v\"/>\n  </method>\n  <method name=\"GetAll\">\n    <arg name=\"interface\" direction=\"in\" type=\"s\"/>\n    <arg name=\"props\" direction=\"out\" type=\"a{sv}\"/>\n  </method>\n</interface>\n<interface name=\"org.gnome.UPnP.MediaObject1\">\n  <property name=\"Parent\" type=\"o\" access=\"readwrite\"/>\n  <property name=\"DisplayName\" type=\"s\" access=\"readwrite\"/>\n</interface>\n");
+	g_string_append (xml_data, "<node>\n<interface name=\"org.freedesktop.DBus.Introspectable\">\n  <method name=\"Introspect\">\n    <arg name=\"data\" direction=\"out\" type=\"s\"/>\n  </method>\n</interface>\n<interface name=\"org.freedesktop.DBus.Properties\">\n  <method name=\"Get\">\n    <arg name=\"interface\" direction=\"in\" type=\"s\"/>\n    <arg name=\"propname\" direction=\"in\" type=\"s\"/>\n    <arg name=\"value\" direction=\"out\" type=\"v\"/>\n  </method>\n  <method name=\"Set\">\n    <arg name=\"interface\" direction=\"in\" type=\"s\"/>\n    <arg name=\"propname\" direction=\"in\" type=\"s\"/>\n    <arg name=\"value\" direction=\"in\" type=\"v\"/>\n  </method>\n  <method name=\"GetAll\">\n    <arg name=\"interface\" direction=\"in\" type=\"s\"/>\n    <arg name=\"props\" direction=\"out\" type=\"a{sv}\"/>\n  </method>\n</interface>\n<interface name=\"org.gnome.UPnP.MediaObject2\">\n  <property name=\"Parent\" type=\"o\" access=\"readwrite\"/>\n  <property name=\"DisplayName\" type=\"s\" access=\"readwrite\"/>\n  <property name=\"Type\" type=\"s\" access=\"readwrite\"/>\n</interface>\n");
 	dbus_connection_list_registered (connection, g_object_get_data ((GObject *) self, "dbus_object_path"), &children);
 	for (i = 0; children[i]; i++) {
 		g_string_append_printf (xml_data, "<node name=\"%s\"/>\n", children[i]);
@@ -547,7 +654,7 @@ static DBusHandlerResult _dbus_rygel_external_media_object_property_get (RygelEx
 	dbus_message_iter_get_basic (&iter, &_tmp1_);
 	dbus_message_iter_next (&iter);
 	property_name = g_strdup (_tmp1_);
-	if ((strcmp (interface_name, "org.gnome.UPnP.MediaObject1") == 0) && (strcmp (property_name, "Parent") == 0)) {
+	if ((strcmp (interface_name, "org.gnome.UPnP.MediaObject2") == 0) && (strcmp (property_name, "Parent") == 0)) {
 		char* result;
 		const char* _tmp2_;
 		dbus_message_iter_open_container (&reply_iter, DBUS_TYPE_VARIANT, "o", &subiter);
@@ -556,13 +663,22 @@ static DBusHandlerResult _dbus_rygel_external_media_object_property_get (RygelEx
 		dbus_message_iter_append_basic (&subiter, DBUS_TYPE_OBJECT_PATH, &_tmp2_);
 		_g_free0 (result);
 		dbus_message_iter_close_container (&reply_iter, &subiter);
-	} else if ((strcmp (interface_name, "org.gnome.UPnP.MediaObject1") == 0) && (strcmp (property_name, "DisplayName") == 0)) {
+	} else if ((strcmp (interface_name, "org.gnome.UPnP.MediaObject2") == 0) && (strcmp (property_name, "DisplayName") == 0)) {
 		char* result;
 		const char* _tmp3_;
 		dbus_message_iter_open_container (&reply_iter, DBUS_TYPE_VARIANT, "s", &subiter);
 		result = rygel_external_media_object_get_display_name (self);
 		_tmp3_ = result;
 		dbus_message_iter_append_basic (&subiter, DBUS_TYPE_STRING, &_tmp3_);
+		_g_free0 (result);
+		dbus_message_iter_close_container (&reply_iter, &subiter);
+	} else if ((strcmp (interface_name, "org.gnome.UPnP.MediaObject2") == 0) && (strcmp (property_name, "Type") == 0)) {
+		char* result;
+		const char* _tmp4_;
+		dbus_message_iter_open_container (&reply_iter, DBUS_TYPE_VARIANT, "s", &subiter);
+		result = rygel_external_media_object_get_object_type (self);
+		_tmp4_ = result;
+		dbus_message_iter_append_basic (&subiter, DBUS_TYPE_STRING, &_tmp4_);
 		_g_free0 (result);
 		dbus_message_iter_close_container (&reply_iter, &subiter);
 	} else {
@@ -585,36 +701,44 @@ static DBusHandlerResult _dbus_rygel_external_media_object_property_set (RygelEx
 	DBusMessage* reply;
 	DBusMessageIter iter, subiter;
 	char* interface_name;
-	const char* _tmp4_;
-	char* property_name;
 	const char* _tmp5_;
+	char* property_name;
+	const char* _tmp6_;
 	if (strcmp (dbus_message_get_signature (message), "ssv")) {
 		return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
 	}
 	dbus_message_iter_init (message, &iter);
 	reply = dbus_message_new_method_return (message);
-	dbus_message_iter_get_basic (&iter, &_tmp4_);
-	dbus_message_iter_next (&iter);
-	interface_name = g_strdup (_tmp4_);
 	dbus_message_iter_get_basic (&iter, &_tmp5_);
 	dbus_message_iter_next (&iter);
-	property_name = g_strdup (_tmp5_);
+	interface_name = g_strdup (_tmp5_);
+	dbus_message_iter_get_basic (&iter, &_tmp6_);
+	dbus_message_iter_next (&iter);
+	property_name = g_strdup (_tmp6_);
 	dbus_message_iter_recurse (&iter, &subiter);
-	if ((strcmp (interface_name, "org.gnome.UPnP.MediaObject1") == 0) && (strcmp (property_name, "Parent") == 0)) {
-		char* value;
-		const char* _tmp6_;
-		dbus_message_iter_get_basic (&subiter, &_tmp6_);
-		dbus_message_iter_next (&subiter);
-		value = g_strdup (_tmp6_);
-		rygel_external_media_object_set_parent (self, value);
-		_g_free0 (value);
-	} else if ((strcmp (interface_name, "org.gnome.UPnP.MediaObject1") == 0) && (strcmp (property_name, "DisplayName") == 0)) {
+	if ((strcmp (interface_name, "org.gnome.UPnP.MediaObject2") == 0) && (strcmp (property_name, "Parent") == 0)) {
 		char* value;
 		const char* _tmp7_;
 		dbus_message_iter_get_basic (&subiter, &_tmp7_);
 		dbus_message_iter_next (&subiter);
 		value = g_strdup (_tmp7_);
+		rygel_external_media_object_set_parent (self, value);
+		_g_free0 (value);
+	} else if ((strcmp (interface_name, "org.gnome.UPnP.MediaObject2") == 0) && (strcmp (property_name, "DisplayName") == 0)) {
+		char* value;
+		const char* _tmp8_;
+		dbus_message_iter_get_basic (&subiter, &_tmp8_);
+		dbus_message_iter_next (&subiter);
+		value = g_strdup (_tmp8_);
 		rygel_external_media_object_set_display_name (self, value);
+		_g_free0 (value);
+	} else if ((strcmp (interface_name, "org.gnome.UPnP.MediaObject2") == 0) && (strcmp (property_name, "Type") == 0)) {
+		char* value;
+		const char* _tmp9_;
+		dbus_message_iter_get_basic (&subiter, &_tmp9_);
+		dbus_message_iter_next (&subiter);
+		value = g_strdup (_tmp9_);
+		rygel_external_media_object_set_object_type (self, value);
 		_g_free0 (value);
 	} else {
 		dbus_message_unref (reply);
@@ -636,7 +760,7 @@ static DBusHandlerResult _dbus_rygel_external_media_object_property_get_all (Ryg
 	DBusMessage* reply;
 	DBusMessageIter iter, reply_iter, subiter, entry_iter, value_iter;
 	char* interface_name;
-	const char* _tmp8_;
+	const char* _tmp10_;
 	const char* property_name;
 	if (strcmp (dbus_message_get_signature (message), "s")) {
 		return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
@@ -644,35 +768,49 @@ static DBusHandlerResult _dbus_rygel_external_media_object_property_get_all (Ryg
 	dbus_message_iter_init (message, &iter);
 	reply = dbus_message_new_method_return (message);
 	dbus_message_iter_init_append (reply, &reply_iter);
-	dbus_message_iter_get_basic (&iter, &_tmp8_);
+	dbus_message_iter_get_basic (&iter, &_tmp10_);
 	dbus_message_iter_next (&iter);
-	interface_name = g_strdup (_tmp8_);
-	if (strcmp (interface_name, "org.gnome.UPnP.MediaObject1") == 0) {
+	interface_name = g_strdup (_tmp10_);
+	if (strcmp (interface_name, "org.gnome.UPnP.MediaObject2") == 0) {
 		dbus_message_iter_open_container (&reply_iter, DBUS_TYPE_ARRAY, "{sv}", &subiter);
 		{
 			char* result;
-			const char* _tmp9_;
+			const char* _tmp11_;
 			dbus_message_iter_open_container (&subiter, DBUS_TYPE_DICT_ENTRY, NULL, &entry_iter);
 			property_name = "Parent";
 			dbus_message_iter_append_basic (&entry_iter, DBUS_TYPE_STRING, &property_name);
 			dbus_message_iter_open_container (&entry_iter, DBUS_TYPE_VARIANT, "o", &value_iter);
 			result = rygel_external_media_object_get_parent (self);
-			_tmp9_ = result;
-			dbus_message_iter_append_basic (&value_iter, DBUS_TYPE_OBJECT_PATH, &_tmp9_);
+			_tmp11_ = result;
+			dbus_message_iter_append_basic (&value_iter, DBUS_TYPE_OBJECT_PATH, &_tmp11_);
 			_g_free0 (result);
 			dbus_message_iter_close_container (&entry_iter, &value_iter);
 			dbus_message_iter_close_container (&subiter, &entry_iter);
 		}
 		{
 			char* result;
-			const char* _tmp10_;
+			const char* _tmp12_;
 			dbus_message_iter_open_container (&subiter, DBUS_TYPE_DICT_ENTRY, NULL, &entry_iter);
 			property_name = "DisplayName";
 			dbus_message_iter_append_basic (&entry_iter, DBUS_TYPE_STRING, &property_name);
 			dbus_message_iter_open_container (&entry_iter, DBUS_TYPE_VARIANT, "s", &value_iter);
 			result = rygel_external_media_object_get_display_name (self);
-			_tmp10_ = result;
-			dbus_message_iter_append_basic (&value_iter, DBUS_TYPE_STRING, &_tmp10_);
+			_tmp12_ = result;
+			dbus_message_iter_append_basic (&value_iter, DBUS_TYPE_STRING, &_tmp12_);
+			_g_free0 (result);
+			dbus_message_iter_close_container (&entry_iter, &value_iter);
+			dbus_message_iter_close_container (&subiter, &entry_iter);
+		}
+		{
+			char* result;
+			const char* _tmp13_;
+			dbus_message_iter_open_container (&subiter, DBUS_TYPE_DICT_ENTRY, NULL, &entry_iter);
+			property_name = "Type";
+			dbus_message_iter_append_basic (&entry_iter, DBUS_TYPE_STRING, &property_name);
+			dbus_message_iter_open_container (&entry_iter, DBUS_TYPE_VARIANT, "s", &value_iter);
+			result = rygel_external_media_object_get_object_type (self);
+			_tmp13_ = result;
+			dbus_message_iter_append_basic (&value_iter, DBUS_TYPE_STRING, &_tmp13_);
 			_g_free0 (result);
 			dbus_message_iter_close_container (&entry_iter, &value_iter);
 			dbus_message_iter_close_container (&subiter, &entry_iter);
@@ -728,6 +866,7 @@ static void rygel_external_media_object_base_init (RygelExternalMediaObjectIface
 		initialized = TRUE;
 		g_object_interface_install_property (iface, g_param_spec_string ("parent", "parent", "parent", NULL, G_PARAM_STATIC_NAME | G_PARAM_STATIC_NICK | G_PARAM_STATIC_BLURB | G_PARAM_READABLE | G_PARAM_WRITABLE));
 		g_object_interface_install_property (iface, g_param_spec_string ("display-name", "display-name", "display-name", NULL, G_PARAM_STATIC_NAME | G_PARAM_STATIC_NICK | G_PARAM_STATIC_BLURB | G_PARAM_READABLE | G_PARAM_WRITABLE));
+		g_object_interface_install_property (iface, g_param_spec_string ("object-type", "object-type", "object-type", NULL, G_PARAM_STATIC_NAME | G_PARAM_STATIC_NICK | G_PARAM_STATIC_BLURB | G_PARAM_READABLE | G_PARAM_WRITABLE));
 		g_type_set_qdata (RYGEL_TYPE_EXTERNAL_MEDIA_OBJECT, g_quark_from_static_string ("DBusObjectVTable"), (void*) (&_rygel_external_media_object_dbus_vtable));
 	}
 }
@@ -750,7 +889,7 @@ GType rygel_external_media_object_get_type (void) {
 G_DEFINE_TYPE_EXTENDED (RygelExternalMediaObjectDBusProxy, rygel_external_media_object_dbus_proxy, DBUS_TYPE_G_PROXY, 0, G_IMPLEMENT_INTERFACE (RYGEL_TYPE_EXTERNAL_MEDIA_OBJECT, rygel_external_media_object_dbus_proxy_rygel_external_media_object__interface_init) );
 RygelExternalMediaObject* rygel_external_media_object_dbus_proxy_new (DBusGConnection* connection, const char* name, const char* path) {
 	RygelExternalMediaObject* self;
-	self = g_object_new (rygel_external_media_object_dbus_proxy_get_type (), "connection", connection, "name", name, "path", path, "interface", "org.gnome.UPnP.MediaObject1", NULL);
+	self = g_object_new (rygel_external_media_object_dbus_proxy_get_type (), "connection", connection, "name", name, "path", path, "interface", "org.gnome.UPnP.MediaObject2", NULL);
 	return self;
 }
 
@@ -799,6 +938,7 @@ static void rygel_external_media_object_dbus_proxy_class_init (RygelExternalMedi
 	G_OBJECT_CLASS (klass)->set_property = rygel_external_media_object_dbus_proxy_set_property;
 	g_object_class_override_property (G_OBJECT_CLASS (klass), RYGEL_EXTERNAL_MEDIA_OBJECT_DBUS_PROXY_PARENT, "parent");
 	g_object_class_override_property (G_OBJECT_CLASS (klass), RYGEL_EXTERNAL_MEDIA_OBJECT_DBUS_PROXY_DISPLAY_NAME, "display-name");
+	g_object_class_override_property (G_OBJECT_CLASS (klass), RYGEL_EXTERNAL_MEDIA_OBJECT_DBUS_PROXY_OBJECT_TYPE, "object-type");
 }
 
 
@@ -811,19 +951,19 @@ static char* rygel_external_media_object_dbus_proxy_get_parent (RygelExternalMed
 	DBusGConnection *_connection;
 	DBusMessage *_message, *_reply;
 	DBusMessageIter _iter, _subiter;
-	const char* _tmp11_;
-	const char* _tmp12_;
+	const char* _tmp14_;
+	const char* _tmp15_;
 	char* _result;
-	const char* _tmp13_;
+	const char* _tmp16_;
 	if (((RygelExternalMediaObjectDBusProxy*) self)->disposed) {
 		return NULL;
 	}
 	_message = dbus_message_new_method_call (dbus_g_proxy_get_bus_name ((DBusGProxy*) self), dbus_g_proxy_get_path ((DBusGProxy*) self), "org.freedesktop.DBus.Properties", "Get");
 	dbus_message_iter_init_append (_message, &_iter);
-	_tmp11_ = "org.gnome.UPnP.MediaObject1";
-	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp11_);
-	_tmp12_ = "Parent";
-	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp12_);
+	_tmp14_ = "org.gnome.UPnP.MediaObject2";
+	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp14_);
+	_tmp15_ = "Parent";
+	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp15_);
 	g_object_get (self, "connection", &_connection, NULL);
 	dbus_error_init (&_dbus_error);
 	_reply = dbus_connection_send_with_reply_and_block (dbus_g_connection_get_connection (_connection), _message, -1, &_dbus_error);
@@ -846,9 +986,9 @@ static char* rygel_external_media_object_dbus_proxy_get_parent (RygelExternalMed
 		dbus_message_unref (_reply);
 		return NULL;
 	}
-	dbus_message_iter_get_basic (&_subiter, &_tmp13_);
+	dbus_message_iter_get_basic (&_subiter, &_tmp16_);
 	dbus_message_iter_next (&_subiter);
-	_result = g_strdup (_tmp13_);
+	_result = g_strdup (_tmp16_);
 	dbus_message_unref (_reply);
 	return _result;
 }
@@ -859,21 +999,21 @@ static void rygel_external_media_object_dbus_proxy_set_parent (RygelExternalMedi
 	DBusGConnection *_connection;
 	DBusMessage *_message, *_reply;
 	DBusMessageIter _iter, _subiter;
-	const char* _tmp14_;
-	const char* _tmp15_;
-	const char* _tmp16_;
+	const char* _tmp17_;
+	const char* _tmp18_;
+	const char* _tmp19_;
 	if (((RygelExternalMediaObjectDBusProxy*) self)->disposed) {
 		return;
 	}
 	_message = dbus_message_new_method_call (dbus_g_proxy_get_bus_name ((DBusGProxy*) self), dbus_g_proxy_get_path ((DBusGProxy*) self), "org.freedesktop.DBus.Properties", "Set");
 	dbus_message_iter_init_append (_message, &_iter);
-	_tmp14_ = "org.gnome.UPnP.MediaObject1";
-	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp14_);
-	_tmp15_ = "Parent";
-	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp15_);
+	_tmp17_ = "org.gnome.UPnP.MediaObject2";
+	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp17_);
+	_tmp18_ = "Parent";
+	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp18_);
 	dbus_message_iter_open_container (&_iter, DBUS_TYPE_VARIANT, "o", &_subiter);
-	_tmp16_ = value;
-	dbus_message_iter_append_basic (&_subiter, DBUS_TYPE_OBJECT_PATH, &_tmp16_);
+	_tmp19_ = value;
+	dbus_message_iter_append_basic (&_subiter, DBUS_TYPE_OBJECT_PATH, &_tmp19_);
 	dbus_message_iter_close_container (&_iter, &_subiter);
 	g_object_get (self, "connection", &_connection, NULL);
 	dbus_error_init (&_dbus_error);
@@ -900,19 +1040,19 @@ static char* rygel_external_media_object_dbus_proxy_get_display_name (RygelExter
 	DBusGConnection *_connection;
 	DBusMessage *_message, *_reply;
 	DBusMessageIter _iter, _subiter;
-	const char* _tmp17_;
-	const char* _tmp18_;
+	const char* _tmp20_;
+	const char* _tmp21_;
 	char* _result;
-	const char* _tmp19_;
+	const char* _tmp22_;
 	if (((RygelExternalMediaObjectDBusProxy*) self)->disposed) {
 		return NULL;
 	}
 	_message = dbus_message_new_method_call (dbus_g_proxy_get_bus_name ((DBusGProxy*) self), dbus_g_proxy_get_path ((DBusGProxy*) self), "org.freedesktop.DBus.Properties", "Get");
 	dbus_message_iter_init_append (_message, &_iter);
-	_tmp17_ = "org.gnome.UPnP.MediaObject1";
-	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp17_);
-	_tmp18_ = "DisplayName";
-	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp18_);
+	_tmp20_ = "org.gnome.UPnP.MediaObject2";
+	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp20_);
+	_tmp21_ = "DisplayName";
+	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp21_);
 	g_object_get (self, "connection", &_connection, NULL);
 	dbus_error_init (&_dbus_error);
 	_reply = dbus_connection_send_with_reply_and_block (dbus_g_connection_get_connection (_connection), _message, -1, &_dbus_error);
@@ -935,9 +1075,9 @@ static char* rygel_external_media_object_dbus_proxy_get_display_name (RygelExter
 		dbus_message_unref (_reply);
 		return NULL;
 	}
-	dbus_message_iter_get_basic (&_subiter, &_tmp19_);
+	dbus_message_iter_get_basic (&_subiter, &_tmp22_);
 	dbus_message_iter_next (&_subiter);
-	_result = g_strdup (_tmp19_);
+	_result = g_strdup (_tmp22_);
 	dbus_message_unref (_reply);
 	return _result;
 }
@@ -948,21 +1088,110 @@ static void rygel_external_media_object_dbus_proxy_set_display_name (RygelExtern
 	DBusGConnection *_connection;
 	DBusMessage *_message, *_reply;
 	DBusMessageIter _iter, _subiter;
-	const char* _tmp20_;
-	const char* _tmp21_;
-	const char* _tmp22_;
+	const char* _tmp23_;
+	const char* _tmp24_;
+	const char* _tmp25_;
 	if (((RygelExternalMediaObjectDBusProxy*) self)->disposed) {
 		return;
 	}
 	_message = dbus_message_new_method_call (dbus_g_proxy_get_bus_name ((DBusGProxy*) self), dbus_g_proxy_get_path ((DBusGProxy*) self), "org.freedesktop.DBus.Properties", "Set");
 	dbus_message_iter_init_append (_message, &_iter);
-	_tmp20_ = "org.gnome.UPnP.MediaObject1";
-	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp20_);
-	_tmp21_ = "DisplayName";
-	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp21_);
+	_tmp23_ = "org.gnome.UPnP.MediaObject2";
+	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp23_);
+	_tmp24_ = "DisplayName";
+	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp24_);
 	dbus_message_iter_open_container (&_iter, DBUS_TYPE_VARIANT, "s", &_subiter);
-	_tmp22_ = value;
-	dbus_message_iter_append_basic (&_subiter, DBUS_TYPE_STRING, &_tmp22_);
+	_tmp25_ = value;
+	dbus_message_iter_append_basic (&_subiter, DBUS_TYPE_STRING, &_tmp25_);
+	dbus_message_iter_close_container (&_iter, &_subiter);
+	g_object_get (self, "connection", &_connection, NULL);
+	dbus_error_init (&_dbus_error);
+	_reply = dbus_connection_send_with_reply_and_block (dbus_g_connection_get_connection (_connection), _message, -1, &_dbus_error);
+	dbus_g_connection_unref (_connection);
+	dbus_message_unref (_message);
+	if (dbus_error_is_set (&_dbus_error)) {
+		g_critical ("file %s: line %d: uncaught error: %s (%s)", __FILE__, __LINE__, _dbus_error.message, _dbus_error.name);
+		dbus_error_free (&_dbus_error);
+		return;
+	}
+	if (strcmp (dbus_message_get_signature (_reply), "")) {
+		g_critical ("file %s: line %d: Invalid signature, expected \"%s\", got \"%s\"", __FILE__, __LINE__, "", dbus_message_get_signature (_reply));
+		dbus_message_unref (_reply);
+		return;
+	}
+	dbus_message_iter_init (_reply, &_iter);
+	dbus_message_unref (_reply);
+}
+
+
+static char* rygel_external_media_object_dbus_proxy_get_object_type (RygelExternalMediaObject* self) {
+	DBusError _dbus_error;
+	DBusGConnection *_connection;
+	DBusMessage *_message, *_reply;
+	DBusMessageIter _iter, _subiter;
+	const char* _tmp26_;
+	const char* _tmp27_;
+	char* _result;
+	const char* _tmp28_;
+	if (((RygelExternalMediaObjectDBusProxy*) self)->disposed) {
+		return NULL;
+	}
+	_message = dbus_message_new_method_call (dbus_g_proxy_get_bus_name ((DBusGProxy*) self), dbus_g_proxy_get_path ((DBusGProxy*) self), "org.freedesktop.DBus.Properties", "Get");
+	dbus_message_iter_init_append (_message, &_iter);
+	_tmp26_ = "org.gnome.UPnP.MediaObject2";
+	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp26_);
+	_tmp27_ = "Type";
+	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp27_);
+	g_object_get (self, "connection", &_connection, NULL);
+	dbus_error_init (&_dbus_error);
+	_reply = dbus_connection_send_with_reply_and_block (dbus_g_connection_get_connection (_connection), _message, -1, &_dbus_error);
+	dbus_g_connection_unref (_connection);
+	dbus_message_unref (_message);
+	if (dbus_error_is_set (&_dbus_error)) {
+		g_critical ("file %s: line %d: uncaught error: %s (%s)", __FILE__, __LINE__, _dbus_error.message, _dbus_error.name);
+		dbus_error_free (&_dbus_error);
+		return NULL;
+	}
+	if (strcmp (dbus_message_get_signature (_reply), "v")) {
+		g_critical ("file %s: line %d: Invalid signature, expected \"%s\", got \"%s\"", __FILE__, __LINE__, "v", dbus_message_get_signature (_reply));
+		dbus_message_unref (_reply);
+		return NULL;
+	}
+	dbus_message_iter_init (_reply, &_iter);
+	dbus_message_iter_recurse (&_iter, &_subiter);
+	if (strcmp (dbus_message_iter_get_signature (&_subiter), "s")) {
+		g_critical ("file %s: line %d: Invalid signature, expected \"%s\", got \"%s\"", __FILE__, __LINE__, "s", dbus_message_iter_get_signature (&_subiter));
+		dbus_message_unref (_reply);
+		return NULL;
+	}
+	dbus_message_iter_get_basic (&_subiter, &_tmp28_);
+	dbus_message_iter_next (&_subiter);
+	_result = g_strdup (_tmp28_);
+	dbus_message_unref (_reply);
+	return _result;
+}
+
+
+static void rygel_external_media_object_dbus_proxy_set_object_type (RygelExternalMediaObject* self, const char* value) {
+	DBusError _dbus_error;
+	DBusGConnection *_connection;
+	DBusMessage *_message, *_reply;
+	DBusMessageIter _iter, _subiter;
+	const char* _tmp29_;
+	const char* _tmp30_;
+	const char* _tmp31_;
+	if (((RygelExternalMediaObjectDBusProxy*) self)->disposed) {
+		return;
+	}
+	_message = dbus_message_new_method_call (dbus_g_proxy_get_bus_name ((DBusGProxy*) self), dbus_g_proxy_get_path ((DBusGProxy*) self), "org.freedesktop.DBus.Properties", "Set");
+	dbus_message_iter_init_append (_message, &_iter);
+	_tmp29_ = "org.gnome.UPnP.MediaObject2";
+	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp29_);
+	_tmp30_ = "Type";
+	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp30_);
+	dbus_message_iter_open_container (&_iter, DBUS_TYPE_VARIANT, "s", &_subiter);
+	_tmp31_ = value;
+	dbus_message_iter_append_basic (&_subiter, DBUS_TYPE_STRING, &_tmp31_);
 	dbus_message_iter_close_container (&_iter, &_subiter);
 	g_object_get (self, "connection", &_connection, NULL);
 	dbus_error_init (&_dbus_error);
@@ -989,6 +1218,8 @@ static void rygel_external_media_object_dbus_proxy_rygel_external_media_object__
 	iface->set_parent = rygel_external_media_object_dbus_proxy_set_parent;
 	iface->get_display_name = rygel_external_media_object_dbus_proxy_get_display_name;
 	iface->set_display_name = rygel_external_media_object_dbus_proxy_set_display_name;
+	iface->get_object_type = rygel_external_media_object_dbus_proxy_get_object_type;
+	iface->set_object_type = rygel_external_media_object_dbus_proxy_set_object_type;
 }
 
 
@@ -1000,23 +1231,53 @@ static void rygel_external_media_object_dbus_proxy_set_property (GObject * objec
 }
 
 
-char** rygel_external_media_container_get_items (RygelExternalMediaContainer* self, int* result_length1) {
-	return RYGEL_EXTERNAL_MEDIA_CONTAINER_GET_INTERFACE (self)->get_items (self, result_length1);
+void rygel_external_media_container_list_children (RygelExternalMediaContainer* self, guint offset, guint max_count, char** filter, int filter_length1, GAsyncReadyCallback _callback_, gpointer _user_data_) {
+	RYGEL_EXTERNAL_MEDIA_CONTAINER_GET_INTERFACE (self)->list_children (self, offset, max_count, filter, filter_length1, _callback_, _user_data_);
 }
 
 
-void rygel_external_media_container_set_items (RygelExternalMediaContainer* self, char** value, int value_length1) {
-	RYGEL_EXTERNAL_MEDIA_CONTAINER_GET_INTERFACE (self)->set_items (self, value, value_length1);
+GHashTable** rygel_external_media_container_list_children_finish (RygelExternalMediaContainer* self, GAsyncResult* _res_, int* result_length1, GError** error) {
+	return RYGEL_EXTERNAL_MEDIA_CONTAINER_GET_INTERFACE (self)->list_children_finish (self, _res_, result_length1, error);
 }
 
 
-char** rygel_external_media_container_get_containers (RygelExternalMediaContainer* self, int* result_length1) {
-	return RYGEL_EXTERNAL_MEDIA_CONTAINER_GET_INTERFACE (self)->get_containers (self, result_length1);
+void rygel_external_media_container_list_containers (RygelExternalMediaContainer* self, guint offset, guint max_count, char** filter, int filter_length1, GAsyncReadyCallback _callback_, gpointer _user_data_) {
+	RYGEL_EXTERNAL_MEDIA_CONTAINER_GET_INTERFACE (self)->list_containers (self, offset, max_count, filter, filter_length1, _callback_, _user_data_);
 }
 
 
-void rygel_external_media_container_set_containers (RygelExternalMediaContainer* self, char** value, int value_length1) {
-	RYGEL_EXTERNAL_MEDIA_CONTAINER_GET_INTERFACE (self)->set_containers (self, value, value_length1);
+GHashTable** rygel_external_media_container_list_containers_finish (RygelExternalMediaContainer* self, GAsyncResult* _res_, int* result_length1, GError** error) {
+	return RYGEL_EXTERNAL_MEDIA_CONTAINER_GET_INTERFACE (self)->list_containers_finish (self, _res_, result_length1, error);
+}
+
+
+void rygel_external_media_container_list_items (RygelExternalMediaContainer* self, guint offset, guint max_count, char** filter, int filter_length1, GAsyncReadyCallback _callback_, gpointer _user_data_) {
+	RYGEL_EXTERNAL_MEDIA_CONTAINER_GET_INTERFACE (self)->list_items (self, offset, max_count, filter, filter_length1, _callback_, _user_data_);
+}
+
+
+GHashTable** rygel_external_media_container_list_items_finish (RygelExternalMediaContainer* self, GAsyncResult* _res_, int* result_length1, GError** error) {
+	return RYGEL_EXTERNAL_MEDIA_CONTAINER_GET_INTERFACE (self)->list_items_finish (self, _res_, result_length1, error);
+}
+
+
+void rygel_external_media_container_search_objects (RygelExternalMediaContainer* self, const char* query, guint offset, guint max_count, char** filter, int filter_length1, GAsyncReadyCallback _callback_, gpointer _user_data_) {
+	RYGEL_EXTERNAL_MEDIA_CONTAINER_GET_INTERFACE (self)->search_objects (self, query, offset, max_count, filter, filter_length1, _callback_, _user_data_);
+}
+
+
+GHashTable** rygel_external_media_container_search_objects_finish (RygelExternalMediaContainer* self, GAsyncResult* _res_, int* result_length1, GError** error) {
+	return RYGEL_EXTERNAL_MEDIA_CONTAINER_GET_INTERFACE (self)->search_objects_finish (self, _res_, result_length1, error);
+}
+
+
+guint rygel_external_media_container_get_child_count (RygelExternalMediaContainer* self) {
+	return RYGEL_EXTERNAL_MEDIA_CONTAINER_GET_INTERFACE (self)->get_child_count (self);
+}
+
+
+void rygel_external_media_container_set_child_count (RygelExternalMediaContainer* self, guint value) {
+	RYGEL_EXTERNAL_MEDIA_CONTAINER_GET_INTERFACE (self)->set_child_count (self, value);
 }
 
 
@@ -1037,6 +1298,16 @@ guint rygel_external_media_container_get_container_count (RygelExternalMediaCont
 
 void rygel_external_media_container_set_container_count (RygelExternalMediaContainer* self, guint value) {
 	RYGEL_EXTERNAL_MEDIA_CONTAINER_GET_INTERFACE (self)->set_container_count (self, value);
+}
+
+
+gboolean rygel_external_media_container_get_searchable (RygelExternalMediaContainer* self) {
+	return RYGEL_EXTERNAL_MEDIA_CONTAINER_GET_INTERFACE (self)->get_searchable (self);
+}
+
+
+void rygel_external_media_container_set_searchable (RygelExternalMediaContainer* self, gboolean value) {
+	RYGEL_EXTERNAL_MEDIA_CONTAINER_GET_INTERFACE (self)->set_searchable (self, value);
 }
 
 
@@ -1063,7 +1334,7 @@ static DBusHandlerResult _dbus_rygel_external_media_container_introspect (RygelE
 	reply = dbus_message_new_method_return (message);
 	dbus_message_iter_init_append (reply, &iter);
 	xml_data = g_string_new ("<!DOCTYPE node PUBLIC \"-//freedesktop//DTD D-BUS Object Introspection 1.0//EN\" \"http://www.freedesktop.org/standards/dbus/1.0/introspect.dtd\">\n");
-	g_string_append (xml_data, "<node>\n<interface name=\"org.freedesktop.DBus.Introspectable\">\n  <method name=\"Introspect\">\n    <arg name=\"data\" direction=\"out\" type=\"s\"/>\n  </method>\n</interface>\n<interface name=\"org.freedesktop.DBus.Properties\">\n  <method name=\"Get\">\n    <arg name=\"interface\" direction=\"in\" type=\"s\"/>\n    <arg name=\"propname\" direction=\"in\" type=\"s\"/>\n    <arg name=\"value\" direction=\"out\" type=\"v\"/>\n  </method>\n  <method name=\"Set\">\n    <arg name=\"interface\" direction=\"in\" type=\"s\"/>\n    <arg name=\"propname\" direction=\"in\" type=\"s\"/>\n    <arg name=\"value\" direction=\"in\" type=\"v\"/>\n  </method>\n  <method name=\"GetAll\">\n    <arg name=\"interface\" direction=\"in\" type=\"s\"/>\n    <arg name=\"props\" direction=\"out\" type=\"a{sv}\"/>\n  </method>\n</interface>\n<interface name=\"org.gnome.UPnP.MediaContainer1\">\n  <property name=\"Items\" type=\"ao\" access=\"readwrite\"/>\n  <property name=\"Containers\" type=\"ao\" access=\"readwrite\"/>\n  <property name=\"ItemCount\" type=\"u\" access=\"readwrite\"/>\n  <property name=\"ContainerCount\" type=\"u\" access=\"readwrite\"/>\n  <property name=\"Icon\" type=\"o\" access=\"readwrite\"/>\n  <signal name=\"Updated\">\n  </signal>\n</interface>\n");
+	g_string_append (xml_data, "<node>\n<interface name=\"org.freedesktop.DBus.Introspectable\">\n  <method name=\"Introspect\">\n    <arg name=\"data\" direction=\"out\" type=\"s\"/>\n  </method>\n</interface>\n<interface name=\"org.freedesktop.DBus.Properties\">\n  <method name=\"Get\">\n    <arg name=\"interface\" direction=\"in\" type=\"s\"/>\n    <arg name=\"propname\" direction=\"in\" type=\"s\"/>\n    <arg name=\"value\" direction=\"out\" type=\"v\"/>\n  </method>\n  <method name=\"Set\">\n    <arg name=\"interface\" direction=\"in\" type=\"s\"/>\n    <arg name=\"propname\" direction=\"in\" type=\"s\"/>\n    <arg name=\"value\" direction=\"in\" type=\"v\"/>\n  </method>\n  <method name=\"GetAll\">\n    <arg name=\"interface\" direction=\"in\" type=\"s\"/>\n    <arg name=\"props\" direction=\"out\" type=\"a{sv}\"/>\n  </method>\n</interface>\n<interface name=\"org.gnome.UPnP.MediaContainer2\">\n  <method name=\"ListChildren\">\n    <arg name=\"offset\" type=\"u\" direction=\"in\"/>\n    <arg name=\"max_count\" type=\"u\" direction=\"in\"/>\n    <arg name=\"filter\" type=\"as\" direction=\"in\"/>\n    <arg name=\"result\" type=\"aa{sv}\" direction=\"out\"/>\n  </method>\n  <method name=\"ListContainers\">\n    <arg name=\"offset\" type=\"u\" direction=\"in\"/>\n    <arg name=\"max_count\" type=\"u\" direction=\"in\"/>\n    <arg name=\"filter\" type=\"as\" direction=\"in\"/>\n    <arg name=\"result\" type=\"aa{sv}\" direction=\"out\"/>\n  </method>\n  <method name=\"ListItems\">\n    <arg name=\"offset\" type=\"u\" direction=\"in\"/>\n    <arg name=\"max_count\" type=\"u\" direction=\"in\"/>\n    <arg name=\"filter\" type=\"as\" direction=\"in\"/>\n    <arg name=\"result\" type=\"aa{sv}\" direction=\"out\"/>\n  </method>\n  <method name=\"SearchObjects\">\n    <arg name=\"query\" type=\"s\" direction=\"in\"/>\n    <arg name=\"offset\" type=\"u\" direction=\"in\"/>\n    <arg name=\"max_count\" type=\"u\" direction=\"in\"/>\n    <arg name=\"filter\" type=\"as\" direction=\"in\"/>\n    <arg name=\"result\" type=\"aa{sv}\" direction=\"out\"/>\n  </method>\n  <property name=\"ChildCount\" type=\"u\" access=\"readwrite\"/>\n  <property name=\"ItemCount\" type=\"u\" access=\"readwrite\"/>\n  <property name=\"ContainerCount\" type=\"u\" access=\"readwrite\"/>\n  <property name=\"Searchable\" type=\"b\" access=\"readwrite\"/>\n  <property name=\"Icon\" type=\"o\" access=\"readwrite\"/>\n  <signal name=\"Updated\">\n  </signal>\n</interface>\n");
 	dbus_connection_list_registered (connection, g_object_get_data ((GObject *) self, "dbus_object_path"), &children);
 	for (i = 0; children[i]; i++) {
 		g_string_append_printf (xml_data, "<node name=\"%s\"/>\n", children[i]);
@@ -1086,82 +1357,60 @@ static DBusHandlerResult _dbus_rygel_external_media_container_property_get (Ryge
 	DBusMessage* reply;
 	DBusMessageIter iter, reply_iter, subiter;
 	char* interface_name;
-	const char* _tmp23_;
+	const char* _tmp32_;
 	char* property_name;
-	const char* _tmp24_;
+	const char* _tmp33_;
 	if (strcmp (dbus_message_get_signature (message), "ss")) {
 		return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
 	}
 	dbus_message_iter_init (message, &iter);
 	reply = dbus_message_new_method_return (message);
 	dbus_message_iter_init_append (reply, &reply_iter);
-	dbus_message_iter_get_basic (&iter, &_tmp23_);
+	dbus_message_iter_get_basic (&iter, &_tmp32_);
 	dbus_message_iter_next (&iter);
-	interface_name = g_strdup (_tmp23_);
-	dbus_message_iter_get_basic (&iter, &_tmp24_);
+	interface_name = g_strdup (_tmp32_);
+	dbus_message_iter_get_basic (&iter, &_tmp33_);
 	dbus_message_iter_next (&iter);
-	property_name = g_strdup (_tmp24_);
-	if ((strcmp (interface_name, "org.gnome.UPnP.MediaContainer1") == 0) && (strcmp (property_name, "Items") == 0)) {
-		char** result;
-		int result_length1;
-		char** _tmp25_;
-		DBusMessageIter _tmp26_;
-		int _tmp27_;
-		dbus_message_iter_open_container (&reply_iter, DBUS_TYPE_VARIANT, "ao", &subiter);
-		result = rygel_external_media_container_get_items (self, &result_length1);
-		_tmp25_ = result;
-		dbus_message_iter_open_container (&subiter, DBUS_TYPE_ARRAY, "o", &_tmp26_);
-		for (_tmp27_ = 0; _tmp27_ < result_length1; _tmp27_++) {
-			const char* _tmp28_;
-			_tmp28_ = *_tmp25_;
-			dbus_message_iter_append_basic (&_tmp26_, DBUS_TYPE_OBJECT_PATH, &_tmp28_);
-			_tmp25_++;
-		}
-		dbus_message_iter_close_container (&subiter, &_tmp26_);
-		result = (_vala_array_free (result,  result_length1, (GDestroyNotify) g_free), NULL);
-		dbus_message_iter_close_container (&reply_iter, &subiter);
-	} else if ((strcmp (interface_name, "org.gnome.UPnP.MediaContainer1") == 0) && (strcmp (property_name, "Containers") == 0)) {
-		char** result;
-		int result_length1;
-		char** _tmp29_;
-		DBusMessageIter _tmp30_;
-		int _tmp31_;
-		dbus_message_iter_open_container (&reply_iter, DBUS_TYPE_VARIANT, "ao", &subiter);
-		result = rygel_external_media_container_get_containers (self, &result_length1);
-		_tmp29_ = result;
-		dbus_message_iter_open_container (&subiter, DBUS_TYPE_ARRAY, "o", &_tmp30_);
-		for (_tmp31_ = 0; _tmp31_ < result_length1; _tmp31_++) {
-			const char* _tmp32_;
-			_tmp32_ = *_tmp29_;
-			dbus_message_iter_append_basic (&_tmp30_, DBUS_TYPE_OBJECT_PATH, &_tmp32_);
-			_tmp29_++;
-		}
-		dbus_message_iter_close_container (&subiter, &_tmp30_);
-		result = (_vala_array_free (result,  result_length1, (GDestroyNotify) g_free), NULL);
-		dbus_message_iter_close_container (&reply_iter, &subiter);
-	} else if ((strcmp (interface_name, "org.gnome.UPnP.MediaContainer1") == 0) && (strcmp (property_name, "ItemCount") == 0)) {
-		guint result;
-		dbus_uint32_t _tmp33_;
-		dbus_message_iter_open_container (&reply_iter, DBUS_TYPE_VARIANT, "u", &subiter);
-		result = rygel_external_media_container_get_item_count (self);
-		_tmp33_ = result;
-		dbus_message_iter_append_basic (&subiter, DBUS_TYPE_UINT32, &_tmp33_);
-		dbus_message_iter_close_container (&reply_iter, &subiter);
-	} else if ((strcmp (interface_name, "org.gnome.UPnP.MediaContainer1") == 0) && (strcmp (property_name, "ContainerCount") == 0)) {
+	property_name = g_strdup (_tmp33_);
+	if ((strcmp (interface_name, "org.gnome.UPnP.MediaContainer2") == 0) && (strcmp (property_name, "ChildCount") == 0)) {
 		guint result;
 		dbus_uint32_t _tmp34_;
 		dbus_message_iter_open_container (&reply_iter, DBUS_TYPE_VARIANT, "u", &subiter);
-		result = rygel_external_media_container_get_container_count (self);
+		result = rygel_external_media_container_get_child_count (self);
 		_tmp34_ = result;
 		dbus_message_iter_append_basic (&subiter, DBUS_TYPE_UINT32, &_tmp34_);
 		dbus_message_iter_close_container (&reply_iter, &subiter);
-	} else if ((strcmp (interface_name, "org.gnome.UPnP.MediaContainer1") == 0) && (strcmp (property_name, "Icon") == 0)) {
+	} else if ((strcmp (interface_name, "org.gnome.UPnP.MediaContainer2") == 0) && (strcmp (property_name, "ItemCount") == 0)) {
+		guint result;
+		dbus_uint32_t _tmp35_;
+		dbus_message_iter_open_container (&reply_iter, DBUS_TYPE_VARIANT, "u", &subiter);
+		result = rygel_external_media_container_get_item_count (self);
+		_tmp35_ = result;
+		dbus_message_iter_append_basic (&subiter, DBUS_TYPE_UINT32, &_tmp35_);
+		dbus_message_iter_close_container (&reply_iter, &subiter);
+	} else if ((strcmp (interface_name, "org.gnome.UPnP.MediaContainer2") == 0) && (strcmp (property_name, "ContainerCount") == 0)) {
+		guint result;
+		dbus_uint32_t _tmp36_;
+		dbus_message_iter_open_container (&reply_iter, DBUS_TYPE_VARIANT, "u", &subiter);
+		result = rygel_external_media_container_get_container_count (self);
+		_tmp36_ = result;
+		dbus_message_iter_append_basic (&subiter, DBUS_TYPE_UINT32, &_tmp36_);
+		dbus_message_iter_close_container (&reply_iter, &subiter);
+	} else if ((strcmp (interface_name, "org.gnome.UPnP.MediaContainer2") == 0) && (strcmp (property_name, "Searchable") == 0)) {
+		gboolean result;
+		dbus_bool_t _tmp37_;
+		dbus_message_iter_open_container (&reply_iter, DBUS_TYPE_VARIANT, "b", &subiter);
+		result = rygel_external_media_container_get_searchable (self);
+		_tmp37_ = result;
+		dbus_message_iter_append_basic (&subiter, DBUS_TYPE_BOOLEAN, &_tmp37_);
+		dbus_message_iter_close_container (&reply_iter, &subiter);
+	} else if ((strcmp (interface_name, "org.gnome.UPnP.MediaContainer2") == 0) && (strcmp (property_name, "Icon") == 0)) {
 		char* result;
-		const char* _tmp35_;
+		const char* _tmp38_;
 		dbus_message_iter_open_container (&reply_iter, DBUS_TYPE_VARIANT, "o", &subiter);
 		result = rygel_external_media_container_get_icon (self);
-		_tmp35_ = result;
-		dbus_message_iter_append_basic (&subiter, DBUS_TYPE_OBJECT_PATH, &_tmp35_);
+		_tmp38_ = result;
+		dbus_message_iter_append_basic (&subiter, DBUS_TYPE_OBJECT_PATH, &_tmp38_);
 		_g_free0 (result);
 		dbus_message_iter_close_container (&reply_iter, &subiter);
 	} else {
@@ -1184,99 +1433,55 @@ static DBusHandlerResult _dbus_rygel_external_media_container_property_set (Ryge
 	DBusMessage* reply;
 	DBusMessageIter iter, subiter;
 	char* interface_name;
-	const char* _tmp36_;
+	const char* _tmp39_;
 	char* property_name;
-	const char* _tmp37_;
+	const char* _tmp40_;
 	if (strcmp (dbus_message_get_signature (message), "ssv")) {
 		return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
 	}
 	dbus_message_iter_init (message, &iter);
 	reply = dbus_message_new_method_return (message);
-	dbus_message_iter_get_basic (&iter, &_tmp36_);
+	dbus_message_iter_get_basic (&iter, &_tmp39_);
 	dbus_message_iter_next (&iter);
-	interface_name = g_strdup (_tmp36_);
-	dbus_message_iter_get_basic (&iter, &_tmp37_);
+	interface_name = g_strdup (_tmp39_);
+	dbus_message_iter_get_basic (&iter, &_tmp40_);
 	dbus_message_iter_next (&iter);
-	property_name = g_strdup (_tmp37_);
+	property_name = g_strdup (_tmp40_);
 	dbus_message_iter_recurse (&iter, &subiter);
-	if ((strcmp (interface_name, "org.gnome.UPnP.MediaContainer1") == 0) && (strcmp (property_name, "Items") == 0)) {
-		char** value;
-		char** _tmp38_;
-		int _tmp38__length;
-		int _tmp38__size;
-		int _tmp38__length1;
-		DBusMessageIter _tmp39_;
-		int value_length1;
-		_tmp38_ = g_new (char*, 5);
-		_tmp38__length = 0;
-		_tmp38__size = 4;
-		_tmp38__length1 = 0;
-		dbus_message_iter_recurse (&subiter, &_tmp39_);
-		for (; dbus_message_iter_get_arg_type (&_tmp39_); _tmp38__length1++) {
-			const char* _tmp40_;
-			if (_tmp38__size == _tmp38__length) {
-				_tmp38__size = 2 * _tmp38__size;
-				_tmp38_ = g_renew (char*, _tmp38_, _tmp38__size + 1);
-			}
-			dbus_message_iter_get_basic (&_tmp39_, &_tmp40_);
-			dbus_message_iter_next (&_tmp39_);
-			_tmp38_[_tmp38__length++] = g_strdup (_tmp40_);
-		}
-		value_length1 = _tmp38__length1;
-		_tmp38_[_tmp38__length] = NULL;
-		dbus_message_iter_next (&subiter);
-		value = _tmp38_;
-		rygel_external_media_container_set_items (self, value, value_length1);
-		value = (_vala_array_free (value, value_length1, (GDestroyNotify) g_free), NULL);
-	} else if ((strcmp (interface_name, "org.gnome.UPnP.MediaContainer1") == 0) && (strcmp (property_name, "Containers") == 0)) {
-		char** value;
-		char** _tmp41_;
-		int _tmp41__length;
-		int _tmp41__size;
-		int _tmp41__length1;
-		DBusMessageIter _tmp42_;
-		int value_length1;
-		_tmp41_ = g_new (char*, 5);
-		_tmp41__length = 0;
-		_tmp41__size = 4;
-		_tmp41__length1 = 0;
-		dbus_message_iter_recurse (&subiter, &_tmp42_);
-		for (; dbus_message_iter_get_arg_type (&_tmp42_); _tmp41__length1++) {
-			const char* _tmp43_;
-			if (_tmp41__size == _tmp41__length) {
-				_tmp41__size = 2 * _tmp41__size;
-				_tmp41_ = g_renew (char*, _tmp41_, _tmp41__size + 1);
-			}
-			dbus_message_iter_get_basic (&_tmp42_, &_tmp43_);
-			dbus_message_iter_next (&_tmp42_);
-			_tmp41_[_tmp41__length++] = g_strdup (_tmp43_);
-		}
-		value_length1 = _tmp41__length1;
-		_tmp41_[_tmp41__length] = NULL;
+	if ((strcmp (interface_name, "org.gnome.UPnP.MediaContainer2") == 0) && (strcmp (property_name, "ChildCount") == 0)) {
+		guint value;
+		dbus_uint32_t _tmp41_;
+		dbus_message_iter_get_basic (&subiter, &_tmp41_);
 		dbus_message_iter_next (&subiter);
 		value = _tmp41_;
-		rygel_external_media_container_set_containers (self, value, value_length1);
-		value = (_vala_array_free (value, value_length1, (GDestroyNotify) g_free), NULL);
-	} else if ((strcmp (interface_name, "org.gnome.UPnP.MediaContainer1") == 0) && (strcmp (property_name, "ItemCount") == 0)) {
+		rygel_external_media_container_set_child_count (self, value);
+	} else if ((strcmp (interface_name, "org.gnome.UPnP.MediaContainer2") == 0) && (strcmp (property_name, "ItemCount") == 0)) {
 		guint value;
-		dbus_uint32_t _tmp44_;
+		dbus_uint32_t _tmp42_;
+		dbus_message_iter_get_basic (&subiter, &_tmp42_);
+		dbus_message_iter_next (&subiter);
+		value = _tmp42_;
+		rygel_external_media_container_set_item_count (self, value);
+	} else if ((strcmp (interface_name, "org.gnome.UPnP.MediaContainer2") == 0) && (strcmp (property_name, "ContainerCount") == 0)) {
+		guint value;
+		dbus_uint32_t _tmp43_;
+		dbus_message_iter_get_basic (&subiter, &_tmp43_);
+		dbus_message_iter_next (&subiter);
+		value = _tmp43_;
+		rygel_external_media_container_set_container_count (self, value);
+	} else if ((strcmp (interface_name, "org.gnome.UPnP.MediaContainer2") == 0) && (strcmp (property_name, "Searchable") == 0)) {
+		gboolean value;
+		dbus_bool_t _tmp44_;
 		dbus_message_iter_get_basic (&subiter, &_tmp44_);
 		dbus_message_iter_next (&subiter);
 		value = _tmp44_;
-		rygel_external_media_container_set_item_count (self, value);
-	} else if ((strcmp (interface_name, "org.gnome.UPnP.MediaContainer1") == 0) && (strcmp (property_name, "ContainerCount") == 0)) {
-		guint value;
-		dbus_uint32_t _tmp45_;
+		rygel_external_media_container_set_searchable (self, value);
+	} else if ((strcmp (interface_name, "org.gnome.UPnP.MediaContainer2") == 0) && (strcmp (property_name, "Icon") == 0)) {
+		char* value;
+		const char* _tmp45_;
 		dbus_message_iter_get_basic (&subiter, &_tmp45_);
 		dbus_message_iter_next (&subiter);
-		value = _tmp45_;
-		rygel_external_media_container_set_container_count (self, value);
-	} else if ((strcmp (interface_name, "org.gnome.UPnP.MediaContainer1") == 0) && (strcmp (property_name, "Icon") == 0)) {
-		char* value;
-		const char* _tmp46_;
-		dbus_message_iter_get_basic (&subiter, &_tmp46_);
-		dbus_message_iter_next (&subiter);
-		value = g_strdup (_tmp46_);
+		value = g_strdup (_tmp45_);
 		rygel_external_media_container_set_icon (self, value);
 		_g_free0 (value);
 	} else {
@@ -1299,7 +1504,7 @@ static DBusHandlerResult _dbus_rygel_external_media_container_property_get_all (
 	DBusMessage* reply;
 	DBusMessageIter iter, reply_iter, subiter, entry_iter, value_iter;
 	char* interface_name;
-	const char* _tmp47_;
+	const char* _tmp46_;
 	const char* property_name;
 	if (strcmp (dbus_message_get_signature (message), "s")) {
 		return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
@@ -1307,95 +1512,73 @@ static DBusHandlerResult _dbus_rygel_external_media_container_property_get_all (
 	dbus_message_iter_init (message, &iter);
 	reply = dbus_message_new_method_return (message);
 	dbus_message_iter_init_append (reply, &reply_iter);
-	dbus_message_iter_get_basic (&iter, &_tmp47_);
+	dbus_message_iter_get_basic (&iter, &_tmp46_);
 	dbus_message_iter_next (&iter);
-	interface_name = g_strdup (_tmp47_);
-	if (strcmp (interface_name, "org.gnome.UPnP.MediaContainer1") == 0) {
+	interface_name = g_strdup (_tmp46_);
+	if (strcmp (interface_name, "org.gnome.UPnP.MediaContainer2") == 0) {
 		dbus_message_iter_open_container (&reply_iter, DBUS_TYPE_ARRAY, "{sv}", &subiter);
 		{
-			char** result;
-			int result_length1;
-			char** _tmp48_;
-			DBusMessageIter _tmp49_;
-			int _tmp50_;
+			guint result;
+			dbus_uint32_t _tmp47_;
 			dbus_message_iter_open_container (&subiter, DBUS_TYPE_DICT_ENTRY, NULL, &entry_iter);
-			property_name = "Items";
+			property_name = "ChildCount";
 			dbus_message_iter_append_basic (&entry_iter, DBUS_TYPE_STRING, &property_name);
-			dbus_message_iter_open_container (&entry_iter, DBUS_TYPE_VARIANT, "ao", &value_iter);
-			result = rygel_external_media_container_get_items (self, &result_length1);
-			_tmp48_ = result;
-			dbus_message_iter_open_container (&value_iter, DBUS_TYPE_ARRAY, "o", &_tmp49_);
-			for (_tmp50_ = 0; _tmp50_ < result_length1; _tmp50_++) {
-				const char* _tmp51_;
-				_tmp51_ = *_tmp48_;
-				dbus_message_iter_append_basic (&_tmp49_, DBUS_TYPE_OBJECT_PATH, &_tmp51_);
-				_tmp48_++;
-			}
-			dbus_message_iter_close_container (&value_iter, &_tmp49_);
-			result = (_vala_array_free (result,  result_length1, (GDestroyNotify) g_free), NULL);
-			dbus_message_iter_close_container (&entry_iter, &value_iter);
-			dbus_message_iter_close_container (&subiter, &entry_iter);
-		}
-		{
-			char** result;
-			int result_length1;
-			char** _tmp52_;
-			DBusMessageIter _tmp53_;
-			int _tmp54_;
-			dbus_message_iter_open_container (&subiter, DBUS_TYPE_DICT_ENTRY, NULL, &entry_iter);
-			property_name = "Containers";
-			dbus_message_iter_append_basic (&entry_iter, DBUS_TYPE_STRING, &property_name);
-			dbus_message_iter_open_container (&entry_iter, DBUS_TYPE_VARIANT, "ao", &value_iter);
-			result = rygel_external_media_container_get_containers (self, &result_length1);
-			_tmp52_ = result;
-			dbus_message_iter_open_container (&value_iter, DBUS_TYPE_ARRAY, "o", &_tmp53_);
-			for (_tmp54_ = 0; _tmp54_ < result_length1; _tmp54_++) {
-				const char* _tmp55_;
-				_tmp55_ = *_tmp52_;
-				dbus_message_iter_append_basic (&_tmp53_, DBUS_TYPE_OBJECT_PATH, &_tmp55_);
-				_tmp52_++;
-			}
-			dbus_message_iter_close_container (&value_iter, &_tmp53_);
-			result = (_vala_array_free (result,  result_length1, (GDestroyNotify) g_free), NULL);
+			dbus_message_iter_open_container (&entry_iter, DBUS_TYPE_VARIANT, "u", &value_iter);
+			result = rygel_external_media_container_get_child_count (self);
+			_tmp47_ = result;
+			dbus_message_iter_append_basic (&value_iter, DBUS_TYPE_UINT32, &_tmp47_);
 			dbus_message_iter_close_container (&entry_iter, &value_iter);
 			dbus_message_iter_close_container (&subiter, &entry_iter);
 		}
 		{
 			guint result;
-			dbus_uint32_t _tmp56_;
+			dbus_uint32_t _tmp48_;
 			dbus_message_iter_open_container (&subiter, DBUS_TYPE_DICT_ENTRY, NULL, &entry_iter);
 			property_name = "ItemCount";
 			dbus_message_iter_append_basic (&entry_iter, DBUS_TYPE_STRING, &property_name);
 			dbus_message_iter_open_container (&entry_iter, DBUS_TYPE_VARIANT, "u", &value_iter);
 			result = rygel_external_media_container_get_item_count (self);
-			_tmp56_ = result;
-			dbus_message_iter_append_basic (&value_iter, DBUS_TYPE_UINT32, &_tmp56_);
+			_tmp48_ = result;
+			dbus_message_iter_append_basic (&value_iter, DBUS_TYPE_UINT32, &_tmp48_);
 			dbus_message_iter_close_container (&entry_iter, &value_iter);
 			dbus_message_iter_close_container (&subiter, &entry_iter);
 		}
 		{
 			guint result;
-			dbus_uint32_t _tmp57_;
+			dbus_uint32_t _tmp49_;
 			dbus_message_iter_open_container (&subiter, DBUS_TYPE_DICT_ENTRY, NULL, &entry_iter);
 			property_name = "ContainerCount";
 			dbus_message_iter_append_basic (&entry_iter, DBUS_TYPE_STRING, &property_name);
 			dbus_message_iter_open_container (&entry_iter, DBUS_TYPE_VARIANT, "u", &value_iter);
 			result = rygel_external_media_container_get_container_count (self);
-			_tmp57_ = result;
-			dbus_message_iter_append_basic (&value_iter, DBUS_TYPE_UINT32, &_tmp57_);
+			_tmp49_ = result;
+			dbus_message_iter_append_basic (&value_iter, DBUS_TYPE_UINT32, &_tmp49_);
+			dbus_message_iter_close_container (&entry_iter, &value_iter);
+			dbus_message_iter_close_container (&subiter, &entry_iter);
+		}
+		{
+			gboolean result;
+			dbus_bool_t _tmp50_;
+			dbus_message_iter_open_container (&subiter, DBUS_TYPE_DICT_ENTRY, NULL, &entry_iter);
+			property_name = "Searchable";
+			dbus_message_iter_append_basic (&entry_iter, DBUS_TYPE_STRING, &property_name);
+			dbus_message_iter_open_container (&entry_iter, DBUS_TYPE_VARIANT, "b", &value_iter);
+			result = rygel_external_media_container_get_searchable (self);
+			_tmp50_ = result;
+			dbus_message_iter_append_basic (&value_iter, DBUS_TYPE_BOOLEAN, &_tmp50_);
 			dbus_message_iter_close_container (&entry_iter, &value_iter);
 			dbus_message_iter_close_container (&subiter, &entry_iter);
 		}
 		{
 			char* result;
-			const char* _tmp58_;
+			const char* _tmp51_;
 			dbus_message_iter_open_container (&subiter, DBUS_TYPE_DICT_ENTRY, NULL, &entry_iter);
 			property_name = "Icon";
 			dbus_message_iter_append_basic (&entry_iter, DBUS_TYPE_STRING, &property_name);
 			dbus_message_iter_open_container (&entry_iter, DBUS_TYPE_VARIANT, "o", &value_iter);
 			result = rygel_external_media_container_get_icon (self);
-			_tmp58_ = result;
-			dbus_message_iter_append_basic (&value_iter, DBUS_TYPE_OBJECT_PATH, &_tmp58_);
+			_tmp51_ = result;
+			dbus_message_iter_append_basic (&value_iter, DBUS_TYPE_OBJECT_PATH, &_tmp51_);
 			_g_free0 (result);
 			dbus_message_iter_close_container (&entry_iter, &value_iter);
 			dbus_message_iter_close_container (&subiter, &entry_iter);
@@ -1416,6 +1599,1116 @@ static DBusHandlerResult _dbus_rygel_external_media_container_property_get_all (
 }
 
 
+static DBusHandlerResult _dbus_rygel_external_media_container_list_children (RygelExternalMediaContainer* self, DBusConnection* connection, DBusMessage* message) {
+	DBusMessageIter iter;
+	guint offset = 0U;
+	dbus_uint32_t _tmp52_;
+	guint max_count = 0U;
+	dbus_uint32_t _tmp53_;
+	char** filter = NULL;
+	int filter_length1;
+	char** _tmp54_;
+	int _tmp54__length;
+	int _tmp54__size;
+	int _tmp54__length1;
+	DBusMessageIter _tmp55_;
+	gpointer * _user_data_;
+	if (strcmp (dbus_message_get_signature (message), "uuas")) {
+		return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
+	}
+	dbus_message_iter_init (message, &iter);
+	dbus_message_iter_get_basic (&iter, &_tmp52_);
+	dbus_message_iter_next (&iter);
+	offset = _tmp52_;
+	dbus_message_iter_get_basic (&iter, &_tmp53_);
+	dbus_message_iter_next (&iter);
+	max_count = _tmp53_;
+	filter_length1 = 0;
+	_tmp54_ = g_new (char*, 5);
+	_tmp54__length = 0;
+	_tmp54__size = 4;
+	_tmp54__length1 = 0;
+	dbus_message_iter_recurse (&iter, &_tmp55_);
+	for (; dbus_message_iter_get_arg_type (&_tmp55_); _tmp54__length1++) {
+		const char* _tmp56_;
+		if (_tmp54__size == _tmp54__length) {
+			_tmp54__size = 2 * _tmp54__size;
+			_tmp54_ = g_renew (char*, _tmp54_, _tmp54__size + 1);
+		}
+		dbus_message_iter_get_basic (&_tmp55_, &_tmp56_);
+		dbus_message_iter_next (&_tmp55_);
+		_tmp54_[_tmp54__length++] = g_strdup (_tmp56_);
+	}
+	filter_length1 = _tmp54__length1;
+	_tmp54_[_tmp54__length] = NULL;
+	dbus_message_iter_next (&iter);
+	filter = _tmp54_;
+	_user_data_ = g_new0 (gpointer, 2);
+	_user_data_[0] = dbus_connection_ref (connection);
+	_user_data_[1] = dbus_message_ref (message);
+	rygel_external_media_container_list_children (self, offset, max_count, filter, filter_length1, (GAsyncReadyCallback) _dbus_rygel_external_media_container_list_children_ready, _user_data_);
+	filter = (_vala_array_free (filter, filter_length1, (GDestroyNotify) g_free), NULL);
+	return DBUS_HANDLER_RESULT_HANDLED;
+}
+
+
+static void _dbus_rygel_external_media_container_list_children_ready (GObject * source_object, GAsyncResult * _res_, gpointer * _user_data_) {
+	DBusConnection * connection;
+	DBusMessage * message;
+	DBusMessageIter iter;
+	GError* error;
+	GHashTable** result;
+	int result_length1;
+	DBusMessage* reply;
+	GHashTable** _tmp57_;
+	DBusMessageIter _tmp58_;
+	int _tmp59_;
+	connection = _user_data_[0];
+	message = _user_data_[1];
+	error = NULL;
+	result_length1 = 0;
+	result = rygel_external_media_container_list_children_finish ((RygelExternalMediaContainer*) source_object, _res_, &result_length1, &error);
+	if (error) {
+		if (error->domain == DBUS_GERROR) {
+			switch (error->code) {
+				case DBUS_GERROR_FAILED:
+				reply = dbus_message_new_error (message, "org.freedesktop.DBus.Error.Failed", error->message);
+				break;
+				case DBUS_GERROR_NO_MEMORY:
+				reply = dbus_message_new_error (message, "org.freedesktop.DBus.Error.NoMemory", error->message);
+				break;
+				case DBUS_GERROR_SERVICE_UNKNOWN:
+				reply = dbus_message_new_error (message, "org.freedesktop.DBus.Error.ServiceUnknown", error->message);
+				break;
+				case DBUS_GERROR_NAME_HAS_NO_OWNER:
+				reply = dbus_message_new_error (message, "org.freedesktop.DBus.Error.NameHasNoOwner", error->message);
+				break;
+				case DBUS_GERROR_NO_REPLY:
+				reply = dbus_message_new_error (message, "org.freedesktop.DBus.Error.NoReply", error->message);
+				break;
+				case DBUS_GERROR_IO_ERROR:
+				reply = dbus_message_new_error (message, "org.freedesktop.DBus.Error.IOError", error->message);
+				break;
+				case DBUS_GERROR_BAD_ADDRESS:
+				reply = dbus_message_new_error (message, "org.freedesktop.DBus.Error.BadAddress", error->message);
+				break;
+				case DBUS_GERROR_NOT_SUPPORTED:
+				reply = dbus_message_new_error (message, "org.freedesktop.DBus.Error.NotSupported", error->message);
+				break;
+				case DBUS_GERROR_LIMITS_EXCEEDED:
+				reply = dbus_message_new_error (message, "org.freedesktop.DBus.Error.LimitsExceeded", error->message);
+				break;
+				case DBUS_GERROR_ACCESS_DENIED:
+				reply = dbus_message_new_error (message, "org.freedesktop.DBus.Error.AccessDenied", error->message);
+				break;
+				case DBUS_GERROR_AUTH_FAILED:
+				reply = dbus_message_new_error (message, "org.freedesktop.DBus.Error.AuthFailed", error->message);
+				break;
+				case DBUS_GERROR_NO_SERVER:
+				reply = dbus_message_new_error (message, "org.freedesktop.DBus.Error.NoServer", error->message);
+				break;
+				case DBUS_GERROR_TIMEOUT:
+				reply = dbus_message_new_error (message, "org.freedesktop.DBus.Error.Timeout", error->message);
+				break;
+				case DBUS_GERROR_NO_NETWORK:
+				reply = dbus_message_new_error (message, "org.freedesktop.DBus.Error.NoNetwork", error->message);
+				break;
+				case DBUS_GERROR_ADDRESS_IN_USE:
+				reply = dbus_message_new_error (message, "org.freedesktop.DBus.Error.AddressInUse", error->message);
+				break;
+				case DBUS_GERROR_DISCONNECTED:
+				reply = dbus_message_new_error (message, "org.freedesktop.DBus.Error.Disconnected", error->message);
+				break;
+				case DBUS_GERROR_INVALID_ARGS:
+				reply = dbus_message_new_error (message, "org.freedesktop.DBus.Error.InvalidArgs", error->message);
+				break;
+				case DBUS_GERROR_FILE_NOT_FOUND:
+				reply = dbus_message_new_error (message, "org.freedesktop.DBus.Error.FileNotFound", error->message);
+				break;
+				case DBUS_GERROR_FILE_EXISTS:
+				reply = dbus_message_new_error (message, "org.freedesktop.DBus.Error.FileExists", error->message);
+				break;
+				case DBUS_GERROR_UNKNOWN_METHOD:
+				reply = dbus_message_new_error (message, "org.freedesktop.DBus.Error.UnknownMethod", error->message);
+				break;
+				case DBUS_GERROR_TIMED_OUT:
+				reply = dbus_message_new_error (message, "org.freedesktop.DBus.Error.TimedOut", error->message);
+				break;
+				case DBUS_GERROR_MATCH_RULE_NOT_FOUND:
+				reply = dbus_message_new_error (message, "org.freedesktop.DBus.Error.MatchRuleNotFound", error->message);
+				break;
+				case DBUS_GERROR_MATCH_RULE_INVALID:
+				reply = dbus_message_new_error (message, "org.freedesktop.DBus.Error.MatchRuleInvalid", error->message);
+				break;
+				case DBUS_GERROR_SPAWN_EXEC_FAILED:
+				reply = dbus_message_new_error (message, "org.freedesktop.DBus.Error.Spawn.ExecFailed", error->message);
+				break;
+				case DBUS_GERROR_SPAWN_FORK_FAILED:
+				reply = dbus_message_new_error (message, "org.freedesktop.DBus.Error.Spawn.ForkFailed", error->message);
+				break;
+				case DBUS_GERROR_SPAWN_CHILD_EXITED:
+				reply = dbus_message_new_error (message, "org.freedesktop.DBus.Error.Spawn.ChildExited", error->message);
+				break;
+				case DBUS_GERROR_SPAWN_CHILD_SIGNALED:
+				reply = dbus_message_new_error (message, "org.freedesktop.DBus.Error.Spawn.ChildSignaled", error->message);
+				break;
+				case DBUS_GERROR_SPAWN_FAILED:
+				reply = dbus_message_new_error (message, "org.freedesktop.DBus.Error.Spawn.Failed", error->message);
+				break;
+				case DBUS_GERROR_UNIX_PROCESS_ID_UNKNOWN:
+				reply = dbus_message_new_error (message, "org.freedesktop.DBus.Error.UnixProcessIdUnknown", error->message);
+				break;
+				case DBUS_GERROR_INVALID_SIGNATURE:
+				reply = dbus_message_new_error (message, "org.freedesktop.DBus.Error.InvalidSignature", error->message);
+				break;
+				case DBUS_GERROR_INVALID_FILE_CONTENT:
+				reply = dbus_message_new_error (message, "org.freedesktop.DBus.Error.InvalidFileContent", error->message);
+				break;
+				case DBUS_GERROR_SELINUX_SECURITY_CONTEXT_UNKNOWN:
+				reply = dbus_message_new_error (message, "org.freedesktop.DBus.Error.SELinuxSecurityContextUnknown", error->message);
+				break;
+				case DBUS_GERROR_REMOTE_EXCEPTION:
+				reply = dbus_message_new_error (message, "org.freedesktop.DBus.Error.RemoteException", error->message);
+				break;
+			}
+		}
+		dbus_connection_send (connection, reply, NULL);
+		dbus_message_unref (reply);
+		return;
+	}
+	reply = dbus_message_new_method_return (message);
+	dbus_message_iter_init_append (reply, &iter);
+	_tmp57_ = result;
+	dbus_message_iter_open_container (&iter, DBUS_TYPE_ARRAY, "a{sv}", &_tmp58_);
+	for (_tmp59_ = 0; _tmp59_ < result_length1; _tmp59_++) {
+		DBusMessageIter _tmp60_, _tmp61_;
+		GHashTableIter _tmp62_;
+		gpointer _tmp63_, _tmp64_;
+		dbus_message_iter_open_container (&_tmp58_, DBUS_TYPE_ARRAY, "{sv}", &_tmp60_);
+		g_hash_table_iter_init (&_tmp62_, *_tmp57_);
+		while (g_hash_table_iter_next (&_tmp62_, &_tmp63_, &_tmp64_)) {
+			char* _key;
+			GValue* _value;
+			const char* _tmp65_;
+			DBusMessageIter _tmp66_;
+			dbus_message_iter_open_container (&_tmp60_, DBUS_TYPE_DICT_ENTRY, NULL, &_tmp61_);
+			_key = (char*) _tmp63_;
+			_value = (GValue*) _tmp64_;
+			_tmp65_ = _key;
+			dbus_message_iter_append_basic (&_tmp61_, DBUS_TYPE_STRING, &_tmp65_);
+			if (G_VALUE_TYPE (_value) == G_TYPE_UCHAR) {
+				guint8 _tmp67_;
+				dbus_message_iter_open_container (&_tmp61_, DBUS_TYPE_VARIANT, "y", &_tmp66_);
+				_tmp67_ = g_value_get_uchar (_value);
+				dbus_message_iter_append_basic (&_tmp66_, DBUS_TYPE_BYTE, &_tmp67_);
+				dbus_message_iter_close_container (&_tmp61_, &_tmp66_);
+			} else if (G_VALUE_TYPE (_value) == G_TYPE_BOOLEAN) {
+				dbus_bool_t _tmp68_;
+				dbus_message_iter_open_container (&_tmp61_, DBUS_TYPE_VARIANT, "b", &_tmp66_);
+				_tmp68_ = g_value_get_boolean (_value);
+				dbus_message_iter_append_basic (&_tmp66_, DBUS_TYPE_BOOLEAN, &_tmp68_);
+				dbus_message_iter_close_container (&_tmp61_, &_tmp66_);
+			} else if (G_VALUE_TYPE (_value) == G_TYPE_INT) {
+				dbus_int32_t _tmp69_;
+				dbus_message_iter_open_container (&_tmp61_, DBUS_TYPE_VARIANT, "i", &_tmp66_);
+				_tmp69_ = g_value_get_int (_value);
+				dbus_message_iter_append_basic (&_tmp66_, DBUS_TYPE_INT32, &_tmp69_);
+				dbus_message_iter_close_container (&_tmp61_, &_tmp66_);
+			} else if (G_VALUE_TYPE (_value) == G_TYPE_UINT) {
+				dbus_uint32_t _tmp70_;
+				dbus_message_iter_open_container (&_tmp61_, DBUS_TYPE_VARIANT, "u", &_tmp66_);
+				_tmp70_ = g_value_get_uint (_value);
+				dbus_message_iter_append_basic (&_tmp66_, DBUS_TYPE_UINT32, &_tmp70_);
+				dbus_message_iter_close_container (&_tmp61_, &_tmp66_);
+			} else if (G_VALUE_TYPE (_value) == G_TYPE_INT64) {
+				dbus_int64_t _tmp71_;
+				dbus_message_iter_open_container (&_tmp61_, DBUS_TYPE_VARIANT, "x", &_tmp66_);
+				_tmp71_ = g_value_get_int64 (_value);
+				dbus_message_iter_append_basic (&_tmp66_, DBUS_TYPE_INT64, &_tmp71_);
+				dbus_message_iter_close_container (&_tmp61_, &_tmp66_);
+			} else if (G_VALUE_TYPE (_value) == G_TYPE_UINT64) {
+				dbus_uint64_t _tmp72_;
+				dbus_message_iter_open_container (&_tmp61_, DBUS_TYPE_VARIANT, "t", &_tmp66_);
+				_tmp72_ = g_value_get_uint64 (_value);
+				dbus_message_iter_append_basic (&_tmp66_, DBUS_TYPE_UINT64, &_tmp72_);
+				dbus_message_iter_close_container (&_tmp61_, &_tmp66_);
+			} else if (G_VALUE_TYPE (_value) == G_TYPE_DOUBLE) {
+				double _tmp73_;
+				dbus_message_iter_open_container (&_tmp61_, DBUS_TYPE_VARIANT, "d", &_tmp66_);
+				_tmp73_ = g_value_get_double (_value);
+				dbus_message_iter_append_basic (&_tmp66_, DBUS_TYPE_DOUBLE, &_tmp73_);
+				dbus_message_iter_close_container (&_tmp61_, &_tmp66_);
+			} else if (G_VALUE_TYPE (_value) == G_TYPE_STRING) {
+				const char* _tmp74_;
+				dbus_message_iter_open_container (&_tmp61_, DBUS_TYPE_VARIANT, "s", &_tmp66_);
+				_tmp74_ = g_value_get_string (_value);
+				dbus_message_iter_append_basic (&_tmp66_, DBUS_TYPE_STRING, &_tmp74_);
+				dbus_message_iter_close_container (&_tmp61_, &_tmp66_);
+			} else if (G_VALUE_TYPE (_value) == G_TYPE_STRV) {
+				const char** _tmp75_;
+				DBusMessageIter _tmp76_;
+				int _tmp77_;
+				dbus_message_iter_open_container (&_tmp61_, DBUS_TYPE_VARIANT, "as", &_tmp66_);
+				_tmp75_ = g_value_get_boxed (_value);
+				dbus_message_iter_open_container (&_tmp66_, DBUS_TYPE_ARRAY, "s", &_tmp76_);
+				for (_tmp77_ = 0; _tmp77_ < g_strv_length (g_value_get_boxed (_value)); _tmp77_++) {
+					const char* _tmp78_;
+					_tmp78_ = *_tmp75_;
+					dbus_message_iter_append_basic (&_tmp76_, DBUS_TYPE_STRING, &_tmp78_);
+					_tmp75_++;
+				}
+				dbus_message_iter_close_container (&_tmp66_, &_tmp76_);
+				dbus_message_iter_close_container (&_tmp61_, &_tmp66_);
+			}
+			dbus_message_iter_close_container (&_tmp60_, &_tmp61_);
+		}
+		dbus_message_iter_close_container (&_tmp58_, &_tmp60_);
+		_tmp57_++;
+	}
+	dbus_message_iter_close_container (&iter, &_tmp58_);
+	result = (_vala_array_free (result,  result_length1, (GDestroyNotify) g_hash_table_unref), NULL);
+	dbus_connection_send (connection, reply, NULL);
+	dbus_message_unref (reply);
+	dbus_connection_unref (connection);
+	dbus_message_unref (message);
+	g_free (_user_data_);
+}
+
+
+static DBusHandlerResult _dbus_rygel_external_media_container_list_containers (RygelExternalMediaContainer* self, DBusConnection* connection, DBusMessage* message) {
+	DBusMessageIter iter;
+	guint offset = 0U;
+	dbus_uint32_t _tmp79_;
+	guint max_count = 0U;
+	dbus_uint32_t _tmp80_;
+	char** filter = NULL;
+	int filter_length1;
+	char** _tmp81_;
+	int _tmp81__length;
+	int _tmp81__size;
+	int _tmp81__length1;
+	DBusMessageIter _tmp82_;
+	gpointer * _user_data_;
+	if (strcmp (dbus_message_get_signature (message), "uuas")) {
+		return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
+	}
+	dbus_message_iter_init (message, &iter);
+	dbus_message_iter_get_basic (&iter, &_tmp79_);
+	dbus_message_iter_next (&iter);
+	offset = _tmp79_;
+	dbus_message_iter_get_basic (&iter, &_tmp80_);
+	dbus_message_iter_next (&iter);
+	max_count = _tmp80_;
+	filter_length1 = 0;
+	_tmp81_ = g_new (char*, 5);
+	_tmp81__length = 0;
+	_tmp81__size = 4;
+	_tmp81__length1 = 0;
+	dbus_message_iter_recurse (&iter, &_tmp82_);
+	for (; dbus_message_iter_get_arg_type (&_tmp82_); _tmp81__length1++) {
+		const char* _tmp83_;
+		if (_tmp81__size == _tmp81__length) {
+			_tmp81__size = 2 * _tmp81__size;
+			_tmp81_ = g_renew (char*, _tmp81_, _tmp81__size + 1);
+		}
+		dbus_message_iter_get_basic (&_tmp82_, &_tmp83_);
+		dbus_message_iter_next (&_tmp82_);
+		_tmp81_[_tmp81__length++] = g_strdup (_tmp83_);
+	}
+	filter_length1 = _tmp81__length1;
+	_tmp81_[_tmp81__length] = NULL;
+	dbus_message_iter_next (&iter);
+	filter = _tmp81_;
+	_user_data_ = g_new0 (gpointer, 2);
+	_user_data_[0] = dbus_connection_ref (connection);
+	_user_data_[1] = dbus_message_ref (message);
+	rygel_external_media_container_list_containers (self, offset, max_count, filter, filter_length1, (GAsyncReadyCallback) _dbus_rygel_external_media_container_list_containers_ready, _user_data_);
+	filter = (_vala_array_free (filter, filter_length1, (GDestroyNotify) g_free), NULL);
+	return DBUS_HANDLER_RESULT_HANDLED;
+}
+
+
+static void _dbus_rygel_external_media_container_list_containers_ready (GObject * source_object, GAsyncResult * _res_, gpointer * _user_data_) {
+	DBusConnection * connection;
+	DBusMessage * message;
+	DBusMessageIter iter;
+	GError* error;
+	GHashTable** result;
+	int result_length1;
+	DBusMessage* reply;
+	GHashTable** _tmp84_;
+	DBusMessageIter _tmp85_;
+	int _tmp86_;
+	connection = _user_data_[0];
+	message = _user_data_[1];
+	error = NULL;
+	result_length1 = 0;
+	result = rygel_external_media_container_list_containers_finish ((RygelExternalMediaContainer*) source_object, _res_, &result_length1, &error);
+	if (error) {
+		if (error->domain == DBUS_GERROR) {
+			switch (error->code) {
+				case DBUS_GERROR_FAILED:
+				reply = dbus_message_new_error (message, "org.freedesktop.DBus.Error.Failed", error->message);
+				break;
+				case DBUS_GERROR_NO_MEMORY:
+				reply = dbus_message_new_error (message, "org.freedesktop.DBus.Error.NoMemory", error->message);
+				break;
+				case DBUS_GERROR_SERVICE_UNKNOWN:
+				reply = dbus_message_new_error (message, "org.freedesktop.DBus.Error.ServiceUnknown", error->message);
+				break;
+				case DBUS_GERROR_NAME_HAS_NO_OWNER:
+				reply = dbus_message_new_error (message, "org.freedesktop.DBus.Error.NameHasNoOwner", error->message);
+				break;
+				case DBUS_GERROR_NO_REPLY:
+				reply = dbus_message_new_error (message, "org.freedesktop.DBus.Error.NoReply", error->message);
+				break;
+				case DBUS_GERROR_IO_ERROR:
+				reply = dbus_message_new_error (message, "org.freedesktop.DBus.Error.IOError", error->message);
+				break;
+				case DBUS_GERROR_BAD_ADDRESS:
+				reply = dbus_message_new_error (message, "org.freedesktop.DBus.Error.BadAddress", error->message);
+				break;
+				case DBUS_GERROR_NOT_SUPPORTED:
+				reply = dbus_message_new_error (message, "org.freedesktop.DBus.Error.NotSupported", error->message);
+				break;
+				case DBUS_GERROR_LIMITS_EXCEEDED:
+				reply = dbus_message_new_error (message, "org.freedesktop.DBus.Error.LimitsExceeded", error->message);
+				break;
+				case DBUS_GERROR_ACCESS_DENIED:
+				reply = dbus_message_new_error (message, "org.freedesktop.DBus.Error.AccessDenied", error->message);
+				break;
+				case DBUS_GERROR_AUTH_FAILED:
+				reply = dbus_message_new_error (message, "org.freedesktop.DBus.Error.AuthFailed", error->message);
+				break;
+				case DBUS_GERROR_NO_SERVER:
+				reply = dbus_message_new_error (message, "org.freedesktop.DBus.Error.NoServer", error->message);
+				break;
+				case DBUS_GERROR_TIMEOUT:
+				reply = dbus_message_new_error (message, "org.freedesktop.DBus.Error.Timeout", error->message);
+				break;
+				case DBUS_GERROR_NO_NETWORK:
+				reply = dbus_message_new_error (message, "org.freedesktop.DBus.Error.NoNetwork", error->message);
+				break;
+				case DBUS_GERROR_ADDRESS_IN_USE:
+				reply = dbus_message_new_error (message, "org.freedesktop.DBus.Error.AddressInUse", error->message);
+				break;
+				case DBUS_GERROR_DISCONNECTED:
+				reply = dbus_message_new_error (message, "org.freedesktop.DBus.Error.Disconnected", error->message);
+				break;
+				case DBUS_GERROR_INVALID_ARGS:
+				reply = dbus_message_new_error (message, "org.freedesktop.DBus.Error.InvalidArgs", error->message);
+				break;
+				case DBUS_GERROR_FILE_NOT_FOUND:
+				reply = dbus_message_new_error (message, "org.freedesktop.DBus.Error.FileNotFound", error->message);
+				break;
+				case DBUS_GERROR_FILE_EXISTS:
+				reply = dbus_message_new_error (message, "org.freedesktop.DBus.Error.FileExists", error->message);
+				break;
+				case DBUS_GERROR_UNKNOWN_METHOD:
+				reply = dbus_message_new_error (message, "org.freedesktop.DBus.Error.UnknownMethod", error->message);
+				break;
+				case DBUS_GERROR_TIMED_OUT:
+				reply = dbus_message_new_error (message, "org.freedesktop.DBus.Error.TimedOut", error->message);
+				break;
+				case DBUS_GERROR_MATCH_RULE_NOT_FOUND:
+				reply = dbus_message_new_error (message, "org.freedesktop.DBus.Error.MatchRuleNotFound", error->message);
+				break;
+				case DBUS_GERROR_MATCH_RULE_INVALID:
+				reply = dbus_message_new_error (message, "org.freedesktop.DBus.Error.MatchRuleInvalid", error->message);
+				break;
+				case DBUS_GERROR_SPAWN_EXEC_FAILED:
+				reply = dbus_message_new_error (message, "org.freedesktop.DBus.Error.Spawn.ExecFailed", error->message);
+				break;
+				case DBUS_GERROR_SPAWN_FORK_FAILED:
+				reply = dbus_message_new_error (message, "org.freedesktop.DBus.Error.Spawn.ForkFailed", error->message);
+				break;
+				case DBUS_GERROR_SPAWN_CHILD_EXITED:
+				reply = dbus_message_new_error (message, "org.freedesktop.DBus.Error.Spawn.ChildExited", error->message);
+				break;
+				case DBUS_GERROR_SPAWN_CHILD_SIGNALED:
+				reply = dbus_message_new_error (message, "org.freedesktop.DBus.Error.Spawn.ChildSignaled", error->message);
+				break;
+				case DBUS_GERROR_SPAWN_FAILED:
+				reply = dbus_message_new_error (message, "org.freedesktop.DBus.Error.Spawn.Failed", error->message);
+				break;
+				case DBUS_GERROR_UNIX_PROCESS_ID_UNKNOWN:
+				reply = dbus_message_new_error (message, "org.freedesktop.DBus.Error.UnixProcessIdUnknown", error->message);
+				break;
+				case DBUS_GERROR_INVALID_SIGNATURE:
+				reply = dbus_message_new_error (message, "org.freedesktop.DBus.Error.InvalidSignature", error->message);
+				break;
+				case DBUS_GERROR_INVALID_FILE_CONTENT:
+				reply = dbus_message_new_error (message, "org.freedesktop.DBus.Error.InvalidFileContent", error->message);
+				break;
+				case DBUS_GERROR_SELINUX_SECURITY_CONTEXT_UNKNOWN:
+				reply = dbus_message_new_error (message, "org.freedesktop.DBus.Error.SELinuxSecurityContextUnknown", error->message);
+				break;
+				case DBUS_GERROR_REMOTE_EXCEPTION:
+				reply = dbus_message_new_error (message, "org.freedesktop.DBus.Error.RemoteException", error->message);
+				break;
+			}
+		}
+		dbus_connection_send (connection, reply, NULL);
+		dbus_message_unref (reply);
+		return;
+	}
+	reply = dbus_message_new_method_return (message);
+	dbus_message_iter_init_append (reply, &iter);
+	_tmp84_ = result;
+	dbus_message_iter_open_container (&iter, DBUS_TYPE_ARRAY, "a{sv}", &_tmp85_);
+	for (_tmp86_ = 0; _tmp86_ < result_length1; _tmp86_++) {
+		DBusMessageIter _tmp87_, _tmp88_;
+		GHashTableIter _tmp89_;
+		gpointer _tmp90_, _tmp91_;
+		dbus_message_iter_open_container (&_tmp85_, DBUS_TYPE_ARRAY, "{sv}", &_tmp87_);
+		g_hash_table_iter_init (&_tmp89_, *_tmp84_);
+		while (g_hash_table_iter_next (&_tmp89_, &_tmp90_, &_tmp91_)) {
+			char* _key;
+			GValue* _value;
+			const char* _tmp92_;
+			DBusMessageIter _tmp93_;
+			dbus_message_iter_open_container (&_tmp87_, DBUS_TYPE_DICT_ENTRY, NULL, &_tmp88_);
+			_key = (char*) _tmp90_;
+			_value = (GValue*) _tmp91_;
+			_tmp92_ = _key;
+			dbus_message_iter_append_basic (&_tmp88_, DBUS_TYPE_STRING, &_tmp92_);
+			if (G_VALUE_TYPE (_value) == G_TYPE_UCHAR) {
+				guint8 _tmp94_;
+				dbus_message_iter_open_container (&_tmp88_, DBUS_TYPE_VARIANT, "y", &_tmp93_);
+				_tmp94_ = g_value_get_uchar (_value);
+				dbus_message_iter_append_basic (&_tmp93_, DBUS_TYPE_BYTE, &_tmp94_);
+				dbus_message_iter_close_container (&_tmp88_, &_tmp93_);
+			} else if (G_VALUE_TYPE (_value) == G_TYPE_BOOLEAN) {
+				dbus_bool_t _tmp95_;
+				dbus_message_iter_open_container (&_tmp88_, DBUS_TYPE_VARIANT, "b", &_tmp93_);
+				_tmp95_ = g_value_get_boolean (_value);
+				dbus_message_iter_append_basic (&_tmp93_, DBUS_TYPE_BOOLEAN, &_tmp95_);
+				dbus_message_iter_close_container (&_tmp88_, &_tmp93_);
+			} else if (G_VALUE_TYPE (_value) == G_TYPE_INT) {
+				dbus_int32_t _tmp96_;
+				dbus_message_iter_open_container (&_tmp88_, DBUS_TYPE_VARIANT, "i", &_tmp93_);
+				_tmp96_ = g_value_get_int (_value);
+				dbus_message_iter_append_basic (&_tmp93_, DBUS_TYPE_INT32, &_tmp96_);
+				dbus_message_iter_close_container (&_tmp88_, &_tmp93_);
+			} else if (G_VALUE_TYPE (_value) == G_TYPE_UINT) {
+				dbus_uint32_t _tmp97_;
+				dbus_message_iter_open_container (&_tmp88_, DBUS_TYPE_VARIANT, "u", &_tmp93_);
+				_tmp97_ = g_value_get_uint (_value);
+				dbus_message_iter_append_basic (&_tmp93_, DBUS_TYPE_UINT32, &_tmp97_);
+				dbus_message_iter_close_container (&_tmp88_, &_tmp93_);
+			} else if (G_VALUE_TYPE (_value) == G_TYPE_INT64) {
+				dbus_int64_t _tmp98_;
+				dbus_message_iter_open_container (&_tmp88_, DBUS_TYPE_VARIANT, "x", &_tmp93_);
+				_tmp98_ = g_value_get_int64 (_value);
+				dbus_message_iter_append_basic (&_tmp93_, DBUS_TYPE_INT64, &_tmp98_);
+				dbus_message_iter_close_container (&_tmp88_, &_tmp93_);
+			} else if (G_VALUE_TYPE (_value) == G_TYPE_UINT64) {
+				dbus_uint64_t _tmp99_;
+				dbus_message_iter_open_container (&_tmp88_, DBUS_TYPE_VARIANT, "t", &_tmp93_);
+				_tmp99_ = g_value_get_uint64 (_value);
+				dbus_message_iter_append_basic (&_tmp93_, DBUS_TYPE_UINT64, &_tmp99_);
+				dbus_message_iter_close_container (&_tmp88_, &_tmp93_);
+			} else if (G_VALUE_TYPE (_value) == G_TYPE_DOUBLE) {
+				double _tmp100_;
+				dbus_message_iter_open_container (&_tmp88_, DBUS_TYPE_VARIANT, "d", &_tmp93_);
+				_tmp100_ = g_value_get_double (_value);
+				dbus_message_iter_append_basic (&_tmp93_, DBUS_TYPE_DOUBLE, &_tmp100_);
+				dbus_message_iter_close_container (&_tmp88_, &_tmp93_);
+			} else if (G_VALUE_TYPE (_value) == G_TYPE_STRING) {
+				const char* _tmp101_;
+				dbus_message_iter_open_container (&_tmp88_, DBUS_TYPE_VARIANT, "s", &_tmp93_);
+				_tmp101_ = g_value_get_string (_value);
+				dbus_message_iter_append_basic (&_tmp93_, DBUS_TYPE_STRING, &_tmp101_);
+				dbus_message_iter_close_container (&_tmp88_, &_tmp93_);
+			} else if (G_VALUE_TYPE (_value) == G_TYPE_STRV) {
+				const char** _tmp102_;
+				DBusMessageIter _tmp103_;
+				int _tmp104_;
+				dbus_message_iter_open_container (&_tmp88_, DBUS_TYPE_VARIANT, "as", &_tmp93_);
+				_tmp102_ = g_value_get_boxed (_value);
+				dbus_message_iter_open_container (&_tmp93_, DBUS_TYPE_ARRAY, "s", &_tmp103_);
+				for (_tmp104_ = 0; _tmp104_ < g_strv_length (g_value_get_boxed (_value)); _tmp104_++) {
+					const char* _tmp105_;
+					_tmp105_ = *_tmp102_;
+					dbus_message_iter_append_basic (&_tmp103_, DBUS_TYPE_STRING, &_tmp105_);
+					_tmp102_++;
+				}
+				dbus_message_iter_close_container (&_tmp93_, &_tmp103_);
+				dbus_message_iter_close_container (&_tmp88_, &_tmp93_);
+			}
+			dbus_message_iter_close_container (&_tmp87_, &_tmp88_);
+		}
+		dbus_message_iter_close_container (&_tmp85_, &_tmp87_);
+		_tmp84_++;
+	}
+	dbus_message_iter_close_container (&iter, &_tmp85_);
+	result = (_vala_array_free (result,  result_length1, (GDestroyNotify) g_hash_table_unref), NULL);
+	dbus_connection_send (connection, reply, NULL);
+	dbus_message_unref (reply);
+	dbus_connection_unref (connection);
+	dbus_message_unref (message);
+	g_free (_user_data_);
+}
+
+
+static DBusHandlerResult _dbus_rygel_external_media_container_list_items (RygelExternalMediaContainer* self, DBusConnection* connection, DBusMessage* message) {
+	DBusMessageIter iter;
+	guint offset = 0U;
+	dbus_uint32_t _tmp106_;
+	guint max_count = 0U;
+	dbus_uint32_t _tmp107_;
+	char** filter = NULL;
+	int filter_length1;
+	char** _tmp108_;
+	int _tmp108__length;
+	int _tmp108__size;
+	int _tmp108__length1;
+	DBusMessageIter _tmp109_;
+	gpointer * _user_data_;
+	if (strcmp (dbus_message_get_signature (message), "uuas")) {
+		return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
+	}
+	dbus_message_iter_init (message, &iter);
+	dbus_message_iter_get_basic (&iter, &_tmp106_);
+	dbus_message_iter_next (&iter);
+	offset = _tmp106_;
+	dbus_message_iter_get_basic (&iter, &_tmp107_);
+	dbus_message_iter_next (&iter);
+	max_count = _tmp107_;
+	filter_length1 = 0;
+	_tmp108_ = g_new (char*, 5);
+	_tmp108__length = 0;
+	_tmp108__size = 4;
+	_tmp108__length1 = 0;
+	dbus_message_iter_recurse (&iter, &_tmp109_);
+	for (; dbus_message_iter_get_arg_type (&_tmp109_); _tmp108__length1++) {
+		const char* _tmp110_;
+		if (_tmp108__size == _tmp108__length) {
+			_tmp108__size = 2 * _tmp108__size;
+			_tmp108_ = g_renew (char*, _tmp108_, _tmp108__size + 1);
+		}
+		dbus_message_iter_get_basic (&_tmp109_, &_tmp110_);
+		dbus_message_iter_next (&_tmp109_);
+		_tmp108_[_tmp108__length++] = g_strdup (_tmp110_);
+	}
+	filter_length1 = _tmp108__length1;
+	_tmp108_[_tmp108__length] = NULL;
+	dbus_message_iter_next (&iter);
+	filter = _tmp108_;
+	_user_data_ = g_new0 (gpointer, 2);
+	_user_data_[0] = dbus_connection_ref (connection);
+	_user_data_[1] = dbus_message_ref (message);
+	rygel_external_media_container_list_items (self, offset, max_count, filter, filter_length1, (GAsyncReadyCallback) _dbus_rygel_external_media_container_list_items_ready, _user_data_);
+	filter = (_vala_array_free (filter, filter_length1, (GDestroyNotify) g_free), NULL);
+	return DBUS_HANDLER_RESULT_HANDLED;
+}
+
+
+static void _dbus_rygel_external_media_container_list_items_ready (GObject * source_object, GAsyncResult * _res_, gpointer * _user_data_) {
+	DBusConnection * connection;
+	DBusMessage * message;
+	DBusMessageIter iter;
+	GError* error;
+	GHashTable** result;
+	int result_length1;
+	DBusMessage* reply;
+	GHashTable** _tmp111_;
+	DBusMessageIter _tmp112_;
+	int _tmp113_;
+	connection = _user_data_[0];
+	message = _user_data_[1];
+	error = NULL;
+	result_length1 = 0;
+	result = rygel_external_media_container_list_items_finish ((RygelExternalMediaContainer*) source_object, _res_, &result_length1, &error);
+	if (error) {
+		if (error->domain == DBUS_GERROR) {
+			switch (error->code) {
+				case DBUS_GERROR_FAILED:
+				reply = dbus_message_new_error (message, "org.freedesktop.DBus.Error.Failed", error->message);
+				break;
+				case DBUS_GERROR_NO_MEMORY:
+				reply = dbus_message_new_error (message, "org.freedesktop.DBus.Error.NoMemory", error->message);
+				break;
+				case DBUS_GERROR_SERVICE_UNKNOWN:
+				reply = dbus_message_new_error (message, "org.freedesktop.DBus.Error.ServiceUnknown", error->message);
+				break;
+				case DBUS_GERROR_NAME_HAS_NO_OWNER:
+				reply = dbus_message_new_error (message, "org.freedesktop.DBus.Error.NameHasNoOwner", error->message);
+				break;
+				case DBUS_GERROR_NO_REPLY:
+				reply = dbus_message_new_error (message, "org.freedesktop.DBus.Error.NoReply", error->message);
+				break;
+				case DBUS_GERROR_IO_ERROR:
+				reply = dbus_message_new_error (message, "org.freedesktop.DBus.Error.IOError", error->message);
+				break;
+				case DBUS_GERROR_BAD_ADDRESS:
+				reply = dbus_message_new_error (message, "org.freedesktop.DBus.Error.BadAddress", error->message);
+				break;
+				case DBUS_GERROR_NOT_SUPPORTED:
+				reply = dbus_message_new_error (message, "org.freedesktop.DBus.Error.NotSupported", error->message);
+				break;
+				case DBUS_GERROR_LIMITS_EXCEEDED:
+				reply = dbus_message_new_error (message, "org.freedesktop.DBus.Error.LimitsExceeded", error->message);
+				break;
+				case DBUS_GERROR_ACCESS_DENIED:
+				reply = dbus_message_new_error (message, "org.freedesktop.DBus.Error.AccessDenied", error->message);
+				break;
+				case DBUS_GERROR_AUTH_FAILED:
+				reply = dbus_message_new_error (message, "org.freedesktop.DBus.Error.AuthFailed", error->message);
+				break;
+				case DBUS_GERROR_NO_SERVER:
+				reply = dbus_message_new_error (message, "org.freedesktop.DBus.Error.NoServer", error->message);
+				break;
+				case DBUS_GERROR_TIMEOUT:
+				reply = dbus_message_new_error (message, "org.freedesktop.DBus.Error.Timeout", error->message);
+				break;
+				case DBUS_GERROR_NO_NETWORK:
+				reply = dbus_message_new_error (message, "org.freedesktop.DBus.Error.NoNetwork", error->message);
+				break;
+				case DBUS_GERROR_ADDRESS_IN_USE:
+				reply = dbus_message_new_error (message, "org.freedesktop.DBus.Error.AddressInUse", error->message);
+				break;
+				case DBUS_GERROR_DISCONNECTED:
+				reply = dbus_message_new_error (message, "org.freedesktop.DBus.Error.Disconnected", error->message);
+				break;
+				case DBUS_GERROR_INVALID_ARGS:
+				reply = dbus_message_new_error (message, "org.freedesktop.DBus.Error.InvalidArgs", error->message);
+				break;
+				case DBUS_GERROR_FILE_NOT_FOUND:
+				reply = dbus_message_new_error (message, "org.freedesktop.DBus.Error.FileNotFound", error->message);
+				break;
+				case DBUS_GERROR_FILE_EXISTS:
+				reply = dbus_message_new_error (message, "org.freedesktop.DBus.Error.FileExists", error->message);
+				break;
+				case DBUS_GERROR_UNKNOWN_METHOD:
+				reply = dbus_message_new_error (message, "org.freedesktop.DBus.Error.UnknownMethod", error->message);
+				break;
+				case DBUS_GERROR_TIMED_OUT:
+				reply = dbus_message_new_error (message, "org.freedesktop.DBus.Error.TimedOut", error->message);
+				break;
+				case DBUS_GERROR_MATCH_RULE_NOT_FOUND:
+				reply = dbus_message_new_error (message, "org.freedesktop.DBus.Error.MatchRuleNotFound", error->message);
+				break;
+				case DBUS_GERROR_MATCH_RULE_INVALID:
+				reply = dbus_message_new_error (message, "org.freedesktop.DBus.Error.MatchRuleInvalid", error->message);
+				break;
+				case DBUS_GERROR_SPAWN_EXEC_FAILED:
+				reply = dbus_message_new_error (message, "org.freedesktop.DBus.Error.Spawn.ExecFailed", error->message);
+				break;
+				case DBUS_GERROR_SPAWN_FORK_FAILED:
+				reply = dbus_message_new_error (message, "org.freedesktop.DBus.Error.Spawn.ForkFailed", error->message);
+				break;
+				case DBUS_GERROR_SPAWN_CHILD_EXITED:
+				reply = dbus_message_new_error (message, "org.freedesktop.DBus.Error.Spawn.ChildExited", error->message);
+				break;
+				case DBUS_GERROR_SPAWN_CHILD_SIGNALED:
+				reply = dbus_message_new_error (message, "org.freedesktop.DBus.Error.Spawn.ChildSignaled", error->message);
+				break;
+				case DBUS_GERROR_SPAWN_FAILED:
+				reply = dbus_message_new_error (message, "org.freedesktop.DBus.Error.Spawn.Failed", error->message);
+				break;
+				case DBUS_GERROR_UNIX_PROCESS_ID_UNKNOWN:
+				reply = dbus_message_new_error (message, "org.freedesktop.DBus.Error.UnixProcessIdUnknown", error->message);
+				break;
+				case DBUS_GERROR_INVALID_SIGNATURE:
+				reply = dbus_message_new_error (message, "org.freedesktop.DBus.Error.InvalidSignature", error->message);
+				break;
+				case DBUS_GERROR_INVALID_FILE_CONTENT:
+				reply = dbus_message_new_error (message, "org.freedesktop.DBus.Error.InvalidFileContent", error->message);
+				break;
+				case DBUS_GERROR_SELINUX_SECURITY_CONTEXT_UNKNOWN:
+				reply = dbus_message_new_error (message, "org.freedesktop.DBus.Error.SELinuxSecurityContextUnknown", error->message);
+				break;
+				case DBUS_GERROR_REMOTE_EXCEPTION:
+				reply = dbus_message_new_error (message, "org.freedesktop.DBus.Error.RemoteException", error->message);
+				break;
+			}
+		}
+		dbus_connection_send (connection, reply, NULL);
+		dbus_message_unref (reply);
+		return;
+	}
+	reply = dbus_message_new_method_return (message);
+	dbus_message_iter_init_append (reply, &iter);
+	_tmp111_ = result;
+	dbus_message_iter_open_container (&iter, DBUS_TYPE_ARRAY, "a{sv}", &_tmp112_);
+	for (_tmp113_ = 0; _tmp113_ < result_length1; _tmp113_++) {
+		DBusMessageIter _tmp114_, _tmp115_;
+		GHashTableIter _tmp116_;
+		gpointer _tmp117_, _tmp118_;
+		dbus_message_iter_open_container (&_tmp112_, DBUS_TYPE_ARRAY, "{sv}", &_tmp114_);
+		g_hash_table_iter_init (&_tmp116_, *_tmp111_);
+		while (g_hash_table_iter_next (&_tmp116_, &_tmp117_, &_tmp118_)) {
+			char* _key;
+			GValue* _value;
+			const char* _tmp119_;
+			DBusMessageIter _tmp120_;
+			dbus_message_iter_open_container (&_tmp114_, DBUS_TYPE_DICT_ENTRY, NULL, &_tmp115_);
+			_key = (char*) _tmp117_;
+			_value = (GValue*) _tmp118_;
+			_tmp119_ = _key;
+			dbus_message_iter_append_basic (&_tmp115_, DBUS_TYPE_STRING, &_tmp119_);
+			if (G_VALUE_TYPE (_value) == G_TYPE_UCHAR) {
+				guint8 _tmp121_;
+				dbus_message_iter_open_container (&_tmp115_, DBUS_TYPE_VARIANT, "y", &_tmp120_);
+				_tmp121_ = g_value_get_uchar (_value);
+				dbus_message_iter_append_basic (&_tmp120_, DBUS_TYPE_BYTE, &_tmp121_);
+				dbus_message_iter_close_container (&_tmp115_, &_tmp120_);
+			} else if (G_VALUE_TYPE (_value) == G_TYPE_BOOLEAN) {
+				dbus_bool_t _tmp122_;
+				dbus_message_iter_open_container (&_tmp115_, DBUS_TYPE_VARIANT, "b", &_tmp120_);
+				_tmp122_ = g_value_get_boolean (_value);
+				dbus_message_iter_append_basic (&_tmp120_, DBUS_TYPE_BOOLEAN, &_tmp122_);
+				dbus_message_iter_close_container (&_tmp115_, &_tmp120_);
+			} else if (G_VALUE_TYPE (_value) == G_TYPE_INT) {
+				dbus_int32_t _tmp123_;
+				dbus_message_iter_open_container (&_tmp115_, DBUS_TYPE_VARIANT, "i", &_tmp120_);
+				_tmp123_ = g_value_get_int (_value);
+				dbus_message_iter_append_basic (&_tmp120_, DBUS_TYPE_INT32, &_tmp123_);
+				dbus_message_iter_close_container (&_tmp115_, &_tmp120_);
+			} else if (G_VALUE_TYPE (_value) == G_TYPE_UINT) {
+				dbus_uint32_t _tmp124_;
+				dbus_message_iter_open_container (&_tmp115_, DBUS_TYPE_VARIANT, "u", &_tmp120_);
+				_tmp124_ = g_value_get_uint (_value);
+				dbus_message_iter_append_basic (&_tmp120_, DBUS_TYPE_UINT32, &_tmp124_);
+				dbus_message_iter_close_container (&_tmp115_, &_tmp120_);
+			} else if (G_VALUE_TYPE (_value) == G_TYPE_INT64) {
+				dbus_int64_t _tmp125_;
+				dbus_message_iter_open_container (&_tmp115_, DBUS_TYPE_VARIANT, "x", &_tmp120_);
+				_tmp125_ = g_value_get_int64 (_value);
+				dbus_message_iter_append_basic (&_tmp120_, DBUS_TYPE_INT64, &_tmp125_);
+				dbus_message_iter_close_container (&_tmp115_, &_tmp120_);
+			} else if (G_VALUE_TYPE (_value) == G_TYPE_UINT64) {
+				dbus_uint64_t _tmp126_;
+				dbus_message_iter_open_container (&_tmp115_, DBUS_TYPE_VARIANT, "t", &_tmp120_);
+				_tmp126_ = g_value_get_uint64 (_value);
+				dbus_message_iter_append_basic (&_tmp120_, DBUS_TYPE_UINT64, &_tmp126_);
+				dbus_message_iter_close_container (&_tmp115_, &_tmp120_);
+			} else if (G_VALUE_TYPE (_value) == G_TYPE_DOUBLE) {
+				double _tmp127_;
+				dbus_message_iter_open_container (&_tmp115_, DBUS_TYPE_VARIANT, "d", &_tmp120_);
+				_tmp127_ = g_value_get_double (_value);
+				dbus_message_iter_append_basic (&_tmp120_, DBUS_TYPE_DOUBLE, &_tmp127_);
+				dbus_message_iter_close_container (&_tmp115_, &_tmp120_);
+			} else if (G_VALUE_TYPE (_value) == G_TYPE_STRING) {
+				const char* _tmp128_;
+				dbus_message_iter_open_container (&_tmp115_, DBUS_TYPE_VARIANT, "s", &_tmp120_);
+				_tmp128_ = g_value_get_string (_value);
+				dbus_message_iter_append_basic (&_tmp120_, DBUS_TYPE_STRING, &_tmp128_);
+				dbus_message_iter_close_container (&_tmp115_, &_tmp120_);
+			} else if (G_VALUE_TYPE (_value) == G_TYPE_STRV) {
+				const char** _tmp129_;
+				DBusMessageIter _tmp130_;
+				int _tmp131_;
+				dbus_message_iter_open_container (&_tmp115_, DBUS_TYPE_VARIANT, "as", &_tmp120_);
+				_tmp129_ = g_value_get_boxed (_value);
+				dbus_message_iter_open_container (&_tmp120_, DBUS_TYPE_ARRAY, "s", &_tmp130_);
+				for (_tmp131_ = 0; _tmp131_ < g_strv_length (g_value_get_boxed (_value)); _tmp131_++) {
+					const char* _tmp132_;
+					_tmp132_ = *_tmp129_;
+					dbus_message_iter_append_basic (&_tmp130_, DBUS_TYPE_STRING, &_tmp132_);
+					_tmp129_++;
+				}
+				dbus_message_iter_close_container (&_tmp120_, &_tmp130_);
+				dbus_message_iter_close_container (&_tmp115_, &_tmp120_);
+			}
+			dbus_message_iter_close_container (&_tmp114_, &_tmp115_);
+		}
+		dbus_message_iter_close_container (&_tmp112_, &_tmp114_);
+		_tmp111_++;
+	}
+	dbus_message_iter_close_container (&iter, &_tmp112_);
+	result = (_vala_array_free (result,  result_length1, (GDestroyNotify) g_hash_table_unref), NULL);
+	dbus_connection_send (connection, reply, NULL);
+	dbus_message_unref (reply);
+	dbus_connection_unref (connection);
+	dbus_message_unref (message);
+	g_free (_user_data_);
+}
+
+
+static DBusHandlerResult _dbus_rygel_external_media_container_search_objects (RygelExternalMediaContainer* self, DBusConnection* connection, DBusMessage* message) {
+	DBusMessageIter iter;
+	char* query = NULL;
+	const char* _tmp133_;
+	guint offset = 0U;
+	dbus_uint32_t _tmp134_;
+	guint max_count = 0U;
+	dbus_uint32_t _tmp135_;
+	char** filter = NULL;
+	int filter_length1;
+	char** _tmp136_;
+	int _tmp136__length;
+	int _tmp136__size;
+	int _tmp136__length1;
+	DBusMessageIter _tmp137_;
+	gpointer * _user_data_;
+	if (strcmp (dbus_message_get_signature (message), "suuas")) {
+		return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
+	}
+	dbus_message_iter_init (message, &iter);
+	dbus_message_iter_get_basic (&iter, &_tmp133_);
+	dbus_message_iter_next (&iter);
+	query = g_strdup (_tmp133_);
+	dbus_message_iter_get_basic (&iter, &_tmp134_);
+	dbus_message_iter_next (&iter);
+	offset = _tmp134_;
+	dbus_message_iter_get_basic (&iter, &_tmp135_);
+	dbus_message_iter_next (&iter);
+	max_count = _tmp135_;
+	filter_length1 = 0;
+	_tmp136_ = g_new (char*, 5);
+	_tmp136__length = 0;
+	_tmp136__size = 4;
+	_tmp136__length1 = 0;
+	dbus_message_iter_recurse (&iter, &_tmp137_);
+	for (; dbus_message_iter_get_arg_type (&_tmp137_); _tmp136__length1++) {
+		const char* _tmp138_;
+		if (_tmp136__size == _tmp136__length) {
+			_tmp136__size = 2 * _tmp136__size;
+			_tmp136_ = g_renew (char*, _tmp136_, _tmp136__size + 1);
+		}
+		dbus_message_iter_get_basic (&_tmp137_, &_tmp138_);
+		dbus_message_iter_next (&_tmp137_);
+		_tmp136_[_tmp136__length++] = g_strdup (_tmp138_);
+	}
+	filter_length1 = _tmp136__length1;
+	_tmp136_[_tmp136__length] = NULL;
+	dbus_message_iter_next (&iter);
+	filter = _tmp136_;
+	_user_data_ = g_new0 (gpointer, 2);
+	_user_data_[0] = dbus_connection_ref (connection);
+	_user_data_[1] = dbus_message_ref (message);
+	rygel_external_media_container_search_objects (self, query, offset, max_count, filter, filter_length1, (GAsyncReadyCallback) _dbus_rygel_external_media_container_search_objects_ready, _user_data_);
+	_g_free0 (query);
+	filter = (_vala_array_free (filter, filter_length1, (GDestroyNotify) g_free), NULL);
+	return DBUS_HANDLER_RESULT_HANDLED;
+}
+
+
+static void _dbus_rygel_external_media_container_search_objects_ready (GObject * source_object, GAsyncResult * _res_, gpointer * _user_data_) {
+	DBusConnection * connection;
+	DBusMessage * message;
+	DBusMessageIter iter;
+	GError* error;
+	GHashTable** result;
+	int result_length1;
+	DBusMessage* reply;
+	GHashTable** _tmp139_;
+	DBusMessageIter _tmp140_;
+	int _tmp141_;
+	connection = _user_data_[0];
+	message = _user_data_[1];
+	error = NULL;
+	result_length1 = 0;
+	result = rygel_external_media_container_search_objects_finish ((RygelExternalMediaContainer*) source_object, _res_, &result_length1, &error);
+	if (error) {
+		if (error->domain == DBUS_GERROR) {
+			switch (error->code) {
+				case DBUS_GERROR_FAILED:
+				reply = dbus_message_new_error (message, "org.freedesktop.DBus.Error.Failed", error->message);
+				break;
+				case DBUS_GERROR_NO_MEMORY:
+				reply = dbus_message_new_error (message, "org.freedesktop.DBus.Error.NoMemory", error->message);
+				break;
+				case DBUS_GERROR_SERVICE_UNKNOWN:
+				reply = dbus_message_new_error (message, "org.freedesktop.DBus.Error.ServiceUnknown", error->message);
+				break;
+				case DBUS_GERROR_NAME_HAS_NO_OWNER:
+				reply = dbus_message_new_error (message, "org.freedesktop.DBus.Error.NameHasNoOwner", error->message);
+				break;
+				case DBUS_GERROR_NO_REPLY:
+				reply = dbus_message_new_error (message, "org.freedesktop.DBus.Error.NoReply", error->message);
+				break;
+				case DBUS_GERROR_IO_ERROR:
+				reply = dbus_message_new_error (message, "org.freedesktop.DBus.Error.IOError", error->message);
+				break;
+				case DBUS_GERROR_BAD_ADDRESS:
+				reply = dbus_message_new_error (message, "org.freedesktop.DBus.Error.BadAddress", error->message);
+				break;
+				case DBUS_GERROR_NOT_SUPPORTED:
+				reply = dbus_message_new_error (message, "org.freedesktop.DBus.Error.NotSupported", error->message);
+				break;
+				case DBUS_GERROR_LIMITS_EXCEEDED:
+				reply = dbus_message_new_error (message, "org.freedesktop.DBus.Error.LimitsExceeded", error->message);
+				break;
+				case DBUS_GERROR_ACCESS_DENIED:
+				reply = dbus_message_new_error (message, "org.freedesktop.DBus.Error.AccessDenied", error->message);
+				break;
+				case DBUS_GERROR_AUTH_FAILED:
+				reply = dbus_message_new_error (message, "org.freedesktop.DBus.Error.AuthFailed", error->message);
+				break;
+				case DBUS_GERROR_NO_SERVER:
+				reply = dbus_message_new_error (message, "org.freedesktop.DBus.Error.NoServer", error->message);
+				break;
+				case DBUS_GERROR_TIMEOUT:
+				reply = dbus_message_new_error (message, "org.freedesktop.DBus.Error.Timeout", error->message);
+				break;
+				case DBUS_GERROR_NO_NETWORK:
+				reply = dbus_message_new_error (message, "org.freedesktop.DBus.Error.NoNetwork", error->message);
+				break;
+				case DBUS_GERROR_ADDRESS_IN_USE:
+				reply = dbus_message_new_error (message, "org.freedesktop.DBus.Error.AddressInUse", error->message);
+				break;
+				case DBUS_GERROR_DISCONNECTED:
+				reply = dbus_message_new_error (message, "org.freedesktop.DBus.Error.Disconnected", error->message);
+				break;
+				case DBUS_GERROR_INVALID_ARGS:
+				reply = dbus_message_new_error (message, "org.freedesktop.DBus.Error.InvalidArgs", error->message);
+				break;
+				case DBUS_GERROR_FILE_NOT_FOUND:
+				reply = dbus_message_new_error (message, "org.freedesktop.DBus.Error.FileNotFound", error->message);
+				break;
+				case DBUS_GERROR_FILE_EXISTS:
+				reply = dbus_message_new_error (message, "org.freedesktop.DBus.Error.FileExists", error->message);
+				break;
+				case DBUS_GERROR_UNKNOWN_METHOD:
+				reply = dbus_message_new_error (message, "org.freedesktop.DBus.Error.UnknownMethod", error->message);
+				break;
+				case DBUS_GERROR_TIMED_OUT:
+				reply = dbus_message_new_error (message, "org.freedesktop.DBus.Error.TimedOut", error->message);
+				break;
+				case DBUS_GERROR_MATCH_RULE_NOT_FOUND:
+				reply = dbus_message_new_error (message, "org.freedesktop.DBus.Error.MatchRuleNotFound", error->message);
+				break;
+				case DBUS_GERROR_MATCH_RULE_INVALID:
+				reply = dbus_message_new_error (message, "org.freedesktop.DBus.Error.MatchRuleInvalid", error->message);
+				break;
+				case DBUS_GERROR_SPAWN_EXEC_FAILED:
+				reply = dbus_message_new_error (message, "org.freedesktop.DBus.Error.Spawn.ExecFailed", error->message);
+				break;
+				case DBUS_GERROR_SPAWN_FORK_FAILED:
+				reply = dbus_message_new_error (message, "org.freedesktop.DBus.Error.Spawn.ForkFailed", error->message);
+				break;
+				case DBUS_GERROR_SPAWN_CHILD_EXITED:
+				reply = dbus_message_new_error (message, "org.freedesktop.DBus.Error.Spawn.ChildExited", error->message);
+				break;
+				case DBUS_GERROR_SPAWN_CHILD_SIGNALED:
+				reply = dbus_message_new_error (message, "org.freedesktop.DBus.Error.Spawn.ChildSignaled", error->message);
+				break;
+				case DBUS_GERROR_SPAWN_FAILED:
+				reply = dbus_message_new_error (message, "org.freedesktop.DBus.Error.Spawn.Failed", error->message);
+				break;
+				case DBUS_GERROR_UNIX_PROCESS_ID_UNKNOWN:
+				reply = dbus_message_new_error (message, "org.freedesktop.DBus.Error.UnixProcessIdUnknown", error->message);
+				break;
+				case DBUS_GERROR_INVALID_SIGNATURE:
+				reply = dbus_message_new_error (message, "org.freedesktop.DBus.Error.InvalidSignature", error->message);
+				break;
+				case DBUS_GERROR_INVALID_FILE_CONTENT:
+				reply = dbus_message_new_error (message, "org.freedesktop.DBus.Error.InvalidFileContent", error->message);
+				break;
+				case DBUS_GERROR_SELINUX_SECURITY_CONTEXT_UNKNOWN:
+				reply = dbus_message_new_error (message, "org.freedesktop.DBus.Error.SELinuxSecurityContextUnknown", error->message);
+				break;
+				case DBUS_GERROR_REMOTE_EXCEPTION:
+				reply = dbus_message_new_error (message, "org.freedesktop.DBus.Error.RemoteException", error->message);
+				break;
+			}
+		}
+		dbus_connection_send (connection, reply, NULL);
+		dbus_message_unref (reply);
+		return;
+	}
+	reply = dbus_message_new_method_return (message);
+	dbus_message_iter_init_append (reply, &iter);
+	_tmp139_ = result;
+	dbus_message_iter_open_container (&iter, DBUS_TYPE_ARRAY, "a{sv}", &_tmp140_);
+	for (_tmp141_ = 0; _tmp141_ < result_length1; _tmp141_++) {
+		DBusMessageIter _tmp142_, _tmp143_;
+		GHashTableIter _tmp144_;
+		gpointer _tmp145_, _tmp146_;
+		dbus_message_iter_open_container (&_tmp140_, DBUS_TYPE_ARRAY, "{sv}", &_tmp142_);
+		g_hash_table_iter_init (&_tmp144_, *_tmp139_);
+		while (g_hash_table_iter_next (&_tmp144_, &_tmp145_, &_tmp146_)) {
+			char* _key;
+			GValue* _value;
+			const char* _tmp147_;
+			DBusMessageIter _tmp148_;
+			dbus_message_iter_open_container (&_tmp142_, DBUS_TYPE_DICT_ENTRY, NULL, &_tmp143_);
+			_key = (char*) _tmp145_;
+			_value = (GValue*) _tmp146_;
+			_tmp147_ = _key;
+			dbus_message_iter_append_basic (&_tmp143_, DBUS_TYPE_STRING, &_tmp147_);
+			if (G_VALUE_TYPE (_value) == G_TYPE_UCHAR) {
+				guint8 _tmp149_;
+				dbus_message_iter_open_container (&_tmp143_, DBUS_TYPE_VARIANT, "y", &_tmp148_);
+				_tmp149_ = g_value_get_uchar (_value);
+				dbus_message_iter_append_basic (&_tmp148_, DBUS_TYPE_BYTE, &_tmp149_);
+				dbus_message_iter_close_container (&_tmp143_, &_tmp148_);
+			} else if (G_VALUE_TYPE (_value) == G_TYPE_BOOLEAN) {
+				dbus_bool_t _tmp150_;
+				dbus_message_iter_open_container (&_tmp143_, DBUS_TYPE_VARIANT, "b", &_tmp148_);
+				_tmp150_ = g_value_get_boolean (_value);
+				dbus_message_iter_append_basic (&_tmp148_, DBUS_TYPE_BOOLEAN, &_tmp150_);
+				dbus_message_iter_close_container (&_tmp143_, &_tmp148_);
+			} else if (G_VALUE_TYPE (_value) == G_TYPE_INT) {
+				dbus_int32_t _tmp151_;
+				dbus_message_iter_open_container (&_tmp143_, DBUS_TYPE_VARIANT, "i", &_tmp148_);
+				_tmp151_ = g_value_get_int (_value);
+				dbus_message_iter_append_basic (&_tmp148_, DBUS_TYPE_INT32, &_tmp151_);
+				dbus_message_iter_close_container (&_tmp143_, &_tmp148_);
+			} else if (G_VALUE_TYPE (_value) == G_TYPE_UINT) {
+				dbus_uint32_t _tmp152_;
+				dbus_message_iter_open_container (&_tmp143_, DBUS_TYPE_VARIANT, "u", &_tmp148_);
+				_tmp152_ = g_value_get_uint (_value);
+				dbus_message_iter_append_basic (&_tmp148_, DBUS_TYPE_UINT32, &_tmp152_);
+				dbus_message_iter_close_container (&_tmp143_, &_tmp148_);
+			} else if (G_VALUE_TYPE (_value) == G_TYPE_INT64) {
+				dbus_int64_t _tmp153_;
+				dbus_message_iter_open_container (&_tmp143_, DBUS_TYPE_VARIANT, "x", &_tmp148_);
+				_tmp153_ = g_value_get_int64 (_value);
+				dbus_message_iter_append_basic (&_tmp148_, DBUS_TYPE_INT64, &_tmp153_);
+				dbus_message_iter_close_container (&_tmp143_, &_tmp148_);
+			} else if (G_VALUE_TYPE (_value) == G_TYPE_UINT64) {
+				dbus_uint64_t _tmp154_;
+				dbus_message_iter_open_container (&_tmp143_, DBUS_TYPE_VARIANT, "t", &_tmp148_);
+				_tmp154_ = g_value_get_uint64 (_value);
+				dbus_message_iter_append_basic (&_tmp148_, DBUS_TYPE_UINT64, &_tmp154_);
+				dbus_message_iter_close_container (&_tmp143_, &_tmp148_);
+			} else if (G_VALUE_TYPE (_value) == G_TYPE_DOUBLE) {
+				double _tmp155_;
+				dbus_message_iter_open_container (&_tmp143_, DBUS_TYPE_VARIANT, "d", &_tmp148_);
+				_tmp155_ = g_value_get_double (_value);
+				dbus_message_iter_append_basic (&_tmp148_, DBUS_TYPE_DOUBLE, &_tmp155_);
+				dbus_message_iter_close_container (&_tmp143_, &_tmp148_);
+			} else if (G_VALUE_TYPE (_value) == G_TYPE_STRING) {
+				const char* _tmp156_;
+				dbus_message_iter_open_container (&_tmp143_, DBUS_TYPE_VARIANT, "s", &_tmp148_);
+				_tmp156_ = g_value_get_string (_value);
+				dbus_message_iter_append_basic (&_tmp148_, DBUS_TYPE_STRING, &_tmp156_);
+				dbus_message_iter_close_container (&_tmp143_, &_tmp148_);
+			} else if (G_VALUE_TYPE (_value) == G_TYPE_STRV) {
+				const char** _tmp157_;
+				DBusMessageIter _tmp158_;
+				int _tmp159_;
+				dbus_message_iter_open_container (&_tmp143_, DBUS_TYPE_VARIANT, "as", &_tmp148_);
+				_tmp157_ = g_value_get_boxed (_value);
+				dbus_message_iter_open_container (&_tmp148_, DBUS_TYPE_ARRAY, "s", &_tmp158_);
+				for (_tmp159_ = 0; _tmp159_ < g_strv_length (g_value_get_boxed (_value)); _tmp159_++) {
+					const char* _tmp160_;
+					_tmp160_ = *_tmp157_;
+					dbus_message_iter_append_basic (&_tmp158_, DBUS_TYPE_STRING, &_tmp160_);
+					_tmp157_++;
+				}
+				dbus_message_iter_close_container (&_tmp148_, &_tmp158_);
+				dbus_message_iter_close_container (&_tmp143_, &_tmp148_);
+			}
+			dbus_message_iter_close_container (&_tmp142_, &_tmp143_);
+		}
+		dbus_message_iter_close_container (&_tmp140_, &_tmp142_);
+		_tmp139_++;
+	}
+	dbus_message_iter_close_container (&iter, &_tmp140_);
+	result = (_vala_array_free (result,  result_length1, (GDestroyNotify) g_hash_table_unref), NULL);
+	dbus_connection_send (connection, reply, NULL);
+	dbus_message_unref (reply);
+	dbus_connection_unref (connection);
+	dbus_message_unref (message);
+	g_free (_user_data_);
+}
+
+
 DBusHandlerResult rygel_external_media_container_dbus_message (DBusConnection* connection, DBusMessage* message, void* object) {
 	DBusHandlerResult result;
 	result = DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
@@ -1427,6 +2720,14 @@ DBusHandlerResult rygel_external_media_container_dbus_message (DBusConnection* c
 		result = _dbus_rygel_external_media_container_property_set (object, connection, message);
 	} else if (dbus_message_is_method_call (message, "org.freedesktop.DBus.Properties", "GetAll")) {
 		result = _dbus_rygel_external_media_container_property_get_all (object, connection, message);
+	} else if (dbus_message_is_method_call (message, "org.gnome.UPnP.MediaContainer2", "ListChildren")) {
+		result = _dbus_rygel_external_media_container_list_children (object, connection, message);
+	} else if (dbus_message_is_method_call (message, "org.gnome.UPnP.MediaContainer2", "ListContainers")) {
+		result = _dbus_rygel_external_media_container_list_containers (object, connection, message);
+	} else if (dbus_message_is_method_call (message, "org.gnome.UPnP.MediaContainer2", "ListItems")) {
+		result = _dbus_rygel_external_media_container_list_items (object, connection, message);
+	} else if (dbus_message_is_method_call (message, "org.gnome.UPnP.MediaContainer2", "SearchObjects")) {
+		result = _dbus_rygel_external_media_container_search_objects (object, connection, message);
 	}
 	if (result == DBUS_HANDLER_RESULT_HANDLED) {
 		return result;
@@ -1441,7 +2742,7 @@ static void _dbus_rygel_external_media_container_updated (GObject* _sender, DBus
 	DBusMessage *_message;
 	DBusMessageIter _iter;
 	_path = g_object_get_data (_sender, "dbus_object_path");
-	_message = dbus_message_new_signal (_path, "org.gnome.UPnP.MediaContainer1", "Updated");
+	_message = dbus_message_new_signal (_path, "org.gnome.UPnP.MediaContainer2", "Updated");
 	dbus_message_iter_init_append (_message, &_iter);
 	dbus_connection_send (_connection, _message, NULL);
 	dbus_message_unref (_message);
@@ -1462,8 +2763,10 @@ static void rygel_external_media_container_base_init (RygelExternalMediaContaine
 	static gboolean initialized = FALSE;
 	if (!initialized) {
 		initialized = TRUE;
+		g_object_interface_install_property (iface, g_param_spec_uint ("child-count", "child-count", "child-count", 0, G_MAXUINT, 0U, G_PARAM_STATIC_NAME | G_PARAM_STATIC_NICK | G_PARAM_STATIC_BLURB | G_PARAM_READABLE | G_PARAM_WRITABLE));
 		g_object_interface_install_property (iface, g_param_spec_uint ("item-count", "item-count", "item-count", 0, G_MAXUINT, 0U, G_PARAM_STATIC_NAME | G_PARAM_STATIC_NICK | G_PARAM_STATIC_BLURB | G_PARAM_READABLE | G_PARAM_WRITABLE));
 		g_object_interface_install_property (iface, g_param_spec_uint ("container-count", "container-count", "container-count", 0, G_MAXUINT, 0U, G_PARAM_STATIC_NAME | G_PARAM_STATIC_NICK | G_PARAM_STATIC_BLURB | G_PARAM_READABLE | G_PARAM_WRITABLE));
+		g_object_interface_install_property (iface, g_param_spec_boolean ("searchable", "searchable", "searchable", FALSE, G_PARAM_STATIC_NAME | G_PARAM_STATIC_NICK | G_PARAM_STATIC_BLURB | G_PARAM_READABLE | G_PARAM_WRITABLE));
 		g_object_interface_install_property (iface, g_param_spec_string ("icon", "icon", "icon", NULL, G_PARAM_STATIC_NAME | G_PARAM_STATIC_NICK | G_PARAM_STATIC_BLURB | G_PARAM_READABLE | G_PARAM_WRITABLE));
 		g_signal_new ("updated", RYGEL_TYPE_EXTERNAL_MEDIA_CONTAINER, G_SIGNAL_RUN_LAST, 0, NULL, NULL, g_cclosure_marshal_VOID__VOID, G_TYPE_NONE, 0);
 		g_type_set_qdata (RYGEL_TYPE_EXTERNAL_MEDIA_CONTAINER, g_quark_from_static_string ("DBusObjectVTable"), (void*) (&_rygel_external_media_container_dbus_vtable));
@@ -1489,7 +2792,7 @@ GType rygel_external_media_container_get_type (void) {
 G_DEFINE_TYPE_EXTENDED (RygelExternalMediaContainerDBusProxy, rygel_external_media_container_dbus_proxy, DBUS_TYPE_G_PROXY, 0, G_IMPLEMENT_INTERFACE (RYGEL_TYPE_EXTERNAL_MEDIA_OBJECT, rygel_external_media_container_dbus_proxy_rygel_external_media_object__interface_init) G_IMPLEMENT_INTERFACE (RYGEL_TYPE_EXTERNAL_MEDIA_CONTAINER, rygel_external_media_container_dbus_proxy_rygel_external_media_container__interface_init) );
 RygelExternalMediaContainer* rygel_external_media_container_dbus_proxy_new (DBusGConnection* connection, const char* name, const char* path) {
 	RygelExternalMediaContainer* self;
-	self = g_object_new (rygel_external_media_container_dbus_proxy_get_type (), "connection", connection, "name", name, "path", path, "interface", "org.gnome.UPnP.MediaContainer1", NULL);
+	self = g_object_new (rygel_external_media_container_dbus_proxy_get_type (), "connection", connection, "name", name, "path", path, "interface", "org.gnome.UPnP.MediaContainer2", NULL);
 	return self;
 }
 
@@ -1525,7 +2828,7 @@ static void _dbus_handle_rygel_external_media_container_updated (RygelExternalMe
 
 DBusHandlerResult rygel_external_media_container_dbus_proxy_filter (DBusConnection* connection, DBusMessage* message, void* user_data) {
 	if (dbus_message_has_path (message, dbus_g_proxy_get_path (user_data))) {
-		if (dbus_message_is_signal (message, "org.gnome.UPnP.MediaContainer1", "Updated")) {
+		if (dbus_message_is_signal (message, "org.gnome.UPnP.MediaContainer2", "Updated")) {
 			_dbus_handle_rygel_external_media_container_updated (user_data, connection, message);
 		}
 	}
@@ -1552,8 +2855,11 @@ static void rygel_external_media_container_dbus_proxy_class_init (RygelExternalM
 	G_OBJECT_CLASS (klass)->set_property = rygel_external_media_container_dbus_proxy_set_property;
 	g_object_class_override_property (G_OBJECT_CLASS (klass), RYGEL_EXTERNAL_MEDIA_CONTAINER_DBUS_PROXY_PARENT, "parent");
 	g_object_class_override_property (G_OBJECT_CLASS (klass), RYGEL_EXTERNAL_MEDIA_CONTAINER_DBUS_PROXY_DISPLAY_NAME, "display-name");
+	g_object_class_override_property (G_OBJECT_CLASS (klass), RYGEL_EXTERNAL_MEDIA_CONTAINER_DBUS_PROXY_OBJECT_TYPE, "object-type");
+	g_object_class_override_property (G_OBJECT_CLASS (klass), RYGEL_EXTERNAL_MEDIA_CONTAINER_DBUS_PROXY_CHILD_COUNT, "child-count");
 	g_object_class_override_property (G_OBJECT_CLASS (klass), RYGEL_EXTERNAL_MEDIA_CONTAINER_DBUS_PROXY_ITEM_COUNT, "item-count");
 	g_object_class_override_property (G_OBJECT_CLASS (klass), RYGEL_EXTERNAL_MEDIA_CONTAINER_DBUS_PROXY_CONTAINER_COUNT, "container-count");
+	g_object_class_override_property (G_OBJECT_CLASS (klass), RYGEL_EXTERNAL_MEDIA_CONTAINER_DBUS_PROXY_SEARCHABLE, "searchable");
 	g_object_class_override_property (G_OBJECT_CLASS (klass), RYGEL_EXTERNAL_MEDIA_CONTAINER_DBUS_PROXY_ICON, "icon");
 }
 
@@ -1567,19 +2873,19 @@ static char* rygel_external_media_container_dbus_proxy_get_parent (RygelExternal
 	DBusGConnection *_connection;
 	DBusMessage *_message, *_reply;
 	DBusMessageIter _iter, _subiter;
-	const char* _tmp59_;
-	const char* _tmp60_;
+	const char* _tmp161_;
+	const char* _tmp162_;
 	char* _result;
-	const char* _tmp61_;
+	const char* _tmp163_;
 	if (((RygelExternalMediaObjectDBusProxy*) self)->disposed) {
 		return NULL;
 	}
 	_message = dbus_message_new_method_call (dbus_g_proxy_get_bus_name ((DBusGProxy*) self), dbus_g_proxy_get_path ((DBusGProxy*) self), "org.freedesktop.DBus.Properties", "Get");
 	dbus_message_iter_init_append (_message, &_iter);
-	_tmp59_ = "org.gnome.UPnP.MediaObject1";
-	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp59_);
-	_tmp60_ = "Parent";
-	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp60_);
+	_tmp161_ = "org.gnome.UPnP.MediaObject2";
+	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp161_);
+	_tmp162_ = "Parent";
+	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp162_);
 	g_object_get (self, "connection", &_connection, NULL);
 	dbus_error_init (&_dbus_error);
 	_reply = dbus_connection_send_with_reply_and_block (dbus_g_connection_get_connection (_connection), _message, -1, &_dbus_error);
@@ -1602,9 +2908,9 @@ static char* rygel_external_media_container_dbus_proxy_get_parent (RygelExternal
 		dbus_message_unref (_reply);
 		return NULL;
 	}
-	dbus_message_iter_get_basic (&_subiter, &_tmp61_);
+	dbus_message_iter_get_basic (&_subiter, &_tmp163_);
 	dbus_message_iter_next (&_subiter);
-	_result = g_strdup (_tmp61_);
+	_result = g_strdup (_tmp163_);
 	dbus_message_unref (_reply);
 	return _result;
 }
@@ -1615,21 +2921,21 @@ static void rygel_external_media_container_dbus_proxy_set_parent (RygelExternalM
 	DBusGConnection *_connection;
 	DBusMessage *_message, *_reply;
 	DBusMessageIter _iter, _subiter;
-	const char* _tmp62_;
-	const char* _tmp63_;
-	const char* _tmp64_;
+	const char* _tmp164_;
+	const char* _tmp165_;
+	const char* _tmp166_;
 	if (((RygelExternalMediaObjectDBusProxy*) self)->disposed) {
 		return;
 	}
 	_message = dbus_message_new_method_call (dbus_g_proxy_get_bus_name ((DBusGProxy*) self), dbus_g_proxy_get_path ((DBusGProxy*) self), "org.freedesktop.DBus.Properties", "Set");
 	dbus_message_iter_init_append (_message, &_iter);
-	_tmp62_ = "org.gnome.UPnP.MediaObject1";
-	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp62_);
-	_tmp63_ = "Parent";
-	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp63_);
+	_tmp164_ = "org.gnome.UPnP.MediaObject2";
+	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp164_);
+	_tmp165_ = "Parent";
+	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp165_);
 	dbus_message_iter_open_container (&_iter, DBUS_TYPE_VARIANT, "o", &_subiter);
-	_tmp64_ = value;
-	dbus_message_iter_append_basic (&_subiter, DBUS_TYPE_OBJECT_PATH, &_tmp64_);
+	_tmp166_ = value;
+	dbus_message_iter_append_basic (&_subiter, DBUS_TYPE_OBJECT_PATH, &_tmp166_);
 	dbus_message_iter_close_container (&_iter, &_subiter);
 	g_object_get (self, "connection", &_connection, NULL);
 	dbus_error_init (&_dbus_error);
@@ -1656,19 +2962,19 @@ static char* rygel_external_media_container_dbus_proxy_get_display_name (RygelEx
 	DBusGConnection *_connection;
 	DBusMessage *_message, *_reply;
 	DBusMessageIter _iter, _subiter;
-	const char* _tmp65_;
-	const char* _tmp66_;
+	const char* _tmp167_;
+	const char* _tmp168_;
 	char* _result;
-	const char* _tmp67_;
+	const char* _tmp169_;
 	if (((RygelExternalMediaObjectDBusProxy*) self)->disposed) {
 		return NULL;
 	}
 	_message = dbus_message_new_method_call (dbus_g_proxy_get_bus_name ((DBusGProxy*) self), dbus_g_proxy_get_path ((DBusGProxy*) self), "org.freedesktop.DBus.Properties", "Get");
 	dbus_message_iter_init_append (_message, &_iter);
-	_tmp65_ = "org.gnome.UPnP.MediaObject1";
-	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp65_);
-	_tmp66_ = "DisplayName";
-	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp66_);
+	_tmp167_ = "org.gnome.UPnP.MediaObject2";
+	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp167_);
+	_tmp168_ = "DisplayName";
+	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp168_);
 	g_object_get (self, "connection", &_connection, NULL);
 	dbus_error_init (&_dbus_error);
 	_reply = dbus_connection_send_with_reply_and_block (dbus_g_connection_get_connection (_connection), _message, -1, &_dbus_error);
@@ -1691,9 +2997,9 @@ static char* rygel_external_media_container_dbus_proxy_get_display_name (RygelEx
 		dbus_message_unref (_reply);
 		return NULL;
 	}
-	dbus_message_iter_get_basic (&_subiter, &_tmp67_);
+	dbus_message_iter_get_basic (&_subiter, &_tmp169_);
 	dbus_message_iter_next (&_subiter);
-	_result = g_strdup (_tmp67_);
+	_result = g_strdup (_tmp169_);
 	dbus_message_unref (_reply);
 	return _result;
 }
@@ -1704,21 +3010,110 @@ static void rygel_external_media_container_dbus_proxy_set_display_name (RygelExt
 	DBusGConnection *_connection;
 	DBusMessage *_message, *_reply;
 	DBusMessageIter _iter, _subiter;
-	const char* _tmp68_;
-	const char* _tmp69_;
-	const char* _tmp70_;
+	const char* _tmp170_;
+	const char* _tmp171_;
+	const char* _tmp172_;
 	if (((RygelExternalMediaObjectDBusProxy*) self)->disposed) {
 		return;
 	}
 	_message = dbus_message_new_method_call (dbus_g_proxy_get_bus_name ((DBusGProxy*) self), dbus_g_proxy_get_path ((DBusGProxy*) self), "org.freedesktop.DBus.Properties", "Set");
 	dbus_message_iter_init_append (_message, &_iter);
-	_tmp68_ = "org.gnome.UPnP.MediaObject1";
-	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp68_);
-	_tmp69_ = "DisplayName";
-	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp69_);
+	_tmp170_ = "org.gnome.UPnP.MediaObject2";
+	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp170_);
+	_tmp171_ = "DisplayName";
+	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp171_);
 	dbus_message_iter_open_container (&_iter, DBUS_TYPE_VARIANT, "s", &_subiter);
-	_tmp70_ = value;
-	dbus_message_iter_append_basic (&_subiter, DBUS_TYPE_STRING, &_tmp70_);
+	_tmp172_ = value;
+	dbus_message_iter_append_basic (&_subiter, DBUS_TYPE_STRING, &_tmp172_);
+	dbus_message_iter_close_container (&_iter, &_subiter);
+	g_object_get (self, "connection", &_connection, NULL);
+	dbus_error_init (&_dbus_error);
+	_reply = dbus_connection_send_with_reply_and_block (dbus_g_connection_get_connection (_connection), _message, -1, &_dbus_error);
+	dbus_g_connection_unref (_connection);
+	dbus_message_unref (_message);
+	if (dbus_error_is_set (&_dbus_error)) {
+		g_critical ("file %s: line %d: uncaught error: %s (%s)", __FILE__, __LINE__, _dbus_error.message, _dbus_error.name);
+		dbus_error_free (&_dbus_error);
+		return;
+	}
+	if (strcmp (dbus_message_get_signature (_reply), "")) {
+		g_critical ("file %s: line %d: Invalid signature, expected \"%s\", got \"%s\"", __FILE__, __LINE__, "", dbus_message_get_signature (_reply));
+		dbus_message_unref (_reply);
+		return;
+	}
+	dbus_message_iter_init (_reply, &_iter);
+	dbus_message_unref (_reply);
+}
+
+
+static char* rygel_external_media_container_dbus_proxy_get_object_type (RygelExternalMediaObject* self) {
+	DBusError _dbus_error;
+	DBusGConnection *_connection;
+	DBusMessage *_message, *_reply;
+	DBusMessageIter _iter, _subiter;
+	const char* _tmp173_;
+	const char* _tmp174_;
+	char* _result;
+	const char* _tmp175_;
+	if (((RygelExternalMediaObjectDBusProxy*) self)->disposed) {
+		return NULL;
+	}
+	_message = dbus_message_new_method_call (dbus_g_proxy_get_bus_name ((DBusGProxy*) self), dbus_g_proxy_get_path ((DBusGProxy*) self), "org.freedesktop.DBus.Properties", "Get");
+	dbus_message_iter_init_append (_message, &_iter);
+	_tmp173_ = "org.gnome.UPnP.MediaObject2";
+	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp173_);
+	_tmp174_ = "Type";
+	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp174_);
+	g_object_get (self, "connection", &_connection, NULL);
+	dbus_error_init (&_dbus_error);
+	_reply = dbus_connection_send_with_reply_and_block (dbus_g_connection_get_connection (_connection), _message, -1, &_dbus_error);
+	dbus_g_connection_unref (_connection);
+	dbus_message_unref (_message);
+	if (dbus_error_is_set (&_dbus_error)) {
+		g_critical ("file %s: line %d: uncaught error: %s (%s)", __FILE__, __LINE__, _dbus_error.message, _dbus_error.name);
+		dbus_error_free (&_dbus_error);
+		return NULL;
+	}
+	if (strcmp (dbus_message_get_signature (_reply), "v")) {
+		g_critical ("file %s: line %d: Invalid signature, expected \"%s\", got \"%s\"", __FILE__, __LINE__, "v", dbus_message_get_signature (_reply));
+		dbus_message_unref (_reply);
+		return NULL;
+	}
+	dbus_message_iter_init (_reply, &_iter);
+	dbus_message_iter_recurse (&_iter, &_subiter);
+	if (strcmp (dbus_message_iter_get_signature (&_subiter), "s")) {
+		g_critical ("file %s: line %d: Invalid signature, expected \"%s\", got \"%s\"", __FILE__, __LINE__, "s", dbus_message_iter_get_signature (&_subiter));
+		dbus_message_unref (_reply);
+		return NULL;
+	}
+	dbus_message_iter_get_basic (&_subiter, &_tmp175_);
+	dbus_message_iter_next (&_subiter);
+	_result = g_strdup (_tmp175_);
+	dbus_message_unref (_reply);
+	return _result;
+}
+
+
+static void rygel_external_media_container_dbus_proxy_set_object_type (RygelExternalMediaObject* self, const char* value) {
+	DBusError _dbus_error;
+	DBusGConnection *_connection;
+	DBusMessage *_message, *_reply;
+	DBusMessageIter _iter, _subiter;
+	const char* _tmp176_;
+	const char* _tmp177_;
+	const char* _tmp178_;
+	if (((RygelExternalMediaObjectDBusProxy*) self)->disposed) {
+		return;
+	}
+	_message = dbus_message_new_method_call (dbus_g_proxy_get_bus_name ((DBusGProxy*) self), dbus_g_proxy_get_path ((DBusGProxy*) self), "org.freedesktop.DBus.Properties", "Set");
+	dbus_message_iter_init_append (_message, &_iter);
+	_tmp176_ = "org.gnome.UPnP.MediaObject2";
+	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp176_);
+	_tmp177_ = "Type";
+	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp177_);
+	dbus_message_iter_open_container (&_iter, DBUS_TYPE_VARIANT, "s", &_subiter);
+	_tmp178_ = value;
+	dbus_message_iter_append_basic (&_subiter, DBUS_TYPE_STRING, &_tmp178_);
 	dbus_message_iter_close_container (&_iter, &_subiter);
 	g_object_get (self, "connection", &_connection, NULL);
 	dbus_error_init (&_dbus_error);
@@ -1745,230 +3140,1218 @@ static void rygel_external_media_container_dbus_proxy_rygel_external_media_objec
 	iface->set_parent = rygel_external_media_container_dbus_proxy_set_parent;
 	iface->get_display_name = rygel_external_media_container_dbus_proxy_get_display_name;
 	iface->set_display_name = rygel_external_media_container_dbus_proxy_set_display_name;
+	iface->get_object_type = rygel_external_media_container_dbus_proxy_get_object_type;
+	iface->set_object_type = rygel_external_media_container_dbus_proxy_set_object_type;
 }
 
 
-static char** rygel_external_media_container_dbus_proxy_get_items (RygelExternalMediaContainer* self, int* result_length1) {
-	DBusError _dbus_error;
+static void rygel_external_media_container_dbus_proxy_list_children_async (RygelExternalMediaContainer* self, guint offset, guint max_count, char** filter, int filter_length1, GAsyncReadyCallback _callback_, gpointer _user_data_) {
 	DBusGConnection *_connection;
-	DBusMessage *_message, *_reply;
-	DBusMessageIter _iter, _subiter;
-	const char* _tmp71_;
-	const char* _tmp72_;
-	char** _result;
-	int _result_length1;
-	char** _tmp73_;
-	int _tmp73__length;
-	int _tmp73__size;
-	int _tmp73__length1;
-	DBusMessageIter _tmp74_;
-	if (((RygelExternalMediaContainerDBusProxy*) self)->disposed) {
-		return NULL;
-	}
-	_message = dbus_message_new_method_call (dbus_g_proxy_get_bus_name ((DBusGProxy*) self), dbus_g_proxy_get_path ((DBusGProxy*) self), "org.freedesktop.DBus.Properties", "Get");
+	DBusMessage *_message;
+	DBusPendingCall *_pending;
+	DBusMessageIter _iter;
+	dbus_uint32_t _tmp179_;
+	dbus_uint32_t _tmp180_;
+	char** _tmp181_;
+	DBusMessageIter _tmp182_;
+	int _tmp183_;
+	RygelExternalMediaContainerDBusProxyListChildrenData* _data_;
+	_message = dbus_message_new_method_call (dbus_g_proxy_get_bus_name ((DBusGProxy*) self), dbus_g_proxy_get_path ((DBusGProxy*) self), "org.gnome.UPnP.MediaContainer2", "ListChildren");
 	dbus_message_iter_init_append (_message, &_iter);
-	_tmp71_ = "org.gnome.UPnP.MediaContainer1";
-	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp71_);
-	_tmp72_ = "Items";
-	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp72_);
+	_tmp179_ = offset;
+	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_UINT32, &_tmp179_);
+	_tmp180_ = max_count;
+	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_UINT32, &_tmp180_);
+	_tmp181_ = filter;
+	dbus_message_iter_open_container (&_iter, DBUS_TYPE_ARRAY, "s", &_tmp182_);
+	for (_tmp183_ = 0; _tmp183_ < filter_length1; _tmp183_++) {
+		const char* _tmp184_;
+		_tmp184_ = *_tmp181_;
+		dbus_message_iter_append_basic (&_tmp182_, DBUS_TYPE_STRING, &_tmp184_);
+		_tmp181_++;
+	}
+	dbus_message_iter_close_container (&_iter, &_tmp182_);
 	g_object_get (self, "connection", &_connection, NULL);
-	dbus_error_init (&_dbus_error);
-	_reply = dbus_connection_send_with_reply_and_block (dbus_g_connection_get_connection (_connection), _message, -1, &_dbus_error);
+	dbus_connection_send_with_reply (dbus_g_connection_get_connection (_connection), _message, &_pending, -1);
 	dbus_g_connection_unref (_connection);
 	dbus_message_unref (_message);
+	_data_ = g_slice_new0 (RygelExternalMediaContainerDBusProxyListChildrenData);
+	_data_->_callback_ = _callback_;
+	_data_->_user_data_ = _user_data_;
+	_data_->pending = _pending;
+	dbus_pending_call_set_notify (_pending, rygel_external_media_container_dbus_proxy_list_children_ready, _data_, NULL);
+}
+
+
+static void rygel_external_media_container_dbus_proxy_list_children_ready (DBusPendingCall* pending, void* user_data) {
+	RygelExternalMediaContainerDBusProxyListChildrenData* _data_;
+	GObject * _obj_;
+	GSimpleAsyncResult * _res_;
+	_data_ = user_data;
+	_obj_ = g_object_newv (G_TYPE_OBJECT, 0, NULL);
+	_res_ = g_simple_async_result_new (_obj_, _data_->_callback_, _data_->_user_data_, _data_);
+	g_simple_async_result_complete (_res_);
+	g_object_unref (_obj_);
+	g_object_unref (_res_);
+	g_slice_free (RygelExternalMediaContainerDBusProxyListChildrenData, _data_);
+	dbus_pending_call_unref (pending);
+}
+
+
+static GHashTable** rygel_external_media_container_dbus_proxy_list_children_finish (RygelExternalMediaContainer* self, GAsyncResult* _res_, int* result_length1, GError** error) {
+	RygelExternalMediaContainerDBusProxyListChildrenData* _data_;
+	DBusError _dbus_error;
+	DBusMessage *_reply;
+	DBusMessageIter _iter;
+	GHashTable** _result;
+	int _result_length1;
+	GHashTable** _tmp215_;
+	int _tmp215__length;
+	int _tmp215__size;
+	int _tmp215__length1;
+	DBusMessageIter _tmp216_;
+	_data_ = g_simple_async_result_get_source_tag ((GSimpleAsyncResult *) _res_);
+	dbus_error_init (&_dbus_error);
+	_reply = dbus_pending_call_steal_reply (_data_->pending);
+	dbus_set_error_from_message (&_dbus_error, _reply);
 	if (dbus_error_is_set (&_dbus_error)) {
-		g_critical ("file %s: line %d: uncaught error: %s (%s)", __FILE__, __LINE__, _dbus_error.message, _dbus_error.name);
+		GQuark _edomain;
+		gint _ecode;
+		if (strstr (_dbus_error.name, "org.freedesktop.DBus.Error") == _dbus_error.name) {
+			const char* _tmp208_;
+			_edomain = DBUS_GERROR;
+			_tmp208_ = _dbus_error.name + 27;
+			if (strcmp (_tmp208_, "Failed") == 0) {
+				_ecode = DBUS_GERROR_FAILED;
+			} else if (strcmp (_tmp208_, "NoMemory") == 0) {
+				_ecode = DBUS_GERROR_NO_MEMORY;
+			} else if (strcmp (_tmp208_, "ServiceUnknown") == 0) {
+				_ecode = DBUS_GERROR_SERVICE_UNKNOWN;
+			} else if (strcmp (_tmp208_, "NameHasNoOwner") == 0) {
+				_ecode = DBUS_GERROR_NAME_HAS_NO_OWNER;
+			} else if (strcmp (_tmp208_, "NoReply") == 0) {
+				_ecode = DBUS_GERROR_NO_REPLY;
+			} else if (strcmp (_tmp208_, "IOError") == 0) {
+				_ecode = DBUS_GERROR_IO_ERROR;
+			} else if (strcmp (_tmp208_, "BadAddress") == 0) {
+				_ecode = DBUS_GERROR_BAD_ADDRESS;
+			} else if (strcmp (_tmp208_, "NotSupported") == 0) {
+				_ecode = DBUS_GERROR_NOT_SUPPORTED;
+			} else if (strcmp (_tmp208_, "LimitsExceeded") == 0) {
+				_ecode = DBUS_GERROR_LIMITS_EXCEEDED;
+			} else if (strcmp (_tmp208_, "AccessDenied") == 0) {
+				_ecode = DBUS_GERROR_ACCESS_DENIED;
+			} else if (strcmp (_tmp208_, "AuthFailed") == 0) {
+				_ecode = DBUS_GERROR_AUTH_FAILED;
+			} else if (strcmp (_tmp208_, "NoServer") == 0) {
+				_ecode = DBUS_GERROR_NO_SERVER;
+			} else if (strcmp (_tmp208_, "Timeout") == 0) {
+				_ecode = DBUS_GERROR_TIMEOUT;
+			} else if (strcmp (_tmp208_, "NoNetwork") == 0) {
+				_ecode = DBUS_GERROR_NO_NETWORK;
+			} else if (strcmp (_tmp208_, "AddressInUse") == 0) {
+				_ecode = DBUS_GERROR_ADDRESS_IN_USE;
+			} else if (strcmp (_tmp208_, "Disconnected") == 0) {
+				_ecode = DBUS_GERROR_DISCONNECTED;
+			} else if (strcmp (_tmp208_, "InvalidArgs") == 0) {
+				_ecode = DBUS_GERROR_INVALID_ARGS;
+			} else if (strcmp (_tmp208_, "FileNotFound") == 0) {
+				_ecode = DBUS_GERROR_FILE_NOT_FOUND;
+			} else if (strcmp (_tmp208_, "FileExists") == 0) {
+				_ecode = DBUS_GERROR_FILE_EXISTS;
+			} else if (strcmp (_tmp208_, "UnknownMethod") == 0) {
+				_ecode = DBUS_GERROR_UNKNOWN_METHOD;
+			} else if (strcmp (_tmp208_, "TimedOut") == 0) {
+				_ecode = DBUS_GERROR_TIMED_OUT;
+			} else if (strcmp (_tmp208_, "MatchRuleNotFound") == 0) {
+				_ecode = DBUS_GERROR_MATCH_RULE_NOT_FOUND;
+			} else if (strcmp (_tmp208_, "MatchRuleInvalid") == 0) {
+				_ecode = DBUS_GERROR_MATCH_RULE_INVALID;
+			} else if (strcmp (_tmp208_, "Spawn.ExecFailed") == 0) {
+				_ecode = DBUS_GERROR_SPAWN_EXEC_FAILED;
+			} else if (strcmp (_tmp208_, "Spawn.ForkFailed") == 0) {
+				_ecode = DBUS_GERROR_SPAWN_FORK_FAILED;
+			} else if (strcmp (_tmp208_, "Spawn.ChildExited") == 0) {
+				_ecode = DBUS_GERROR_SPAWN_CHILD_EXITED;
+			} else if (strcmp (_tmp208_, "Spawn.ChildSignaled") == 0) {
+				_ecode = DBUS_GERROR_SPAWN_CHILD_SIGNALED;
+			} else if (strcmp (_tmp208_, "Spawn.Failed") == 0) {
+				_ecode = DBUS_GERROR_SPAWN_FAILED;
+			} else if (strcmp (_tmp208_, "UnixProcessIdUnknown") == 0) {
+				_ecode = DBUS_GERROR_UNIX_PROCESS_ID_UNKNOWN;
+			} else if (strcmp (_tmp208_, "InvalidSignature") == 0) {
+				_ecode = DBUS_GERROR_INVALID_SIGNATURE;
+			} else if (strcmp (_tmp208_, "InvalidFileContent") == 0) {
+				_ecode = DBUS_GERROR_INVALID_FILE_CONTENT;
+			} else if (strcmp (_tmp208_, "SELinuxSecurityContextUnknown") == 0) {
+				_ecode = DBUS_GERROR_SELINUX_SECURITY_CONTEXT_UNKNOWN;
+			} else if (strcmp (_tmp208_, "RemoteException") == 0) {
+				_ecode = DBUS_GERROR_REMOTE_EXCEPTION;
+			}
+		}
+		g_set_error (error, _edomain, _ecode, "%s", _dbus_error.message);
 		dbus_error_free (&_dbus_error);
 		return NULL;
 	}
-	if (strcmp (dbus_message_get_signature (_reply), "v")) {
-		g_critical ("file %s: line %d: Invalid signature, expected \"%s\", got \"%s\"", __FILE__, __LINE__, "v", dbus_message_get_signature (_reply));
+	if (strcmp (dbus_message_get_signature (_reply), "aa{sv}")) {
+		g_set_error (error, DBUS_GERROR, DBUS_GERROR_INVALID_SIGNATURE, "Invalid signature, expected \"%s\", got \"%s\"", "aa{sv}", dbus_message_get_signature (_reply));
 		dbus_message_unref (_reply);
 		return NULL;
 	}
 	dbus_message_iter_init (_reply, &_iter);
-	dbus_message_iter_recurse (&_iter, &_subiter);
-	if (strcmp (dbus_message_iter_get_signature (&_subiter), "ao")) {
-		g_critical ("file %s: line %d: Invalid signature, expected \"%s\", got \"%s\"", __FILE__, __LINE__, "ao", dbus_message_iter_get_signature (&_subiter));
-		dbus_message_unref (_reply);
-		return NULL;
-	}
 	_result_length1 = 0;
-	_tmp73_ = g_new (char*, 5);
-	_tmp73__length = 0;
-	_tmp73__size = 4;
-	_tmp73__length1 = 0;
-	dbus_message_iter_recurse (&_subiter, &_tmp74_);
-	for (; dbus_message_iter_get_arg_type (&_tmp74_); _tmp73__length1++) {
-		const char* _tmp75_;
-		if (_tmp73__size == _tmp73__length) {
-			_tmp73__size = 2 * _tmp73__size;
-			_tmp73_ = g_renew (char*, _tmp73_, _tmp73__size + 1);
+	_tmp215_ = g_new (GHashTable*, 5);
+	_tmp215__length = 0;
+	_tmp215__size = 4;
+	_tmp215__length1 = 0;
+	dbus_message_iter_recurse (&_iter, &_tmp216_);
+	for (; dbus_message_iter_get_arg_type (&_tmp216_); _tmp215__length1++) {
+		GHashTable* _tmp217_;
+		DBusMessageIter _tmp218_;
+		DBusMessageIter _tmp219_;
+		if (_tmp215__size == _tmp215__length) {
+			_tmp215__size = 2 * _tmp215__size;
+			_tmp215_ = g_renew (GHashTable*, _tmp215_, _tmp215__size + 1);
 		}
-		dbus_message_iter_get_basic (&_tmp74_, &_tmp75_);
-		dbus_message_iter_next (&_tmp74_);
-		_tmp73_[_tmp73__length++] = g_strdup (_tmp75_);
+		_tmp217_ = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);
+		dbus_message_iter_recurse (&_tmp216_, &_tmp218_);
+		while (dbus_message_iter_get_arg_type (&_tmp218_)) {
+			char* _key;
+			GValue* _value;
+			const char* _tmp220_;
+			GValue _tmp221_ = {0};
+			DBusMessageIter _tmp222_;
+			dbus_message_iter_recurse (&_tmp218_, &_tmp219_);
+			dbus_message_iter_get_basic (&_tmp219_, &_tmp220_);
+			dbus_message_iter_next (&_tmp219_);
+			_key = g_strdup (_tmp220_);
+			dbus_message_iter_recurse (&_tmp219_, &_tmp222_);
+			if (dbus_message_iter_get_arg_type (&_tmp222_) == DBUS_TYPE_BYTE) {
+				guint8 _tmp223_;
+				dbus_message_iter_get_basic (&_tmp222_, &_tmp223_);
+				g_value_init (&_tmp221_, G_TYPE_UCHAR);
+				g_value_set_uchar (&_tmp221_, _tmp223_);
+			} else if (dbus_message_iter_get_arg_type (&_tmp222_) == DBUS_TYPE_BOOLEAN) {
+				dbus_bool_t _tmp224_;
+				dbus_message_iter_get_basic (&_tmp222_, &_tmp224_);
+				g_value_init (&_tmp221_, G_TYPE_BOOLEAN);
+				g_value_set_boolean (&_tmp221_, _tmp224_);
+			} else if (dbus_message_iter_get_arg_type (&_tmp222_) == DBUS_TYPE_INT16) {
+				dbus_int16_t _tmp225_;
+				dbus_message_iter_get_basic (&_tmp222_, &_tmp225_);
+				g_value_init (&_tmp221_, G_TYPE_INT);
+				g_value_set_int (&_tmp221_, _tmp225_);
+			} else if (dbus_message_iter_get_arg_type (&_tmp222_) == DBUS_TYPE_UINT16) {
+				dbus_uint16_t _tmp226_;
+				dbus_message_iter_get_basic (&_tmp222_, &_tmp226_);
+				g_value_init (&_tmp221_, G_TYPE_UINT);
+				g_value_set_uint (&_tmp221_, _tmp226_);
+			} else if (dbus_message_iter_get_arg_type (&_tmp222_) == DBUS_TYPE_INT32) {
+				dbus_int32_t _tmp227_;
+				dbus_message_iter_get_basic (&_tmp222_, &_tmp227_);
+				g_value_init (&_tmp221_, G_TYPE_INT);
+				g_value_set_int (&_tmp221_, _tmp227_);
+			} else if (dbus_message_iter_get_arg_type (&_tmp222_) == DBUS_TYPE_UINT32) {
+				dbus_uint32_t _tmp228_;
+				dbus_message_iter_get_basic (&_tmp222_, &_tmp228_);
+				g_value_init (&_tmp221_, G_TYPE_UINT);
+				g_value_set_uint (&_tmp221_, _tmp228_);
+			} else if (dbus_message_iter_get_arg_type (&_tmp222_) == DBUS_TYPE_INT64) {
+				dbus_int64_t _tmp229_;
+				dbus_message_iter_get_basic (&_tmp222_, &_tmp229_);
+				g_value_init (&_tmp221_, G_TYPE_INT64);
+				g_value_set_int64 (&_tmp221_, _tmp229_);
+			} else if (dbus_message_iter_get_arg_type (&_tmp222_) == DBUS_TYPE_UINT64) {
+				dbus_uint64_t _tmp230_;
+				dbus_message_iter_get_basic (&_tmp222_, &_tmp230_);
+				g_value_init (&_tmp221_, G_TYPE_UINT64);
+				g_value_set_uint64 (&_tmp221_, _tmp230_);
+			} else if (dbus_message_iter_get_arg_type (&_tmp222_) == DBUS_TYPE_DOUBLE) {
+				double _tmp231_;
+				dbus_message_iter_get_basic (&_tmp222_, &_tmp231_);
+				g_value_init (&_tmp221_, G_TYPE_DOUBLE);
+				g_value_set_double (&_tmp221_, _tmp231_);
+			} else if (dbus_message_iter_get_arg_type (&_tmp222_) == DBUS_TYPE_STRING) {
+				const char* _tmp232_;
+				dbus_message_iter_get_basic (&_tmp222_, &_tmp232_);
+				g_value_init (&_tmp221_, G_TYPE_STRING);
+				g_value_take_string (&_tmp221_, g_strdup (_tmp232_));
+			} else if (dbus_message_iter_get_arg_type (&_tmp222_) == DBUS_TYPE_OBJECT_PATH) {
+				const char* _tmp233_;
+				dbus_message_iter_get_basic (&_tmp222_, &_tmp233_);
+				g_value_init (&_tmp221_, G_TYPE_STRING);
+				g_value_take_string (&_tmp221_, g_strdup (_tmp233_));
+			} else if (dbus_message_iter_get_arg_type (&_tmp222_) == DBUS_TYPE_SIGNATURE) {
+				const char* _tmp234_;
+				dbus_message_iter_get_basic (&_tmp222_, &_tmp234_);
+				g_value_init (&_tmp221_, G_TYPE_STRING);
+				g_value_take_string (&_tmp221_, g_strdup (_tmp234_));
+			} else if ((dbus_message_iter_get_arg_type (&_tmp222_) == DBUS_TYPE_ARRAY) && (dbus_message_iter_get_element_type (&_tmp222_) == DBUS_TYPE_STRING)) {
+				const char** _tmp235_;
+				int _tmp235__length;
+				int _tmp235__size;
+				int _tmp235__length1;
+				DBusMessageIter _tmp236_;
+				_tmp235_ = g_new (const char*, 5);
+				_tmp235__length = 0;
+				_tmp235__size = 4;
+				_tmp235__length1 = 0;
+				dbus_message_iter_recurse (&_tmp222_, &_tmp236_);
+				for (; dbus_message_iter_get_arg_type (&_tmp236_); _tmp235__length1++) {
+					const char* _tmp237_;
+					if (_tmp235__size == _tmp235__length) {
+						_tmp235__size = 2 * _tmp235__size;
+						_tmp235_ = g_renew (const char*, _tmp235_, _tmp235__size + 1);
+					}
+					dbus_message_iter_get_basic (&_tmp236_, &_tmp237_);
+					dbus_message_iter_next (&_tmp236_);
+					_tmp235_[_tmp235__length++] = g_strdup (_tmp237_);
+				}
+				_tmp235_[_tmp235__length] = NULL;
+				g_value_init (&_tmp221_, G_TYPE_STRV);
+				g_value_take_boxed (&_tmp221_, _tmp235_);
+			}
+			dbus_message_iter_next (&_tmp219_);
+			_value = g_memdup (&_tmp221_, sizeof (GValue));
+			g_hash_table_insert (_tmp217_, _key, _value);
+			dbus_message_iter_next (&_tmp218_);
+		}
+		dbus_message_iter_next (&_tmp216_);
+		_tmp215_[_tmp215__length++] = _tmp217_;
 	}
-	_result_length1 = _tmp73__length1;
-	_tmp73_[_tmp73__length] = NULL;
-	dbus_message_iter_next (&_subiter);
-	_result = _tmp73_;
+	_result_length1 = _tmp215__length1;
+	_tmp215_[_tmp215__length] = NULL;
+	dbus_message_iter_next (&_iter);
+	_result = _tmp215_;
 	*result_length1 = _result_length1;
 	dbus_message_unref (_reply);
 	return _result;
 }
 
 
-static void rygel_external_media_container_dbus_proxy_set_items (RygelExternalMediaContainer* self, char** value, int value_length1) {
-	DBusError _dbus_error;
+static void rygel_external_media_container_dbus_proxy_list_containers_async (RygelExternalMediaContainer* self, guint offset, guint max_count, char** filter, int filter_length1, GAsyncReadyCallback _callback_, gpointer _user_data_) {
 	DBusGConnection *_connection;
-	DBusMessage *_message, *_reply;
-	DBusMessageIter _iter, _subiter;
-	const char* _tmp76_;
-	const char* _tmp77_;
-	char** _tmp78_;
-	DBusMessageIter _tmp79_;
-	int _tmp80_;
-	if (((RygelExternalMediaContainerDBusProxy*) self)->disposed) {
-		return;
-	}
-	_message = dbus_message_new_method_call (dbus_g_proxy_get_bus_name ((DBusGProxy*) self), dbus_g_proxy_get_path ((DBusGProxy*) self), "org.freedesktop.DBus.Properties", "Set");
+	DBusMessage *_message;
+	DBusPendingCall *_pending;
+	DBusMessageIter _iter;
+	dbus_uint32_t _tmp238_;
+	dbus_uint32_t _tmp239_;
+	char** _tmp240_;
+	DBusMessageIter _tmp241_;
+	int _tmp242_;
+	RygelExternalMediaContainerDBusProxyListContainersData* _data_;
+	_message = dbus_message_new_method_call (dbus_g_proxy_get_bus_name ((DBusGProxy*) self), dbus_g_proxy_get_path ((DBusGProxy*) self), "org.gnome.UPnP.MediaContainer2", "ListContainers");
 	dbus_message_iter_init_append (_message, &_iter);
-	_tmp76_ = "org.gnome.UPnP.MediaContainer1";
-	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp76_);
-	_tmp77_ = "Items";
-	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp77_);
-	dbus_message_iter_open_container (&_iter, DBUS_TYPE_VARIANT, "ao", &_subiter);
-	_tmp78_ = value;
-	dbus_message_iter_open_container (&_subiter, DBUS_TYPE_ARRAY, "o", &_tmp79_);
-	for (_tmp80_ = 0; _tmp80_ < value_length1; _tmp80_++) {
-		const char* _tmp81_;
-		_tmp81_ = *_tmp78_;
-		dbus_message_iter_append_basic (&_tmp79_, DBUS_TYPE_OBJECT_PATH, &_tmp81_);
-		_tmp78_++;
+	_tmp238_ = offset;
+	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_UINT32, &_tmp238_);
+	_tmp239_ = max_count;
+	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_UINT32, &_tmp239_);
+	_tmp240_ = filter;
+	dbus_message_iter_open_container (&_iter, DBUS_TYPE_ARRAY, "s", &_tmp241_);
+	for (_tmp242_ = 0; _tmp242_ < filter_length1; _tmp242_++) {
+		const char* _tmp243_;
+		_tmp243_ = *_tmp240_;
+		dbus_message_iter_append_basic (&_tmp241_, DBUS_TYPE_STRING, &_tmp243_);
+		_tmp240_++;
 	}
-	dbus_message_iter_close_container (&_subiter, &_tmp79_);
-	dbus_message_iter_close_container (&_iter, &_subiter);
+	dbus_message_iter_close_container (&_iter, &_tmp241_);
 	g_object_get (self, "connection", &_connection, NULL);
-	dbus_error_init (&_dbus_error);
-	_reply = dbus_connection_send_with_reply_and_block (dbus_g_connection_get_connection (_connection), _message, -1, &_dbus_error);
+	dbus_connection_send_with_reply (dbus_g_connection_get_connection (_connection), _message, &_pending, -1);
 	dbus_g_connection_unref (_connection);
 	dbus_message_unref (_message);
-	if (dbus_error_is_set (&_dbus_error)) {
-		g_critical ("file %s: line %d: uncaught error: %s (%s)", __FILE__, __LINE__, _dbus_error.message, _dbus_error.name);
-		dbus_error_free (&_dbus_error);
-		return;
-	}
-	if (strcmp (dbus_message_get_signature (_reply), "")) {
-		g_critical ("file %s: line %d: Invalid signature, expected \"%s\", got \"%s\"", __FILE__, __LINE__, "", dbus_message_get_signature (_reply));
-		dbus_message_unref (_reply);
-		return;
-	}
-	dbus_message_iter_init (_reply, &_iter);
-	dbus_message_unref (_reply);
+	_data_ = g_slice_new0 (RygelExternalMediaContainerDBusProxyListContainersData);
+	_data_->_callback_ = _callback_;
+	_data_->_user_data_ = _user_data_;
+	_data_->pending = _pending;
+	dbus_pending_call_set_notify (_pending, rygel_external_media_container_dbus_proxy_list_containers_ready, _data_, NULL);
 }
 
 
-static char** rygel_external_media_container_dbus_proxy_get_containers (RygelExternalMediaContainer* self, int* result_length1) {
+static void rygel_external_media_container_dbus_proxy_list_containers_ready (DBusPendingCall* pending, void* user_data) {
+	RygelExternalMediaContainerDBusProxyListContainersData* _data_;
+	GObject * _obj_;
+	GSimpleAsyncResult * _res_;
+	_data_ = user_data;
+	_obj_ = g_object_newv (G_TYPE_OBJECT, 0, NULL);
+	_res_ = g_simple_async_result_new (_obj_, _data_->_callback_, _data_->_user_data_, _data_);
+	g_simple_async_result_complete (_res_);
+	g_object_unref (_obj_);
+	g_object_unref (_res_);
+	g_slice_free (RygelExternalMediaContainerDBusProxyListContainersData, _data_);
+	dbus_pending_call_unref (pending);
+}
+
+
+static GHashTable** rygel_external_media_container_dbus_proxy_list_containers_finish (RygelExternalMediaContainer* self, GAsyncResult* _res_, int* result_length1, GError** error) {
+	RygelExternalMediaContainerDBusProxyListContainersData* _data_;
 	DBusError _dbus_error;
-	DBusGConnection *_connection;
-	DBusMessage *_message, *_reply;
-	DBusMessageIter _iter, _subiter;
-	const char* _tmp82_;
-	const char* _tmp83_;
-	char** _result;
+	DBusMessage *_reply;
+	DBusMessageIter _iter;
+	GHashTable** _result;
 	int _result_length1;
-	char** _tmp84_;
-	int _tmp84__length;
-	int _tmp84__size;
-	int _tmp84__length1;
-	DBusMessageIter _tmp85_;
-	if (((RygelExternalMediaContainerDBusProxy*) self)->disposed) {
-		return NULL;
-	}
-	_message = dbus_message_new_method_call (dbus_g_proxy_get_bus_name ((DBusGProxy*) self), dbus_g_proxy_get_path ((DBusGProxy*) self), "org.freedesktop.DBus.Properties", "Get");
-	dbus_message_iter_init_append (_message, &_iter);
-	_tmp82_ = "org.gnome.UPnP.MediaContainer1";
-	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp82_);
-	_tmp83_ = "Containers";
-	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp83_);
-	g_object_get (self, "connection", &_connection, NULL);
+	GHashTable** _tmp274_;
+	int _tmp274__length;
+	int _tmp274__size;
+	int _tmp274__length1;
+	DBusMessageIter _tmp275_;
+	_data_ = g_simple_async_result_get_source_tag ((GSimpleAsyncResult *) _res_);
 	dbus_error_init (&_dbus_error);
-	_reply = dbus_connection_send_with_reply_and_block (dbus_g_connection_get_connection (_connection), _message, -1, &_dbus_error);
-	dbus_g_connection_unref (_connection);
-	dbus_message_unref (_message);
+	_reply = dbus_pending_call_steal_reply (_data_->pending);
+	dbus_set_error_from_message (&_dbus_error, _reply);
 	if (dbus_error_is_set (&_dbus_error)) {
-		g_critical ("file %s: line %d: uncaught error: %s (%s)", __FILE__, __LINE__, _dbus_error.message, _dbus_error.name);
+		GQuark _edomain;
+		gint _ecode;
+		if (strstr (_dbus_error.name, "org.freedesktop.DBus.Error") == _dbus_error.name) {
+			const char* _tmp267_;
+			_edomain = DBUS_GERROR;
+			_tmp267_ = _dbus_error.name + 27;
+			if (strcmp (_tmp267_, "Failed") == 0) {
+				_ecode = DBUS_GERROR_FAILED;
+			} else if (strcmp (_tmp267_, "NoMemory") == 0) {
+				_ecode = DBUS_GERROR_NO_MEMORY;
+			} else if (strcmp (_tmp267_, "ServiceUnknown") == 0) {
+				_ecode = DBUS_GERROR_SERVICE_UNKNOWN;
+			} else if (strcmp (_tmp267_, "NameHasNoOwner") == 0) {
+				_ecode = DBUS_GERROR_NAME_HAS_NO_OWNER;
+			} else if (strcmp (_tmp267_, "NoReply") == 0) {
+				_ecode = DBUS_GERROR_NO_REPLY;
+			} else if (strcmp (_tmp267_, "IOError") == 0) {
+				_ecode = DBUS_GERROR_IO_ERROR;
+			} else if (strcmp (_tmp267_, "BadAddress") == 0) {
+				_ecode = DBUS_GERROR_BAD_ADDRESS;
+			} else if (strcmp (_tmp267_, "NotSupported") == 0) {
+				_ecode = DBUS_GERROR_NOT_SUPPORTED;
+			} else if (strcmp (_tmp267_, "LimitsExceeded") == 0) {
+				_ecode = DBUS_GERROR_LIMITS_EXCEEDED;
+			} else if (strcmp (_tmp267_, "AccessDenied") == 0) {
+				_ecode = DBUS_GERROR_ACCESS_DENIED;
+			} else if (strcmp (_tmp267_, "AuthFailed") == 0) {
+				_ecode = DBUS_GERROR_AUTH_FAILED;
+			} else if (strcmp (_tmp267_, "NoServer") == 0) {
+				_ecode = DBUS_GERROR_NO_SERVER;
+			} else if (strcmp (_tmp267_, "Timeout") == 0) {
+				_ecode = DBUS_GERROR_TIMEOUT;
+			} else if (strcmp (_tmp267_, "NoNetwork") == 0) {
+				_ecode = DBUS_GERROR_NO_NETWORK;
+			} else if (strcmp (_tmp267_, "AddressInUse") == 0) {
+				_ecode = DBUS_GERROR_ADDRESS_IN_USE;
+			} else if (strcmp (_tmp267_, "Disconnected") == 0) {
+				_ecode = DBUS_GERROR_DISCONNECTED;
+			} else if (strcmp (_tmp267_, "InvalidArgs") == 0) {
+				_ecode = DBUS_GERROR_INVALID_ARGS;
+			} else if (strcmp (_tmp267_, "FileNotFound") == 0) {
+				_ecode = DBUS_GERROR_FILE_NOT_FOUND;
+			} else if (strcmp (_tmp267_, "FileExists") == 0) {
+				_ecode = DBUS_GERROR_FILE_EXISTS;
+			} else if (strcmp (_tmp267_, "UnknownMethod") == 0) {
+				_ecode = DBUS_GERROR_UNKNOWN_METHOD;
+			} else if (strcmp (_tmp267_, "TimedOut") == 0) {
+				_ecode = DBUS_GERROR_TIMED_OUT;
+			} else if (strcmp (_tmp267_, "MatchRuleNotFound") == 0) {
+				_ecode = DBUS_GERROR_MATCH_RULE_NOT_FOUND;
+			} else if (strcmp (_tmp267_, "MatchRuleInvalid") == 0) {
+				_ecode = DBUS_GERROR_MATCH_RULE_INVALID;
+			} else if (strcmp (_tmp267_, "Spawn.ExecFailed") == 0) {
+				_ecode = DBUS_GERROR_SPAWN_EXEC_FAILED;
+			} else if (strcmp (_tmp267_, "Spawn.ForkFailed") == 0) {
+				_ecode = DBUS_GERROR_SPAWN_FORK_FAILED;
+			} else if (strcmp (_tmp267_, "Spawn.ChildExited") == 0) {
+				_ecode = DBUS_GERROR_SPAWN_CHILD_EXITED;
+			} else if (strcmp (_tmp267_, "Spawn.ChildSignaled") == 0) {
+				_ecode = DBUS_GERROR_SPAWN_CHILD_SIGNALED;
+			} else if (strcmp (_tmp267_, "Spawn.Failed") == 0) {
+				_ecode = DBUS_GERROR_SPAWN_FAILED;
+			} else if (strcmp (_tmp267_, "UnixProcessIdUnknown") == 0) {
+				_ecode = DBUS_GERROR_UNIX_PROCESS_ID_UNKNOWN;
+			} else if (strcmp (_tmp267_, "InvalidSignature") == 0) {
+				_ecode = DBUS_GERROR_INVALID_SIGNATURE;
+			} else if (strcmp (_tmp267_, "InvalidFileContent") == 0) {
+				_ecode = DBUS_GERROR_INVALID_FILE_CONTENT;
+			} else if (strcmp (_tmp267_, "SELinuxSecurityContextUnknown") == 0) {
+				_ecode = DBUS_GERROR_SELINUX_SECURITY_CONTEXT_UNKNOWN;
+			} else if (strcmp (_tmp267_, "RemoteException") == 0) {
+				_ecode = DBUS_GERROR_REMOTE_EXCEPTION;
+			}
+		}
+		g_set_error (error, _edomain, _ecode, "%s", _dbus_error.message);
 		dbus_error_free (&_dbus_error);
 		return NULL;
 	}
-	if (strcmp (dbus_message_get_signature (_reply), "v")) {
-		g_critical ("file %s: line %d: Invalid signature, expected \"%s\", got \"%s\"", __FILE__, __LINE__, "v", dbus_message_get_signature (_reply));
+	if (strcmp (dbus_message_get_signature (_reply), "aa{sv}")) {
+		g_set_error (error, DBUS_GERROR, DBUS_GERROR_INVALID_SIGNATURE, "Invalid signature, expected \"%s\", got \"%s\"", "aa{sv}", dbus_message_get_signature (_reply));
 		dbus_message_unref (_reply);
 		return NULL;
 	}
 	dbus_message_iter_init (_reply, &_iter);
-	dbus_message_iter_recurse (&_iter, &_subiter);
-	if (strcmp (dbus_message_iter_get_signature (&_subiter), "ao")) {
-		g_critical ("file %s: line %d: Invalid signature, expected \"%s\", got \"%s\"", __FILE__, __LINE__, "ao", dbus_message_iter_get_signature (&_subiter));
-		dbus_message_unref (_reply);
-		return NULL;
-	}
 	_result_length1 = 0;
-	_tmp84_ = g_new (char*, 5);
-	_tmp84__length = 0;
-	_tmp84__size = 4;
-	_tmp84__length1 = 0;
-	dbus_message_iter_recurse (&_subiter, &_tmp85_);
-	for (; dbus_message_iter_get_arg_type (&_tmp85_); _tmp84__length1++) {
-		const char* _tmp86_;
-		if (_tmp84__size == _tmp84__length) {
-			_tmp84__size = 2 * _tmp84__size;
-			_tmp84_ = g_renew (char*, _tmp84_, _tmp84__size + 1);
+	_tmp274_ = g_new (GHashTable*, 5);
+	_tmp274__length = 0;
+	_tmp274__size = 4;
+	_tmp274__length1 = 0;
+	dbus_message_iter_recurse (&_iter, &_tmp275_);
+	for (; dbus_message_iter_get_arg_type (&_tmp275_); _tmp274__length1++) {
+		GHashTable* _tmp276_;
+		DBusMessageIter _tmp277_;
+		DBusMessageIter _tmp278_;
+		if (_tmp274__size == _tmp274__length) {
+			_tmp274__size = 2 * _tmp274__size;
+			_tmp274_ = g_renew (GHashTable*, _tmp274_, _tmp274__size + 1);
 		}
-		dbus_message_iter_get_basic (&_tmp85_, &_tmp86_);
-		dbus_message_iter_next (&_tmp85_);
-		_tmp84_[_tmp84__length++] = g_strdup (_tmp86_);
+		_tmp276_ = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);
+		dbus_message_iter_recurse (&_tmp275_, &_tmp277_);
+		while (dbus_message_iter_get_arg_type (&_tmp277_)) {
+			char* _key;
+			GValue* _value;
+			const char* _tmp279_;
+			GValue _tmp280_ = {0};
+			DBusMessageIter _tmp281_;
+			dbus_message_iter_recurse (&_tmp277_, &_tmp278_);
+			dbus_message_iter_get_basic (&_tmp278_, &_tmp279_);
+			dbus_message_iter_next (&_tmp278_);
+			_key = g_strdup (_tmp279_);
+			dbus_message_iter_recurse (&_tmp278_, &_tmp281_);
+			if (dbus_message_iter_get_arg_type (&_tmp281_) == DBUS_TYPE_BYTE) {
+				guint8 _tmp282_;
+				dbus_message_iter_get_basic (&_tmp281_, &_tmp282_);
+				g_value_init (&_tmp280_, G_TYPE_UCHAR);
+				g_value_set_uchar (&_tmp280_, _tmp282_);
+			} else if (dbus_message_iter_get_arg_type (&_tmp281_) == DBUS_TYPE_BOOLEAN) {
+				dbus_bool_t _tmp283_;
+				dbus_message_iter_get_basic (&_tmp281_, &_tmp283_);
+				g_value_init (&_tmp280_, G_TYPE_BOOLEAN);
+				g_value_set_boolean (&_tmp280_, _tmp283_);
+			} else if (dbus_message_iter_get_arg_type (&_tmp281_) == DBUS_TYPE_INT16) {
+				dbus_int16_t _tmp284_;
+				dbus_message_iter_get_basic (&_tmp281_, &_tmp284_);
+				g_value_init (&_tmp280_, G_TYPE_INT);
+				g_value_set_int (&_tmp280_, _tmp284_);
+			} else if (dbus_message_iter_get_arg_type (&_tmp281_) == DBUS_TYPE_UINT16) {
+				dbus_uint16_t _tmp285_;
+				dbus_message_iter_get_basic (&_tmp281_, &_tmp285_);
+				g_value_init (&_tmp280_, G_TYPE_UINT);
+				g_value_set_uint (&_tmp280_, _tmp285_);
+			} else if (dbus_message_iter_get_arg_type (&_tmp281_) == DBUS_TYPE_INT32) {
+				dbus_int32_t _tmp286_;
+				dbus_message_iter_get_basic (&_tmp281_, &_tmp286_);
+				g_value_init (&_tmp280_, G_TYPE_INT);
+				g_value_set_int (&_tmp280_, _tmp286_);
+			} else if (dbus_message_iter_get_arg_type (&_tmp281_) == DBUS_TYPE_UINT32) {
+				dbus_uint32_t _tmp287_;
+				dbus_message_iter_get_basic (&_tmp281_, &_tmp287_);
+				g_value_init (&_tmp280_, G_TYPE_UINT);
+				g_value_set_uint (&_tmp280_, _tmp287_);
+			} else if (dbus_message_iter_get_arg_type (&_tmp281_) == DBUS_TYPE_INT64) {
+				dbus_int64_t _tmp288_;
+				dbus_message_iter_get_basic (&_tmp281_, &_tmp288_);
+				g_value_init (&_tmp280_, G_TYPE_INT64);
+				g_value_set_int64 (&_tmp280_, _tmp288_);
+			} else if (dbus_message_iter_get_arg_type (&_tmp281_) == DBUS_TYPE_UINT64) {
+				dbus_uint64_t _tmp289_;
+				dbus_message_iter_get_basic (&_tmp281_, &_tmp289_);
+				g_value_init (&_tmp280_, G_TYPE_UINT64);
+				g_value_set_uint64 (&_tmp280_, _tmp289_);
+			} else if (dbus_message_iter_get_arg_type (&_tmp281_) == DBUS_TYPE_DOUBLE) {
+				double _tmp290_;
+				dbus_message_iter_get_basic (&_tmp281_, &_tmp290_);
+				g_value_init (&_tmp280_, G_TYPE_DOUBLE);
+				g_value_set_double (&_tmp280_, _tmp290_);
+			} else if (dbus_message_iter_get_arg_type (&_tmp281_) == DBUS_TYPE_STRING) {
+				const char* _tmp291_;
+				dbus_message_iter_get_basic (&_tmp281_, &_tmp291_);
+				g_value_init (&_tmp280_, G_TYPE_STRING);
+				g_value_take_string (&_tmp280_, g_strdup (_tmp291_));
+			} else if (dbus_message_iter_get_arg_type (&_tmp281_) == DBUS_TYPE_OBJECT_PATH) {
+				const char* _tmp292_;
+				dbus_message_iter_get_basic (&_tmp281_, &_tmp292_);
+				g_value_init (&_tmp280_, G_TYPE_STRING);
+				g_value_take_string (&_tmp280_, g_strdup (_tmp292_));
+			} else if (dbus_message_iter_get_arg_type (&_tmp281_) == DBUS_TYPE_SIGNATURE) {
+				const char* _tmp293_;
+				dbus_message_iter_get_basic (&_tmp281_, &_tmp293_);
+				g_value_init (&_tmp280_, G_TYPE_STRING);
+				g_value_take_string (&_tmp280_, g_strdup (_tmp293_));
+			} else if ((dbus_message_iter_get_arg_type (&_tmp281_) == DBUS_TYPE_ARRAY) && (dbus_message_iter_get_element_type (&_tmp281_) == DBUS_TYPE_STRING)) {
+				const char** _tmp294_;
+				int _tmp294__length;
+				int _tmp294__size;
+				int _tmp294__length1;
+				DBusMessageIter _tmp295_;
+				_tmp294_ = g_new (const char*, 5);
+				_tmp294__length = 0;
+				_tmp294__size = 4;
+				_tmp294__length1 = 0;
+				dbus_message_iter_recurse (&_tmp281_, &_tmp295_);
+				for (; dbus_message_iter_get_arg_type (&_tmp295_); _tmp294__length1++) {
+					const char* _tmp296_;
+					if (_tmp294__size == _tmp294__length) {
+						_tmp294__size = 2 * _tmp294__size;
+						_tmp294_ = g_renew (const char*, _tmp294_, _tmp294__size + 1);
+					}
+					dbus_message_iter_get_basic (&_tmp295_, &_tmp296_);
+					dbus_message_iter_next (&_tmp295_);
+					_tmp294_[_tmp294__length++] = g_strdup (_tmp296_);
+				}
+				_tmp294_[_tmp294__length] = NULL;
+				g_value_init (&_tmp280_, G_TYPE_STRV);
+				g_value_take_boxed (&_tmp280_, _tmp294_);
+			}
+			dbus_message_iter_next (&_tmp278_);
+			_value = g_memdup (&_tmp280_, sizeof (GValue));
+			g_hash_table_insert (_tmp276_, _key, _value);
+			dbus_message_iter_next (&_tmp277_);
+		}
+		dbus_message_iter_next (&_tmp275_);
+		_tmp274_[_tmp274__length++] = _tmp276_;
 	}
-	_result_length1 = _tmp84__length1;
-	_tmp84_[_tmp84__length] = NULL;
-	dbus_message_iter_next (&_subiter);
-	_result = _tmp84_;
+	_result_length1 = _tmp274__length1;
+	_tmp274_[_tmp274__length] = NULL;
+	dbus_message_iter_next (&_iter);
+	_result = _tmp274_;
 	*result_length1 = _result_length1;
 	dbus_message_unref (_reply);
 	return _result;
 }
 
 
-static void rygel_external_media_container_dbus_proxy_set_containers (RygelExternalMediaContainer* self, char** value, int value_length1) {
+static void rygel_external_media_container_dbus_proxy_list_items_async (RygelExternalMediaContainer* self, guint offset, guint max_count, char** filter, int filter_length1, GAsyncReadyCallback _callback_, gpointer _user_data_) {
+	DBusGConnection *_connection;
+	DBusMessage *_message;
+	DBusPendingCall *_pending;
+	DBusMessageIter _iter;
+	dbus_uint32_t _tmp297_;
+	dbus_uint32_t _tmp298_;
+	char** _tmp299_;
+	DBusMessageIter _tmp300_;
+	int _tmp301_;
+	RygelExternalMediaContainerDBusProxyListItemsData* _data_;
+	_message = dbus_message_new_method_call (dbus_g_proxy_get_bus_name ((DBusGProxy*) self), dbus_g_proxy_get_path ((DBusGProxy*) self), "org.gnome.UPnP.MediaContainer2", "ListItems");
+	dbus_message_iter_init_append (_message, &_iter);
+	_tmp297_ = offset;
+	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_UINT32, &_tmp297_);
+	_tmp298_ = max_count;
+	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_UINT32, &_tmp298_);
+	_tmp299_ = filter;
+	dbus_message_iter_open_container (&_iter, DBUS_TYPE_ARRAY, "s", &_tmp300_);
+	for (_tmp301_ = 0; _tmp301_ < filter_length1; _tmp301_++) {
+		const char* _tmp302_;
+		_tmp302_ = *_tmp299_;
+		dbus_message_iter_append_basic (&_tmp300_, DBUS_TYPE_STRING, &_tmp302_);
+		_tmp299_++;
+	}
+	dbus_message_iter_close_container (&_iter, &_tmp300_);
+	g_object_get (self, "connection", &_connection, NULL);
+	dbus_connection_send_with_reply (dbus_g_connection_get_connection (_connection), _message, &_pending, -1);
+	dbus_g_connection_unref (_connection);
+	dbus_message_unref (_message);
+	_data_ = g_slice_new0 (RygelExternalMediaContainerDBusProxyListItemsData);
+	_data_->_callback_ = _callback_;
+	_data_->_user_data_ = _user_data_;
+	_data_->pending = _pending;
+	dbus_pending_call_set_notify (_pending, rygel_external_media_container_dbus_proxy_list_items_ready, _data_, NULL);
+}
+
+
+static void rygel_external_media_container_dbus_proxy_list_items_ready (DBusPendingCall* pending, void* user_data) {
+	RygelExternalMediaContainerDBusProxyListItemsData* _data_;
+	GObject * _obj_;
+	GSimpleAsyncResult * _res_;
+	_data_ = user_data;
+	_obj_ = g_object_newv (G_TYPE_OBJECT, 0, NULL);
+	_res_ = g_simple_async_result_new (_obj_, _data_->_callback_, _data_->_user_data_, _data_);
+	g_simple_async_result_complete (_res_);
+	g_object_unref (_obj_);
+	g_object_unref (_res_);
+	g_slice_free (RygelExternalMediaContainerDBusProxyListItemsData, _data_);
+	dbus_pending_call_unref (pending);
+}
+
+
+static GHashTable** rygel_external_media_container_dbus_proxy_list_items_finish (RygelExternalMediaContainer* self, GAsyncResult* _res_, int* result_length1, GError** error) {
+	RygelExternalMediaContainerDBusProxyListItemsData* _data_;
+	DBusError _dbus_error;
+	DBusMessage *_reply;
+	DBusMessageIter _iter;
+	GHashTable** _result;
+	int _result_length1;
+	GHashTable** _tmp333_;
+	int _tmp333__length;
+	int _tmp333__size;
+	int _tmp333__length1;
+	DBusMessageIter _tmp334_;
+	_data_ = g_simple_async_result_get_source_tag ((GSimpleAsyncResult *) _res_);
+	dbus_error_init (&_dbus_error);
+	_reply = dbus_pending_call_steal_reply (_data_->pending);
+	dbus_set_error_from_message (&_dbus_error, _reply);
+	if (dbus_error_is_set (&_dbus_error)) {
+		GQuark _edomain;
+		gint _ecode;
+		if (strstr (_dbus_error.name, "org.freedesktop.DBus.Error") == _dbus_error.name) {
+			const char* _tmp326_;
+			_edomain = DBUS_GERROR;
+			_tmp326_ = _dbus_error.name + 27;
+			if (strcmp (_tmp326_, "Failed") == 0) {
+				_ecode = DBUS_GERROR_FAILED;
+			} else if (strcmp (_tmp326_, "NoMemory") == 0) {
+				_ecode = DBUS_GERROR_NO_MEMORY;
+			} else if (strcmp (_tmp326_, "ServiceUnknown") == 0) {
+				_ecode = DBUS_GERROR_SERVICE_UNKNOWN;
+			} else if (strcmp (_tmp326_, "NameHasNoOwner") == 0) {
+				_ecode = DBUS_GERROR_NAME_HAS_NO_OWNER;
+			} else if (strcmp (_tmp326_, "NoReply") == 0) {
+				_ecode = DBUS_GERROR_NO_REPLY;
+			} else if (strcmp (_tmp326_, "IOError") == 0) {
+				_ecode = DBUS_GERROR_IO_ERROR;
+			} else if (strcmp (_tmp326_, "BadAddress") == 0) {
+				_ecode = DBUS_GERROR_BAD_ADDRESS;
+			} else if (strcmp (_tmp326_, "NotSupported") == 0) {
+				_ecode = DBUS_GERROR_NOT_SUPPORTED;
+			} else if (strcmp (_tmp326_, "LimitsExceeded") == 0) {
+				_ecode = DBUS_GERROR_LIMITS_EXCEEDED;
+			} else if (strcmp (_tmp326_, "AccessDenied") == 0) {
+				_ecode = DBUS_GERROR_ACCESS_DENIED;
+			} else if (strcmp (_tmp326_, "AuthFailed") == 0) {
+				_ecode = DBUS_GERROR_AUTH_FAILED;
+			} else if (strcmp (_tmp326_, "NoServer") == 0) {
+				_ecode = DBUS_GERROR_NO_SERVER;
+			} else if (strcmp (_tmp326_, "Timeout") == 0) {
+				_ecode = DBUS_GERROR_TIMEOUT;
+			} else if (strcmp (_tmp326_, "NoNetwork") == 0) {
+				_ecode = DBUS_GERROR_NO_NETWORK;
+			} else if (strcmp (_tmp326_, "AddressInUse") == 0) {
+				_ecode = DBUS_GERROR_ADDRESS_IN_USE;
+			} else if (strcmp (_tmp326_, "Disconnected") == 0) {
+				_ecode = DBUS_GERROR_DISCONNECTED;
+			} else if (strcmp (_tmp326_, "InvalidArgs") == 0) {
+				_ecode = DBUS_GERROR_INVALID_ARGS;
+			} else if (strcmp (_tmp326_, "FileNotFound") == 0) {
+				_ecode = DBUS_GERROR_FILE_NOT_FOUND;
+			} else if (strcmp (_tmp326_, "FileExists") == 0) {
+				_ecode = DBUS_GERROR_FILE_EXISTS;
+			} else if (strcmp (_tmp326_, "UnknownMethod") == 0) {
+				_ecode = DBUS_GERROR_UNKNOWN_METHOD;
+			} else if (strcmp (_tmp326_, "TimedOut") == 0) {
+				_ecode = DBUS_GERROR_TIMED_OUT;
+			} else if (strcmp (_tmp326_, "MatchRuleNotFound") == 0) {
+				_ecode = DBUS_GERROR_MATCH_RULE_NOT_FOUND;
+			} else if (strcmp (_tmp326_, "MatchRuleInvalid") == 0) {
+				_ecode = DBUS_GERROR_MATCH_RULE_INVALID;
+			} else if (strcmp (_tmp326_, "Spawn.ExecFailed") == 0) {
+				_ecode = DBUS_GERROR_SPAWN_EXEC_FAILED;
+			} else if (strcmp (_tmp326_, "Spawn.ForkFailed") == 0) {
+				_ecode = DBUS_GERROR_SPAWN_FORK_FAILED;
+			} else if (strcmp (_tmp326_, "Spawn.ChildExited") == 0) {
+				_ecode = DBUS_GERROR_SPAWN_CHILD_EXITED;
+			} else if (strcmp (_tmp326_, "Spawn.ChildSignaled") == 0) {
+				_ecode = DBUS_GERROR_SPAWN_CHILD_SIGNALED;
+			} else if (strcmp (_tmp326_, "Spawn.Failed") == 0) {
+				_ecode = DBUS_GERROR_SPAWN_FAILED;
+			} else if (strcmp (_tmp326_, "UnixProcessIdUnknown") == 0) {
+				_ecode = DBUS_GERROR_UNIX_PROCESS_ID_UNKNOWN;
+			} else if (strcmp (_tmp326_, "InvalidSignature") == 0) {
+				_ecode = DBUS_GERROR_INVALID_SIGNATURE;
+			} else if (strcmp (_tmp326_, "InvalidFileContent") == 0) {
+				_ecode = DBUS_GERROR_INVALID_FILE_CONTENT;
+			} else if (strcmp (_tmp326_, "SELinuxSecurityContextUnknown") == 0) {
+				_ecode = DBUS_GERROR_SELINUX_SECURITY_CONTEXT_UNKNOWN;
+			} else if (strcmp (_tmp326_, "RemoteException") == 0) {
+				_ecode = DBUS_GERROR_REMOTE_EXCEPTION;
+			}
+		}
+		g_set_error (error, _edomain, _ecode, "%s", _dbus_error.message);
+		dbus_error_free (&_dbus_error);
+		return NULL;
+	}
+	if (strcmp (dbus_message_get_signature (_reply), "aa{sv}")) {
+		g_set_error (error, DBUS_GERROR, DBUS_GERROR_INVALID_SIGNATURE, "Invalid signature, expected \"%s\", got \"%s\"", "aa{sv}", dbus_message_get_signature (_reply));
+		dbus_message_unref (_reply);
+		return NULL;
+	}
+	dbus_message_iter_init (_reply, &_iter);
+	_result_length1 = 0;
+	_tmp333_ = g_new (GHashTable*, 5);
+	_tmp333__length = 0;
+	_tmp333__size = 4;
+	_tmp333__length1 = 0;
+	dbus_message_iter_recurse (&_iter, &_tmp334_);
+	for (; dbus_message_iter_get_arg_type (&_tmp334_); _tmp333__length1++) {
+		GHashTable* _tmp335_;
+		DBusMessageIter _tmp336_;
+		DBusMessageIter _tmp337_;
+		if (_tmp333__size == _tmp333__length) {
+			_tmp333__size = 2 * _tmp333__size;
+			_tmp333_ = g_renew (GHashTable*, _tmp333_, _tmp333__size + 1);
+		}
+		_tmp335_ = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);
+		dbus_message_iter_recurse (&_tmp334_, &_tmp336_);
+		while (dbus_message_iter_get_arg_type (&_tmp336_)) {
+			char* _key;
+			GValue* _value;
+			const char* _tmp338_;
+			GValue _tmp339_ = {0};
+			DBusMessageIter _tmp340_;
+			dbus_message_iter_recurse (&_tmp336_, &_tmp337_);
+			dbus_message_iter_get_basic (&_tmp337_, &_tmp338_);
+			dbus_message_iter_next (&_tmp337_);
+			_key = g_strdup (_tmp338_);
+			dbus_message_iter_recurse (&_tmp337_, &_tmp340_);
+			if (dbus_message_iter_get_arg_type (&_tmp340_) == DBUS_TYPE_BYTE) {
+				guint8 _tmp341_;
+				dbus_message_iter_get_basic (&_tmp340_, &_tmp341_);
+				g_value_init (&_tmp339_, G_TYPE_UCHAR);
+				g_value_set_uchar (&_tmp339_, _tmp341_);
+			} else if (dbus_message_iter_get_arg_type (&_tmp340_) == DBUS_TYPE_BOOLEAN) {
+				dbus_bool_t _tmp342_;
+				dbus_message_iter_get_basic (&_tmp340_, &_tmp342_);
+				g_value_init (&_tmp339_, G_TYPE_BOOLEAN);
+				g_value_set_boolean (&_tmp339_, _tmp342_);
+			} else if (dbus_message_iter_get_arg_type (&_tmp340_) == DBUS_TYPE_INT16) {
+				dbus_int16_t _tmp343_;
+				dbus_message_iter_get_basic (&_tmp340_, &_tmp343_);
+				g_value_init (&_tmp339_, G_TYPE_INT);
+				g_value_set_int (&_tmp339_, _tmp343_);
+			} else if (dbus_message_iter_get_arg_type (&_tmp340_) == DBUS_TYPE_UINT16) {
+				dbus_uint16_t _tmp344_;
+				dbus_message_iter_get_basic (&_tmp340_, &_tmp344_);
+				g_value_init (&_tmp339_, G_TYPE_UINT);
+				g_value_set_uint (&_tmp339_, _tmp344_);
+			} else if (dbus_message_iter_get_arg_type (&_tmp340_) == DBUS_TYPE_INT32) {
+				dbus_int32_t _tmp345_;
+				dbus_message_iter_get_basic (&_tmp340_, &_tmp345_);
+				g_value_init (&_tmp339_, G_TYPE_INT);
+				g_value_set_int (&_tmp339_, _tmp345_);
+			} else if (dbus_message_iter_get_arg_type (&_tmp340_) == DBUS_TYPE_UINT32) {
+				dbus_uint32_t _tmp346_;
+				dbus_message_iter_get_basic (&_tmp340_, &_tmp346_);
+				g_value_init (&_tmp339_, G_TYPE_UINT);
+				g_value_set_uint (&_tmp339_, _tmp346_);
+			} else if (dbus_message_iter_get_arg_type (&_tmp340_) == DBUS_TYPE_INT64) {
+				dbus_int64_t _tmp347_;
+				dbus_message_iter_get_basic (&_tmp340_, &_tmp347_);
+				g_value_init (&_tmp339_, G_TYPE_INT64);
+				g_value_set_int64 (&_tmp339_, _tmp347_);
+			} else if (dbus_message_iter_get_arg_type (&_tmp340_) == DBUS_TYPE_UINT64) {
+				dbus_uint64_t _tmp348_;
+				dbus_message_iter_get_basic (&_tmp340_, &_tmp348_);
+				g_value_init (&_tmp339_, G_TYPE_UINT64);
+				g_value_set_uint64 (&_tmp339_, _tmp348_);
+			} else if (dbus_message_iter_get_arg_type (&_tmp340_) == DBUS_TYPE_DOUBLE) {
+				double _tmp349_;
+				dbus_message_iter_get_basic (&_tmp340_, &_tmp349_);
+				g_value_init (&_tmp339_, G_TYPE_DOUBLE);
+				g_value_set_double (&_tmp339_, _tmp349_);
+			} else if (dbus_message_iter_get_arg_type (&_tmp340_) == DBUS_TYPE_STRING) {
+				const char* _tmp350_;
+				dbus_message_iter_get_basic (&_tmp340_, &_tmp350_);
+				g_value_init (&_tmp339_, G_TYPE_STRING);
+				g_value_take_string (&_tmp339_, g_strdup (_tmp350_));
+			} else if (dbus_message_iter_get_arg_type (&_tmp340_) == DBUS_TYPE_OBJECT_PATH) {
+				const char* _tmp351_;
+				dbus_message_iter_get_basic (&_tmp340_, &_tmp351_);
+				g_value_init (&_tmp339_, G_TYPE_STRING);
+				g_value_take_string (&_tmp339_, g_strdup (_tmp351_));
+			} else if (dbus_message_iter_get_arg_type (&_tmp340_) == DBUS_TYPE_SIGNATURE) {
+				const char* _tmp352_;
+				dbus_message_iter_get_basic (&_tmp340_, &_tmp352_);
+				g_value_init (&_tmp339_, G_TYPE_STRING);
+				g_value_take_string (&_tmp339_, g_strdup (_tmp352_));
+			} else if ((dbus_message_iter_get_arg_type (&_tmp340_) == DBUS_TYPE_ARRAY) && (dbus_message_iter_get_element_type (&_tmp340_) == DBUS_TYPE_STRING)) {
+				const char** _tmp353_;
+				int _tmp353__length;
+				int _tmp353__size;
+				int _tmp353__length1;
+				DBusMessageIter _tmp354_;
+				_tmp353_ = g_new (const char*, 5);
+				_tmp353__length = 0;
+				_tmp353__size = 4;
+				_tmp353__length1 = 0;
+				dbus_message_iter_recurse (&_tmp340_, &_tmp354_);
+				for (; dbus_message_iter_get_arg_type (&_tmp354_); _tmp353__length1++) {
+					const char* _tmp355_;
+					if (_tmp353__size == _tmp353__length) {
+						_tmp353__size = 2 * _tmp353__size;
+						_tmp353_ = g_renew (const char*, _tmp353_, _tmp353__size + 1);
+					}
+					dbus_message_iter_get_basic (&_tmp354_, &_tmp355_);
+					dbus_message_iter_next (&_tmp354_);
+					_tmp353_[_tmp353__length++] = g_strdup (_tmp355_);
+				}
+				_tmp353_[_tmp353__length] = NULL;
+				g_value_init (&_tmp339_, G_TYPE_STRV);
+				g_value_take_boxed (&_tmp339_, _tmp353_);
+			}
+			dbus_message_iter_next (&_tmp337_);
+			_value = g_memdup (&_tmp339_, sizeof (GValue));
+			g_hash_table_insert (_tmp335_, _key, _value);
+			dbus_message_iter_next (&_tmp336_);
+		}
+		dbus_message_iter_next (&_tmp334_);
+		_tmp333_[_tmp333__length++] = _tmp335_;
+	}
+	_result_length1 = _tmp333__length1;
+	_tmp333_[_tmp333__length] = NULL;
+	dbus_message_iter_next (&_iter);
+	_result = _tmp333_;
+	*result_length1 = _result_length1;
+	dbus_message_unref (_reply);
+	return _result;
+}
+
+
+static void rygel_external_media_container_dbus_proxy_search_objects_async (RygelExternalMediaContainer* self, const char* query, guint offset, guint max_count, char** filter, int filter_length1, GAsyncReadyCallback _callback_, gpointer _user_data_) {
+	DBusGConnection *_connection;
+	DBusMessage *_message;
+	DBusPendingCall *_pending;
+	DBusMessageIter _iter;
+	const char* _tmp356_;
+	dbus_uint32_t _tmp357_;
+	dbus_uint32_t _tmp358_;
+	char** _tmp359_;
+	DBusMessageIter _tmp360_;
+	int _tmp361_;
+	RygelExternalMediaContainerDBusProxySearchObjectsData* _data_;
+	_message = dbus_message_new_method_call (dbus_g_proxy_get_bus_name ((DBusGProxy*) self), dbus_g_proxy_get_path ((DBusGProxy*) self), "org.gnome.UPnP.MediaContainer2", "SearchObjects");
+	dbus_message_iter_init_append (_message, &_iter);
+	_tmp356_ = query;
+	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp356_);
+	_tmp357_ = offset;
+	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_UINT32, &_tmp357_);
+	_tmp358_ = max_count;
+	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_UINT32, &_tmp358_);
+	_tmp359_ = filter;
+	dbus_message_iter_open_container (&_iter, DBUS_TYPE_ARRAY, "s", &_tmp360_);
+	for (_tmp361_ = 0; _tmp361_ < filter_length1; _tmp361_++) {
+		const char* _tmp362_;
+		_tmp362_ = *_tmp359_;
+		dbus_message_iter_append_basic (&_tmp360_, DBUS_TYPE_STRING, &_tmp362_);
+		_tmp359_++;
+	}
+	dbus_message_iter_close_container (&_iter, &_tmp360_);
+	g_object_get (self, "connection", &_connection, NULL);
+	dbus_connection_send_with_reply (dbus_g_connection_get_connection (_connection), _message, &_pending, -1);
+	dbus_g_connection_unref (_connection);
+	dbus_message_unref (_message);
+	_data_ = g_slice_new0 (RygelExternalMediaContainerDBusProxySearchObjectsData);
+	_data_->_callback_ = _callback_;
+	_data_->_user_data_ = _user_data_;
+	_data_->pending = _pending;
+	dbus_pending_call_set_notify (_pending, rygel_external_media_container_dbus_proxy_search_objects_ready, _data_, NULL);
+}
+
+
+static void rygel_external_media_container_dbus_proxy_search_objects_ready (DBusPendingCall* pending, void* user_data) {
+	RygelExternalMediaContainerDBusProxySearchObjectsData* _data_;
+	GObject * _obj_;
+	GSimpleAsyncResult * _res_;
+	_data_ = user_data;
+	_obj_ = g_object_newv (G_TYPE_OBJECT, 0, NULL);
+	_res_ = g_simple_async_result_new (_obj_, _data_->_callback_, _data_->_user_data_, _data_);
+	g_simple_async_result_complete (_res_);
+	g_object_unref (_obj_);
+	g_object_unref (_res_);
+	g_slice_free (RygelExternalMediaContainerDBusProxySearchObjectsData, _data_);
+	dbus_pending_call_unref (pending);
+}
+
+
+static GHashTable** rygel_external_media_container_dbus_proxy_search_objects_finish (RygelExternalMediaContainer* self, GAsyncResult* _res_, int* result_length1, GError** error) {
+	RygelExternalMediaContainerDBusProxySearchObjectsData* _data_;
+	DBusError _dbus_error;
+	DBusMessage *_reply;
+	DBusMessageIter _iter;
+	GHashTable** _result;
+	int _result_length1;
+	GHashTable** _tmp394_;
+	int _tmp394__length;
+	int _tmp394__size;
+	int _tmp394__length1;
+	DBusMessageIter _tmp395_;
+	_data_ = g_simple_async_result_get_source_tag ((GSimpleAsyncResult *) _res_);
+	dbus_error_init (&_dbus_error);
+	_reply = dbus_pending_call_steal_reply (_data_->pending);
+	dbus_set_error_from_message (&_dbus_error, _reply);
+	if (dbus_error_is_set (&_dbus_error)) {
+		GQuark _edomain;
+		gint _ecode;
+		if (strstr (_dbus_error.name, "org.freedesktop.DBus.Error") == _dbus_error.name) {
+			const char* _tmp386_;
+			_edomain = DBUS_GERROR;
+			_tmp386_ = _dbus_error.name + 27;
+			if (strcmp (_tmp386_, "Failed") == 0) {
+				_ecode = DBUS_GERROR_FAILED;
+			} else if (strcmp (_tmp386_, "NoMemory") == 0) {
+				_ecode = DBUS_GERROR_NO_MEMORY;
+			} else if (strcmp (_tmp386_, "ServiceUnknown") == 0) {
+				_ecode = DBUS_GERROR_SERVICE_UNKNOWN;
+			} else if (strcmp (_tmp386_, "NameHasNoOwner") == 0) {
+				_ecode = DBUS_GERROR_NAME_HAS_NO_OWNER;
+			} else if (strcmp (_tmp386_, "NoReply") == 0) {
+				_ecode = DBUS_GERROR_NO_REPLY;
+			} else if (strcmp (_tmp386_, "IOError") == 0) {
+				_ecode = DBUS_GERROR_IO_ERROR;
+			} else if (strcmp (_tmp386_, "BadAddress") == 0) {
+				_ecode = DBUS_GERROR_BAD_ADDRESS;
+			} else if (strcmp (_tmp386_, "NotSupported") == 0) {
+				_ecode = DBUS_GERROR_NOT_SUPPORTED;
+			} else if (strcmp (_tmp386_, "LimitsExceeded") == 0) {
+				_ecode = DBUS_GERROR_LIMITS_EXCEEDED;
+			} else if (strcmp (_tmp386_, "AccessDenied") == 0) {
+				_ecode = DBUS_GERROR_ACCESS_DENIED;
+			} else if (strcmp (_tmp386_, "AuthFailed") == 0) {
+				_ecode = DBUS_GERROR_AUTH_FAILED;
+			} else if (strcmp (_tmp386_, "NoServer") == 0) {
+				_ecode = DBUS_GERROR_NO_SERVER;
+			} else if (strcmp (_tmp386_, "Timeout") == 0) {
+				_ecode = DBUS_GERROR_TIMEOUT;
+			} else if (strcmp (_tmp386_, "NoNetwork") == 0) {
+				_ecode = DBUS_GERROR_NO_NETWORK;
+			} else if (strcmp (_tmp386_, "AddressInUse") == 0) {
+				_ecode = DBUS_GERROR_ADDRESS_IN_USE;
+			} else if (strcmp (_tmp386_, "Disconnected") == 0) {
+				_ecode = DBUS_GERROR_DISCONNECTED;
+			} else if (strcmp (_tmp386_, "InvalidArgs") == 0) {
+				_ecode = DBUS_GERROR_INVALID_ARGS;
+			} else if (strcmp (_tmp386_, "FileNotFound") == 0) {
+				_ecode = DBUS_GERROR_FILE_NOT_FOUND;
+			} else if (strcmp (_tmp386_, "FileExists") == 0) {
+				_ecode = DBUS_GERROR_FILE_EXISTS;
+			} else if (strcmp (_tmp386_, "UnknownMethod") == 0) {
+				_ecode = DBUS_GERROR_UNKNOWN_METHOD;
+			} else if (strcmp (_tmp386_, "TimedOut") == 0) {
+				_ecode = DBUS_GERROR_TIMED_OUT;
+			} else if (strcmp (_tmp386_, "MatchRuleNotFound") == 0) {
+				_ecode = DBUS_GERROR_MATCH_RULE_NOT_FOUND;
+			} else if (strcmp (_tmp386_, "MatchRuleInvalid") == 0) {
+				_ecode = DBUS_GERROR_MATCH_RULE_INVALID;
+			} else if (strcmp (_tmp386_, "Spawn.ExecFailed") == 0) {
+				_ecode = DBUS_GERROR_SPAWN_EXEC_FAILED;
+			} else if (strcmp (_tmp386_, "Spawn.ForkFailed") == 0) {
+				_ecode = DBUS_GERROR_SPAWN_FORK_FAILED;
+			} else if (strcmp (_tmp386_, "Spawn.ChildExited") == 0) {
+				_ecode = DBUS_GERROR_SPAWN_CHILD_EXITED;
+			} else if (strcmp (_tmp386_, "Spawn.ChildSignaled") == 0) {
+				_ecode = DBUS_GERROR_SPAWN_CHILD_SIGNALED;
+			} else if (strcmp (_tmp386_, "Spawn.Failed") == 0) {
+				_ecode = DBUS_GERROR_SPAWN_FAILED;
+			} else if (strcmp (_tmp386_, "UnixProcessIdUnknown") == 0) {
+				_ecode = DBUS_GERROR_UNIX_PROCESS_ID_UNKNOWN;
+			} else if (strcmp (_tmp386_, "InvalidSignature") == 0) {
+				_ecode = DBUS_GERROR_INVALID_SIGNATURE;
+			} else if (strcmp (_tmp386_, "InvalidFileContent") == 0) {
+				_ecode = DBUS_GERROR_INVALID_FILE_CONTENT;
+			} else if (strcmp (_tmp386_, "SELinuxSecurityContextUnknown") == 0) {
+				_ecode = DBUS_GERROR_SELINUX_SECURITY_CONTEXT_UNKNOWN;
+			} else if (strcmp (_tmp386_, "RemoteException") == 0) {
+				_ecode = DBUS_GERROR_REMOTE_EXCEPTION;
+			}
+		}
+		g_set_error (error, _edomain, _ecode, "%s", _dbus_error.message);
+		dbus_error_free (&_dbus_error);
+		return NULL;
+	}
+	if (strcmp (dbus_message_get_signature (_reply), "aa{sv}")) {
+		g_set_error (error, DBUS_GERROR, DBUS_GERROR_INVALID_SIGNATURE, "Invalid signature, expected \"%s\", got \"%s\"", "aa{sv}", dbus_message_get_signature (_reply));
+		dbus_message_unref (_reply);
+		return NULL;
+	}
+	dbus_message_iter_init (_reply, &_iter);
+	_result_length1 = 0;
+	_tmp394_ = g_new (GHashTable*, 5);
+	_tmp394__length = 0;
+	_tmp394__size = 4;
+	_tmp394__length1 = 0;
+	dbus_message_iter_recurse (&_iter, &_tmp395_);
+	for (; dbus_message_iter_get_arg_type (&_tmp395_); _tmp394__length1++) {
+		GHashTable* _tmp396_;
+		DBusMessageIter _tmp397_;
+		DBusMessageIter _tmp398_;
+		if (_tmp394__size == _tmp394__length) {
+			_tmp394__size = 2 * _tmp394__size;
+			_tmp394_ = g_renew (GHashTable*, _tmp394_, _tmp394__size + 1);
+		}
+		_tmp396_ = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);
+		dbus_message_iter_recurse (&_tmp395_, &_tmp397_);
+		while (dbus_message_iter_get_arg_type (&_tmp397_)) {
+			char* _key;
+			GValue* _value;
+			const char* _tmp399_;
+			GValue _tmp400_ = {0};
+			DBusMessageIter _tmp401_;
+			dbus_message_iter_recurse (&_tmp397_, &_tmp398_);
+			dbus_message_iter_get_basic (&_tmp398_, &_tmp399_);
+			dbus_message_iter_next (&_tmp398_);
+			_key = g_strdup (_tmp399_);
+			dbus_message_iter_recurse (&_tmp398_, &_tmp401_);
+			if (dbus_message_iter_get_arg_type (&_tmp401_) == DBUS_TYPE_BYTE) {
+				guint8 _tmp402_;
+				dbus_message_iter_get_basic (&_tmp401_, &_tmp402_);
+				g_value_init (&_tmp400_, G_TYPE_UCHAR);
+				g_value_set_uchar (&_tmp400_, _tmp402_);
+			} else if (dbus_message_iter_get_arg_type (&_tmp401_) == DBUS_TYPE_BOOLEAN) {
+				dbus_bool_t _tmp403_;
+				dbus_message_iter_get_basic (&_tmp401_, &_tmp403_);
+				g_value_init (&_tmp400_, G_TYPE_BOOLEAN);
+				g_value_set_boolean (&_tmp400_, _tmp403_);
+			} else if (dbus_message_iter_get_arg_type (&_tmp401_) == DBUS_TYPE_INT16) {
+				dbus_int16_t _tmp404_;
+				dbus_message_iter_get_basic (&_tmp401_, &_tmp404_);
+				g_value_init (&_tmp400_, G_TYPE_INT);
+				g_value_set_int (&_tmp400_, _tmp404_);
+			} else if (dbus_message_iter_get_arg_type (&_tmp401_) == DBUS_TYPE_UINT16) {
+				dbus_uint16_t _tmp405_;
+				dbus_message_iter_get_basic (&_tmp401_, &_tmp405_);
+				g_value_init (&_tmp400_, G_TYPE_UINT);
+				g_value_set_uint (&_tmp400_, _tmp405_);
+			} else if (dbus_message_iter_get_arg_type (&_tmp401_) == DBUS_TYPE_INT32) {
+				dbus_int32_t _tmp406_;
+				dbus_message_iter_get_basic (&_tmp401_, &_tmp406_);
+				g_value_init (&_tmp400_, G_TYPE_INT);
+				g_value_set_int (&_tmp400_, _tmp406_);
+			} else if (dbus_message_iter_get_arg_type (&_tmp401_) == DBUS_TYPE_UINT32) {
+				dbus_uint32_t _tmp407_;
+				dbus_message_iter_get_basic (&_tmp401_, &_tmp407_);
+				g_value_init (&_tmp400_, G_TYPE_UINT);
+				g_value_set_uint (&_tmp400_, _tmp407_);
+			} else if (dbus_message_iter_get_arg_type (&_tmp401_) == DBUS_TYPE_INT64) {
+				dbus_int64_t _tmp408_;
+				dbus_message_iter_get_basic (&_tmp401_, &_tmp408_);
+				g_value_init (&_tmp400_, G_TYPE_INT64);
+				g_value_set_int64 (&_tmp400_, _tmp408_);
+			} else if (dbus_message_iter_get_arg_type (&_tmp401_) == DBUS_TYPE_UINT64) {
+				dbus_uint64_t _tmp409_;
+				dbus_message_iter_get_basic (&_tmp401_, &_tmp409_);
+				g_value_init (&_tmp400_, G_TYPE_UINT64);
+				g_value_set_uint64 (&_tmp400_, _tmp409_);
+			} else if (dbus_message_iter_get_arg_type (&_tmp401_) == DBUS_TYPE_DOUBLE) {
+				double _tmp410_;
+				dbus_message_iter_get_basic (&_tmp401_, &_tmp410_);
+				g_value_init (&_tmp400_, G_TYPE_DOUBLE);
+				g_value_set_double (&_tmp400_, _tmp410_);
+			} else if (dbus_message_iter_get_arg_type (&_tmp401_) == DBUS_TYPE_STRING) {
+				const char* _tmp411_;
+				dbus_message_iter_get_basic (&_tmp401_, &_tmp411_);
+				g_value_init (&_tmp400_, G_TYPE_STRING);
+				g_value_take_string (&_tmp400_, g_strdup (_tmp411_));
+			} else if (dbus_message_iter_get_arg_type (&_tmp401_) == DBUS_TYPE_OBJECT_PATH) {
+				const char* _tmp412_;
+				dbus_message_iter_get_basic (&_tmp401_, &_tmp412_);
+				g_value_init (&_tmp400_, G_TYPE_STRING);
+				g_value_take_string (&_tmp400_, g_strdup (_tmp412_));
+			} else if (dbus_message_iter_get_arg_type (&_tmp401_) == DBUS_TYPE_SIGNATURE) {
+				const char* _tmp413_;
+				dbus_message_iter_get_basic (&_tmp401_, &_tmp413_);
+				g_value_init (&_tmp400_, G_TYPE_STRING);
+				g_value_take_string (&_tmp400_, g_strdup (_tmp413_));
+			} else if ((dbus_message_iter_get_arg_type (&_tmp401_) == DBUS_TYPE_ARRAY) && (dbus_message_iter_get_element_type (&_tmp401_) == DBUS_TYPE_STRING)) {
+				const char** _tmp414_;
+				int _tmp414__length;
+				int _tmp414__size;
+				int _tmp414__length1;
+				DBusMessageIter _tmp415_;
+				_tmp414_ = g_new (const char*, 5);
+				_tmp414__length = 0;
+				_tmp414__size = 4;
+				_tmp414__length1 = 0;
+				dbus_message_iter_recurse (&_tmp401_, &_tmp415_);
+				for (; dbus_message_iter_get_arg_type (&_tmp415_); _tmp414__length1++) {
+					const char* _tmp416_;
+					if (_tmp414__size == _tmp414__length) {
+						_tmp414__size = 2 * _tmp414__size;
+						_tmp414_ = g_renew (const char*, _tmp414_, _tmp414__size + 1);
+					}
+					dbus_message_iter_get_basic (&_tmp415_, &_tmp416_);
+					dbus_message_iter_next (&_tmp415_);
+					_tmp414_[_tmp414__length++] = g_strdup (_tmp416_);
+				}
+				_tmp414_[_tmp414__length] = NULL;
+				g_value_init (&_tmp400_, G_TYPE_STRV);
+				g_value_take_boxed (&_tmp400_, _tmp414_);
+			}
+			dbus_message_iter_next (&_tmp398_);
+			_value = g_memdup (&_tmp400_, sizeof (GValue));
+			g_hash_table_insert (_tmp396_, _key, _value);
+			dbus_message_iter_next (&_tmp397_);
+		}
+		dbus_message_iter_next (&_tmp395_);
+		_tmp394_[_tmp394__length++] = _tmp396_;
+	}
+	_result_length1 = _tmp394__length1;
+	_tmp394_[_tmp394__length] = NULL;
+	dbus_message_iter_next (&_iter);
+	_result = _tmp394_;
+	*result_length1 = _result_length1;
+	dbus_message_unref (_reply);
+	return _result;
+}
+
+
+static guint rygel_external_media_container_dbus_proxy_get_child_count (RygelExternalMediaContainer* self) {
 	DBusError _dbus_error;
 	DBusGConnection *_connection;
 	DBusMessage *_message, *_reply;
 	DBusMessageIter _iter, _subiter;
-	const char* _tmp87_;
-	const char* _tmp88_;
-	char** _tmp89_;
-	DBusMessageIter _tmp90_;
-	int _tmp91_;
+	const char* _tmp417_;
+	const char* _tmp418_;
+	guint _result;
+	dbus_uint32_t _tmp419_;
+	if (((RygelExternalMediaContainerDBusProxy*) self)->disposed) {
+		return 0U;
+	}
+	_message = dbus_message_new_method_call (dbus_g_proxy_get_bus_name ((DBusGProxy*) self), dbus_g_proxy_get_path ((DBusGProxy*) self), "org.freedesktop.DBus.Properties", "Get");
+	dbus_message_iter_init_append (_message, &_iter);
+	_tmp417_ = "org.gnome.UPnP.MediaContainer2";
+	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp417_);
+	_tmp418_ = "ChildCount";
+	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp418_);
+	g_object_get (self, "connection", &_connection, NULL);
+	dbus_error_init (&_dbus_error);
+	_reply = dbus_connection_send_with_reply_and_block (dbus_g_connection_get_connection (_connection), _message, -1, &_dbus_error);
+	dbus_g_connection_unref (_connection);
+	dbus_message_unref (_message);
+	if (dbus_error_is_set (&_dbus_error)) {
+		g_critical ("file %s: line %d: uncaught error: %s (%s)", __FILE__, __LINE__, _dbus_error.message, _dbus_error.name);
+		dbus_error_free (&_dbus_error);
+		return 0U;
+	}
+	if (strcmp (dbus_message_get_signature (_reply), "v")) {
+		g_critical ("file %s: line %d: Invalid signature, expected \"%s\", got \"%s\"", __FILE__, __LINE__, "v", dbus_message_get_signature (_reply));
+		dbus_message_unref (_reply);
+		return 0U;
+	}
+	dbus_message_iter_init (_reply, &_iter);
+	dbus_message_iter_recurse (&_iter, &_subiter);
+	if (strcmp (dbus_message_iter_get_signature (&_subiter), "u")) {
+		g_critical ("file %s: line %d: Invalid signature, expected \"%s\", got \"%s\"", __FILE__, __LINE__, "u", dbus_message_iter_get_signature (&_subiter));
+		dbus_message_unref (_reply);
+		return 0U;
+	}
+	dbus_message_iter_get_basic (&_subiter, &_tmp419_);
+	dbus_message_iter_next (&_subiter);
+	_result = _tmp419_;
+	dbus_message_unref (_reply);
+	return _result;
+}
+
+
+static void rygel_external_media_container_dbus_proxy_set_child_count (RygelExternalMediaContainer* self, guint value) {
+	DBusError _dbus_error;
+	DBusGConnection *_connection;
+	DBusMessage *_message, *_reply;
+	DBusMessageIter _iter, _subiter;
+	const char* _tmp420_;
+	const char* _tmp421_;
+	dbus_uint32_t _tmp422_;
 	if (((RygelExternalMediaContainerDBusProxy*) self)->disposed) {
 		return;
 	}
 	_message = dbus_message_new_method_call (dbus_g_proxy_get_bus_name ((DBusGProxy*) self), dbus_g_proxy_get_path ((DBusGProxy*) self), "org.freedesktop.DBus.Properties", "Set");
 	dbus_message_iter_init_append (_message, &_iter);
-	_tmp87_ = "org.gnome.UPnP.MediaContainer1";
-	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp87_);
-	_tmp88_ = "Containers";
-	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp88_);
-	dbus_message_iter_open_container (&_iter, DBUS_TYPE_VARIANT, "ao", &_subiter);
-	_tmp89_ = value;
-	dbus_message_iter_open_container (&_subiter, DBUS_TYPE_ARRAY, "o", &_tmp90_);
-	for (_tmp91_ = 0; _tmp91_ < value_length1; _tmp91_++) {
-		const char* _tmp92_;
-		_tmp92_ = *_tmp89_;
-		dbus_message_iter_append_basic (&_tmp90_, DBUS_TYPE_OBJECT_PATH, &_tmp92_);
-		_tmp89_++;
-	}
-	dbus_message_iter_close_container (&_subiter, &_tmp90_);
+	_tmp420_ = "org.gnome.UPnP.MediaContainer2";
+	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp420_);
+	_tmp421_ = "ChildCount";
+	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp421_);
+	dbus_message_iter_open_container (&_iter, DBUS_TYPE_VARIANT, "u", &_subiter);
+	_tmp422_ = value;
+	dbus_message_iter_append_basic (&_subiter, DBUS_TYPE_UINT32, &_tmp422_);
 	dbus_message_iter_close_container (&_iter, &_subiter);
 	g_object_get (self, "connection", &_connection, NULL);
 	dbus_error_init (&_dbus_error);
@@ -1995,19 +4378,19 @@ static guint rygel_external_media_container_dbus_proxy_get_item_count (RygelExte
 	DBusGConnection *_connection;
 	DBusMessage *_message, *_reply;
 	DBusMessageIter _iter, _subiter;
-	const char* _tmp93_;
-	const char* _tmp94_;
+	const char* _tmp423_;
+	const char* _tmp424_;
 	guint _result;
-	dbus_uint32_t _tmp95_;
+	dbus_uint32_t _tmp425_;
 	if (((RygelExternalMediaContainerDBusProxy*) self)->disposed) {
 		return 0U;
 	}
 	_message = dbus_message_new_method_call (dbus_g_proxy_get_bus_name ((DBusGProxy*) self), dbus_g_proxy_get_path ((DBusGProxy*) self), "org.freedesktop.DBus.Properties", "Get");
 	dbus_message_iter_init_append (_message, &_iter);
-	_tmp93_ = "org.gnome.UPnP.MediaContainer1";
-	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp93_);
-	_tmp94_ = "ItemCount";
-	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp94_);
+	_tmp423_ = "org.gnome.UPnP.MediaContainer2";
+	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp423_);
+	_tmp424_ = "ItemCount";
+	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp424_);
 	g_object_get (self, "connection", &_connection, NULL);
 	dbus_error_init (&_dbus_error);
 	_reply = dbus_connection_send_with_reply_and_block (dbus_g_connection_get_connection (_connection), _message, -1, &_dbus_error);
@@ -2030,9 +4413,9 @@ static guint rygel_external_media_container_dbus_proxy_get_item_count (RygelExte
 		dbus_message_unref (_reply);
 		return 0U;
 	}
-	dbus_message_iter_get_basic (&_subiter, &_tmp95_);
+	dbus_message_iter_get_basic (&_subiter, &_tmp425_);
 	dbus_message_iter_next (&_subiter);
-	_result = _tmp95_;
+	_result = _tmp425_;
 	dbus_message_unref (_reply);
 	return _result;
 }
@@ -2043,21 +4426,21 @@ static void rygel_external_media_container_dbus_proxy_set_item_count (RygelExter
 	DBusGConnection *_connection;
 	DBusMessage *_message, *_reply;
 	DBusMessageIter _iter, _subiter;
-	const char* _tmp96_;
-	const char* _tmp97_;
-	dbus_uint32_t _tmp98_;
+	const char* _tmp426_;
+	const char* _tmp427_;
+	dbus_uint32_t _tmp428_;
 	if (((RygelExternalMediaContainerDBusProxy*) self)->disposed) {
 		return;
 	}
 	_message = dbus_message_new_method_call (dbus_g_proxy_get_bus_name ((DBusGProxy*) self), dbus_g_proxy_get_path ((DBusGProxy*) self), "org.freedesktop.DBus.Properties", "Set");
 	dbus_message_iter_init_append (_message, &_iter);
-	_tmp96_ = "org.gnome.UPnP.MediaContainer1";
-	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp96_);
-	_tmp97_ = "ItemCount";
-	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp97_);
+	_tmp426_ = "org.gnome.UPnP.MediaContainer2";
+	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp426_);
+	_tmp427_ = "ItemCount";
+	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp427_);
 	dbus_message_iter_open_container (&_iter, DBUS_TYPE_VARIANT, "u", &_subiter);
-	_tmp98_ = value;
-	dbus_message_iter_append_basic (&_subiter, DBUS_TYPE_UINT32, &_tmp98_);
+	_tmp428_ = value;
+	dbus_message_iter_append_basic (&_subiter, DBUS_TYPE_UINT32, &_tmp428_);
 	dbus_message_iter_close_container (&_iter, &_subiter);
 	g_object_get (self, "connection", &_connection, NULL);
 	dbus_error_init (&_dbus_error);
@@ -2084,19 +4467,19 @@ static guint rygel_external_media_container_dbus_proxy_get_container_count (Ryge
 	DBusGConnection *_connection;
 	DBusMessage *_message, *_reply;
 	DBusMessageIter _iter, _subiter;
-	const char* _tmp99_;
-	const char* _tmp100_;
+	const char* _tmp429_;
+	const char* _tmp430_;
 	guint _result;
-	dbus_uint32_t _tmp101_;
+	dbus_uint32_t _tmp431_;
 	if (((RygelExternalMediaContainerDBusProxy*) self)->disposed) {
 		return 0U;
 	}
 	_message = dbus_message_new_method_call (dbus_g_proxy_get_bus_name ((DBusGProxy*) self), dbus_g_proxy_get_path ((DBusGProxy*) self), "org.freedesktop.DBus.Properties", "Get");
 	dbus_message_iter_init_append (_message, &_iter);
-	_tmp99_ = "org.gnome.UPnP.MediaContainer1";
-	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp99_);
-	_tmp100_ = "ContainerCount";
-	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp100_);
+	_tmp429_ = "org.gnome.UPnP.MediaContainer2";
+	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp429_);
+	_tmp430_ = "ContainerCount";
+	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp430_);
 	g_object_get (self, "connection", &_connection, NULL);
 	dbus_error_init (&_dbus_error);
 	_reply = dbus_connection_send_with_reply_and_block (dbus_g_connection_get_connection (_connection), _message, -1, &_dbus_error);
@@ -2119,9 +4502,9 @@ static guint rygel_external_media_container_dbus_proxy_get_container_count (Ryge
 		dbus_message_unref (_reply);
 		return 0U;
 	}
-	dbus_message_iter_get_basic (&_subiter, &_tmp101_);
+	dbus_message_iter_get_basic (&_subiter, &_tmp431_);
 	dbus_message_iter_next (&_subiter);
-	_result = _tmp101_;
+	_result = _tmp431_;
 	dbus_message_unref (_reply);
 	return _result;
 }
@@ -2132,21 +4515,110 @@ static void rygel_external_media_container_dbus_proxy_set_container_count (Rygel
 	DBusGConnection *_connection;
 	DBusMessage *_message, *_reply;
 	DBusMessageIter _iter, _subiter;
-	const char* _tmp102_;
-	const char* _tmp103_;
-	dbus_uint32_t _tmp104_;
+	const char* _tmp432_;
+	const char* _tmp433_;
+	dbus_uint32_t _tmp434_;
 	if (((RygelExternalMediaContainerDBusProxy*) self)->disposed) {
 		return;
 	}
 	_message = dbus_message_new_method_call (dbus_g_proxy_get_bus_name ((DBusGProxy*) self), dbus_g_proxy_get_path ((DBusGProxy*) self), "org.freedesktop.DBus.Properties", "Set");
 	dbus_message_iter_init_append (_message, &_iter);
-	_tmp102_ = "org.gnome.UPnP.MediaContainer1";
-	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp102_);
-	_tmp103_ = "ContainerCount";
-	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp103_);
+	_tmp432_ = "org.gnome.UPnP.MediaContainer2";
+	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp432_);
+	_tmp433_ = "ContainerCount";
+	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp433_);
 	dbus_message_iter_open_container (&_iter, DBUS_TYPE_VARIANT, "u", &_subiter);
-	_tmp104_ = value;
-	dbus_message_iter_append_basic (&_subiter, DBUS_TYPE_UINT32, &_tmp104_);
+	_tmp434_ = value;
+	dbus_message_iter_append_basic (&_subiter, DBUS_TYPE_UINT32, &_tmp434_);
+	dbus_message_iter_close_container (&_iter, &_subiter);
+	g_object_get (self, "connection", &_connection, NULL);
+	dbus_error_init (&_dbus_error);
+	_reply = dbus_connection_send_with_reply_and_block (dbus_g_connection_get_connection (_connection), _message, -1, &_dbus_error);
+	dbus_g_connection_unref (_connection);
+	dbus_message_unref (_message);
+	if (dbus_error_is_set (&_dbus_error)) {
+		g_critical ("file %s: line %d: uncaught error: %s (%s)", __FILE__, __LINE__, _dbus_error.message, _dbus_error.name);
+		dbus_error_free (&_dbus_error);
+		return;
+	}
+	if (strcmp (dbus_message_get_signature (_reply), "")) {
+		g_critical ("file %s: line %d: Invalid signature, expected \"%s\", got \"%s\"", __FILE__, __LINE__, "", dbus_message_get_signature (_reply));
+		dbus_message_unref (_reply);
+		return;
+	}
+	dbus_message_iter_init (_reply, &_iter);
+	dbus_message_unref (_reply);
+}
+
+
+static gboolean rygel_external_media_container_dbus_proxy_get_searchable (RygelExternalMediaContainer* self) {
+	DBusError _dbus_error;
+	DBusGConnection *_connection;
+	DBusMessage *_message, *_reply;
+	DBusMessageIter _iter, _subiter;
+	const char* _tmp435_;
+	const char* _tmp436_;
+	gboolean _result;
+	dbus_bool_t _tmp437_;
+	if (((RygelExternalMediaContainerDBusProxy*) self)->disposed) {
+		return FALSE;
+	}
+	_message = dbus_message_new_method_call (dbus_g_proxy_get_bus_name ((DBusGProxy*) self), dbus_g_proxy_get_path ((DBusGProxy*) self), "org.freedesktop.DBus.Properties", "Get");
+	dbus_message_iter_init_append (_message, &_iter);
+	_tmp435_ = "org.gnome.UPnP.MediaContainer2";
+	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp435_);
+	_tmp436_ = "Searchable";
+	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp436_);
+	g_object_get (self, "connection", &_connection, NULL);
+	dbus_error_init (&_dbus_error);
+	_reply = dbus_connection_send_with_reply_and_block (dbus_g_connection_get_connection (_connection), _message, -1, &_dbus_error);
+	dbus_g_connection_unref (_connection);
+	dbus_message_unref (_message);
+	if (dbus_error_is_set (&_dbus_error)) {
+		g_critical ("file %s: line %d: uncaught error: %s (%s)", __FILE__, __LINE__, _dbus_error.message, _dbus_error.name);
+		dbus_error_free (&_dbus_error);
+		return FALSE;
+	}
+	if (strcmp (dbus_message_get_signature (_reply), "v")) {
+		g_critical ("file %s: line %d: Invalid signature, expected \"%s\", got \"%s\"", __FILE__, __LINE__, "v", dbus_message_get_signature (_reply));
+		dbus_message_unref (_reply);
+		return FALSE;
+	}
+	dbus_message_iter_init (_reply, &_iter);
+	dbus_message_iter_recurse (&_iter, &_subiter);
+	if (strcmp (dbus_message_iter_get_signature (&_subiter), "b")) {
+		g_critical ("file %s: line %d: Invalid signature, expected \"%s\", got \"%s\"", __FILE__, __LINE__, "b", dbus_message_iter_get_signature (&_subiter));
+		dbus_message_unref (_reply);
+		return FALSE;
+	}
+	dbus_message_iter_get_basic (&_subiter, &_tmp437_);
+	dbus_message_iter_next (&_subiter);
+	_result = _tmp437_;
+	dbus_message_unref (_reply);
+	return _result;
+}
+
+
+static void rygel_external_media_container_dbus_proxy_set_searchable (RygelExternalMediaContainer* self, gboolean value) {
+	DBusError _dbus_error;
+	DBusGConnection *_connection;
+	DBusMessage *_message, *_reply;
+	DBusMessageIter _iter, _subiter;
+	const char* _tmp438_;
+	const char* _tmp439_;
+	dbus_bool_t _tmp440_;
+	if (((RygelExternalMediaContainerDBusProxy*) self)->disposed) {
+		return;
+	}
+	_message = dbus_message_new_method_call (dbus_g_proxy_get_bus_name ((DBusGProxy*) self), dbus_g_proxy_get_path ((DBusGProxy*) self), "org.freedesktop.DBus.Properties", "Set");
+	dbus_message_iter_init_append (_message, &_iter);
+	_tmp438_ = "org.gnome.UPnP.MediaContainer2";
+	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp438_);
+	_tmp439_ = "Searchable";
+	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp439_);
+	dbus_message_iter_open_container (&_iter, DBUS_TYPE_VARIANT, "b", &_subiter);
+	_tmp440_ = value;
+	dbus_message_iter_append_basic (&_subiter, DBUS_TYPE_BOOLEAN, &_tmp440_);
 	dbus_message_iter_close_container (&_iter, &_subiter);
 	g_object_get (self, "connection", &_connection, NULL);
 	dbus_error_init (&_dbus_error);
@@ -2173,19 +4645,19 @@ static char* rygel_external_media_container_dbus_proxy_get_icon (RygelExternalMe
 	DBusGConnection *_connection;
 	DBusMessage *_message, *_reply;
 	DBusMessageIter _iter, _subiter;
-	const char* _tmp105_;
-	const char* _tmp106_;
+	const char* _tmp441_;
+	const char* _tmp442_;
 	char* _result;
-	const char* _tmp107_;
+	const char* _tmp443_;
 	if (((RygelExternalMediaContainerDBusProxy*) self)->disposed) {
 		return NULL;
 	}
 	_message = dbus_message_new_method_call (dbus_g_proxy_get_bus_name ((DBusGProxy*) self), dbus_g_proxy_get_path ((DBusGProxy*) self), "org.freedesktop.DBus.Properties", "Get");
 	dbus_message_iter_init_append (_message, &_iter);
-	_tmp105_ = "org.gnome.UPnP.MediaContainer1";
-	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp105_);
-	_tmp106_ = "Icon";
-	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp106_);
+	_tmp441_ = "org.gnome.UPnP.MediaContainer2";
+	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp441_);
+	_tmp442_ = "Icon";
+	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp442_);
 	g_object_get (self, "connection", &_connection, NULL);
 	dbus_error_init (&_dbus_error);
 	_reply = dbus_connection_send_with_reply_and_block (dbus_g_connection_get_connection (_connection), _message, -1, &_dbus_error);
@@ -2208,9 +4680,9 @@ static char* rygel_external_media_container_dbus_proxy_get_icon (RygelExternalMe
 		dbus_message_unref (_reply);
 		return NULL;
 	}
-	dbus_message_iter_get_basic (&_subiter, &_tmp107_);
+	dbus_message_iter_get_basic (&_subiter, &_tmp443_);
 	dbus_message_iter_next (&_subiter);
-	_result = g_strdup (_tmp107_);
+	_result = g_strdup (_tmp443_);
 	dbus_message_unref (_reply);
 	return _result;
 }
@@ -2221,21 +4693,21 @@ static void rygel_external_media_container_dbus_proxy_set_icon (RygelExternalMed
 	DBusGConnection *_connection;
 	DBusMessage *_message, *_reply;
 	DBusMessageIter _iter, _subiter;
-	const char* _tmp108_;
-	const char* _tmp109_;
-	const char* _tmp110_;
+	const char* _tmp444_;
+	const char* _tmp445_;
+	const char* _tmp446_;
 	if (((RygelExternalMediaContainerDBusProxy*) self)->disposed) {
 		return;
 	}
 	_message = dbus_message_new_method_call (dbus_g_proxy_get_bus_name ((DBusGProxy*) self), dbus_g_proxy_get_path ((DBusGProxy*) self), "org.freedesktop.DBus.Properties", "Set");
 	dbus_message_iter_init_append (_message, &_iter);
-	_tmp108_ = "org.gnome.UPnP.MediaContainer1";
-	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp108_);
-	_tmp109_ = "Icon";
-	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp109_);
+	_tmp444_ = "org.gnome.UPnP.MediaContainer2";
+	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp444_);
+	_tmp445_ = "Icon";
+	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp445_);
 	dbus_message_iter_open_container (&_iter, DBUS_TYPE_VARIANT, "o", &_subiter);
-	_tmp110_ = value;
-	dbus_message_iter_append_basic (&_subiter, DBUS_TYPE_OBJECT_PATH, &_tmp110_);
+	_tmp446_ = value;
+	dbus_message_iter_append_basic (&_subiter, DBUS_TYPE_OBJECT_PATH, &_tmp446_);
 	dbus_message_iter_close_container (&_iter, &_subiter);
 	g_object_get (self, "connection", &_connection, NULL);
 	dbus_error_init (&_dbus_error);
@@ -2258,14 +4730,22 @@ static void rygel_external_media_container_dbus_proxy_set_icon (RygelExternalMed
 
 
 static void rygel_external_media_container_dbus_proxy_rygel_external_media_container__interface_init (RygelExternalMediaContainerIface* iface) {
-	iface->get_items = rygel_external_media_container_dbus_proxy_get_items;
-	iface->set_items = rygel_external_media_container_dbus_proxy_set_items;
-	iface->get_containers = rygel_external_media_container_dbus_proxy_get_containers;
-	iface->set_containers = rygel_external_media_container_dbus_proxy_set_containers;
+	iface->list_children = rygel_external_media_container_dbus_proxy_list_children_async;
+	iface->list_children_finish = rygel_external_media_container_dbus_proxy_list_children_finish;
+	iface->list_containers = rygel_external_media_container_dbus_proxy_list_containers_async;
+	iface->list_containers_finish = rygel_external_media_container_dbus_proxy_list_containers_finish;
+	iface->list_items = rygel_external_media_container_dbus_proxy_list_items_async;
+	iface->list_items_finish = rygel_external_media_container_dbus_proxy_list_items_finish;
+	iface->search_objects = rygel_external_media_container_dbus_proxy_search_objects_async;
+	iface->search_objects_finish = rygel_external_media_container_dbus_proxy_search_objects_finish;
+	iface->get_child_count = rygel_external_media_container_dbus_proxy_get_child_count;
+	iface->set_child_count = rygel_external_media_container_dbus_proxy_set_child_count;
 	iface->get_item_count = rygel_external_media_container_dbus_proxy_get_item_count;
 	iface->set_item_count = rygel_external_media_container_dbus_proxy_set_item_count;
 	iface->get_container_count = rygel_external_media_container_dbus_proxy_get_container_count;
 	iface->set_container_count = rygel_external_media_container_dbus_proxy_set_container_count;
+	iface->get_searchable = rygel_external_media_container_dbus_proxy_get_searchable;
+	iface->set_searchable = rygel_external_media_container_dbus_proxy_set_searchable;
 	iface->get_icon = rygel_external_media_container_dbus_proxy_get_icon;
 	iface->set_icon = rygel_external_media_container_dbus_proxy_set_icon;
 }
@@ -2296,16 +4776,6 @@ char* rygel_external_media_item_get_mime_type (RygelExternalMediaItem* self) {
 
 void rygel_external_media_item_set_mime_type (RygelExternalMediaItem* self, const char* value) {
 	RYGEL_EXTERNAL_MEDIA_ITEM_GET_INTERFACE (self)->set_mime_type (self, value);
-}
-
-
-char* rygel_external_media_item_get_media_type (RygelExternalMediaItem* self) {
-	return RYGEL_EXTERNAL_MEDIA_ITEM_GET_INTERFACE (self)->get_media_type (self);
-}
-
-
-void rygel_external_media_item_set_media_type (RygelExternalMediaItem* self, const char* value) {
-	RYGEL_EXTERNAL_MEDIA_ITEM_GET_INTERFACE (self)->set_media_type (self, value);
 }
 
 
@@ -2472,7 +4942,7 @@ static DBusHandlerResult _dbus_rygel_external_media_item_introspect (RygelExtern
 	reply = dbus_message_new_method_return (message);
 	dbus_message_iter_init_append (reply, &iter);
 	xml_data = g_string_new ("<!DOCTYPE node PUBLIC \"-//freedesktop//DTD D-BUS Object Introspection 1.0//EN\" \"http://www.freedesktop.org/standards/dbus/1.0/introspect.dtd\">\n");
-	g_string_append (xml_data, "<node>\n<interface name=\"org.freedesktop.DBus.Introspectable\">\n  <method name=\"Introspect\">\n    <arg name=\"data\" direction=\"out\" type=\"s\"/>\n  </method>\n</interface>\n<interface name=\"org.freedesktop.DBus.Properties\">\n  <method name=\"Get\">\n    <arg name=\"interface\" direction=\"in\" type=\"s\"/>\n    <arg name=\"propname\" direction=\"in\" type=\"s\"/>\n    <arg name=\"value\" direction=\"out\" type=\"v\"/>\n  </method>\n  <method name=\"Set\">\n    <arg name=\"interface\" direction=\"in\" type=\"s\"/>\n    <arg name=\"propname\" direction=\"in\" type=\"s\"/>\n    <arg name=\"value\" direction=\"in\" type=\"v\"/>\n  </method>\n  <method name=\"GetAll\">\n    <arg name=\"interface\" direction=\"in\" type=\"s\"/>\n    <arg name=\"props\" direction=\"out\" type=\"a{sv}\"/>\n  </method>\n</interface>\n<interface name=\"org.gnome.UPnP.MediaItem1\">\n  <property name=\"URLs\" type=\"as\" access=\"readwrite\"/>\n  <property name=\"MimeType\" type=\"s\" access=\"readwrite\"/>\n  <property name=\"Type\" type=\"s\" access=\"readwrite\"/>\n  <property name=\"Size\" type=\"i\" access=\"readwrite\"/>\n  <property name=\"Artist\" type=\"s\" access=\"readwrite\"/>\n  <property name=\"Album\" type=\"s\" access=\"readwrite\"/>\n  <property name=\"Date\" type=\"s\" access=\"readwrite\"/>\n  <property name=\"Genre\" type=\"s\" access=\"readwrite\"/>\n  <property name=\"DlnaProfile\" type=\"s\" access=\"readwrite\"/>\n  <property name=\"Duration\" type=\"i\" access=\"readwrite\"/>\n  <property name=\"Bitrate\" type=\"i\" access=\"readwrite\"/>\n  <property name=\"SampleRate\" type=\"i\" access=\"readwrite\"/>\n  <property name=\"BitsPerSample\" type=\"i\" access=\"readwrite\"/>\n  <property name=\"Width\" type=\"i\" access=\"readwrite\"/>\n  <property name=\"Height\" type=\"i\" access=\"readwrite\"/>\n  <property name=\"ColorDepth\" type=\"i\" access=\"readwrite\"/>\n  <property name=\"Thumbnail\" type=\"o\" access=\"readwrite\"/>\n  <property name=\"AlbumArt\" type=\"o\" access=\"readwrite\"/>\n</interface>\n");
+	g_string_append (xml_data, "<node>\n<interface name=\"org.freedesktop.DBus.Introspectable\">\n  <method name=\"Introspect\">\n    <arg name=\"data\" direction=\"out\" type=\"s\"/>\n  </method>\n</interface>\n<interface name=\"org.freedesktop.DBus.Properties\">\n  <method name=\"Get\">\n    <arg name=\"interface\" direction=\"in\" type=\"s\"/>\n    <arg name=\"propname\" direction=\"in\" type=\"s\"/>\n    <arg name=\"value\" direction=\"out\" type=\"v\"/>\n  </method>\n  <method name=\"Set\">\n    <arg name=\"interface\" direction=\"in\" type=\"s\"/>\n    <arg name=\"propname\" direction=\"in\" type=\"s\"/>\n    <arg name=\"value\" direction=\"in\" type=\"v\"/>\n  </method>\n  <method name=\"GetAll\">\n    <arg name=\"interface\" direction=\"in\" type=\"s\"/>\n    <arg name=\"props\" direction=\"out\" type=\"a{sv}\"/>\n  </method>\n</interface>\n<interface name=\"org.gnome.UPnP.MediaItem2\">\n  <property name=\"URLs\" type=\"as\" access=\"readwrite\"/>\n  <property name=\"MimeType\" type=\"s\" access=\"readwrite\"/>\n  <property name=\"Size\" type=\"i\" access=\"readwrite\"/>\n  <property name=\"Artist\" type=\"s\" access=\"readwrite\"/>\n  <property name=\"Album\" type=\"s\" access=\"readwrite\"/>\n  <property name=\"Date\" type=\"s\" access=\"readwrite\"/>\n  <property name=\"Genre\" type=\"s\" access=\"readwrite\"/>\n  <property name=\"DlnaProfile\" type=\"s\" access=\"readwrite\"/>\n  <property name=\"Duration\" type=\"i\" access=\"readwrite\"/>\n  <property name=\"Bitrate\" type=\"i\" access=\"readwrite\"/>\n  <property name=\"SampleRate\" type=\"i\" access=\"readwrite\"/>\n  <property name=\"BitsPerSample\" type=\"i\" access=\"readwrite\"/>\n  <property name=\"Width\" type=\"i\" access=\"readwrite\"/>\n  <property name=\"Height\" type=\"i\" access=\"readwrite\"/>\n  <property name=\"ColorDepth\" type=\"i\" access=\"readwrite\"/>\n  <property name=\"Thumbnail\" type=\"o\" access=\"readwrite\"/>\n  <property name=\"AlbumArt\" type=\"o\" access=\"readwrite\"/>\n</interface>\n");
 	dbus_connection_list_registered (connection, g_object_get_data ((GObject *) self, "dbus_object_path"), &children);
 	for (i = 0; children[i]; i++) {
 		g_string_append_printf (xml_data, "<node name=\"%s\"/>\n", children[i]);
@@ -2495,183 +4965,174 @@ static DBusHandlerResult _dbus_rygel_external_media_item_property_get (RygelExte
 	DBusMessage* reply;
 	DBusMessageIter iter, reply_iter, subiter;
 	char* interface_name;
-	const char* _tmp111_;
+	const char* _tmp447_;
 	char* property_name;
-	const char* _tmp112_;
+	const char* _tmp448_;
 	if (strcmp (dbus_message_get_signature (message), "ss")) {
 		return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
 	}
 	dbus_message_iter_init (message, &iter);
 	reply = dbus_message_new_method_return (message);
 	dbus_message_iter_init_append (reply, &reply_iter);
-	dbus_message_iter_get_basic (&iter, &_tmp111_);
+	dbus_message_iter_get_basic (&iter, &_tmp447_);
 	dbus_message_iter_next (&iter);
-	interface_name = g_strdup (_tmp111_);
-	dbus_message_iter_get_basic (&iter, &_tmp112_);
+	interface_name = g_strdup (_tmp447_);
+	dbus_message_iter_get_basic (&iter, &_tmp448_);
 	dbus_message_iter_next (&iter);
-	property_name = g_strdup (_tmp112_);
-	if ((strcmp (interface_name, "org.gnome.UPnP.MediaItem1") == 0) && (strcmp (property_name, "URLs") == 0)) {
+	property_name = g_strdup (_tmp448_);
+	if ((strcmp (interface_name, "org.gnome.UPnP.MediaItem2") == 0) && (strcmp (property_name, "URLs") == 0)) {
 		char** result;
 		int result_length1;
-		char** _tmp113_;
-		DBusMessageIter _tmp114_;
-		int _tmp115_;
+		char** _tmp449_;
+		DBusMessageIter _tmp450_;
+		int _tmp451_;
 		dbus_message_iter_open_container (&reply_iter, DBUS_TYPE_VARIANT, "as", &subiter);
 		result = rygel_external_media_item_get_urls (self, &result_length1);
-		_tmp113_ = result;
-		dbus_message_iter_open_container (&subiter, DBUS_TYPE_ARRAY, "s", &_tmp114_);
-		for (_tmp115_ = 0; _tmp115_ < result_length1; _tmp115_++) {
-			const char* _tmp116_;
-			_tmp116_ = *_tmp113_;
-			dbus_message_iter_append_basic (&_tmp114_, DBUS_TYPE_STRING, &_tmp116_);
-			_tmp113_++;
+		_tmp449_ = result;
+		dbus_message_iter_open_container (&subiter, DBUS_TYPE_ARRAY, "s", &_tmp450_);
+		for (_tmp451_ = 0; _tmp451_ < result_length1; _tmp451_++) {
+			const char* _tmp452_;
+			_tmp452_ = *_tmp449_;
+			dbus_message_iter_append_basic (&_tmp450_, DBUS_TYPE_STRING, &_tmp452_);
+			_tmp449_++;
 		}
-		dbus_message_iter_close_container (&subiter, &_tmp114_);
+		dbus_message_iter_close_container (&subiter, &_tmp450_);
 		result = (_vala_array_free (result,  result_length1, (GDestroyNotify) g_free), NULL);
 		dbus_message_iter_close_container (&reply_iter, &subiter);
-	} else if ((strcmp (interface_name, "org.gnome.UPnP.MediaItem1") == 0) && (strcmp (property_name, "MimeType") == 0)) {
+	} else if ((strcmp (interface_name, "org.gnome.UPnP.MediaItem2") == 0) && (strcmp (property_name, "MimeType") == 0)) {
 		char* result;
-		const char* _tmp117_;
+		const char* _tmp453_;
 		dbus_message_iter_open_container (&reply_iter, DBUS_TYPE_VARIANT, "s", &subiter);
 		result = rygel_external_media_item_get_mime_type (self);
-		_tmp117_ = result;
-		dbus_message_iter_append_basic (&subiter, DBUS_TYPE_STRING, &_tmp117_);
+		_tmp453_ = result;
+		dbus_message_iter_append_basic (&subiter, DBUS_TYPE_STRING, &_tmp453_);
 		_g_free0 (result);
 		dbus_message_iter_close_container (&reply_iter, &subiter);
-	} else if ((strcmp (interface_name, "org.gnome.UPnP.MediaItem1") == 0) && (strcmp (property_name, "Type") == 0)) {
-		char* result;
-		const char* _tmp118_;
-		dbus_message_iter_open_container (&reply_iter, DBUS_TYPE_VARIANT, "s", &subiter);
-		result = rygel_external_media_item_get_media_type (self);
-		_tmp118_ = result;
-		dbus_message_iter_append_basic (&subiter, DBUS_TYPE_STRING, &_tmp118_);
-		_g_free0 (result);
-		dbus_message_iter_close_container (&reply_iter, &subiter);
-	} else if ((strcmp (interface_name, "org.gnome.UPnP.MediaItem1") == 0) && (strcmp (property_name, "Size") == 0)) {
+	} else if ((strcmp (interface_name, "org.gnome.UPnP.MediaItem2") == 0) && (strcmp (property_name, "Size") == 0)) {
 		gint result;
-		dbus_int32_t _tmp119_;
+		dbus_int32_t _tmp454_;
 		dbus_message_iter_open_container (&reply_iter, DBUS_TYPE_VARIANT, "i", &subiter);
 		result = rygel_external_media_item_get_size (self);
-		_tmp119_ = result;
-		dbus_message_iter_append_basic (&subiter, DBUS_TYPE_INT32, &_tmp119_);
+		_tmp454_ = result;
+		dbus_message_iter_append_basic (&subiter, DBUS_TYPE_INT32, &_tmp454_);
 		dbus_message_iter_close_container (&reply_iter, &subiter);
-	} else if ((strcmp (interface_name, "org.gnome.UPnP.MediaItem1") == 0) && (strcmp (property_name, "Artist") == 0)) {
+	} else if ((strcmp (interface_name, "org.gnome.UPnP.MediaItem2") == 0) && (strcmp (property_name, "Artist") == 0)) {
 		char* result;
-		const char* _tmp120_;
+		const char* _tmp455_;
 		dbus_message_iter_open_container (&reply_iter, DBUS_TYPE_VARIANT, "s", &subiter);
 		result = rygel_external_media_item_get_artist (self);
-		_tmp120_ = result;
-		dbus_message_iter_append_basic (&subiter, DBUS_TYPE_STRING, &_tmp120_);
+		_tmp455_ = result;
+		dbus_message_iter_append_basic (&subiter, DBUS_TYPE_STRING, &_tmp455_);
 		_g_free0 (result);
 		dbus_message_iter_close_container (&reply_iter, &subiter);
-	} else if ((strcmp (interface_name, "org.gnome.UPnP.MediaItem1") == 0) && (strcmp (property_name, "Album") == 0)) {
+	} else if ((strcmp (interface_name, "org.gnome.UPnP.MediaItem2") == 0) && (strcmp (property_name, "Album") == 0)) {
 		char* result;
-		const char* _tmp121_;
+		const char* _tmp456_;
 		dbus_message_iter_open_container (&reply_iter, DBUS_TYPE_VARIANT, "s", &subiter);
 		result = rygel_external_media_item_get_album (self);
-		_tmp121_ = result;
-		dbus_message_iter_append_basic (&subiter, DBUS_TYPE_STRING, &_tmp121_);
+		_tmp456_ = result;
+		dbus_message_iter_append_basic (&subiter, DBUS_TYPE_STRING, &_tmp456_);
 		_g_free0 (result);
 		dbus_message_iter_close_container (&reply_iter, &subiter);
-	} else if ((strcmp (interface_name, "org.gnome.UPnP.MediaItem1") == 0) && (strcmp (property_name, "Date") == 0)) {
+	} else if ((strcmp (interface_name, "org.gnome.UPnP.MediaItem2") == 0) && (strcmp (property_name, "Date") == 0)) {
 		char* result;
-		const char* _tmp122_;
+		const char* _tmp457_;
 		dbus_message_iter_open_container (&reply_iter, DBUS_TYPE_VARIANT, "s", &subiter);
 		result = rygel_external_media_item_get_date (self);
-		_tmp122_ = result;
-		dbus_message_iter_append_basic (&subiter, DBUS_TYPE_STRING, &_tmp122_);
+		_tmp457_ = result;
+		dbus_message_iter_append_basic (&subiter, DBUS_TYPE_STRING, &_tmp457_);
 		_g_free0 (result);
 		dbus_message_iter_close_container (&reply_iter, &subiter);
-	} else if ((strcmp (interface_name, "org.gnome.UPnP.MediaItem1") == 0) && (strcmp (property_name, "Genre") == 0)) {
+	} else if ((strcmp (interface_name, "org.gnome.UPnP.MediaItem2") == 0) && (strcmp (property_name, "Genre") == 0)) {
 		char* result;
-		const char* _tmp123_;
+		const char* _tmp458_;
 		dbus_message_iter_open_container (&reply_iter, DBUS_TYPE_VARIANT, "s", &subiter);
 		result = rygel_external_media_item_get_genre (self);
-		_tmp123_ = result;
-		dbus_message_iter_append_basic (&subiter, DBUS_TYPE_STRING, &_tmp123_);
+		_tmp458_ = result;
+		dbus_message_iter_append_basic (&subiter, DBUS_TYPE_STRING, &_tmp458_);
 		_g_free0 (result);
 		dbus_message_iter_close_container (&reply_iter, &subiter);
-	} else if ((strcmp (interface_name, "org.gnome.UPnP.MediaItem1") == 0) && (strcmp (property_name, "DlnaProfile") == 0)) {
+	} else if ((strcmp (interface_name, "org.gnome.UPnP.MediaItem2") == 0) && (strcmp (property_name, "DlnaProfile") == 0)) {
 		char* result;
-		const char* _tmp124_;
+		const char* _tmp459_;
 		dbus_message_iter_open_container (&reply_iter, DBUS_TYPE_VARIANT, "s", &subiter);
 		result = rygel_external_media_item_get_dlna_profile (self);
-		_tmp124_ = result;
-		dbus_message_iter_append_basic (&subiter, DBUS_TYPE_STRING, &_tmp124_);
+		_tmp459_ = result;
+		dbus_message_iter_append_basic (&subiter, DBUS_TYPE_STRING, &_tmp459_);
 		_g_free0 (result);
 		dbus_message_iter_close_container (&reply_iter, &subiter);
-	} else if ((strcmp (interface_name, "org.gnome.UPnP.MediaItem1") == 0) && (strcmp (property_name, "Duration") == 0)) {
+	} else if ((strcmp (interface_name, "org.gnome.UPnP.MediaItem2") == 0) && (strcmp (property_name, "Duration") == 0)) {
 		gint result;
-		dbus_int32_t _tmp125_;
+		dbus_int32_t _tmp460_;
 		dbus_message_iter_open_container (&reply_iter, DBUS_TYPE_VARIANT, "i", &subiter);
 		result = rygel_external_media_item_get_duration (self);
-		_tmp125_ = result;
-		dbus_message_iter_append_basic (&subiter, DBUS_TYPE_INT32, &_tmp125_);
+		_tmp460_ = result;
+		dbus_message_iter_append_basic (&subiter, DBUS_TYPE_INT32, &_tmp460_);
 		dbus_message_iter_close_container (&reply_iter, &subiter);
-	} else if ((strcmp (interface_name, "org.gnome.UPnP.MediaItem1") == 0) && (strcmp (property_name, "Bitrate") == 0)) {
+	} else if ((strcmp (interface_name, "org.gnome.UPnP.MediaItem2") == 0) && (strcmp (property_name, "Bitrate") == 0)) {
 		gint result;
-		dbus_int32_t _tmp126_;
+		dbus_int32_t _tmp461_;
 		dbus_message_iter_open_container (&reply_iter, DBUS_TYPE_VARIANT, "i", &subiter);
 		result = rygel_external_media_item_get_bitrate (self);
-		_tmp126_ = result;
-		dbus_message_iter_append_basic (&subiter, DBUS_TYPE_INT32, &_tmp126_);
+		_tmp461_ = result;
+		dbus_message_iter_append_basic (&subiter, DBUS_TYPE_INT32, &_tmp461_);
 		dbus_message_iter_close_container (&reply_iter, &subiter);
-	} else if ((strcmp (interface_name, "org.gnome.UPnP.MediaItem1") == 0) && (strcmp (property_name, "SampleRate") == 0)) {
+	} else if ((strcmp (interface_name, "org.gnome.UPnP.MediaItem2") == 0) && (strcmp (property_name, "SampleRate") == 0)) {
 		gint result;
-		dbus_int32_t _tmp127_;
+		dbus_int32_t _tmp462_;
 		dbus_message_iter_open_container (&reply_iter, DBUS_TYPE_VARIANT, "i", &subiter);
 		result = rygel_external_media_item_get_sample_rate (self);
-		_tmp127_ = result;
-		dbus_message_iter_append_basic (&subiter, DBUS_TYPE_INT32, &_tmp127_);
+		_tmp462_ = result;
+		dbus_message_iter_append_basic (&subiter, DBUS_TYPE_INT32, &_tmp462_);
 		dbus_message_iter_close_container (&reply_iter, &subiter);
-	} else if ((strcmp (interface_name, "org.gnome.UPnP.MediaItem1") == 0) && (strcmp (property_name, "BitsPerSample") == 0)) {
+	} else if ((strcmp (interface_name, "org.gnome.UPnP.MediaItem2") == 0) && (strcmp (property_name, "BitsPerSample") == 0)) {
 		gint result;
-		dbus_int32_t _tmp128_;
+		dbus_int32_t _tmp463_;
 		dbus_message_iter_open_container (&reply_iter, DBUS_TYPE_VARIANT, "i", &subiter);
 		result = rygel_external_media_item_get_bits_per_sample (self);
-		_tmp128_ = result;
-		dbus_message_iter_append_basic (&subiter, DBUS_TYPE_INT32, &_tmp128_);
+		_tmp463_ = result;
+		dbus_message_iter_append_basic (&subiter, DBUS_TYPE_INT32, &_tmp463_);
 		dbus_message_iter_close_container (&reply_iter, &subiter);
-	} else if ((strcmp (interface_name, "org.gnome.UPnP.MediaItem1") == 0) && (strcmp (property_name, "Width") == 0)) {
+	} else if ((strcmp (interface_name, "org.gnome.UPnP.MediaItem2") == 0) && (strcmp (property_name, "Width") == 0)) {
 		gint result;
-		dbus_int32_t _tmp129_;
+		dbus_int32_t _tmp464_;
 		dbus_message_iter_open_container (&reply_iter, DBUS_TYPE_VARIANT, "i", &subiter);
 		result = rygel_external_media_item_get_width (self);
-		_tmp129_ = result;
-		dbus_message_iter_append_basic (&subiter, DBUS_TYPE_INT32, &_tmp129_);
+		_tmp464_ = result;
+		dbus_message_iter_append_basic (&subiter, DBUS_TYPE_INT32, &_tmp464_);
 		dbus_message_iter_close_container (&reply_iter, &subiter);
-	} else if ((strcmp (interface_name, "org.gnome.UPnP.MediaItem1") == 0) && (strcmp (property_name, "Height") == 0)) {
+	} else if ((strcmp (interface_name, "org.gnome.UPnP.MediaItem2") == 0) && (strcmp (property_name, "Height") == 0)) {
 		gint result;
-		dbus_int32_t _tmp130_;
+		dbus_int32_t _tmp465_;
 		dbus_message_iter_open_container (&reply_iter, DBUS_TYPE_VARIANT, "i", &subiter);
 		result = rygel_external_media_item_get_height (self);
-		_tmp130_ = result;
-		dbus_message_iter_append_basic (&subiter, DBUS_TYPE_INT32, &_tmp130_);
+		_tmp465_ = result;
+		dbus_message_iter_append_basic (&subiter, DBUS_TYPE_INT32, &_tmp465_);
 		dbus_message_iter_close_container (&reply_iter, &subiter);
-	} else if ((strcmp (interface_name, "org.gnome.UPnP.MediaItem1") == 0) && (strcmp (property_name, "ColorDepth") == 0)) {
+	} else if ((strcmp (interface_name, "org.gnome.UPnP.MediaItem2") == 0) && (strcmp (property_name, "ColorDepth") == 0)) {
 		gint result;
-		dbus_int32_t _tmp131_;
+		dbus_int32_t _tmp466_;
 		dbus_message_iter_open_container (&reply_iter, DBUS_TYPE_VARIANT, "i", &subiter);
 		result = rygel_external_media_item_get_color_depth (self);
-		_tmp131_ = result;
-		dbus_message_iter_append_basic (&subiter, DBUS_TYPE_INT32, &_tmp131_);
+		_tmp466_ = result;
+		dbus_message_iter_append_basic (&subiter, DBUS_TYPE_INT32, &_tmp466_);
 		dbus_message_iter_close_container (&reply_iter, &subiter);
-	} else if ((strcmp (interface_name, "org.gnome.UPnP.MediaItem1") == 0) && (strcmp (property_name, "Thumbnail") == 0)) {
+	} else if ((strcmp (interface_name, "org.gnome.UPnP.MediaItem2") == 0) && (strcmp (property_name, "Thumbnail") == 0)) {
 		char* result;
-		const char* _tmp132_;
+		const char* _tmp467_;
 		dbus_message_iter_open_container (&reply_iter, DBUS_TYPE_VARIANT, "o", &subiter);
 		result = rygel_external_media_item_get_thumbnail (self);
-		_tmp132_ = result;
-		dbus_message_iter_append_basic (&subiter, DBUS_TYPE_OBJECT_PATH, &_tmp132_);
+		_tmp467_ = result;
+		dbus_message_iter_append_basic (&subiter, DBUS_TYPE_OBJECT_PATH, &_tmp467_);
 		_g_free0 (result);
 		dbus_message_iter_close_container (&reply_iter, &subiter);
-	} else if ((strcmp (interface_name, "org.gnome.UPnP.MediaItem1") == 0) && (strcmp (property_name, "AlbumArt") == 0)) {
+	} else if ((strcmp (interface_name, "org.gnome.UPnP.MediaItem2") == 0) && (strcmp (property_name, "AlbumArt") == 0)) {
 		char* result;
-		const char* _tmp133_;
+		const char* _tmp468_;
 		dbus_message_iter_open_container (&reply_iter, DBUS_TYPE_VARIANT, "o", &subiter);
 		result = rygel_external_media_item_get_album_art (self);
-		_tmp133_ = result;
-		dbus_message_iter_append_basic (&subiter, DBUS_TYPE_OBJECT_PATH, &_tmp133_);
+		_tmp468_ = result;
+		dbus_message_iter_append_basic (&subiter, DBUS_TYPE_OBJECT_PATH, &_tmp468_);
 		_g_free0 (result);
 		dbus_message_iter_close_container (&reply_iter, &subiter);
 	} else {
@@ -2694,176 +5155,168 @@ static DBusHandlerResult _dbus_rygel_external_media_item_property_set (RygelExte
 	DBusMessage* reply;
 	DBusMessageIter iter, subiter;
 	char* interface_name;
-	const char* _tmp134_;
+	const char* _tmp469_;
 	char* property_name;
-	const char* _tmp135_;
+	const char* _tmp470_;
 	if (strcmp (dbus_message_get_signature (message), "ssv")) {
 		return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
 	}
 	dbus_message_iter_init (message, &iter);
 	reply = dbus_message_new_method_return (message);
-	dbus_message_iter_get_basic (&iter, &_tmp134_);
+	dbus_message_iter_get_basic (&iter, &_tmp469_);
 	dbus_message_iter_next (&iter);
-	interface_name = g_strdup (_tmp134_);
-	dbus_message_iter_get_basic (&iter, &_tmp135_);
+	interface_name = g_strdup (_tmp469_);
+	dbus_message_iter_get_basic (&iter, &_tmp470_);
 	dbus_message_iter_next (&iter);
-	property_name = g_strdup (_tmp135_);
+	property_name = g_strdup (_tmp470_);
 	dbus_message_iter_recurse (&iter, &subiter);
-	if ((strcmp (interface_name, "org.gnome.UPnP.MediaItem1") == 0) && (strcmp (property_name, "URLs") == 0)) {
+	if ((strcmp (interface_name, "org.gnome.UPnP.MediaItem2") == 0) && (strcmp (property_name, "URLs") == 0)) {
 		char** value;
-		char** _tmp136_;
-		int _tmp136__length;
-		int _tmp136__size;
-		int _tmp136__length1;
-		DBusMessageIter _tmp137_;
+		char** _tmp471_;
+		int _tmp471__length;
+		int _tmp471__size;
+		int _tmp471__length1;
+		DBusMessageIter _tmp472_;
 		int value_length1;
-		_tmp136_ = g_new (char*, 5);
-		_tmp136__length = 0;
-		_tmp136__size = 4;
-		_tmp136__length1 = 0;
-		dbus_message_iter_recurse (&subiter, &_tmp137_);
-		for (; dbus_message_iter_get_arg_type (&_tmp137_); _tmp136__length1++) {
-			const char* _tmp138_;
-			if (_tmp136__size == _tmp136__length) {
-				_tmp136__size = 2 * _tmp136__size;
-				_tmp136_ = g_renew (char*, _tmp136_, _tmp136__size + 1);
+		_tmp471_ = g_new (char*, 5);
+		_tmp471__length = 0;
+		_tmp471__size = 4;
+		_tmp471__length1 = 0;
+		dbus_message_iter_recurse (&subiter, &_tmp472_);
+		for (; dbus_message_iter_get_arg_type (&_tmp472_); _tmp471__length1++) {
+			const char* _tmp473_;
+			if (_tmp471__size == _tmp471__length) {
+				_tmp471__size = 2 * _tmp471__size;
+				_tmp471_ = g_renew (char*, _tmp471_, _tmp471__size + 1);
 			}
-			dbus_message_iter_get_basic (&_tmp137_, &_tmp138_);
-			dbus_message_iter_next (&_tmp137_);
-			_tmp136_[_tmp136__length++] = g_strdup (_tmp138_);
+			dbus_message_iter_get_basic (&_tmp472_, &_tmp473_);
+			dbus_message_iter_next (&_tmp472_);
+			_tmp471_[_tmp471__length++] = g_strdup (_tmp473_);
 		}
-		value_length1 = _tmp136__length1;
-		_tmp136_[_tmp136__length] = NULL;
+		value_length1 = _tmp471__length1;
+		_tmp471_[_tmp471__length] = NULL;
 		dbus_message_iter_next (&subiter);
-		value = _tmp136_;
+		value = _tmp471_;
 		rygel_external_media_item_set_urls (self, value, value_length1);
 		value = (_vala_array_free (value, value_length1, (GDestroyNotify) g_free), NULL);
-	} else if ((strcmp (interface_name, "org.gnome.UPnP.MediaItem1") == 0) && (strcmp (property_name, "MimeType") == 0)) {
+	} else if ((strcmp (interface_name, "org.gnome.UPnP.MediaItem2") == 0) && (strcmp (property_name, "MimeType") == 0)) {
 		char* value;
-		const char* _tmp139_;
-		dbus_message_iter_get_basic (&subiter, &_tmp139_);
+		const char* _tmp474_;
+		dbus_message_iter_get_basic (&subiter, &_tmp474_);
 		dbus_message_iter_next (&subiter);
-		value = g_strdup (_tmp139_);
+		value = g_strdup (_tmp474_);
 		rygel_external_media_item_set_mime_type (self, value);
 		_g_free0 (value);
-	} else if ((strcmp (interface_name, "org.gnome.UPnP.MediaItem1") == 0) && (strcmp (property_name, "Type") == 0)) {
-		char* value;
-		const char* _tmp140_;
-		dbus_message_iter_get_basic (&subiter, &_tmp140_);
-		dbus_message_iter_next (&subiter);
-		value = g_strdup (_tmp140_);
-		rygel_external_media_item_set_media_type (self, value);
-		_g_free0 (value);
-	} else if ((strcmp (interface_name, "org.gnome.UPnP.MediaItem1") == 0) && (strcmp (property_name, "Size") == 0)) {
+	} else if ((strcmp (interface_name, "org.gnome.UPnP.MediaItem2") == 0) && (strcmp (property_name, "Size") == 0)) {
 		gint value;
-		dbus_int32_t _tmp141_;
-		dbus_message_iter_get_basic (&subiter, &_tmp141_);
+		dbus_int32_t _tmp475_;
+		dbus_message_iter_get_basic (&subiter, &_tmp475_);
 		dbus_message_iter_next (&subiter);
-		value = _tmp141_;
+		value = _tmp475_;
 		rygel_external_media_item_set_size (self, value);
-	} else if ((strcmp (interface_name, "org.gnome.UPnP.MediaItem1") == 0) && (strcmp (property_name, "Artist") == 0)) {
+	} else if ((strcmp (interface_name, "org.gnome.UPnP.MediaItem2") == 0) && (strcmp (property_name, "Artist") == 0)) {
 		char* value;
-		const char* _tmp142_;
-		dbus_message_iter_get_basic (&subiter, &_tmp142_);
+		const char* _tmp476_;
+		dbus_message_iter_get_basic (&subiter, &_tmp476_);
 		dbus_message_iter_next (&subiter);
-		value = g_strdup (_tmp142_);
+		value = g_strdup (_tmp476_);
 		rygel_external_media_item_set_artist (self, value);
 		_g_free0 (value);
-	} else if ((strcmp (interface_name, "org.gnome.UPnP.MediaItem1") == 0) && (strcmp (property_name, "Album") == 0)) {
+	} else if ((strcmp (interface_name, "org.gnome.UPnP.MediaItem2") == 0) && (strcmp (property_name, "Album") == 0)) {
 		char* value;
-		const char* _tmp143_;
-		dbus_message_iter_get_basic (&subiter, &_tmp143_);
+		const char* _tmp477_;
+		dbus_message_iter_get_basic (&subiter, &_tmp477_);
 		dbus_message_iter_next (&subiter);
-		value = g_strdup (_tmp143_);
+		value = g_strdup (_tmp477_);
 		rygel_external_media_item_set_album (self, value);
 		_g_free0 (value);
-	} else if ((strcmp (interface_name, "org.gnome.UPnP.MediaItem1") == 0) && (strcmp (property_name, "Date") == 0)) {
+	} else if ((strcmp (interface_name, "org.gnome.UPnP.MediaItem2") == 0) && (strcmp (property_name, "Date") == 0)) {
 		char* value;
-		const char* _tmp144_;
-		dbus_message_iter_get_basic (&subiter, &_tmp144_);
+		const char* _tmp478_;
+		dbus_message_iter_get_basic (&subiter, &_tmp478_);
 		dbus_message_iter_next (&subiter);
-		value = g_strdup (_tmp144_);
+		value = g_strdup (_tmp478_);
 		rygel_external_media_item_set_date (self, value);
 		_g_free0 (value);
-	} else if ((strcmp (interface_name, "org.gnome.UPnP.MediaItem1") == 0) && (strcmp (property_name, "Genre") == 0)) {
+	} else if ((strcmp (interface_name, "org.gnome.UPnP.MediaItem2") == 0) && (strcmp (property_name, "Genre") == 0)) {
 		char* value;
-		const char* _tmp145_;
-		dbus_message_iter_get_basic (&subiter, &_tmp145_);
+		const char* _tmp479_;
+		dbus_message_iter_get_basic (&subiter, &_tmp479_);
 		dbus_message_iter_next (&subiter);
-		value = g_strdup (_tmp145_);
+		value = g_strdup (_tmp479_);
 		rygel_external_media_item_set_genre (self, value);
 		_g_free0 (value);
-	} else if ((strcmp (interface_name, "org.gnome.UPnP.MediaItem1") == 0) && (strcmp (property_name, "DlnaProfile") == 0)) {
+	} else if ((strcmp (interface_name, "org.gnome.UPnP.MediaItem2") == 0) && (strcmp (property_name, "DlnaProfile") == 0)) {
 		char* value;
-		const char* _tmp146_;
-		dbus_message_iter_get_basic (&subiter, &_tmp146_);
+		const char* _tmp480_;
+		dbus_message_iter_get_basic (&subiter, &_tmp480_);
 		dbus_message_iter_next (&subiter);
-		value = g_strdup (_tmp146_);
+		value = g_strdup (_tmp480_);
 		rygel_external_media_item_set_dlna_profile (self, value);
 		_g_free0 (value);
-	} else if ((strcmp (interface_name, "org.gnome.UPnP.MediaItem1") == 0) && (strcmp (property_name, "Duration") == 0)) {
+	} else if ((strcmp (interface_name, "org.gnome.UPnP.MediaItem2") == 0) && (strcmp (property_name, "Duration") == 0)) {
 		gint value;
-		dbus_int32_t _tmp147_;
-		dbus_message_iter_get_basic (&subiter, &_tmp147_);
+		dbus_int32_t _tmp481_;
+		dbus_message_iter_get_basic (&subiter, &_tmp481_);
 		dbus_message_iter_next (&subiter);
-		value = _tmp147_;
+		value = _tmp481_;
 		rygel_external_media_item_set_duration (self, value);
-	} else if ((strcmp (interface_name, "org.gnome.UPnP.MediaItem1") == 0) && (strcmp (property_name, "Bitrate") == 0)) {
+	} else if ((strcmp (interface_name, "org.gnome.UPnP.MediaItem2") == 0) && (strcmp (property_name, "Bitrate") == 0)) {
 		gint value;
-		dbus_int32_t _tmp148_;
-		dbus_message_iter_get_basic (&subiter, &_tmp148_);
+		dbus_int32_t _tmp482_;
+		dbus_message_iter_get_basic (&subiter, &_tmp482_);
 		dbus_message_iter_next (&subiter);
-		value = _tmp148_;
+		value = _tmp482_;
 		rygel_external_media_item_set_bitrate (self, value);
-	} else if ((strcmp (interface_name, "org.gnome.UPnP.MediaItem1") == 0) && (strcmp (property_name, "SampleRate") == 0)) {
+	} else if ((strcmp (interface_name, "org.gnome.UPnP.MediaItem2") == 0) && (strcmp (property_name, "SampleRate") == 0)) {
 		gint value;
-		dbus_int32_t _tmp149_;
-		dbus_message_iter_get_basic (&subiter, &_tmp149_);
+		dbus_int32_t _tmp483_;
+		dbus_message_iter_get_basic (&subiter, &_tmp483_);
 		dbus_message_iter_next (&subiter);
-		value = _tmp149_;
+		value = _tmp483_;
 		rygel_external_media_item_set_sample_rate (self, value);
-	} else if ((strcmp (interface_name, "org.gnome.UPnP.MediaItem1") == 0) && (strcmp (property_name, "BitsPerSample") == 0)) {
+	} else if ((strcmp (interface_name, "org.gnome.UPnP.MediaItem2") == 0) && (strcmp (property_name, "BitsPerSample") == 0)) {
 		gint value;
-		dbus_int32_t _tmp150_;
-		dbus_message_iter_get_basic (&subiter, &_tmp150_);
+		dbus_int32_t _tmp484_;
+		dbus_message_iter_get_basic (&subiter, &_tmp484_);
 		dbus_message_iter_next (&subiter);
-		value = _tmp150_;
+		value = _tmp484_;
 		rygel_external_media_item_set_bits_per_sample (self, value);
-	} else if ((strcmp (interface_name, "org.gnome.UPnP.MediaItem1") == 0) && (strcmp (property_name, "Width") == 0)) {
+	} else if ((strcmp (interface_name, "org.gnome.UPnP.MediaItem2") == 0) && (strcmp (property_name, "Width") == 0)) {
 		gint value;
-		dbus_int32_t _tmp151_;
-		dbus_message_iter_get_basic (&subiter, &_tmp151_);
+		dbus_int32_t _tmp485_;
+		dbus_message_iter_get_basic (&subiter, &_tmp485_);
 		dbus_message_iter_next (&subiter);
-		value = _tmp151_;
+		value = _tmp485_;
 		rygel_external_media_item_set_width (self, value);
-	} else if ((strcmp (interface_name, "org.gnome.UPnP.MediaItem1") == 0) && (strcmp (property_name, "Height") == 0)) {
+	} else if ((strcmp (interface_name, "org.gnome.UPnP.MediaItem2") == 0) && (strcmp (property_name, "Height") == 0)) {
 		gint value;
-		dbus_int32_t _tmp152_;
-		dbus_message_iter_get_basic (&subiter, &_tmp152_);
+		dbus_int32_t _tmp486_;
+		dbus_message_iter_get_basic (&subiter, &_tmp486_);
 		dbus_message_iter_next (&subiter);
-		value = _tmp152_;
+		value = _tmp486_;
 		rygel_external_media_item_set_height (self, value);
-	} else if ((strcmp (interface_name, "org.gnome.UPnP.MediaItem1") == 0) && (strcmp (property_name, "ColorDepth") == 0)) {
+	} else if ((strcmp (interface_name, "org.gnome.UPnP.MediaItem2") == 0) && (strcmp (property_name, "ColorDepth") == 0)) {
 		gint value;
-		dbus_int32_t _tmp153_;
-		dbus_message_iter_get_basic (&subiter, &_tmp153_);
+		dbus_int32_t _tmp487_;
+		dbus_message_iter_get_basic (&subiter, &_tmp487_);
 		dbus_message_iter_next (&subiter);
-		value = _tmp153_;
+		value = _tmp487_;
 		rygel_external_media_item_set_color_depth (self, value);
-	} else if ((strcmp (interface_name, "org.gnome.UPnP.MediaItem1") == 0) && (strcmp (property_name, "Thumbnail") == 0)) {
+	} else if ((strcmp (interface_name, "org.gnome.UPnP.MediaItem2") == 0) && (strcmp (property_name, "Thumbnail") == 0)) {
 		char* value;
-		const char* _tmp154_;
-		dbus_message_iter_get_basic (&subiter, &_tmp154_);
+		const char* _tmp488_;
+		dbus_message_iter_get_basic (&subiter, &_tmp488_);
 		dbus_message_iter_next (&subiter);
-		value = g_strdup (_tmp154_);
+		value = g_strdup (_tmp488_);
 		rygel_external_media_item_set_thumbnail (self, value);
 		_g_free0 (value);
-	} else if ((strcmp (interface_name, "org.gnome.UPnP.MediaItem1") == 0) && (strcmp (property_name, "AlbumArt") == 0)) {
+	} else if ((strcmp (interface_name, "org.gnome.UPnP.MediaItem2") == 0) && (strcmp (property_name, "AlbumArt") == 0)) {
 		char* value;
-		const char* _tmp155_;
-		dbus_message_iter_get_basic (&subiter, &_tmp155_);
+		const char* _tmp489_;
+		dbus_message_iter_get_basic (&subiter, &_tmp489_);
 		dbus_message_iter_next (&subiter);
-		value = g_strdup (_tmp155_);
+		value = g_strdup (_tmp489_);
 		rygel_external_media_item_set_album_art (self, value);
 		_g_free0 (value);
 	} else {
@@ -2886,7 +5339,7 @@ static DBusHandlerResult _dbus_rygel_external_media_item_property_get_all (Rygel
 	DBusMessage* reply;
 	DBusMessageIter iter, reply_iter, subiter, entry_iter, value_iter;
 	char* interface_name;
-	const char* _tmp156_;
+	const char* _tmp490_;
 	const char* property_name;
 	if (strcmp (dbus_message_get_signature (message), "s")) {
 		return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
@@ -2894,261 +5347,247 @@ static DBusHandlerResult _dbus_rygel_external_media_item_property_get_all (Rygel
 	dbus_message_iter_init (message, &iter);
 	reply = dbus_message_new_method_return (message);
 	dbus_message_iter_init_append (reply, &reply_iter);
-	dbus_message_iter_get_basic (&iter, &_tmp156_);
+	dbus_message_iter_get_basic (&iter, &_tmp490_);
 	dbus_message_iter_next (&iter);
-	interface_name = g_strdup (_tmp156_);
-	if (strcmp (interface_name, "org.gnome.UPnP.MediaItem1") == 0) {
+	interface_name = g_strdup (_tmp490_);
+	if (strcmp (interface_name, "org.gnome.UPnP.MediaItem2") == 0) {
 		dbus_message_iter_open_container (&reply_iter, DBUS_TYPE_ARRAY, "{sv}", &subiter);
 		{
 			char** result;
 			int result_length1;
-			char** _tmp157_;
-			DBusMessageIter _tmp158_;
-			int _tmp159_;
+			char** _tmp491_;
+			DBusMessageIter _tmp492_;
+			int _tmp493_;
 			dbus_message_iter_open_container (&subiter, DBUS_TYPE_DICT_ENTRY, NULL, &entry_iter);
 			property_name = "URLs";
 			dbus_message_iter_append_basic (&entry_iter, DBUS_TYPE_STRING, &property_name);
 			dbus_message_iter_open_container (&entry_iter, DBUS_TYPE_VARIANT, "as", &value_iter);
 			result = rygel_external_media_item_get_urls (self, &result_length1);
-			_tmp157_ = result;
-			dbus_message_iter_open_container (&value_iter, DBUS_TYPE_ARRAY, "s", &_tmp158_);
-			for (_tmp159_ = 0; _tmp159_ < result_length1; _tmp159_++) {
-				const char* _tmp160_;
-				_tmp160_ = *_tmp157_;
-				dbus_message_iter_append_basic (&_tmp158_, DBUS_TYPE_STRING, &_tmp160_);
-				_tmp157_++;
+			_tmp491_ = result;
+			dbus_message_iter_open_container (&value_iter, DBUS_TYPE_ARRAY, "s", &_tmp492_);
+			for (_tmp493_ = 0; _tmp493_ < result_length1; _tmp493_++) {
+				const char* _tmp494_;
+				_tmp494_ = *_tmp491_;
+				dbus_message_iter_append_basic (&_tmp492_, DBUS_TYPE_STRING, &_tmp494_);
+				_tmp491_++;
 			}
-			dbus_message_iter_close_container (&value_iter, &_tmp158_);
+			dbus_message_iter_close_container (&value_iter, &_tmp492_);
 			result = (_vala_array_free (result,  result_length1, (GDestroyNotify) g_free), NULL);
 			dbus_message_iter_close_container (&entry_iter, &value_iter);
 			dbus_message_iter_close_container (&subiter, &entry_iter);
 		}
 		{
 			char* result;
-			const char* _tmp161_;
+			const char* _tmp495_;
 			dbus_message_iter_open_container (&subiter, DBUS_TYPE_DICT_ENTRY, NULL, &entry_iter);
 			property_name = "MimeType";
 			dbus_message_iter_append_basic (&entry_iter, DBUS_TYPE_STRING, &property_name);
 			dbus_message_iter_open_container (&entry_iter, DBUS_TYPE_VARIANT, "s", &value_iter);
 			result = rygel_external_media_item_get_mime_type (self);
-			_tmp161_ = result;
-			dbus_message_iter_append_basic (&value_iter, DBUS_TYPE_STRING, &_tmp161_);
-			_g_free0 (result);
-			dbus_message_iter_close_container (&entry_iter, &value_iter);
-			dbus_message_iter_close_container (&subiter, &entry_iter);
-		}
-		{
-			char* result;
-			const char* _tmp162_;
-			dbus_message_iter_open_container (&subiter, DBUS_TYPE_DICT_ENTRY, NULL, &entry_iter);
-			property_name = "Type";
-			dbus_message_iter_append_basic (&entry_iter, DBUS_TYPE_STRING, &property_name);
-			dbus_message_iter_open_container (&entry_iter, DBUS_TYPE_VARIANT, "s", &value_iter);
-			result = rygel_external_media_item_get_media_type (self);
-			_tmp162_ = result;
-			dbus_message_iter_append_basic (&value_iter, DBUS_TYPE_STRING, &_tmp162_);
+			_tmp495_ = result;
+			dbus_message_iter_append_basic (&value_iter, DBUS_TYPE_STRING, &_tmp495_);
 			_g_free0 (result);
 			dbus_message_iter_close_container (&entry_iter, &value_iter);
 			dbus_message_iter_close_container (&subiter, &entry_iter);
 		}
 		{
 			gint result;
-			dbus_int32_t _tmp163_;
+			dbus_int32_t _tmp496_;
 			dbus_message_iter_open_container (&subiter, DBUS_TYPE_DICT_ENTRY, NULL, &entry_iter);
 			property_name = "Size";
 			dbus_message_iter_append_basic (&entry_iter, DBUS_TYPE_STRING, &property_name);
 			dbus_message_iter_open_container (&entry_iter, DBUS_TYPE_VARIANT, "i", &value_iter);
 			result = rygel_external_media_item_get_size (self);
-			_tmp163_ = result;
-			dbus_message_iter_append_basic (&value_iter, DBUS_TYPE_INT32, &_tmp163_);
+			_tmp496_ = result;
+			dbus_message_iter_append_basic (&value_iter, DBUS_TYPE_INT32, &_tmp496_);
 			dbus_message_iter_close_container (&entry_iter, &value_iter);
 			dbus_message_iter_close_container (&subiter, &entry_iter);
 		}
 		{
 			char* result;
-			const char* _tmp164_;
+			const char* _tmp497_;
 			dbus_message_iter_open_container (&subiter, DBUS_TYPE_DICT_ENTRY, NULL, &entry_iter);
 			property_name = "Artist";
 			dbus_message_iter_append_basic (&entry_iter, DBUS_TYPE_STRING, &property_name);
 			dbus_message_iter_open_container (&entry_iter, DBUS_TYPE_VARIANT, "s", &value_iter);
 			result = rygel_external_media_item_get_artist (self);
-			_tmp164_ = result;
-			dbus_message_iter_append_basic (&value_iter, DBUS_TYPE_STRING, &_tmp164_);
+			_tmp497_ = result;
+			dbus_message_iter_append_basic (&value_iter, DBUS_TYPE_STRING, &_tmp497_);
 			_g_free0 (result);
 			dbus_message_iter_close_container (&entry_iter, &value_iter);
 			dbus_message_iter_close_container (&subiter, &entry_iter);
 		}
 		{
 			char* result;
-			const char* _tmp165_;
+			const char* _tmp498_;
 			dbus_message_iter_open_container (&subiter, DBUS_TYPE_DICT_ENTRY, NULL, &entry_iter);
 			property_name = "Album";
 			dbus_message_iter_append_basic (&entry_iter, DBUS_TYPE_STRING, &property_name);
 			dbus_message_iter_open_container (&entry_iter, DBUS_TYPE_VARIANT, "s", &value_iter);
 			result = rygel_external_media_item_get_album (self);
-			_tmp165_ = result;
-			dbus_message_iter_append_basic (&value_iter, DBUS_TYPE_STRING, &_tmp165_);
+			_tmp498_ = result;
+			dbus_message_iter_append_basic (&value_iter, DBUS_TYPE_STRING, &_tmp498_);
 			_g_free0 (result);
 			dbus_message_iter_close_container (&entry_iter, &value_iter);
 			dbus_message_iter_close_container (&subiter, &entry_iter);
 		}
 		{
 			char* result;
-			const char* _tmp166_;
+			const char* _tmp499_;
 			dbus_message_iter_open_container (&subiter, DBUS_TYPE_DICT_ENTRY, NULL, &entry_iter);
 			property_name = "Date";
 			dbus_message_iter_append_basic (&entry_iter, DBUS_TYPE_STRING, &property_name);
 			dbus_message_iter_open_container (&entry_iter, DBUS_TYPE_VARIANT, "s", &value_iter);
 			result = rygel_external_media_item_get_date (self);
-			_tmp166_ = result;
-			dbus_message_iter_append_basic (&value_iter, DBUS_TYPE_STRING, &_tmp166_);
+			_tmp499_ = result;
+			dbus_message_iter_append_basic (&value_iter, DBUS_TYPE_STRING, &_tmp499_);
 			_g_free0 (result);
 			dbus_message_iter_close_container (&entry_iter, &value_iter);
 			dbus_message_iter_close_container (&subiter, &entry_iter);
 		}
 		{
 			char* result;
-			const char* _tmp167_;
+			const char* _tmp500_;
 			dbus_message_iter_open_container (&subiter, DBUS_TYPE_DICT_ENTRY, NULL, &entry_iter);
 			property_name = "Genre";
 			dbus_message_iter_append_basic (&entry_iter, DBUS_TYPE_STRING, &property_name);
 			dbus_message_iter_open_container (&entry_iter, DBUS_TYPE_VARIANT, "s", &value_iter);
 			result = rygel_external_media_item_get_genre (self);
-			_tmp167_ = result;
-			dbus_message_iter_append_basic (&value_iter, DBUS_TYPE_STRING, &_tmp167_);
+			_tmp500_ = result;
+			dbus_message_iter_append_basic (&value_iter, DBUS_TYPE_STRING, &_tmp500_);
 			_g_free0 (result);
 			dbus_message_iter_close_container (&entry_iter, &value_iter);
 			dbus_message_iter_close_container (&subiter, &entry_iter);
 		}
 		{
 			char* result;
-			const char* _tmp168_;
+			const char* _tmp501_;
 			dbus_message_iter_open_container (&subiter, DBUS_TYPE_DICT_ENTRY, NULL, &entry_iter);
 			property_name = "DlnaProfile";
 			dbus_message_iter_append_basic (&entry_iter, DBUS_TYPE_STRING, &property_name);
 			dbus_message_iter_open_container (&entry_iter, DBUS_TYPE_VARIANT, "s", &value_iter);
 			result = rygel_external_media_item_get_dlna_profile (self);
-			_tmp168_ = result;
-			dbus_message_iter_append_basic (&value_iter, DBUS_TYPE_STRING, &_tmp168_);
+			_tmp501_ = result;
+			dbus_message_iter_append_basic (&value_iter, DBUS_TYPE_STRING, &_tmp501_);
 			_g_free0 (result);
 			dbus_message_iter_close_container (&entry_iter, &value_iter);
 			dbus_message_iter_close_container (&subiter, &entry_iter);
 		}
 		{
 			gint result;
-			dbus_int32_t _tmp169_;
+			dbus_int32_t _tmp502_;
 			dbus_message_iter_open_container (&subiter, DBUS_TYPE_DICT_ENTRY, NULL, &entry_iter);
 			property_name = "Duration";
 			dbus_message_iter_append_basic (&entry_iter, DBUS_TYPE_STRING, &property_name);
 			dbus_message_iter_open_container (&entry_iter, DBUS_TYPE_VARIANT, "i", &value_iter);
 			result = rygel_external_media_item_get_duration (self);
-			_tmp169_ = result;
-			dbus_message_iter_append_basic (&value_iter, DBUS_TYPE_INT32, &_tmp169_);
+			_tmp502_ = result;
+			dbus_message_iter_append_basic (&value_iter, DBUS_TYPE_INT32, &_tmp502_);
 			dbus_message_iter_close_container (&entry_iter, &value_iter);
 			dbus_message_iter_close_container (&subiter, &entry_iter);
 		}
 		{
 			gint result;
-			dbus_int32_t _tmp170_;
+			dbus_int32_t _tmp503_;
 			dbus_message_iter_open_container (&subiter, DBUS_TYPE_DICT_ENTRY, NULL, &entry_iter);
 			property_name = "Bitrate";
 			dbus_message_iter_append_basic (&entry_iter, DBUS_TYPE_STRING, &property_name);
 			dbus_message_iter_open_container (&entry_iter, DBUS_TYPE_VARIANT, "i", &value_iter);
 			result = rygel_external_media_item_get_bitrate (self);
-			_tmp170_ = result;
-			dbus_message_iter_append_basic (&value_iter, DBUS_TYPE_INT32, &_tmp170_);
+			_tmp503_ = result;
+			dbus_message_iter_append_basic (&value_iter, DBUS_TYPE_INT32, &_tmp503_);
 			dbus_message_iter_close_container (&entry_iter, &value_iter);
 			dbus_message_iter_close_container (&subiter, &entry_iter);
 		}
 		{
 			gint result;
-			dbus_int32_t _tmp171_;
+			dbus_int32_t _tmp504_;
 			dbus_message_iter_open_container (&subiter, DBUS_TYPE_DICT_ENTRY, NULL, &entry_iter);
 			property_name = "SampleRate";
 			dbus_message_iter_append_basic (&entry_iter, DBUS_TYPE_STRING, &property_name);
 			dbus_message_iter_open_container (&entry_iter, DBUS_TYPE_VARIANT, "i", &value_iter);
 			result = rygel_external_media_item_get_sample_rate (self);
-			_tmp171_ = result;
-			dbus_message_iter_append_basic (&value_iter, DBUS_TYPE_INT32, &_tmp171_);
+			_tmp504_ = result;
+			dbus_message_iter_append_basic (&value_iter, DBUS_TYPE_INT32, &_tmp504_);
 			dbus_message_iter_close_container (&entry_iter, &value_iter);
 			dbus_message_iter_close_container (&subiter, &entry_iter);
 		}
 		{
 			gint result;
-			dbus_int32_t _tmp172_;
+			dbus_int32_t _tmp505_;
 			dbus_message_iter_open_container (&subiter, DBUS_TYPE_DICT_ENTRY, NULL, &entry_iter);
 			property_name = "BitsPerSample";
 			dbus_message_iter_append_basic (&entry_iter, DBUS_TYPE_STRING, &property_name);
 			dbus_message_iter_open_container (&entry_iter, DBUS_TYPE_VARIANT, "i", &value_iter);
 			result = rygel_external_media_item_get_bits_per_sample (self);
-			_tmp172_ = result;
-			dbus_message_iter_append_basic (&value_iter, DBUS_TYPE_INT32, &_tmp172_);
+			_tmp505_ = result;
+			dbus_message_iter_append_basic (&value_iter, DBUS_TYPE_INT32, &_tmp505_);
 			dbus_message_iter_close_container (&entry_iter, &value_iter);
 			dbus_message_iter_close_container (&subiter, &entry_iter);
 		}
 		{
 			gint result;
-			dbus_int32_t _tmp173_;
+			dbus_int32_t _tmp506_;
 			dbus_message_iter_open_container (&subiter, DBUS_TYPE_DICT_ENTRY, NULL, &entry_iter);
 			property_name = "Width";
 			dbus_message_iter_append_basic (&entry_iter, DBUS_TYPE_STRING, &property_name);
 			dbus_message_iter_open_container (&entry_iter, DBUS_TYPE_VARIANT, "i", &value_iter);
 			result = rygel_external_media_item_get_width (self);
-			_tmp173_ = result;
-			dbus_message_iter_append_basic (&value_iter, DBUS_TYPE_INT32, &_tmp173_);
+			_tmp506_ = result;
+			dbus_message_iter_append_basic (&value_iter, DBUS_TYPE_INT32, &_tmp506_);
 			dbus_message_iter_close_container (&entry_iter, &value_iter);
 			dbus_message_iter_close_container (&subiter, &entry_iter);
 		}
 		{
 			gint result;
-			dbus_int32_t _tmp174_;
+			dbus_int32_t _tmp507_;
 			dbus_message_iter_open_container (&subiter, DBUS_TYPE_DICT_ENTRY, NULL, &entry_iter);
 			property_name = "Height";
 			dbus_message_iter_append_basic (&entry_iter, DBUS_TYPE_STRING, &property_name);
 			dbus_message_iter_open_container (&entry_iter, DBUS_TYPE_VARIANT, "i", &value_iter);
 			result = rygel_external_media_item_get_height (self);
-			_tmp174_ = result;
-			dbus_message_iter_append_basic (&value_iter, DBUS_TYPE_INT32, &_tmp174_);
+			_tmp507_ = result;
+			dbus_message_iter_append_basic (&value_iter, DBUS_TYPE_INT32, &_tmp507_);
 			dbus_message_iter_close_container (&entry_iter, &value_iter);
 			dbus_message_iter_close_container (&subiter, &entry_iter);
 		}
 		{
 			gint result;
-			dbus_int32_t _tmp175_;
+			dbus_int32_t _tmp508_;
 			dbus_message_iter_open_container (&subiter, DBUS_TYPE_DICT_ENTRY, NULL, &entry_iter);
 			property_name = "ColorDepth";
 			dbus_message_iter_append_basic (&entry_iter, DBUS_TYPE_STRING, &property_name);
 			dbus_message_iter_open_container (&entry_iter, DBUS_TYPE_VARIANT, "i", &value_iter);
 			result = rygel_external_media_item_get_color_depth (self);
-			_tmp175_ = result;
-			dbus_message_iter_append_basic (&value_iter, DBUS_TYPE_INT32, &_tmp175_);
+			_tmp508_ = result;
+			dbus_message_iter_append_basic (&value_iter, DBUS_TYPE_INT32, &_tmp508_);
 			dbus_message_iter_close_container (&entry_iter, &value_iter);
 			dbus_message_iter_close_container (&subiter, &entry_iter);
 		}
 		{
 			char* result;
-			const char* _tmp176_;
+			const char* _tmp509_;
 			dbus_message_iter_open_container (&subiter, DBUS_TYPE_DICT_ENTRY, NULL, &entry_iter);
 			property_name = "Thumbnail";
 			dbus_message_iter_append_basic (&entry_iter, DBUS_TYPE_STRING, &property_name);
 			dbus_message_iter_open_container (&entry_iter, DBUS_TYPE_VARIANT, "o", &value_iter);
 			result = rygel_external_media_item_get_thumbnail (self);
-			_tmp176_ = result;
-			dbus_message_iter_append_basic (&value_iter, DBUS_TYPE_OBJECT_PATH, &_tmp176_);
+			_tmp509_ = result;
+			dbus_message_iter_append_basic (&value_iter, DBUS_TYPE_OBJECT_PATH, &_tmp509_);
 			_g_free0 (result);
 			dbus_message_iter_close_container (&entry_iter, &value_iter);
 			dbus_message_iter_close_container (&subiter, &entry_iter);
 		}
 		{
 			char* result;
-			const char* _tmp177_;
+			const char* _tmp510_;
 			dbus_message_iter_open_container (&subiter, DBUS_TYPE_DICT_ENTRY, NULL, &entry_iter);
 			property_name = "AlbumArt";
 			dbus_message_iter_append_basic (&entry_iter, DBUS_TYPE_STRING, &property_name);
 			dbus_message_iter_open_container (&entry_iter, DBUS_TYPE_VARIANT, "o", &value_iter);
 			result = rygel_external_media_item_get_album_art (self);
-			_tmp177_ = result;
-			dbus_message_iter_append_basic (&value_iter, DBUS_TYPE_OBJECT_PATH, &_tmp177_);
+			_tmp510_ = result;
+			dbus_message_iter_append_basic (&value_iter, DBUS_TYPE_OBJECT_PATH, &_tmp510_);
 			_g_free0 (result);
 			dbus_message_iter_close_container (&entry_iter, &value_iter);
 			dbus_message_iter_close_container (&subiter, &entry_iter);
@@ -3204,7 +5643,6 @@ static void rygel_external_media_item_base_init (RygelExternalMediaItemIface * i
 		initialized = TRUE;
 		g_object_interface_install_property (iface, g_param_spec_boxed ("urls", "urls", "urls", G_TYPE_STRV, G_PARAM_STATIC_NAME | G_PARAM_STATIC_NICK | G_PARAM_STATIC_BLURB | G_PARAM_READABLE | G_PARAM_WRITABLE));
 		g_object_interface_install_property (iface, g_param_spec_string ("mime-type", "mime-type", "mime-type", NULL, G_PARAM_STATIC_NAME | G_PARAM_STATIC_NICK | G_PARAM_STATIC_BLURB | G_PARAM_READABLE | G_PARAM_WRITABLE));
-		g_object_interface_install_property (iface, g_param_spec_string ("media-type", "media-type", "media-type", NULL, G_PARAM_STATIC_NAME | G_PARAM_STATIC_NICK | G_PARAM_STATIC_BLURB | G_PARAM_READABLE | G_PARAM_WRITABLE));
 		g_object_interface_install_property (iface, g_param_spec_int ("size", "size", "size", G_MININT, G_MAXINT, 0, G_PARAM_STATIC_NAME | G_PARAM_STATIC_NICK | G_PARAM_STATIC_BLURB | G_PARAM_READABLE | G_PARAM_WRITABLE));
 		g_object_interface_install_property (iface, g_param_spec_string ("artist", "artist", "artist", NULL, G_PARAM_STATIC_NAME | G_PARAM_STATIC_NICK | G_PARAM_STATIC_BLURB | G_PARAM_READABLE | G_PARAM_WRITABLE));
 		g_object_interface_install_property (iface, g_param_spec_string ("album", "album", "album", NULL, G_PARAM_STATIC_NAME | G_PARAM_STATIC_NICK | G_PARAM_STATIC_BLURB | G_PARAM_READABLE | G_PARAM_WRITABLE));
@@ -3243,7 +5681,7 @@ GType rygel_external_media_item_get_type (void) {
 G_DEFINE_TYPE_EXTENDED (RygelExternalMediaItemDBusProxy, rygel_external_media_item_dbus_proxy, DBUS_TYPE_G_PROXY, 0, G_IMPLEMENT_INTERFACE (RYGEL_TYPE_EXTERNAL_MEDIA_OBJECT, rygel_external_media_item_dbus_proxy_rygel_external_media_object__interface_init) G_IMPLEMENT_INTERFACE (RYGEL_TYPE_EXTERNAL_MEDIA_ITEM, rygel_external_media_item_dbus_proxy_rygel_external_media_item__interface_init) );
 RygelExternalMediaItem* rygel_external_media_item_dbus_proxy_new (DBusGConnection* connection, const char* name, const char* path) {
 	RygelExternalMediaItem* self;
-	self = g_object_new (rygel_external_media_item_dbus_proxy_get_type (), "connection", connection, "name", name, "path", path, "interface", "org.gnome.UPnP.MediaItem1", NULL);
+	self = g_object_new (rygel_external_media_item_dbus_proxy_get_type (), "connection", connection, "name", name, "path", path, "interface", "org.gnome.UPnP.MediaItem2", NULL);
 	return self;
 }
 
@@ -3292,9 +5730,9 @@ static void rygel_external_media_item_dbus_proxy_class_init (RygelExternalMediaI
 	G_OBJECT_CLASS (klass)->set_property = rygel_external_media_item_dbus_proxy_set_property;
 	g_object_class_override_property (G_OBJECT_CLASS (klass), RYGEL_EXTERNAL_MEDIA_ITEM_DBUS_PROXY_PARENT, "parent");
 	g_object_class_override_property (G_OBJECT_CLASS (klass), RYGEL_EXTERNAL_MEDIA_ITEM_DBUS_PROXY_DISPLAY_NAME, "display-name");
+	g_object_class_override_property (G_OBJECT_CLASS (klass), RYGEL_EXTERNAL_MEDIA_ITEM_DBUS_PROXY_OBJECT_TYPE, "object-type");
 	g_object_class_override_property (G_OBJECT_CLASS (klass), RYGEL_EXTERNAL_MEDIA_ITEM_DBUS_PROXY_URLS, "urls");
 	g_object_class_override_property (G_OBJECT_CLASS (klass), RYGEL_EXTERNAL_MEDIA_ITEM_DBUS_PROXY_MIME_TYPE, "mime-type");
-	g_object_class_override_property (G_OBJECT_CLASS (klass), RYGEL_EXTERNAL_MEDIA_ITEM_DBUS_PROXY_MEDIA_TYPE, "media-type");
 	g_object_class_override_property (G_OBJECT_CLASS (klass), RYGEL_EXTERNAL_MEDIA_ITEM_DBUS_PROXY_SIZE, "size");
 	g_object_class_override_property (G_OBJECT_CLASS (klass), RYGEL_EXTERNAL_MEDIA_ITEM_DBUS_PROXY_ARTIST, "artist");
 	g_object_class_override_property (G_OBJECT_CLASS (klass), RYGEL_EXTERNAL_MEDIA_ITEM_DBUS_PROXY_ALBUM, "album");
@@ -3322,19 +5760,19 @@ static char* rygel_external_media_item_dbus_proxy_get_parent (RygelExternalMedia
 	DBusGConnection *_connection;
 	DBusMessage *_message, *_reply;
 	DBusMessageIter _iter, _subiter;
-	const char* _tmp178_;
-	const char* _tmp179_;
+	const char* _tmp511_;
+	const char* _tmp512_;
 	char* _result;
-	const char* _tmp180_;
+	const char* _tmp513_;
 	if (((RygelExternalMediaObjectDBusProxy*) self)->disposed) {
 		return NULL;
 	}
 	_message = dbus_message_new_method_call (dbus_g_proxy_get_bus_name ((DBusGProxy*) self), dbus_g_proxy_get_path ((DBusGProxy*) self), "org.freedesktop.DBus.Properties", "Get");
 	dbus_message_iter_init_append (_message, &_iter);
-	_tmp178_ = "org.gnome.UPnP.MediaObject1";
-	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp178_);
-	_tmp179_ = "Parent";
-	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp179_);
+	_tmp511_ = "org.gnome.UPnP.MediaObject2";
+	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp511_);
+	_tmp512_ = "Parent";
+	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp512_);
 	g_object_get (self, "connection", &_connection, NULL);
 	dbus_error_init (&_dbus_error);
 	_reply = dbus_connection_send_with_reply_and_block (dbus_g_connection_get_connection (_connection), _message, -1, &_dbus_error);
@@ -3357,9 +5795,9 @@ static char* rygel_external_media_item_dbus_proxy_get_parent (RygelExternalMedia
 		dbus_message_unref (_reply);
 		return NULL;
 	}
-	dbus_message_iter_get_basic (&_subiter, &_tmp180_);
+	dbus_message_iter_get_basic (&_subiter, &_tmp513_);
 	dbus_message_iter_next (&_subiter);
-	_result = g_strdup (_tmp180_);
+	_result = g_strdup (_tmp513_);
 	dbus_message_unref (_reply);
 	return _result;
 }
@@ -3370,21 +5808,21 @@ static void rygel_external_media_item_dbus_proxy_set_parent (RygelExternalMediaO
 	DBusGConnection *_connection;
 	DBusMessage *_message, *_reply;
 	DBusMessageIter _iter, _subiter;
-	const char* _tmp181_;
-	const char* _tmp182_;
-	const char* _tmp183_;
+	const char* _tmp514_;
+	const char* _tmp515_;
+	const char* _tmp516_;
 	if (((RygelExternalMediaObjectDBusProxy*) self)->disposed) {
 		return;
 	}
 	_message = dbus_message_new_method_call (dbus_g_proxy_get_bus_name ((DBusGProxy*) self), dbus_g_proxy_get_path ((DBusGProxy*) self), "org.freedesktop.DBus.Properties", "Set");
 	dbus_message_iter_init_append (_message, &_iter);
-	_tmp181_ = "org.gnome.UPnP.MediaObject1";
-	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp181_);
-	_tmp182_ = "Parent";
-	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp182_);
+	_tmp514_ = "org.gnome.UPnP.MediaObject2";
+	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp514_);
+	_tmp515_ = "Parent";
+	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp515_);
 	dbus_message_iter_open_container (&_iter, DBUS_TYPE_VARIANT, "o", &_subiter);
-	_tmp183_ = value;
-	dbus_message_iter_append_basic (&_subiter, DBUS_TYPE_OBJECT_PATH, &_tmp183_);
+	_tmp516_ = value;
+	dbus_message_iter_append_basic (&_subiter, DBUS_TYPE_OBJECT_PATH, &_tmp516_);
 	dbus_message_iter_close_container (&_iter, &_subiter);
 	g_object_get (self, "connection", &_connection, NULL);
 	dbus_error_init (&_dbus_error);
@@ -3411,19 +5849,19 @@ static char* rygel_external_media_item_dbus_proxy_get_display_name (RygelExterna
 	DBusGConnection *_connection;
 	DBusMessage *_message, *_reply;
 	DBusMessageIter _iter, _subiter;
-	const char* _tmp184_;
-	const char* _tmp185_;
+	const char* _tmp517_;
+	const char* _tmp518_;
 	char* _result;
-	const char* _tmp186_;
+	const char* _tmp519_;
 	if (((RygelExternalMediaObjectDBusProxy*) self)->disposed) {
 		return NULL;
 	}
 	_message = dbus_message_new_method_call (dbus_g_proxy_get_bus_name ((DBusGProxy*) self), dbus_g_proxy_get_path ((DBusGProxy*) self), "org.freedesktop.DBus.Properties", "Get");
 	dbus_message_iter_init_append (_message, &_iter);
-	_tmp184_ = "org.gnome.UPnP.MediaObject1";
-	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp184_);
-	_tmp185_ = "DisplayName";
-	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp185_);
+	_tmp517_ = "org.gnome.UPnP.MediaObject2";
+	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp517_);
+	_tmp518_ = "DisplayName";
+	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp518_);
 	g_object_get (self, "connection", &_connection, NULL);
 	dbus_error_init (&_dbus_error);
 	_reply = dbus_connection_send_with_reply_and_block (dbus_g_connection_get_connection (_connection), _message, -1, &_dbus_error);
@@ -3446,9 +5884,9 @@ static char* rygel_external_media_item_dbus_proxy_get_display_name (RygelExterna
 		dbus_message_unref (_reply);
 		return NULL;
 	}
-	dbus_message_iter_get_basic (&_subiter, &_tmp186_);
+	dbus_message_iter_get_basic (&_subiter, &_tmp519_);
 	dbus_message_iter_next (&_subiter);
-	_result = g_strdup (_tmp186_);
+	_result = g_strdup (_tmp519_);
 	dbus_message_unref (_reply);
 	return _result;
 }
@@ -3459,21 +5897,110 @@ static void rygel_external_media_item_dbus_proxy_set_display_name (RygelExternal
 	DBusGConnection *_connection;
 	DBusMessage *_message, *_reply;
 	DBusMessageIter _iter, _subiter;
-	const char* _tmp187_;
-	const char* _tmp188_;
-	const char* _tmp189_;
+	const char* _tmp520_;
+	const char* _tmp521_;
+	const char* _tmp522_;
 	if (((RygelExternalMediaObjectDBusProxy*) self)->disposed) {
 		return;
 	}
 	_message = dbus_message_new_method_call (dbus_g_proxy_get_bus_name ((DBusGProxy*) self), dbus_g_proxy_get_path ((DBusGProxy*) self), "org.freedesktop.DBus.Properties", "Set");
 	dbus_message_iter_init_append (_message, &_iter);
-	_tmp187_ = "org.gnome.UPnP.MediaObject1";
-	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp187_);
-	_tmp188_ = "DisplayName";
-	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp188_);
+	_tmp520_ = "org.gnome.UPnP.MediaObject2";
+	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp520_);
+	_tmp521_ = "DisplayName";
+	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp521_);
 	dbus_message_iter_open_container (&_iter, DBUS_TYPE_VARIANT, "s", &_subiter);
-	_tmp189_ = value;
-	dbus_message_iter_append_basic (&_subiter, DBUS_TYPE_STRING, &_tmp189_);
+	_tmp522_ = value;
+	dbus_message_iter_append_basic (&_subiter, DBUS_TYPE_STRING, &_tmp522_);
+	dbus_message_iter_close_container (&_iter, &_subiter);
+	g_object_get (self, "connection", &_connection, NULL);
+	dbus_error_init (&_dbus_error);
+	_reply = dbus_connection_send_with_reply_and_block (dbus_g_connection_get_connection (_connection), _message, -1, &_dbus_error);
+	dbus_g_connection_unref (_connection);
+	dbus_message_unref (_message);
+	if (dbus_error_is_set (&_dbus_error)) {
+		g_critical ("file %s: line %d: uncaught error: %s (%s)", __FILE__, __LINE__, _dbus_error.message, _dbus_error.name);
+		dbus_error_free (&_dbus_error);
+		return;
+	}
+	if (strcmp (dbus_message_get_signature (_reply), "")) {
+		g_critical ("file %s: line %d: Invalid signature, expected \"%s\", got \"%s\"", __FILE__, __LINE__, "", dbus_message_get_signature (_reply));
+		dbus_message_unref (_reply);
+		return;
+	}
+	dbus_message_iter_init (_reply, &_iter);
+	dbus_message_unref (_reply);
+}
+
+
+static char* rygel_external_media_item_dbus_proxy_get_object_type (RygelExternalMediaObject* self) {
+	DBusError _dbus_error;
+	DBusGConnection *_connection;
+	DBusMessage *_message, *_reply;
+	DBusMessageIter _iter, _subiter;
+	const char* _tmp523_;
+	const char* _tmp524_;
+	char* _result;
+	const char* _tmp525_;
+	if (((RygelExternalMediaObjectDBusProxy*) self)->disposed) {
+		return NULL;
+	}
+	_message = dbus_message_new_method_call (dbus_g_proxy_get_bus_name ((DBusGProxy*) self), dbus_g_proxy_get_path ((DBusGProxy*) self), "org.freedesktop.DBus.Properties", "Get");
+	dbus_message_iter_init_append (_message, &_iter);
+	_tmp523_ = "org.gnome.UPnP.MediaObject2";
+	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp523_);
+	_tmp524_ = "Type";
+	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp524_);
+	g_object_get (self, "connection", &_connection, NULL);
+	dbus_error_init (&_dbus_error);
+	_reply = dbus_connection_send_with_reply_and_block (dbus_g_connection_get_connection (_connection), _message, -1, &_dbus_error);
+	dbus_g_connection_unref (_connection);
+	dbus_message_unref (_message);
+	if (dbus_error_is_set (&_dbus_error)) {
+		g_critical ("file %s: line %d: uncaught error: %s (%s)", __FILE__, __LINE__, _dbus_error.message, _dbus_error.name);
+		dbus_error_free (&_dbus_error);
+		return NULL;
+	}
+	if (strcmp (dbus_message_get_signature (_reply), "v")) {
+		g_critical ("file %s: line %d: Invalid signature, expected \"%s\", got \"%s\"", __FILE__, __LINE__, "v", dbus_message_get_signature (_reply));
+		dbus_message_unref (_reply);
+		return NULL;
+	}
+	dbus_message_iter_init (_reply, &_iter);
+	dbus_message_iter_recurse (&_iter, &_subiter);
+	if (strcmp (dbus_message_iter_get_signature (&_subiter), "s")) {
+		g_critical ("file %s: line %d: Invalid signature, expected \"%s\", got \"%s\"", __FILE__, __LINE__, "s", dbus_message_iter_get_signature (&_subiter));
+		dbus_message_unref (_reply);
+		return NULL;
+	}
+	dbus_message_iter_get_basic (&_subiter, &_tmp525_);
+	dbus_message_iter_next (&_subiter);
+	_result = g_strdup (_tmp525_);
+	dbus_message_unref (_reply);
+	return _result;
+}
+
+
+static void rygel_external_media_item_dbus_proxy_set_object_type (RygelExternalMediaObject* self, const char* value) {
+	DBusError _dbus_error;
+	DBusGConnection *_connection;
+	DBusMessage *_message, *_reply;
+	DBusMessageIter _iter, _subiter;
+	const char* _tmp526_;
+	const char* _tmp527_;
+	const char* _tmp528_;
+	if (((RygelExternalMediaObjectDBusProxy*) self)->disposed) {
+		return;
+	}
+	_message = dbus_message_new_method_call (dbus_g_proxy_get_bus_name ((DBusGProxy*) self), dbus_g_proxy_get_path ((DBusGProxy*) self), "org.freedesktop.DBus.Properties", "Set");
+	dbus_message_iter_init_append (_message, &_iter);
+	_tmp526_ = "org.gnome.UPnP.MediaObject2";
+	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp526_);
+	_tmp527_ = "Type";
+	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp527_);
+	dbus_message_iter_open_container (&_iter, DBUS_TYPE_VARIANT, "s", &_subiter);
+	_tmp528_ = value;
+	dbus_message_iter_append_basic (&_subiter, DBUS_TYPE_STRING, &_tmp528_);
 	dbus_message_iter_close_container (&_iter, &_subiter);
 	g_object_get (self, "connection", &_connection, NULL);
 	dbus_error_init (&_dbus_error);
@@ -3500,6 +6027,8 @@ static void rygel_external_media_item_dbus_proxy_rygel_external_media_object__in
 	iface->set_parent = rygel_external_media_item_dbus_proxy_set_parent;
 	iface->get_display_name = rygel_external_media_item_dbus_proxy_get_display_name;
 	iface->set_display_name = rygel_external_media_item_dbus_proxy_set_display_name;
+	iface->get_object_type = rygel_external_media_item_dbus_proxy_get_object_type;
+	iface->set_object_type = rygel_external_media_item_dbus_proxy_set_object_type;
 }
 
 
@@ -3508,24 +6037,24 @@ static char** rygel_external_media_item_dbus_proxy_get_urls (RygelExternalMediaI
 	DBusGConnection *_connection;
 	DBusMessage *_message, *_reply;
 	DBusMessageIter _iter, _subiter;
-	const char* _tmp190_;
-	const char* _tmp191_;
+	const char* _tmp529_;
+	const char* _tmp530_;
 	char** _result;
 	int _result_length1;
-	char** _tmp192_;
-	int _tmp192__length;
-	int _tmp192__size;
-	int _tmp192__length1;
-	DBusMessageIter _tmp193_;
+	char** _tmp531_;
+	int _tmp531__length;
+	int _tmp531__size;
+	int _tmp531__length1;
+	DBusMessageIter _tmp532_;
 	if (((RygelExternalMediaItemDBusProxy*) self)->disposed) {
 		return NULL;
 	}
 	_message = dbus_message_new_method_call (dbus_g_proxy_get_bus_name ((DBusGProxy*) self), dbus_g_proxy_get_path ((DBusGProxy*) self), "org.freedesktop.DBus.Properties", "Get");
 	dbus_message_iter_init_append (_message, &_iter);
-	_tmp190_ = "org.gnome.UPnP.MediaItem1";
-	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp190_);
-	_tmp191_ = "URLs";
-	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp191_);
+	_tmp529_ = "org.gnome.UPnP.MediaItem2";
+	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp529_);
+	_tmp530_ = "URLs";
+	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp530_);
 	g_object_get (self, "connection", &_connection, NULL);
 	dbus_error_init (&_dbus_error);
 	_reply = dbus_connection_send_with_reply_and_block (dbus_g_connection_get_connection (_connection), _message, -1, &_dbus_error);
@@ -3549,25 +6078,25 @@ static char** rygel_external_media_item_dbus_proxy_get_urls (RygelExternalMediaI
 		return NULL;
 	}
 	_result_length1 = 0;
-	_tmp192_ = g_new (char*, 5);
-	_tmp192__length = 0;
-	_tmp192__size = 4;
-	_tmp192__length1 = 0;
-	dbus_message_iter_recurse (&_subiter, &_tmp193_);
-	for (; dbus_message_iter_get_arg_type (&_tmp193_); _tmp192__length1++) {
-		const char* _tmp194_;
-		if (_tmp192__size == _tmp192__length) {
-			_tmp192__size = 2 * _tmp192__size;
-			_tmp192_ = g_renew (char*, _tmp192_, _tmp192__size + 1);
+	_tmp531_ = g_new (char*, 5);
+	_tmp531__length = 0;
+	_tmp531__size = 4;
+	_tmp531__length1 = 0;
+	dbus_message_iter_recurse (&_subiter, &_tmp532_);
+	for (; dbus_message_iter_get_arg_type (&_tmp532_); _tmp531__length1++) {
+		const char* _tmp533_;
+		if (_tmp531__size == _tmp531__length) {
+			_tmp531__size = 2 * _tmp531__size;
+			_tmp531_ = g_renew (char*, _tmp531_, _tmp531__size + 1);
 		}
-		dbus_message_iter_get_basic (&_tmp193_, &_tmp194_);
-		dbus_message_iter_next (&_tmp193_);
-		_tmp192_[_tmp192__length++] = g_strdup (_tmp194_);
+		dbus_message_iter_get_basic (&_tmp532_, &_tmp533_);
+		dbus_message_iter_next (&_tmp532_);
+		_tmp531_[_tmp531__length++] = g_strdup (_tmp533_);
 	}
-	_result_length1 = _tmp192__length1;
-	_tmp192_[_tmp192__length] = NULL;
+	_result_length1 = _tmp531__length1;
+	_tmp531_[_tmp531__length] = NULL;
 	dbus_message_iter_next (&_subiter);
-	_result = _tmp192_;
+	_result = _tmp531_;
 	*result_length1 = _result_length1;
 	dbus_message_unref (_reply);
 	return _result;
@@ -3579,30 +6108,30 @@ static void rygel_external_media_item_dbus_proxy_set_urls (RygelExternalMediaIte
 	DBusGConnection *_connection;
 	DBusMessage *_message, *_reply;
 	DBusMessageIter _iter, _subiter;
-	const char* _tmp195_;
-	const char* _tmp196_;
-	char** _tmp197_;
-	DBusMessageIter _tmp198_;
-	int _tmp199_;
+	const char* _tmp534_;
+	const char* _tmp535_;
+	char** _tmp536_;
+	DBusMessageIter _tmp537_;
+	int _tmp538_;
 	if (((RygelExternalMediaItemDBusProxy*) self)->disposed) {
 		return;
 	}
 	_message = dbus_message_new_method_call (dbus_g_proxy_get_bus_name ((DBusGProxy*) self), dbus_g_proxy_get_path ((DBusGProxy*) self), "org.freedesktop.DBus.Properties", "Set");
 	dbus_message_iter_init_append (_message, &_iter);
-	_tmp195_ = "org.gnome.UPnP.MediaItem1";
-	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp195_);
-	_tmp196_ = "URLs";
-	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp196_);
+	_tmp534_ = "org.gnome.UPnP.MediaItem2";
+	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp534_);
+	_tmp535_ = "URLs";
+	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp535_);
 	dbus_message_iter_open_container (&_iter, DBUS_TYPE_VARIANT, "as", &_subiter);
-	_tmp197_ = value;
-	dbus_message_iter_open_container (&_subiter, DBUS_TYPE_ARRAY, "s", &_tmp198_);
-	for (_tmp199_ = 0; _tmp199_ < value_length1; _tmp199_++) {
-		const char* _tmp200_;
-		_tmp200_ = *_tmp197_;
-		dbus_message_iter_append_basic (&_tmp198_, DBUS_TYPE_STRING, &_tmp200_);
-		_tmp197_++;
+	_tmp536_ = value;
+	dbus_message_iter_open_container (&_subiter, DBUS_TYPE_ARRAY, "s", &_tmp537_);
+	for (_tmp538_ = 0; _tmp538_ < value_length1; _tmp538_++) {
+		const char* _tmp539_;
+		_tmp539_ = *_tmp536_;
+		dbus_message_iter_append_basic (&_tmp537_, DBUS_TYPE_STRING, &_tmp539_);
+		_tmp536_++;
 	}
-	dbus_message_iter_close_container (&_subiter, &_tmp198_);
+	dbus_message_iter_close_container (&_subiter, &_tmp537_);
 	dbus_message_iter_close_container (&_iter, &_subiter);
 	g_object_get (self, "connection", &_connection, NULL);
 	dbus_error_init (&_dbus_error);
@@ -3629,19 +6158,19 @@ static char* rygel_external_media_item_dbus_proxy_get_mime_type (RygelExternalMe
 	DBusGConnection *_connection;
 	DBusMessage *_message, *_reply;
 	DBusMessageIter _iter, _subiter;
-	const char* _tmp201_;
-	const char* _tmp202_;
+	const char* _tmp540_;
+	const char* _tmp541_;
 	char* _result;
-	const char* _tmp203_;
+	const char* _tmp542_;
 	if (((RygelExternalMediaItemDBusProxy*) self)->disposed) {
 		return NULL;
 	}
 	_message = dbus_message_new_method_call (dbus_g_proxy_get_bus_name ((DBusGProxy*) self), dbus_g_proxy_get_path ((DBusGProxy*) self), "org.freedesktop.DBus.Properties", "Get");
 	dbus_message_iter_init_append (_message, &_iter);
-	_tmp201_ = "org.gnome.UPnP.MediaItem1";
-	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp201_);
-	_tmp202_ = "MimeType";
-	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp202_);
+	_tmp540_ = "org.gnome.UPnP.MediaItem2";
+	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp540_);
+	_tmp541_ = "MimeType";
+	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp541_);
 	g_object_get (self, "connection", &_connection, NULL);
 	dbus_error_init (&_dbus_error);
 	_reply = dbus_connection_send_with_reply_and_block (dbus_g_connection_get_connection (_connection), _message, -1, &_dbus_error);
@@ -3664,9 +6193,9 @@ static char* rygel_external_media_item_dbus_proxy_get_mime_type (RygelExternalMe
 		dbus_message_unref (_reply);
 		return NULL;
 	}
-	dbus_message_iter_get_basic (&_subiter, &_tmp203_);
+	dbus_message_iter_get_basic (&_subiter, &_tmp542_);
 	dbus_message_iter_next (&_subiter);
-	_result = g_strdup (_tmp203_);
+	_result = g_strdup (_tmp542_);
 	dbus_message_unref (_reply);
 	return _result;
 }
@@ -3677,110 +6206,21 @@ static void rygel_external_media_item_dbus_proxy_set_mime_type (RygelExternalMed
 	DBusGConnection *_connection;
 	DBusMessage *_message, *_reply;
 	DBusMessageIter _iter, _subiter;
-	const char* _tmp204_;
-	const char* _tmp205_;
-	const char* _tmp206_;
+	const char* _tmp543_;
+	const char* _tmp544_;
+	const char* _tmp545_;
 	if (((RygelExternalMediaItemDBusProxy*) self)->disposed) {
 		return;
 	}
 	_message = dbus_message_new_method_call (dbus_g_proxy_get_bus_name ((DBusGProxy*) self), dbus_g_proxy_get_path ((DBusGProxy*) self), "org.freedesktop.DBus.Properties", "Set");
 	dbus_message_iter_init_append (_message, &_iter);
-	_tmp204_ = "org.gnome.UPnP.MediaItem1";
-	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp204_);
-	_tmp205_ = "MimeType";
-	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp205_);
+	_tmp543_ = "org.gnome.UPnP.MediaItem2";
+	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp543_);
+	_tmp544_ = "MimeType";
+	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp544_);
 	dbus_message_iter_open_container (&_iter, DBUS_TYPE_VARIANT, "s", &_subiter);
-	_tmp206_ = value;
-	dbus_message_iter_append_basic (&_subiter, DBUS_TYPE_STRING, &_tmp206_);
-	dbus_message_iter_close_container (&_iter, &_subiter);
-	g_object_get (self, "connection", &_connection, NULL);
-	dbus_error_init (&_dbus_error);
-	_reply = dbus_connection_send_with_reply_and_block (dbus_g_connection_get_connection (_connection), _message, -1, &_dbus_error);
-	dbus_g_connection_unref (_connection);
-	dbus_message_unref (_message);
-	if (dbus_error_is_set (&_dbus_error)) {
-		g_critical ("file %s: line %d: uncaught error: %s (%s)", __FILE__, __LINE__, _dbus_error.message, _dbus_error.name);
-		dbus_error_free (&_dbus_error);
-		return;
-	}
-	if (strcmp (dbus_message_get_signature (_reply), "")) {
-		g_critical ("file %s: line %d: Invalid signature, expected \"%s\", got \"%s\"", __FILE__, __LINE__, "", dbus_message_get_signature (_reply));
-		dbus_message_unref (_reply);
-		return;
-	}
-	dbus_message_iter_init (_reply, &_iter);
-	dbus_message_unref (_reply);
-}
-
-
-static char* rygel_external_media_item_dbus_proxy_get_media_type (RygelExternalMediaItem* self) {
-	DBusError _dbus_error;
-	DBusGConnection *_connection;
-	DBusMessage *_message, *_reply;
-	DBusMessageIter _iter, _subiter;
-	const char* _tmp207_;
-	const char* _tmp208_;
-	char* _result;
-	const char* _tmp209_;
-	if (((RygelExternalMediaItemDBusProxy*) self)->disposed) {
-		return NULL;
-	}
-	_message = dbus_message_new_method_call (dbus_g_proxy_get_bus_name ((DBusGProxy*) self), dbus_g_proxy_get_path ((DBusGProxy*) self), "org.freedesktop.DBus.Properties", "Get");
-	dbus_message_iter_init_append (_message, &_iter);
-	_tmp207_ = "org.gnome.UPnP.MediaItem1";
-	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp207_);
-	_tmp208_ = "Type";
-	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp208_);
-	g_object_get (self, "connection", &_connection, NULL);
-	dbus_error_init (&_dbus_error);
-	_reply = dbus_connection_send_with_reply_and_block (dbus_g_connection_get_connection (_connection), _message, -1, &_dbus_error);
-	dbus_g_connection_unref (_connection);
-	dbus_message_unref (_message);
-	if (dbus_error_is_set (&_dbus_error)) {
-		g_critical ("file %s: line %d: uncaught error: %s (%s)", __FILE__, __LINE__, _dbus_error.message, _dbus_error.name);
-		dbus_error_free (&_dbus_error);
-		return NULL;
-	}
-	if (strcmp (dbus_message_get_signature (_reply), "v")) {
-		g_critical ("file %s: line %d: Invalid signature, expected \"%s\", got \"%s\"", __FILE__, __LINE__, "v", dbus_message_get_signature (_reply));
-		dbus_message_unref (_reply);
-		return NULL;
-	}
-	dbus_message_iter_init (_reply, &_iter);
-	dbus_message_iter_recurse (&_iter, &_subiter);
-	if (strcmp (dbus_message_iter_get_signature (&_subiter), "s")) {
-		g_critical ("file %s: line %d: Invalid signature, expected \"%s\", got \"%s\"", __FILE__, __LINE__, "s", dbus_message_iter_get_signature (&_subiter));
-		dbus_message_unref (_reply);
-		return NULL;
-	}
-	dbus_message_iter_get_basic (&_subiter, &_tmp209_);
-	dbus_message_iter_next (&_subiter);
-	_result = g_strdup (_tmp209_);
-	dbus_message_unref (_reply);
-	return _result;
-}
-
-
-static void rygel_external_media_item_dbus_proxy_set_media_type (RygelExternalMediaItem* self, const char* value) {
-	DBusError _dbus_error;
-	DBusGConnection *_connection;
-	DBusMessage *_message, *_reply;
-	DBusMessageIter _iter, _subiter;
-	const char* _tmp210_;
-	const char* _tmp211_;
-	const char* _tmp212_;
-	if (((RygelExternalMediaItemDBusProxy*) self)->disposed) {
-		return;
-	}
-	_message = dbus_message_new_method_call (dbus_g_proxy_get_bus_name ((DBusGProxy*) self), dbus_g_proxy_get_path ((DBusGProxy*) self), "org.freedesktop.DBus.Properties", "Set");
-	dbus_message_iter_init_append (_message, &_iter);
-	_tmp210_ = "org.gnome.UPnP.MediaItem1";
-	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp210_);
-	_tmp211_ = "Type";
-	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp211_);
-	dbus_message_iter_open_container (&_iter, DBUS_TYPE_VARIANT, "s", &_subiter);
-	_tmp212_ = value;
-	dbus_message_iter_append_basic (&_subiter, DBUS_TYPE_STRING, &_tmp212_);
+	_tmp545_ = value;
+	dbus_message_iter_append_basic (&_subiter, DBUS_TYPE_STRING, &_tmp545_);
 	dbus_message_iter_close_container (&_iter, &_subiter);
 	g_object_get (self, "connection", &_connection, NULL);
 	dbus_error_init (&_dbus_error);
@@ -3807,19 +6247,19 @@ static gint rygel_external_media_item_dbus_proxy_get_size (RygelExternalMediaIte
 	DBusGConnection *_connection;
 	DBusMessage *_message, *_reply;
 	DBusMessageIter _iter, _subiter;
-	const char* _tmp213_;
-	const char* _tmp214_;
+	const char* _tmp546_;
+	const char* _tmp547_;
 	gint _result;
-	dbus_int32_t _tmp215_;
+	dbus_int32_t _tmp548_;
 	if (((RygelExternalMediaItemDBusProxy*) self)->disposed) {
 		return 0;
 	}
 	_message = dbus_message_new_method_call (dbus_g_proxy_get_bus_name ((DBusGProxy*) self), dbus_g_proxy_get_path ((DBusGProxy*) self), "org.freedesktop.DBus.Properties", "Get");
 	dbus_message_iter_init_append (_message, &_iter);
-	_tmp213_ = "org.gnome.UPnP.MediaItem1";
-	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp213_);
-	_tmp214_ = "Size";
-	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp214_);
+	_tmp546_ = "org.gnome.UPnP.MediaItem2";
+	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp546_);
+	_tmp547_ = "Size";
+	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp547_);
 	g_object_get (self, "connection", &_connection, NULL);
 	dbus_error_init (&_dbus_error);
 	_reply = dbus_connection_send_with_reply_and_block (dbus_g_connection_get_connection (_connection), _message, -1, &_dbus_error);
@@ -3842,9 +6282,9 @@ static gint rygel_external_media_item_dbus_proxy_get_size (RygelExternalMediaIte
 		dbus_message_unref (_reply);
 		return 0;
 	}
-	dbus_message_iter_get_basic (&_subiter, &_tmp215_);
+	dbus_message_iter_get_basic (&_subiter, &_tmp548_);
 	dbus_message_iter_next (&_subiter);
-	_result = _tmp215_;
+	_result = _tmp548_;
 	dbus_message_unref (_reply);
 	return _result;
 }
@@ -3855,21 +6295,21 @@ static void rygel_external_media_item_dbus_proxy_set_size (RygelExternalMediaIte
 	DBusGConnection *_connection;
 	DBusMessage *_message, *_reply;
 	DBusMessageIter _iter, _subiter;
-	const char* _tmp216_;
-	const char* _tmp217_;
-	dbus_int32_t _tmp218_;
+	const char* _tmp549_;
+	const char* _tmp550_;
+	dbus_int32_t _tmp551_;
 	if (((RygelExternalMediaItemDBusProxy*) self)->disposed) {
 		return;
 	}
 	_message = dbus_message_new_method_call (dbus_g_proxy_get_bus_name ((DBusGProxy*) self), dbus_g_proxy_get_path ((DBusGProxy*) self), "org.freedesktop.DBus.Properties", "Set");
 	dbus_message_iter_init_append (_message, &_iter);
-	_tmp216_ = "org.gnome.UPnP.MediaItem1";
-	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp216_);
-	_tmp217_ = "Size";
-	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp217_);
+	_tmp549_ = "org.gnome.UPnP.MediaItem2";
+	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp549_);
+	_tmp550_ = "Size";
+	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp550_);
 	dbus_message_iter_open_container (&_iter, DBUS_TYPE_VARIANT, "i", &_subiter);
-	_tmp218_ = value;
-	dbus_message_iter_append_basic (&_subiter, DBUS_TYPE_INT32, &_tmp218_);
+	_tmp551_ = value;
+	dbus_message_iter_append_basic (&_subiter, DBUS_TYPE_INT32, &_tmp551_);
 	dbus_message_iter_close_container (&_iter, &_subiter);
 	g_object_get (self, "connection", &_connection, NULL);
 	dbus_error_init (&_dbus_error);
@@ -3896,19 +6336,19 @@ static char* rygel_external_media_item_dbus_proxy_get_artist (RygelExternalMedia
 	DBusGConnection *_connection;
 	DBusMessage *_message, *_reply;
 	DBusMessageIter _iter, _subiter;
-	const char* _tmp219_;
-	const char* _tmp220_;
+	const char* _tmp552_;
+	const char* _tmp553_;
 	char* _result;
-	const char* _tmp221_;
+	const char* _tmp554_;
 	if (((RygelExternalMediaItemDBusProxy*) self)->disposed) {
 		return NULL;
 	}
 	_message = dbus_message_new_method_call (dbus_g_proxy_get_bus_name ((DBusGProxy*) self), dbus_g_proxy_get_path ((DBusGProxy*) self), "org.freedesktop.DBus.Properties", "Get");
 	dbus_message_iter_init_append (_message, &_iter);
-	_tmp219_ = "org.gnome.UPnP.MediaItem1";
-	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp219_);
-	_tmp220_ = "Artist";
-	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp220_);
+	_tmp552_ = "org.gnome.UPnP.MediaItem2";
+	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp552_);
+	_tmp553_ = "Artist";
+	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp553_);
 	g_object_get (self, "connection", &_connection, NULL);
 	dbus_error_init (&_dbus_error);
 	_reply = dbus_connection_send_with_reply_and_block (dbus_g_connection_get_connection (_connection), _message, -1, &_dbus_error);
@@ -3931,9 +6371,9 @@ static char* rygel_external_media_item_dbus_proxy_get_artist (RygelExternalMedia
 		dbus_message_unref (_reply);
 		return NULL;
 	}
-	dbus_message_iter_get_basic (&_subiter, &_tmp221_);
+	dbus_message_iter_get_basic (&_subiter, &_tmp554_);
 	dbus_message_iter_next (&_subiter);
-	_result = g_strdup (_tmp221_);
+	_result = g_strdup (_tmp554_);
 	dbus_message_unref (_reply);
 	return _result;
 }
@@ -3944,21 +6384,21 @@ static void rygel_external_media_item_dbus_proxy_set_artist (RygelExternalMediaI
 	DBusGConnection *_connection;
 	DBusMessage *_message, *_reply;
 	DBusMessageIter _iter, _subiter;
-	const char* _tmp222_;
-	const char* _tmp223_;
-	const char* _tmp224_;
+	const char* _tmp555_;
+	const char* _tmp556_;
+	const char* _tmp557_;
 	if (((RygelExternalMediaItemDBusProxy*) self)->disposed) {
 		return;
 	}
 	_message = dbus_message_new_method_call (dbus_g_proxy_get_bus_name ((DBusGProxy*) self), dbus_g_proxy_get_path ((DBusGProxy*) self), "org.freedesktop.DBus.Properties", "Set");
 	dbus_message_iter_init_append (_message, &_iter);
-	_tmp222_ = "org.gnome.UPnP.MediaItem1";
-	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp222_);
-	_tmp223_ = "Artist";
-	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp223_);
+	_tmp555_ = "org.gnome.UPnP.MediaItem2";
+	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp555_);
+	_tmp556_ = "Artist";
+	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp556_);
 	dbus_message_iter_open_container (&_iter, DBUS_TYPE_VARIANT, "s", &_subiter);
-	_tmp224_ = value;
-	dbus_message_iter_append_basic (&_subiter, DBUS_TYPE_STRING, &_tmp224_);
+	_tmp557_ = value;
+	dbus_message_iter_append_basic (&_subiter, DBUS_TYPE_STRING, &_tmp557_);
 	dbus_message_iter_close_container (&_iter, &_subiter);
 	g_object_get (self, "connection", &_connection, NULL);
 	dbus_error_init (&_dbus_error);
@@ -3985,19 +6425,19 @@ static char* rygel_external_media_item_dbus_proxy_get_album (RygelExternalMediaI
 	DBusGConnection *_connection;
 	DBusMessage *_message, *_reply;
 	DBusMessageIter _iter, _subiter;
-	const char* _tmp225_;
-	const char* _tmp226_;
+	const char* _tmp558_;
+	const char* _tmp559_;
 	char* _result;
-	const char* _tmp227_;
+	const char* _tmp560_;
 	if (((RygelExternalMediaItemDBusProxy*) self)->disposed) {
 		return NULL;
 	}
 	_message = dbus_message_new_method_call (dbus_g_proxy_get_bus_name ((DBusGProxy*) self), dbus_g_proxy_get_path ((DBusGProxy*) self), "org.freedesktop.DBus.Properties", "Get");
 	dbus_message_iter_init_append (_message, &_iter);
-	_tmp225_ = "org.gnome.UPnP.MediaItem1";
-	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp225_);
-	_tmp226_ = "Album";
-	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp226_);
+	_tmp558_ = "org.gnome.UPnP.MediaItem2";
+	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp558_);
+	_tmp559_ = "Album";
+	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp559_);
 	g_object_get (self, "connection", &_connection, NULL);
 	dbus_error_init (&_dbus_error);
 	_reply = dbus_connection_send_with_reply_and_block (dbus_g_connection_get_connection (_connection), _message, -1, &_dbus_error);
@@ -4020,9 +6460,9 @@ static char* rygel_external_media_item_dbus_proxy_get_album (RygelExternalMediaI
 		dbus_message_unref (_reply);
 		return NULL;
 	}
-	dbus_message_iter_get_basic (&_subiter, &_tmp227_);
+	dbus_message_iter_get_basic (&_subiter, &_tmp560_);
 	dbus_message_iter_next (&_subiter);
-	_result = g_strdup (_tmp227_);
+	_result = g_strdup (_tmp560_);
 	dbus_message_unref (_reply);
 	return _result;
 }
@@ -4033,21 +6473,21 @@ static void rygel_external_media_item_dbus_proxy_set_album (RygelExternalMediaIt
 	DBusGConnection *_connection;
 	DBusMessage *_message, *_reply;
 	DBusMessageIter _iter, _subiter;
-	const char* _tmp228_;
-	const char* _tmp229_;
-	const char* _tmp230_;
+	const char* _tmp561_;
+	const char* _tmp562_;
+	const char* _tmp563_;
 	if (((RygelExternalMediaItemDBusProxy*) self)->disposed) {
 		return;
 	}
 	_message = dbus_message_new_method_call (dbus_g_proxy_get_bus_name ((DBusGProxy*) self), dbus_g_proxy_get_path ((DBusGProxy*) self), "org.freedesktop.DBus.Properties", "Set");
 	dbus_message_iter_init_append (_message, &_iter);
-	_tmp228_ = "org.gnome.UPnP.MediaItem1";
-	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp228_);
-	_tmp229_ = "Album";
-	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp229_);
+	_tmp561_ = "org.gnome.UPnP.MediaItem2";
+	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp561_);
+	_tmp562_ = "Album";
+	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp562_);
 	dbus_message_iter_open_container (&_iter, DBUS_TYPE_VARIANT, "s", &_subiter);
-	_tmp230_ = value;
-	dbus_message_iter_append_basic (&_subiter, DBUS_TYPE_STRING, &_tmp230_);
+	_tmp563_ = value;
+	dbus_message_iter_append_basic (&_subiter, DBUS_TYPE_STRING, &_tmp563_);
 	dbus_message_iter_close_container (&_iter, &_subiter);
 	g_object_get (self, "connection", &_connection, NULL);
 	dbus_error_init (&_dbus_error);
@@ -4074,19 +6514,19 @@ static char* rygel_external_media_item_dbus_proxy_get_date (RygelExternalMediaIt
 	DBusGConnection *_connection;
 	DBusMessage *_message, *_reply;
 	DBusMessageIter _iter, _subiter;
-	const char* _tmp231_;
-	const char* _tmp232_;
+	const char* _tmp564_;
+	const char* _tmp565_;
 	char* _result;
-	const char* _tmp233_;
+	const char* _tmp566_;
 	if (((RygelExternalMediaItemDBusProxy*) self)->disposed) {
 		return NULL;
 	}
 	_message = dbus_message_new_method_call (dbus_g_proxy_get_bus_name ((DBusGProxy*) self), dbus_g_proxy_get_path ((DBusGProxy*) self), "org.freedesktop.DBus.Properties", "Get");
 	dbus_message_iter_init_append (_message, &_iter);
-	_tmp231_ = "org.gnome.UPnP.MediaItem1";
-	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp231_);
-	_tmp232_ = "Date";
-	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp232_);
+	_tmp564_ = "org.gnome.UPnP.MediaItem2";
+	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp564_);
+	_tmp565_ = "Date";
+	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp565_);
 	g_object_get (self, "connection", &_connection, NULL);
 	dbus_error_init (&_dbus_error);
 	_reply = dbus_connection_send_with_reply_and_block (dbus_g_connection_get_connection (_connection), _message, -1, &_dbus_error);
@@ -4109,9 +6549,9 @@ static char* rygel_external_media_item_dbus_proxy_get_date (RygelExternalMediaIt
 		dbus_message_unref (_reply);
 		return NULL;
 	}
-	dbus_message_iter_get_basic (&_subiter, &_tmp233_);
+	dbus_message_iter_get_basic (&_subiter, &_tmp566_);
 	dbus_message_iter_next (&_subiter);
-	_result = g_strdup (_tmp233_);
+	_result = g_strdup (_tmp566_);
 	dbus_message_unref (_reply);
 	return _result;
 }
@@ -4122,21 +6562,21 @@ static void rygel_external_media_item_dbus_proxy_set_date (RygelExternalMediaIte
 	DBusGConnection *_connection;
 	DBusMessage *_message, *_reply;
 	DBusMessageIter _iter, _subiter;
-	const char* _tmp234_;
-	const char* _tmp235_;
-	const char* _tmp236_;
+	const char* _tmp567_;
+	const char* _tmp568_;
+	const char* _tmp569_;
 	if (((RygelExternalMediaItemDBusProxy*) self)->disposed) {
 		return;
 	}
 	_message = dbus_message_new_method_call (dbus_g_proxy_get_bus_name ((DBusGProxy*) self), dbus_g_proxy_get_path ((DBusGProxy*) self), "org.freedesktop.DBus.Properties", "Set");
 	dbus_message_iter_init_append (_message, &_iter);
-	_tmp234_ = "org.gnome.UPnP.MediaItem1";
-	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp234_);
-	_tmp235_ = "Date";
-	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp235_);
+	_tmp567_ = "org.gnome.UPnP.MediaItem2";
+	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp567_);
+	_tmp568_ = "Date";
+	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp568_);
 	dbus_message_iter_open_container (&_iter, DBUS_TYPE_VARIANT, "s", &_subiter);
-	_tmp236_ = value;
-	dbus_message_iter_append_basic (&_subiter, DBUS_TYPE_STRING, &_tmp236_);
+	_tmp569_ = value;
+	dbus_message_iter_append_basic (&_subiter, DBUS_TYPE_STRING, &_tmp569_);
 	dbus_message_iter_close_container (&_iter, &_subiter);
 	g_object_get (self, "connection", &_connection, NULL);
 	dbus_error_init (&_dbus_error);
@@ -4163,19 +6603,19 @@ static char* rygel_external_media_item_dbus_proxy_get_genre (RygelExternalMediaI
 	DBusGConnection *_connection;
 	DBusMessage *_message, *_reply;
 	DBusMessageIter _iter, _subiter;
-	const char* _tmp237_;
-	const char* _tmp238_;
+	const char* _tmp570_;
+	const char* _tmp571_;
 	char* _result;
-	const char* _tmp239_;
+	const char* _tmp572_;
 	if (((RygelExternalMediaItemDBusProxy*) self)->disposed) {
 		return NULL;
 	}
 	_message = dbus_message_new_method_call (dbus_g_proxy_get_bus_name ((DBusGProxy*) self), dbus_g_proxy_get_path ((DBusGProxy*) self), "org.freedesktop.DBus.Properties", "Get");
 	dbus_message_iter_init_append (_message, &_iter);
-	_tmp237_ = "org.gnome.UPnP.MediaItem1";
-	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp237_);
-	_tmp238_ = "Genre";
-	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp238_);
+	_tmp570_ = "org.gnome.UPnP.MediaItem2";
+	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp570_);
+	_tmp571_ = "Genre";
+	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp571_);
 	g_object_get (self, "connection", &_connection, NULL);
 	dbus_error_init (&_dbus_error);
 	_reply = dbus_connection_send_with_reply_and_block (dbus_g_connection_get_connection (_connection), _message, -1, &_dbus_error);
@@ -4198,9 +6638,9 @@ static char* rygel_external_media_item_dbus_proxy_get_genre (RygelExternalMediaI
 		dbus_message_unref (_reply);
 		return NULL;
 	}
-	dbus_message_iter_get_basic (&_subiter, &_tmp239_);
+	dbus_message_iter_get_basic (&_subiter, &_tmp572_);
 	dbus_message_iter_next (&_subiter);
-	_result = g_strdup (_tmp239_);
+	_result = g_strdup (_tmp572_);
 	dbus_message_unref (_reply);
 	return _result;
 }
@@ -4211,21 +6651,21 @@ static void rygel_external_media_item_dbus_proxy_set_genre (RygelExternalMediaIt
 	DBusGConnection *_connection;
 	DBusMessage *_message, *_reply;
 	DBusMessageIter _iter, _subiter;
-	const char* _tmp240_;
-	const char* _tmp241_;
-	const char* _tmp242_;
+	const char* _tmp573_;
+	const char* _tmp574_;
+	const char* _tmp575_;
 	if (((RygelExternalMediaItemDBusProxy*) self)->disposed) {
 		return;
 	}
 	_message = dbus_message_new_method_call (dbus_g_proxy_get_bus_name ((DBusGProxy*) self), dbus_g_proxy_get_path ((DBusGProxy*) self), "org.freedesktop.DBus.Properties", "Set");
 	dbus_message_iter_init_append (_message, &_iter);
-	_tmp240_ = "org.gnome.UPnP.MediaItem1";
-	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp240_);
-	_tmp241_ = "Genre";
-	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp241_);
+	_tmp573_ = "org.gnome.UPnP.MediaItem2";
+	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp573_);
+	_tmp574_ = "Genre";
+	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp574_);
 	dbus_message_iter_open_container (&_iter, DBUS_TYPE_VARIANT, "s", &_subiter);
-	_tmp242_ = value;
-	dbus_message_iter_append_basic (&_subiter, DBUS_TYPE_STRING, &_tmp242_);
+	_tmp575_ = value;
+	dbus_message_iter_append_basic (&_subiter, DBUS_TYPE_STRING, &_tmp575_);
 	dbus_message_iter_close_container (&_iter, &_subiter);
 	g_object_get (self, "connection", &_connection, NULL);
 	dbus_error_init (&_dbus_error);
@@ -4252,19 +6692,19 @@ static char* rygel_external_media_item_dbus_proxy_get_dlna_profile (RygelExterna
 	DBusGConnection *_connection;
 	DBusMessage *_message, *_reply;
 	DBusMessageIter _iter, _subiter;
-	const char* _tmp243_;
-	const char* _tmp244_;
+	const char* _tmp576_;
+	const char* _tmp577_;
 	char* _result;
-	const char* _tmp245_;
+	const char* _tmp578_;
 	if (((RygelExternalMediaItemDBusProxy*) self)->disposed) {
 		return NULL;
 	}
 	_message = dbus_message_new_method_call (dbus_g_proxy_get_bus_name ((DBusGProxy*) self), dbus_g_proxy_get_path ((DBusGProxy*) self), "org.freedesktop.DBus.Properties", "Get");
 	dbus_message_iter_init_append (_message, &_iter);
-	_tmp243_ = "org.gnome.UPnP.MediaItem1";
-	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp243_);
-	_tmp244_ = "DlnaProfile";
-	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp244_);
+	_tmp576_ = "org.gnome.UPnP.MediaItem2";
+	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp576_);
+	_tmp577_ = "DlnaProfile";
+	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp577_);
 	g_object_get (self, "connection", &_connection, NULL);
 	dbus_error_init (&_dbus_error);
 	_reply = dbus_connection_send_with_reply_and_block (dbus_g_connection_get_connection (_connection), _message, -1, &_dbus_error);
@@ -4287,9 +6727,9 @@ static char* rygel_external_media_item_dbus_proxy_get_dlna_profile (RygelExterna
 		dbus_message_unref (_reply);
 		return NULL;
 	}
-	dbus_message_iter_get_basic (&_subiter, &_tmp245_);
+	dbus_message_iter_get_basic (&_subiter, &_tmp578_);
 	dbus_message_iter_next (&_subiter);
-	_result = g_strdup (_tmp245_);
+	_result = g_strdup (_tmp578_);
 	dbus_message_unref (_reply);
 	return _result;
 }
@@ -4300,21 +6740,21 @@ static void rygel_external_media_item_dbus_proxy_set_dlna_profile (RygelExternal
 	DBusGConnection *_connection;
 	DBusMessage *_message, *_reply;
 	DBusMessageIter _iter, _subiter;
-	const char* _tmp246_;
-	const char* _tmp247_;
-	const char* _tmp248_;
+	const char* _tmp579_;
+	const char* _tmp580_;
+	const char* _tmp581_;
 	if (((RygelExternalMediaItemDBusProxy*) self)->disposed) {
 		return;
 	}
 	_message = dbus_message_new_method_call (dbus_g_proxy_get_bus_name ((DBusGProxy*) self), dbus_g_proxy_get_path ((DBusGProxy*) self), "org.freedesktop.DBus.Properties", "Set");
 	dbus_message_iter_init_append (_message, &_iter);
-	_tmp246_ = "org.gnome.UPnP.MediaItem1";
-	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp246_);
-	_tmp247_ = "DlnaProfile";
-	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp247_);
+	_tmp579_ = "org.gnome.UPnP.MediaItem2";
+	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp579_);
+	_tmp580_ = "DlnaProfile";
+	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp580_);
 	dbus_message_iter_open_container (&_iter, DBUS_TYPE_VARIANT, "s", &_subiter);
-	_tmp248_ = value;
-	dbus_message_iter_append_basic (&_subiter, DBUS_TYPE_STRING, &_tmp248_);
+	_tmp581_ = value;
+	dbus_message_iter_append_basic (&_subiter, DBUS_TYPE_STRING, &_tmp581_);
 	dbus_message_iter_close_container (&_iter, &_subiter);
 	g_object_get (self, "connection", &_connection, NULL);
 	dbus_error_init (&_dbus_error);
@@ -4341,19 +6781,19 @@ static gint rygel_external_media_item_dbus_proxy_get_duration (RygelExternalMedi
 	DBusGConnection *_connection;
 	DBusMessage *_message, *_reply;
 	DBusMessageIter _iter, _subiter;
-	const char* _tmp249_;
-	const char* _tmp250_;
+	const char* _tmp582_;
+	const char* _tmp583_;
 	gint _result;
-	dbus_int32_t _tmp251_;
+	dbus_int32_t _tmp584_;
 	if (((RygelExternalMediaItemDBusProxy*) self)->disposed) {
 		return 0;
 	}
 	_message = dbus_message_new_method_call (dbus_g_proxy_get_bus_name ((DBusGProxy*) self), dbus_g_proxy_get_path ((DBusGProxy*) self), "org.freedesktop.DBus.Properties", "Get");
 	dbus_message_iter_init_append (_message, &_iter);
-	_tmp249_ = "org.gnome.UPnP.MediaItem1";
-	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp249_);
-	_tmp250_ = "Duration";
-	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp250_);
+	_tmp582_ = "org.gnome.UPnP.MediaItem2";
+	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp582_);
+	_tmp583_ = "Duration";
+	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp583_);
 	g_object_get (self, "connection", &_connection, NULL);
 	dbus_error_init (&_dbus_error);
 	_reply = dbus_connection_send_with_reply_and_block (dbus_g_connection_get_connection (_connection), _message, -1, &_dbus_error);
@@ -4376,9 +6816,9 @@ static gint rygel_external_media_item_dbus_proxy_get_duration (RygelExternalMedi
 		dbus_message_unref (_reply);
 		return 0;
 	}
-	dbus_message_iter_get_basic (&_subiter, &_tmp251_);
+	dbus_message_iter_get_basic (&_subiter, &_tmp584_);
 	dbus_message_iter_next (&_subiter);
-	_result = _tmp251_;
+	_result = _tmp584_;
 	dbus_message_unref (_reply);
 	return _result;
 }
@@ -4389,21 +6829,21 @@ static void rygel_external_media_item_dbus_proxy_set_duration (RygelExternalMedi
 	DBusGConnection *_connection;
 	DBusMessage *_message, *_reply;
 	DBusMessageIter _iter, _subiter;
-	const char* _tmp252_;
-	const char* _tmp253_;
-	dbus_int32_t _tmp254_;
+	const char* _tmp585_;
+	const char* _tmp586_;
+	dbus_int32_t _tmp587_;
 	if (((RygelExternalMediaItemDBusProxy*) self)->disposed) {
 		return;
 	}
 	_message = dbus_message_new_method_call (dbus_g_proxy_get_bus_name ((DBusGProxy*) self), dbus_g_proxy_get_path ((DBusGProxy*) self), "org.freedesktop.DBus.Properties", "Set");
 	dbus_message_iter_init_append (_message, &_iter);
-	_tmp252_ = "org.gnome.UPnP.MediaItem1";
-	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp252_);
-	_tmp253_ = "Duration";
-	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp253_);
+	_tmp585_ = "org.gnome.UPnP.MediaItem2";
+	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp585_);
+	_tmp586_ = "Duration";
+	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp586_);
 	dbus_message_iter_open_container (&_iter, DBUS_TYPE_VARIANT, "i", &_subiter);
-	_tmp254_ = value;
-	dbus_message_iter_append_basic (&_subiter, DBUS_TYPE_INT32, &_tmp254_);
+	_tmp587_ = value;
+	dbus_message_iter_append_basic (&_subiter, DBUS_TYPE_INT32, &_tmp587_);
 	dbus_message_iter_close_container (&_iter, &_subiter);
 	g_object_get (self, "connection", &_connection, NULL);
 	dbus_error_init (&_dbus_error);
@@ -4430,19 +6870,19 @@ static gint rygel_external_media_item_dbus_proxy_get_bitrate (RygelExternalMedia
 	DBusGConnection *_connection;
 	DBusMessage *_message, *_reply;
 	DBusMessageIter _iter, _subiter;
-	const char* _tmp255_;
-	const char* _tmp256_;
+	const char* _tmp588_;
+	const char* _tmp589_;
 	gint _result;
-	dbus_int32_t _tmp257_;
+	dbus_int32_t _tmp590_;
 	if (((RygelExternalMediaItemDBusProxy*) self)->disposed) {
 		return 0;
 	}
 	_message = dbus_message_new_method_call (dbus_g_proxy_get_bus_name ((DBusGProxy*) self), dbus_g_proxy_get_path ((DBusGProxy*) self), "org.freedesktop.DBus.Properties", "Get");
 	dbus_message_iter_init_append (_message, &_iter);
-	_tmp255_ = "org.gnome.UPnP.MediaItem1";
-	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp255_);
-	_tmp256_ = "Bitrate";
-	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp256_);
+	_tmp588_ = "org.gnome.UPnP.MediaItem2";
+	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp588_);
+	_tmp589_ = "Bitrate";
+	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp589_);
 	g_object_get (self, "connection", &_connection, NULL);
 	dbus_error_init (&_dbus_error);
 	_reply = dbus_connection_send_with_reply_and_block (dbus_g_connection_get_connection (_connection), _message, -1, &_dbus_error);
@@ -4465,9 +6905,9 @@ static gint rygel_external_media_item_dbus_proxy_get_bitrate (RygelExternalMedia
 		dbus_message_unref (_reply);
 		return 0;
 	}
-	dbus_message_iter_get_basic (&_subiter, &_tmp257_);
+	dbus_message_iter_get_basic (&_subiter, &_tmp590_);
 	dbus_message_iter_next (&_subiter);
-	_result = _tmp257_;
+	_result = _tmp590_;
 	dbus_message_unref (_reply);
 	return _result;
 }
@@ -4478,21 +6918,21 @@ static void rygel_external_media_item_dbus_proxy_set_bitrate (RygelExternalMedia
 	DBusGConnection *_connection;
 	DBusMessage *_message, *_reply;
 	DBusMessageIter _iter, _subiter;
-	const char* _tmp258_;
-	const char* _tmp259_;
-	dbus_int32_t _tmp260_;
+	const char* _tmp591_;
+	const char* _tmp592_;
+	dbus_int32_t _tmp593_;
 	if (((RygelExternalMediaItemDBusProxy*) self)->disposed) {
 		return;
 	}
 	_message = dbus_message_new_method_call (dbus_g_proxy_get_bus_name ((DBusGProxy*) self), dbus_g_proxy_get_path ((DBusGProxy*) self), "org.freedesktop.DBus.Properties", "Set");
 	dbus_message_iter_init_append (_message, &_iter);
-	_tmp258_ = "org.gnome.UPnP.MediaItem1";
-	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp258_);
-	_tmp259_ = "Bitrate";
-	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp259_);
+	_tmp591_ = "org.gnome.UPnP.MediaItem2";
+	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp591_);
+	_tmp592_ = "Bitrate";
+	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp592_);
 	dbus_message_iter_open_container (&_iter, DBUS_TYPE_VARIANT, "i", &_subiter);
-	_tmp260_ = value;
-	dbus_message_iter_append_basic (&_subiter, DBUS_TYPE_INT32, &_tmp260_);
+	_tmp593_ = value;
+	dbus_message_iter_append_basic (&_subiter, DBUS_TYPE_INT32, &_tmp593_);
 	dbus_message_iter_close_container (&_iter, &_subiter);
 	g_object_get (self, "connection", &_connection, NULL);
 	dbus_error_init (&_dbus_error);
@@ -4519,19 +6959,19 @@ static gint rygel_external_media_item_dbus_proxy_get_sample_rate (RygelExternalM
 	DBusGConnection *_connection;
 	DBusMessage *_message, *_reply;
 	DBusMessageIter _iter, _subiter;
-	const char* _tmp261_;
-	const char* _tmp262_;
+	const char* _tmp594_;
+	const char* _tmp595_;
 	gint _result;
-	dbus_int32_t _tmp263_;
+	dbus_int32_t _tmp596_;
 	if (((RygelExternalMediaItemDBusProxy*) self)->disposed) {
 		return 0;
 	}
 	_message = dbus_message_new_method_call (dbus_g_proxy_get_bus_name ((DBusGProxy*) self), dbus_g_proxy_get_path ((DBusGProxy*) self), "org.freedesktop.DBus.Properties", "Get");
 	dbus_message_iter_init_append (_message, &_iter);
-	_tmp261_ = "org.gnome.UPnP.MediaItem1";
-	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp261_);
-	_tmp262_ = "SampleRate";
-	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp262_);
+	_tmp594_ = "org.gnome.UPnP.MediaItem2";
+	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp594_);
+	_tmp595_ = "SampleRate";
+	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp595_);
 	g_object_get (self, "connection", &_connection, NULL);
 	dbus_error_init (&_dbus_error);
 	_reply = dbus_connection_send_with_reply_and_block (dbus_g_connection_get_connection (_connection), _message, -1, &_dbus_error);
@@ -4554,9 +6994,9 @@ static gint rygel_external_media_item_dbus_proxy_get_sample_rate (RygelExternalM
 		dbus_message_unref (_reply);
 		return 0;
 	}
-	dbus_message_iter_get_basic (&_subiter, &_tmp263_);
+	dbus_message_iter_get_basic (&_subiter, &_tmp596_);
 	dbus_message_iter_next (&_subiter);
-	_result = _tmp263_;
+	_result = _tmp596_;
 	dbus_message_unref (_reply);
 	return _result;
 }
@@ -4567,21 +7007,21 @@ static void rygel_external_media_item_dbus_proxy_set_sample_rate (RygelExternalM
 	DBusGConnection *_connection;
 	DBusMessage *_message, *_reply;
 	DBusMessageIter _iter, _subiter;
-	const char* _tmp264_;
-	const char* _tmp265_;
-	dbus_int32_t _tmp266_;
+	const char* _tmp597_;
+	const char* _tmp598_;
+	dbus_int32_t _tmp599_;
 	if (((RygelExternalMediaItemDBusProxy*) self)->disposed) {
 		return;
 	}
 	_message = dbus_message_new_method_call (dbus_g_proxy_get_bus_name ((DBusGProxy*) self), dbus_g_proxy_get_path ((DBusGProxy*) self), "org.freedesktop.DBus.Properties", "Set");
 	dbus_message_iter_init_append (_message, &_iter);
-	_tmp264_ = "org.gnome.UPnP.MediaItem1";
-	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp264_);
-	_tmp265_ = "SampleRate";
-	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp265_);
+	_tmp597_ = "org.gnome.UPnP.MediaItem2";
+	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp597_);
+	_tmp598_ = "SampleRate";
+	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp598_);
 	dbus_message_iter_open_container (&_iter, DBUS_TYPE_VARIANT, "i", &_subiter);
-	_tmp266_ = value;
-	dbus_message_iter_append_basic (&_subiter, DBUS_TYPE_INT32, &_tmp266_);
+	_tmp599_ = value;
+	dbus_message_iter_append_basic (&_subiter, DBUS_TYPE_INT32, &_tmp599_);
 	dbus_message_iter_close_container (&_iter, &_subiter);
 	g_object_get (self, "connection", &_connection, NULL);
 	dbus_error_init (&_dbus_error);
@@ -4608,19 +7048,19 @@ static gint rygel_external_media_item_dbus_proxy_get_bits_per_sample (RygelExter
 	DBusGConnection *_connection;
 	DBusMessage *_message, *_reply;
 	DBusMessageIter _iter, _subiter;
-	const char* _tmp267_;
-	const char* _tmp268_;
+	const char* _tmp600_;
+	const char* _tmp601_;
 	gint _result;
-	dbus_int32_t _tmp269_;
+	dbus_int32_t _tmp602_;
 	if (((RygelExternalMediaItemDBusProxy*) self)->disposed) {
 		return 0;
 	}
 	_message = dbus_message_new_method_call (dbus_g_proxy_get_bus_name ((DBusGProxy*) self), dbus_g_proxy_get_path ((DBusGProxy*) self), "org.freedesktop.DBus.Properties", "Get");
 	dbus_message_iter_init_append (_message, &_iter);
-	_tmp267_ = "org.gnome.UPnP.MediaItem1";
-	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp267_);
-	_tmp268_ = "BitsPerSample";
-	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp268_);
+	_tmp600_ = "org.gnome.UPnP.MediaItem2";
+	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp600_);
+	_tmp601_ = "BitsPerSample";
+	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp601_);
 	g_object_get (self, "connection", &_connection, NULL);
 	dbus_error_init (&_dbus_error);
 	_reply = dbus_connection_send_with_reply_and_block (dbus_g_connection_get_connection (_connection), _message, -1, &_dbus_error);
@@ -4643,9 +7083,9 @@ static gint rygel_external_media_item_dbus_proxy_get_bits_per_sample (RygelExter
 		dbus_message_unref (_reply);
 		return 0;
 	}
-	dbus_message_iter_get_basic (&_subiter, &_tmp269_);
+	dbus_message_iter_get_basic (&_subiter, &_tmp602_);
 	dbus_message_iter_next (&_subiter);
-	_result = _tmp269_;
+	_result = _tmp602_;
 	dbus_message_unref (_reply);
 	return _result;
 }
@@ -4656,21 +7096,21 @@ static void rygel_external_media_item_dbus_proxy_set_bits_per_sample (RygelExter
 	DBusGConnection *_connection;
 	DBusMessage *_message, *_reply;
 	DBusMessageIter _iter, _subiter;
-	const char* _tmp270_;
-	const char* _tmp271_;
-	dbus_int32_t _tmp272_;
+	const char* _tmp603_;
+	const char* _tmp604_;
+	dbus_int32_t _tmp605_;
 	if (((RygelExternalMediaItemDBusProxy*) self)->disposed) {
 		return;
 	}
 	_message = dbus_message_new_method_call (dbus_g_proxy_get_bus_name ((DBusGProxy*) self), dbus_g_proxy_get_path ((DBusGProxy*) self), "org.freedesktop.DBus.Properties", "Set");
 	dbus_message_iter_init_append (_message, &_iter);
-	_tmp270_ = "org.gnome.UPnP.MediaItem1";
-	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp270_);
-	_tmp271_ = "BitsPerSample";
-	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp271_);
+	_tmp603_ = "org.gnome.UPnP.MediaItem2";
+	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp603_);
+	_tmp604_ = "BitsPerSample";
+	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp604_);
 	dbus_message_iter_open_container (&_iter, DBUS_TYPE_VARIANT, "i", &_subiter);
-	_tmp272_ = value;
-	dbus_message_iter_append_basic (&_subiter, DBUS_TYPE_INT32, &_tmp272_);
+	_tmp605_ = value;
+	dbus_message_iter_append_basic (&_subiter, DBUS_TYPE_INT32, &_tmp605_);
 	dbus_message_iter_close_container (&_iter, &_subiter);
 	g_object_get (self, "connection", &_connection, NULL);
 	dbus_error_init (&_dbus_error);
@@ -4697,19 +7137,19 @@ static gint rygel_external_media_item_dbus_proxy_get_width (RygelExternalMediaIt
 	DBusGConnection *_connection;
 	DBusMessage *_message, *_reply;
 	DBusMessageIter _iter, _subiter;
-	const char* _tmp273_;
-	const char* _tmp274_;
+	const char* _tmp606_;
+	const char* _tmp607_;
 	gint _result;
-	dbus_int32_t _tmp275_;
+	dbus_int32_t _tmp608_;
 	if (((RygelExternalMediaItemDBusProxy*) self)->disposed) {
 		return 0;
 	}
 	_message = dbus_message_new_method_call (dbus_g_proxy_get_bus_name ((DBusGProxy*) self), dbus_g_proxy_get_path ((DBusGProxy*) self), "org.freedesktop.DBus.Properties", "Get");
 	dbus_message_iter_init_append (_message, &_iter);
-	_tmp273_ = "org.gnome.UPnP.MediaItem1";
-	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp273_);
-	_tmp274_ = "Width";
-	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp274_);
+	_tmp606_ = "org.gnome.UPnP.MediaItem2";
+	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp606_);
+	_tmp607_ = "Width";
+	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp607_);
 	g_object_get (self, "connection", &_connection, NULL);
 	dbus_error_init (&_dbus_error);
 	_reply = dbus_connection_send_with_reply_and_block (dbus_g_connection_get_connection (_connection), _message, -1, &_dbus_error);
@@ -4732,9 +7172,9 @@ static gint rygel_external_media_item_dbus_proxy_get_width (RygelExternalMediaIt
 		dbus_message_unref (_reply);
 		return 0;
 	}
-	dbus_message_iter_get_basic (&_subiter, &_tmp275_);
+	dbus_message_iter_get_basic (&_subiter, &_tmp608_);
 	dbus_message_iter_next (&_subiter);
-	_result = _tmp275_;
+	_result = _tmp608_;
 	dbus_message_unref (_reply);
 	return _result;
 }
@@ -4745,21 +7185,21 @@ static void rygel_external_media_item_dbus_proxy_set_width (RygelExternalMediaIt
 	DBusGConnection *_connection;
 	DBusMessage *_message, *_reply;
 	DBusMessageIter _iter, _subiter;
-	const char* _tmp276_;
-	const char* _tmp277_;
-	dbus_int32_t _tmp278_;
+	const char* _tmp609_;
+	const char* _tmp610_;
+	dbus_int32_t _tmp611_;
 	if (((RygelExternalMediaItemDBusProxy*) self)->disposed) {
 		return;
 	}
 	_message = dbus_message_new_method_call (dbus_g_proxy_get_bus_name ((DBusGProxy*) self), dbus_g_proxy_get_path ((DBusGProxy*) self), "org.freedesktop.DBus.Properties", "Set");
 	dbus_message_iter_init_append (_message, &_iter);
-	_tmp276_ = "org.gnome.UPnP.MediaItem1";
-	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp276_);
-	_tmp277_ = "Width";
-	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp277_);
+	_tmp609_ = "org.gnome.UPnP.MediaItem2";
+	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp609_);
+	_tmp610_ = "Width";
+	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp610_);
 	dbus_message_iter_open_container (&_iter, DBUS_TYPE_VARIANT, "i", &_subiter);
-	_tmp278_ = value;
-	dbus_message_iter_append_basic (&_subiter, DBUS_TYPE_INT32, &_tmp278_);
+	_tmp611_ = value;
+	dbus_message_iter_append_basic (&_subiter, DBUS_TYPE_INT32, &_tmp611_);
 	dbus_message_iter_close_container (&_iter, &_subiter);
 	g_object_get (self, "connection", &_connection, NULL);
 	dbus_error_init (&_dbus_error);
@@ -4786,19 +7226,19 @@ static gint rygel_external_media_item_dbus_proxy_get_height (RygelExternalMediaI
 	DBusGConnection *_connection;
 	DBusMessage *_message, *_reply;
 	DBusMessageIter _iter, _subiter;
-	const char* _tmp279_;
-	const char* _tmp280_;
+	const char* _tmp612_;
+	const char* _tmp613_;
 	gint _result;
-	dbus_int32_t _tmp281_;
+	dbus_int32_t _tmp614_;
 	if (((RygelExternalMediaItemDBusProxy*) self)->disposed) {
 		return 0;
 	}
 	_message = dbus_message_new_method_call (dbus_g_proxy_get_bus_name ((DBusGProxy*) self), dbus_g_proxy_get_path ((DBusGProxy*) self), "org.freedesktop.DBus.Properties", "Get");
 	dbus_message_iter_init_append (_message, &_iter);
-	_tmp279_ = "org.gnome.UPnP.MediaItem1";
-	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp279_);
-	_tmp280_ = "Height";
-	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp280_);
+	_tmp612_ = "org.gnome.UPnP.MediaItem2";
+	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp612_);
+	_tmp613_ = "Height";
+	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp613_);
 	g_object_get (self, "connection", &_connection, NULL);
 	dbus_error_init (&_dbus_error);
 	_reply = dbus_connection_send_with_reply_and_block (dbus_g_connection_get_connection (_connection), _message, -1, &_dbus_error);
@@ -4821,9 +7261,9 @@ static gint rygel_external_media_item_dbus_proxy_get_height (RygelExternalMediaI
 		dbus_message_unref (_reply);
 		return 0;
 	}
-	dbus_message_iter_get_basic (&_subiter, &_tmp281_);
+	dbus_message_iter_get_basic (&_subiter, &_tmp614_);
 	dbus_message_iter_next (&_subiter);
-	_result = _tmp281_;
+	_result = _tmp614_;
 	dbus_message_unref (_reply);
 	return _result;
 }
@@ -4834,21 +7274,21 @@ static void rygel_external_media_item_dbus_proxy_set_height (RygelExternalMediaI
 	DBusGConnection *_connection;
 	DBusMessage *_message, *_reply;
 	DBusMessageIter _iter, _subiter;
-	const char* _tmp282_;
-	const char* _tmp283_;
-	dbus_int32_t _tmp284_;
+	const char* _tmp615_;
+	const char* _tmp616_;
+	dbus_int32_t _tmp617_;
 	if (((RygelExternalMediaItemDBusProxy*) self)->disposed) {
 		return;
 	}
 	_message = dbus_message_new_method_call (dbus_g_proxy_get_bus_name ((DBusGProxy*) self), dbus_g_proxy_get_path ((DBusGProxy*) self), "org.freedesktop.DBus.Properties", "Set");
 	dbus_message_iter_init_append (_message, &_iter);
-	_tmp282_ = "org.gnome.UPnP.MediaItem1";
-	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp282_);
-	_tmp283_ = "Height";
-	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp283_);
+	_tmp615_ = "org.gnome.UPnP.MediaItem2";
+	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp615_);
+	_tmp616_ = "Height";
+	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp616_);
 	dbus_message_iter_open_container (&_iter, DBUS_TYPE_VARIANT, "i", &_subiter);
-	_tmp284_ = value;
-	dbus_message_iter_append_basic (&_subiter, DBUS_TYPE_INT32, &_tmp284_);
+	_tmp617_ = value;
+	dbus_message_iter_append_basic (&_subiter, DBUS_TYPE_INT32, &_tmp617_);
 	dbus_message_iter_close_container (&_iter, &_subiter);
 	g_object_get (self, "connection", &_connection, NULL);
 	dbus_error_init (&_dbus_error);
@@ -4875,19 +7315,19 @@ static gint rygel_external_media_item_dbus_proxy_get_color_depth (RygelExternalM
 	DBusGConnection *_connection;
 	DBusMessage *_message, *_reply;
 	DBusMessageIter _iter, _subiter;
-	const char* _tmp285_;
-	const char* _tmp286_;
+	const char* _tmp618_;
+	const char* _tmp619_;
 	gint _result;
-	dbus_int32_t _tmp287_;
+	dbus_int32_t _tmp620_;
 	if (((RygelExternalMediaItemDBusProxy*) self)->disposed) {
 		return 0;
 	}
 	_message = dbus_message_new_method_call (dbus_g_proxy_get_bus_name ((DBusGProxy*) self), dbus_g_proxy_get_path ((DBusGProxy*) self), "org.freedesktop.DBus.Properties", "Get");
 	dbus_message_iter_init_append (_message, &_iter);
-	_tmp285_ = "org.gnome.UPnP.MediaItem1";
-	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp285_);
-	_tmp286_ = "ColorDepth";
-	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp286_);
+	_tmp618_ = "org.gnome.UPnP.MediaItem2";
+	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp618_);
+	_tmp619_ = "ColorDepth";
+	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp619_);
 	g_object_get (self, "connection", &_connection, NULL);
 	dbus_error_init (&_dbus_error);
 	_reply = dbus_connection_send_with_reply_and_block (dbus_g_connection_get_connection (_connection), _message, -1, &_dbus_error);
@@ -4910,9 +7350,9 @@ static gint rygel_external_media_item_dbus_proxy_get_color_depth (RygelExternalM
 		dbus_message_unref (_reply);
 		return 0;
 	}
-	dbus_message_iter_get_basic (&_subiter, &_tmp287_);
+	dbus_message_iter_get_basic (&_subiter, &_tmp620_);
 	dbus_message_iter_next (&_subiter);
-	_result = _tmp287_;
+	_result = _tmp620_;
 	dbus_message_unref (_reply);
 	return _result;
 }
@@ -4923,21 +7363,21 @@ static void rygel_external_media_item_dbus_proxy_set_color_depth (RygelExternalM
 	DBusGConnection *_connection;
 	DBusMessage *_message, *_reply;
 	DBusMessageIter _iter, _subiter;
-	const char* _tmp288_;
-	const char* _tmp289_;
-	dbus_int32_t _tmp290_;
+	const char* _tmp621_;
+	const char* _tmp622_;
+	dbus_int32_t _tmp623_;
 	if (((RygelExternalMediaItemDBusProxy*) self)->disposed) {
 		return;
 	}
 	_message = dbus_message_new_method_call (dbus_g_proxy_get_bus_name ((DBusGProxy*) self), dbus_g_proxy_get_path ((DBusGProxy*) self), "org.freedesktop.DBus.Properties", "Set");
 	dbus_message_iter_init_append (_message, &_iter);
-	_tmp288_ = "org.gnome.UPnP.MediaItem1";
-	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp288_);
-	_tmp289_ = "ColorDepth";
-	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp289_);
+	_tmp621_ = "org.gnome.UPnP.MediaItem2";
+	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp621_);
+	_tmp622_ = "ColorDepth";
+	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp622_);
 	dbus_message_iter_open_container (&_iter, DBUS_TYPE_VARIANT, "i", &_subiter);
-	_tmp290_ = value;
-	dbus_message_iter_append_basic (&_subiter, DBUS_TYPE_INT32, &_tmp290_);
+	_tmp623_ = value;
+	dbus_message_iter_append_basic (&_subiter, DBUS_TYPE_INT32, &_tmp623_);
 	dbus_message_iter_close_container (&_iter, &_subiter);
 	g_object_get (self, "connection", &_connection, NULL);
 	dbus_error_init (&_dbus_error);
@@ -4964,19 +7404,19 @@ static char* rygel_external_media_item_dbus_proxy_get_thumbnail (RygelExternalMe
 	DBusGConnection *_connection;
 	DBusMessage *_message, *_reply;
 	DBusMessageIter _iter, _subiter;
-	const char* _tmp291_;
-	const char* _tmp292_;
+	const char* _tmp624_;
+	const char* _tmp625_;
 	char* _result;
-	const char* _tmp293_;
+	const char* _tmp626_;
 	if (((RygelExternalMediaItemDBusProxy*) self)->disposed) {
 		return NULL;
 	}
 	_message = dbus_message_new_method_call (dbus_g_proxy_get_bus_name ((DBusGProxy*) self), dbus_g_proxy_get_path ((DBusGProxy*) self), "org.freedesktop.DBus.Properties", "Get");
 	dbus_message_iter_init_append (_message, &_iter);
-	_tmp291_ = "org.gnome.UPnP.MediaItem1";
-	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp291_);
-	_tmp292_ = "Thumbnail";
-	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp292_);
+	_tmp624_ = "org.gnome.UPnP.MediaItem2";
+	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp624_);
+	_tmp625_ = "Thumbnail";
+	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp625_);
 	g_object_get (self, "connection", &_connection, NULL);
 	dbus_error_init (&_dbus_error);
 	_reply = dbus_connection_send_with_reply_and_block (dbus_g_connection_get_connection (_connection), _message, -1, &_dbus_error);
@@ -4999,9 +7439,9 @@ static char* rygel_external_media_item_dbus_proxy_get_thumbnail (RygelExternalMe
 		dbus_message_unref (_reply);
 		return NULL;
 	}
-	dbus_message_iter_get_basic (&_subiter, &_tmp293_);
+	dbus_message_iter_get_basic (&_subiter, &_tmp626_);
 	dbus_message_iter_next (&_subiter);
-	_result = g_strdup (_tmp293_);
+	_result = g_strdup (_tmp626_);
 	dbus_message_unref (_reply);
 	return _result;
 }
@@ -5012,21 +7452,21 @@ static void rygel_external_media_item_dbus_proxy_set_thumbnail (RygelExternalMed
 	DBusGConnection *_connection;
 	DBusMessage *_message, *_reply;
 	DBusMessageIter _iter, _subiter;
-	const char* _tmp294_;
-	const char* _tmp295_;
-	const char* _tmp296_;
+	const char* _tmp627_;
+	const char* _tmp628_;
+	const char* _tmp629_;
 	if (((RygelExternalMediaItemDBusProxy*) self)->disposed) {
 		return;
 	}
 	_message = dbus_message_new_method_call (dbus_g_proxy_get_bus_name ((DBusGProxy*) self), dbus_g_proxy_get_path ((DBusGProxy*) self), "org.freedesktop.DBus.Properties", "Set");
 	dbus_message_iter_init_append (_message, &_iter);
-	_tmp294_ = "org.gnome.UPnP.MediaItem1";
-	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp294_);
-	_tmp295_ = "Thumbnail";
-	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp295_);
+	_tmp627_ = "org.gnome.UPnP.MediaItem2";
+	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp627_);
+	_tmp628_ = "Thumbnail";
+	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp628_);
 	dbus_message_iter_open_container (&_iter, DBUS_TYPE_VARIANT, "o", &_subiter);
-	_tmp296_ = value;
-	dbus_message_iter_append_basic (&_subiter, DBUS_TYPE_OBJECT_PATH, &_tmp296_);
+	_tmp629_ = value;
+	dbus_message_iter_append_basic (&_subiter, DBUS_TYPE_OBJECT_PATH, &_tmp629_);
 	dbus_message_iter_close_container (&_iter, &_subiter);
 	g_object_get (self, "connection", &_connection, NULL);
 	dbus_error_init (&_dbus_error);
@@ -5053,19 +7493,19 @@ static char* rygel_external_media_item_dbus_proxy_get_album_art (RygelExternalMe
 	DBusGConnection *_connection;
 	DBusMessage *_message, *_reply;
 	DBusMessageIter _iter, _subiter;
-	const char* _tmp297_;
-	const char* _tmp298_;
+	const char* _tmp630_;
+	const char* _tmp631_;
 	char* _result;
-	const char* _tmp299_;
+	const char* _tmp632_;
 	if (((RygelExternalMediaItemDBusProxy*) self)->disposed) {
 		return NULL;
 	}
 	_message = dbus_message_new_method_call (dbus_g_proxy_get_bus_name ((DBusGProxy*) self), dbus_g_proxy_get_path ((DBusGProxy*) self), "org.freedesktop.DBus.Properties", "Get");
 	dbus_message_iter_init_append (_message, &_iter);
-	_tmp297_ = "org.gnome.UPnP.MediaItem1";
-	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp297_);
-	_tmp298_ = "AlbumArt";
-	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp298_);
+	_tmp630_ = "org.gnome.UPnP.MediaItem2";
+	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp630_);
+	_tmp631_ = "AlbumArt";
+	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp631_);
 	g_object_get (self, "connection", &_connection, NULL);
 	dbus_error_init (&_dbus_error);
 	_reply = dbus_connection_send_with_reply_and_block (dbus_g_connection_get_connection (_connection), _message, -1, &_dbus_error);
@@ -5088,9 +7528,9 @@ static char* rygel_external_media_item_dbus_proxy_get_album_art (RygelExternalMe
 		dbus_message_unref (_reply);
 		return NULL;
 	}
-	dbus_message_iter_get_basic (&_subiter, &_tmp299_);
+	dbus_message_iter_get_basic (&_subiter, &_tmp632_);
 	dbus_message_iter_next (&_subiter);
-	_result = g_strdup (_tmp299_);
+	_result = g_strdup (_tmp632_);
 	dbus_message_unref (_reply);
 	return _result;
 }
@@ -5101,21 +7541,21 @@ static void rygel_external_media_item_dbus_proxy_set_album_art (RygelExternalMed
 	DBusGConnection *_connection;
 	DBusMessage *_message, *_reply;
 	DBusMessageIter _iter, _subiter;
-	const char* _tmp300_;
-	const char* _tmp301_;
-	const char* _tmp302_;
+	const char* _tmp633_;
+	const char* _tmp634_;
+	const char* _tmp635_;
 	if (((RygelExternalMediaItemDBusProxy*) self)->disposed) {
 		return;
 	}
 	_message = dbus_message_new_method_call (dbus_g_proxy_get_bus_name ((DBusGProxy*) self), dbus_g_proxy_get_path ((DBusGProxy*) self), "org.freedesktop.DBus.Properties", "Set");
 	dbus_message_iter_init_append (_message, &_iter);
-	_tmp300_ = "org.gnome.UPnP.MediaItem1";
-	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp300_);
-	_tmp301_ = "AlbumArt";
-	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp301_);
+	_tmp633_ = "org.gnome.UPnP.MediaItem2";
+	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp633_);
+	_tmp634_ = "AlbumArt";
+	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp634_);
 	dbus_message_iter_open_container (&_iter, DBUS_TYPE_VARIANT, "o", &_subiter);
-	_tmp302_ = value;
-	dbus_message_iter_append_basic (&_subiter, DBUS_TYPE_OBJECT_PATH, &_tmp302_);
+	_tmp635_ = value;
+	dbus_message_iter_append_basic (&_subiter, DBUS_TYPE_OBJECT_PATH, &_tmp635_);
 	dbus_message_iter_close_container (&_iter, &_subiter);
 	g_object_get (self, "connection", &_connection, NULL);
 	dbus_error_init (&_dbus_error);
@@ -5142,8 +7582,6 @@ static void rygel_external_media_item_dbus_proxy_rygel_external_media_item__inte
 	iface->set_urls = rygel_external_media_item_dbus_proxy_set_urls;
 	iface->get_mime_type = rygel_external_media_item_dbus_proxy_get_mime_type;
 	iface->set_mime_type = rygel_external_media_item_dbus_proxy_set_mime_type;
-	iface->get_media_type = rygel_external_media_item_dbus_proxy_get_media_type;
-	iface->set_media_type = rygel_external_media_item_dbus_proxy_set_media_type;
 	iface->get_size = rygel_external_media_item_dbus_proxy_get_size;
 	iface->set_size = rygel_external_media_item_dbus_proxy_set_size;
 	iface->get_artist = rygel_external_media_item_dbus_proxy_get_artist;
@@ -5241,16 +7679,16 @@ static DBusHandlerResult _dbus_free_desktop_dbus_object_property_get_all (FreeDe
 	DBusMessage* reply;
 	DBusMessageIter iter, reply_iter, subiter;
 	char* interface_name;
-	const char* _tmp303_;
+	const char* _tmp636_;
 	if (strcmp (dbus_message_get_signature (message), "s")) {
 		return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
 	}
 	dbus_message_iter_init (message, &iter);
 	reply = dbus_message_new_method_return (message);
 	dbus_message_iter_init_append (reply, &reply_iter);
-	dbus_message_iter_get_basic (&iter, &_tmp303_);
+	dbus_message_iter_get_basic (&iter, &_tmp636_);
 	dbus_message_iter_next (&iter);
-	interface_name = g_strdup (_tmp303_);
+	interface_name = g_strdup (_tmp636_);
 	if (strcmp (interface_name, "org.freedesktop.DBus") == 0) {
 		dbus_message_iter_open_container (&reply_iter, DBUS_TYPE_ARRAY, "{sv}", &subiter);
 		dbus_message_iter_close_container (&reply_iter, &subiter);
@@ -5279,7 +7717,7 @@ static DBusHandlerResult _dbus_free_desktop_dbus_object_list_names (FreeDesktopD
 	_user_data_ = g_new0 (gpointer, 2);
 	_user_data_[0] = dbus_connection_ref (connection);
 	_user_data_[1] = dbus_message_ref (message);
-	free_desktop_dbus_object_list_names (self, _dbus_free_desktop_dbus_object_list_names_ready, _user_data_);
+	free_desktop_dbus_object_list_names (self, (GAsyncReadyCallback) _dbus_free_desktop_dbus_object_list_names_ready, _user_data_);
 	return DBUS_HANDLER_RESULT_HANDLED;
 }
 
@@ -5292,14 +7730,14 @@ static void _dbus_free_desktop_dbus_object_list_names_ready (GObject * source_ob
 	char** result;
 	int result_length1;
 	DBusMessage* reply;
-	char** _tmp304_;
-	DBusMessageIter _tmp305_;
-	int _tmp306_;
+	char** _tmp637_;
+	DBusMessageIter _tmp638_;
+	int _tmp639_;
 	connection = _user_data_[0];
 	message = _user_data_[1];
 	error = NULL;
 	result_length1 = 0;
-	result = free_desktop_dbus_object_list_names_finish (source_object, _res_, &result_length1, &error);
+	result = free_desktop_dbus_object_list_names_finish ((FreeDesktopDBusObject*) source_object, _res_, &result_length1, &error);
 	if (error) {
 		if (error->domain == DBUS_GERROR) {
 			switch (error->code) {
@@ -5410,15 +7848,15 @@ static void _dbus_free_desktop_dbus_object_list_names_ready (GObject * source_ob
 	}
 	reply = dbus_message_new_method_return (message);
 	dbus_message_iter_init_append (reply, &iter);
-	_tmp304_ = result;
-	dbus_message_iter_open_container (&iter, DBUS_TYPE_ARRAY, "s", &_tmp305_);
-	for (_tmp306_ = 0; _tmp306_ < result_length1; _tmp306_++) {
-		const char* _tmp307_;
-		_tmp307_ = *_tmp304_;
-		dbus_message_iter_append_basic (&_tmp305_, DBUS_TYPE_STRING, &_tmp307_);
-		_tmp304_++;
+	_tmp637_ = result;
+	dbus_message_iter_open_container (&iter, DBUS_TYPE_ARRAY, "s", &_tmp638_);
+	for (_tmp639_ = 0; _tmp639_ < result_length1; _tmp639_++) {
+		const char* _tmp640_;
+		_tmp640_ = *_tmp637_;
+		dbus_message_iter_append_basic (&_tmp638_, DBUS_TYPE_STRING, &_tmp640_);
+		_tmp637_++;
 	}
-	dbus_message_iter_close_container (&iter, &_tmp305_);
+	dbus_message_iter_close_container (&iter, &_tmp638_);
 	result = (_vala_array_free (result,  result_length1, (GDestroyNotify) g_free), NULL);
 	dbus_connection_send (connection, reply, NULL);
 	dbus_message_unref (reply);
@@ -5438,7 +7876,7 @@ static DBusHandlerResult _dbus_free_desktop_dbus_object_list_activatable_names (
 	_user_data_ = g_new0 (gpointer, 2);
 	_user_data_[0] = dbus_connection_ref (connection);
 	_user_data_[1] = dbus_message_ref (message);
-	free_desktop_dbus_object_list_activatable_names (self, _dbus_free_desktop_dbus_object_list_activatable_names_ready, _user_data_);
+	free_desktop_dbus_object_list_activatable_names (self, (GAsyncReadyCallback) _dbus_free_desktop_dbus_object_list_activatable_names_ready, _user_data_);
 	return DBUS_HANDLER_RESULT_HANDLED;
 }
 
@@ -5451,14 +7889,14 @@ static void _dbus_free_desktop_dbus_object_list_activatable_names_ready (GObject
 	char** result;
 	int result_length1;
 	DBusMessage* reply;
-	char** _tmp308_;
-	DBusMessageIter _tmp309_;
-	int _tmp310_;
+	char** _tmp641_;
+	DBusMessageIter _tmp642_;
+	int _tmp643_;
 	connection = _user_data_[0];
 	message = _user_data_[1];
 	error = NULL;
 	result_length1 = 0;
-	result = free_desktop_dbus_object_list_activatable_names_finish (source_object, _res_, &result_length1, &error);
+	result = free_desktop_dbus_object_list_activatable_names_finish ((FreeDesktopDBusObject*) source_object, _res_, &result_length1, &error);
 	if (error) {
 		if (error->domain == DBUS_GERROR) {
 			switch (error->code) {
@@ -5569,15 +8007,15 @@ static void _dbus_free_desktop_dbus_object_list_activatable_names_ready (GObject
 	}
 	reply = dbus_message_new_method_return (message);
 	dbus_message_iter_init_append (reply, &iter);
-	_tmp308_ = result;
-	dbus_message_iter_open_container (&iter, DBUS_TYPE_ARRAY, "s", &_tmp309_);
-	for (_tmp310_ = 0; _tmp310_ < result_length1; _tmp310_++) {
-		const char* _tmp311_;
-		_tmp311_ = *_tmp308_;
-		dbus_message_iter_append_basic (&_tmp309_, DBUS_TYPE_STRING, &_tmp311_);
-		_tmp308_++;
+	_tmp641_ = result;
+	dbus_message_iter_open_container (&iter, DBUS_TYPE_ARRAY, "s", &_tmp642_);
+	for (_tmp643_ = 0; _tmp643_ < result_length1; _tmp643_++) {
+		const char* _tmp644_;
+		_tmp644_ = *_tmp641_;
+		dbus_message_iter_append_basic (&_tmp642_, DBUS_TYPE_STRING, &_tmp644_);
+		_tmp641_++;
 	}
-	dbus_message_iter_close_container (&iter, &_tmp309_);
+	dbus_message_iter_close_container (&iter, &_tmp642_);
 	result = (_vala_array_free (result,  result_length1, (GDestroyNotify) g_free), NULL);
 	dbus_connection_send (connection, reply, NULL);
 	dbus_message_unref (reply);
@@ -5611,18 +8049,18 @@ static void _dbus_free_desktop_dbus_object_name_owner_changed (GObject* _sender,
 	const char * _path;
 	DBusMessage *_message;
 	DBusMessageIter _iter;
-	const char* _tmp312_;
-	const char* _tmp313_;
-	const char* _tmp314_;
+	const char* _tmp645_;
+	const char* _tmp646_;
+	const char* _tmp647_;
 	_path = g_object_get_data (_sender, "dbus_object_path");
 	_message = dbus_message_new_signal (_path, "org.freedesktop.DBus", "NameOwnerChanged");
 	dbus_message_iter_init_append (_message, &_iter);
-	_tmp312_ = name;
-	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp312_);
-	_tmp313_ = old_owner;
-	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp313_);
-	_tmp314_ = new_owner;
-	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp314_);
+	_tmp645_ = name;
+	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp645_);
+	_tmp646_ = old_owner;
+	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp646_);
+	_tmp647_ = new_owner;
+	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp647_);
 	dbus_connection_send (_connection, _message, NULL);
 	dbus_message_unref (_message);
 }
@@ -5691,25 +8129,25 @@ static GObject* free_desktop_dbus_object_dbus_proxy_construct (GType gtype, guin
 static void _dbus_handle_free_desktop_dbus_object_name_owner_changed (FreeDesktopDBusObject* self, DBusConnection* connection, DBusMessage* message) {
 	DBusMessageIter iter;
 	char* name = NULL;
-	const char* _tmp315_;
+	const char* _tmp648_;
 	char* old_owner = NULL;
-	const char* _tmp316_;
+	const char* _tmp649_;
 	char* new_owner = NULL;
-	const char* _tmp317_;
+	const char* _tmp650_;
 	DBusMessage* reply;
 	if (strcmp (dbus_message_get_signature (message), "sss")) {
 		return;
 	}
 	dbus_message_iter_init (message, &iter);
-	dbus_message_iter_get_basic (&iter, &_tmp315_);
+	dbus_message_iter_get_basic (&iter, &_tmp648_);
 	dbus_message_iter_next (&iter);
-	name = g_strdup (_tmp315_);
-	dbus_message_iter_get_basic (&iter, &_tmp316_);
+	name = g_strdup (_tmp648_);
+	dbus_message_iter_get_basic (&iter, &_tmp649_);
 	dbus_message_iter_next (&iter);
-	old_owner = g_strdup (_tmp316_);
-	dbus_message_iter_get_basic (&iter, &_tmp317_);
+	old_owner = g_strdup (_tmp649_);
+	dbus_message_iter_get_basic (&iter, &_tmp650_);
 	dbus_message_iter_next (&iter);
-	new_owner = g_strdup (_tmp317_);
+	new_owner = g_strdup (_tmp650_);
 	g_signal_emit_by_name (self, "name-owner-changed", name, old_owner, new_owner);
 	_g_free0 (name);
 	_g_free0 (old_owner);
@@ -5793,11 +8231,11 @@ static char** free_desktop_dbus_object_dbus_proxy_list_names_finish (FreeDesktop
 	DBusMessageIter _iter;
 	char** _result;
 	int _result_length1;
-	char** _tmp322_;
-	int _tmp322__length;
-	int _tmp322__size;
-	int _tmp322__length1;
-	DBusMessageIter _tmp323_;
+	char** _tmp655_;
+	int _tmp655__length;
+	int _tmp655__size;
+	int _tmp655__length1;
+	DBusMessageIter _tmp656_;
 	_data_ = g_simple_async_result_get_source_tag ((GSimpleAsyncResult *) _res_);
 	dbus_error_init (&_dbus_error);
 	_reply = dbus_pending_call_steal_reply (_data_->pending);
@@ -5806,74 +8244,74 @@ static char** free_desktop_dbus_object_dbus_proxy_list_names_finish (FreeDesktop
 		GQuark _edomain;
 		gint _ecode;
 		if (strstr (_dbus_error.name, "org.freedesktop.DBus.Error") == _dbus_error.name) {
-			const char* _tmp321_;
+			const char* _tmp654_;
 			_edomain = DBUS_GERROR;
-			_tmp321_ = _dbus_error.name + 27;
-			if (strcmp (_tmp321_, "Failed") == 0) {
+			_tmp654_ = _dbus_error.name + 27;
+			if (strcmp (_tmp654_, "Failed") == 0) {
 				_ecode = DBUS_GERROR_FAILED;
-			} else if (strcmp (_tmp321_, "NoMemory") == 0) {
+			} else if (strcmp (_tmp654_, "NoMemory") == 0) {
 				_ecode = DBUS_GERROR_NO_MEMORY;
-			} else if (strcmp (_tmp321_, "ServiceUnknown") == 0) {
+			} else if (strcmp (_tmp654_, "ServiceUnknown") == 0) {
 				_ecode = DBUS_GERROR_SERVICE_UNKNOWN;
-			} else if (strcmp (_tmp321_, "NameHasNoOwner") == 0) {
+			} else if (strcmp (_tmp654_, "NameHasNoOwner") == 0) {
 				_ecode = DBUS_GERROR_NAME_HAS_NO_OWNER;
-			} else if (strcmp (_tmp321_, "NoReply") == 0) {
+			} else if (strcmp (_tmp654_, "NoReply") == 0) {
 				_ecode = DBUS_GERROR_NO_REPLY;
-			} else if (strcmp (_tmp321_, "IOError") == 0) {
+			} else if (strcmp (_tmp654_, "IOError") == 0) {
 				_ecode = DBUS_GERROR_IO_ERROR;
-			} else if (strcmp (_tmp321_, "BadAddress") == 0) {
+			} else if (strcmp (_tmp654_, "BadAddress") == 0) {
 				_ecode = DBUS_GERROR_BAD_ADDRESS;
-			} else if (strcmp (_tmp321_, "NotSupported") == 0) {
+			} else if (strcmp (_tmp654_, "NotSupported") == 0) {
 				_ecode = DBUS_GERROR_NOT_SUPPORTED;
-			} else if (strcmp (_tmp321_, "LimitsExceeded") == 0) {
+			} else if (strcmp (_tmp654_, "LimitsExceeded") == 0) {
 				_ecode = DBUS_GERROR_LIMITS_EXCEEDED;
-			} else if (strcmp (_tmp321_, "AccessDenied") == 0) {
+			} else if (strcmp (_tmp654_, "AccessDenied") == 0) {
 				_ecode = DBUS_GERROR_ACCESS_DENIED;
-			} else if (strcmp (_tmp321_, "AuthFailed") == 0) {
+			} else if (strcmp (_tmp654_, "AuthFailed") == 0) {
 				_ecode = DBUS_GERROR_AUTH_FAILED;
-			} else if (strcmp (_tmp321_, "NoServer") == 0) {
+			} else if (strcmp (_tmp654_, "NoServer") == 0) {
 				_ecode = DBUS_GERROR_NO_SERVER;
-			} else if (strcmp (_tmp321_, "Timeout") == 0) {
+			} else if (strcmp (_tmp654_, "Timeout") == 0) {
 				_ecode = DBUS_GERROR_TIMEOUT;
-			} else if (strcmp (_tmp321_, "NoNetwork") == 0) {
+			} else if (strcmp (_tmp654_, "NoNetwork") == 0) {
 				_ecode = DBUS_GERROR_NO_NETWORK;
-			} else if (strcmp (_tmp321_, "AddressInUse") == 0) {
+			} else if (strcmp (_tmp654_, "AddressInUse") == 0) {
 				_ecode = DBUS_GERROR_ADDRESS_IN_USE;
-			} else if (strcmp (_tmp321_, "Disconnected") == 0) {
+			} else if (strcmp (_tmp654_, "Disconnected") == 0) {
 				_ecode = DBUS_GERROR_DISCONNECTED;
-			} else if (strcmp (_tmp321_, "InvalidArgs") == 0) {
+			} else if (strcmp (_tmp654_, "InvalidArgs") == 0) {
 				_ecode = DBUS_GERROR_INVALID_ARGS;
-			} else if (strcmp (_tmp321_, "FileNotFound") == 0) {
+			} else if (strcmp (_tmp654_, "FileNotFound") == 0) {
 				_ecode = DBUS_GERROR_FILE_NOT_FOUND;
-			} else if (strcmp (_tmp321_, "FileExists") == 0) {
+			} else if (strcmp (_tmp654_, "FileExists") == 0) {
 				_ecode = DBUS_GERROR_FILE_EXISTS;
-			} else if (strcmp (_tmp321_, "UnknownMethod") == 0) {
+			} else if (strcmp (_tmp654_, "UnknownMethod") == 0) {
 				_ecode = DBUS_GERROR_UNKNOWN_METHOD;
-			} else if (strcmp (_tmp321_, "TimedOut") == 0) {
+			} else if (strcmp (_tmp654_, "TimedOut") == 0) {
 				_ecode = DBUS_GERROR_TIMED_OUT;
-			} else if (strcmp (_tmp321_, "MatchRuleNotFound") == 0) {
+			} else if (strcmp (_tmp654_, "MatchRuleNotFound") == 0) {
 				_ecode = DBUS_GERROR_MATCH_RULE_NOT_FOUND;
-			} else if (strcmp (_tmp321_, "MatchRuleInvalid") == 0) {
+			} else if (strcmp (_tmp654_, "MatchRuleInvalid") == 0) {
 				_ecode = DBUS_GERROR_MATCH_RULE_INVALID;
-			} else if (strcmp (_tmp321_, "Spawn.ExecFailed") == 0) {
+			} else if (strcmp (_tmp654_, "Spawn.ExecFailed") == 0) {
 				_ecode = DBUS_GERROR_SPAWN_EXEC_FAILED;
-			} else if (strcmp (_tmp321_, "Spawn.ForkFailed") == 0) {
+			} else if (strcmp (_tmp654_, "Spawn.ForkFailed") == 0) {
 				_ecode = DBUS_GERROR_SPAWN_FORK_FAILED;
-			} else if (strcmp (_tmp321_, "Spawn.ChildExited") == 0) {
+			} else if (strcmp (_tmp654_, "Spawn.ChildExited") == 0) {
 				_ecode = DBUS_GERROR_SPAWN_CHILD_EXITED;
-			} else if (strcmp (_tmp321_, "Spawn.ChildSignaled") == 0) {
+			} else if (strcmp (_tmp654_, "Spawn.ChildSignaled") == 0) {
 				_ecode = DBUS_GERROR_SPAWN_CHILD_SIGNALED;
-			} else if (strcmp (_tmp321_, "Spawn.Failed") == 0) {
+			} else if (strcmp (_tmp654_, "Spawn.Failed") == 0) {
 				_ecode = DBUS_GERROR_SPAWN_FAILED;
-			} else if (strcmp (_tmp321_, "UnixProcessIdUnknown") == 0) {
+			} else if (strcmp (_tmp654_, "UnixProcessIdUnknown") == 0) {
 				_ecode = DBUS_GERROR_UNIX_PROCESS_ID_UNKNOWN;
-			} else if (strcmp (_tmp321_, "InvalidSignature") == 0) {
+			} else if (strcmp (_tmp654_, "InvalidSignature") == 0) {
 				_ecode = DBUS_GERROR_INVALID_SIGNATURE;
-			} else if (strcmp (_tmp321_, "InvalidFileContent") == 0) {
+			} else if (strcmp (_tmp654_, "InvalidFileContent") == 0) {
 				_ecode = DBUS_GERROR_INVALID_FILE_CONTENT;
-			} else if (strcmp (_tmp321_, "SELinuxSecurityContextUnknown") == 0) {
+			} else if (strcmp (_tmp654_, "SELinuxSecurityContextUnknown") == 0) {
 				_ecode = DBUS_GERROR_SELINUX_SECURITY_CONTEXT_UNKNOWN;
-			} else if (strcmp (_tmp321_, "RemoteException") == 0) {
+			} else if (strcmp (_tmp654_, "RemoteException") == 0) {
 				_ecode = DBUS_GERROR_REMOTE_EXCEPTION;
 			}
 		}
@@ -5888,25 +8326,25 @@ static char** free_desktop_dbus_object_dbus_proxy_list_names_finish (FreeDesktop
 	}
 	dbus_message_iter_init (_reply, &_iter);
 	_result_length1 = 0;
-	_tmp322_ = g_new (char*, 5);
-	_tmp322__length = 0;
-	_tmp322__size = 4;
-	_tmp322__length1 = 0;
-	dbus_message_iter_recurse (&_iter, &_tmp323_);
-	for (; dbus_message_iter_get_arg_type (&_tmp323_); _tmp322__length1++) {
-		const char* _tmp324_;
-		if (_tmp322__size == _tmp322__length) {
-			_tmp322__size = 2 * _tmp322__size;
-			_tmp322_ = g_renew (char*, _tmp322_, _tmp322__size + 1);
+	_tmp655_ = g_new (char*, 5);
+	_tmp655__length = 0;
+	_tmp655__size = 4;
+	_tmp655__length1 = 0;
+	dbus_message_iter_recurse (&_iter, &_tmp656_);
+	for (; dbus_message_iter_get_arg_type (&_tmp656_); _tmp655__length1++) {
+		const char* _tmp657_;
+		if (_tmp655__size == _tmp655__length) {
+			_tmp655__size = 2 * _tmp655__size;
+			_tmp655_ = g_renew (char*, _tmp655_, _tmp655__size + 1);
 		}
-		dbus_message_iter_get_basic (&_tmp323_, &_tmp324_);
-		dbus_message_iter_next (&_tmp323_);
-		_tmp322_[_tmp322__length++] = g_strdup (_tmp324_);
+		dbus_message_iter_get_basic (&_tmp656_, &_tmp657_);
+		dbus_message_iter_next (&_tmp656_);
+		_tmp655_[_tmp655__length++] = g_strdup (_tmp657_);
 	}
-	_result_length1 = _tmp322__length1;
-	_tmp322_[_tmp322__length] = NULL;
+	_result_length1 = _tmp655__length1;
+	_tmp655_[_tmp655__length] = NULL;
 	dbus_message_iter_next (&_iter);
-	_result = _tmp322_;
+	_result = _tmp655_;
 	*result_length1 = _result_length1;
 	dbus_message_unref (_reply);
 	return _result;
@@ -5955,11 +8393,11 @@ static char** free_desktop_dbus_object_dbus_proxy_list_activatable_names_finish 
 	DBusMessageIter _iter;
 	char** _result;
 	int _result_length1;
-	char** _tmp329_;
-	int _tmp329__length;
-	int _tmp329__size;
-	int _tmp329__length1;
-	DBusMessageIter _tmp330_;
+	char** _tmp662_;
+	int _tmp662__length;
+	int _tmp662__size;
+	int _tmp662__length1;
+	DBusMessageIter _tmp663_;
 	_data_ = g_simple_async_result_get_source_tag ((GSimpleAsyncResult *) _res_);
 	dbus_error_init (&_dbus_error);
 	_reply = dbus_pending_call_steal_reply (_data_->pending);
@@ -5968,74 +8406,74 @@ static char** free_desktop_dbus_object_dbus_proxy_list_activatable_names_finish 
 		GQuark _edomain;
 		gint _ecode;
 		if (strstr (_dbus_error.name, "org.freedesktop.DBus.Error") == _dbus_error.name) {
-			const char* _tmp328_;
+			const char* _tmp661_;
 			_edomain = DBUS_GERROR;
-			_tmp328_ = _dbus_error.name + 27;
-			if (strcmp (_tmp328_, "Failed") == 0) {
+			_tmp661_ = _dbus_error.name + 27;
+			if (strcmp (_tmp661_, "Failed") == 0) {
 				_ecode = DBUS_GERROR_FAILED;
-			} else if (strcmp (_tmp328_, "NoMemory") == 0) {
+			} else if (strcmp (_tmp661_, "NoMemory") == 0) {
 				_ecode = DBUS_GERROR_NO_MEMORY;
-			} else if (strcmp (_tmp328_, "ServiceUnknown") == 0) {
+			} else if (strcmp (_tmp661_, "ServiceUnknown") == 0) {
 				_ecode = DBUS_GERROR_SERVICE_UNKNOWN;
-			} else if (strcmp (_tmp328_, "NameHasNoOwner") == 0) {
+			} else if (strcmp (_tmp661_, "NameHasNoOwner") == 0) {
 				_ecode = DBUS_GERROR_NAME_HAS_NO_OWNER;
-			} else if (strcmp (_tmp328_, "NoReply") == 0) {
+			} else if (strcmp (_tmp661_, "NoReply") == 0) {
 				_ecode = DBUS_GERROR_NO_REPLY;
-			} else if (strcmp (_tmp328_, "IOError") == 0) {
+			} else if (strcmp (_tmp661_, "IOError") == 0) {
 				_ecode = DBUS_GERROR_IO_ERROR;
-			} else if (strcmp (_tmp328_, "BadAddress") == 0) {
+			} else if (strcmp (_tmp661_, "BadAddress") == 0) {
 				_ecode = DBUS_GERROR_BAD_ADDRESS;
-			} else if (strcmp (_tmp328_, "NotSupported") == 0) {
+			} else if (strcmp (_tmp661_, "NotSupported") == 0) {
 				_ecode = DBUS_GERROR_NOT_SUPPORTED;
-			} else if (strcmp (_tmp328_, "LimitsExceeded") == 0) {
+			} else if (strcmp (_tmp661_, "LimitsExceeded") == 0) {
 				_ecode = DBUS_GERROR_LIMITS_EXCEEDED;
-			} else if (strcmp (_tmp328_, "AccessDenied") == 0) {
+			} else if (strcmp (_tmp661_, "AccessDenied") == 0) {
 				_ecode = DBUS_GERROR_ACCESS_DENIED;
-			} else if (strcmp (_tmp328_, "AuthFailed") == 0) {
+			} else if (strcmp (_tmp661_, "AuthFailed") == 0) {
 				_ecode = DBUS_GERROR_AUTH_FAILED;
-			} else if (strcmp (_tmp328_, "NoServer") == 0) {
+			} else if (strcmp (_tmp661_, "NoServer") == 0) {
 				_ecode = DBUS_GERROR_NO_SERVER;
-			} else if (strcmp (_tmp328_, "Timeout") == 0) {
+			} else if (strcmp (_tmp661_, "Timeout") == 0) {
 				_ecode = DBUS_GERROR_TIMEOUT;
-			} else if (strcmp (_tmp328_, "NoNetwork") == 0) {
+			} else if (strcmp (_tmp661_, "NoNetwork") == 0) {
 				_ecode = DBUS_GERROR_NO_NETWORK;
-			} else if (strcmp (_tmp328_, "AddressInUse") == 0) {
+			} else if (strcmp (_tmp661_, "AddressInUse") == 0) {
 				_ecode = DBUS_GERROR_ADDRESS_IN_USE;
-			} else if (strcmp (_tmp328_, "Disconnected") == 0) {
+			} else if (strcmp (_tmp661_, "Disconnected") == 0) {
 				_ecode = DBUS_GERROR_DISCONNECTED;
-			} else if (strcmp (_tmp328_, "InvalidArgs") == 0) {
+			} else if (strcmp (_tmp661_, "InvalidArgs") == 0) {
 				_ecode = DBUS_GERROR_INVALID_ARGS;
-			} else if (strcmp (_tmp328_, "FileNotFound") == 0) {
+			} else if (strcmp (_tmp661_, "FileNotFound") == 0) {
 				_ecode = DBUS_GERROR_FILE_NOT_FOUND;
-			} else if (strcmp (_tmp328_, "FileExists") == 0) {
+			} else if (strcmp (_tmp661_, "FileExists") == 0) {
 				_ecode = DBUS_GERROR_FILE_EXISTS;
-			} else if (strcmp (_tmp328_, "UnknownMethod") == 0) {
+			} else if (strcmp (_tmp661_, "UnknownMethod") == 0) {
 				_ecode = DBUS_GERROR_UNKNOWN_METHOD;
-			} else if (strcmp (_tmp328_, "TimedOut") == 0) {
+			} else if (strcmp (_tmp661_, "TimedOut") == 0) {
 				_ecode = DBUS_GERROR_TIMED_OUT;
-			} else if (strcmp (_tmp328_, "MatchRuleNotFound") == 0) {
+			} else if (strcmp (_tmp661_, "MatchRuleNotFound") == 0) {
 				_ecode = DBUS_GERROR_MATCH_RULE_NOT_FOUND;
-			} else if (strcmp (_tmp328_, "MatchRuleInvalid") == 0) {
+			} else if (strcmp (_tmp661_, "MatchRuleInvalid") == 0) {
 				_ecode = DBUS_GERROR_MATCH_RULE_INVALID;
-			} else if (strcmp (_tmp328_, "Spawn.ExecFailed") == 0) {
+			} else if (strcmp (_tmp661_, "Spawn.ExecFailed") == 0) {
 				_ecode = DBUS_GERROR_SPAWN_EXEC_FAILED;
-			} else if (strcmp (_tmp328_, "Spawn.ForkFailed") == 0) {
+			} else if (strcmp (_tmp661_, "Spawn.ForkFailed") == 0) {
 				_ecode = DBUS_GERROR_SPAWN_FORK_FAILED;
-			} else if (strcmp (_tmp328_, "Spawn.ChildExited") == 0) {
+			} else if (strcmp (_tmp661_, "Spawn.ChildExited") == 0) {
 				_ecode = DBUS_GERROR_SPAWN_CHILD_EXITED;
-			} else if (strcmp (_tmp328_, "Spawn.ChildSignaled") == 0) {
+			} else if (strcmp (_tmp661_, "Spawn.ChildSignaled") == 0) {
 				_ecode = DBUS_GERROR_SPAWN_CHILD_SIGNALED;
-			} else if (strcmp (_tmp328_, "Spawn.Failed") == 0) {
+			} else if (strcmp (_tmp661_, "Spawn.Failed") == 0) {
 				_ecode = DBUS_GERROR_SPAWN_FAILED;
-			} else if (strcmp (_tmp328_, "UnixProcessIdUnknown") == 0) {
+			} else if (strcmp (_tmp661_, "UnixProcessIdUnknown") == 0) {
 				_ecode = DBUS_GERROR_UNIX_PROCESS_ID_UNKNOWN;
-			} else if (strcmp (_tmp328_, "InvalidSignature") == 0) {
+			} else if (strcmp (_tmp661_, "InvalidSignature") == 0) {
 				_ecode = DBUS_GERROR_INVALID_SIGNATURE;
-			} else if (strcmp (_tmp328_, "InvalidFileContent") == 0) {
+			} else if (strcmp (_tmp661_, "InvalidFileContent") == 0) {
 				_ecode = DBUS_GERROR_INVALID_FILE_CONTENT;
-			} else if (strcmp (_tmp328_, "SELinuxSecurityContextUnknown") == 0) {
+			} else if (strcmp (_tmp661_, "SELinuxSecurityContextUnknown") == 0) {
 				_ecode = DBUS_GERROR_SELINUX_SECURITY_CONTEXT_UNKNOWN;
-			} else if (strcmp (_tmp328_, "RemoteException") == 0) {
+			} else if (strcmp (_tmp661_, "RemoteException") == 0) {
 				_ecode = DBUS_GERROR_REMOTE_EXCEPTION;
 			}
 		}
@@ -6050,25 +8488,25 @@ static char** free_desktop_dbus_object_dbus_proxy_list_activatable_names_finish 
 	}
 	dbus_message_iter_init (_reply, &_iter);
 	_result_length1 = 0;
-	_tmp329_ = g_new (char*, 5);
-	_tmp329__length = 0;
-	_tmp329__size = 4;
-	_tmp329__length1 = 0;
-	dbus_message_iter_recurse (&_iter, &_tmp330_);
-	for (; dbus_message_iter_get_arg_type (&_tmp330_); _tmp329__length1++) {
-		const char* _tmp331_;
-		if (_tmp329__size == _tmp329__length) {
-			_tmp329__size = 2 * _tmp329__size;
-			_tmp329_ = g_renew (char*, _tmp329_, _tmp329__size + 1);
+	_tmp662_ = g_new (char*, 5);
+	_tmp662__length = 0;
+	_tmp662__size = 4;
+	_tmp662__length1 = 0;
+	dbus_message_iter_recurse (&_iter, &_tmp663_);
+	for (; dbus_message_iter_get_arg_type (&_tmp663_); _tmp662__length1++) {
+		const char* _tmp664_;
+		if (_tmp662__size == _tmp662__length) {
+			_tmp662__size = 2 * _tmp662__size;
+			_tmp662_ = g_renew (char*, _tmp662_, _tmp662__size + 1);
 		}
-		dbus_message_iter_get_basic (&_tmp330_, &_tmp331_);
-		dbus_message_iter_next (&_tmp330_);
-		_tmp329_[_tmp329__length++] = g_strdup (_tmp331_);
+		dbus_message_iter_get_basic (&_tmp663_, &_tmp664_);
+		dbus_message_iter_next (&_tmp663_);
+		_tmp662_[_tmp662__length++] = g_strdup (_tmp664_);
 	}
-	_result_length1 = _tmp329__length1;
-	_tmp329_[_tmp329__length] = NULL;
+	_result_length1 = _tmp662__length1;
+	_tmp662_[_tmp662__length] = NULL;
 	dbus_message_iter_next (&_iter);
-	_result = _tmp329_;
+	_result = _tmp662_;
 	*result_length1 = _result_length1;
 	dbus_message_unref (_reply);
 	return _result;
@@ -6137,16 +8575,16 @@ static DBusHandlerResult _dbus_free_desktop_properties_property_get_all (FreeDes
 	DBusMessage* reply;
 	DBusMessageIter iter, reply_iter, subiter;
 	char* interface_name;
-	const char* _tmp332_;
+	const char* _tmp665_;
 	if (strcmp (dbus_message_get_signature (message), "s")) {
 		return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
 	}
 	dbus_message_iter_init (message, &iter);
 	reply = dbus_message_new_method_return (message);
 	dbus_message_iter_init_append (reply, &reply_iter);
-	dbus_message_iter_get_basic (&iter, &_tmp332_);
+	dbus_message_iter_get_basic (&iter, &_tmp665_);
 	dbus_message_iter_next (&iter);
-	interface_name = g_strdup (_tmp332_);
+	interface_name = g_strdup (_tmp665_);
 	if (strcmp (interface_name, "org.freedesktop.DBus.Properties") == 0) {
 		dbus_message_iter_open_container (&reply_iter, DBUS_TYPE_ARRAY, "{sv}", &subiter);
 		dbus_message_iter_close_container (&reply_iter, &subiter);
@@ -6168,19 +8606,19 @@ static DBusHandlerResult _dbus_free_desktop_properties_property_get_all (FreeDes
 static DBusHandlerResult _dbus_free_desktop_properties_get_all (FreeDesktopProperties* self, DBusConnection* connection, DBusMessage* message) {
 	DBusMessageIter iter;
 	char* iface = NULL;
-	const char* _tmp333_;
+	const char* _tmp666_;
 	gpointer * _user_data_;
 	if (strcmp (dbus_message_get_signature (message), "s")) {
 		return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
 	}
 	dbus_message_iter_init (message, &iter);
-	dbus_message_iter_get_basic (&iter, &_tmp333_);
+	dbus_message_iter_get_basic (&iter, &_tmp666_);
 	dbus_message_iter_next (&iter);
-	iface = g_strdup (_tmp333_);
+	iface = g_strdup (_tmp666_);
 	_user_data_ = g_new0 (gpointer, 2);
 	_user_data_[0] = dbus_connection_ref (connection);
 	_user_data_[1] = dbus_message_ref (message);
-	free_desktop_properties_get_all (self, iface, _dbus_free_desktop_properties_get_all_ready, _user_data_);
+	free_desktop_properties_get_all (self, iface, (GAsyncReadyCallback) _dbus_free_desktop_properties_get_all_ready, _user_data_);
 	_g_free0 (iface);
 	return DBUS_HANDLER_RESULT_HANDLED;
 }
@@ -6193,13 +8631,13 @@ static void _dbus_free_desktop_properties_get_all_ready (GObject * source_object
 	GError* error;
 	GHashTable* result;
 	DBusMessage* reply;
-	DBusMessageIter _tmp334_, _tmp335_;
-	GHashTableIter _tmp336_;
-	gpointer _tmp337_, _tmp338_;
+	DBusMessageIter _tmp667_, _tmp668_;
+	GHashTableIter _tmp669_;
+	gpointer _tmp670_, _tmp671_;
 	connection = _user_data_[0];
 	message = _user_data_[1];
 	error = NULL;
-	result = free_desktop_properties_get_all_finish (source_object, _res_, &error);
+	result = free_desktop_properties_get_all_finish ((FreeDesktopProperties*) source_object, _res_, &error);
 	if (error) {
 		if (error->domain == DBUS_GERROR) {
 			switch (error->code) {
@@ -6310,70 +8748,85 @@ static void _dbus_free_desktop_properties_get_all_ready (GObject * source_object
 	}
 	reply = dbus_message_new_method_return (message);
 	dbus_message_iter_init_append (reply, &iter);
-	dbus_message_iter_open_container (&iter, DBUS_TYPE_ARRAY, "{sv}", &_tmp334_);
-	g_hash_table_iter_init (&_tmp336_, result);
-	while (g_hash_table_iter_next (&_tmp336_, &_tmp337_, &_tmp338_)) {
+	dbus_message_iter_open_container (&iter, DBUS_TYPE_ARRAY, "{sv}", &_tmp667_);
+	g_hash_table_iter_init (&_tmp669_, result);
+	while (g_hash_table_iter_next (&_tmp669_, &_tmp670_, &_tmp671_)) {
 		char* _key;
 		GValue* _value;
-		const char* _tmp339_;
-		DBusMessageIter _tmp340_;
-		dbus_message_iter_open_container (&_tmp334_, DBUS_TYPE_DICT_ENTRY, NULL, &_tmp335_);
-		_key = (char*) _tmp337_;
-		_value = (GValue*) _tmp338_;
-		_tmp339_ = _key;
-		dbus_message_iter_append_basic (&_tmp335_, DBUS_TYPE_STRING, &_tmp339_);
+		const char* _tmp672_;
+		DBusMessageIter _tmp673_;
+		dbus_message_iter_open_container (&_tmp667_, DBUS_TYPE_DICT_ENTRY, NULL, &_tmp668_);
+		_key = (char*) _tmp670_;
+		_value = (GValue*) _tmp671_;
+		_tmp672_ = _key;
+		dbus_message_iter_append_basic (&_tmp668_, DBUS_TYPE_STRING, &_tmp672_);
 		if (G_VALUE_TYPE (_value) == G_TYPE_UCHAR) {
-			guint8 _tmp341_;
-			dbus_message_iter_open_container (&_tmp335_, DBUS_TYPE_VARIANT, "y", &_tmp340_);
-			_tmp341_ = g_value_get_uchar (_value);
-			dbus_message_iter_append_basic (&_tmp340_, DBUS_TYPE_BYTE, &_tmp341_);
-			dbus_message_iter_close_container (&_tmp335_, &_tmp340_);
+			guint8 _tmp674_;
+			dbus_message_iter_open_container (&_tmp668_, DBUS_TYPE_VARIANT, "y", &_tmp673_);
+			_tmp674_ = g_value_get_uchar (_value);
+			dbus_message_iter_append_basic (&_tmp673_, DBUS_TYPE_BYTE, &_tmp674_);
+			dbus_message_iter_close_container (&_tmp668_, &_tmp673_);
 		} else if (G_VALUE_TYPE (_value) == G_TYPE_BOOLEAN) {
-			dbus_bool_t _tmp342_;
-			dbus_message_iter_open_container (&_tmp335_, DBUS_TYPE_VARIANT, "b", &_tmp340_);
-			_tmp342_ = g_value_get_boolean (_value);
-			dbus_message_iter_append_basic (&_tmp340_, DBUS_TYPE_BOOLEAN, &_tmp342_);
-			dbus_message_iter_close_container (&_tmp335_, &_tmp340_);
+			dbus_bool_t _tmp675_;
+			dbus_message_iter_open_container (&_tmp668_, DBUS_TYPE_VARIANT, "b", &_tmp673_);
+			_tmp675_ = g_value_get_boolean (_value);
+			dbus_message_iter_append_basic (&_tmp673_, DBUS_TYPE_BOOLEAN, &_tmp675_);
+			dbus_message_iter_close_container (&_tmp668_, &_tmp673_);
 		} else if (G_VALUE_TYPE (_value) == G_TYPE_INT) {
-			dbus_int32_t _tmp343_;
-			dbus_message_iter_open_container (&_tmp335_, DBUS_TYPE_VARIANT, "i", &_tmp340_);
-			_tmp343_ = g_value_get_int (_value);
-			dbus_message_iter_append_basic (&_tmp340_, DBUS_TYPE_INT32, &_tmp343_);
-			dbus_message_iter_close_container (&_tmp335_, &_tmp340_);
+			dbus_int32_t _tmp676_;
+			dbus_message_iter_open_container (&_tmp668_, DBUS_TYPE_VARIANT, "i", &_tmp673_);
+			_tmp676_ = g_value_get_int (_value);
+			dbus_message_iter_append_basic (&_tmp673_, DBUS_TYPE_INT32, &_tmp676_);
+			dbus_message_iter_close_container (&_tmp668_, &_tmp673_);
 		} else if (G_VALUE_TYPE (_value) == G_TYPE_UINT) {
-			dbus_uint32_t _tmp344_;
-			dbus_message_iter_open_container (&_tmp335_, DBUS_TYPE_VARIANT, "u", &_tmp340_);
-			_tmp344_ = g_value_get_uint (_value);
-			dbus_message_iter_append_basic (&_tmp340_, DBUS_TYPE_UINT32, &_tmp344_);
-			dbus_message_iter_close_container (&_tmp335_, &_tmp340_);
+			dbus_uint32_t _tmp677_;
+			dbus_message_iter_open_container (&_tmp668_, DBUS_TYPE_VARIANT, "u", &_tmp673_);
+			_tmp677_ = g_value_get_uint (_value);
+			dbus_message_iter_append_basic (&_tmp673_, DBUS_TYPE_UINT32, &_tmp677_);
+			dbus_message_iter_close_container (&_tmp668_, &_tmp673_);
 		} else if (G_VALUE_TYPE (_value) == G_TYPE_INT64) {
-			dbus_int64_t _tmp345_;
-			dbus_message_iter_open_container (&_tmp335_, DBUS_TYPE_VARIANT, "x", &_tmp340_);
-			_tmp345_ = g_value_get_int64 (_value);
-			dbus_message_iter_append_basic (&_tmp340_, DBUS_TYPE_INT64, &_tmp345_);
-			dbus_message_iter_close_container (&_tmp335_, &_tmp340_);
+			dbus_int64_t _tmp678_;
+			dbus_message_iter_open_container (&_tmp668_, DBUS_TYPE_VARIANT, "x", &_tmp673_);
+			_tmp678_ = g_value_get_int64 (_value);
+			dbus_message_iter_append_basic (&_tmp673_, DBUS_TYPE_INT64, &_tmp678_);
+			dbus_message_iter_close_container (&_tmp668_, &_tmp673_);
 		} else if (G_VALUE_TYPE (_value) == G_TYPE_UINT64) {
-			dbus_uint64_t _tmp346_;
-			dbus_message_iter_open_container (&_tmp335_, DBUS_TYPE_VARIANT, "t", &_tmp340_);
-			_tmp346_ = g_value_get_uint64 (_value);
-			dbus_message_iter_append_basic (&_tmp340_, DBUS_TYPE_UINT64, &_tmp346_);
-			dbus_message_iter_close_container (&_tmp335_, &_tmp340_);
+			dbus_uint64_t _tmp679_;
+			dbus_message_iter_open_container (&_tmp668_, DBUS_TYPE_VARIANT, "t", &_tmp673_);
+			_tmp679_ = g_value_get_uint64 (_value);
+			dbus_message_iter_append_basic (&_tmp673_, DBUS_TYPE_UINT64, &_tmp679_);
+			dbus_message_iter_close_container (&_tmp668_, &_tmp673_);
 		} else if (G_VALUE_TYPE (_value) == G_TYPE_DOUBLE) {
-			double _tmp347_;
-			dbus_message_iter_open_container (&_tmp335_, DBUS_TYPE_VARIANT, "d", &_tmp340_);
-			_tmp347_ = g_value_get_double (_value);
-			dbus_message_iter_append_basic (&_tmp340_, DBUS_TYPE_DOUBLE, &_tmp347_);
-			dbus_message_iter_close_container (&_tmp335_, &_tmp340_);
+			double _tmp680_;
+			dbus_message_iter_open_container (&_tmp668_, DBUS_TYPE_VARIANT, "d", &_tmp673_);
+			_tmp680_ = g_value_get_double (_value);
+			dbus_message_iter_append_basic (&_tmp673_, DBUS_TYPE_DOUBLE, &_tmp680_);
+			dbus_message_iter_close_container (&_tmp668_, &_tmp673_);
 		} else if (G_VALUE_TYPE (_value) == G_TYPE_STRING) {
-			const char* _tmp348_;
-			dbus_message_iter_open_container (&_tmp335_, DBUS_TYPE_VARIANT, "s", &_tmp340_);
-			_tmp348_ = g_value_get_string (_value);
-			dbus_message_iter_append_basic (&_tmp340_, DBUS_TYPE_STRING, &_tmp348_);
-			dbus_message_iter_close_container (&_tmp335_, &_tmp340_);
+			const char* _tmp681_;
+			dbus_message_iter_open_container (&_tmp668_, DBUS_TYPE_VARIANT, "s", &_tmp673_);
+			_tmp681_ = g_value_get_string (_value);
+			dbus_message_iter_append_basic (&_tmp673_, DBUS_TYPE_STRING, &_tmp681_);
+			dbus_message_iter_close_container (&_tmp668_, &_tmp673_);
+		} else if (G_VALUE_TYPE (_value) == G_TYPE_STRV) {
+			const char** _tmp682_;
+			DBusMessageIter _tmp683_;
+			int _tmp684_;
+			dbus_message_iter_open_container (&_tmp668_, DBUS_TYPE_VARIANT, "as", &_tmp673_);
+			_tmp682_ = g_value_get_boxed (_value);
+			dbus_message_iter_open_container (&_tmp673_, DBUS_TYPE_ARRAY, "s", &_tmp683_);
+			for (_tmp684_ = 0; _tmp684_ < g_strv_length (g_value_get_boxed (_value)); _tmp684_++) {
+				const char* _tmp685_;
+				_tmp685_ = *_tmp682_;
+				dbus_message_iter_append_basic (&_tmp683_, DBUS_TYPE_STRING, &_tmp685_);
+				_tmp682_++;
+			}
+			dbus_message_iter_close_container (&_tmp673_, &_tmp683_);
+			dbus_message_iter_close_container (&_tmp668_, &_tmp673_);
 		}
-		dbus_message_iter_close_container (&_tmp334_, &_tmp335_);
+		dbus_message_iter_close_container (&_tmp667_, &_tmp668_);
 	}
-	dbus_message_iter_close_container (&iter, &_tmp334_);
+	dbus_message_iter_close_container (&iter, &_tmp667_);
 	_g_hash_table_unref0 (result);
 	dbus_connection_send (connection, reply, NULL);
 	dbus_message_unref (reply);
@@ -6495,12 +8948,12 @@ static void free_desktop_properties_dbus_proxy_get_all_async (FreeDesktopPropert
 	DBusMessage *_message;
 	DBusPendingCall *_pending;
 	DBusMessageIter _iter;
-	const char* _tmp349_;
+	const char* _tmp686_;
 	FreeDesktopPropertiesDBusProxyGetAllData* _data_;
 	_message = dbus_message_new_method_call (dbus_g_proxy_get_bus_name ((DBusGProxy*) self), dbus_g_proxy_get_path ((DBusGProxy*) self), "org.freedesktop.DBus.Properties", "GetAll");
 	dbus_message_iter_init_append (_message, &_iter);
-	_tmp349_ = iface;
-	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp349_);
+	_tmp686_ = iface;
+	dbus_message_iter_append_basic (&_iter, DBUS_TYPE_STRING, &_tmp686_);
 	g_object_get (self, "connection", &_connection, NULL);
 	dbus_connection_send_with_reply (dbus_g_connection_get_connection (_connection), _message, &_pending, -1);
 	dbus_g_connection_unref (_connection);
@@ -6534,9 +8987,9 @@ static GHashTable* free_desktop_properties_dbus_proxy_get_all_finish (FreeDeskto
 	DBusMessage *_reply;
 	DBusMessageIter _iter;
 	GHashTable* _result;
-	GHashTable* _tmp370_;
-	DBusMessageIter _tmp371_;
-	DBusMessageIter _tmp372_;
+	GHashTable* _tmp710_;
+	DBusMessageIter _tmp711_;
+	DBusMessageIter _tmp712_;
 	_data_ = g_simple_async_result_get_source_tag ((GSimpleAsyncResult *) _res_);
 	dbus_error_init (&_dbus_error);
 	_reply = dbus_pending_call_steal_reply (_data_->pending);
@@ -6545,74 +8998,74 @@ static GHashTable* free_desktop_properties_dbus_proxy_get_all_finish (FreeDeskto
 		GQuark _edomain;
 		gint _ecode;
 		if (strstr (_dbus_error.name, "org.freedesktop.DBus.Error") == _dbus_error.name) {
-			const char* _tmp368_;
+			const char* _tmp708_;
 			_edomain = DBUS_GERROR;
-			_tmp368_ = _dbus_error.name + 27;
-			if (strcmp (_tmp368_, "Failed") == 0) {
+			_tmp708_ = _dbus_error.name + 27;
+			if (strcmp (_tmp708_, "Failed") == 0) {
 				_ecode = DBUS_GERROR_FAILED;
-			} else if (strcmp (_tmp368_, "NoMemory") == 0) {
+			} else if (strcmp (_tmp708_, "NoMemory") == 0) {
 				_ecode = DBUS_GERROR_NO_MEMORY;
-			} else if (strcmp (_tmp368_, "ServiceUnknown") == 0) {
+			} else if (strcmp (_tmp708_, "ServiceUnknown") == 0) {
 				_ecode = DBUS_GERROR_SERVICE_UNKNOWN;
-			} else if (strcmp (_tmp368_, "NameHasNoOwner") == 0) {
+			} else if (strcmp (_tmp708_, "NameHasNoOwner") == 0) {
 				_ecode = DBUS_GERROR_NAME_HAS_NO_OWNER;
-			} else if (strcmp (_tmp368_, "NoReply") == 0) {
+			} else if (strcmp (_tmp708_, "NoReply") == 0) {
 				_ecode = DBUS_GERROR_NO_REPLY;
-			} else if (strcmp (_tmp368_, "IOError") == 0) {
+			} else if (strcmp (_tmp708_, "IOError") == 0) {
 				_ecode = DBUS_GERROR_IO_ERROR;
-			} else if (strcmp (_tmp368_, "BadAddress") == 0) {
+			} else if (strcmp (_tmp708_, "BadAddress") == 0) {
 				_ecode = DBUS_GERROR_BAD_ADDRESS;
-			} else if (strcmp (_tmp368_, "NotSupported") == 0) {
+			} else if (strcmp (_tmp708_, "NotSupported") == 0) {
 				_ecode = DBUS_GERROR_NOT_SUPPORTED;
-			} else if (strcmp (_tmp368_, "LimitsExceeded") == 0) {
+			} else if (strcmp (_tmp708_, "LimitsExceeded") == 0) {
 				_ecode = DBUS_GERROR_LIMITS_EXCEEDED;
-			} else if (strcmp (_tmp368_, "AccessDenied") == 0) {
+			} else if (strcmp (_tmp708_, "AccessDenied") == 0) {
 				_ecode = DBUS_GERROR_ACCESS_DENIED;
-			} else if (strcmp (_tmp368_, "AuthFailed") == 0) {
+			} else if (strcmp (_tmp708_, "AuthFailed") == 0) {
 				_ecode = DBUS_GERROR_AUTH_FAILED;
-			} else if (strcmp (_tmp368_, "NoServer") == 0) {
+			} else if (strcmp (_tmp708_, "NoServer") == 0) {
 				_ecode = DBUS_GERROR_NO_SERVER;
-			} else if (strcmp (_tmp368_, "Timeout") == 0) {
+			} else if (strcmp (_tmp708_, "Timeout") == 0) {
 				_ecode = DBUS_GERROR_TIMEOUT;
-			} else if (strcmp (_tmp368_, "NoNetwork") == 0) {
+			} else if (strcmp (_tmp708_, "NoNetwork") == 0) {
 				_ecode = DBUS_GERROR_NO_NETWORK;
-			} else if (strcmp (_tmp368_, "AddressInUse") == 0) {
+			} else if (strcmp (_tmp708_, "AddressInUse") == 0) {
 				_ecode = DBUS_GERROR_ADDRESS_IN_USE;
-			} else if (strcmp (_tmp368_, "Disconnected") == 0) {
+			} else if (strcmp (_tmp708_, "Disconnected") == 0) {
 				_ecode = DBUS_GERROR_DISCONNECTED;
-			} else if (strcmp (_tmp368_, "InvalidArgs") == 0) {
+			} else if (strcmp (_tmp708_, "InvalidArgs") == 0) {
 				_ecode = DBUS_GERROR_INVALID_ARGS;
-			} else if (strcmp (_tmp368_, "FileNotFound") == 0) {
+			} else if (strcmp (_tmp708_, "FileNotFound") == 0) {
 				_ecode = DBUS_GERROR_FILE_NOT_FOUND;
-			} else if (strcmp (_tmp368_, "FileExists") == 0) {
+			} else if (strcmp (_tmp708_, "FileExists") == 0) {
 				_ecode = DBUS_GERROR_FILE_EXISTS;
-			} else if (strcmp (_tmp368_, "UnknownMethod") == 0) {
+			} else if (strcmp (_tmp708_, "UnknownMethod") == 0) {
 				_ecode = DBUS_GERROR_UNKNOWN_METHOD;
-			} else if (strcmp (_tmp368_, "TimedOut") == 0) {
+			} else if (strcmp (_tmp708_, "TimedOut") == 0) {
 				_ecode = DBUS_GERROR_TIMED_OUT;
-			} else if (strcmp (_tmp368_, "MatchRuleNotFound") == 0) {
+			} else if (strcmp (_tmp708_, "MatchRuleNotFound") == 0) {
 				_ecode = DBUS_GERROR_MATCH_RULE_NOT_FOUND;
-			} else if (strcmp (_tmp368_, "MatchRuleInvalid") == 0) {
+			} else if (strcmp (_tmp708_, "MatchRuleInvalid") == 0) {
 				_ecode = DBUS_GERROR_MATCH_RULE_INVALID;
-			} else if (strcmp (_tmp368_, "Spawn.ExecFailed") == 0) {
+			} else if (strcmp (_tmp708_, "Spawn.ExecFailed") == 0) {
 				_ecode = DBUS_GERROR_SPAWN_EXEC_FAILED;
-			} else if (strcmp (_tmp368_, "Spawn.ForkFailed") == 0) {
+			} else if (strcmp (_tmp708_, "Spawn.ForkFailed") == 0) {
 				_ecode = DBUS_GERROR_SPAWN_FORK_FAILED;
-			} else if (strcmp (_tmp368_, "Spawn.ChildExited") == 0) {
+			} else if (strcmp (_tmp708_, "Spawn.ChildExited") == 0) {
 				_ecode = DBUS_GERROR_SPAWN_CHILD_EXITED;
-			} else if (strcmp (_tmp368_, "Spawn.ChildSignaled") == 0) {
+			} else if (strcmp (_tmp708_, "Spawn.ChildSignaled") == 0) {
 				_ecode = DBUS_GERROR_SPAWN_CHILD_SIGNALED;
-			} else if (strcmp (_tmp368_, "Spawn.Failed") == 0) {
+			} else if (strcmp (_tmp708_, "Spawn.Failed") == 0) {
 				_ecode = DBUS_GERROR_SPAWN_FAILED;
-			} else if (strcmp (_tmp368_, "UnixProcessIdUnknown") == 0) {
+			} else if (strcmp (_tmp708_, "UnixProcessIdUnknown") == 0) {
 				_ecode = DBUS_GERROR_UNIX_PROCESS_ID_UNKNOWN;
-			} else if (strcmp (_tmp368_, "InvalidSignature") == 0) {
+			} else if (strcmp (_tmp708_, "InvalidSignature") == 0) {
 				_ecode = DBUS_GERROR_INVALID_SIGNATURE;
-			} else if (strcmp (_tmp368_, "InvalidFileContent") == 0) {
+			} else if (strcmp (_tmp708_, "InvalidFileContent") == 0) {
 				_ecode = DBUS_GERROR_INVALID_FILE_CONTENT;
-			} else if (strcmp (_tmp368_, "SELinuxSecurityContextUnknown") == 0) {
+			} else if (strcmp (_tmp708_, "SELinuxSecurityContextUnknown") == 0) {
 				_ecode = DBUS_GERROR_SELINUX_SECURITY_CONTEXT_UNKNOWN;
-			} else if (strcmp (_tmp368_, "RemoteException") == 0) {
+			} else if (strcmp (_tmp708_, "RemoteException") == 0) {
 				_ecode = DBUS_GERROR_REMOTE_EXCEPTION;
 			}
 		}
@@ -6626,87 +9079,111 @@ static GHashTable* free_desktop_properties_dbus_proxy_get_all_finish (FreeDeskto
 		return NULL;
 	}
 	dbus_message_iter_init (_reply, &_iter);
-	_tmp370_ = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);
-	dbus_message_iter_recurse (&_iter, &_tmp371_);
-	while (dbus_message_iter_get_arg_type (&_tmp371_)) {
+	_tmp710_ = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);
+	dbus_message_iter_recurse (&_iter, &_tmp711_);
+	while (dbus_message_iter_get_arg_type (&_tmp711_)) {
 		char* _key;
 		GValue* _value;
-		const char* _tmp373_;
-		GValue _tmp374_ = {0};
-		DBusMessageIter _tmp375_;
-		dbus_message_iter_recurse (&_tmp371_, &_tmp372_);
-		dbus_message_iter_get_basic (&_tmp372_, &_tmp373_);
-		dbus_message_iter_next (&_tmp372_);
-		_key = g_strdup (_tmp373_);
-		dbus_message_iter_recurse (&_tmp372_, &_tmp375_);
-		if (dbus_message_iter_get_arg_type (&_tmp375_) == DBUS_TYPE_BYTE) {
-			guint8 _tmp376_;
-			dbus_message_iter_get_basic (&_tmp375_, &_tmp376_);
-			g_value_init (&_tmp374_, G_TYPE_UCHAR);
-			g_value_set_uchar (&_tmp374_, _tmp376_);
-		} else if (dbus_message_iter_get_arg_type (&_tmp375_) == DBUS_TYPE_BOOLEAN) {
-			dbus_bool_t _tmp377_;
-			dbus_message_iter_get_basic (&_tmp375_, &_tmp377_);
-			g_value_init (&_tmp374_, G_TYPE_BOOLEAN);
-			g_value_set_boolean (&_tmp374_, _tmp377_);
-		} else if (dbus_message_iter_get_arg_type (&_tmp375_) == DBUS_TYPE_INT16) {
-			dbus_int16_t _tmp378_;
-			dbus_message_iter_get_basic (&_tmp375_, &_tmp378_);
-			g_value_init (&_tmp374_, G_TYPE_INT);
-			g_value_set_int (&_tmp374_, _tmp378_);
-		} else if (dbus_message_iter_get_arg_type (&_tmp375_) == DBUS_TYPE_UINT16) {
-			dbus_uint16_t _tmp379_;
-			dbus_message_iter_get_basic (&_tmp375_, &_tmp379_);
-			g_value_init (&_tmp374_, G_TYPE_UINT);
-			g_value_set_uint (&_tmp374_, _tmp379_);
-		} else if (dbus_message_iter_get_arg_type (&_tmp375_) == DBUS_TYPE_INT32) {
-			dbus_int32_t _tmp380_;
-			dbus_message_iter_get_basic (&_tmp375_, &_tmp380_);
-			g_value_init (&_tmp374_, G_TYPE_INT);
-			g_value_set_int (&_tmp374_, _tmp380_);
-		} else if (dbus_message_iter_get_arg_type (&_tmp375_) == DBUS_TYPE_UINT32) {
-			dbus_uint32_t _tmp381_;
-			dbus_message_iter_get_basic (&_tmp375_, &_tmp381_);
-			g_value_init (&_tmp374_, G_TYPE_UINT);
-			g_value_set_uint (&_tmp374_, _tmp381_);
-		} else if (dbus_message_iter_get_arg_type (&_tmp375_) == DBUS_TYPE_INT64) {
-			dbus_int64_t _tmp382_;
-			dbus_message_iter_get_basic (&_tmp375_, &_tmp382_);
-			g_value_init (&_tmp374_, G_TYPE_INT64);
-			g_value_set_int64 (&_tmp374_, _tmp382_);
-		} else if (dbus_message_iter_get_arg_type (&_tmp375_) == DBUS_TYPE_UINT64) {
-			dbus_uint64_t _tmp383_;
-			dbus_message_iter_get_basic (&_tmp375_, &_tmp383_);
-			g_value_init (&_tmp374_, G_TYPE_UINT64);
-			g_value_set_uint64 (&_tmp374_, _tmp383_);
-		} else if (dbus_message_iter_get_arg_type (&_tmp375_) == DBUS_TYPE_DOUBLE) {
-			double _tmp384_;
-			dbus_message_iter_get_basic (&_tmp375_, &_tmp384_);
-			g_value_init (&_tmp374_, G_TYPE_DOUBLE);
-			g_value_set_double (&_tmp374_, _tmp384_);
-		} else if (dbus_message_iter_get_arg_type (&_tmp375_) == DBUS_TYPE_STRING) {
-			const char* _tmp385_;
-			dbus_message_iter_get_basic (&_tmp375_, &_tmp385_);
-			g_value_init (&_tmp374_, G_TYPE_STRING);
-			g_value_take_string (&_tmp374_, g_strdup (_tmp385_));
-		} else if (dbus_message_iter_get_arg_type (&_tmp375_) == DBUS_TYPE_OBJECT_PATH) {
-			const char* _tmp386_;
-			dbus_message_iter_get_basic (&_tmp375_, &_tmp386_);
-			g_value_init (&_tmp374_, G_TYPE_STRING);
-			g_value_take_string (&_tmp374_, g_strdup (_tmp386_));
-		} else if (dbus_message_iter_get_arg_type (&_tmp375_) == DBUS_TYPE_SIGNATURE) {
-			const char* _tmp387_;
-			dbus_message_iter_get_basic (&_tmp375_, &_tmp387_);
-			g_value_init (&_tmp374_, G_TYPE_STRING);
-			g_value_take_string (&_tmp374_, g_strdup (_tmp387_));
+		const char* _tmp713_;
+		GValue _tmp714_ = {0};
+		DBusMessageIter _tmp715_;
+		dbus_message_iter_recurse (&_tmp711_, &_tmp712_);
+		dbus_message_iter_get_basic (&_tmp712_, &_tmp713_);
+		dbus_message_iter_next (&_tmp712_);
+		_key = g_strdup (_tmp713_);
+		dbus_message_iter_recurse (&_tmp712_, &_tmp715_);
+		if (dbus_message_iter_get_arg_type (&_tmp715_) == DBUS_TYPE_BYTE) {
+			guint8 _tmp716_;
+			dbus_message_iter_get_basic (&_tmp715_, &_tmp716_);
+			g_value_init (&_tmp714_, G_TYPE_UCHAR);
+			g_value_set_uchar (&_tmp714_, _tmp716_);
+		} else if (dbus_message_iter_get_arg_type (&_tmp715_) == DBUS_TYPE_BOOLEAN) {
+			dbus_bool_t _tmp717_;
+			dbus_message_iter_get_basic (&_tmp715_, &_tmp717_);
+			g_value_init (&_tmp714_, G_TYPE_BOOLEAN);
+			g_value_set_boolean (&_tmp714_, _tmp717_);
+		} else if (dbus_message_iter_get_arg_type (&_tmp715_) == DBUS_TYPE_INT16) {
+			dbus_int16_t _tmp718_;
+			dbus_message_iter_get_basic (&_tmp715_, &_tmp718_);
+			g_value_init (&_tmp714_, G_TYPE_INT);
+			g_value_set_int (&_tmp714_, _tmp718_);
+		} else if (dbus_message_iter_get_arg_type (&_tmp715_) == DBUS_TYPE_UINT16) {
+			dbus_uint16_t _tmp719_;
+			dbus_message_iter_get_basic (&_tmp715_, &_tmp719_);
+			g_value_init (&_tmp714_, G_TYPE_UINT);
+			g_value_set_uint (&_tmp714_, _tmp719_);
+		} else if (dbus_message_iter_get_arg_type (&_tmp715_) == DBUS_TYPE_INT32) {
+			dbus_int32_t _tmp720_;
+			dbus_message_iter_get_basic (&_tmp715_, &_tmp720_);
+			g_value_init (&_tmp714_, G_TYPE_INT);
+			g_value_set_int (&_tmp714_, _tmp720_);
+		} else if (dbus_message_iter_get_arg_type (&_tmp715_) == DBUS_TYPE_UINT32) {
+			dbus_uint32_t _tmp721_;
+			dbus_message_iter_get_basic (&_tmp715_, &_tmp721_);
+			g_value_init (&_tmp714_, G_TYPE_UINT);
+			g_value_set_uint (&_tmp714_, _tmp721_);
+		} else if (dbus_message_iter_get_arg_type (&_tmp715_) == DBUS_TYPE_INT64) {
+			dbus_int64_t _tmp722_;
+			dbus_message_iter_get_basic (&_tmp715_, &_tmp722_);
+			g_value_init (&_tmp714_, G_TYPE_INT64);
+			g_value_set_int64 (&_tmp714_, _tmp722_);
+		} else if (dbus_message_iter_get_arg_type (&_tmp715_) == DBUS_TYPE_UINT64) {
+			dbus_uint64_t _tmp723_;
+			dbus_message_iter_get_basic (&_tmp715_, &_tmp723_);
+			g_value_init (&_tmp714_, G_TYPE_UINT64);
+			g_value_set_uint64 (&_tmp714_, _tmp723_);
+		} else if (dbus_message_iter_get_arg_type (&_tmp715_) == DBUS_TYPE_DOUBLE) {
+			double _tmp724_;
+			dbus_message_iter_get_basic (&_tmp715_, &_tmp724_);
+			g_value_init (&_tmp714_, G_TYPE_DOUBLE);
+			g_value_set_double (&_tmp714_, _tmp724_);
+		} else if (dbus_message_iter_get_arg_type (&_tmp715_) == DBUS_TYPE_STRING) {
+			const char* _tmp725_;
+			dbus_message_iter_get_basic (&_tmp715_, &_tmp725_);
+			g_value_init (&_tmp714_, G_TYPE_STRING);
+			g_value_take_string (&_tmp714_, g_strdup (_tmp725_));
+		} else if (dbus_message_iter_get_arg_type (&_tmp715_) == DBUS_TYPE_OBJECT_PATH) {
+			const char* _tmp726_;
+			dbus_message_iter_get_basic (&_tmp715_, &_tmp726_);
+			g_value_init (&_tmp714_, G_TYPE_STRING);
+			g_value_take_string (&_tmp714_, g_strdup (_tmp726_));
+		} else if (dbus_message_iter_get_arg_type (&_tmp715_) == DBUS_TYPE_SIGNATURE) {
+			const char* _tmp727_;
+			dbus_message_iter_get_basic (&_tmp715_, &_tmp727_);
+			g_value_init (&_tmp714_, G_TYPE_STRING);
+			g_value_take_string (&_tmp714_, g_strdup (_tmp727_));
+		} else if ((dbus_message_iter_get_arg_type (&_tmp715_) == DBUS_TYPE_ARRAY) && (dbus_message_iter_get_element_type (&_tmp715_) == DBUS_TYPE_STRING)) {
+			const char** _tmp728_;
+			int _tmp728__length;
+			int _tmp728__size;
+			int _tmp728__length1;
+			DBusMessageIter _tmp729_;
+			_tmp728_ = g_new (const char*, 5);
+			_tmp728__length = 0;
+			_tmp728__size = 4;
+			_tmp728__length1 = 0;
+			dbus_message_iter_recurse (&_tmp715_, &_tmp729_);
+			for (; dbus_message_iter_get_arg_type (&_tmp729_); _tmp728__length1++) {
+				const char* _tmp730_;
+				if (_tmp728__size == _tmp728__length) {
+					_tmp728__size = 2 * _tmp728__size;
+					_tmp728_ = g_renew (const char*, _tmp728_, _tmp728__size + 1);
+				}
+				dbus_message_iter_get_basic (&_tmp729_, &_tmp730_);
+				dbus_message_iter_next (&_tmp729_);
+				_tmp728_[_tmp728__length++] = g_strdup (_tmp730_);
+			}
+			_tmp728_[_tmp728__length] = NULL;
+			g_value_init (&_tmp714_, G_TYPE_STRV);
+			g_value_take_boxed (&_tmp714_, _tmp728_);
 		}
-		dbus_message_iter_next (&_tmp372_);
-		_value = g_memdup (&_tmp374_, sizeof (GValue));
-		g_hash_table_insert (_tmp370_, _key, _value);
-		dbus_message_iter_next (&_tmp371_);
+		dbus_message_iter_next (&_tmp712_);
+		_value = g_memdup (&_tmp714_, sizeof (GValue));
+		g_hash_table_insert (_tmp710_, _key, _value);
+		dbus_message_iter_next (&_tmp711_);
 	}
 	dbus_message_iter_next (&_iter);
-	_result = _tmp370_;
+	_result = _tmp710_;
 	dbus_message_unref (_reply);
 	return _result;
 }
@@ -6741,25 +9218,6 @@ static void _vala_array_destroy (gpointer array, gint array_length, GDestroyNoti
 static void _vala_array_free (gpointer array, gint array_length, GDestroyNotify destroy_func) {
 	_vala_array_destroy (array, array_length, destroy_func);
 	g_free (array);
-}
-
-
-static void _vala_dbus_register_object (DBusConnection* connection, const char* path, void* object) {
-	const _DBusObjectVTable * vtable;
-	vtable = g_type_get_qdata (G_TYPE_FROM_INSTANCE (object), g_quark_from_static_string ("DBusObjectVTable"));
-	if (vtable) {
-		vtable->register_object (connection, path, object);
-	} else {
-		g_warning ("Object does not implement any D-Bus interface");
-	}
-}
-
-
-static void _vala_dbus_unregister_object (gpointer connection, GObject* object) {
-	char* path;
-	path = g_object_steal_data ((GObject*) object, "dbus_object_path");
-	dbus_connection_unregister_object_path (connection, path);
-	g_free (path);
 }
 
 

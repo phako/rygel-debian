@@ -28,12 +28,12 @@
 #include <glib/gi18n-lib.h>
 
 
-#define RYGEL_TYPE_MEDIA_EXPORT_RECURSIVE_FILE_MONITOR (rygel_media_export_recursive_file_monitor_get_type ())
-#define RYGEL_MEDIA_EXPORT_RECURSIVE_FILE_MONITOR(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_MEDIA_EXPORT_RECURSIVE_FILE_MONITOR, RygelMediaExportRecursiveFileMonitor))
-#define RYGEL_MEDIA_EXPORT_RECURSIVE_FILE_MONITOR_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TYPE_MEDIA_EXPORT_RECURSIVE_FILE_MONITOR, RygelMediaExportRecursiveFileMonitorClass))
-#define RYGEL_IS_MEDIA_EXPORT_RECURSIVE_FILE_MONITOR(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TYPE_MEDIA_EXPORT_RECURSIVE_FILE_MONITOR))
-#define RYGEL_IS_MEDIA_EXPORT_RECURSIVE_FILE_MONITOR_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_TYPE_MEDIA_EXPORT_RECURSIVE_FILE_MONITOR))
-#define RYGEL_MEDIA_EXPORT_RECURSIVE_FILE_MONITOR_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_TYPE_MEDIA_EXPORT_RECURSIVE_FILE_MONITOR, RygelMediaExportRecursiveFileMonitorClass))
+#define RYGEL_MEDIA_EXPORT_TYPE_RECURSIVE_FILE_MONITOR (rygel_media_export_recursive_file_monitor_get_type ())
+#define RYGEL_MEDIA_EXPORT_RECURSIVE_FILE_MONITOR(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_MEDIA_EXPORT_TYPE_RECURSIVE_FILE_MONITOR, RygelMediaExportRecursiveFileMonitor))
+#define RYGEL_MEDIA_EXPORT_RECURSIVE_FILE_MONITOR_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_MEDIA_EXPORT_TYPE_RECURSIVE_FILE_MONITOR, RygelMediaExportRecursiveFileMonitorClass))
+#define RYGEL_MEDIA_EXPORT_IS_RECURSIVE_FILE_MONITOR(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_MEDIA_EXPORT_TYPE_RECURSIVE_FILE_MONITOR))
+#define RYGEL_MEDIA_EXPORT_IS_RECURSIVE_FILE_MONITOR_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_MEDIA_EXPORT_TYPE_RECURSIVE_FILE_MONITOR))
+#define RYGEL_MEDIA_EXPORT_RECURSIVE_FILE_MONITOR_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_MEDIA_EXPORT_TYPE_RECURSIVE_FILE_MONITOR, RygelMediaExportRecursiveFileMonitorClass))
 
 typedef struct _RygelMediaExportRecursiveFileMonitor RygelMediaExportRecursiveFileMonitor;
 typedef struct _RygelMediaExportRecursiveFileMonitorClass RygelMediaExportRecursiveFileMonitorClass;
@@ -74,7 +74,7 @@ struct _RygelMediaExportRecursiveFileMonitorMonitorData {
 static gpointer rygel_media_export_recursive_file_monitor_parent_class = NULL;
 
 GType rygel_media_export_recursive_file_monitor_get_type (void);
-#define RYGEL_MEDIA_EXPORT_RECURSIVE_FILE_MONITOR_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), RYGEL_TYPE_MEDIA_EXPORT_RECURSIVE_FILE_MONITOR, RygelMediaExportRecursiveFileMonitorPrivate))
+#define RYGEL_MEDIA_EXPORT_RECURSIVE_FILE_MONITOR_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), RYGEL_MEDIA_EXPORT_TYPE_RECURSIVE_FILE_MONITOR, RygelMediaExportRecursiveFileMonitorPrivate))
 enum  {
 	RYGEL_MEDIA_EXPORT_RECURSIVE_FILE_MONITOR_DUMMY_PROPERTY
 };
@@ -118,7 +118,7 @@ RygelMediaExportRecursiveFileMonitor* rygel_media_export_recursive_file_monitor_
 #line 29 "rygel-media-export-recursive-file-monitor.vala"
 RygelMediaExportRecursiveFileMonitor* rygel_media_export_recursive_file_monitor_new (GCancellable* cancellable) {
 #line 29 "rygel-media-export-recursive-file-monitor.vala"
-	return rygel_media_export_recursive_file_monitor_construct (RYGEL_TYPE_MEDIA_EXPORT_RECURSIVE_FILE_MONITOR, cancellable);
+	return rygel_media_export_recursive_file_monitor_construct (RYGEL_MEDIA_EXPORT_TYPE_RECURSIVE_FILE_MONITOR, cancellable);
 #line 123 "rygel-media-export-recursive-file-monitor.c"
 }
 
@@ -240,7 +240,7 @@ static gboolean rygel_media_export_recursive_file_monitor_monitor_co (RygelMedia
 			_state_4:
 			data->info = g_file_query_info_finish (data->file, data->_res_, &data->_inner_error_);
 			if (data->_inner_error_ != NULL) {
-				goto __catch31_g_error;
+				goto __catch30_g_error;
 			}
 #line 67 "rygel-media-export-recursive-file-monitor.vala"
 			if (g_file_info_get_file_type (data->info) == G_FILE_TYPE_DIRECTORY) {
@@ -248,7 +248,7 @@ static gboolean rygel_media_export_recursive_file_monitor_monitor_co (RygelMedia
 				data->file_monitor = g_file_monitor_directory (data->file, G_FILE_MONITOR_NONE, data->self->priv->cancellable, &data->_inner_error_);
 				if (data->_inner_error_ != NULL) {
 					_g_object_unref0 (data->info);
-					goto __catch31_g_error;
+					goto __catch30_g_error;
 				}
 #line 71 "rygel-media-export-recursive-file-monitor.vala"
 				gee_abstract_map_set ((GeeAbstractMap*) data->self->priv->monitors, data->file, data->file_monitor);
@@ -259,8 +259,8 @@ static gboolean rygel_media_export_recursive_file_monitor_monitor_co (RygelMedia
 			}
 			_g_object_unref0 (data->info);
 		}
-		goto __finally31;
-		__catch31_g_error:
+		goto __finally30;
+		__catch30_g_error:
 		{
 			data->err = data->_inner_error_;
 			data->_inner_error_ = NULL;
@@ -272,7 +272,7 @@ static gboolean rygel_media_export_recursive_file_monitor_monitor_co (RygelMedia
 				_g_error_free0 (data->err);
 			}
 		}
-		__finally31:
+		__finally30:
 		if (data->_inner_error_ != NULL) {
 			g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, data->_inner_error_->message, g_quark_to_string (data->_inner_error_->domain), data->_inner_error_->code);
 			g_clear_error (&data->_inner_error_);
@@ -333,7 +333,7 @@ static void rygel_media_export_recursive_file_monitor_class_init (RygelMediaExpo
 	rygel_media_export_recursive_file_monitor_parent_class = g_type_class_peek_parent (klass);
 	g_type_class_add_private (klass, sizeof (RygelMediaExportRecursiveFileMonitorPrivate));
 	G_OBJECT_CLASS (klass)->finalize = rygel_media_export_recursive_file_monitor_finalize;
-	g_signal_new ("changed", RYGEL_TYPE_MEDIA_EXPORT_RECURSIVE_FILE_MONITOR, G_SIGNAL_RUN_LAST, 0, NULL, NULL, g_cclosure_user_marshal_VOID__OBJECT_OBJECT_ENUM, G_TYPE_NONE, 3, G_TYPE_FILE, G_TYPE_FILE, G_TYPE_FILE_MONITOR_EVENT);
+	g_signal_new ("changed", RYGEL_MEDIA_EXPORT_TYPE_RECURSIVE_FILE_MONITOR, G_SIGNAL_RUN_LAST, 0, NULL, NULL, g_cclosure_user_marshal_VOID__OBJECT_OBJECT_ENUM, G_TYPE_NONE, 3, G_TYPE_FILE, G_TYPE_FILE, G_TYPE_FILE_MONITOR_EVENT);
 }
 
 

@@ -188,43 +188,43 @@ static gpointer _g_object_ref0 (gpointer self) {
 }
 
 
-#line 98 "rygel-cmdline-config.vala"
+#line 97 "rygel-cmdline-config.vala"
 RygelCmdlineConfig* rygel_cmdline_config_get_default (void) {
 #line 194 "rygel-cmdline-config.c"
 	RygelCmdlineConfig* result = NULL;
-#line 99 "rygel-cmdline-config.vala"
+#line 98 "rygel-cmdline-config.vala"
 	if (rygel_cmdline_config_config == NULL) {
 #line 198 "rygel-cmdline-config.c"
 		RygelCmdlineConfig* _tmp0_;
-#line 100 "rygel-cmdline-config.vala"
+#line 99 "rygel-cmdline-config.vala"
 		rygel_cmdline_config_config = (_tmp0_ = rygel_cmdline_config_new (), _g_object_unref0 (rygel_cmdline_config_config), _tmp0_);
 #line 202 "rygel-cmdline-config.c"
 	}
 	result = _g_object_ref0 (rygel_cmdline_config_config);
-#line 103 "rygel-cmdline-config.vala"
+#line 102 "rygel-cmdline-config.vala"
 	return result;
 #line 207 "rygel-cmdline-config.c"
 }
 
 
-#line 106 "rygel-cmdline-config.vala"
+#line 105 "rygel-cmdline-config.vala"
 void rygel_cmdline_config_parse_args (char*** args, int* args_length1, GError** error) {
 #line 213 "rygel-cmdline-config.c"
 	GError * _inner_error_;
 	char* parameter_string;
 	GOptionContext* opt_context;
 	_inner_error_ = NULL;
-#line 109 "rygel-cmdline-config.vala"
+#line 108 "rygel-cmdline-config.vala"
 	parameter_string = g_strdup ("- " PACKAGE_NAME);
-#line 110 "rygel-cmdline-config.vala"
+#line 109 "rygel-cmdline-config.vala"
 	opt_context = g_option_context_new (parameter_string);
-#line 111 "rygel-cmdline-config.vala"
+#line 110 "rygel-cmdline-config.vala"
 	g_option_context_set_help_enabled (opt_context, TRUE);
-#line 112 "rygel-cmdline-config.vala"
+#line 111 "rygel-cmdline-config.vala"
 	g_option_context_add_main_entries (opt_context, RYGEL_CMDLINE_CONFIG_options, NULL);
-#line 113 "rygel-cmdline-config.vala"
+#line 112 "rygel-cmdline-config.vala"
 	g_option_context_add_group (opt_context, gst_init_get_option_group ());
-#line 114 "rygel-cmdline-config.vala"
+#line 113 "rygel-cmdline-config.vala"
 	g_option_context_parse (opt_context, args_length1, args, &_inner_error_);
 #line 230 "rygel-cmdline-config.c"
 	if (_inner_error_ != NULL) {
@@ -241,9 +241,9 @@ void rygel_cmdline_config_parse_args (char*** args, int* args_length1, GError** 
 			return;
 		}
 	}
-#line 116 "rygel-cmdline-config.vala"
+#line 115 "rygel-cmdline-config.vala"
 	if (rygel_cmdline_config_version) {
-#line 117 "rygel-cmdline-config.vala"
+#line 116 "rygel-cmdline-config.vala"
 		fprintf (stdout, "%s\n", PACKAGE_STRING);
 #line 249 "rygel-cmdline-config.c"
 		_inner_error_ = g_error_new_literal (RYGEL_CMDLINE_CONFIG_ERROR, RYGEL_CMDLINE_CONFIG_ERROR_VERSION_ONLY, "");
@@ -267,7 +267,7 @@ void rygel_cmdline_config_parse_args (char*** args, int* args_length1, GError** 
 }
 
 
-#line 123 "rygel-cmdline-config.vala"
+#line 122 "rygel-cmdline-config.vala"
 static gboolean rygel_cmdline_config_real_get_upnp_enabled (RygelConfiguration* base, GError** error) {
 #line 273 "rygel-cmdline-config.c"
 	RygelCmdlineConfig * self;
@@ -280,20 +280,21 @@ static gboolean rygel_cmdline_config_real_get_upnp_enabled (RygelConfiguration* 
 		g_propagate_error (error, _inner_error_);
 		return FALSE;
 	}
+	return result;
 }
 
 
-#line 127 "rygel-cmdline-config.vala"
+#line 126 "rygel-cmdline-config.vala"
 static char* rygel_cmdline_config_real_get_interface (RygelConfiguration* base, GError** error) {
-#line 289 "rygel-cmdline-config.c"
+#line 290 "rygel-cmdline-config.c"
 	RygelCmdlineConfig * self;
 	char* result = NULL;
 	GError * _inner_error_;
 	self = (RygelCmdlineConfig*) base;
 	_inner_error_ = NULL;
-#line 128 "rygel-cmdline-config.vala"
+#line 127 "rygel-cmdline-config.vala"
 	if (rygel_cmdline_config_iface == NULL) {
-#line 297 "rygel-cmdline-config.c"
+#line 298 "rygel-cmdline-config.c"
 		_inner_error_ = g_error_new_literal (RYGEL_CONFIGURATION_ERROR, RYGEL_CONFIGURATION_ERROR_NO_VALUE_SET, _ ("No value available"));
 		{
 			g_propagate_error (error, _inner_error_);
@@ -301,23 +302,23 @@ static char* rygel_cmdline_config_real_get_interface (RygelConfiguration* base, 
 		}
 	}
 	result = g_strdup (rygel_cmdline_config_iface);
-#line 132 "rygel-cmdline-config.vala"
+#line 131 "rygel-cmdline-config.vala"
 	return result;
-#line 307 "rygel-cmdline-config.c"
+#line 308 "rygel-cmdline-config.c"
 }
 
 
-#line 135 "rygel-cmdline-config.vala"
+#line 134 "rygel-cmdline-config.vala"
 static gint rygel_cmdline_config_real_get_port (RygelConfiguration* base, GError** error) {
-#line 313 "rygel-cmdline-config.c"
+#line 314 "rygel-cmdline-config.c"
 	RygelCmdlineConfig * self;
 	gint result = 0;
 	GError * _inner_error_;
 	self = (RygelCmdlineConfig*) base;
 	_inner_error_ = NULL;
-#line 136 "rygel-cmdline-config.vala"
+#line 135 "rygel-cmdline-config.vala"
 	if (rygel_cmdline_config_port <= 0) {
-#line 321 "rygel-cmdline-config.c"
+#line 322 "rygel-cmdline-config.c"
 		_inner_error_ = g_error_new_literal (RYGEL_CONFIGURATION_ERROR, RYGEL_CONFIGURATION_ERROR_NO_VALUE_SET, _ ("No value available"));
 		{
 			g_propagate_error (error, _inner_error_);
@@ -325,23 +326,23 @@ static gint rygel_cmdline_config_real_get_port (RygelConfiguration* base, GError
 		}
 	}
 	result = rygel_cmdline_config_port;
-#line 140 "rygel-cmdline-config.vala"
+#line 139 "rygel-cmdline-config.vala"
 	return result;
-#line 331 "rygel-cmdline-config.c"
+#line 332 "rygel-cmdline-config.c"
 }
 
 
-#line 143 "rygel-cmdline-config.vala"
+#line 142 "rygel-cmdline-config.vala"
 static gboolean rygel_cmdline_config_real_get_transcoding (RygelConfiguration* base, GError** error) {
-#line 337 "rygel-cmdline-config.c"
+#line 338 "rygel-cmdline-config.c"
 	RygelCmdlineConfig * self;
 	gboolean result = FALSE;
 	GError * _inner_error_;
 	self = (RygelCmdlineConfig*) base;
 	_inner_error_ = NULL;
-#line 144 "rygel-cmdline-config.vala"
+#line 143 "rygel-cmdline-config.vala"
 	if (!rygel_cmdline_config_no_transcoding) {
-#line 345 "rygel-cmdline-config.c"
+#line 346 "rygel-cmdline-config.c"
 		_inner_error_ = g_error_new_literal (RYGEL_CONFIGURATION_ERROR, RYGEL_CONFIGURATION_ERROR_NO_VALUE_SET, _ ("No value available"));
 		{
 			g_propagate_error (error, _inner_error_);
@@ -349,24 +350,24 @@ static gboolean rygel_cmdline_config_real_get_transcoding (RygelConfiguration* b
 		}
 	} else {
 		result = FALSE;
-#line 147 "rygel-cmdline-config.vala"
+#line 146 "rygel-cmdline-config.vala"
 		return result;
-#line 355 "rygel-cmdline-config.c"
+#line 356 "rygel-cmdline-config.c"
 	}
 }
 
 
-#line 151 "rygel-cmdline-config.vala"
+#line 150 "rygel-cmdline-config.vala"
 static gboolean rygel_cmdline_config_real_get_mp3_transcoder (RygelConfiguration* base, GError** error) {
-#line 362 "rygel-cmdline-config.c"
+#line 363 "rygel-cmdline-config.c"
 	RygelCmdlineConfig * self;
 	gboolean result = FALSE;
 	GError * _inner_error_;
 	self = (RygelCmdlineConfig*) base;
 	_inner_error_ = NULL;
-#line 152 "rygel-cmdline-config.vala"
+#line 151 "rygel-cmdline-config.vala"
 	if (!rygel_cmdline_config_no_mp3_trans) {
-#line 370 "rygel-cmdline-config.c"
+#line 371 "rygel-cmdline-config.c"
 		_inner_error_ = g_error_new_literal (RYGEL_CONFIGURATION_ERROR, RYGEL_CONFIGURATION_ERROR_NO_VALUE_SET, _ ("No value available"));
 		{
 			g_propagate_error (error, _inner_error_);
@@ -374,24 +375,24 @@ static gboolean rygel_cmdline_config_real_get_mp3_transcoder (RygelConfiguration
 		}
 	} else {
 		result = FALSE;
-#line 155 "rygel-cmdline-config.vala"
+#line 154 "rygel-cmdline-config.vala"
 		return result;
-#line 380 "rygel-cmdline-config.c"
+#line 381 "rygel-cmdline-config.c"
 	}
 }
 
 
-#line 159 "rygel-cmdline-config.vala"
+#line 158 "rygel-cmdline-config.vala"
 static gboolean rygel_cmdline_config_real_get_mp2ts_transcoder (RygelConfiguration* base, GError** error) {
-#line 387 "rygel-cmdline-config.c"
+#line 388 "rygel-cmdline-config.c"
 	RygelCmdlineConfig * self;
 	gboolean result = FALSE;
 	GError * _inner_error_;
 	self = (RygelCmdlineConfig*) base;
 	_inner_error_ = NULL;
-#line 160 "rygel-cmdline-config.vala"
+#line 159 "rygel-cmdline-config.vala"
 	if (!rygel_cmdline_config_no_mp2ts_trans) {
-#line 395 "rygel-cmdline-config.c"
+#line 396 "rygel-cmdline-config.c"
 		_inner_error_ = g_error_new_literal (RYGEL_CONFIGURATION_ERROR, RYGEL_CONFIGURATION_ERROR_NO_VALUE_SET, _ ("No value available"));
 		{
 			g_propagate_error (error, _inner_error_);
@@ -399,24 +400,24 @@ static gboolean rygel_cmdline_config_real_get_mp2ts_transcoder (RygelConfigurati
 		}
 	} else {
 		result = FALSE;
-#line 163 "rygel-cmdline-config.vala"
+#line 162 "rygel-cmdline-config.vala"
 		return result;
-#line 405 "rygel-cmdline-config.c"
+#line 406 "rygel-cmdline-config.c"
 	}
 }
 
 
-#line 167 "rygel-cmdline-config.vala"
+#line 166 "rygel-cmdline-config.vala"
 static gboolean rygel_cmdline_config_real_get_lpcm_transcoder (RygelConfiguration* base, GError** error) {
-#line 412 "rygel-cmdline-config.c"
+#line 413 "rygel-cmdline-config.c"
 	RygelCmdlineConfig * self;
 	gboolean result = FALSE;
 	GError * _inner_error_;
 	self = (RygelCmdlineConfig*) base;
 	_inner_error_ = NULL;
-#line 168 "rygel-cmdline-config.vala"
+#line 167 "rygel-cmdline-config.vala"
 	if (!rygel_cmdline_config_no_lpcm_trans) {
-#line 420 "rygel-cmdline-config.c"
+#line 421 "rygel-cmdline-config.c"
 		_inner_error_ = g_error_new_literal (RYGEL_CONFIGURATION_ERROR, RYGEL_CONFIGURATION_ERROR_NO_VALUE_SET, _ ("No value available"));
 		{
 			g_propagate_error (error, _inner_error_);
@@ -424,37 +425,49 @@ static gboolean rygel_cmdline_config_real_get_lpcm_transcoder (RygelConfiguratio
 		}
 	} else {
 		result = FALSE;
-#line 171 "rygel-cmdline-config.vala"
+#line 170 "rygel-cmdline-config.vala"
 		return result;
-#line 430 "rygel-cmdline-config.c"
+#line 431 "rygel-cmdline-config.c"
 	}
 }
 
 
-#line 175 "rygel-cmdline-config.vala"
+#line 174 "rygel-cmdline-config.vala"
 static gboolean rygel_cmdline_config_real_get_wmv_transcoder (RygelConfiguration* base, GError** error) {
-#line 437 "rygel-cmdline-config.c"
+#line 438 "rygel-cmdline-config.c"
 	RygelCmdlineConfig * self;
 	gboolean result = FALSE;
+	GError * _inner_error_;
 	self = (RygelCmdlineConfig*) base;
-	result = !rygel_cmdline_config_no_wmv_trans;
-#line 176 "rygel-cmdline-config.vala"
-	return result;
-#line 444 "rygel-cmdline-config.c"
+	_inner_error_ = NULL;
+#line 175 "rygel-cmdline-config.vala"
+	if (!rygel_cmdline_config_no_wmv_trans) {
+#line 446 "rygel-cmdline-config.c"
+		_inner_error_ = g_error_new_literal (RYGEL_CONFIGURATION_ERROR, RYGEL_CONFIGURATION_ERROR_NO_VALUE_SET, _ ("No value available"));
+		{
+			g_propagate_error (error, _inner_error_);
+			return FALSE;
+		}
+	} else {
+		result = FALSE;
+#line 178 "rygel-cmdline-config.vala"
+		return result;
+#line 456 "rygel-cmdline-config.c"
+	}
 }
 
 
-#line 179 "rygel-cmdline-config.vala"
+#line 182 "rygel-cmdline-config.vala"
 static RygelLogLevel rygel_cmdline_config_real_get_log_level (RygelConfiguration* base, GError** error) {
-#line 450 "rygel-cmdline-config.c"
+#line 463 "rygel-cmdline-config.c"
 	RygelCmdlineConfig * self;
 	RygelLogLevel result = 0;
 	GError * _inner_error_;
 	self = (RygelCmdlineConfig*) base;
 	_inner_error_ = NULL;
-#line 180 "rygel-cmdline-config.vala"
+#line 183 "rygel-cmdline-config.vala"
 	if (rygel_cmdline_config_log_level == RYGEL_LOG_LEVEL_INVALID) {
-#line 458 "rygel-cmdline-config.c"
+#line 471 "rygel-cmdline-config.c"
 		_inner_error_ = g_error_new_literal (RYGEL_CONFIGURATION_ERROR, RYGEL_CONFIGURATION_ERROR_NO_VALUE_SET, _ ("No value available"));
 		{
 			g_propagate_error (error, _inner_error_);
@@ -462,23 +475,23 @@ static RygelLogLevel rygel_cmdline_config_real_get_log_level (RygelConfiguration
 		}
 	}
 	result = rygel_cmdline_config_log_level;
-#line 184 "rygel-cmdline-config.vala"
+#line 187 "rygel-cmdline-config.vala"
 	return result;
-#line 468 "rygel-cmdline-config.c"
+#line 481 "rygel-cmdline-config.c"
 }
 
 
-#line 187 "rygel-cmdline-config.vala"
+#line 190 "rygel-cmdline-config.vala"
 static char* rygel_cmdline_config_real_get_plugin_path (RygelConfiguration* base, GError** error) {
-#line 474 "rygel-cmdline-config.c"
+#line 487 "rygel-cmdline-config.c"
 	RygelCmdlineConfig * self;
 	char* result = NULL;
 	GError * _inner_error_;
 	self = (RygelCmdlineConfig*) base;
 	_inner_error_ = NULL;
-#line 188 "rygel-cmdline-config.vala"
+#line 191 "rygel-cmdline-config.vala"
 	if (rygel_cmdline_config_plugin_path == NULL) {
-#line 482 "rygel-cmdline-config.c"
+#line 495 "rygel-cmdline-config.c"
 		_inner_error_ = g_error_new_literal (RYGEL_CONFIGURATION_ERROR, RYGEL_CONFIGURATION_ERROR_NO_VALUE_SET, "No value available");
 		{
 			g_propagate_error (error, _inner_error_);
@@ -486,60 +499,60 @@ static char* rygel_cmdline_config_real_get_plugin_path (RygelConfiguration* base
 		}
 	}
 	result = g_strdup (rygel_cmdline_config_plugin_path);
-#line 192 "rygel-cmdline-config.vala"
+#line 195 "rygel-cmdline-config.vala"
 	return result;
-#line 492 "rygel-cmdline-config.c"
+#line 505 "rygel-cmdline-config.c"
 }
 
 
-#line 195 "rygel-cmdline-config.vala"
+#line 198 "rygel-cmdline-config.vala"
 static gboolean rygel_cmdline_config_real_get_enabled (RygelConfiguration* base, const char* section, GError** error) {
-#line 498 "rygel-cmdline-config.c"
+#line 511 "rygel-cmdline-config.c"
 	RygelCmdlineConfig * self;
 	gboolean result = FALSE;
 	GError * _inner_error_;
 	gboolean disabled;
 	self = (RygelCmdlineConfig*) base;
-#line 195 "rygel-cmdline-config.vala"
+#line 198 "rygel-cmdline-config.vala"
 	g_return_val_if_fail (section != NULL, FALSE);
-#line 506 "rygel-cmdline-config.c"
+#line 519 "rygel-cmdline-config.c"
 	_inner_error_ = NULL;
-#line 196 "rygel-cmdline-config.vala"
+#line 199 "rygel-cmdline-config.vala"
 	disabled = FALSE;
-#line 510 "rygel-cmdline-config.c"
+#line 523 "rygel-cmdline-config.c"
 	{
 		char** plugin_collection;
 		int plugin_collection_length1;
 		int plugin_it;
-#line 197 "rygel-cmdline-config.vala"
+#line 200 "rygel-cmdline-config.vala"
 		plugin_collection = rygel_cmdline_config_disabled_plugins;
-#line 517 "rygel-cmdline-config.c"
+#line 530 "rygel-cmdline-config.c"
 		plugin_collection_length1 = _vala_array_length (rygel_cmdline_config_disabled_plugins);
 		for (plugin_it = 0; plugin_it < _vala_array_length (rygel_cmdline_config_disabled_plugins); plugin_it = plugin_it + 1) {
 			char* plugin;
 			plugin = g_strdup (plugin_collection[plugin_it]);
 			{
-#line 198 "rygel-cmdline-config.vala"
+#line 201 "rygel-cmdline-config.vala"
 				if (_vala_strcmp0 (plugin, section) == 0) {
-#line 199 "rygel-cmdline-config.vala"
+#line 202 "rygel-cmdline-config.vala"
 					disabled = TRUE;
-#line 527 "rygel-cmdline-config.c"
+#line 540 "rygel-cmdline-config.c"
 					_g_free0 (plugin);
-#line 200 "rygel-cmdline-config.vala"
+#line 203 "rygel-cmdline-config.vala"
 					break;
-#line 531 "rygel-cmdline-config.c"
+#line 544 "rygel-cmdline-config.c"
 				}
 				_g_free0 (plugin);
 			}
 		}
 	}
-#line 204 "rygel-cmdline-config.vala"
+#line 207 "rygel-cmdline-config.vala"
 	if (disabled) {
-#line 539 "rygel-cmdline-config.c"
+#line 552 "rygel-cmdline-config.c"
 		result = FALSE;
-#line 205 "rygel-cmdline-config.vala"
+#line 208 "rygel-cmdline-config.vala"
 		return result;
-#line 543 "rygel-cmdline-config.c"
+#line 556 "rygel-cmdline-config.c"
 	} else {
 		_inner_error_ = g_error_new_literal (RYGEL_CONFIGURATION_ERROR, RYGEL_CONFIGURATION_ERROR_NO_VALUE_SET, _ ("No value available"));
 		{
@@ -550,28 +563,28 @@ static gboolean rygel_cmdline_config_real_get_enabled (RygelConfiguration* base,
 }
 
 
-#line 211 "rygel-cmdline-config.vala"
+#line 214 "rygel-cmdline-config.vala"
 static char* rygel_cmdline_config_real_get_title (RygelConfiguration* base, const char* section, GError** error) {
-#line 556 "rygel-cmdline-config.c"
+#line 569 "rygel-cmdline-config.c"
 	RygelCmdlineConfig * self;
 	char* result = NULL;
 	GError * _inner_error_;
 	char* title;
 	self = (RygelCmdlineConfig*) base;
-#line 211 "rygel-cmdline-config.vala"
+#line 214 "rygel-cmdline-config.vala"
 	g_return_val_if_fail (section != NULL, NULL);
-#line 564 "rygel-cmdline-config.c"
+#line 577 "rygel-cmdline-config.c"
 	_inner_error_ = NULL;
-#line 212 "rygel-cmdline-config.vala"
+#line 215 "rygel-cmdline-config.vala"
 	title = NULL;
-#line 568 "rygel-cmdline-config.c"
+#line 581 "rygel-cmdline-config.c"
 	{
 		char** plugin_title_collection;
 		int plugin_title_collection_length1;
 		int plugin_title_it;
-#line 213 "rygel-cmdline-config.vala"
+#line 216 "rygel-cmdline-config.vala"
 		plugin_title_collection = rygel_cmdline_config_plugin_titles;
-#line 575 "rygel-cmdline-config.c"
+#line 588 "rygel-cmdline-config.c"
 		plugin_title_collection_length1 = _vala_array_length (rygel_cmdline_config_plugin_titles);
 		for (plugin_title_it = 0; plugin_title_it < _vala_array_length (rygel_cmdline_config_plugin_titles); plugin_title_it = plugin_title_it + 1) {
 			char* plugin_title;
@@ -585,51 +598,51 @@ static char* rygel_cmdline_config_real_get_title (RygelConfiguration* base, cons
 				gboolean _tmp2_ = FALSE;
 				gboolean _tmp3_ = FALSE;
 				tokens = (_tmp1_ = _tmp0_ = g_strsplit (plugin_title, ":", 2), tokens_length1 = _vala_array_length (_tmp0_), _tokens_size_ = tokens_length1, _tmp1_);
-#line 215 "rygel-cmdline-config.vala"
-				if (tokens[0] != NULL) {
-#line 216 "rygel-cmdline-config.vala"
-					_tmp3_ = tokens[1] != NULL;
-#line 593 "rygel-cmdline-config.c"
-				} else {
-#line 215 "rygel-cmdline-config.vala"
-					_tmp3_ = FALSE;
-#line 597 "rygel-cmdline-config.c"
-				}
-#line 215 "rygel-cmdline-config.vala"
-				if (_tmp3_) {
-#line 217 "rygel-cmdline-config.vala"
-					_tmp2_ = _vala_strcmp0 (tokens[0], section) == 0;
-#line 603 "rygel-cmdline-config.c"
-				} else {
-#line 215 "rygel-cmdline-config.vala"
-					_tmp2_ = FALSE;
-#line 607 "rygel-cmdline-config.c"
-				}
-#line 215 "rygel-cmdline-config.vala"
-				if (_tmp2_) {
-#line 611 "rygel-cmdline-config.c"
-					char* _tmp4_;
 #line 218 "rygel-cmdline-config.vala"
+				if (tokens[0] != NULL) {
+#line 219 "rygel-cmdline-config.vala"
+					_tmp3_ = tokens[1] != NULL;
+#line 606 "rygel-cmdline-config.c"
+				} else {
+#line 218 "rygel-cmdline-config.vala"
+					_tmp3_ = FALSE;
+#line 610 "rygel-cmdline-config.c"
+				}
+#line 218 "rygel-cmdline-config.vala"
+				if (_tmp3_) {
+#line 220 "rygel-cmdline-config.vala"
+					_tmp2_ = _vala_strcmp0 (tokens[0], section) == 0;
+#line 616 "rygel-cmdline-config.c"
+				} else {
+#line 218 "rygel-cmdline-config.vala"
+					_tmp2_ = FALSE;
+#line 620 "rygel-cmdline-config.c"
+				}
+#line 218 "rygel-cmdline-config.vala"
+				if (_tmp2_) {
+#line 624 "rygel-cmdline-config.c"
+					char* _tmp4_;
+#line 221 "rygel-cmdline-config.vala"
 					title = (_tmp4_ = g_strdup (tokens[1]), _g_free0 (title), _tmp4_);
-#line 615 "rygel-cmdline-config.c"
+#line 628 "rygel-cmdline-config.c"
 					_g_free0 (plugin_title);
 					tokens = (_vala_array_free (tokens, tokens_length1, (GDestroyNotify) g_free), NULL);
-#line 219 "rygel-cmdline-config.vala"
+#line 222 "rygel-cmdline-config.vala"
 					break;
-#line 620 "rygel-cmdline-config.c"
+#line 633 "rygel-cmdline-config.c"
 				}
 				_g_free0 (plugin_title);
 				tokens = (_vala_array_free (tokens, tokens_length1, (GDestroyNotify) g_free), NULL);
 			}
 		}
 	}
-#line 223 "rygel-cmdline-config.vala"
+#line 226 "rygel-cmdline-config.vala"
 	if (title != NULL) {
-#line 629 "rygel-cmdline-config.c"
+#line 642 "rygel-cmdline-config.c"
 		result = title;
-#line 224 "rygel-cmdline-config.vala"
+#line 227 "rygel-cmdline-config.vala"
 		return result;
-#line 633 "rygel-cmdline-config.c"
+#line 646 "rygel-cmdline-config.c"
 	} else {
 		_inner_error_ = g_error_new_literal (RYGEL_CONFIGURATION_ERROR, RYGEL_CONFIGURATION_ERROR_NO_VALUE_SET, _ ("No value available"));
 		{
@@ -642,30 +655,30 @@ static char* rygel_cmdline_config_real_get_title (RygelConfiguration* base, cons
 }
 
 
-#line 232 "rygel-cmdline-config.vala"
+#line 235 "rygel-cmdline-config.vala"
 static char* rygel_cmdline_config_real_get_string (RygelConfiguration* base, const char* section, const char* key, GError** error) {
-#line 648 "rygel-cmdline-config.c"
+#line 661 "rygel-cmdline-config.c"
 	RygelCmdlineConfig * self;
 	char* result = NULL;
 	GError * _inner_error_;
 	char* value;
 	self = (RygelCmdlineConfig*) base;
-#line 232 "rygel-cmdline-config.vala"
+#line 235 "rygel-cmdline-config.vala"
 	g_return_val_if_fail (section != NULL, NULL);
-#line 232 "rygel-cmdline-config.vala"
+#line 235 "rygel-cmdline-config.vala"
 	g_return_val_if_fail (key != NULL, NULL);
-#line 658 "rygel-cmdline-config.c"
+#line 671 "rygel-cmdline-config.c"
 	_inner_error_ = NULL;
-#line 234 "rygel-cmdline-config.vala"
+#line 237 "rygel-cmdline-config.vala"
 	value = NULL;
-#line 662 "rygel-cmdline-config.c"
+#line 675 "rygel-cmdline-config.c"
 	{
 		char** option_collection;
 		int option_collection_length1;
 		int option_it;
-#line 235 "rygel-cmdline-config.vala"
+#line 238 "rygel-cmdline-config.vala"
 		option_collection = rygel_cmdline_config_plugin_options;
-#line 669 "rygel-cmdline-config.c"
+#line 682 "rygel-cmdline-config.c"
 		option_collection_length1 = _vala_array_length (rygel_cmdline_config_plugin_options);
 		for (option_it = 0; option_it < _vala_array_length (rygel_cmdline_config_plugin_options); option_it = option_it + 1) {
 			char* option;
@@ -681,71 +694,71 @@ static char* rygel_cmdline_config_real_get_string (RygelConfiguration* base, con
 				gboolean _tmp4_ = FALSE;
 				gboolean _tmp5_ = FALSE;
 				tokens = (_tmp1_ = _tmp0_ = g_strsplit (option, ":", 3), tokens_length1 = _vala_array_length (_tmp0_), _tokens_size_ = tokens_length1, _tmp1_);
-#line 237 "rygel-cmdline-config.vala"
-				if (tokens[0] != NULL) {
-#line 238 "rygel-cmdline-config.vala"
-					_tmp5_ = tokens[1] != NULL;
-#line 689 "rygel-cmdline-config.c"
-				} else {
-#line 237 "rygel-cmdline-config.vala"
-					_tmp5_ = FALSE;
-#line 693 "rygel-cmdline-config.c"
-				}
-#line 237 "rygel-cmdline-config.vala"
-				if (_tmp5_) {
-#line 239 "rygel-cmdline-config.vala"
-					_tmp4_ = tokens[2] != NULL;
-#line 699 "rygel-cmdline-config.c"
-				} else {
-#line 237 "rygel-cmdline-config.vala"
-					_tmp4_ = FALSE;
-#line 703 "rygel-cmdline-config.c"
-				}
-#line 237 "rygel-cmdline-config.vala"
-				if (_tmp4_) {
 #line 240 "rygel-cmdline-config.vala"
-					_tmp3_ = _vala_strcmp0 (tokens[0], section) == 0;
-#line 709 "rygel-cmdline-config.c"
-				} else {
-#line 237 "rygel-cmdline-config.vala"
-					_tmp3_ = FALSE;
-#line 713 "rygel-cmdline-config.c"
-				}
-#line 237 "rygel-cmdline-config.vala"
-				if (_tmp3_) {
+				if (tokens[0] != NULL) {
 #line 241 "rygel-cmdline-config.vala"
-					_tmp2_ = _vala_strcmp0 (tokens[1], key) == 0;
-#line 719 "rygel-cmdline-config.c"
+					_tmp5_ = tokens[1] != NULL;
+#line 702 "rygel-cmdline-config.c"
 				} else {
-#line 237 "rygel-cmdline-config.vala"
-					_tmp2_ = FALSE;
-#line 723 "rygel-cmdline-config.c"
+#line 240 "rygel-cmdline-config.vala"
+					_tmp5_ = FALSE;
+#line 706 "rygel-cmdline-config.c"
 				}
-#line 237 "rygel-cmdline-config.vala"
-				if (_tmp2_) {
-#line 727 "rygel-cmdline-config.c"
-					char* _tmp6_;
+#line 240 "rygel-cmdline-config.vala"
+				if (_tmp5_) {
 #line 242 "rygel-cmdline-config.vala"
+					_tmp4_ = tokens[2] != NULL;
+#line 712 "rygel-cmdline-config.c"
+				} else {
+#line 240 "rygel-cmdline-config.vala"
+					_tmp4_ = FALSE;
+#line 716 "rygel-cmdline-config.c"
+				}
+#line 240 "rygel-cmdline-config.vala"
+				if (_tmp4_) {
+#line 243 "rygel-cmdline-config.vala"
+					_tmp3_ = _vala_strcmp0 (tokens[0], section) == 0;
+#line 722 "rygel-cmdline-config.c"
+				} else {
+#line 240 "rygel-cmdline-config.vala"
+					_tmp3_ = FALSE;
+#line 726 "rygel-cmdline-config.c"
+				}
+#line 240 "rygel-cmdline-config.vala"
+				if (_tmp3_) {
+#line 244 "rygel-cmdline-config.vala"
+					_tmp2_ = _vala_strcmp0 (tokens[1], key) == 0;
+#line 732 "rygel-cmdline-config.c"
+				} else {
+#line 240 "rygel-cmdline-config.vala"
+					_tmp2_ = FALSE;
+#line 736 "rygel-cmdline-config.c"
+				}
+#line 240 "rygel-cmdline-config.vala"
+				if (_tmp2_) {
+#line 740 "rygel-cmdline-config.c"
+					char* _tmp6_;
+#line 245 "rygel-cmdline-config.vala"
 					value = (_tmp6_ = g_strdup (tokens[2]), _g_free0 (value), _tmp6_);
-#line 731 "rygel-cmdline-config.c"
+#line 744 "rygel-cmdline-config.c"
 					_g_free0 (option);
 					tokens = (_vala_array_free (tokens, tokens_length1, (GDestroyNotify) g_free), NULL);
-#line 243 "rygel-cmdline-config.vala"
+#line 246 "rygel-cmdline-config.vala"
 					break;
-#line 736 "rygel-cmdline-config.c"
+#line 749 "rygel-cmdline-config.c"
 				}
 				_g_free0 (option);
 				tokens = (_vala_array_free (tokens, tokens_length1, (GDestroyNotify) g_free), NULL);
 			}
 		}
 	}
-#line 247 "rygel-cmdline-config.vala"
+#line 250 "rygel-cmdline-config.vala"
 	if (value != NULL) {
-#line 745 "rygel-cmdline-config.c"
+#line 758 "rygel-cmdline-config.c"
 		result = value;
-#line 248 "rygel-cmdline-config.vala"
+#line 251 "rygel-cmdline-config.vala"
 		return result;
-#line 749 "rygel-cmdline-config.c"
+#line 762 "rygel-cmdline-config.c"
 	} else {
 		_inner_error_ = g_error_new_literal (RYGEL_CONFIGURATION_ERROR, RYGEL_CONFIGURATION_ERROR_NO_VALUE_SET, _ ("No value available"));
 		{
@@ -758,30 +771,30 @@ static char* rygel_cmdline_config_real_get_string (RygelConfiguration* base, con
 }
 
 
-#line 254 "rygel-cmdline-config.vala"
+#line 257 "rygel-cmdline-config.vala"
 static GeeArrayList* rygel_cmdline_config_real_get_string_list (RygelConfiguration* base, const char* section, const char* key, GError** error) {
-#line 764 "rygel-cmdline-config.c"
+#line 777 "rygel-cmdline-config.c"
 	RygelCmdlineConfig * self;
 	GeeArrayList* result = NULL;
 	GError * _inner_error_;
 	GeeArrayList* value;
 	self = (RygelCmdlineConfig*) base;
-#line 254 "rygel-cmdline-config.vala"
-	g_return_val_if_fail (section != NULL, NULL);
-#line 254 "rygel-cmdline-config.vala"
-	g_return_val_if_fail (key != NULL, NULL);
-#line 774 "rygel-cmdline-config.c"
-	_inner_error_ = NULL;
 #line 257 "rygel-cmdline-config.vala"
+	g_return_val_if_fail (section != NULL, NULL);
+#line 257 "rygel-cmdline-config.vala"
+	g_return_val_if_fail (key != NULL, NULL);
+#line 787 "rygel-cmdline-config.c"
+	_inner_error_ = NULL;
+#line 260 "rygel-cmdline-config.vala"
 	value = NULL;
-#line 778 "rygel-cmdline-config.c"
+#line 791 "rygel-cmdline-config.c"
 	{
 		char** option_collection;
 		int option_collection_length1;
 		int option_it;
-#line 258 "rygel-cmdline-config.vala"
+#line 261 "rygel-cmdline-config.vala"
 		option_collection = rygel_cmdline_config_plugin_options;
-#line 785 "rygel-cmdline-config.c"
+#line 798 "rygel-cmdline-config.c"
 		option_collection_length1 = _vala_array_length (rygel_cmdline_config_plugin_options);
 		for (option_it = 0; option_it < _vala_array_length (rygel_cmdline_config_plugin_options); option_it = option_it + 1) {
 			char* option;
@@ -797,94 +810,94 @@ static GeeArrayList* rygel_cmdline_config_real_get_string_list (RygelConfigurati
 				gboolean _tmp4_ = FALSE;
 				gboolean _tmp5_ = FALSE;
 				tokens = (_tmp1_ = _tmp0_ = g_strsplit (option, ":", 3), tokens_length1 = _vala_array_length (_tmp0_), _tokens_size_ = tokens_length1, _tmp1_);
-#line 260 "rygel-cmdline-config.vala"
-				if (tokens[0] != NULL) {
-#line 261 "rygel-cmdline-config.vala"
-					_tmp5_ = tokens[1] != NULL;
-#line 805 "rygel-cmdline-config.c"
-				} else {
-#line 260 "rygel-cmdline-config.vala"
-					_tmp5_ = FALSE;
-#line 809 "rygel-cmdline-config.c"
-				}
-#line 260 "rygel-cmdline-config.vala"
-				if (_tmp5_) {
-#line 262 "rygel-cmdline-config.vala"
-					_tmp4_ = tokens[2] != NULL;
-#line 815 "rygel-cmdline-config.c"
-				} else {
-#line 260 "rygel-cmdline-config.vala"
-					_tmp4_ = FALSE;
-#line 819 "rygel-cmdline-config.c"
-				}
-#line 260 "rygel-cmdline-config.vala"
-				if (_tmp4_) {
 #line 263 "rygel-cmdline-config.vala"
-					_tmp3_ = _vala_strcmp0 (tokens[0], section) == 0;
-#line 825 "rygel-cmdline-config.c"
-				} else {
-#line 260 "rygel-cmdline-config.vala"
-					_tmp3_ = FALSE;
-#line 829 "rygel-cmdline-config.c"
-				}
-#line 260 "rygel-cmdline-config.vala"
-				if (_tmp3_) {
+				if (tokens[0] != NULL) {
 #line 264 "rygel-cmdline-config.vala"
-					_tmp2_ = _vala_strcmp0 (tokens[1], key) == 0;
-#line 835 "rygel-cmdline-config.c"
+					_tmp5_ = tokens[1] != NULL;
+#line 818 "rygel-cmdline-config.c"
 				} else {
-#line 260 "rygel-cmdline-config.vala"
-					_tmp2_ = FALSE;
-#line 839 "rygel-cmdline-config.c"
+#line 263 "rygel-cmdline-config.vala"
+					_tmp5_ = FALSE;
+#line 822 "rygel-cmdline-config.c"
 				}
-#line 260 "rygel-cmdline-config.vala"
-				if (_tmp2_) {
-#line 843 "rygel-cmdline-config.c"
-					GeeArrayList* _tmp6_;
+#line 263 "rygel-cmdline-config.vala"
+				if (_tmp5_) {
 #line 265 "rygel-cmdline-config.vala"
+					_tmp4_ = tokens[2] != NULL;
+#line 828 "rygel-cmdline-config.c"
+				} else {
+#line 263 "rygel-cmdline-config.vala"
+					_tmp4_ = FALSE;
+#line 832 "rygel-cmdline-config.c"
+				}
+#line 263 "rygel-cmdline-config.vala"
+				if (_tmp4_) {
+#line 266 "rygel-cmdline-config.vala"
+					_tmp3_ = _vala_strcmp0 (tokens[0], section) == 0;
+#line 838 "rygel-cmdline-config.c"
+				} else {
+#line 263 "rygel-cmdline-config.vala"
+					_tmp3_ = FALSE;
+#line 842 "rygel-cmdline-config.c"
+				}
+#line 263 "rygel-cmdline-config.vala"
+				if (_tmp3_) {
+#line 267 "rygel-cmdline-config.vala"
+					_tmp2_ = _vala_strcmp0 (tokens[1], key) == 0;
+#line 848 "rygel-cmdline-config.c"
+				} else {
+#line 263 "rygel-cmdline-config.vala"
+					_tmp2_ = FALSE;
+#line 852 "rygel-cmdline-config.c"
+				}
+#line 263 "rygel-cmdline-config.vala"
+				if (_tmp2_) {
+#line 856 "rygel-cmdline-config.c"
+					GeeArrayList* _tmp6_;
+#line 268 "rygel-cmdline-config.vala"
 					value = (_tmp6_ = gee_array_list_new (G_TYPE_STRING, (GBoxedCopyFunc) g_strdup, g_free, NULL), _g_object_unref0 (value), _tmp6_);
-#line 847 "rygel-cmdline-config.c"
+#line 860 "rygel-cmdline-config.c"
 					{
 						char** _tmp7_;
 						char** val_token_collection;
 						int val_token_collection_length1;
 						int val_token_it;
-#line 266 "rygel-cmdline-config.vala"
+#line 269 "rygel-cmdline-config.vala"
 						val_token_collection = _tmp7_ = g_strsplit (tokens[2], ",", -1);
-#line 855 "rygel-cmdline-config.c"
+#line 868 "rygel-cmdline-config.c"
 						val_token_collection_length1 = _vala_array_length (_tmp7_);
 						for (val_token_it = 0; val_token_it < _vala_array_length (_tmp7_); val_token_it = val_token_it + 1) {
 							char* val_token;
 							val_token = g_strdup (val_token_collection[val_token_it]);
 							{
-#line 267 "rygel-cmdline-config.vala"
+#line 270 "rygel-cmdline-config.vala"
 								gee_abstract_collection_add ((GeeAbstractCollection*) value, val_token);
-#line 863 "rygel-cmdline-config.c"
+#line 876 "rygel-cmdline-config.c"
 								_g_free0 (val_token);
 							}
 						}
-#line 266 "rygel-cmdline-config.vala"
+#line 269 "rygel-cmdline-config.vala"
 						val_token_collection = (_vala_array_free (val_token_collection, val_token_collection_length1, (GDestroyNotify) g_free), NULL);
-#line 869 "rygel-cmdline-config.c"
+#line 882 "rygel-cmdline-config.c"
 					}
 					_g_free0 (option);
 					tokens = (_vala_array_free (tokens, tokens_length1, (GDestroyNotify) g_free), NULL);
-#line 269 "rygel-cmdline-config.vala"
+#line 272 "rygel-cmdline-config.vala"
 					break;
-#line 875 "rygel-cmdline-config.c"
+#line 888 "rygel-cmdline-config.c"
 				}
 				_g_free0 (option);
 				tokens = (_vala_array_free (tokens, tokens_length1, (GDestroyNotify) g_free), NULL);
 			}
 		}
 	}
-#line 273 "rygel-cmdline-config.vala"
+#line 276 "rygel-cmdline-config.vala"
 	if (value != NULL) {
-#line 884 "rygel-cmdline-config.c"
+#line 897 "rygel-cmdline-config.c"
 		result = value;
-#line 274 "rygel-cmdline-config.vala"
+#line 277 "rygel-cmdline-config.vala"
 		return result;
-#line 888 "rygel-cmdline-config.c"
+#line 901 "rygel-cmdline-config.c"
 	} else {
 		_inner_error_ = g_error_new_literal (RYGEL_CONFIGURATION_ERROR, RYGEL_CONFIGURATION_ERROR_NO_VALUE_SET, _ ("No value available"));
 		{
@@ -897,33 +910,33 @@ static GeeArrayList* rygel_cmdline_config_real_get_string_list (RygelConfigurati
 }
 
 
-#line 280 "rygel-cmdline-config.vala"
+#line 283 "rygel-cmdline-config.vala"
 static gint rygel_cmdline_config_real_get_int (RygelConfiguration* base, const char* section, const char* key, gint min, gint max, GError** error) {
-#line 903 "rygel-cmdline-config.c"
+#line 916 "rygel-cmdline-config.c"
 	RygelCmdlineConfig * self;
 	gint result = 0;
 	GError * _inner_error_;
 	gint value;
 	gboolean value_set;
 	self = (RygelCmdlineConfig*) base;
-#line 280 "rygel-cmdline-config.vala"
+#line 283 "rygel-cmdline-config.vala"
 	g_return_val_if_fail (section != NULL, 0);
-#line 280 "rygel-cmdline-config.vala"
+#line 283 "rygel-cmdline-config.vala"
 	g_return_val_if_fail (key != NULL, 0);
-#line 914 "rygel-cmdline-config.c"
+#line 927 "rygel-cmdline-config.c"
 	_inner_error_ = NULL;
-#line 285 "rygel-cmdline-config.vala"
+#line 288 "rygel-cmdline-config.vala"
 	value = 0;
-#line 286 "rygel-cmdline-config.vala"
+#line 289 "rygel-cmdline-config.vala"
 	value_set = FALSE;
-#line 920 "rygel-cmdline-config.c"
+#line 933 "rygel-cmdline-config.c"
 	{
 		char** option_collection;
 		int option_collection_length1;
 		int option_it;
-#line 287 "rygel-cmdline-config.vala"
+#line 290 "rygel-cmdline-config.vala"
 		option_collection = rygel_cmdline_config_plugin_options;
-#line 927 "rygel-cmdline-config.c"
+#line 940 "rygel-cmdline-config.c"
 		option_collection_length1 = _vala_array_length (rygel_cmdline_config_plugin_options);
 		for (option_it = 0; option_it < _vala_array_length (rygel_cmdline_config_plugin_options); option_it = option_it + 1) {
 			char* option;
@@ -939,86 +952,86 @@ static gint rygel_cmdline_config_real_get_int (RygelConfiguration* base, const c
 				gboolean _tmp4_ = FALSE;
 				gboolean _tmp5_ = FALSE;
 				tokens = (_tmp1_ = _tmp0_ = g_strsplit (option, ":", 3), tokens_length1 = _vala_array_length (_tmp0_), _tokens_size_ = tokens_length1, _tmp1_);
-#line 289 "rygel-cmdline-config.vala"
-				if (tokens[0] != NULL) {
-#line 290 "rygel-cmdline-config.vala"
-					_tmp5_ = tokens[1] != NULL;
-#line 947 "rygel-cmdline-config.c"
-				} else {
-#line 289 "rygel-cmdline-config.vala"
-					_tmp5_ = FALSE;
-#line 951 "rygel-cmdline-config.c"
-				}
-#line 289 "rygel-cmdline-config.vala"
-				if (_tmp5_) {
-#line 291 "rygel-cmdline-config.vala"
-					_tmp4_ = tokens[2] != NULL;
-#line 957 "rygel-cmdline-config.c"
-				} else {
-#line 289 "rygel-cmdline-config.vala"
-					_tmp4_ = FALSE;
-#line 961 "rygel-cmdline-config.c"
-				}
-#line 289 "rygel-cmdline-config.vala"
-				if (_tmp4_) {
 #line 292 "rygel-cmdline-config.vala"
-					_tmp3_ = _vala_strcmp0 (tokens[0], section) == 0;
-#line 967 "rygel-cmdline-config.c"
-				} else {
-#line 289 "rygel-cmdline-config.vala"
-					_tmp3_ = FALSE;
-#line 971 "rygel-cmdline-config.c"
-				}
-#line 289 "rygel-cmdline-config.vala"
-				if (_tmp3_) {
+				if (tokens[0] != NULL) {
 #line 293 "rygel-cmdline-config.vala"
-					_tmp2_ = _vala_strcmp0 (tokens[1], key) == 0;
-#line 977 "rygel-cmdline-config.c"
+					_tmp5_ = tokens[1] != NULL;
+#line 960 "rygel-cmdline-config.c"
 				} else {
-#line 289 "rygel-cmdline-config.vala"
-					_tmp2_ = FALSE;
-#line 981 "rygel-cmdline-config.c"
+#line 292 "rygel-cmdline-config.vala"
+					_tmp5_ = FALSE;
+#line 964 "rygel-cmdline-config.c"
 				}
-#line 289 "rygel-cmdline-config.vala"
-				if (_tmp2_) {
-#line 985 "rygel-cmdline-config.c"
-					gboolean _tmp6_ = FALSE;
+#line 292 "rygel-cmdline-config.vala"
+				if (_tmp5_) {
 #line 294 "rygel-cmdline-config.vala"
-					value = atoi (tokens[2]);
+					_tmp4_ = tokens[2] != NULL;
+#line 970 "rygel-cmdline-config.c"
+				} else {
+#line 292 "rygel-cmdline-config.vala"
+					_tmp4_ = FALSE;
+#line 974 "rygel-cmdline-config.c"
+				}
+#line 292 "rygel-cmdline-config.vala"
+				if (_tmp4_) {
 #line 295 "rygel-cmdline-config.vala"
-					if (value >= min) {
-#line 295 "rygel-cmdline-config.vala"
-						_tmp6_ = value <= max;
-#line 993 "rygel-cmdline-config.c"
-					} else {
-#line 295 "rygel-cmdline-config.vala"
-						_tmp6_ = FALSE;
-#line 997 "rygel-cmdline-config.c"
-					}
-#line 295 "rygel-cmdline-config.vala"
-					if (_tmp6_) {
+					_tmp3_ = _vala_strcmp0 (tokens[0], section) == 0;
+#line 980 "rygel-cmdline-config.c"
+				} else {
+#line 292 "rygel-cmdline-config.vala"
+					_tmp3_ = FALSE;
+#line 984 "rygel-cmdline-config.c"
+				}
+#line 292 "rygel-cmdline-config.vala"
+				if (_tmp3_) {
 #line 296 "rygel-cmdline-config.vala"
+					_tmp2_ = _vala_strcmp0 (tokens[1], key) == 0;
+#line 990 "rygel-cmdline-config.c"
+				} else {
+#line 292 "rygel-cmdline-config.vala"
+					_tmp2_ = FALSE;
+#line 994 "rygel-cmdline-config.c"
+				}
+#line 292 "rygel-cmdline-config.vala"
+				if (_tmp2_) {
+#line 998 "rygel-cmdline-config.c"
+					gboolean _tmp6_ = FALSE;
+#line 297 "rygel-cmdline-config.vala"
+					value = atoi (tokens[2]);
+#line 298 "rygel-cmdline-config.vala"
+					if (value >= min) {
+#line 298 "rygel-cmdline-config.vala"
+						_tmp6_ = value <= max;
+#line 1006 "rygel-cmdline-config.c"
+					} else {
+#line 298 "rygel-cmdline-config.vala"
+						_tmp6_ = FALSE;
+#line 1010 "rygel-cmdline-config.c"
+					}
+#line 298 "rygel-cmdline-config.vala"
+					if (_tmp6_) {
+#line 299 "rygel-cmdline-config.vala"
 						value_set = TRUE;
-#line 1003 "rygel-cmdline-config.c"
+#line 1016 "rygel-cmdline-config.c"
 					}
 					_g_free0 (option);
 					tokens = (_vala_array_free (tokens, tokens_length1, (GDestroyNotify) g_free), NULL);
-#line 298 "rygel-cmdline-config.vala"
+#line 301 "rygel-cmdline-config.vala"
 					break;
-#line 1009 "rygel-cmdline-config.c"
+#line 1022 "rygel-cmdline-config.c"
 				}
 				_g_free0 (option);
 				tokens = (_vala_array_free (tokens, tokens_length1, (GDestroyNotify) g_free), NULL);
 			}
 		}
 	}
-#line 302 "rygel-cmdline-config.vala"
+#line 305 "rygel-cmdline-config.vala"
 	if (value_set) {
-#line 1018 "rygel-cmdline-config.c"
+#line 1031 "rygel-cmdline-config.c"
 		result = value;
-#line 303 "rygel-cmdline-config.vala"
+#line 306 "rygel-cmdline-config.vala"
 		return result;
-#line 1022 "rygel-cmdline-config.c"
+#line 1035 "rygel-cmdline-config.c"
 	} else {
 		_inner_error_ = g_error_new_literal (RYGEL_CONFIGURATION_ERROR, RYGEL_CONFIGURATION_ERROR_NO_VALUE_SET, _ ("No value available"));
 		{
@@ -1029,30 +1042,30 @@ static gint rygel_cmdline_config_real_get_int (RygelConfiguration* base, const c
 }
 
 
-#line 309 "rygel-cmdline-config.vala"
+#line 312 "rygel-cmdline-config.vala"
 static GeeArrayList* rygel_cmdline_config_real_get_int_list (RygelConfiguration* base, const char* section, const char* key, GError** error) {
-#line 1035 "rygel-cmdline-config.c"
+#line 1048 "rygel-cmdline-config.c"
 	RygelCmdlineConfig * self;
 	GeeArrayList* result = NULL;
 	GError * _inner_error_;
 	GeeArrayList* value;
 	self = (RygelCmdlineConfig*) base;
-#line 309 "rygel-cmdline-config.vala"
-	g_return_val_if_fail (section != NULL, NULL);
-#line 309 "rygel-cmdline-config.vala"
-	g_return_val_if_fail (key != NULL, NULL);
-#line 1045 "rygel-cmdline-config.c"
-	_inner_error_ = NULL;
 #line 312 "rygel-cmdline-config.vala"
+	g_return_val_if_fail (section != NULL, NULL);
+#line 312 "rygel-cmdline-config.vala"
+	g_return_val_if_fail (key != NULL, NULL);
+#line 1058 "rygel-cmdline-config.c"
+	_inner_error_ = NULL;
+#line 315 "rygel-cmdline-config.vala"
 	value = NULL;
-#line 1049 "rygel-cmdline-config.c"
+#line 1062 "rygel-cmdline-config.c"
 	{
 		char** option_collection;
 		int option_collection_length1;
 		int option_it;
-#line 313 "rygel-cmdline-config.vala"
+#line 316 "rygel-cmdline-config.vala"
 		option_collection = rygel_cmdline_config_plugin_options;
-#line 1056 "rygel-cmdline-config.c"
+#line 1069 "rygel-cmdline-config.c"
 		option_collection_length1 = _vala_array_length (rygel_cmdline_config_plugin_options);
 		for (option_it = 0; option_it < _vala_array_length (rygel_cmdline_config_plugin_options); option_it = option_it + 1) {
 			char* option;
@@ -1068,94 +1081,94 @@ static GeeArrayList* rygel_cmdline_config_real_get_int_list (RygelConfiguration*
 				gboolean _tmp4_ = FALSE;
 				gboolean _tmp5_ = FALSE;
 				tokens = (_tmp1_ = _tmp0_ = g_strsplit (option, ":", 3), tokens_length1 = _vala_array_length (_tmp0_), _tokens_size_ = tokens_length1, _tmp1_);
-#line 315 "rygel-cmdline-config.vala"
-				if (tokens[0] != NULL) {
-#line 316 "rygel-cmdline-config.vala"
-					_tmp5_ = tokens[1] != NULL;
-#line 1076 "rygel-cmdline-config.c"
-				} else {
-#line 315 "rygel-cmdline-config.vala"
-					_tmp5_ = FALSE;
-#line 1080 "rygel-cmdline-config.c"
-				}
-#line 315 "rygel-cmdline-config.vala"
-				if (_tmp5_) {
-#line 317 "rygel-cmdline-config.vala"
-					_tmp4_ = tokens[2] != NULL;
-#line 1086 "rygel-cmdline-config.c"
-				} else {
-#line 315 "rygel-cmdline-config.vala"
-					_tmp4_ = FALSE;
-#line 1090 "rygel-cmdline-config.c"
-				}
-#line 315 "rygel-cmdline-config.vala"
-				if (_tmp4_) {
 #line 318 "rygel-cmdline-config.vala"
-					_tmp3_ = _vala_strcmp0 (tokens[0], section) == 0;
-#line 1096 "rygel-cmdline-config.c"
-				} else {
-#line 315 "rygel-cmdline-config.vala"
-					_tmp3_ = FALSE;
-#line 1100 "rygel-cmdline-config.c"
-				}
-#line 315 "rygel-cmdline-config.vala"
-				if (_tmp3_) {
+				if (tokens[0] != NULL) {
 #line 319 "rygel-cmdline-config.vala"
-					_tmp2_ = _vala_strcmp0 (tokens[1], key) == 0;
-#line 1106 "rygel-cmdline-config.c"
+					_tmp5_ = tokens[1] != NULL;
+#line 1089 "rygel-cmdline-config.c"
 				} else {
-#line 315 "rygel-cmdline-config.vala"
-					_tmp2_ = FALSE;
-#line 1110 "rygel-cmdline-config.c"
+#line 318 "rygel-cmdline-config.vala"
+					_tmp5_ = FALSE;
+#line 1093 "rygel-cmdline-config.c"
 				}
-#line 315 "rygel-cmdline-config.vala"
-				if (_tmp2_) {
-#line 1114 "rygel-cmdline-config.c"
-					GeeArrayList* _tmp6_;
+#line 318 "rygel-cmdline-config.vala"
+				if (_tmp5_) {
 #line 320 "rygel-cmdline-config.vala"
+					_tmp4_ = tokens[2] != NULL;
+#line 1099 "rygel-cmdline-config.c"
+				} else {
+#line 318 "rygel-cmdline-config.vala"
+					_tmp4_ = FALSE;
+#line 1103 "rygel-cmdline-config.c"
+				}
+#line 318 "rygel-cmdline-config.vala"
+				if (_tmp4_) {
+#line 321 "rygel-cmdline-config.vala"
+					_tmp3_ = _vala_strcmp0 (tokens[0], section) == 0;
+#line 1109 "rygel-cmdline-config.c"
+				} else {
+#line 318 "rygel-cmdline-config.vala"
+					_tmp3_ = FALSE;
+#line 1113 "rygel-cmdline-config.c"
+				}
+#line 318 "rygel-cmdline-config.vala"
+				if (_tmp3_) {
+#line 322 "rygel-cmdline-config.vala"
+					_tmp2_ = _vala_strcmp0 (tokens[1], key) == 0;
+#line 1119 "rygel-cmdline-config.c"
+				} else {
+#line 318 "rygel-cmdline-config.vala"
+					_tmp2_ = FALSE;
+#line 1123 "rygel-cmdline-config.c"
+				}
+#line 318 "rygel-cmdline-config.vala"
+				if (_tmp2_) {
+#line 1127 "rygel-cmdline-config.c"
+					GeeArrayList* _tmp6_;
+#line 323 "rygel-cmdline-config.vala"
 					value = (_tmp6_ = gee_array_list_new (G_TYPE_INT, NULL, NULL, NULL), _g_object_unref0 (value), _tmp6_);
-#line 1118 "rygel-cmdline-config.c"
+#line 1131 "rygel-cmdline-config.c"
 					{
 						char** _tmp7_;
 						char** val_token_collection;
 						int val_token_collection_length1;
 						int val_token_it;
-#line 321 "rygel-cmdline-config.vala"
+#line 324 "rygel-cmdline-config.vala"
 						val_token_collection = _tmp7_ = g_strsplit (tokens[2], ",", -1);
-#line 1126 "rygel-cmdline-config.c"
+#line 1139 "rygel-cmdline-config.c"
 						val_token_collection_length1 = _vala_array_length (_tmp7_);
 						for (val_token_it = 0; val_token_it < _vala_array_length (_tmp7_); val_token_it = val_token_it + 1) {
 							char* val_token;
 							val_token = g_strdup (val_token_collection[val_token_it]);
 							{
-#line 322 "rygel-cmdline-config.vala"
+#line 325 "rygel-cmdline-config.vala"
 								gee_abstract_collection_add ((GeeAbstractCollection*) value, GINT_TO_POINTER (atoi (val_token)));
-#line 1134 "rygel-cmdline-config.c"
+#line 1147 "rygel-cmdline-config.c"
 								_g_free0 (val_token);
 							}
 						}
-#line 321 "rygel-cmdline-config.vala"
+#line 324 "rygel-cmdline-config.vala"
 						val_token_collection = (_vala_array_free (val_token_collection, val_token_collection_length1, (GDestroyNotify) g_free), NULL);
-#line 1140 "rygel-cmdline-config.c"
+#line 1153 "rygel-cmdline-config.c"
 					}
 					_g_free0 (option);
 					tokens = (_vala_array_free (tokens, tokens_length1, (GDestroyNotify) g_free), NULL);
-#line 324 "rygel-cmdline-config.vala"
+#line 327 "rygel-cmdline-config.vala"
 					break;
-#line 1146 "rygel-cmdline-config.c"
+#line 1159 "rygel-cmdline-config.c"
 				}
 				_g_free0 (option);
 				tokens = (_vala_array_free (tokens, tokens_length1, (GDestroyNotify) g_free), NULL);
 			}
 		}
 	}
-#line 328 "rygel-cmdline-config.vala"
+#line 331 "rygel-cmdline-config.vala"
 	if (value != NULL) {
-#line 1155 "rygel-cmdline-config.c"
+#line 1168 "rygel-cmdline-config.c"
 		result = value;
-#line 329 "rygel-cmdline-config.vala"
+#line 332 "rygel-cmdline-config.vala"
 		return result;
-#line 1159 "rygel-cmdline-config.c"
+#line 1172 "rygel-cmdline-config.c"
 	} else {
 		_inner_error_ = g_error_new_literal (RYGEL_CONFIGURATION_ERROR, RYGEL_CONFIGURATION_ERROR_NO_VALUE_SET, _ ("No value available"));
 		{
@@ -1168,55 +1181,55 @@ static GeeArrayList* rygel_cmdline_config_real_get_int_list (RygelConfiguration*
 }
 
 
-#line 952 "glib-2.0.vapi"
+#line 1048 "glib-2.0.vapi"
 static gboolean string_to_bool (const char* self) {
-#line 1174 "rygel-cmdline-config.c"
+#line 1187 "rygel-cmdline-config.c"
 	gboolean result = FALSE;
-#line 952 "glib-2.0.vapi"
+#line 1048 "glib-2.0.vapi"
 	g_return_val_if_fail (self != NULL, FALSE);
-#line 953 "glib-2.0.vapi"
+#line 1049 "glib-2.0.vapi"
 	if (_vala_strcmp0 (self, "true") == 0) {
-#line 1180 "rygel-cmdline-config.c"
+#line 1193 "rygel-cmdline-config.c"
 		result = TRUE;
-#line 954 "glib-2.0.vapi"
+#line 1050 "glib-2.0.vapi"
 		return result;
-#line 1184 "rygel-cmdline-config.c"
+#line 1197 "rygel-cmdline-config.c"
 	} else {
 		result = FALSE;
-#line 956 "glib-2.0.vapi"
+#line 1052 "glib-2.0.vapi"
 		return result;
-#line 1189 "rygel-cmdline-config.c"
+#line 1202 "rygel-cmdline-config.c"
 	}
 }
 
 
-#line 335 "rygel-cmdline-config.vala"
+#line 338 "rygel-cmdline-config.vala"
 static gboolean rygel_cmdline_config_real_get_bool (RygelConfiguration* base, const char* section, const char* key, GError** error) {
-#line 1196 "rygel-cmdline-config.c"
+#line 1209 "rygel-cmdline-config.c"
 	RygelCmdlineConfig * self;
 	gboolean result = FALSE;
 	GError * _inner_error_;
 	gboolean value;
 	gboolean value_set;
 	self = (RygelCmdlineConfig*) base;
-#line 335 "rygel-cmdline-config.vala"
-	g_return_val_if_fail (section != NULL, FALSE);
-#line 335 "rygel-cmdline-config.vala"
-	g_return_val_if_fail (key != NULL, FALSE);
-#line 1207 "rygel-cmdline-config.c"
-	_inner_error_ = NULL;
 #line 338 "rygel-cmdline-config.vala"
+	g_return_val_if_fail (section != NULL, FALSE);
+#line 338 "rygel-cmdline-config.vala"
+	g_return_val_if_fail (key != NULL, FALSE);
+#line 1220 "rygel-cmdline-config.c"
+	_inner_error_ = NULL;
+#line 341 "rygel-cmdline-config.vala"
 	value = FALSE;
-#line 339 "rygel-cmdline-config.vala"
+#line 342 "rygel-cmdline-config.vala"
 	value_set = FALSE;
-#line 1213 "rygel-cmdline-config.c"
+#line 1226 "rygel-cmdline-config.c"
 	{
 		char** option_collection;
 		int option_collection_length1;
 		int option_it;
-#line 340 "rygel-cmdline-config.vala"
+#line 343 "rygel-cmdline-config.vala"
 		option_collection = rygel_cmdline_config_plugin_options;
-#line 1220 "rygel-cmdline-config.c"
+#line 1233 "rygel-cmdline-config.c"
 		option_collection_length1 = _vala_array_length (rygel_cmdline_config_plugin_options);
 		for (option_it = 0; option_it < _vala_array_length (rygel_cmdline_config_plugin_options); option_it = option_it + 1) {
 			char* option;
@@ -1232,71 +1245,71 @@ static gboolean rygel_cmdline_config_real_get_bool (RygelConfiguration* base, co
 				gboolean _tmp4_ = FALSE;
 				gboolean _tmp5_ = FALSE;
 				tokens = (_tmp1_ = _tmp0_ = g_strsplit (option, ":", 3), tokens_length1 = _vala_array_length (_tmp0_), _tokens_size_ = tokens_length1, _tmp1_);
-#line 342 "rygel-cmdline-config.vala"
-				if (tokens[0] != NULL) {
-#line 343 "rygel-cmdline-config.vala"
-					_tmp5_ = tokens[1] != NULL;
-#line 1240 "rygel-cmdline-config.c"
-				} else {
-#line 342 "rygel-cmdline-config.vala"
-					_tmp5_ = FALSE;
-#line 1244 "rygel-cmdline-config.c"
-				}
-#line 342 "rygel-cmdline-config.vala"
-				if (_tmp5_) {
-#line 344 "rygel-cmdline-config.vala"
-					_tmp4_ = tokens[2] != NULL;
-#line 1250 "rygel-cmdline-config.c"
-				} else {
-#line 342 "rygel-cmdline-config.vala"
-					_tmp4_ = FALSE;
-#line 1254 "rygel-cmdline-config.c"
-				}
-#line 342 "rygel-cmdline-config.vala"
-				if (_tmp4_) {
 #line 345 "rygel-cmdline-config.vala"
-					_tmp3_ = _vala_strcmp0 (tokens[0], section) == 0;
-#line 1260 "rygel-cmdline-config.c"
-				} else {
-#line 342 "rygel-cmdline-config.vala"
-					_tmp3_ = FALSE;
-#line 1264 "rygel-cmdline-config.c"
-				}
-#line 342 "rygel-cmdline-config.vala"
-				if (_tmp3_) {
+				if (tokens[0] != NULL) {
 #line 346 "rygel-cmdline-config.vala"
-					_tmp2_ = _vala_strcmp0 (tokens[1], key) == 0;
-#line 1270 "rygel-cmdline-config.c"
+					_tmp5_ = tokens[1] != NULL;
+#line 1253 "rygel-cmdline-config.c"
 				} else {
-#line 342 "rygel-cmdline-config.vala"
-					_tmp2_ = FALSE;
-#line 1274 "rygel-cmdline-config.c"
+#line 345 "rygel-cmdline-config.vala"
+					_tmp5_ = FALSE;
+#line 1257 "rygel-cmdline-config.c"
 				}
-#line 342 "rygel-cmdline-config.vala"
-				if (_tmp2_) {
+#line 345 "rygel-cmdline-config.vala"
+				if (_tmp5_) {
 #line 347 "rygel-cmdline-config.vala"
-					value = string_to_bool (tokens[2]);
+					_tmp4_ = tokens[2] != NULL;
+#line 1263 "rygel-cmdline-config.c"
+				} else {
+#line 345 "rygel-cmdline-config.vala"
+					_tmp4_ = FALSE;
+#line 1267 "rygel-cmdline-config.c"
+				}
+#line 345 "rygel-cmdline-config.vala"
+				if (_tmp4_) {
 #line 348 "rygel-cmdline-config.vala"
+					_tmp3_ = _vala_strcmp0 (tokens[0], section) == 0;
+#line 1273 "rygel-cmdline-config.c"
+				} else {
+#line 345 "rygel-cmdline-config.vala"
+					_tmp3_ = FALSE;
+#line 1277 "rygel-cmdline-config.c"
+				}
+#line 345 "rygel-cmdline-config.vala"
+				if (_tmp3_) {
+#line 349 "rygel-cmdline-config.vala"
+					_tmp2_ = _vala_strcmp0 (tokens[1], key) == 0;
+#line 1283 "rygel-cmdline-config.c"
+				} else {
+#line 345 "rygel-cmdline-config.vala"
+					_tmp2_ = FALSE;
+#line 1287 "rygel-cmdline-config.c"
+				}
+#line 345 "rygel-cmdline-config.vala"
+				if (_tmp2_) {
+#line 350 "rygel-cmdline-config.vala"
+					value = string_to_bool (tokens[2]);
+#line 351 "rygel-cmdline-config.vala"
 					value_set = TRUE;
-#line 1282 "rygel-cmdline-config.c"
+#line 1295 "rygel-cmdline-config.c"
 					_g_free0 (option);
 					tokens = (_vala_array_free (tokens, tokens_length1, (GDestroyNotify) g_free), NULL);
-#line 349 "rygel-cmdline-config.vala"
+#line 352 "rygel-cmdline-config.vala"
 					break;
-#line 1287 "rygel-cmdline-config.c"
+#line 1300 "rygel-cmdline-config.c"
 				}
 				_g_free0 (option);
 				tokens = (_vala_array_free (tokens, tokens_length1, (GDestroyNotify) g_free), NULL);
 			}
 		}
 	}
-#line 353 "rygel-cmdline-config.vala"
+#line 356 "rygel-cmdline-config.vala"
 	if (value_set) {
-#line 1296 "rygel-cmdline-config.c"
+#line 1309 "rygel-cmdline-config.c"
 		result = value;
-#line 354 "rygel-cmdline-config.vala"
+#line 357 "rygel-cmdline-config.vala"
 		return result;
-#line 1300 "rygel-cmdline-config.c"
+#line 1313 "rygel-cmdline-config.c"
 	} else {
 		_inner_error_ = g_error_new_literal (RYGEL_CONFIGURATION_ERROR, RYGEL_CONFIGURATION_ERROR_NO_VALUE_SET, _ ("No value available"));
 		{
@@ -1307,22 +1320,22 @@ static gboolean rygel_cmdline_config_real_get_bool (RygelConfiguration* base, co
 }
 
 
-#line 35 "rygel-cmdline-config.vala"
+#line 34 "rygel-cmdline-config.vala"
 RygelCmdlineConfig* rygel_cmdline_config_construct (GType object_type) {
-#line 1313 "rygel-cmdline-config.c"
+#line 1326 "rygel-cmdline-config.c"
 	RygelCmdlineConfig * self;
-#line 35 "rygel-cmdline-config.vala"
+#line 34 "rygel-cmdline-config.vala"
 	self = (RygelCmdlineConfig*) g_object_new (object_type, NULL);
-#line 1317 "rygel-cmdline-config.c"
+#line 1330 "rygel-cmdline-config.c"
 	return self;
 }
 
 
-#line 35 "rygel-cmdline-config.vala"
+#line 34 "rygel-cmdline-config.vala"
 RygelCmdlineConfig* rygel_cmdline_config_new (void) {
-#line 35 "rygel-cmdline-config.vala"
+#line 34 "rygel-cmdline-config.vala"
 	return rygel_cmdline_config_construct (RYGEL_TYPE_CMDLINE_CONFIG);
-#line 1326 "rygel-cmdline-config.c"
+#line 1339 "rygel-cmdline-config.c"
 }
 
 

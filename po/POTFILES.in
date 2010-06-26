@@ -36,7 +36,6 @@ src/plugins/media-export/rygel-media-export-media-cache.vala
 src/plugins/media-export/rygel-media-export-dbus-service.vala
 src/plugins/media-export/rygel-media-export-dummy-container.vala
 src/plugins/media-export/rygel-media-export-dynamic-container.vala
-src/plugins/media-export/rygel-media-export-file-queue-entry.vala
 src/plugins/media-export/rygel-media-export-harvester.vala
 src/plugins/media-export/rygel-media-export-item.vala
 src/plugins/media-export/rygel-media-export-null-container.vala
@@ -46,11 +45,6 @@ src/plugins/media-export/rygel-media-export-query-container.vala
 src/plugins/media-export/rygel-media-export-recursive-file-monitor.vala
 src/plugins/media-export/rygel-media-export-root-container.vala
 src/plugins/media-export/rygel-media-export-writable-container.vala
-src/plugins/mediathek/rygel-mediathek-asx-playlist.vala
-src/plugins/mediathek/rygel-mediathek-plugin.vala
-src/plugins/mediathek/rygel-mediathek-root-container.vala
-src/plugins/mediathek/rygel-mediathek-rss-container.vala
-src/plugins/mediathek/rygel-mediathek-video-item.vala
 src/plugins/test/rygel-test-audio-item.vala
 src/plugins/test/rygel-test-content-dir.vala
 src/plugins/test/rygel-test-item.vala

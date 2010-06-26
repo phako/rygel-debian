@@ -30,64 +30,64 @@
 #include <rygel.h>
 
 
-#define RYGEL_TYPE_MEDIA_EXPORT_DB_OBJECT_FACTORY (rygel_media_export_db_object_factory_get_type ())
-#define RYGEL_MEDIA_EXPORT_DB_OBJECT_FACTORY(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_MEDIA_EXPORT_DB_OBJECT_FACTORY, RygelMediaExportDBObjectFactory))
-#define RYGEL_MEDIA_EXPORT_DB_OBJECT_FACTORY_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TYPE_MEDIA_EXPORT_DB_OBJECT_FACTORY, RygelMediaExportDBObjectFactoryClass))
-#define RYGEL_IS_MEDIA_EXPORT_DB_OBJECT_FACTORY(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TYPE_MEDIA_EXPORT_DB_OBJECT_FACTORY))
-#define RYGEL_IS_MEDIA_EXPORT_DB_OBJECT_FACTORY_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_TYPE_MEDIA_EXPORT_DB_OBJECT_FACTORY))
-#define RYGEL_MEDIA_EXPORT_DB_OBJECT_FACTORY_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_TYPE_MEDIA_EXPORT_DB_OBJECT_FACTORY, RygelMediaExportDBObjectFactoryClass))
+#define RYGEL_MEDIA_EXPORT_TYPE_DB_OBJECT_FACTORY (rygel_media_export_db_object_factory_get_type ())
+#define RYGEL_MEDIA_EXPORT_DB_OBJECT_FACTORY(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_MEDIA_EXPORT_TYPE_DB_OBJECT_FACTORY, RygelMediaExportDBObjectFactory))
+#define RYGEL_MEDIA_EXPORT_DB_OBJECT_FACTORY_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_MEDIA_EXPORT_TYPE_DB_OBJECT_FACTORY, RygelMediaExportDBObjectFactoryClass))
+#define RYGEL_MEDIA_EXPORT_IS_DB_OBJECT_FACTORY(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_MEDIA_EXPORT_TYPE_DB_OBJECT_FACTORY))
+#define RYGEL_MEDIA_EXPORT_IS_DB_OBJECT_FACTORY_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_MEDIA_EXPORT_TYPE_DB_OBJECT_FACTORY))
+#define RYGEL_MEDIA_EXPORT_DB_OBJECT_FACTORY_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_MEDIA_EXPORT_TYPE_DB_OBJECT_FACTORY, RygelMediaExportDBObjectFactoryClass))
 
 typedef struct _RygelMediaExportDBObjectFactory RygelMediaExportDBObjectFactory;
 typedef struct _RygelMediaExportDBObjectFactoryClass RygelMediaExportDBObjectFactoryClass;
 typedef struct _RygelMediaExportDBObjectFactoryPrivate RygelMediaExportDBObjectFactoryPrivate;
 
-#define RYGEL_TYPE_MEDIA_EXPORT_MEDIA_CACHE (rygel_media_export_media_cache_get_type ())
-#define RYGEL_MEDIA_EXPORT_MEDIA_CACHE(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_MEDIA_EXPORT_MEDIA_CACHE, RygelMediaExportMediaCache))
-#define RYGEL_MEDIA_EXPORT_MEDIA_CACHE_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TYPE_MEDIA_EXPORT_MEDIA_CACHE, RygelMediaExportMediaCacheClass))
-#define RYGEL_IS_MEDIA_EXPORT_MEDIA_CACHE(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TYPE_MEDIA_EXPORT_MEDIA_CACHE))
-#define RYGEL_IS_MEDIA_EXPORT_MEDIA_CACHE_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_TYPE_MEDIA_EXPORT_MEDIA_CACHE))
-#define RYGEL_MEDIA_EXPORT_MEDIA_CACHE_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_TYPE_MEDIA_EXPORT_MEDIA_CACHE, RygelMediaExportMediaCacheClass))
+#define RYGEL_MEDIA_EXPORT_TYPE_MEDIA_CACHE (rygel_media_export_media_cache_get_type ())
+#define RYGEL_MEDIA_EXPORT_MEDIA_CACHE(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_MEDIA_EXPORT_TYPE_MEDIA_CACHE, RygelMediaExportMediaCache))
+#define RYGEL_MEDIA_EXPORT_MEDIA_CACHE_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_MEDIA_EXPORT_TYPE_MEDIA_CACHE, RygelMediaExportMediaCacheClass))
+#define RYGEL_MEDIA_EXPORT_IS_MEDIA_CACHE(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_MEDIA_EXPORT_TYPE_MEDIA_CACHE))
+#define RYGEL_MEDIA_EXPORT_IS_MEDIA_CACHE_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_MEDIA_EXPORT_TYPE_MEDIA_CACHE))
+#define RYGEL_MEDIA_EXPORT_MEDIA_CACHE_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_MEDIA_EXPORT_TYPE_MEDIA_CACHE, RygelMediaExportMediaCacheClass))
 
 typedef struct _RygelMediaExportMediaCache RygelMediaExportMediaCache;
 typedef struct _RygelMediaExportMediaCacheClass RygelMediaExportMediaCacheClass;
 
-#define RYGEL_TYPE_MEDIA_EXPORT_OBJECT_FACTORY (rygel_media_export_object_factory_get_type ())
-#define RYGEL_MEDIA_EXPORT_OBJECT_FACTORY(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_MEDIA_EXPORT_OBJECT_FACTORY, RygelMediaExportObjectFactory))
-#define RYGEL_MEDIA_EXPORT_OBJECT_FACTORY_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TYPE_MEDIA_EXPORT_OBJECT_FACTORY, RygelMediaExportObjectFactoryClass))
-#define RYGEL_IS_MEDIA_EXPORT_OBJECT_FACTORY(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TYPE_MEDIA_EXPORT_OBJECT_FACTORY))
-#define RYGEL_IS_MEDIA_EXPORT_OBJECT_FACTORY_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_TYPE_MEDIA_EXPORT_OBJECT_FACTORY))
-#define RYGEL_MEDIA_EXPORT_OBJECT_FACTORY_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_TYPE_MEDIA_EXPORT_OBJECT_FACTORY, RygelMediaExportObjectFactoryClass))
+#define RYGEL_MEDIA_EXPORT_TYPE_OBJECT_FACTORY (rygel_media_export_object_factory_get_type ())
+#define RYGEL_MEDIA_EXPORT_OBJECT_FACTORY(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_MEDIA_EXPORT_TYPE_OBJECT_FACTORY, RygelMediaExportObjectFactory))
+#define RYGEL_MEDIA_EXPORT_OBJECT_FACTORY_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_MEDIA_EXPORT_TYPE_OBJECT_FACTORY, RygelMediaExportObjectFactoryClass))
+#define RYGEL_MEDIA_EXPORT_IS_OBJECT_FACTORY(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_MEDIA_EXPORT_TYPE_OBJECT_FACTORY))
+#define RYGEL_MEDIA_EXPORT_IS_OBJECT_FACTORY_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_MEDIA_EXPORT_TYPE_OBJECT_FACTORY))
+#define RYGEL_MEDIA_EXPORT_OBJECT_FACTORY_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_MEDIA_EXPORT_TYPE_OBJECT_FACTORY, RygelMediaExportObjectFactoryClass))
 
 typedef struct _RygelMediaExportObjectFactory RygelMediaExportObjectFactory;
 typedef struct _RygelMediaExportObjectFactoryClass RygelMediaExportObjectFactoryClass;
 typedef struct _RygelMediaExportObjectFactoryPrivate RygelMediaExportObjectFactoryPrivate;
 
-#define RYGEL_TYPE_MEDIA_EXPORT_DB_CONTAINER (rygel_media_export_db_container_get_type ())
-#define RYGEL_MEDIA_EXPORT_DB_CONTAINER(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_MEDIA_EXPORT_DB_CONTAINER, RygelMediaExportDBContainer))
-#define RYGEL_MEDIA_EXPORT_DB_CONTAINER_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TYPE_MEDIA_EXPORT_DB_CONTAINER, RygelMediaExportDBContainerClass))
-#define RYGEL_IS_MEDIA_EXPORT_DB_CONTAINER(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TYPE_MEDIA_EXPORT_DB_CONTAINER))
-#define RYGEL_IS_MEDIA_EXPORT_DB_CONTAINER_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_TYPE_MEDIA_EXPORT_DB_CONTAINER))
-#define RYGEL_MEDIA_EXPORT_DB_CONTAINER_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_TYPE_MEDIA_EXPORT_DB_CONTAINER, RygelMediaExportDBContainerClass))
+#define RYGEL_MEDIA_EXPORT_TYPE_DB_CONTAINER (rygel_media_export_db_container_get_type ())
+#define RYGEL_MEDIA_EXPORT_DB_CONTAINER(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_MEDIA_EXPORT_TYPE_DB_CONTAINER, RygelMediaExportDBContainer))
+#define RYGEL_MEDIA_EXPORT_DB_CONTAINER_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_MEDIA_EXPORT_TYPE_DB_CONTAINER, RygelMediaExportDBContainerClass))
+#define RYGEL_MEDIA_EXPORT_IS_DB_CONTAINER(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_MEDIA_EXPORT_TYPE_DB_CONTAINER))
+#define RYGEL_MEDIA_EXPORT_IS_DB_CONTAINER_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_MEDIA_EXPORT_TYPE_DB_CONTAINER))
+#define RYGEL_MEDIA_EXPORT_DB_CONTAINER_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_MEDIA_EXPORT_TYPE_DB_CONTAINER, RygelMediaExportDBContainerClass))
 
 typedef struct _RygelMediaExportDBContainer RygelMediaExportDBContainer;
 typedef struct _RygelMediaExportDBContainerClass RygelMediaExportDBContainerClass;
 
-#define RYGEL_TYPE_MEDIA_EXPORT_QUERY_CONTAINER (rygel_media_export_query_container_get_type ())
-#define RYGEL_MEDIA_EXPORT_QUERY_CONTAINER(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_MEDIA_EXPORT_QUERY_CONTAINER, RygelMediaExportQueryContainer))
-#define RYGEL_MEDIA_EXPORT_QUERY_CONTAINER_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TYPE_MEDIA_EXPORT_QUERY_CONTAINER, RygelMediaExportQueryContainerClass))
-#define RYGEL_IS_MEDIA_EXPORT_QUERY_CONTAINER(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TYPE_MEDIA_EXPORT_QUERY_CONTAINER))
-#define RYGEL_IS_MEDIA_EXPORT_QUERY_CONTAINER_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_TYPE_MEDIA_EXPORT_QUERY_CONTAINER))
-#define RYGEL_MEDIA_EXPORT_QUERY_CONTAINER_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_TYPE_MEDIA_EXPORT_QUERY_CONTAINER, RygelMediaExportQueryContainerClass))
+#define RYGEL_MEDIA_EXPORT_TYPE_QUERY_CONTAINER (rygel_media_export_query_container_get_type ())
+#define RYGEL_MEDIA_EXPORT_QUERY_CONTAINER(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_MEDIA_EXPORT_TYPE_QUERY_CONTAINER, RygelMediaExportQueryContainer))
+#define RYGEL_MEDIA_EXPORT_QUERY_CONTAINER_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_MEDIA_EXPORT_TYPE_QUERY_CONTAINER, RygelMediaExportQueryContainerClass))
+#define RYGEL_MEDIA_EXPORT_IS_QUERY_CONTAINER(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_MEDIA_EXPORT_TYPE_QUERY_CONTAINER))
+#define RYGEL_MEDIA_EXPORT_IS_QUERY_CONTAINER_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_MEDIA_EXPORT_TYPE_QUERY_CONTAINER))
+#define RYGEL_MEDIA_EXPORT_QUERY_CONTAINER_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_MEDIA_EXPORT_TYPE_QUERY_CONTAINER, RygelMediaExportQueryContainerClass))
 
 typedef struct _RygelMediaExportQueryContainer RygelMediaExportQueryContainer;
 typedef struct _RygelMediaExportQueryContainerClass RygelMediaExportQueryContainerClass;
 
-#define RYGEL_TYPE_MEDIA_EXPORT_WRITABLE_CONTAINER (rygel_media_export_writable_container_get_type ())
-#define RYGEL_MEDIA_EXPORT_WRITABLE_CONTAINER(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_MEDIA_EXPORT_WRITABLE_CONTAINER, RygelMediaExportWritableContainer))
-#define RYGEL_MEDIA_EXPORT_WRITABLE_CONTAINER_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TYPE_MEDIA_EXPORT_WRITABLE_CONTAINER, RygelMediaExportWritableContainerClass))
-#define RYGEL_IS_MEDIA_EXPORT_WRITABLE_CONTAINER(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TYPE_MEDIA_EXPORT_WRITABLE_CONTAINER))
-#define RYGEL_IS_MEDIA_EXPORT_WRITABLE_CONTAINER_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_TYPE_MEDIA_EXPORT_WRITABLE_CONTAINER))
-#define RYGEL_MEDIA_EXPORT_WRITABLE_CONTAINER_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_TYPE_MEDIA_EXPORT_WRITABLE_CONTAINER, RygelMediaExportWritableContainerClass))
+#define RYGEL_MEDIA_EXPORT_TYPE_WRITABLE_CONTAINER (rygel_media_export_writable_container_get_type ())
+#define RYGEL_MEDIA_EXPORT_WRITABLE_CONTAINER(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_MEDIA_EXPORT_TYPE_WRITABLE_CONTAINER, RygelMediaExportWritableContainer))
+#define RYGEL_MEDIA_EXPORT_WRITABLE_CONTAINER_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_MEDIA_EXPORT_TYPE_WRITABLE_CONTAINER, RygelMediaExportWritableContainerClass))
+#define RYGEL_MEDIA_EXPORT_IS_WRITABLE_CONTAINER(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_MEDIA_EXPORT_TYPE_WRITABLE_CONTAINER))
+#define RYGEL_MEDIA_EXPORT_IS_WRITABLE_CONTAINER_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_MEDIA_EXPORT_TYPE_WRITABLE_CONTAINER))
+#define RYGEL_MEDIA_EXPORT_WRITABLE_CONTAINER_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_MEDIA_EXPORT_TYPE_WRITABLE_CONTAINER, RygelMediaExportWritableContainerClass))
 
 typedef struct _RygelMediaExportWritableContainer RygelMediaExportWritableContainer;
 typedef struct _RygelMediaExportWritableContainerClass RygelMediaExportWritableContainerClass;
@@ -179,7 +179,7 @@ RygelMediaExportObjectFactory* rygel_media_export_object_factory_construct (GTyp
 #line 23 "rygel-media-export-object-factory.vala"
 RygelMediaExportObjectFactory* rygel_media_export_object_factory_new (void) {
 #line 23 "rygel-media-export-object-factory.vala"
-	return rygel_media_export_object_factory_construct (RYGEL_TYPE_MEDIA_EXPORT_OBJECT_FACTORY);
+	return rygel_media_export_object_factory_construct (RYGEL_MEDIA_EXPORT_TYPE_OBJECT_FACTORY);
 #line 184 "rygel-media-export-object-factory.c"
 }
 
@@ -199,7 +199,7 @@ GType rygel_media_export_object_factory_get_type (void) {
 	if (g_once_init_enter (&rygel_media_export_object_factory_type_id__volatile)) {
 		static const GTypeInfo g_define_type_info = { sizeof (RygelMediaExportObjectFactoryClass), (GBaseInitFunc) NULL, (GBaseFinalizeFunc) NULL, (GClassInitFunc) rygel_media_export_object_factory_class_init, (GClassFinalizeFunc) NULL, NULL, sizeof (RygelMediaExportObjectFactory), 0, (GInstanceInitFunc) rygel_media_export_object_factory_instance_init, NULL };
 		GType rygel_media_export_object_factory_type_id;
-		rygel_media_export_object_factory_type_id = g_type_register_static (RYGEL_TYPE_MEDIA_EXPORT_DB_OBJECT_FACTORY, "RygelMediaExportObjectFactory", &g_define_type_info, 0);
+		rygel_media_export_object_factory_type_id = g_type_register_static (RYGEL_MEDIA_EXPORT_TYPE_DB_OBJECT_FACTORY, "RygelMediaExportObjectFactory", &g_define_type_info, 0);
 		g_once_init_leave (&rygel_media_export_object_factory_type_id__volatile, rygel_media_export_object_factory_type_id);
 	}
 	return rygel_media_export_object_factory_type_id__volatile;

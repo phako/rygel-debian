@@ -46,15 +46,15 @@ void module_init (RygelPluginLoader* loader);
 
 
 
-#line 28 "rygel-gst-launch-plugin.vala"
+#line 26 "rygel-gst-launch-plugin.vala"
 void module_init (RygelPluginLoader* loader) {
 #line 52 "rygel-gst-launch-plugin.c"
 	RygelPlugin* plugin;
-#line 28 "rygel-gst-launch-plugin.vala"
+#line 26 "rygel-gst-launch-plugin.vala"
 	g_return_if_fail (loader != NULL);
-#line 29 "rygel-gst-launch-plugin.vala"
+#line 27 "rygel-gst-launch-plugin.vala"
 	plugin = rygel_plugin_new_MediaServer ("GstLaunch", "Gst Launch", RYGEL_TYPE_GST_LAUNCH_CONTENT_DIR, NULL);
-#line 32 "rygel-gst-launch-plugin.vala"
+#line 30 "rygel-gst-launch-plugin.vala"
 	rygel_plugin_loader_add_plugin (loader, plugin);
 #line 60 "rygel-gst-launch-plugin.c"
 	_g_object_unref0 (plugin);

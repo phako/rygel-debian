@@ -60,10 +60,17 @@ internal class Rygel.WMVTranscoderBin : Gst.Bin {
         var ghost = new GhostPad (null, src_pad);
         this.add_pad (ghost);
 
-        decodebin.pad_added += this.decodebin_pad_added;
-        decodebin.autoplug_continue += this.autoplug_continue;
+        decodebin.pad_added.connect (this.decodebin_pad_added);
+        // FIXME: Use 'connect' syntax & remove the ugly annotation on the
+        //        callback once bug#622089 is fixed.
+        Signal.connect_object (decodebin,
+                               "autoplug-continue",
+                               (Callback) this.autoplug_continue,
+                               this,
+                               ConnectFlags.AFTER);
     }
 
+    [CCode (instance_pos = -1)]
     private bool autoplug_continue (Element decodebin,
                                     Pad     new_pad,
                                     Caps    caps) {

@@ -25,60 +25,50 @@
 #include <glib-object.h>
 #include <gio/gio.h>
 #include <rygel.h>
-#include <gst/gst.h>
+#include <gee.h>
 #include <stdlib.h>
 #include <string.h>
+#include <gst/gst.h>
 #include <glib/gi18n-lib.h>
-#include <gee.h>
 
 
-#define RYGEL_TYPE_MEDIA_EXPORT_HARVESTER (rygel_media_export_harvester_get_type ())
-#define RYGEL_MEDIA_EXPORT_HARVESTER(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_MEDIA_EXPORT_HARVESTER, RygelMediaExportHarvester))
-#define RYGEL_MEDIA_EXPORT_HARVESTER_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TYPE_MEDIA_EXPORT_HARVESTER, RygelMediaExportHarvesterClass))
-#define RYGEL_IS_MEDIA_EXPORT_HARVESTER(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TYPE_MEDIA_EXPORT_HARVESTER))
-#define RYGEL_IS_MEDIA_EXPORT_HARVESTER_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_TYPE_MEDIA_EXPORT_HARVESTER))
-#define RYGEL_MEDIA_EXPORT_HARVESTER_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_TYPE_MEDIA_EXPORT_HARVESTER, RygelMediaExportHarvesterClass))
+#define RYGEL_MEDIA_EXPORT_TYPE_HARVESTER (rygel_media_export_harvester_get_type ())
+#define RYGEL_MEDIA_EXPORT_HARVESTER(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_MEDIA_EXPORT_TYPE_HARVESTER, RygelMediaExportHarvester))
+#define RYGEL_MEDIA_EXPORT_HARVESTER_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_MEDIA_EXPORT_TYPE_HARVESTER, RygelMediaExportHarvesterClass))
+#define RYGEL_MEDIA_EXPORT_IS_HARVESTER(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_MEDIA_EXPORT_TYPE_HARVESTER))
+#define RYGEL_MEDIA_EXPORT_IS_HARVESTER_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_MEDIA_EXPORT_TYPE_HARVESTER))
+#define RYGEL_MEDIA_EXPORT_HARVESTER_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_MEDIA_EXPORT_TYPE_HARVESTER, RygelMediaExportHarvesterClass))
 
 typedef struct _RygelMediaExportHarvester RygelMediaExportHarvester;
 typedef struct _RygelMediaExportHarvesterClass RygelMediaExportHarvesterClass;
 typedef struct _RygelMediaExportHarvesterPrivate RygelMediaExportHarvesterPrivate;
 
-#define RYGEL_TYPE_MEDIA_EXPORT_METADATA_EXTRACTOR (rygel_media_export_metadata_extractor_get_type ())
-#define RYGEL_MEDIA_EXPORT_METADATA_EXTRACTOR(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_MEDIA_EXPORT_METADATA_EXTRACTOR, RygelMediaExportMetadataExtractor))
-#define RYGEL_MEDIA_EXPORT_METADATA_EXTRACTOR_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TYPE_MEDIA_EXPORT_METADATA_EXTRACTOR, RygelMediaExportMetadataExtractorClass))
-#define RYGEL_IS_MEDIA_EXPORT_METADATA_EXTRACTOR(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TYPE_MEDIA_EXPORT_METADATA_EXTRACTOR))
-#define RYGEL_IS_MEDIA_EXPORT_METADATA_EXTRACTOR_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_TYPE_MEDIA_EXPORT_METADATA_EXTRACTOR))
-#define RYGEL_MEDIA_EXPORT_METADATA_EXTRACTOR_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_TYPE_MEDIA_EXPORT_METADATA_EXTRACTOR, RygelMediaExportMetadataExtractorClass))
+#define RYGEL_MEDIA_EXPORT_TYPE_METADATA_EXTRACTOR (rygel_media_export_metadata_extractor_get_type ())
+#define RYGEL_MEDIA_EXPORT_METADATA_EXTRACTOR(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_MEDIA_EXPORT_TYPE_METADATA_EXTRACTOR, RygelMediaExportMetadataExtractor))
+#define RYGEL_MEDIA_EXPORT_METADATA_EXTRACTOR_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_MEDIA_EXPORT_TYPE_METADATA_EXTRACTOR, RygelMediaExportMetadataExtractorClass))
+#define RYGEL_MEDIA_EXPORT_IS_METADATA_EXTRACTOR(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_MEDIA_EXPORT_TYPE_METADATA_EXTRACTOR))
+#define RYGEL_MEDIA_EXPORT_IS_METADATA_EXTRACTOR_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_MEDIA_EXPORT_TYPE_METADATA_EXTRACTOR))
+#define RYGEL_MEDIA_EXPORT_METADATA_EXTRACTOR_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_MEDIA_EXPORT_TYPE_METADATA_EXTRACTOR, RygelMediaExportMetadataExtractorClass))
 
 typedef struct _RygelMediaExportMetadataExtractor RygelMediaExportMetadataExtractor;
 typedef struct _RygelMediaExportMetadataExtractorClass RygelMediaExportMetadataExtractorClass;
 
-#define RYGEL_TYPE_MEDIA_EXPORT_MEDIA_CACHE (rygel_media_export_media_cache_get_type ())
-#define RYGEL_MEDIA_EXPORT_MEDIA_CACHE(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_MEDIA_EXPORT_MEDIA_CACHE, RygelMediaExportMediaCache))
-#define RYGEL_MEDIA_EXPORT_MEDIA_CACHE_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TYPE_MEDIA_EXPORT_MEDIA_CACHE, RygelMediaExportMediaCacheClass))
-#define RYGEL_IS_MEDIA_EXPORT_MEDIA_CACHE(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TYPE_MEDIA_EXPORT_MEDIA_CACHE))
-#define RYGEL_IS_MEDIA_EXPORT_MEDIA_CACHE_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_TYPE_MEDIA_EXPORT_MEDIA_CACHE))
-#define RYGEL_MEDIA_EXPORT_MEDIA_CACHE_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_TYPE_MEDIA_EXPORT_MEDIA_CACHE, RygelMediaExportMediaCacheClass))
+#define RYGEL_MEDIA_EXPORT_TYPE_MEDIA_CACHE (rygel_media_export_media_cache_get_type ())
+#define RYGEL_MEDIA_EXPORT_MEDIA_CACHE(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_MEDIA_EXPORT_TYPE_MEDIA_CACHE, RygelMediaExportMediaCache))
+#define RYGEL_MEDIA_EXPORT_MEDIA_CACHE_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_MEDIA_EXPORT_TYPE_MEDIA_CACHE, RygelMediaExportMediaCacheClass))
+#define RYGEL_MEDIA_EXPORT_IS_MEDIA_CACHE(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_MEDIA_EXPORT_TYPE_MEDIA_CACHE))
+#define RYGEL_MEDIA_EXPORT_IS_MEDIA_CACHE_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_MEDIA_EXPORT_TYPE_MEDIA_CACHE))
+#define RYGEL_MEDIA_EXPORT_MEDIA_CACHE_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_MEDIA_EXPORT_TYPE_MEDIA_CACHE, RygelMediaExportMediaCacheClass))
 
 typedef struct _RygelMediaExportMediaCache RygelMediaExportMediaCache;
 typedef struct _RygelMediaExportMediaCacheClass RygelMediaExportMediaCacheClass;
 
-#define RYGEL_TYPE_FILE_QUEUE_ENTRY (rygel_file_queue_entry_get_type ())
-#define RYGEL_FILE_QUEUE_ENTRY(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_FILE_QUEUE_ENTRY, RygelFileQueueEntry))
-#define RYGEL_FILE_QUEUE_ENTRY_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TYPE_FILE_QUEUE_ENTRY, RygelFileQueueEntryClass))
-#define RYGEL_IS_FILE_QUEUE_ENTRY(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TYPE_FILE_QUEUE_ENTRY))
-#define RYGEL_IS_FILE_QUEUE_ENTRY_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_TYPE_FILE_QUEUE_ENTRY))
-#define RYGEL_FILE_QUEUE_ENTRY_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_TYPE_FILE_QUEUE_ENTRY, RygelFileQueueEntryClass))
-
-typedef struct _RygelFileQueueEntry RygelFileQueueEntry;
-typedef struct _RygelFileQueueEntryClass RygelFileQueueEntryClass;
-
-#define RYGEL_TYPE_MEDIA_EXPORT_RECURSIVE_FILE_MONITOR (rygel_media_export_recursive_file_monitor_get_type ())
-#define RYGEL_MEDIA_EXPORT_RECURSIVE_FILE_MONITOR(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_MEDIA_EXPORT_RECURSIVE_FILE_MONITOR, RygelMediaExportRecursiveFileMonitor))
-#define RYGEL_MEDIA_EXPORT_RECURSIVE_FILE_MONITOR_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TYPE_MEDIA_EXPORT_RECURSIVE_FILE_MONITOR, RygelMediaExportRecursiveFileMonitorClass))
-#define RYGEL_IS_MEDIA_EXPORT_RECURSIVE_FILE_MONITOR(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TYPE_MEDIA_EXPORT_RECURSIVE_FILE_MONITOR))
-#define RYGEL_IS_MEDIA_EXPORT_RECURSIVE_FILE_MONITOR_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_TYPE_MEDIA_EXPORT_RECURSIVE_FILE_MONITOR))
-#define RYGEL_MEDIA_EXPORT_RECURSIVE_FILE_MONITOR_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_TYPE_MEDIA_EXPORT_RECURSIVE_FILE_MONITOR, RygelMediaExportRecursiveFileMonitorClass))
+#define RYGEL_MEDIA_EXPORT_TYPE_RECURSIVE_FILE_MONITOR (rygel_media_export_recursive_file_monitor_get_type ())
+#define RYGEL_MEDIA_EXPORT_RECURSIVE_FILE_MONITOR(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_MEDIA_EXPORT_TYPE_RECURSIVE_FILE_MONITOR, RygelMediaExportRecursiveFileMonitor))
+#define RYGEL_MEDIA_EXPORT_RECURSIVE_FILE_MONITOR_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_MEDIA_EXPORT_TYPE_RECURSIVE_FILE_MONITOR, RygelMediaExportRecursiveFileMonitorClass))
+#define RYGEL_MEDIA_EXPORT_IS_RECURSIVE_FILE_MONITOR(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_MEDIA_EXPORT_TYPE_RECURSIVE_FILE_MONITOR))
+#define RYGEL_MEDIA_EXPORT_IS_RECURSIVE_FILE_MONITOR_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_MEDIA_EXPORT_TYPE_RECURSIVE_FILE_MONITOR))
+#define RYGEL_MEDIA_EXPORT_RECURSIVE_FILE_MONITOR_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_MEDIA_EXPORT_TYPE_RECURSIVE_FILE_MONITOR, RygelMediaExportRecursiveFileMonitorClass))
 
 typedef struct _RygelMediaExportRecursiveFileMonitor RygelMediaExportRecursiveFileMonitor;
 typedef struct _RygelMediaExportRecursiveFileMonitorClass RygelMediaExportRecursiveFileMonitorClass;
@@ -97,22 +87,30 @@ typedef struct _RygelMediaExportRecursiveFileMonitorClass RygelMediaExportRecurs
 typedef struct _RygelNullContainer RygelNullContainer;
 typedef struct _RygelNullContainerClass RygelNullContainerClass;
 
-#define RYGEL_TYPE_DUMMY_CONTAINER (rygel_dummy_container_get_type ())
-#define RYGEL_DUMMY_CONTAINER(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_DUMMY_CONTAINER, RygelDummyContainer))
-#define RYGEL_DUMMY_CONTAINER_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TYPE_DUMMY_CONTAINER, RygelDummyContainerClass))
-#define RYGEL_IS_DUMMY_CONTAINER(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TYPE_DUMMY_CONTAINER))
-#define RYGEL_IS_DUMMY_CONTAINER_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_TYPE_DUMMY_CONTAINER))
-#define RYGEL_DUMMY_CONTAINER_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_TYPE_DUMMY_CONTAINER, RygelDummyContainerClass))
+#define RYGEL_MEDIA_EXPORT_TYPE_DUMMY_CONTAINER (rygel_media_export_dummy_container_get_type ())
+#define RYGEL_MEDIA_EXPORT_DUMMY_CONTAINER(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_MEDIA_EXPORT_TYPE_DUMMY_CONTAINER, RygelMediaExportDummyContainer))
+#define RYGEL_MEDIA_EXPORT_DUMMY_CONTAINER_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_MEDIA_EXPORT_TYPE_DUMMY_CONTAINER, RygelMediaExportDummyContainerClass))
+#define RYGEL_MEDIA_EXPORT_IS_DUMMY_CONTAINER(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_MEDIA_EXPORT_TYPE_DUMMY_CONTAINER))
+#define RYGEL_MEDIA_EXPORT_IS_DUMMY_CONTAINER_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_MEDIA_EXPORT_TYPE_DUMMY_CONTAINER))
+#define RYGEL_MEDIA_EXPORT_DUMMY_CONTAINER_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_MEDIA_EXPORT_TYPE_DUMMY_CONTAINER, RygelMediaExportDummyContainerClass))
 
-typedef struct _RygelDummyContainer RygelDummyContainer;
-typedef struct _RygelDummyContainerClass RygelDummyContainerClass;
+typedef struct _RygelMediaExportDummyContainer RygelMediaExportDummyContainer;
+typedef struct _RygelMediaExportDummyContainerClass RygelMediaExportDummyContainerClass;
 typedef struct _RygelNullContainerPrivate RygelNullContainerPrivate;
-typedef struct _RygelDummyContainerPrivate RygelDummyContainerPrivate;
+typedef struct _RygelMediaExportDummyContainerPrivate RygelMediaExportDummyContainerPrivate;
 #define __g_list_free_g_object_unref0(var) ((var == NULL) ? NULL : (var = (_g_list_free_g_object_unref (var), NULL)))
 typedef struct _RygelMediaExportHarvesterEnumerateDirectoryData RygelMediaExportHarvesterEnumerateDirectoryData;
-typedef struct _RygelFileQueueEntryPrivate RygelFileQueueEntryPrivate;
 typedef struct _RygelMediaExportHarvesterHarvestData RygelMediaExportHarvesterHarvestData;
-#define _rygel_file_queue_entry_unref0(var) ((var == NULL) ? NULL : (var = (rygel_file_queue_entry_unref (var), NULL)))
+
+#define RYGEL_MEDIA_EXPORT_TYPE_MEDIA_EXPORT_ITEM (rygel_media_export_media_export_item_get_type ())
+#define RYGEL_MEDIA_EXPORT_MEDIA_EXPORT_ITEM(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_MEDIA_EXPORT_TYPE_MEDIA_EXPORT_ITEM, RygelMediaExportMediaExportItem))
+#define RYGEL_MEDIA_EXPORT_MEDIA_EXPORT_ITEM_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_MEDIA_EXPORT_TYPE_MEDIA_EXPORT_ITEM, RygelMediaExportMediaExportItemClass))
+#define RYGEL_MEDIA_EXPORT_IS_MEDIA_EXPORT_ITEM(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_MEDIA_EXPORT_TYPE_MEDIA_EXPORT_ITEM))
+#define RYGEL_MEDIA_EXPORT_IS_MEDIA_EXPORT_ITEM_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_MEDIA_EXPORT_TYPE_MEDIA_EXPORT_ITEM))
+#define RYGEL_MEDIA_EXPORT_MEDIA_EXPORT_ITEM_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_MEDIA_EXPORT_TYPE_MEDIA_EXPORT_ITEM, RygelMediaExportMediaExportItemClass))
+
+typedef struct _RygelMediaExportMediaExportItem RygelMediaExportMediaExportItem;
+typedef struct _RygelMediaExportMediaExportItemClass RygelMediaExportMediaExportItemClass;
 
 struct _RygelMediaExportHarvester {
 	GObject parent_instance;
@@ -128,17 +126,17 @@ struct _RygelMediaExportHarvesterPrivate {
 	RygelMediaExportMetadataExtractor* extractor;
 	RygelMediaExportMediaCache* media_db;
 	GQueue* containers;
-	GQueue* files;
+	GeeQueue* files;
 	GFile* origin;
 	RygelMediaContainer* parent;
 	RygelMediaExportRecursiveFileMonitor* monitor;
 };
 
 typedef enum  {
-	RYGEL_DATABASE_ERROR_IO_ERROR,
-	RYGEL_DATABASE_ERROR_SQLITE_ERROR
-} RygelDatabaseError;
-#define RYGEL_DATABASE_ERROR rygel_database_error_quark ()
+	RYGEL_MEDIA_EXPORT_DATABASE_ERROR_IO_ERROR,
+	RYGEL_MEDIA_EXPORT_DATABASE_ERROR_SQLITE_ERROR
+} RygelMediaExportDatabaseError;
+#define RYGEL_MEDIA_EXPORT_DATABASE_ERROR rygel_media_export_database_error_quark ()
 typedef enum  {
 	RYGEL_MEDIA_DB_ERROR_SQLITE_ERROR,
 	RYGEL_MEDIA_DB_ERROR_GENERAL_ERROR,
@@ -155,14 +153,14 @@ struct _RygelNullContainerClass {
 	RygelMediaContainerClass parent_class;
 };
 
-struct _RygelDummyContainer {
+struct _RygelMediaExportDummyContainer {
 	RygelNullContainer parent_instance;
-	RygelDummyContainerPrivate * priv;
+	RygelMediaExportDummyContainerPrivate * priv;
 	GFile* file;
 	GeeArrayList* seen_children;
 };
 
-struct _RygelDummyContainerClass {
+struct _RygelMediaExportDummyContainerClass {
 	RygelNullContainerClass parent_class;
 };
 
@@ -182,19 +180,6 @@ struct _RygelMediaExportHarvesterEnumerateDirectoryData {
 	GError * _inner_error_;
 };
 
-struct _RygelFileQueueEntry {
-	GTypeInstance parent_instance;
-	volatile int ref_count;
-	RygelFileQueueEntryPrivate * priv;
-	GFile* file;
-	gboolean update;
-};
-
-struct _RygelFileQueueEntryClass {
-	GTypeClass parent_class;
-	void (*finalize) (RygelFileQueueEntry *self);
-};
-
 struct _RygelMediaExportHarvesterHarvestData {
 	int _state_;
 	GAsyncResult* _res_;
@@ -203,7 +188,7 @@ struct _RygelMediaExportHarvesterHarvestData {
 	GFile* file;
 	GFileInfo* info;
 	GFile* _tmp0_;
-	RygelDummyContainer* container;
+	RygelMediaExportDummyContainer* container;
 	gint64 timestamp;
 	gboolean _tmp1_;
 	char* id;
@@ -223,44 +208,36 @@ static gpointer rygel_media_export_harvester_parent_class = NULL;
 GType rygel_media_export_harvester_get_type (void);
 GType rygel_media_export_metadata_extractor_get_type (void);
 GType rygel_media_export_media_cache_get_type (void);
-gpointer rygel_file_queue_entry_ref (gpointer instance);
-void rygel_file_queue_entry_unref (gpointer instance);
-GParamSpec* rygel_param_spec_file_queue_entry (const gchar* name, const gchar* nick, const gchar* blurb, GType object_type, GParamFlags flags);
-void rygel_value_set_file_queue_entry (GValue* value, gpointer v_object);
-void rygel_value_take_file_queue_entry (GValue* value, gpointer v_object);
-gpointer rygel_value_get_file_queue_entry (const GValue* value);
-GType rygel_file_queue_entry_get_type (void);
 GType rygel_media_export_recursive_file_monitor_get_type (void);
-#define RYGEL_MEDIA_EXPORT_HARVESTER_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), RYGEL_TYPE_MEDIA_EXPORT_HARVESTER, RygelMediaExportHarvesterPrivate))
+#define RYGEL_MEDIA_EXPORT_HARVESTER_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), RYGEL_MEDIA_EXPORT_TYPE_HARVESTER, RygelMediaExportHarvesterPrivate))
 enum  {
 	RYGEL_MEDIA_EXPORT_HARVESTER_DUMMY_PROPERTY
 };
+#define RYGEL_MEDIA_EXPORT_HARVESTER_HARVESTER_ATTRIBUTES G_FILE_ATTRIBUTE_STANDARD_NAME "," G_FILE_ATTRIBUTE_STANDARD_TYPE "," G_FILE_ATTRIBUTE_TIME_MODIFIED "," G_FILE_ATTRIBUTE_STANDARD_SIZE
 static void rygel_media_export_harvester_on_extracted_cb (RygelMediaExportHarvester* self, GFile* file, GstTagList* tag_list);
 static void _rygel_media_export_harvester_on_extracted_cb_rygel_media_export_metadata_extractor_extraction_done (RygelMediaExportMetadataExtractor* _sender, GFile* file, GstTagList* tag_list, gpointer self);
 static void rygel_media_export_harvester_on_extractor_error_cb (RygelMediaExportHarvester* self, GFile* file, GError* _error_);
 static void _rygel_media_export_harvester_on_extractor_error_cb_rygel_media_export_metadata_extractor_error (RygelMediaExportMetadataExtractor* _sender, GFile* file, GError* err, gpointer self);
 RygelMediaExportHarvester* rygel_media_export_harvester_new (RygelMediaContainer* parent, RygelMediaExportMediaCache* media_db, RygelMediaExportMetadataExtractor* extractor, RygelMediaExportRecursiveFileMonitor* monitor);
 RygelMediaExportHarvester* rygel_media_export_harvester_construct (GType object_type, RygelMediaContainer* parent, RygelMediaExportMediaCache* media_db, RygelMediaExportMetadataExtractor* extractor, RygelMediaExportRecursiveFileMonitor* monitor);
-GQuark rygel_database_error_quark (void);
+GQuark rygel_media_export_database_error_quark (void);
 gboolean rygel_media_export_media_cache_exists (RygelMediaExportMediaCache* self, const char* object_id, gint64* timestamp, GError** error);
-RygelFileQueueEntry* rygel_file_queue_entry_new (GFile* file, gboolean update);
-RygelFileQueueEntry* rygel_file_queue_entry_construct (GType object_type, GFile* file, gboolean update);
 GQuark rygel_media_db_error_quark (void);
 RygelMediaItem* rygel_media_export_media_cache_get_item (RygelMediaExportMediaCache* self, const char* item_id, GError** error);
 static gboolean rygel_media_export_harvester_push_if_changed_or_unknown (RygelMediaExportHarvester* self, GFile* file, GFileInfo* info, char** id);
 GType rygel_null_container_get_type (void);
-GType rygel_dummy_container_get_type (void);
+GType rygel_media_export_dummy_container_get_type (void);
 void rygel_media_export_recursive_file_monitor_monitor (RygelMediaExportRecursiveFileMonitor* self, GFile* file, GAsyncReadyCallback _callback_, gpointer _user_data_);
 void rygel_media_export_recursive_file_monitor_monitor_finish (RygelMediaExportRecursiveFileMonitor* self, GAsyncResult* _res_);
-RygelDummyContainer* rygel_dummy_container_new (GFile* file, RygelMediaContainer* parent);
-RygelDummyContainer* rygel_dummy_container_construct (GType object_type, GFile* file, RygelMediaContainer* parent);
-void rygel_dummy_container_seen (RygelDummyContainer* self, const char* id);
+RygelMediaExportDummyContainer* rygel_media_export_dummy_container_new (GFile* file, RygelMediaContainer* parent);
+RygelMediaExportDummyContainer* rygel_media_export_dummy_container_construct (GType object_type, GFile* file, RygelMediaContainer* parent);
+void rygel_media_export_dummy_container_seen (RygelMediaExportDummyContainer* self, const char* id);
 void rygel_media_export_media_cache_save_container (RygelMediaExportMediaCache* self, RygelMediaContainer* container, GError** error);
 static gboolean rygel_media_export_harvester_process_children (RygelMediaExportHarvester* self, GList* list);
 static void rygel_media_export_harvester_enumerate_directory_data_free (gpointer _data);
 static void rygel_media_export_harvester_enumerate_directory_ready (GObject* source_object, GAsyncResult* _res_, gpointer _user_data_);
 static void _g_list_free_g_object_unref (GList* self);
-static void rygel_media_export_harvester_cleanup_database (RygelMediaExportHarvester* self, RygelDummyContainer* container);
+static void rygel_media_export_harvester_cleanup_database (RygelMediaExportHarvester* self, RygelMediaExportDummyContainer* container);
 static void rygel_media_export_harvester_do_update (RygelMediaExportHarvester* self);
 static void rygel_media_export_harvester_enumerate_directory (RygelMediaExportHarvester* self, GFile* directory, GAsyncReadyCallback _callback_, gpointer _user_data_);
 static void rygel_media_export_harvester_enumerate_directory_finish (RygelMediaExportHarvester* self, GAsyncResult* _res_);
@@ -275,8 +252,8 @@ static gboolean _rygel_media_export_harvester_on_idle_gsource_func (gpointer sel
 void rygel_media_export_harvester_harvest (RygelMediaExportHarvester* self, GFile* file, GAsyncReadyCallback _callback_, gpointer _user_data_);
 void rygel_media_export_harvester_harvest_finish (RygelMediaExportHarvester* self, GAsyncResult* _res_);
 static gboolean rygel_media_export_harvester_harvest_co (RygelMediaExportHarvesterHarvestData* data);
-RygelMediaItem* rygel_media_export_item_create_from_taglist (RygelMediaContainer* parent, GFile* file, GstTagList* tag_list);
-void rygel_media_export_media_cache_update_object (RygelMediaExportMediaCache* self, RygelMediaObject* object, GError** error);
+GType rygel_media_export_media_export_item_get_type (void);
+RygelMediaExportMediaExportItem* rygel_media_export_media_export_item_create_from_taglist (RygelMediaContainer* parent, GFile* file, GstTagList* tag_list);
 void rygel_media_export_media_cache_save_item (RygelMediaExportMediaCache* self, RygelMediaItem* item, GError** error);
 static void rygel_media_export_harvester_finalize (GObject* obj);
 
@@ -287,284 +264,284 @@ static gpointer _g_object_ref0 (gpointer self) {
 }
 
 
-#line 257 "rygel-media-export-harvester.vala"
+#line 260 "rygel-media-export-harvester.vala"
 static void _rygel_media_export_harvester_on_extracted_cb_rygel_media_export_metadata_extractor_extraction_done (RygelMediaExportMetadataExtractor* _sender, GFile* file, GstTagList* tag_list, gpointer self) {
-#line 293 "rygel-media-export-harvester.c"
+#line 270 "rygel-media-export-harvester.c"
 	rygel_media_export_harvester_on_extracted_cb (self, file, tag_list);
 }
 
 
-#line 291 "rygel-media-export-harvester.vala"
+#line 290 "rygel-media-export-harvester.vala"
 static void _rygel_media_export_harvester_on_extractor_error_cb_rygel_media_export_metadata_extractor_error (RygelMediaExportMetadataExtractor* _sender, GFile* file, GError* err, gpointer self) {
-#line 300 "rygel-media-export-harvester.c"
+#line 277 "rygel-media-export-harvester.c"
 	rygel_media_export_harvester_on_extractor_error_cb (self, file, err);
 }
 
 
-#line 34 "rygel-media-export-harvester.vala"
+#line 40 "rygel-media-export-harvester.vala"
 RygelMediaExportHarvester* rygel_media_export_harvester_construct (GType object_type, RygelMediaContainer* parent, RygelMediaExportMediaCache* media_db, RygelMediaExportMetadataExtractor* extractor, RygelMediaExportRecursiveFileMonitor* monitor) {
-#line 307 "rygel-media-export-harvester.c"
+#line 284 "rygel-media-export-harvester.c"
 	RygelMediaExportHarvester * self;
 	RygelMediaContainer* _tmp0_;
 	RygelMediaExportMetadataExtractor* _tmp1_;
 	RygelMediaExportMediaCache* _tmp2_;
-	GQueue* _tmp3_;
+	GeeQueue* _tmp3_;
 	GQueue* _tmp4_;
 	GFile* _tmp5_;
 	RygelMediaExportRecursiveFileMonitor* _tmp6_;
 	GCancellable* _tmp7_;
-#line 34 "rygel-media-export-harvester.vala"
-	g_return_val_if_fail (parent != NULL, NULL);
-#line 34 "rygel-media-export-harvester.vala"
-	g_return_val_if_fail (media_db != NULL, NULL);
-#line 34 "rygel-media-export-harvester.vala"
-	g_return_val_if_fail (extractor != NULL, NULL);
-#line 34 "rygel-media-export-harvester.vala"
-	g_return_val_if_fail (monitor != NULL, NULL);
-#line 34 "rygel-media-export-harvester.vala"
-	self = (RygelMediaExportHarvester*) g_object_new (object_type, NULL);
-#line 38 "rygel-media-export-harvester.vala"
-	self->priv->parent = (_tmp0_ = _g_object_ref0 (parent), _g_object_unref0 (self->priv->parent), _tmp0_);
-#line 39 "rygel-media-export-harvester.vala"
-	self->priv->extractor = (_tmp1_ = _g_object_ref0 (extractor), _g_object_unref0 (self->priv->extractor), _tmp1_);
 #line 40 "rygel-media-export-harvester.vala"
-	self->priv->media_db = (_tmp2_ = _g_object_ref0 (media_db), _g_object_unref0 (self->priv->media_db), _tmp2_);
-#line 41 "rygel-media-export-harvester.vala"
-	g_signal_connect_object (self->priv->extractor, "extraction-done", (GCallback) _rygel_media_export_harvester_on_extracted_cb_rygel_media_export_metadata_extractor_extraction_done, self, 0);
-#line 42 "rygel-media-export-harvester.vala"
-	g_signal_connect_object (self->priv->extractor, "error", (GCallback) _rygel_media_export_harvester_on_extractor_error_cb_rygel_media_export_metadata_extractor_error, self, 0);
-#line 43 "rygel-media-export-harvester.vala"
-	self->priv->files = (_tmp3_ = g_queue_new (), _g_queue_free0 (self->priv->files), _tmp3_);
+	g_return_val_if_fail (parent != NULL, NULL);
+#line 40 "rygel-media-export-harvester.vala"
+	g_return_val_if_fail (media_db != NULL, NULL);
+#line 40 "rygel-media-export-harvester.vala"
+	g_return_val_if_fail (extractor != NULL, NULL);
+#line 40 "rygel-media-export-harvester.vala"
+	g_return_val_if_fail (monitor != NULL, NULL);
+#line 40 "rygel-media-export-harvester.vala"
+	self = (RygelMediaExportHarvester*) g_object_new (object_type, NULL);
 #line 44 "rygel-media-export-harvester.vala"
-	self->priv->containers = (_tmp4_ = g_queue_new (), _g_queue_free0 (self->priv->containers), _tmp4_);
+	self->priv->parent = (_tmp0_ = _g_object_ref0 (parent), _g_object_unref0 (self->priv->parent), _tmp0_);
 #line 45 "rygel-media-export-harvester.vala"
-	self->priv->origin = (_tmp5_ = NULL, _g_object_unref0 (self->priv->origin), _tmp5_);
+	self->priv->extractor = (_tmp1_ = _g_object_ref0 (extractor), _g_object_unref0 (self->priv->extractor), _tmp1_);
 #line 46 "rygel-media-export-harvester.vala"
-	self->priv->monitor = (_tmp6_ = _g_object_ref0 (monitor), _g_object_unref0 (self->priv->monitor), _tmp6_);
+	self->priv->media_db = (_tmp2_ = _g_object_ref0 (media_db), _g_object_unref0 (self->priv->media_db), _tmp2_);
 #line 47 "rygel-media-export-harvester.vala"
+	g_signal_connect_object (self->priv->extractor, "extraction-done", (GCallback) _rygel_media_export_harvester_on_extracted_cb_rygel_media_export_metadata_extractor_extraction_done, self, 0);
+#line 48 "rygel-media-export-harvester.vala"
+	g_signal_connect_object (self->priv->extractor, "error", (GCallback) _rygel_media_export_harvester_on_extractor_error_cb_rygel_media_export_metadata_extractor_error, self, 0);
+#line 49 "rygel-media-export-harvester.vala"
+	self->priv->files = (_tmp3_ = (GeeQueue*) gee_linked_list_new (G_TYPE_FILE, (GBoxedCopyFunc) g_object_ref, g_object_unref, NULL), _g_object_unref0 (self->priv->files), _tmp3_);
+#line 50 "rygel-media-export-harvester.vala"
+	self->priv->containers = (_tmp4_ = g_queue_new (), _g_queue_free0 (self->priv->containers), _tmp4_);
+#line 51 "rygel-media-export-harvester.vala"
+	self->priv->origin = (_tmp5_ = NULL, _g_object_unref0 (self->priv->origin), _tmp5_);
+#line 52 "rygel-media-export-harvester.vala"
+	self->priv->monitor = (_tmp6_ = _g_object_ref0 (monitor), _g_object_unref0 (self->priv->monitor), _tmp6_);
+#line 53 "rygel-media-export-harvester.vala"
 	self->cancellable = (_tmp7_ = g_cancellable_new (), _g_object_unref0 (self->cancellable), _tmp7_);
-#line 347 "rygel-media-export-harvester.c"
+#line 324 "rygel-media-export-harvester.c"
 	return self;
 }
 
 
-#line 34 "rygel-media-export-harvester.vala"
+#line 40 "rygel-media-export-harvester.vala"
 RygelMediaExportHarvester* rygel_media_export_harvester_new (RygelMediaContainer* parent, RygelMediaExportMediaCache* media_db, RygelMediaExportMetadataExtractor* extractor, RygelMediaExportRecursiveFileMonitor* monitor) {
-#line 34 "rygel-media-export-harvester.vala"
-	return rygel_media_export_harvester_construct (RYGEL_TYPE_MEDIA_EXPORT_HARVESTER, parent, media_db, extractor, monitor);
-#line 356 "rygel-media-export-harvester.c"
+#line 40 "rygel-media-export-harvester.vala"
+	return rygel_media_export_harvester_construct (RYGEL_MEDIA_EXPORT_TYPE_HARVESTER, parent, media_db, extractor, monitor);
+#line 333 "rygel-media-export-harvester.c"
 }
 
 
-#line 50 "rygel-media-export-harvester.vala"
+#line 56 "rygel-media-export-harvester.vala"
 static gboolean rygel_media_export_harvester_push_if_changed_or_unknown (RygelMediaExportHarvester* self, GFile* file, GFileInfo* info, char** id) {
-#line 362 "rygel-media-export-harvester.c"
+#line 339 "rygel-media-export-harvester.c"
 	gboolean result = FALSE;
 	GError * _inner_error_;
 	char* _tmp1_;
 	char* _tmp0_;
 	gint64 timestamp = 0LL;
-#line 50 "rygel-media-export-harvester.vala"
+#line 56 "rygel-media-export-harvester.vala"
 	g_return_val_if_fail (self != NULL, FALSE);
-#line 50 "rygel-media-export-harvester.vala"
+#line 56 "rygel-media-export-harvester.vala"
 	g_return_val_if_fail (file != NULL, FALSE);
-#line 50 "rygel-media-export-harvester.vala"
+#line 56 "rygel-media-export-harvester.vala"
 	g_return_val_if_fail (info != NULL, FALSE);
-#line 374 "rygel-media-export-harvester.c"
+#line 351 "rygel-media-export-harvester.c"
 	if (id != NULL) {
 		*id = NULL;
 	}
 	_inner_error_ = NULL;
-#line 53 "rygel-media-export-harvester.vala"
+#line 59 "rygel-media-export-harvester.vala"
 	*id = (_tmp1_ = g_compute_checksum_for_string (G_CHECKSUM_MD5, _tmp0_ = g_file_get_uri (file), -1), _g_free0 (*id), _tmp1_);
-#line 381 "rygel-media-export-harvester.c"
+#line 358 "rygel-media-export-harvester.c"
 	_g_free0 (_tmp0_);
 	{
 		gboolean _tmp2_;
-#line 56 "rygel-media-export-harvester.vala"
-		_tmp2_ = rygel_media_export_media_cache_exists (self->priv->media_db, *id, &timestamp, &_inner_error_);
-#line 387 "rygel-media-export-harvester.c"
-		if (_inner_error_ != NULL) {
-			goto __catch32_g_error;
-		}
-#line 56 "rygel-media-export-harvester.vala"
-		if (_tmp2_) {
-#line 393 "rygel-media-export-harvester.c"
-			gint64 mtime;
-#line 57 "rygel-media-export-harvester.vala"
-			mtime = (gint64) g_file_info_get_attribute_uint64 (info, G_FILE_ATTRIBUTE_TIME_MODIFIED);
-#line 60 "rygel-media-export-harvester.vala"
-			if (mtime > timestamp) {
-#line 61 "rygel-media-export-harvester.vala"
-				g_queue_push_tail (self->priv->files, rygel_file_queue_entry_new (file, TRUE));
-#line 401 "rygel-media-export-harvester.c"
-				result = TRUE;
 #line 62 "rygel-media-export-harvester.vala"
+		_tmp2_ = rygel_media_export_media_cache_exists (self->priv->media_db, *id, &timestamp, &_inner_error_);
+#line 364 "rygel-media-export-harvester.c"
+		if (_inner_error_ != NULL) {
+			goto __catch31_g_error;
+		}
+#line 62 "rygel-media-export-harvester.vala"
+		if (_tmp2_) {
+#line 370 "rygel-media-export-harvester.c"
+			gint64 mtime;
+#line 63 "rygel-media-export-harvester.vala"
+			mtime = (gint64) g_file_info_get_attribute_uint64 (info, G_FILE_ATTRIBUTE_TIME_MODIFIED);
+#line 66 "rygel-media-export-harvester.vala"
+			if (mtime > timestamp) {
+#line 67 "rygel-media-export-harvester.vala"
+				gee_queue_offer (self->priv->files, file);
+#line 378 "rygel-media-export-harvester.c"
+				result = TRUE;
+#line 69 "rygel-media-export-harvester.vala"
 				return result;
-#line 405 "rygel-media-export-harvester.c"
+#line 382 "rygel-media-export-harvester.c"
 			} else {
 				gint64 size;
 				RygelMediaItem* item;
-#line 65 "rygel-media-export-harvester.vala"
+#line 72 "rygel-media-export-harvester.vala"
 				size = g_file_info_get_size (info);
-#line 66 "rygel-media-export-harvester.vala"
+#line 73 "rygel-media-export-harvester.vala"
 				item = rygel_media_export_media_cache_get_item (self->priv->media_db, *id, &_inner_error_);
-#line 413 "rygel-media-export-harvester.c"
+#line 390 "rygel-media-export-harvester.c"
 				if (_inner_error_ != NULL) {
-					goto __catch32_g_error;
+					goto __catch31_g_error;
 				}
-#line 67 "rygel-media-export-harvester.vala"
+#line 74 "rygel-media-export-harvester.vala"
 				if (item->size != size) {
-#line 68 "rygel-media-export-harvester.vala"
-					g_queue_push_tail (self->priv->files, rygel_file_queue_entry_new (file, TRUE));
-#line 421 "rygel-media-export-harvester.c"
+#line 75 "rygel-media-export-harvester.vala"
+					gee_queue_offer (self->priv->files, file);
+#line 398 "rygel-media-export-harvester.c"
 					result = TRUE;
 					_g_object_unref0 (item);
-#line 71 "rygel-media-export-harvester.vala"
+#line 77 "rygel-media-export-harvester.vala"
 					return result;
-#line 426 "rygel-media-export-harvester.c"
+#line 403 "rygel-media-export-harvester.c"
 				}
 				_g_object_unref0 (item);
 			}
 		} else {
-#line 75 "rygel-media-export-harvester.vala"
-			g_queue_push_tail (self->priv->files, rygel_file_queue_entry_new (file, FALSE));
-#line 433 "rygel-media-export-harvester.c"
+#line 81 "rygel-media-export-harvester.vala"
+			gee_queue_offer (self->priv->files, file);
+#line 410 "rygel-media-export-harvester.c"
 			result = TRUE;
-#line 76 "rygel-media-export-harvester.vala"
+#line 83 "rygel-media-export-harvester.vala"
 			return result;
-#line 437 "rygel-media-export-harvester.c"
+#line 414 "rygel-media-export-harvester.c"
 		}
 	}
-	goto __finally32;
-	__catch32_g_error:
+	goto __finally31;
+	__catch31_g_error:
 	{
-		GError * err;
-		err = _inner_error_;
+		GError * _error_;
+		_error_ = _inner_error_;
 		_inner_error_ = NULL;
 		{
-#line 79 "rygel-media-export-harvester.vala"
-			g_warning (_ ("Failed to query database: %s"), err->message);
-#line 449 "rygel-media-export-harvester.c"
-			_g_error_free0 (err);
+#line 86 "rygel-media-export-harvester.vala"
+			g_warning (_ ("Failed to query database: %s"), _error_->message);
+#line 426 "rygel-media-export-harvester.c"
+			_g_error_free0 (_error_);
 		}
 	}
-	__finally32:
+	__finally31:
 	if (_inner_error_ != NULL) {
 		g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
 		g_clear_error (&_inner_error_);
 		return FALSE;
 	}
 	result = FALSE;
-#line 82 "rygel-media-export-harvester.vala"
+#line 89 "rygel-media-export-harvester.vala"
 	return result;
-#line 462 "rygel-media-export-harvester.c"
+#line 439 "rygel-media-export-harvester.c"
 }
 
 
-#line 85 "rygel-media-export-harvester.vala"
+#line 92 "rygel-media-export-harvester.vala"
 static gboolean rygel_media_export_harvester_process_children (RygelMediaExportHarvester* self, GList* list) {
-#line 468 "rygel-media-export-harvester.c"
+#line 445 "rygel-media-export-harvester.c"
 	gboolean result = FALSE;
 	GError * _inner_error_;
 	gboolean _tmp0_ = FALSE;
-#line 85 "rygel-media-export-harvester.vala"
+#line 92 "rygel-media-export-harvester.vala"
 	g_return_val_if_fail (self != NULL, FALSE);
-#line 474 "rygel-media-export-harvester.c"
+#line 451 "rygel-media-export-harvester.c"
 	_inner_error_ = NULL;
-#line 86 "rygel-media-export-harvester.vala"
+#line 93 "rygel-media-export-harvester.vala"
 	if (list == NULL) {
-#line 86 "rygel-media-export-harvester.vala"
+#line 93 "rygel-media-export-harvester.vala"
 		_tmp0_ = TRUE;
-#line 480 "rygel-media-export-harvester.c"
+#line 457 "rygel-media-export-harvester.c"
 	} else {
-#line 86 "rygel-media-export-harvester.vala"
+#line 93 "rygel-media-export-harvester.vala"
 		_tmp0_ = g_cancellable_is_cancelled (self->cancellable);
-#line 484 "rygel-media-export-harvester.c"
+#line 461 "rygel-media-export-harvester.c"
 	}
-#line 86 "rygel-media-export-harvester.vala"
+#line 93 "rygel-media-export-harvester.vala"
 	if (_tmp0_) {
-#line 488 "rygel-media-export-harvester.c"
+#line 465 "rygel-media-export-harvester.c"
 		result = FALSE;
-#line 87 "rygel-media-export-harvester.vala"
+#line 94 "rygel-media-export-harvester.vala"
 		return result;
-#line 492 "rygel-media-export-harvester.c"
+#line 469 "rygel-media-export-harvester.c"
 	}
 	{
 		GList* info_collection;
 		GList* info_it;
-#line 89 "rygel-media-export-harvester.vala"
+#line 97 "rygel-media-export-harvester.vala"
 		info_collection = list;
-#line 499 "rygel-media-export-harvester.c"
+#line 476 "rygel-media-export-harvester.c"
 		for (info_it = info_collection; info_it != NULL; info_it = info_it->next) {
 			GFileInfo* info;
-#line 89 "rygel-media-export-harvester.vala"
+#line 97 "rygel-media-export-harvester.vala"
 			info = _g_object_ref0 ((GFileInfo*) info_it->data);
-#line 504 "rygel-media-export-harvester.c"
+#line 481 "rygel-media-export-harvester.c"
 			{
-				RygelDummyContainer* parent_container;
+				RygelMediaExportDummyContainer* parent_container;
 				GFile* dir;
 				GFile* file;
-#line 90 "rygel-media-export-harvester.vala"
-				if (g_utf8_get_char (g_utf8_offset_to_pointer (g_file_info_get_name (info), 0)) == '.') {
-#line 511 "rygel-media-export-harvester.c"
-					_g_object_unref0 (info);
-#line 91 "rygel-media-export-harvester.vala"
-					continue;
-#line 515 "rygel-media-export-harvester.c"
-				}
-#line 94 "rygel-media-export-harvester.vala"
-				parent_container = _g_object_ref0 (RYGEL_DUMMY_CONTAINER ((RygelMediaContainer*) g_queue_peek_head (self->priv->containers)));
-#line 96 "rygel-media-export-harvester.vala"
-				dir = _g_object_ref0 (parent_container->file);
-#line 97 "rygel-media-export-harvester.vala"
-				file = g_file_get_child (dir, g_file_info_get_name (info));
 #line 98 "rygel-media-export-harvester.vala"
-				if (g_file_info_get_file_type (info) == G_FILE_TYPE_DIRECTORY) {
-#line 525 "rygel-media-export-harvester.c"
-					RygelDummyContainer* container;
+				if (g_utf8_get_char (g_utf8_offset_to_pointer (g_file_info_get_name (info), 0)) == '.') {
+#line 488 "rygel-media-export-harvester.c"
+					_g_object_unref0 (info);
 #line 99 "rygel-media-export-harvester.vala"
-					rygel_media_export_recursive_file_monitor_monitor (self->priv->monitor, file, NULL, NULL);
-#line 100 "rygel-media-export-harvester.vala"
-					container = rygel_dummy_container_new (file, (RygelMediaContainer*) parent_container);
+					continue;
+#line 492 "rygel-media-export-harvester.c"
+				}
 #line 102 "rygel-media-export-harvester.vala"
+				parent_container = _g_object_ref0 (RYGEL_MEDIA_EXPORT_DUMMY_CONTAINER ((RygelMediaContainer*) g_queue_peek_head (self->priv->containers)));
+#line 104 "rygel-media-export-harvester.vala"
+				dir = _g_object_ref0 (parent_container->file);
+#line 105 "rygel-media-export-harvester.vala"
+				file = g_file_get_child (dir, g_file_info_get_name (info));
+#line 106 "rygel-media-export-harvester.vala"
+				if (g_file_info_get_file_type (info) == G_FILE_TYPE_DIRECTORY) {
+#line 502 "rygel-media-export-harvester.c"
+					RygelMediaExportDummyContainer* container;
+#line 107 "rygel-media-export-harvester.vala"
+					rygel_media_export_recursive_file_monitor_monitor (self->priv->monitor, file, NULL, NULL);
+#line 108 "rygel-media-export-harvester.vala"
+					container = rygel_media_export_dummy_container_new (file, (RygelMediaContainer*) parent_container);
+#line 110 "rygel-media-export-harvester.vala"
 					g_queue_push_tail (self->priv->containers, _g_object_ref0 ((RygelMediaContainer*) container));
-#line 103 "rygel-media-export-harvester.vala"
-					rygel_dummy_container_seen (parent_container, ((RygelMediaObject*) container)->id);
-#line 535 "rygel-media-export-harvester.c"
+#line 111 "rygel-media-export-harvester.vala"
+					rygel_media_export_dummy_container_seen (parent_container, ((RygelMediaObject*) container)->id);
+#line 512 "rygel-media-export-harvester.c"
 					{
 						gint64 timestamp = 0LL;
 						gboolean _tmp1_;
-#line 106 "rygel-media-export-harvester.vala"
+#line 114 "rygel-media-export-harvester.vala"
 						_tmp1_ = rygel_media_export_media_cache_exists (self->priv->media_db, ((RygelMediaObject*) container)->id, &timestamp, &_inner_error_);
-#line 541 "rygel-media-export-harvester.c"
+#line 518 "rygel-media-export-harvester.c"
 						if (_inner_error_ != NULL) {
-							goto __catch33_g_error;
+							goto __catch32_g_error;
 						}
-#line 106 "rygel-media-export-harvester.vala"
+#line 114 "rygel-media-export-harvester.vala"
 						if (!_tmp1_) {
-#line 108 "rygel-media-export-harvester.vala"
+#line 116 "rygel-media-export-harvester.vala"
 							rygel_media_export_media_cache_save_container (self->priv->media_db, (RygelMediaContainer*) container, &_inner_error_);
-#line 549 "rygel-media-export-harvester.c"
+#line 526 "rygel-media-export-harvester.c"
 							if (_inner_error_ != NULL) {
-								goto __catch33_g_error;
+								goto __catch32_g_error;
 							}
 						}
 					}
-					goto __finally33;
-					__catch33_g_error:
+					goto __finally32;
+					__catch32_g_error:
 					{
 						GError * err;
 						err = _inner_error_;
 						_inner_error_ = NULL;
 						{
-#line 111 "rygel-media-export-harvester.vala"
+#line 119 "rygel-media-export-harvester.vala"
 							g_warning (_ ("Failed to update database: %s"), err->message);
-#line 564 "rygel-media-export-harvester.c"
+#line 541 "rygel-media-export-harvester.c"
 							_g_error_free0 (err);
 						}
 					}
-					__finally33:
+					__finally32:
 					if (_inner_error_ != NULL) {
 						_g_object_unref0 (container);
 						_g_object_unref0 (info);
@@ -581,13 +558,13 @@ static gboolean rygel_media_export_harvester_process_children (RygelMediaExportH
 					char* _tmp3_;
 					char* _tmp2_ = NULL;
 					id = NULL;
-#line 115 "rygel-media-export-harvester.vala"
+#line 123 "rygel-media-export-harvester.vala"
 					rygel_media_export_harvester_push_if_changed_or_unknown (self, file, info, &_tmp2_);
-#line 115 "rygel-media-export-harvester.vala"
+#line 123 "rygel-media-export-harvester.vala"
 					id = (_tmp3_ = _tmp2_, _g_free0 (id), _tmp3_);
-#line 116 "rygel-media-export-harvester.vala"
-					rygel_dummy_container_seen (parent_container, id);
-#line 591 "rygel-media-export-harvester.c"
+#line 124 "rygel-media-export-harvester.vala"
+					rygel_media_export_dummy_container_seen (parent_container, id);
+#line 568 "rygel-media-export-harvester.c"
 					_g_free0 (id);
 				}
 				_g_object_unref0 (info);
@@ -598,9 +575,9 @@ static gboolean rygel_media_export_harvester_process_children (RygelMediaExportH
 		}
 	}
 	result = TRUE;
-#line 120 "rygel-media-export-harvester.vala"
+#line 128 "rygel-media-export-harvester.vala"
 	return result;
-#line 604 "rygel-media-export-harvester.c"
+#line 581 "rygel-media-export-harvester.c"
 }
 
 
@@ -661,30 +638,30 @@ static gboolean rygel_media_export_harvester_enumerate_directory_co (RygelMediaE
 	{
 		{
 			data->_state_ = 5;
-			g_file_enumerate_children_async (data->directory, G_FILE_ATTRIBUTE_STANDARD_TYPE "," G_FILE_ATTRIBUTE_STANDARD_NAME "," G_FILE_ATTRIBUTE_TIME_MODIFIED "," G_FILE_ATTRIBUTE_STANDARD_SIZE, G_FILE_QUERY_INFO_NONE, G_PRIORITY_DEFAULT, data->self->cancellable, rygel_media_export_harvester_enumerate_directory_ready, data);
+			g_file_enumerate_children_async (data->directory, RYGEL_MEDIA_EXPORT_HARVESTER_HARVESTER_ATTRIBUTES, G_FILE_QUERY_INFO_NONE, G_PRIORITY_DEFAULT, data->self->cancellable, rygel_media_export_harvester_enumerate_directory_ready, data);
 			return FALSE;
 			_state_5:
 			data->enumerator = g_file_enumerate_children_finish (data->directory, data->_res_, &data->_inner_error_);
 			if (data->_inner_error_ != NULL) {
-				goto __catch34_g_error;
+				goto __catch33_g_error;
 			}
 			data->list = NULL;
 			{
 				data->_tmp0_ = TRUE;
-#line 136 "rygel-media-export-harvester.vala"
+#line 140 "rygel-media-export-harvester.vala"
 				while (TRUE) {
-#line 136 "rygel-media-export-harvester.vala"
+#line 140 "rygel-media-export-harvester.vala"
 					if (!data->_tmp0_) {
-#line 140 "rygel-media-export-harvester.vala"
+#line 144 "rygel-media-export-harvester.vala"
 						if (!rygel_media_export_harvester_process_children (data->self, data->list)) {
-#line 140 "rygel-media-export-harvester.vala"
+#line 144 "rygel-media-export-harvester.vala"
 							break;
-#line 683 "rygel-media-export-harvester.c"
+#line 660 "rygel-media-export-harvester.c"
 						}
 					}
-#line 136 "rygel-media-export-harvester.vala"
+#line 140 "rygel-media-export-harvester.vala"
 					data->_tmp0_ = FALSE;
-#line 688 "rygel-media-export-harvester.c"
+#line 665 "rygel-media-export-harvester.c"
 					data->_state_ = 6;
 					g_file_enumerator_next_files_async (data->enumerator, 10, G_PRIORITY_DEFAULT, data->self->cancellable, rygel_media_export_harvester_enumerate_directory_ready, data);
 					return FALSE;
@@ -693,51 +670,51 @@ static gboolean rygel_media_export_harvester_enumerate_directory_co (RygelMediaE
 					if (data->_inner_error_ != NULL) {
 						_g_object_unref0 (data->enumerator);
 						__g_list_free_g_object_unref0 (data->list);
-						goto __catch34_g_error;
+						goto __catch33_g_error;
 					}
-#line 137 "rygel-media-export-harvester.vala"
+#line 141 "rygel-media-export-harvester.vala"
 					data->list = (data->_tmp2_ = data->_tmp1_, __g_list_free_g_object_unref0 (data->list), data->_tmp2_);
-#line 701 "rygel-media-export-harvester.c"
+#line 678 "rygel-media-export-harvester.c"
 				}
 			}
 			data->_state_ = 7;
 			g_file_enumerator_close_async (data->enumerator, G_PRIORITY_DEFAULT, data->self->cancellable, rygel_media_export_harvester_enumerate_directory_ready, data);
 			return FALSE;
 			_state_7:
-#line 142 "rygel-media-export-harvester.vala"
+#line 146 "rygel-media-export-harvester.vala"
 			g_file_enumerator_close_finish (data->enumerator, data->_res_, &data->_inner_error_);
-#line 710 "rygel-media-export-harvester.c"
+#line 687 "rygel-media-export-harvester.c"
 			if (data->_inner_error_ != NULL) {
 				_g_object_unref0 (data->enumerator);
 				__g_list_free_g_object_unref0 (data->list);
-				goto __catch34_g_error;
+				goto __catch33_g_error;
 			}
 			_g_object_unref0 (data->enumerator);
 			__g_list_free_g_object_unref0 (data->list);
 		}
-		goto __finally34;
-		__catch34_g_error:
+		goto __finally33;
+		__catch33_g_error:
 		{
 			data->err = data->_inner_error_;
 			data->_inner_error_ = NULL;
 			{
-#line 144 "rygel-media-export-harvester.vala"
+#line 148 "rygel-media-export-harvester.vala"
 				g_warning (_ ("failed to enumerate folder: %s"), data->err->message);
-#line 727 "rygel-media-export-harvester.c"
+#line 704 "rygel-media-export-harvester.c"
 				_g_error_free0 (data->err);
 			}
 		}
-		__finally34:
+		__finally33:
 		if (data->_inner_error_ != NULL) {
 			g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, data->_inner_error_->message, g_quark_to_string (data->_inner_error_->domain), data->_inner_error_->code);
 			g_clear_error (&data->_inner_error_);
 			return FALSE;
 		}
-#line 147 "rygel-media-export-harvester.vala"
-		rygel_media_export_harvester_cleanup_database (data->self, (data->_tmp3_ = (RygelMediaContainer*) g_queue_peek_head (data->self->priv->containers), RYGEL_IS_DUMMY_CONTAINER (data->_tmp3_) ? ((RygelDummyContainer*) data->_tmp3_) : NULL));
-#line 148 "rygel-media-export-harvester.vala"
+#line 151 "rygel-media-export-harvester.vala"
+		rygel_media_export_harvester_cleanup_database (data->self, (data->_tmp3_ = (RygelMediaContainer*) g_queue_peek_head (data->self->priv->containers), RYGEL_MEDIA_EXPORT_IS_DUMMY_CONTAINER (data->_tmp3_) ? ((RygelMediaExportDummyContainer*) data->_tmp3_) : NULL));
+#line 152 "rygel-media-export-harvester.vala"
 		rygel_media_export_harvester_do_update (data->self);
-#line 741 "rygel-media-export-harvester.c"
+#line 718 "rygel-media-export-harvester.c"
 	}
 	{
 		if (data->_state_ == 0) {
@@ -751,27 +728,27 @@ static gboolean rygel_media_export_harvester_enumerate_directory_co (RygelMediaE
 }
 
 
-#line 151 "rygel-media-export-harvester.vala"
-static void rygel_media_export_harvester_cleanup_database (RygelMediaExportHarvester* self, RygelDummyContainer* container) {
-#line 757 "rygel-media-export-harvester.c"
+#line 155 "rygel-media-export-harvester.vala"
+static void rygel_media_export_harvester_cleanup_database (RygelMediaExportHarvester* self, RygelMediaExportDummyContainer* container) {
+#line 734 "rygel-media-export-harvester.c"
 	GError * _inner_error_;
-#line 151 "rygel-media-export-harvester.vala"
+#line 155 "rygel-media-export-harvester.vala"
 	g_return_if_fail (self != NULL);
-#line 151 "rygel-media-export-harvester.vala"
+#line 155 "rygel-media-export-harvester.vala"
 	g_return_if_fail (container != NULL);
-#line 763 "rygel-media-export-harvester.c"
+#line 740 "rygel-media-export-harvester.c"
 	_inner_error_ = NULL;
-#line 153 "rygel-media-export-harvester.vala"
-	container = RYGEL_DUMMY_CONTAINER ((RygelMediaContainer*) g_queue_peek_head (self->priv->containers));
-#line 767 "rygel-media-export-harvester.c"
+#line 157 "rygel-media-export-harvester.vala"
+	container = RYGEL_MEDIA_EXPORT_DUMMY_CONTAINER ((RygelMediaContainer*) g_queue_peek_head (self->priv->containers));
+#line 744 "rygel-media-export-harvester.c"
 	{
 		GeeArrayList* children;
-#line 155 "rygel-media-export-harvester.vala"
+#line 159 "rygel-media-export-harvester.vala"
 		children = rygel_media_export_media_cache_get_child_ids (self->priv->media_db, ((RygelMediaObject*) container)->id, &_inner_error_);
-#line 772 "rygel-media-export-harvester.c"
+#line 749 "rygel-media-export-harvester.c"
 		if (_inner_error_ != NULL) {
-			if (_inner_error_->domain == RYGEL_DATABASE_ERROR) {
-				goto __catch35_rygel_database_error;
+			if (_inner_error_->domain == RYGEL_MEDIA_EXPORT_DATABASE_ERROR) {
+				goto __catch34_rygel_media_export_database_error;
 			}
 			g_critical ("file %s: line %d: unexpected error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
 			g_clear_error (&_inner_error_);
@@ -780,21 +757,21 @@ static void rygel_media_export_harvester_cleanup_database (RygelMediaExportHarve
 		{
 			GeeIterator* _seen_id_it;
 			_seen_id_it = gee_abstract_collection_iterator ((GeeAbstractCollection*) container->seen_children);
-#line 157 "rygel-media-export-harvester.vala"
+#line 161 "rygel-media-export-harvester.vala"
 			while (TRUE) {
-#line 786 "rygel-media-export-harvester.c"
+#line 763 "rygel-media-export-harvester.c"
 				char* seen_id;
-#line 157 "rygel-media-export-harvester.vala"
+#line 161 "rygel-media-export-harvester.vala"
 				if (!gee_iterator_next (_seen_id_it)) {
-#line 157 "rygel-media-export-harvester.vala"
+#line 161 "rygel-media-export-harvester.vala"
 					break;
-#line 792 "rygel-media-export-harvester.c"
+#line 769 "rygel-media-export-harvester.c"
 				}
-#line 157 "rygel-media-export-harvester.vala"
+#line 161 "rygel-media-export-harvester.vala"
 				seen_id = (char*) gee_iterator_get (_seen_id_it);
-#line 158 "rygel-media-export-harvester.vala"
+#line 162 "rygel-media-export-harvester.vala"
 				gee_abstract_collection_remove ((GeeAbstractCollection*) children, seen_id);
-#line 798 "rygel-media-export-harvester.c"
+#line 775 "rygel-media-export-harvester.c"
 				_g_free0 (seen_id);
 			}
 			_g_object_unref0 (_seen_id_it);
@@ -802,27 +779,27 @@ static void rygel_media_export_harvester_cleanup_database (RygelMediaExportHarve
 		{
 			GeeIterator* _child_it;
 			_child_it = gee_abstract_collection_iterator ((GeeAbstractCollection*) children);
-#line 161 "rygel-media-export-harvester.vala"
+#line 165 "rygel-media-export-harvester.vala"
 			while (TRUE) {
-#line 808 "rygel-media-export-harvester.c"
+#line 785 "rygel-media-export-harvester.c"
 				char* child;
-#line 161 "rygel-media-export-harvester.vala"
+#line 165 "rygel-media-export-harvester.vala"
 				if (!gee_iterator_next (_child_it)) {
-#line 161 "rygel-media-export-harvester.vala"
+#line 165 "rygel-media-export-harvester.vala"
 					break;
-#line 814 "rygel-media-export-harvester.c"
+#line 791 "rygel-media-export-harvester.c"
 				}
-#line 161 "rygel-media-export-harvester.vala"
+#line 165 "rygel-media-export-harvester.vala"
 				child = (char*) gee_iterator_get (_child_it);
-#line 162 "rygel-media-export-harvester.vala"
+#line 166 "rygel-media-export-harvester.vala"
 				rygel_media_export_media_cache_remove_by_id (self->priv->media_db, child, &_inner_error_);
-#line 820 "rygel-media-export-harvester.c"
+#line 797 "rygel-media-export-harvester.c"
 				if (_inner_error_ != NULL) {
 					_g_free0 (child);
 					_g_object_unref0 (_child_it);
 					_g_object_unref0 (children);
-					if (_inner_error_->domain == RYGEL_DATABASE_ERROR) {
-						goto __catch35_rygel_database_error;
+					if (_inner_error_->domain == RYGEL_MEDIA_EXPORT_DATABASE_ERROR) {
+						goto __catch34_rygel_media_export_database_error;
 					}
 					_g_free0 (child);
 					_g_object_unref0 (_child_it);
@@ -837,20 +814,20 @@ static void rygel_media_export_harvester_cleanup_database (RygelMediaExportHarve
 		}
 		_g_object_unref0 (children);
 	}
-	goto __finally35;
-	__catch35_rygel_database_error:
+	goto __finally34;
+	__catch34_rygel_media_export_database_error:
 	{
 		GError * err;
 		err = _inner_error_;
 		_inner_error_ = NULL;
 		{
-#line 165 "rygel-media-export-harvester.vala"
+#line 169 "rygel-media-export-harvester.vala"
 			g_warning (_ ("Failed to get children of container %s: %s"), ((RygelMediaObject*) container)->id, err->message);
-#line 850 "rygel-media-export-harvester.c"
+#line 827 "rygel-media-export-harvester.c"
 			_g_error_free0 (err);
 		}
 	}
-	__finally35:
+	__finally34:
 	if (_inner_error_ != NULL) {
 		g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
 		g_clear_error (&_inner_error_);
@@ -859,51 +836,56 @@ static void rygel_media_export_harvester_cleanup_database (RygelMediaExportHarve
 }
 
 
-#line 172 "rygel-media-export-harvester.vala"
+#line 176 "rygel-media-export-harvester.vala"
 static gboolean rygel_media_export_harvester_on_idle (RygelMediaExportHarvester* self) {
-#line 865 "rygel-media-export-harvester.c"
+#line 842 "rygel-media-export-harvester.c"
 	gboolean result = FALSE;
-#line 172 "rygel-media-export-harvester.vala"
+#line 176 "rygel-media-export-harvester.vala"
 	g_return_val_if_fail (self != NULL, FALSE);
-#line 173 "rygel-media-export-harvester.vala"
+#line 177 "rygel-media-export-harvester.vala"
 	if (g_cancellable_is_cancelled (self->cancellable)) {
-#line 871 "rygel-media-export-harvester.c"
+#line 848 "rygel-media-export-harvester.c"
 		result = FALSE;
-#line 175 "rygel-media-export-harvester.vala"
-		return result;
-#line 875 "rygel-media-export-harvester.c"
-	}
 #line 178 "rygel-media-export-harvester.vala"
-	if (g_queue_get_length (self->priv->files) > 0) {
-#line 879 "rygel-media-export-harvester.c"
+		return result;
+#line 852 "rygel-media-export-harvester.c"
+	}
+#line 181 "rygel-media-export-harvester.vala"
+	if (gee_collection_get_size ((GeeCollection*) self->priv->files) > 0) {
+#line 856 "rygel-media-export-harvester.c"
 		GFile* candidate;
-#line 179 "rygel-media-export-harvester.vala"
-		candidate = _g_object_ref0 (((RygelFileQueueEntry*) g_queue_peek_head (self->priv->files))->file);
-#line 180 "rygel-media-export-harvester.vala"
+#line 182 "rygel-media-export-harvester.vala"
+		candidate = (GFile*) gee_queue_peek (self->priv->files);
+#line 183 "rygel-media-export-harvester.vala"
 		rygel_media_export_metadata_extractor_extract (self->priv->extractor, candidate);
-#line 885 "rygel-media-export-harvester.c"
+#line 862 "rygel-media-export-harvester.c"
 		_g_object_unref0 (candidate);
 	} else {
-#line 181 "rygel-media-export-harvester.vala"
+#line 184 "rygel-media-export-harvester.vala"
 		if (g_queue_get_length (self->priv->containers) > 0) {
-#line 890 "rygel-media-export-harvester.c"
+#line 867 "rygel-media-export-harvester.c"
+			RygelMediaContainer* _tmp0_;
+			RygelMediaExportDummyContainer* container;
 			GFile* directory;
-#line 182 "rygel-media-export-harvester.vala"
-			directory = _g_object_ref0 (RYGEL_DUMMY_CONTAINER ((RygelMediaContainer*) g_queue_peek_head (self->priv->containers))->file);
-#line 183 "rygel-media-export-harvester.vala"
+#line 185 "rygel-media-export-harvester.vala"
+			container = _g_object_ref0 ((_tmp0_ = (RygelMediaContainer*) g_queue_peek_head (self->priv->containers), RYGEL_MEDIA_EXPORT_IS_DUMMY_CONTAINER (_tmp0_) ? ((RygelMediaExportDummyContainer*) _tmp0_) : NULL));
+#line 186 "rygel-media-export-harvester.vala"
+			directory = _g_object_ref0 (container->file);
+#line 187 "rygel-media-export-harvester.vala"
 			rygel_media_export_harvester_enumerate_directory (self, directory, NULL, NULL);
-#line 896 "rygel-media-export-harvester.c"
+#line 877 "rygel-media-export-harvester.c"
+			_g_object_unref0 (container);
 			_g_object_unref0 (directory);
 		} else {
-#line 186 "rygel-media-export-harvester.vala"
+#line 190 "rygel-media-export-harvester.vala"
 			g_signal_emit_by_name (self, "harvested", self->priv->origin);
-#line 901 "rygel-media-export-harvester.c"
+#line 883 "rygel-media-export-harvester.c"
 		}
 	}
 	result = FALSE;
-#line 189 "rygel-media-export-harvester.vala"
+#line 193 "rygel-media-export-harvester.vala"
 	return result;
-#line 907 "rygel-media-export-harvester.c"
+#line 889 "rygel-media-export-harvester.c"
 }
 
 
@@ -941,10 +923,12 @@ static void rygel_media_export_harvester_harvest_ready (GObject* source_object, 
 }
 
 
-#line 172 "rygel-media-export-harvester.vala"
+#line 176 "rygel-media-export-harvester.vala"
 static gboolean _rygel_media_export_harvester_on_idle_gsource_func (gpointer self) {
-#line 947 "rygel-media-export-harvester.c"
-	return rygel_media_export_harvester_on_idle (self);
+#line 929 "rygel-media-export-harvester.c"
+	gboolean result;
+	result = rygel_media_export_harvester_on_idle (self);
+	return result;
 }
 
 
@@ -960,90 +944,90 @@ static gboolean rygel_media_export_harvester_harvest_co (RygelMediaExportHarvest
 	_state_0:
 	{
 		{
-#line 214 "rygel-media-export-harvester.vala"
+#line 218 "rygel-media-export-harvester.vala"
 			g_cancellable_reset (data->self->cancellable);
-#line 966 "rygel-media-export-harvester.c"
+#line 950 "rygel-media-export-harvester.c"
 			data->_state_ = 8;
-			g_file_query_info_async (data->file, G_FILE_ATTRIBUTE_STANDARD_NAME "," G_FILE_ATTRIBUTE_STANDARD_TYPE "," G_FILE_ATTRIBUTE_TIME_MODIFIED "," G_FILE_ATTRIBUTE_STANDARD_SIZE, G_FILE_QUERY_INFO_NONE, G_PRIORITY_DEFAULT, data->self->cancellable, rygel_media_export_harvester_harvest_ready, data);
+			g_file_query_info_async (data->file, RYGEL_MEDIA_EXPORT_HARVESTER_HARVESTER_ATTRIBUTES, G_FILE_QUERY_INFO_NONE, G_PRIORITY_DEFAULT, data->self->cancellable, rygel_media_export_harvester_harvest_ready, data);
 			return FALSE;
 			_state_8:
 			data->info = g_file_query_info_finish (data->file, data->_res_, &data->_inner_error_);
 			if (data->_inner_error_ != NULL) {
-				goto __catch36_g_error;
+				goto __catch35_g_error;
 			}
-#line 224 "rygel-media-export-harvester.vala"
-			if (g_file_info_get_file_type (data->info) == G_FILE_TYPE_DIRECTORY) {
 #line 225 "rygel-media-export-harvester.vala"
-				data->self->priv->origin = (data->_tmp0_ = _g_object_ref0 (data->file), _g_object_unref0 (data->self->priv->origin), data->_tmp0_);
+			if (g_file_info_get_file_type (data->info) == G_FILE_TYPE_DIRECTORY) {
 #line 226 "rygel-media-export-harvester.vala"
+				data->self->priv->origin = (data->_tmp0_ = _g_object_ref0 (data->file), _g_object_unref0 (data->self->priv->origin), data->_tmp0_);
+#line 227 "rygel-media-export-harvester.vala"
 				rygel_media_export_recursive_file_monitor_monitor (data->self->priv->monitor, data->file, NULL, NULL);
-#line 981 "rygel-media-export-harvester.c"
-				data->container = rygel_dummy_container_new (data->file, data->self->priv->parent);
-#line 228 "rygel-media-export-harvester.vala"
+#line 965 "rygel-media-export-harvester.c"
+				data->container = rygel_media_export_dummy_container_new (data->file, data->self->priv->parent);
+#line 229 "rygel-media-export-harvester.vala"
 				g_queue_push_tail (data->self->priv->containers, _g_object_ref0 ((RygelMediaContainer*) data->container));
-#line 985 "rygel-media-export-harvester.c"
+#line 969 "rygel-media-export-harvester.c"
 				data->_tmp1_ = rygel_media_export_media_cache_exists (data->self->priv->media_db, ((RygelMediaObject*) data->container)->id, &data->timestamp, &data->_inner_error_);
 				if (data->_inner_error_ != NULL) {
 					_g_object_unref0 (data->container);
 					_g_object_unref0 (data->info);
-					goto __catch36_g_error;
+					goto __catch35_g_error;
 				}
-#line 231 "rygel-media-export-harvester.vala"
-				if (!data->_tmp1_) {
 #line 232 "rygel-media-export-harvester.vala"
+				if (!data->_tmp1_) {
+#line 233 "rygel-media-export-harvester.vala"
 					rygel_media_export_media_cache_save_container (data->self->priv->media_db, (RygelMediaContainer*) data->container, &data->_inner_error_);
-#line 996 "rygel-media-export-harvester.c"
+#line 980 "rygel-media-export-harvester.c"
 					if (data->_inner_error_ != NULL) {
 						_g_object_unref0 (data->container);
 						_g_object_unref0 (data->info);
-						goto __catch36_g_error;
+						goto __catch35_g_error;
 					}
 				}
-#line 235 "rygel-media-export-harvester.vala"
+#line 236 "rygel-media-export-harvester.vala"
 				g_idle_add_full (G_PRIORITY_DEFAULT_IDLE, _rygel_media_export_harvester_on_idle_gsource_func, g_object_ref (data->self), g_object_unref);
-#line 1005 "rygel-media-export-harvester.c"
+#line 989 "rygel-media-export-harvester.c"
 				_g_object_unref0 (data->container);
 			} else {
 				data->_tmp2_ = NULL;
-#line 238 "rygel-media-export-harvester.vala"
-				if ((data->_tmp3_ = rygel_media_export_harvester_push_if_changed_or_unknown (data->self, data->file, data->info, &data->_tmp2_), data->id = (data->_tmp4_ = data->_tmp2_, _g_free0 (data->id), data->_tmp4_), data->_tmp3_)) {
 #line 239 "rygel-media-export-harvester.vala"
-					g_idle_add_full (G_PRIORITY_DEFAULT_IDLE, _rygel_media_export_harvester_on_idle_gsource_func, g_object_ref (data->self), g_object_unref);
+				if ((data->_tmp3_ = rygel_media_export_harvester_push_if_changed_or_unknown (data->self, data->file, data->info, &data->_tmp2_), data->id = (data->_tmp4_ = data->_tmp2_, _g_free0 (data->id), data->_tmp4_), data->_tmp3_)) {
 #line 240 "rygel-media-export-harvester.vala"
-					data->self->priv->origin = (data->_tmp5_ = _g_object_ref0 (data->file), _g_object_unref0 (data->self->priv->origin), data->_tmp5_);
+					g_idle_add_full (G_PRIORITY_DEFAULT_IDLE, _rygel_media_export_harvester_on_idle_gsource_func, g_object_ref (data->self), g_object_unref);
 #line 241 "rygel-media-export-harvester.vala"
+					data->self->priv->origin = (data->_tmp5_ = _g_object_ref0 (data->file), _g_object_unref0 (data->self->priv->origin), data->_tmp5_);
+#line 242 "rygel-media-export-harvester.vala"
 					g_queue_push_tail (data->self->priv->containers, _g_object_ref0 (data->self->priv->parent));
-#line 1017 "rygel-media-export-harvester.c"
+#line 1001 "rygel-media-export-harvester.c"
 				} else {
-#line 243 "rygel-media-export-harvester.vala"
+#line 246 "rygel-media-export-harvester.vala"
 					g_debug (_ ("File %s does not need harvesting"), data->_tmp6_ = g_file_get_uri (data->file));
-#line 1021 "rygel-media-export-harvester.c"
+#line 1005 "rygel-media-export-harvester.c"
 					_g_free0 (data->_tmp6_);
-#line 245 "rygel-media-export-harvester.vala"
+#line 248 "rygel-media-export-harvester.vala"
 					g_signal_emit_by_name (data->self, "harvested", data->file);
-#line 1025 "rygel-media-export-harvester.c"
+#line 1009 "rygel-media-export-harvester.c"
 				}
 				_g_free0 (data->id);
 			}
 			_g_object_unref0 (data->info);
 		}
-		goto __finally36;
-		__catch36_g_error:
+		goto __finally35;
+		__catch35_g_error:
 		{
 			data->err = data->_inner_error_;
 			data->_inner_error_ = NULL;
 			{
-#line 250 "rygel-media-export-harvester.vala"
-				g_warning (_ ("Failed to harvest file %s: %s"), data->_tmp7_ = g_file_get_uri (data->file), data->err->message);
-#line 1039 "rygel-media-export-harvester.c"
-				_g_free0 (data->_tmp7_);
 #line 253 "rygel-media-export-harvester.vala"
+				g_warning (_ ("Failed to harvest file %s: %s"), data->_tmp7_ = g_file_get_uri (data->file), data->err->message);
+#line 1023 "rygel-media-export-harvester.c"
+				_g_free0 (data->_tmp7_);
+#line 256 "rygel-media-export-harvester.vala"
 				g_signal_emit_by_name (data->self, "harvested", data->file);
-#line 1043 "rygel-media-export-harvester.c"
+#line 1027 "rygel-media-export-harvester.c"
 				_g_error_free0 (data->err);
 			}
 		}
-		__finally36:
+		__finally35:
 		if (data->_inner_error_ != NULL) {
 			g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, data->_inner_error_->message, g_quark_to_string (data->_inner_error_->domain), data->_inner_error_->code);
 			g_clear_error (&data->_inner_error_);
@@ -1062,72 +1046,57 @@ static gboolean rygel_media_export_harvester_harvest_co (RygelMediaExportHarvest
 }
 
 
-static gpointer _rygel_file_queue_entry_ref0 (gpointer self) {
-	return self ? rygel_file_queue_entry_ref (self) : NULL;
-}
-
-
-#line 257 "rygel-media-export-harvester.vala"
+#line 260 "rygel-media-export-harvester.vala"
 static void rygel_media_export_harvester_on_extracted_cb (RygelMediaExportHarvester* self, GFile* file, GstTagList* tag_list) {
-#line 1073 "rygel-media-export-harvester.c"
+#line 1052 "rygel-media-export-harvester.c"
 	GError * _inner_error_;
-	RygelFileQueueEntry* entry;
-#line 257 "rygel-media-export-harvester.vala"
+	GFile* entry;
+#line 260 "rygel-media-export-harvester.vala"
 	g_return_if_fail (self != NULL);
-#line 257 "rygel-media-export-harvester.vala"
+#line 260 "rygel-media-export-harvester.vala"
 	g_return_if_fail (file != NULL);
-#line 257 "rygel-media-export-harvester.vala"
+#line 260 "rygel-media-export-harvester.vala"
 	g_return_if_fail (tag_list != NULL);
-#line 1082 "rygel-media-export-harvester.c"
+#line 1061 "rygel-media-export-harvester.c"
 	_inner_error_ = NULL;
-#line 258 "rygel-media-export-harvester.vala"
+#line 261 "rygel-media-export-harvester.vala"
 	if (g_cancellable_is_cancelled (self->cancellable)) {
-#line 259 "rygel-media-export-harvester.vala"
-		g_signal_emit_by_name (self, "harvested", self->priv->origin);
-#line 1088 "rygel-media-export-harvester.c"
-	}
 #line 262 "rygel-media-export-harvester.vala"
-	entry = _rygel_file_queue_entry_ref0 ((RygelFileQueueEntry*) g_queue_peek_head (self->priv->files));
-#line 263 "rygel-media-export-harvester.vala"
-	if (entry == NULL) {
-#line 1094 "rygel-media-export-harvester.c"
-		_rygel_file_queue_entry_unref0 (entry);
-#line 266 "rygel-media-export-harvester.vala"
-		return;
-#line 1098 "rygel-media-export-harvester.c"
+		g_signal_emit_by_name (self, "harvested", self->priv->origin);
+#line 1067 "rygel-media-export-harvester.c"
 	}
-#line 268 "rygel-media-export-harvester.vala"
-	if (file == entry->file) {
-#line 1102 "rygel-media-export-harvester.c"
-		RygelMediaItem* item;
-		RygelFileQueueEntry* _tmp0_;
+#line 265 "rygel-media-export-harvester.vala"
+	entry = (GFile*) gee_queue_peek (self->priv->files);
+#line 266 "rygel-media-export-harvester.vala"
+	if (entry == NULL) {
+#line 1073 "rygel-media-export-harvester.c"
+		_g_object_unref0 (entry);
 #line 269 "rygel-media-export-harvester.vala"
-		item = rygel_media_export_item_create_from_taglist ((RygelMediaContainer*) g_queue_peek_head (self->priv->containers), file, tag_list);
-#line 273 "rygel-media-export-harvester.vala"
-		if (item != NULL) {
-#line 274 "rygel-media-export-harvester.vala"
-			rygel_media_object_set_parent_ref ((RygelMediaObject*) item, (RygelMediaContainer*) g_queue_peek_head (self->priv->containers));
-#line 1111 "rygel-media-export-harvester.c"
-			{
+		return;
+#line 1077 "rygel-media-export-harvester.c"
+	}
+#line 271 "rygel-media-export-harvester.vala"
+	if (file == entry) {
+#line 1081 "rygel-media-export-harvester.c"
+		RygelMediaExportMediaExportItem* item;
+		GFile* _tmp0_;
+#line 272 "rygel-media-export-harvester.vala"
+		item = rygel_media_export_media_export_item_create_from_taglist ((RygelMediaContainer*) g_queue_peek_head (self->priv->containers), file, tag_list);
 #line 276 "rygel-media-export-harvester.vala"
-				if (entry->update) {
+		if (item != NULL) {
 #line 277 "rygel-media-export-harvester.vala"
-					rygel_media_export_media_cache_update_object (self->priv->media_db, (RygelMediaObject*) item, &_inner_error_);
-#line 1117 "rygel-media-export-harvester.c"
-					if (_inner_error_ != NULL) {
-						goto __catch37_g_error;
-					}
-				} else {
+			rygel_media_object_set_parent_ref ((RygelMediaObject*) item, (RygelMediaContainer*) g_queue_peek_head (self->priv->containers));
+#line 1090 "rygel-media-export-harvester.c"
+			{
 #line 279 "rygel-media-export-harvester.vala"
-					rygel_media_export_media_cache_save_item (self->priv->media_db, item, &_inner_error_);
-#line 1124 "rygel-media-export-harvester.c"
-					if (_inner_error_ != NULL) {
-						goto __catch37_g_error;
-					}
+				rygel_media_export_media_cache_save_item (self->priv->media_db, (RygelMediaItem*) item, &_inner_error_);
+#line 1094 "rygel-media-export-harvester.c"
+				if (_inner_error_ != NULL) {
+					goto __catch36_g_error;
 				}
 			}
-			goto __finally37;
-			__catch37_g_error:
+			goto __finally36;
+			__catch36_g_error:
 			{
 				GError * _error_;
 				_error_ = _inner_error_;
@@ -1136,92 +1105,92 @@ static void rygel_media_export_harvester_on_extracted_cb (RygelMediaExportHarves
 					_g_error_free0 (_error_);
 				}
 			}
-			__finally37:
+			__finally36:
 			if (_inner_error_ != NULL) {
 				_g_object_unref0 (item);
-				_rygel_file_queue_entry_unref0 (entry);
+				_g_object_unref0 (entry);
 				g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
 				g_clear_error (&_inner_error_);
 				return;
 			}
 		}
+#line 285 "rygel-media-export-harvester.vala"
+		_tmp0_ = (GFile*) gee_queue_poll (self->priv->files);
+#line 1120 "rygel-media-export-harvester.c"
+		_g_object_unref0 (_tmp0_);
 #line 286 "rygel-media-export-harvester.vala"
-		_tmp0_ = (RygelFileQueueEntry*) g_queue_pop_head (self->priv->files);
-#line 1151 "rygel-media-export-harvester.c"
-		_rygel_file_queue_entry_unref0 (_tmp0_);
-#line 287 "rygel-media-export-harvester.vala"
 		rygel_media_export_harvester_do_update (self);
-#line 1155 "rygel-media-export-harvester.c"
+#line 1124 "rygel-media-export-harvester.c"
 		_g_object_unref0 (item);
 	}
-	_rygel_file_queue_entry_unref0 (entry);
+	_g_object_unref0 (entry);
 }
 
 
-#line 291 "rygel-media-export-harvester.vala"
+#line 290 "rygel-media-export-harvester.vala"
 static void rygel_media_export_harvester_on_extractor_error_cb (RygelMediaExportHarvester* self, GFile* file, GError* _error_) {
-#line 1164 "rygel-media-export-harvester.c"
-	RygelFileQueueEntry* entry;
-#line 291 "rygel-media-export-harvester.vala"
+#line 1133 "rygel-media-export-harvester.c"
+	GFile* entry;
+#line 290 "rygel-media-export-harvester.vala"
 	g_return_if_fail (self != NULL);
-#line 291 "rygel-media-export-harvester.vala"
+#line 290 "rygel-media-export-harvester.vala"
 	g_return_if_fail (file != NULL);
+#line 291 "rygel-media-export-harvester.vala"
+	entry = (GFile*) gee_queue_peek (self->priv->files);
 #line 292 "rygel-media-export-harvester.vala"
-	entry = _rygel_file_queue_entry_ref0 ((RygelFileQueueEntry*) g_queue_peek_head (self->priv->files));
-#line 293 "rygel-media-export-harvester.vala"
 	if (entry == NULL) {
-#line 1174 "rygel-media-export-harvester.c"
-		_rygel_file_queue_entry_unref0 (entry);
-#line 296 "rygel-media-export-harvester.vala"
+#line 1143 "rygel-media-export-harvester.c"
+		_g_object_unref0 (entry);
+#line 295 "rygel-media-export-harvester.vala"
 		return;
-#line 1178 "rygel-media-export-harvester.c"
+#line 1147 "rygel-media-export-harvester.c"
 	}
 #line 298 "rygel-media-export-harvester.vala"
-	if (file == entry->file) {
-#line 1182 "rygel-media-export-harvester.c"
-		RygelFileQueueEntry* _tmp0_;
+	if (file == entry) {
+#line 1151 "rygel-media-export-harvester.c"
+		GFile* _tmp0_;
 #line 299 "rygel-media-export-harvester.vala"
-		_tmp0_ = (RygelFileQueueEntry*) g_queue_pop_head (self->priv->files);
-#line 1186 "rygel-media-export-harvester.c"
-		_rygel_file_queue_entry_unref0 (_tmp0_);
+		_tmp0_ = (GFile*) gee_queue_poll (self->priv->files);
+#line 1155 "rygel-media-export-harvester.c"
+		_g_object_unref0 (_tmp0_);
 #line 300 "rygel-media-export-harvester.vala"
 		rygel_media_export_harvester_do_update (self);
-#line 1190 "rygel-media-export-harvester.c"
+#line 1159 "rygel-media-export-harvester.c"
 	}
-	_rygel_file_queue_entry_unref0 (entry);
+	_g_object_unref0 (entry);
 }
 
 
 #line 309 "rygel-media-export-harvester.vala"
 static void rygel_media_export_harvester_do_update (RygelMediaExportHarvester* self) {
-#line 1198 "rygel-media-export-harvester.c"
+#line 1167 "rygel-media-export-harvester.c"
 	gboolean _tmp0_ = FALSE;
 #line 309 "rygel-media-export-harvester.vala"
 	g_return_if_fail (self != NULL);
 #line 310 "rygel-media-export-harvester.vala"
-	if (g_queue_get_length (self->priv->files) == 0) {
+	if (gee_collection_get_size ((GeeCollection*) self->priv->files) == 0) {
 #line 311 "rygel-media-export-harvester.vala"
 		_tmp0_ = g_queue_get_length (self->priv->containers) != 0;
-#line 1206 "rygel-media-export-harvester.c"
+#line 1175 "rygel-media-export-harvester.c"
 	} else {
 #line 310 "rygel-media-export-harvester.vala"
 		_tmp0_ = FALSE;
-#line 1210 "rygel-media-export-harvester.c"
+#line 1179 "rygel-media-export-harvester.c"
 	}
 #line 310 "rygel-media-export-harvester.vala"
 	if (_tmp0_) {
-#line 1214 "rygel-media-export-harvester.c"
+#line 1183 "rygel-media-export-harvester.c"
 		RygelMediaContainer* _tmp1_;
 #line 312 "rygel-media-export-harvester.vala"
 		rygel_media_container_updated ((RygelMediaContainer*) g_queue_peek_head (self->priv->containers));
 #line 313 "rygel-media-export-harvester.vala"
 		_tmp1_ = (RygelMediaContainer*) g_queue_pop_head (self->priv->containers);
-#line 1220 "rygel-media-export-harvester.c"
+#line 1189 "rygel-media-export-harvester.c"
 		_g_object_unref0 (_tmp1_);
 	}
 #line 316 "rygel-media-export-harvester.vala"
 	g_idle_add_full (G_PRIORITY_DEFAULT_IDLE, _rygel_media_export_harvester_on_idle_gsource_func, g_object_ref (self), g_object_unref);
-#line 1225 "rygel-media-export-harvester.c"
+#line 1194 "rygel-media-export-harvester.c"
 }
 
 
@@ -1229,7 +1198,7 @@ static void rygel_media_export_harvester_class_init (RygelMediaExportHarvesterCl
 	rygel_media_export_harvester_parent_class = g_type_class_peek_parent (klass);
 	g_type_class_add_private (klass, sizeof (RygelMediaExportHarvesterPrivate));
 	G_OBJECT_CLASS (klass)->finalize = rygel_media_export_harvester_finalize;
-	g_signal_new ("harvested", RYGEL_TYPE_MEDIA_EXPORT_HARVESTER, G_SIGNAL_RUN_LAST, 0, NULL, NULL, g_cclosure_marshal_VOID__OBJECT, G_TYPE_NONE, 1, G_TYPE_FILE);
+	g_signal_new ("harvested", RYGEL_MEDIA_EXPORT_TYPE_HARVESTER, G_SIGNAL_RUN_LAST, 0, NULL, NULL, g_cclosure_marshal_VOID__OBJECT, G_TYPE_NONE, 1, G_TYPE_FILE);
 }
 
 
@@ -1244,7 +1213,7 @@ static void rygel_media_export_harvester_finalize (GObject* obj) {
 	_g_object_unref0 (self->priv->extractor);
 	_g_object_unref0 (self->priv->media_db);
 	_g_queue_free0 (self->priv->containers);
-	_g_queue_free0 (self->priv->files);
+	_g_object_unref0 (self->priv->files);
 	_g_object_unref0 (self->priv->origin);
 	_g_object_unref0 (self->priv->parent);
 	_g_object_unref0 (self->priv->monitor);

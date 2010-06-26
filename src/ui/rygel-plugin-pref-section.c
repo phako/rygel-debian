@@ -99,8 +99,8 @@ enum  {
 #define RYGEL_PLUGIN_PREF_SECTION_TITLE_LABEL "-title-label"
 #define RYGEL_PLUGIN_PREF_SECTION_TITLE_ENTRY "-title-entry"
 RygelPreferencesSection* rygel_preferences_section_construct (GType object_type, RygelUserConfig* config, const char* name);
-static void rygel_plugin_pref_section_on_enabled_check_toggled (RygelPluginPrefSection* self, GtkCheckButton* enabled_check);
-static void _rygel_plugin_pref_section_on_enabled_check_toggled_gtk_toggle_button_toggled (GtkCheckButton* _sender, gpointer self);
+static void rygel_plugin_pref_section_on_enabled_check_toggled (RygelPluginPrefSection* self, GtkToggleButton* enabled_check);
+static void _rygel_plugin_pref_section_on_enabled_check_toggled_gtk_toggle_button_toggled (GtkToggleButton* _sender, gpointer self);
 RygelPluginPrefSection* rygel_plugin_pref_section_new (GtkBuilder* builder, RygelUserConfig* config, const char* name);
 RygelPluginPrefSection* rygel_plugin_pref_section_construct (GType object_type, GtkBuilder* builder, RygelUserConfig* config, const char* name);
 static void rygel_plugin_pref_section_real_save (RygelPreferencesSection* base);
@@ -114,16 +114,16 @@ static gpointer _g_object_ref0 (gpointer self) {
 }
 
 
-#line 1052 "glib-2.0.vapi"
+#line 1148 "glib-2.0.vapi"
 static char* string_replace (const char* self, const char* old, const char* replacement) {
 #line 120 "rygel-plugin-pref-section.c"
 	char* result = NULL;
 	GError * _inner_error_;
-#line 1052 "glib-2.0.vapi"
+#line 1148 "glib-2.0.vapi"
 	g_return_val_if_fail (self != NULL, NULL);
-#line 1052 "glib-2.0.vapi"
+#line 1148 "glib-2.0.vapi"
 	g_return_val_if_fail (old != NULL, NULL);
-#line 1052 "glib-2.0.vapi"
+#line 1148 "glib-2.0.vapi"
 	g_return_val_if_fail (replacement != NULL, NULL);
 #line 129 "rygel-plugin-pref-section.c"
 	_inner_error_ = NULL;
@@ -132,7 +132,7 @@ static char* string_replace (const char* self, const char* old, const char* repl
 		GRegex* _tmp1_;
 		GRegex* regex;
 		char* _tmp2_;
-#line 1054 "glib-2.0.vapi"
+#line 1150 "glib-2.0.vapi"
 		regex = (_tmp1_ = g_regex_new (_tmp0_ = g_regex_escape_string (old, -1), 0, 0, &_inner_error_), _g_free0 (_tmp0_), _tmp1_);
 #line 138 "rygel-plugin-pref-section.c"
 		if (_inner_error_ != NULL) {
@@ -143,7 +143,7 @@ static char* string_replace (const char* self, const char* old, const char* repl
 			g_clear_error (&_inner_error_);
 			return NULL;
 		}
-#line 1055 "glib-2.0.vapi"
+#line 1151 "glib-2.0.vapi"
 		_tmp2_ = g_regex_replace_literal (regex, self, (gssize) (-1), 0, replacement, 0, &_inner_error_);
 #line 149 "rygel-plugin-pref-section.c"
 		if (_inner_error_ != NULL) {
@@ -158,7 +158,7 @@ static char* string_replace (const char* self, const char* old, const char* repl
 		}
 		result = _tmp2_;
 		_g_regex_unref0 (regex);
-#line 1055 "glib-2.0.vapi"
+#line 1151 "glib-2.0.vapi"
 		return result;
 #line 164 "rygel-plugin-pref-section.c"
 	}
@@ -169,7 +169,7 @@ static char* string_replace (const char* self, const char* old, const char* repl
 		e = _inner_error_;
 		_inner_error_ = NULL;
 		{
-#line 1057 "glib-2.0.vapi"
+#line 1153 "glib-2.0.vapi"
 			g_assert_not_reached ();
 #line 175 "rygel-plugin-pref-section.c"
 			_g_error_free0 (e);
@@ -185,7 +185,7 @@ static char* string_replace (const char* self, const char* old, const char* repl
 
 
 #line 94 "rygel-plugin-pref-section.vala"
-static void _rygel_plugin_pref_section_on_enabled_check_toggled_gtk_toggle_button_toggled (GtkCheckButton* _sender, gpointer self) {
+static void _rygel_plugin_pref_section_on_enabled_check_toggled_gtk_toggle_button_toggled (GtkToggleButton* _sender, gpointer self) {
 #line 190 "rygel-plugin-pref-section.c"
 	rygel_plugin_pref_section_on_enabled_check_toggled (self, _sender);
 }
@@ -393,7 +393,7 @@ void rygel_plugin_pref_section_reset_widgets_sensitivity (RygelPluginPrefSection
 
 
 #line 94 "rygel-plugin-pref-section.vala"
-static void rygel_plugin_pref_section_on_enabled_check_toggled (RygelPluginPrefSection* self, GtkCheckButton* enabled_check) {
+static void rygel_plugin_pref_section_on_enabled_check_toggled (RygelPluginPrefSection* self, GtkToggleButton* enabled_check) {
 #line 94 "rygel-plugin-pref-section.vala"
 	g_return_if_fail (self != NULL);
 #line 94 "rygel-plugin-pref-section.vala"

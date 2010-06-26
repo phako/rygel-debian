@@ -142,41 +142,41 @@ RygelSubtitleManager* rygel_subtitle_manager_get_default (void) {
 }
 
 
-#line 981 "glib-2.0.vapi"
+#line 1077 "glib-2.0.vapi"
 static char* string_substring (const char* self, glong offset, glong len) {
 #line 148 "rygel-subtitle-manager.c"
 	char* result = NULL;
 	glong string_length;
 	const char* start;
-#line 981 "glib-2.0.vapi"
+#line 1077 "glib-2.0.vapi"
 	g_return_val_if_fail (self != NULL, NULL);
-#line 982 "glib-2.0.vapi"
+#line 1078 "glib-2.0.vapi"
 	string_length = g_utf8_strlen (self, -1);
-#line 983 "glib-2.0.vapi"
+#line 1079 "glib-2.0.vapi"
 	if (offset < 0) {
-#line 984 "glib-2.0.vapi"
+#line 1080 "glib-2.0.vapi"
 		offset = string_length + offset;
-#line 985 "glib-2.0.vapi"
+#line 1081 "glib-2.0.vapi"
 		g_return_val_if_fail (offset >= 0, NULL);
 #line 162 "rygel-subtitle-manager.c"
 	} else {
-#line 987 "glib-2.0.vapi"
+#line 1083 "glib-2.0.vapi"
 		g_return_val_if_fail (offset <= string_length, NULL);
 #line 166 "rygel-subtitle-manager.c"
 	}
-#line 989 "glib-2.0.vapi"
+#line 1085 "glib-2.0.vapi"
 	if (len < 0) {
-#line 990 "glib-2.0.vapi"
+#line 1086 "glib-2.0.vapi"
 		len = string_length - offset;
 #line 172 "rygel-subtitle-manager.c"
 	}
-#line 992 "glib-2.0.vapi"
+#line 1088 "glib-2.0.vapi"
 	g_return_val_if_fail ((offset + len) <= string_length, NULL);
-#line 993 "glib-2.0.vapi"
+#line 1089 "glib-2.0.vapi"
 	start = g_utf8_offset_to_pointer (self, offset);
 #line 178 "rygel-subtitle-manager.c"
 	result = g_strndup (start, ((gchar*) g_utf8_offset_to_pointer (start, len)) - ((gchar*) start));
-#line 994 "glib-2.0.vapi"
+#line 1090 "glib-2.0.vapi"
 	return result;
 #line 182 "rygel-subtitle-manager.c"
 }
@@ -186,7 +186,7 @@ static glong string_get_length (const char* self) {
 	glong result;
 	g_return_val_if_fail (self != NULL, 0L);
 	result = g_utf8_strlen (self, -1);
-#line 1062 "glib-2.0.vapi"
+#line 1158 "glib-2.0.vapi"
 	return result;
 #line 192 "rygel-subtitle-manager.c"
 }

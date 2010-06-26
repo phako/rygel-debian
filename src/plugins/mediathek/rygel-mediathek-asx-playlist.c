@@ -32,7 +32,6 @@
 #include <libxml/parser.h>
 #include <libxml/tree.h>
 #include <libxml/xpath.h>
-#include <glib/gi18n-lib.h>
 
 
 #define RYGEL_TYPE_MEDIATHEK_ASX_PLAYLIST (rygel_mediathek_asx_playlist_get_type ())
@@ -93,7 +92,7 @@ GQuark rygel_mediathek_asx_playlist_error_quark (void) {
 
 #line 46 "rygel-mediathek-asx-playlist.vala"
 RygelMediathekAsxPlaylist* rygel_mediathek_asx_playlist_construct (GType object_type, const char* uri) {
-#line 97 "rygel-mediathek-asx-playlist.c"
+#line 96 "rygel-mediathek-asx-playlist.c"
 	RygelMediathekAsxPlaylist * self;
 	GeeArrayList* _tmp0_;
 	char* _tmp1_;
@@ -105,7 +104,7 @@ RygelMediathekAsxPlaylist* rygel_mediathek_asx_playlist_construct (GType object_
 	self->uris = (_tmp0_ = gee_array_list_new (G_TYPE_STRING, (GBoxedCopyFunc) g_strdup, g_free, NULL), _g_object_unref0 (self->uris), _tmp0_);
 #line 48 "rygel-mediathek-asx-playlist.vala"
 	self->priv->uri = (_tmp1_ = g_strdup (uri), _g_free0 (self->priv->uri), _tmp1_);
-#line 109 "rygel-mediathek-asx-playlist.c"
+#line 108 "rygel-mediathek-asx-playlist.c"
 	return self;
 }
 
@@ -114,7 +113,7 @@ RygelMediathekAsxPlaylist* rygel_mediathek_asx_playlist_construct (GType object_
 RygelMediathekAsxPlaylist* rygel_mediathek_asx_playlist_new (const char* uri) {
 #line 46 "rygel-mediathek-asx-playlist.vala"
 	return rygel_mediathek_asx_playlist_construct (RYGEL_TYPE_MEDIATHEK_ASX_PLAYLIST, uri);
-#line 118 "rygel-mediathek-asx-playlist.c"
+#line 117 "rygel-mediathek-asx-playlist.c"
 }
 
 
@@ -122,22 +121,22 @@ static glong string_get_length (const char* self) {
 	glong result;
 	g_return_val_if_fail (self != NULL, 0L);
 	result = g_utf8_strlen (self, -1);
-#line 1062 "glib-2.0.vapi"
+#line 1158 "glib-2.0.vapi"
 	return result;
-#line 128 "rygel-mediathek-asx-playlist.c"
+#line 127 "rygel-mediathek-asx-playlist.c"
 }
 
 
 #line 61 "rygel-mediathek-asx-playlist.vala"
 void rygel_mediathek_asx_playlist_parse (RygelMediathekAsxPlaylist* self, GError** error) {
-#line 134 "rygel-mediathek-asx-playlist.c"
+#line 133 "rygel-mediathek-asx-playlist.c"
 	GError * _inner_error_;
 	SoupSessionSync* session;
 	SoupMessage* message;
 	guint _tmp0_;
 #line 61 "rygel-mediathek-asx-playlist.vala"
 	g_return_if_fail (self != NULL);
-#line 141 "rygel-mediathek-asx-playlist.c"
+#line 140 "rygel-mediathek-asx-playlist.c"
 	_inner_error_ = NULL;
 #line 63 "rygel-mediathek-asx-playlist.vala"
 	session = (SoupSessionSync*) soup_session_sync_new ();
@@ -147,14 +146,14 @@ void rygel_mediathek_asx_playlist_parse (RygelMediathekAsxPlaylist* self, GError
 	soup_session_send_message ((SoupSession*) session, message);
 #line 68 "rygel-mediathek-asx-playlist.vala"
 	if ((g_object_get (message, "status-code", &_tmp0_, NULL), _tmp0_) == 200) {
-#line 151 "rygel-mediathek-asx-playlist.c"
+#line 150 "rygel-mediathek-asx-playlist.c"
 		{
 			GRegex* normalizer;
 			char* normalized_content;
 			xmlDoc* doc;
 #line 71 "rygel-mediathek-asx-playlist.vala"
 			normalizer = g_regex_new ("(<[/]?)([a-zA-Z:]+)", 0, 0, &_inner_error_);
-#line 158 "rygel-mediathek-asx-playlist.c"
+#line 157 "rygel-mediathek-asx-playlist.c"
 			if (_inner_error_ != NULL) {
 				if (_inner_error_->domain == G_REGEX_ERROR) {
 					goto __catch0_g_regex_error;
@@ -167,7 +166,7 @@ void rygel_mediathek_asx_playlist_parse (RygelMediathekAsxPlaylist* self, GError
 			}
 #line 73 "rygel-mediathek-asx-playlist.vala"
 			normalized_content = g_regex_replace (normalizer, (const char*) message->response_body->data, (gssize) ((glong) message->response_body->length), 0, "\\1\\L\\2\\E", 0, &_inner_error_);
-#line 171 "rygel-mediathek-asx-playlist.c"
+#line 170 "rygel-mediathek-asx-playlist.c"
 			if (_inner_error_ != NULL) {
 				_g_regex_unref0 (normalizer);
 				if (_inner_error_->domain == G_REGEX_ERROR) {
@@ -184,7 +183,7 @@ void rygel_mediathek_asx_playlist_parse (RygelMediathekAsxPlaylist* self, GError
 			doc = xmlParseMemory (normalized_content, (gint) string_get_length (normalized_content));
 #line 81 "rygel-mediathek-asx-playlist.vala"
 			if (doc != NULL) {
-#line 188 "rygel-mediathek-asx-playlist.c"
+#line 187 "rygel-mediathek-asx-playlist.c"
 				xmlXPathContext* ctx;
 				xmlXPathObject* xpo;
 #line 82 "rygel-mediathek-asx-playlist.vala"
@@ -193,25 +192,25 @@ void rygel_mediathek_asx_playlist_parse (RygelMediathekAsxPlaylist* self, GError
 				xpo = xmlXPathEval ("/asx/entry/ref/@href", ctx);
 #line 84 "rygel-mediathek-asx-playlist.vala"
 				if (xpo->type == XPATH_NODESET) {
-#line 197 "rygel-mediathek-asx-playlist.c"
+#line 196 "rygel-mediathek-asx-playlist.c"
 					{
 						gint i;
 #line 85 "rygel-mediathek-asx-playlist.vala"
 						i = 0;
-#line 202 "rygel-mediathek-asx-playlist.c"
+#line 201 "rygel-mediathek-asx-playlist.c"
 						{
 							gboolean _tmp1_;
 #line 85 "rygel-mediathek-asx-playlist.vala"
 							_tmp1_ = TRUE;
 #line 85 "rygel-mediathek-asx-playlist.vala"
 							while (TRUE) {
-#line 209 "rygel-mediathek-asx-playlist.c"
+#line 208 "rygel-mediathek-asx-playlist.c"
 								xmlNode* item;
 #line 85 "rygel-mediathek-asx-playlist.vala"
 								if (!_tmp1_) {
 #line 85 "rygel-mediathek-asx-playlist.vala"
 									i++;
-#line 215 "rygel-mediathek-asx-playlist.c"
+#line 214 "rygel-mediathek-asx-playlist.c"
 								}
 #line 85 "rygel-mediathek-asx-playlist.vala"
 								_tmp1_ = FALSE;
@@ -219,20 +218,20 @@ void rygel_mediathek_asx_playlist_parse (RygelMediathekAsxPlaylist* self, GError
 								if (!(i < xmlXPathNodeSetGetLength (xpo->nodesetval))) {
 #line 85 "rygel-mediathek-asx-playlist.vala"
 									break;
-#line 223 "rygel-mediathek-asx-playlist.c"
+#line 222 "rygel-mediathek-asx-playlist.c"
 								}
 #line 86 "rygel-mediathek-asx-playlist.vala"
 								item = xmlXPathNodeSetItem (xpo->nodesetval, i);
 #line 87 "rygel-mediathek-asx-playlist.vala"
 								gee_abstract_collection_add ((GeeAbstractCollection*) self->uris, item->children->content);
-#line 229 "rygel-mediathek-asx-playlist.c"
+#line 228 "rygel-mediathek-asx-playlist.c"
 							}
 						}
 					}
 				}
 				_xmlXPathFreeContext0 (ctx);
 			} else {
-				_inner_error_ = g_error_new_literal (RYGEL_MEDIATHEK_ASX_PLAYLIST_ERROR, RYGEL_MEDIATHEK_ASX_PLAYLIST_ERROR_XML_ERROR, _ ("Could not fetch XML"));
+				_inner_error_ = g_error_new_literal (RYGEL_MEDIATHEK_ASX_PLAYLIST_ERROR, RYGEL_MEDIATHEK_ASX_PLAYLIST_ERROR_XML_ERROR, "Could not fetch XML");
 				{
 					_g_regex_unref0 (normalizer);
 					_g_free0 (normalized_content);
@@ -273,7 +272,7 @@ void rygel_mediathek_asx_playlist_parse (RygelMediathekAsxPlaylist* self, GError
 	} else {
 		guint _tmp2_;
 		guint _tmp3_;
-		_inner_error_ = g_error_new (RYGEL_MEDIATHEK_ASX_PLAYLIST_ERROR, RYGEL_MEDIATHEK_ASX_PLAYLIST_ERROR_NETWORK_ERROR, _ ("Playlist download failed: %u (%s)"), (g_object_get (message, "status-code", &_tmp2_, NULL), _tmp2_), soup_status_get_phrase ((g_object_get (message, "status-code", &_tmp3_, NULL), _tmp3_)));
+		_inner_error_ = g_error_new (RYGEL_MEDIATHEK_ASX_PLAYLIST_ERROR, RYGEL_MEDIATHEK_ASX_PLAYLIST_ERROR_NETWORK_ERROR, "Playlist download failed: %u (%s)", (g_object_get (message, "status-code", &_tmp2_, NULL), _tmp2_), soup_status_get_phrase ((g_object_get (message, "status-code", &_tmp3_, NULL), _tmp3_)));
 		{
 			if (_inner_error_->domain == RYGEL_MEDIATHEK_ASX_PLAYLIST_ERROR) {
 				g_propagate_error (error, _inner_error_);

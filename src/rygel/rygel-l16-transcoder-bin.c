@@ -219,7 +219,7 @@ static void rygel_l16_transcoder_bin_decodebin_pad_added (RygelL16TranscoderBin*
 #line 57 "rygel-l16-transcoder-bin.vala"
 	g_return_if_fail (new_pad != NULL);
 #line 58 "rygel-l16-transcoder-bin.vala"
-	enc_pad = _gst_object_ref0 (gst_element_get_pad (self->priv->audio_enc, RYGEL_L16_TRANSCODER_BIN_AUDIO_SINK_PAD));
+	enc_pad = gst_element_get_pad (self->priv->audio_enc, RYGEL_L16_TRANSCODER_BIN_AUDIO_SINK_PAD);
 #line 59 "rygel-l16-transcoder-bin.vala"
 	if (!gst_pad_can_link (new_pad, enc_pad)) {
 #line 226 "rygel-l16-transcoder-bin.c"

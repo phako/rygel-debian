@@ -93,7 +93,13 @@ internal class Rygel.LiveResponse : Rygel.HTTPResponse {
         }
 
         sink.signal_handoffs = true;
-        sink.handoff += this.on_new_buffer;
+        // FIXME: Use 'connect' syntax & remove the ugly annotation on the
+        //        callback once bug#622089 is fixed.
+        Signal.connect_object (sink,
+                               "handoff",
+                               (Callback) this.on_new_buffer,
+                               this,
+                               ConnectFlags.AFTER);
 
         this.pipeline = new Pipeline (name);
         assert (this.pipeline != null);
@@ -102,7 +108,7 @@ internal class Rygel.LiveResponse : Rygel.HTTPResponse {
 
         if (src.numpads == 0) {
             // Seems source uses dynamic pads, link when pad available
-            src.pad_added += this.src_pad_added;
+            src.pad_added.connect (this.src_pad_added);
         } else {
             // static pads? easy!
             if (!src.link (sink)) {
@@ -153,6 +159,7 @@ internal class Rygel.LiveResponse : Rygel.HTTPResponse {
         }
     }
 
+    [CCode (instance_pos = -1)]
     private void on_new_buffer (Element sink,
                                 Buffer  buffer,
                                 Pad     pad) {

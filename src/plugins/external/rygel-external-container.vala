@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2009 Zeeshan Ali (Khattak) <zeeshanak@gnome.org>.
- * Copyright (C) 2009 Nokia Corporation.
+ * Copyright (C) 2009,2010 Nokia Corporation.
  *
  * Author: Zeeshan Ali (Khattak) <zeeshanak@gnome.org>
  *                               <zeeshan.ali@nokia.com>
@@ -25,6 +25,7 @@
 using GUPnP;
 using DBus;
 using Gee;
+using FreeDesktop;
 
 /**
  * Represents an external container.
@@ -33,43 +34,40 @@ public class Rygel.ExternalContainer : Rygel.MediaContainer {
     public ExternalMediaContainer actual_container;
 
     public string host_ip;
-
     public string service_name;
-    private string object_path;
 
+    private ExternalItemFactory item_factory;
     private ArrayList<ExternalContainer> containers;
+    private Connection connection;
+
+    private bool searchable;
 
     public ExternalContainer (string             id,
+                              string             title,
+                              uint               child_count,
+                              bool               searchable,
                               string             service_name,
-                              string             object_path,
                               string             host_ip,
-                              ExternalContainer? parent) {
-        base (id, parent, "Uknown", 0);
+                              ExternalContainer? parent = null) {
+        base (id, parent, title, (int) child_count);
 
         this.service_name = service_name;
-        this.object_path = object_path;
         this.host_ip = host_ip;
-
+        this.item_factory = new ExternalItemFactory ();
         this.containers = new ArrayList<ExternalContainer> ();
 
         try {
-            DBus.Connection connection = DBus.Bus.get (DBus.BusType.SESSION);
-
-            // Create proxy to MediaContainer iface
-            this.actual_container = connection.get_object (
-                                        service_name,
-                                        object_path)
-                                        as ExternalMediaContainer;
-            this.title = this.actual_container.display_name;
-
-            this.update_container ();
-
-            this.actual_container.updated += this.on_updated;
+            this.connection = DBus.Bus.get (DBus.BusType.SESSION);
         } catch (GLib.Error err) {
-            critical ("Failed to fetch information about container '%s': %s\n",
-                      this.id,
-                      err.message);
+            critical ("Failed to connect to session bus: %s", err.message);
         }
+
+        // Create proxy to MediaContainer iface
+        this.actual_container = this.connection.get_object (this.service_name,
+                                                            id)
+                                as ExternalMediaContainer;
+
+        this.update_container.begin (true);
     }
 
     public override async Gee.List<MediaObject>? get_children (
@@ -77,30 +75,22 @@ public class Rygel.ExternalContainer : Rygel.MediaContainer {
                                         uint         max_count,
                                         Cancellable? cancellable)
                                         throws GLib.Error {
-        var media_objects = new ArrayList <MediaObject> ();
+        string[] filter = {};
 
-        // First add the child containers
-        media_objects.add_all (this.containers);
-
-        // Then get and add the child items
-        var obj_paths = this.actual_container.items;
-        var factory = new ExternalItemFactory ();
-        foreach (var obj_path in obj_paths) {
-            try {
-                var item = yield factory.create_for_path (obj_path, this);
-
-                media_objects.add (item);
-            } catch (GLib.Error err) {
-                warning ("Error initializable item at '%s': %s. Ignoring..",
-                        obj_path,
-                        err.message);
-            }
+        foreach (var object_prop in ExternalMediaObject.PROPERTIES) {
+            filter += object_prop;
         }
 
-        uint stop = offset + max_count;
-        stop = stop.clamp (0, media_objects.size);
+        foreach (var item_prop in ExternalMediaItem.PROPERTIES) {
+            filter += item_prop;
+        }
 
-        return media_objects.slice ((int) offset, (int) stop);
+        var children_props = yield this.actual_container.list_children (
+                                        offset,
+                                        max_count,
+                                        filter);
+
+        return yield this.create_media_objects (children_props, this);
     }
 
     public override async Gee.List<MediaObject>? search (
@@ -110,10 +100,8 @@ public class Rygel.ExternalContainer : Rygel.MediaContainer {
                                         out uint         total_matches,
                                         Cancellable?     cancellable)
                                         throws GLib.Error {
-        var results = new ArrayList<MediaObject> ();
-
-        /* We only deal with relational expression */
-        if (expression == null || !(expression is RelationalExpression)) {
+        if (!this.searchable) {
+            // Backend doesn't implement search :(
             return yield base.search (expression,
                                       offset,
                                       max_count,
@@ -121,82 +109,248 @@ public class Rygel.ExternalContainer : Rygel.MediaContainer {
                                       cancellable);
         }
 
-        var rel_expression = expression as RelationalExpression;
-        var id = rel_expression.operand2;
-
-        /* We only deal with search for a particular item */
-        if (rel_expression.operand1 != "@id" ||
-            rel_expression.op != SearchCriteriaOp.EQ ||
-            !is_direct_child (id)) {
-            return yield base.search (expression,
-                                      offset,
-                                      max_count,
-                                      out total_matches,
-                                      cancellable);
+        string[] filter = {};
+        foreach (var object_prop in ExternalMediaObject.PROPERTIES) {
+            filter += object_prop;
         }
 
-        var factory = new ExternalItemFactory ();
-
-        if (ExternalItemFactory.id_valid (id)) {
-            var media_object = yield factory.create_for_id (id, this);
-            results.add (media_object);
-        } else {
-            foreach (var container in this.containers) {
-                if (container.id == id) {
-                    results.add (container);
-                }
-            }
+        foreach (var container_prop in ExternalMediaContainer.PROPERTIES) {
+            filter += container_prop;
         }
 
-        total_matches = results.size;
+        foreach (var item_prop in ExternalMediaItem.PROPERTIES) {
+            filter += item_prop;
+        }
 
-        return results;
+        var ext_expression = this.translate_expression (expression);
+        var result = yield this.actual_container.search_objects (
+                                        ext_expression.to_string (),
+                                        offset,
+                                        max_count,
+                                        filter);
+        total_matches = result.length;
+
+        return yield this.create_media_objects (result);
     }
 
-    private bool is_direct_child (string id) {
-        if (ExternalItemFactory.id_valid (id)) {
-            return true;
+    public override async MediaObject? find_object (string       id,
+                                                    Cancellable? cancellable)
+                                                    throws GLib.Error {
+        MediaObject media_object = null;
+
+        // Create proxy to MediaObject iface
+        var actual_object = this.connection.get_object (this.service_name, id)
+                            as ExternalMediaObject;
+
+        if (actual_object.object_type == "container") {
+            media_object = this.find_container_by_id (id);
+
+            if (media_object == null) {
+                // Not a child container, lets search in child containers then
+                foreach (var container in this.containers) {
+                    media_object = yield container.find_object (id,
+                                                                cancellable);
+
+                    if (media_object != null) {
+                        break;
+                    }
+                }
+            }
         } else {
-            foreach (var container in this.containers) {
-                if (container.id == id) {
-                    return true;
+            var parent_container = new ExternalDummyContainer
+                                        ((string) actual_object.parent,
+                                         "LaLaLa",
+                                         0,
+                                         null);
+
+            var props_iface = this.connection.get_object (this.service_name, id)
+                              as Properties;
+
+            var props = yield props_iface.get_all (ExternalMediaItem.IFACE);
+
+            // Its an item then
+            media_object = yield this.item_factory.create (
+                                        id,
+                                        actual_object.object_type,
+                                        actual_object.display_name,
+                                        props,
+                                        this.service_name,
+                                        this.host_ip,
+                                        parent_container);
+        }
+
+        return media_object;
+    }
+
+    private async Gee.List<MediaObject> create_media_objects (
+                                        HashTable<string,Value?>[] all_props,
+                                        MediaContainer?            parent
+                                        = null) throws GLib.Error {
+        var media_objects = new ArrayList <MediaObject> ();
+
+        foreach (var props in all_props) {
+            var id = props.lookup ("Path").get_string ();
+            var type = props.lookup ("Type").get_string ();
+
+            MediaContainer parent_container;
+            if (parent != null) {
+                parent_container = parent;
+            } else {
+                var parent_id = props.lookup ("Parent").get_string ();
+
+                parent_container = new ExternalDummyContainer (parent_id,
+                                                               "LaLaLa",
+                                                               0,
+                                                               null);
+            }
+
+            MediaObject media_object = null;
+            if (type == "container") {
+                media_object = this.find_container_by_id (id);
+            }
+
+            if (media_object == null) {
+                var title = props.lookup ("DisplayName").get_string ();
+
+                if (type == "container") {
+                    var child_count = props.lookup ("ChildCount").get_uint ();
+
+                    media_object = new ExternalDummyContainer (
+                                        id,
+                                        title,
+                                        child_count,
+                                        parent_container);
+                } else {
+                    // Its an item then
+                    media_object = yield this.item_factory.create (
+                                        id,
+                                        type,
+                                        title,
+                                        props,
+                                        this.service_name,
+                                        this.host_ip,
+                                        parent_container);
                 }
             }
 
-            return false;
+            media_objects.add (media_object);
         }
+
+        return media_objects;
     }
 
-    private void update_container () throws GLib.Error {
+    private async void refresh_child_containers () throws GLib.Error {
+        string[] filter = {};
+
+        foreach (var object_prop in ExternalMediaObject.PROPERTIES) {
+            filter += object_prop;
+        }
+
+        foreach (var container_prop in ExternalMediaContainer.PROPERTIES) {
+            filter += container_prop;
+        }
+
+        var children_props = yield this.actual_container.list_containers (
+                                        0,
+                                        0,
+                                        filter);
         this.containers.clear ();
 
-        var obj_paths = this.actual_container.containers;
-        foreach (var obj_path in obj_paths) {
-            var container = new ExternalContainer (
-                                        "container:" + (string) obj_path,
-                                        this.service_name,
-                                        obj_path,
-                                        this.host_ip,
-                                        this);
+        foreach (var props in children_props) {
+            var id = props.lookup ("Path").get_string ();
+            var title = props.lookup ("DisplayName").get_string ();
+            var child_count = props.lookup ("ChildCount").get_uint ();
+            var searchable = props.lookup ("Searchable").get_boolean ();
+
+            var container = new ExternalContainer (id,
+                                                   title,
+                                                   child_count,
+                                                   searchable,
+                                                   this.service_name,
+                                                   this.host_ip,
+                                                   this);
             this.containers.add (container);
         }
-
-        this.child_count = this.containers.size +
-                           (int) this.actual_container.item_count;
     }
 
-    private void on_updated (ExternalMediaContainer actual_container) {
+    private async void update_container (bool connect_signal = false) {
         try {
             // Update our information about the container
-            this.update_container ();
+            yield this.refresh_child_containers ();
         } catch (GLib.Error err) {
-            warning ("Failed to update information about container '%s': %s\n",
-                     this.id,
+            warning ("Failed to update information about container '%s': %s",
+                     this.actual_container.get_path (),
                      err.message);
         }
 
         // and signal the clients
         this.updated ();
+
+        if (connect_signal) {
+            this.actual_container.updated.connect (this.on_updated);
+        }
+    }
+
+    private void on_updated (ExternalMediaContainer actual_container) {
+        this.update_container.begin ();
+    }
+
+    private MediaContainer find_container_by_id (string id) {
+        MediaContainer target = null;
+
+        foreach (var container in this.containers) {
+            if (container.id == id) {
+                target = container;
+
+                break;
+            }
+        }
+
+        return target;
+    }
+
+    private SearchExpression translate_expression (
+                                        SearchExpression upnp_expression) {
+        if (upnp_expression is RelationalExpression) {
+            var expression = upnp_expression as RelationalExpression;
+            var ext_expression = new RelationalExpression ();
+            ext_expression.op = expression.op;
+            ext_expression.operand1 = this.translate_property (
+                                        expression.operand1);
+            ext_expression.operand2 = expression.operand2;
+
+            return ext_expression;
+        } else {
+            var expression = upnp_expression as LogicalExpression;
+            var ext_expression = new LogicalExpression ();
+
+            ext_expression.op = expression.op;
+            ext_expression.operand1 = this.translate_expression (
+                                        expression.operand1);
+            ext_expression.operand2 = this.translate_expression (
+                                        expression.operand2);
+
+            return ext_expression;
+        }
+    }
+
+    public string translate_property (string property) {
+        switch (property) {
+        case "@id":
+            return "Path";
+        case "@parentID":
+            return "Parent";
+        case "dc:title":
+            return "DisplayName";
+        case "dc:creator":
+        case "upnp:artist":
+        case "upnp:author":
+            return "Artist";
+        case "upnp:album":
+            return "Album";
+        default:
+            return property;
+        }
     }
 }
 

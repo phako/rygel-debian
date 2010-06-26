@@ -235,16 +235,16 @@ RygelHTTPItemURI* rygel_http_item_uri_new (const char* item_id, RygelHTTPServer*
 }
 
 
-#line 1052 "glib-2.0.vapi"
+#line 1148 "glib-2.0.vapi"
 static char* string_replace (const char* self, const char* old, const char* replacement) {
 #line 241 "rygel-http-item-uri.c"
 	char* result = NULL;
 	GError * _inner_error_;
-#line 1052 "glib-2.0.vapi"
+#line 1148 "glib-2.0.vapi"
 	g_return_val_if_fail (self != NULL, NULL);
-#line 1052 "glib-2.0.vapi"
+#line 1148 "glib-2.0.vapi"
 	g_return_val_if_fail (old != NULL, NULL);
-#line 1052 "glib-2.0.vapi"
+#line 1148 "glib-2.0.vapi"
 	g_return_val_if_fail (replacement != NULL, NULL);
 #line 250 "rygel-http-item-uri.c"
 	_inner_error_ = NULL;
@@ -253,7 +253,7 @@ static char* string_replace (const char* self, const char* old, const char* repl
 		GRegex* _tmp1_;
 		GRegex* regex;
 		char* _tmp2_;
-#line 1054 "glib-2.0.vapi"
+#line 1150 "glib-2.0.vapi"
 		regex = (_tmp1_ = g_regex_new (_tmp0_ = g_regex_escape_string (old, -1), 0, 0, &_inner_error_), _g_free0 (_tmp0_), _tmp1_);
 #line 259 "rygel-http-item-uri.c"
 		if (_inner_error_ != NULL) {
@@ -264,7 +264,7 @@ static char* string_replace (const char* self, const char* old, const char* repl
 			g_clear_error (&_inner_error_);
 			return NULL;
 		}
-#line 1055 "glib-2.0.vapi"
+#line 1151 "glib-2.0.vapi"
 		_tmp2_ = g_regex_replace_literal (regex, self, (gssize) (-1), 0, replacement, 0, &_inner_error_);
 #line 270 "rygel-http-item-uri.c"
 		if (_inner_error_ != NULL) {
@@ -279,7 +279,7 @@ static char* string_replace (const char* self, const char* old, const char* repl
 		}
 		result = _tmp2_;
 		_g_regex_unref0 (regex);
-#line 1055 "glib-2.0.vapi"
+#line 1151 "glib-2.0.vapi"
 		return result;
 #line 285 "rygel-http-item-uri.c"
 	}
@@ -290,7 +290,7 @@ static char* string_replace (const char* self, const char* old, const char* repl
 		e = _inner_error_;
 		_inner_error_ = NULL;
 		{
-#line 1057 "glib-2.0.vapi"
+#line 1153 "glib-2.0.vapi"
 			g_assert_not_reached ();
 #line 296 "rygel-http-item-uri.c"
 			_g_error_free0 (e);
@@ -507,7 +507,7 @@ RygelHTTPItemURI* rygel_http_item_uri_new_from_string (const char* uri, RygelHTT
 }
 
 
-#line 1065 "glib-2.0.vapi"
+#line 1161 "glib-2.0.vapi"
 static gchar* string_to_utf8 (const char* self, int* result_length1) {
 #line 513 "rygel-http-item-uri.c"
 	gchar* result = NULL;
@@ -517,17 +517,17 @@ static gchar* string_to_utf8 (const char* self, int* result_length1) {
 	gint _tmp0_;
 	gchar* _result_;
 	gchar* _tmp2_;
-#line 1065 "glib-2.0.vapi"
+#line 1161 "glib-2.0.vapi"
 	g_return_val_if_fail (self != NULL, NULL);
 #line 523 "rygel-http-item-uri.c"
 	_result_ = (_tmp1_ = g_new0 (gchar, _tmp0_ = strlen (self) + 1), _result__length1 = _tmp0_, __result__size_ = _result__length1, _tmp1_);
-#line 1067 "glib-2.0.vapi"
+#line 1163 "glib-2.0.vapi"
 	_result__length1--;
-#line 1068 "glib-2.0.vapi"
+#line 1164 "glib-2.0.vapi"
 	memcpy (_result_, self, strlen (self));
 #line 529 "rygel-http-item-uri.c"
 	result = (_tmp2_ = _result_, *result_length1 = _result__length1, _tmp2_);
-#line 1069 "glib-2.0.vapi"
+#line 1165 "glib-2.0.vapi"
 	return result;
 #line 533 "rygel-http-item-uri.c"
 	_result_ = (g_free (_result_), NULL);

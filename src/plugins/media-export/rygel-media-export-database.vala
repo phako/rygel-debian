@@ -22,7 +22,7 @@
 
 using Sqlite;
 
-public errordomain Rygel.DatabaseError {
+public errordomain Rygel.MediaExport.DatabaseError {
     IO_ERROR,
     SQLITE_ERROR
 }
@@ -33,7 +33,7 @@ public errordomain Rygel.DatabaseError {
  * It adds statement preparation based on GValue and a cancellable exec
  * function.
  */
-internal class Rygel.MediaExportDatabase : Object {
+internal class Rygel.MediaExport.Database : Object {
     private Sqlite.Database db;
 
     /**
@@ -49,7 +49,7 @@ internal class Rygel.MediaExportDatabase : Object {
      * @param name of the database, used to build full path
      * (<cache-dir>/rygel/<name>.db)
      */
-    public MediaExportDatabase (string name) throws DatabaseError {
+    public Database (string name) throws DatabaseError {
         var dirname = Path.build_filename (Environment.get_user_cache_dir (),
                                            "rygel");
         DirUtils.create_with_parents (dirname, 0750);
@@ -115,7 +115,7 @@ internal class Rygel.MediaExportDatabase : Object {
             throw new DatabaseError.SQLITE_ERROR (db.errmsg ());
         }
         #if RYGEL_DEBUG_SQL
-        debug (_("Query: %s, Time: %f"), sql, t.elapsed ());
+        debug ("Query: %s, Time: %f", sql, t.elapsed ());
         #endif
 
         return rc;
@@ -145,7 +145,7 @@ internal class Rygel.MediaExportDatabase : Object {
 
         if (values != null) {
             for (int i = 0; i < values.length; i++) {
-                if (values[i].holds(typeof (int))) {
+                if (values[i].holds (typeof (int))) {
                     rc = statement.bind_int (i + 1, values[i].get_int ());
                 } else if (values[i].holds (typeof (int64))) {
                     rc = statement.bind_int64 (i + 1, values[i].get_int64 ());

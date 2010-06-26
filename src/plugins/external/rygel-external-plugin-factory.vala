@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2009 Zeeshan Ali (Khattak) <zeeshanak@gnome.org>.
- * Copyright (C) 2009 Nokia Corporation.
+ * Copyright (C) 2009,2010 Nokia Corporation.
  *
  * Author: Zeeshan Ali (Khattak) <zeeshanak@gnome.org>
  *                               <zeeshan.ali@nokia.com>
@@ -24,12 +24,10 @@
 
 using Rygel;
 using Gee;
-using CStuff;
 using FreeDesktop;
 
 private ExternalPluginFactory plugin_factory;
 
-[ModuleInit]
 public void module_init (PluginLoader loader) {
     try {
         plugin_factory = new ExternalPluginFactory (loader);
@@ -43,10 +41,11 @@ public class Rygel.ExternalPluginFactory {
     private const string DBUS_SERVICE = "org.freedesktop.DBus";
     private const string DBUS_OBJECT = "/org/freedesktop/DBus";
 
-    private static string OBJECT_IFACE = "org.gnome.UPnP.MediaObject1";
-    private static string CONTAINER_IFACE = "org.gnome.UPnP.MediaContainer1";
+    private static string OBJECT_IFACE = "org.gnome.UPnP.MediaObject2";
+    private static string CONTAINER_IFACE = "org.gnome.UPnP.MediaContainer2";
 
-    private const string SERVICE_PREFIX = "org.gnome.UPnP.MediaServer1.";
+    private const string SERVICE_PREFIX = "org.gnome.UPnP.MediaServer2.";
+    private const string GRILO_UPNP_PREFIX = SERVICE_PREFIX + "grl_upnp";
 
     DBusObject          dbus_obj;
     DBus.Connection     connection;
@@ -88,7 +87,7 @@ public class Rygel.ExternalPluginFactory {
             }
         }
 
-        this.dbus_obj.name_owner_changed += this.name_owner_changed;
+        this.dbus_obj.name_owner_changed.connect (this.name_owner_changed);
     }
 
     private void name_owner_changed (DBusObject dbus_obj,
@@ -114,6 +113,11 @@ public class Rygel.ExternalPluginFactory {
     }
 
     private async void load_plugin (string service_name) {
+        if (service_name.has_prefix (GRILO_UPNP_PREFIX)) {
+            // We don't entertain UPnP sources
+            return;
+        }
+
         // org.gnome.UPnP.MediaServer1.NAME => /org/gnome/UPnP/MediaServer1/NAME
         var root_object = "/" + service_name.replace (".", "/");
 
@@ -147,8 +151,13 @@ public class Rygel.ExternalPluginFactory {
             title = service_name;
         }
 
+        var child_count = container_props.lookup ("ChildCount").get_uint ();
+        var searchable = container_props.lookup ("Searchable").get_boolean ();
+
         var plugin = new ExternalPlugin (service_name,
                                          title,
+                                         child_count,
+                                         searchable,
                                          root_object,
                                          icon);
 

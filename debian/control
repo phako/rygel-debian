@@ -6,7 +6,7 @@ Uploaders: Marc-André Lureau <marcandre.lureau@gmail.com>, Andreas Henriksson <
 Build-Depends: quilt, debhelper (>= 7), autotools-dev,
     intltool,
     libgupnp-1.0-dev (>= 0.13.3),
-    libgupnp-av-1.0-dev (>= 0.5.5),
+    libgupnp-av-1.0-dev (>= 0.5.7),
     libdbus-glib-1-dev (>= 0.74),
     libgstreamer0.10-dev (>= 0.10.23),
     libglib2.0-dev (>= 2.16.6),

@@ -32,44 +32,44 @@
 #include <string.h>
 
 
-#define RYGEL_TYPE_TEST_ROOT_CONTAINER (rygel_test_root_container_get_type ())
-#define RYGEL_TEST_ROOT_CONTAINER(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_TEST_ROOT_CONTAINER, RygelTestRootContainer))
-#define RYGEL_TEST_ROOT_CONTAINER_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TYPE_TEST_ROOT_CONTAINER, RygelTestRootContainerClass))
-#define RYGEL_IS_TEST_ROOT_CONTAINER(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TYPE_TEST_ROOT_CONTAINER))
-#define RYGEL_IS_TEST_ROOT_CONTAINER_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_TYPE_TEST_ROOT_CONTAINER))
-#define RYGEL_TEST_ROOT_CONTAINER_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_TYPE_TEST_ROOT_CONTAINER, RygelTestRootContainerClass))
+#define RYGEL_TEST_TYPE_ROOT_CONTAINER (rygel_test_root_container_get_type ())
+#define RYGEL_TEST_ROOT_CONTAINER(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TEST_TYPE_ROOT_CONTAINER, RygelTestRootContainer))
+#define RYGEL_TEST_ROOT_CONTAINER_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TEST_TYPE_ROOT_CONTAINER, RygelTestRootContainerClass))
+#define RYGEL_TEST_IS_ROOT_CONTAINER(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TEST_TYPE_ROOT_CONTAINER))
+#define RYGEL_TEST_IS_ROOT_CONTAINER_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_TEST_TYPE_ROOT_CONTAINER))
+#define RYGEL_TEST_ROOT_CONTAINER_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_TEST_TYPE_ROOT_CONTAINER, RygelTestRootContainerClass))
 
 typedef struct _RygelTestRootContainer RygelTestRootContainer;
 typedef struct _RygelTestRootContainerClass RygelTestRootContainerClass;
 typedef struct _RygelTestRootContainerPrivate RygelTestRootContainerPrivate;
 
-#define RYGEL_TYPE_TEST_ITEM (rygel_test_item_get_type ())
-#define RYGEL_TEST_ITEM(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_TEST_ITEM, RygelTestItem))
-#define RYGEL_TEST_ITEM_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TYPE_TEST_ITEM, RygelTestItemClass))
-#define RYGEL_IS_TEST_ITEM(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TYPE_TEST_ITEM))
-#define RYGEL_IS_TEST_ITEM_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_TYPE_TEST_ITEM))
-#define RYGEL_TEST_ITEM_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_TYPE_TEST_ITEM, RygelTestItemClass))
+#define RYGEL_TEST_TYPE_ITEM (rygel_test_item_get_type ())
+#define RYGEL_TEST_ITEM(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TEST_TYPE_ITEM, RygelTestItem))
+#define RYGEL_TEST_ITEM_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TEST_TYPE_ITEM, RygelTestItemClass))
+#define RYGEL_TEST_IS_ITEM(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TEST_TYPE_ITEM))
+#define RYGEL_TEST_IS_ITEM_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_TEST_TYPE_ITEM))
+#define RYGEL_TEST_ITEM_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_TEST_TYPE_ITEM, RygelTestItemClass))
 
 typedef struct _RygelTestItem RygelTestItem;
 typedef struct _RygelTestItemClass RygelTestItemClass;
 
-#define RYGEL_TYPE_TEST_AUDIO_ITEM (rygel_test_audio_item_get_type ())
-#define RYGEL_TEST_AUDIO_ITEM(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_TEST_AUDIO_ITEM, RygelTestAudioItem))
-#define RYGEL_TEST_AUDIO_ITEM_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TYPE_TEST_AUDIO_ITEM, RygelTestAudioItemClass))
-#define RYGEL_IS_TEST_AUDIO_ITEM(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TYPE_TEST_AUDIO_ITEM))
-#define RYGEL_IS_TEST_AUDIO_ITEM_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_TYPE_TEST_AUDIO_ITEM))
-#define RYGEL_TEST_AUDIO_ITEM_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_TYPE_TEST_AUDIO_ITEM, RygelTestAudioItemClass))
+#define RYGEL_TEST_TYPE_AUDIO_ITEM (rygel_test_audio_item_get_type ())
+#define RYGEL_TEST_AUDIO_ITEM(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TEST_TYPE_AUDIO_ITEM, RygelTestAudioItem))
+#define RYGEL_TEST_AUDIO_ITEM_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TEST_TYPE_AUDIO_ITEM, RygelTestAudioItemClass))
+#define RYGEL_TEST_IS_AUDIO_ITEM(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TEST_TYPE_AUDIO_ITEM))
+#define RYGEL_TEST_IS_AUDIO_ITEM_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_TEST_TYPE_AUDIO_ITEM))
+#define RYGEL_TEST_AUDIO_ITEM_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_TEST_TYPE_AUDIO_ITEM, RygelTestAudioItemClass))
 
 typedef struct _RygelTestAudioItem RygelTestAudioItem;
 typedef struct _RygelTestAudioItemClass RygelTestAudioItemClass;
 #define _g_object_unref0(var) ((var == NULL) ? NULL : (var = (g_object_unref (var), NULL)))
 
-#define RYGEL_TYPE_TEST_VIDEO_ITEM (rygel_test_video_item_get_type ())
-#define RYGEL_TEST_VIDEO_ITEM(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_TEST_VIDEO_ITEM, RygelTestVideoItem))
-#define RYGEL_TEST_VIDEO_ITEM_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TYPE_TEST_VIDEO_ITEM, RygelTestVideoItemClass))
-#define RYGEL_IS_TEST_VIDEO_ITEM(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TYPE_TEST_VIDEO_ITEM))
-#define RYGEL_IS_TEST_VIDEO_ITEM_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_TYPE_TEST_VIDEO_ITEM))
-#define RYGEL_TEST_VIDEO_ITEM_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_TYPE_TEST_VIDEO_ITEM, RygelTestVideoItemClass))
+#define RYGEL_TEST_TYPE_VIDEO_ITEM (rygel_test_video_item_get_type ())
+#define RYGEL_TEST_VIDEO_ITEM(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TEST_TYPE_VIDEO_ITEM, RygelTestVideoItem))
+#define RYGEL_TEST_VIDEO_ITEM_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TEST_TYPE_VIDEO_ITEM, RygelTestVideoItemClass))
+#define RYGEL_TEST_IS_VIDEO_ITEM(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TEST_TYPE_VIDEO_ITEM))
+#define RYGEL_TEST_IS_VIDEO_ITEM_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_TEST_TYPE_VIDEO_ITEM))
+#define RYGEL_TEST_VIDEO_ITEM_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_TEST_TYPE_VIDEO_ITEM, RygelTestVideoItemClass))
 
 typedef struct _RygelTestVideoItem RygelTestVideoItem;
 typedef struct _RygelTestVideoItemClass RygelTestVideoItemClass;
@@ -116,7 +116,7 @@ RygelTestRootContainer* rygel_test_root_container_construct (GType object_type, 
 	rygel_simple_container_add_child ((RygelSimpleContainer*) self, (RygelMediaObject*) (_tmp0_ = rygel_test_audio_item_new ("sinewave", (RygelMediaContainer*) self, "Sine Wave")));
 #line 118 "rygel-test-root-container.c"
 	_g_object_unref0 (_tmp0_);
-#line 39 "rygel-test-root-container.vala"
+#line 37 "rygel-test-root-container.vala"
 	rygel_simple_container_add_child ((RygelSimpleContainer*) self, (RygelMediaObject*) (_tmp1_ = rygel_test_video_item_new ("smtpe", (RygelMediaContainer*) self, "SMTPE")));
 #line 122 "rygel-test-root-container.c"
 	_g_object_unref0 (_tmp1_);
@@ -127,7 +127,7 @@ RygelTestRootContainer* rygel_test_root_container_construct (GType object_type, 
 #line 33 "rygel-test-root-container.vala"
 RygelTestRootContainer* rygel_test_root_container_new (const char* title) {
 #line 33 "rygel-test-root-container.vala"
-	return rygel_test_root_container_construct (RYGEL_TYPE_TEST_ROOT_CONTAINER, title);
+	return rygel_test_root_container_construct (RYGEL_TEST_TYPE_ROOT_CONTAINER, title);
 #line 132 "rygel-test-root-container.c"
 }
 

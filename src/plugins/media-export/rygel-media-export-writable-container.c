@@ -197,17 +197,17 @@ static gboolean rygel_media_export_writable_container_real_add_item_co (RygelMed
 	switch (data->_state_) {
 		case 0:
 		goto _state_0;
-		case 9:
-		goto _state_9;
+		case 11:
+		goto _state_11;
 		default:
 		g_assert_not_reached ();
 	}
 	_state_0:
 	{
-		data->_state_ = 9;
+		data->_state_ = 11;
 		RYGEL_MEDIA_CONTAINER_CLASS (rygel_media_export_writable_container_parent_class)->add_item ((RygelMediaContainer*) RYGEL_MEDIA_EXPORT_DB_CONTAINER (data->self), data->item, data->cancellable, rygel_media_export_writable_container_add_item_ready, data);
 		return FALSE;
-		_state_9:
+		_state_11:
 #line 35 "rygel-media-export-writable-container.vala"
 		RYGEL_MEDIA_CONTAINER_CLASS (rygel_media_export_writable_container_parent_class)->add_item_finish ((RygelMediaContainer*) RYGEL_MEDIA_EXPORT_DB_CONTAINER (data->self), data->_res_, &data->_inner_error_);
 #line 214 "rygel-media-export-writable-container.c"

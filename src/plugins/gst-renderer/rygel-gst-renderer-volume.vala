@@ -1,10 +1,10 @@
 /*
- * Copyright (C) 2008 Zeeshan Ali <zeenix@gmail.com>.
- * Copyright (C) 2008 Nokia Corporation.
+ * Copyright (C) 2008 OpenedHand Ltd.
+ * Copyright (C) 2009 Nokia Corporation.
  *
- * Author: Zeeshan Ali <zeenix@gmail.com>
- *
- * This file is part of Rygel.
+ * Author: Jorn Baayen <jorn@openedhand.com>
+ *         Zeeshan Ali (Khattak) <zeeshanak@gnome.org>
+ *                               <zeeshan.ali@nokia.com>
  *
  * Rygel is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -21,18 +21,14 @@
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-using GUPnP;
-using DBus;
-using Gee;
+// Helper class for converting between double and percentage representations
+// of volume.
+private class Rygel.GstRenderer.Volume {
+    public static double from_percentage (uint percentage) {
+        return (double) percentage / 100.0;
+    }
 
-/**
- * Implementation of Tracker-based ContentDirectory service.
- */
-public class Rygel.MediaTracker : Rygel.ContentDirectory {
-    /* Pubic methods */
-    public override MediaContainer? create_root_container () {
-        string friendly_name = this.root_device.get_friendly_name ();
-        return new TrackerRootContainer (friendly_name);
+    public static uint to_percentage (double volume) {
+        return (uint) (volume * 100.0);
     }
 }
-

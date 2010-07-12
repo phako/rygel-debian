@@ -158,11 +158,11 @@ RygelMediaExportMediaExportItem* rygel_media_export_media_export_item_create_fro
 #line 61 "rygel-media-export-item.vala"
 						content_type = (_tmp12_ = _tmp11_, _g_free0 (content_type), _tmp12_);
 #line 63 "rygel-media-export-item.vala"
-						g_warning (_ ("File '%s' is of unknown format/type."), _tmp13_ = g_file_get_uri (file));
+						g_debug (_ ("File '%s' is of unknown format/type."), _tmp13_ = g_file_get_uri (file));
 #line 163 "rygel-media-export-item.c"
 						_g_free0 (_tmp13_);
 #line 65 "rygel-media-export-item.vala"
-						g_warning (_ ("Trying to guess from content type %s"), content_type);
+						g_debug (_ ("Trying to guess from content type %s"), content_type);
 #line 67 "rygel-media-export-item.vala"
 						if (g_str_has_prefix (content_type, "video/")) {
 #line 169 "rygel-media-export-item.c"

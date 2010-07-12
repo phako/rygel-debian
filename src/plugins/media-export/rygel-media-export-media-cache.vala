@@ -29,7 +29,7 @@ public errordomain Rygel.MediaDBError {
     SQLITE_ERROR,
     GENERAL_ERROR,
     INVALID_TYPE,
-    UNSUPPORTED
+    UNSUPPORTED_SEARCH
 }
 
 public enum Rygel.MediaDBObjectType {
@@ -132,7 +132,7 @@ public class Rygel.MediaExport.MediaCache : Object {
     "SELECT DISTINCT o.type_fk, o.title, m.size, m.mime_type, m.width, m.height, " +
             "m.class, m.author, m.album, m.date, m.bitrate, m.sample_freq, " +
             "m.bits_per_sample, m.channels, m.track, m.color_depth, " +
-            "m.duration, o.parent, o.upnp_id, o.uri " +
+            "m.duration, o.parent, o.upnp_id, o.timestamp, o.uri " +
     "FROM Object o " +
         "JOIN Closure c ON (o.upnp_id = c.ancestor) " +
         "LEFT OUTER JOIN meta_data m ON (o.upnp_id = m.object_fk) " +
@@ -649,9 +649,11 @@ public class Rygel.MediaExport.MediaCache : Object {
                                                 object_id,
                                                 statement.column_text (1),
                                                 0);
+
+                var container = object as MediaContainer;
                 var uri = statement.column_text (20);
                 if (uri != null) {
-                    object.uris.add (uri);
+                    container.set_uri (uri);
                 }
                 break;
             case 1:
@@ -672,7 +674,7 @@ public class Rygel.MediaExport.MediaCache : Object {
         }
 
         if (object != null) {
-            object.modified = statement.column_int64 (18);
+            object.modified = statement.column_int64 (19);
         }
 
         return object;
@@ -781,7 +783,7 @@ public class Rygel.MediaExport.MediaCache : Object {
             default:
                 var message = "Unsupported column %s".printf (operand);
 
-                throw new MediaDBError.UNSUPPORTED (message);
+                throw new MediaDBError.UNSUPPORTED_SEARCH (message);
         }
 
         return column;

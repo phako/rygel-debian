@@ -32,33 +32,33 @@
 #include <gee.h>
 
 
-#define RYGEL_TYPE_TRACKER_ITEM_FACTORY (rygel_tracker_item_factory_get_type ())
-#define RYGEL_TRACKER_ITEM_FACTORY(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_TRACKER_ITEM_FACTORY, RygelTrackerItemFactory))
-#define RYGEL_TRACKER_ITEM_FACTORY_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TYPE_TRACKER_ITEM_FACTORY, RygelTrackerItemFactoryClass))
-#define RYGEL_IS_TRACKER_ITEM_FACTORY(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TYPE_TRACKER_ITEM_FACTORY))
-#define RYGEL_IS_TRACKER_ITEM_FACTORY_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_TYPE_TRACKER_ITEM_FACTORY))
-#define RYGEL_TRACKER_ITEM_FACTORY_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_TYPE_TRACKER_ITEM_FACTORY, RygelTrackerItemFactoryClass))
+#define RYGEL_TRACKER_TYPE_ITEM_FACTORY (rygel_tracker_item_factory_get_type ())
+#define RYGEL_TRACKER_ITEM_FACTORY(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TRACKER_TYPE_ITEM_FACTORY, RygelTrackerItemFactory))
+#define RYGEL_TRACKER_ITEM_FACTORY_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TRACKER_TYPE_ITEM_FACTORY, RygelTrackerItemFactoryClass))
+#define RYGEL_TRACKER_IS_ITEM_FACTORY(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TRACKER_TYPE_ITEM_FACTORY))
+#define RYGEL_TRACKER_IS_ITEM_FACTORY_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_TRACKER_TYPE_ITEM_FACTORY))
+#define RYGEL_TRACKER_ITEM_FACTORY_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_TRACKER_TYPE_ITEM_FACTORY, RygelTrackerItemFactoryClass))
 
 typedef struct _RygelTrackerItemFactory RygelTrackerItemFactory;
 typedef struct _RygelTrackerItemFactoryClass RygelTrackerItemFactoryClass;
 typedef struct _RygelTrackerItemFactoryPrivate RygelTrackerItemFactoryPrivate;
 
-#define RYGEL_TYPE_TRACKER_SEARCH_CONTAINER (rygel_tracker_search_container_get_type ())
-#define RYGEL_TRACKER_SEARCH_CONTAINER(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_TRACKER_SEARCH_CONTAINER, RygelTrackerSearchContainer))
-#define RYGEL_TRACKER_SEARCH_CONTAINER_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TYPE_TRACKER_SEARCH_CONTAINER, RygelTrackerSearchContainerClass))
-#define RYGEL_IS_TRACKER_SEARCH_CONTAINER(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TYPE_TRACKER_SEARCH_CONTAINER))
-#define RYGEL_IS_TRACKER_SEARCH_CONTAINER_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_TYPE_TRACKER_SEARCH_CONTAINER))
-#define RYGEL_TRACKER_SEARCH_CONTAINER_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_TYPE_TRACKER_SEARCH_CONTAINER, RygelTrackerSearchContainerClass))
+#define RYGEL_TRACKER_TYPE_SEARCH_CONTAINER (rygel_tracker_search_container_get_type ())
+#define RYGEL_TRACKER_SEARCH_CONTAINER(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TRACKER_TYPE_SEARCH_CONTAINER, RygelTrackerSearchContainer))
+#define RYGEL_TRACKER_SEARCH_CONTAINER_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TRACKER_TYPE_SEARCH_CONTAINER, RygelTrackerSearchContainerClass))
+#define RYGEL_TRACKER_IS_SEARCH_CONTAINER(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TRACKER_TYPE_SEARCH_CONTAINER))
+#define RYGEL_TRACKER_IS_SEARCH_CONTAINER_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_TRACKER_TYPE_SEARCH_CONTAINER))
+#define RYGEL_TRACKER_SEARCH_CONTAINER_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_TRACKER_TYPE_SEARCH_CONTAINER, RygelTrackerSearchContainerClass))
 
 typedef struct _RygelTrackerSearchContainer RygelTrackerSearchContainer;
 typedef struct _RygelTrackerSearchContainerClass RygelTrackerSearchContainerClass;
 
-#define RYGEL_TYPE_TRACKER_PICTURE_ITEM_FACTORY (rygel_tracker_picture_item_factory_get_type ())
-#define RYGEL_TRACKER_PICTURE_ITEM_FACTORY(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_TRACKER_PICTURE_ITEM_FACTORY, RygelTrackerPictureItemFactory))
-#define RYGEL_TRACKER_PICTURE_ITEM_FACTORY_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TYPE_TRACKER_PICTURE_ITEM_FACTORY, RygelTrackerPictureItemFactoryClass))
-#define RYGEL_IS_TRACKER_PICTURE_ITEM_FACTORY(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TYPE_TRACKER_PICTURE_ITEM_FACTORY))
-#define RYGEL_IS_TRACKER_PICTURE_ITEM_FACTORY_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_TYPE_TRACKER_PICTURE_ITEM_FACTORY))
-#define RYGEL_TRACKER_PICTURE_ITEM_FACTORY_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_TYPE_TRACKER_PICTURE_ITEM_FACTORY, RygelTrackerPictureItemFactoryClass))
+#define RYGEL_TRACKER_TYPE_PICTURE_ITEM_FACTORY (rygel_tracker_picture_item_factory_get_type ())
+#define RYGEL_TRACKER_PICTURE_ITEM_FACTORY(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TRACKER_TYPE_PICTURE_ITEM_FACTORY, RygelTrackerPictureItemFactory))
+#define RYGEL_TRACKER_PICTURE_ITEM_FACTORY_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TRACKER_TYPE_PICTURE_ITEM_FACTORY, RygelTrackerPictureItemFactoryClass))
+#define RYGEL_TRACKER_IS_PICTURE_ITEM_FACTORY(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TRACKER_TYPE_PICTURE_ITEM_FACTORY))
+#define RYGEL_TRACKER_IS_PICTURE_ITEM_FACTORY_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_TRACKER_TYPE_PICTURE_ITEM_FACTORY))
+#define RYGEL_TRACKER_PICTURE_ITEM_FACTORY_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_TRACKER_TYPE_PICTURE_ITEM_FACTORY, RygelTrackerPictureItemFactoryClass))
 
 typedef struct _RygelTrackerPictureItemFactory RygelTrackerPictureItemFactory;
 typedef struct _RygelTrackerPictureItemFactoryClass RygelTrackerPictureItemFactoryClass;
@@ -115,10 +115,10 @@ static gpointer rygel_tracker_picture_item_factory_parent_class = NULL;
 
 gpointer rygel_tracker_item_factory_ref (gpointer instance);
 void rygel_tracker_item_factory_unref (gpointer instance);
-GParamSpec* rygel_param_spec_tracker_item_factory (const gchar* name, const gchar* nick, const gchar* blurb, GType object_type, GParamFlags flags);
-void rygel_value_set_tracker_item_factory (GValue* value, gpointer v_object);
-void rygel_value_take_tracker_item_factory (GValue* value, gpointer v_object);
-gpointer rygel_value_get_tracker_item_factory (const GValue* value);
+GParamSpec* rygel_tracker_param_spec_item_factory (const gchar* name, const gchar* nick, const gchar* blurb, GType object_type, GParamFlags flags);
+void rygel_tracker_value_set_item_factory (GValue* value, gpointer v_object);
+void rygel_tracker_value_take_item_factory (GValue* value, gpointer v_object);
+gpointer rygel_tracker_value_get_item_factory (const GValue* value);
 GType rygel_tracker_item_factory_get_type (void);
 GType rygel_tracker_search_container_get_type (void);
 GType rygel_tracker_picture_item_factory_get_type (void);
@@ -209,7 +209,7 @@ RygelTrackerPictureItemFactory* rygel_tracker_picture_item_factory_construct (GT
 #line 39 "rygel-tracker-picture-item-factory.vala"
 RygelTrackerPictureItemFactory* rygel_tracker_picture_item_factory_new (void) {
 #line 39 "rygel-tracker-picture-item-factory.vala"
-	return rygel_tracker_picture_item_factory_construct (RYGEL_TYPE_TRACKER_PICTURE_ITEM_FACTORY);
+	return rygel_tracker_picture_item_factory_construct (RYGEL_TRACKER_TYPE_PICTURE_ITEM_FACTORY);
 #line 214 "rygel-tracker-picture-item-factory.c"
 }
 
@@ -271,7 +271,7 @@ GType rygel_tracker_picture_item_factory_get_type (void) {
 	if (g_once_init_enter (&rygel_tracker_picture_item_factory_type_id__volatile)) {
 		static const GTypeInfo g_define_type_info = { sizeof (RygelTrackerPictureItemFactoryClass), (GBaseInitFunc) NULL, (GBaseFinalizeFunc) NULL, (GClassInitFunc) rygel_tracker_picture_item_factory_class_init, (GClassFinalizeFunc) NULL, NULL, sizeof (RygelTrackerPictureItemFactory), 0, (GInstanceInitFunc) rygel_tracker_picture_item_factory_instance_init, NULL };
 		GType rygel_tracker_picture_item_factory_type_id;
-		rygel_tracker_picture_item_factory_type_id = g_type_register_static (RYGEL_TYPE_TRACKER_ITEM_FACTORY, "RygelTrackerPictureItemFactory", &g_define_type_info, 0);
+		rygel_tracker_picture_item_factory_type_id = g_type_register_static (RYGEL_TRACKER_TYPE_ITEM_FACTORY, "RygelTrackerPictureItemFactory", &g_define_type_info, 0);
 		g_once_init_leave (&rygel_tracker_picture_item_factory_type_id__volatile, rygel_tracker_picture_item_factory_type_id);
 	}
 	return rygel_tracker_picture_item_factory_type_id__volatile;

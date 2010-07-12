@@ -28,12 +28,12 @@
 #include <rygel.h>
 
 
-#define RYGEL_TYPE_GST_LAUNCH_CONTENT_DIR (rygel_gst_launch_content_dir_get_type ())
-#define RYGEL_GST_LAUNCH_CONTENT_DIR(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_GST_LAUNCH_CONTENT_DIR, RygelGstLaunchContentDir))
-#define RYGEL_GST_LAUNCH_CONTENT_DIR_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TYPE_GST_LAUNCH_CONTENT_DIR, RygelGstLaunchContentDirClass))
-#define RYGEL_IS_GST_LAUNCH_CONTENT_DIR(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TYPE_GST_LAUNCH_CONTENT_DIR))
-#define RYGEL_IS_GST_LAUNCH_CONTENT_DIR_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_TYPE_GST_LAUNCH_CONTENT_DIR))
-#define RYGEL_GST_LAUNCH_CONTENT_DIR_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_TYPE_GST_LAUNCH_CONTENT_DIR, RygelGstLaunchContentDirClass))
+#define RYGEL_GST_LAUNCH_TYPE_CONTENT_DIR (rygel_gst_launch_content_dir_get_type ())
+#define RYGEL_GST_LAUNCH_CONTENT_DIR(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_GST_LAUNCH_TYPE_CONTENT_DIR, RygelGstLaunchContentDir))
+#define RYGEL_GST_LAUNCH_CONTENT_DIR_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_GST_LAUNCH_TYPE_CONTENT_DIR, RygelGstLaunchContentDirClass))
+#define RYGEL_GST_LAUNCH_IS_CONTENT_DIR(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_GST_LAUNCH_TYPE_CONTENT_DIR))
+#define RYGEL_GST_LAUNCH_IS_CONTENT_DIR_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_GST_LAUNCH_TYPE_CONTENT_DIR))
+#define RYGEL_GST_LAUNCH_CONTENT_DIR_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_GST_LAUNCH_TYPE_CONTENT_DIR, RygelGstLaunchContentDirClass))
 
 typedef struct _RygelGstLaunchContentDir RygelGstLaunchContentDir;
 typedef struct _RygelGstLaunchContentDirClass RygelGstLaunchContentDirClass;
@@ -53,7 +53,7 @@ void module_init (RygelPluginLoader* loader) {
 #line 26 "rygel-gst-launch-plugin.vala"
 	g_return_if_fail (loader != NULL);
 #line 27 "rygel-gst-launch-plugin.vala"
-	plugin = rygel_plugin_new_MediaServer ("GstLaunch", "Gst Launch", RYGEL_TYPE_GST_LAUNCH_CONTENT_DIR, NULL);
+	plugin = rygel_plugin_new_MediaServer ("GstLaunch", "Gst Launch", RYGEL_GST_LAUNCH_TYPE_CONTENT_DIR, NULL);
 #line 30 "rygel-gst-launch-plugin.vala"
 	rygel_plugin_loader_add_plugin (loader, plugin);
 #line 60 "rygel-gst-launch-plugin.c"

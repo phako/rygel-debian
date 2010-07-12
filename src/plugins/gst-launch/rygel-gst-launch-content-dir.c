@@ -31,24 +31,24 @@
 #include <string.h>
 
 
-#define RYGEL_TYPE_GST_LAUNCH_CONTENT_DIR (rygel_gst_launch_content_dir_get_type ())
-#define RYGEL_GST_LAUNCH_CONTENT_DIR(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_GST_LAUNCH_CONTENT_DIR, RygelGstLaunchContentDir))
-#define RYGEL_GST_LAUNCH_CONTENT_DIR_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TYPE_GST_LAUNCH_CONTENT_DIR, RygelGstLaunchContentDirClass))
-#define RYGEL_IS_GST_LAUNCH_CONTENT_DIR(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TYPE_GST_LAUNCH_CONTENT_DIR))
-#define RYGEL_IS_GST_LAUNCH_CONTENT_DIR_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_TYPE_GST_LAUNCH_CONTENT_DIR))
-#define RYGEL_GST_LAUNCH_CONTENT_DIR_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_TYPE_GST_LAUNCH_CONTENT_DIR, RygelGstLaunchContentDirClass))
+#define RYGEL_GST_LAUNCH_TYPE_CONTENT_DIR (rygel_gst_launch_content_dir_get_type ())
+#define RYGEL_GST_LAUNCH_CONTENT_DIR(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_GST_LAUNCH_TYPE_CONTENT_DIR, RygelGstLaunchContentDir))
+#define RYGEL_GST_LAUNCH_CONTENT_DIR_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_GST_LAUNCH_TYPE_CONTENT_DIR, RygelGstLaunchContentDirClass))
+#define RYGEL_GST_LAUNCH_IS_CONTENT_DIR(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_GST_LAUNCH_TYPE_CONTENT_DIR))
+#define RYGEL_GST_LAUNCH_IS_CONTENT_DIR_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_GST_LAUNCH_TYPE_CONTENT_DIR))
+#define RYGEL_GST_LAUNCH_CONTENT_DIR_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_GST_LAUNCH_TYPE_CONTENT_DIR, RygelGstLaunchContentDirClass))
 
 typedef struct _RygelGstLaunchContentDir RygelGstLaunchContentDir;
 typedef struct _RygelGstLaunchContentDirClass RygelGstLaunchContentDirClass;
 typedef struct _RygelGstLaunchContentDirPrivate RygelGstLaunchContentDirPrivate;
 #define _g_object_unref0(var) ((var == NULL) ? NULL : (var = (g_object_unref (var), NULL)))
 
-#define RYGEL_TYPE_GST_LAUNCH_ROOT_CONTAINER (rygel_gst_launch_root_container_get_type ())
-#define RYGEL_GST_LAUNCH_ROOT_CONTAINER(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_GST_LAUNCH_ROOT_CONTAINER, RygelGstLaunchRootContainer))
-#define RYGEL_GST_LAUNCH_ROOT_CONTAINER_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TYPE_GST_LAUNCH_ROOT_CONTAINER, RygelGstLaunchRootContainerClass))
-#define RYGEL_IS_GST_LAUNCH_ROOT_CONTAINER(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TYPE_GST_LAUNCH_ROOT_CONTAINER))
-#define RYGEL_IS_GST_LAUNCH_ROOT_CONTAINER_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_TYPE_GST_LAUNCH_ROOT_CONTAINER))
-#define RYGEL_GST_LAUNCH_ROOT_CONTAINER_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_TYPE_GST_LAUNCH_ROOT_CONTAINER, RygelGstLaunchRootContainerClass))
+#define RYGEL_GST_LAUNCH_TYPE_ROOT_CONTAINER (rygel_gst_launch_root_container_get_type ())
+#define RYGEL_GST_LAUNCH_ROOT_CONTAINER(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_GST_LAUNCH_TYPE_ROOT_CONTAINER, RygelGstLaunchRootContainer))
+#define RYGEL_GST_LAUNCH_ROOT_CONTAINER_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_GST_LAUNCH_TYPE_ROOT_CONTAINER, RygelGstLaunchRootContainerClass))
+#define RYGEL_GST_LAUNCH_IS_ROOT_CONTAINER(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_GST_LAUNCH_TYPE_ROOT_CONTAINER))
+#define RYGEL_GST_LAUNCH_IS_ROOT_CONTAINER_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_GST_LAUNCH_TYPE_ROOT_CONTAINER))
+#define RYGEL_GST_LAUNCH_ROOT_CONTAINER_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_GST_LAUNCH_TYPE_ROOT_CONTAINER, RygelGstLaunchRootContainerClass))
 
 typedef struct _RygelGstLaunchRootContainer RygelGstLaunchRootContainer;
 typedef struct _RygelGstLaunchRootContainerClass RygelGstLaunchRootContainerClass;
@@ -114,7 +114,7 @@ RygelGstLaunchContentDir* rygel_gst_launch_content_dir_construct (GType object_t
 #line 27 "rygel-gst-launch-content-dir.vala"
 RygelGstLaunchContentDir* rygel_gst_launch_content_dir_new (void) {
 #line 27 "rygel-gst-launch-content-dir.vala"
-	return rygel_gst_launch_content_dir_construct (RYGEL_TYPE_GST_LAUNCH_CONTENT_DIR);
+	return rygel_gst_launch_content_dir_construct (RYGEL_GST_LAUNCH_TYPE_CONTENT_DIR);
 #line 119 "rygel-gst-launch-content-dir.c"
 }
 

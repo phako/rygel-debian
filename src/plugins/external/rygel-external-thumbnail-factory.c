@@ -36,12 +36,12 @@
 #include <gobject/gvaluecollector.h>
 
 
-#define RYGEL_TYPE_EXTERNAL_THUMBNAIL_FACTORY (rygel_external_thumbnail_factory_get_type ())
-#define RYGEL_EXTERNAL_THUMBNAIL_FACTORY(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_EXTERNAL_THUMBNAIL_FACTORY, RygelExternalThumbnailFactory))
-#define RYGEL_EXTERNAL_THUMBNAIL_FACTORY_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TYPE_EXTERNAL_THUMBNAIL_FACTORY, RygelExternalThumbnailFactoryClass))
-#define RYGEL_IS_EXTERNAL_THUMBNAIL_FACTORY(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TYPE_EXTERNAL_THUMBNAIL_FACTORY))
-#define RYGEL_IS_EXTERNAL_THUMBNAIL_FACTORY_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_TYPE_EXTERNAL_THUMBNAIL_FACTORY))
-#define RYGEL_EXTERNAL_THUMBNAIL_FACTORY_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_TYPE_EXTERNAL_THUMBNAIL_FACTORY, RygelExternalThumbnailFactoryClass))
+#define RYGEL_EXTERNAL_TYPE_THUMBNAIL_FACTORY (rygel_external_thumbnail_factory_get_type ())
+#define RYGEL_EXTERNAL_THUMBNAIL_FACTORY(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_EXTERNAL_TYPE_THUMBNAIL_FACTORY, RygelExternalThumbnailFactory))
+#define RYGEL_EXTERNAL_THUMBNAIL_FACTORY_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_EXTERNAL_TYPE_THUMBNAIL_FACTORY, RygelExternalThumbnailFactoryClass))
+#define RYGEL_EXTERNAL_IS_THUMBNAIL_FACTORY(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_EXTERNAL_TYPE_THUMBNAIL_FACTORY))
+#define RYGEL_EXTERNAL_IS_THUMBNAIL_FACTORY_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_EXTERNAL_TYPE_THUMBNAIL_FACTORY))
+#define RYGEL_EXTERNAL_THUMBNAIL_FACTORY_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_EXTERNAL_TYPE_THUMBNAIL_FACTORY, RygelExternalThumbnailFactoryClass))
 
 typedef struct _RygelExternalThumbnailFactory RygelExternalThumbnailFactory;
 typedef struct _RygelExternalThumbnailFactoryClass RygelExternalThumbnailFactoryClass;
@@ -62,7 +62,7 @@ typedef struct _FreeDesktopPropertiesIface FreeDesktopPropertiesIface;
 #define _g_error_free0(var) ((var == NULL) ? NULL : (var = (g_error_free (var), NULL)))
 #define _g_hash_table_unref0(var) ((var == NULL) ? NULL : (var = (g_hash_table_unref (var), NULL)))
 typedef struct _RygelExternalThumbnailFactoryCreateData RygelExternalThumbnailFactoryCreateData;
-typedef struct _RygelParamSpecExternalThumbnailFactory RygelParamSpecExternalThumbnailFactory;
+typedef struct _RygelExternalParamSpecThumbnailFactory RygelExternalParamSpecThumbnailFactory;
 
 struct _RygelExternalThumbnailFactory {
 	GTypeInstance parent_instance;
@@ -112,7 +112,7 @@ struct _RygelExternalThumbnailFactoryCreateData {
 	GError * _inner_error_;
 };
 
-struct _RygelParamSpecExternalThumbnailFactory {
+struct _RygelExternalParamSpecThumbnailFactory {
 	GParamSpec parent_instance;
 };
 
@@ -121,10 +121,10 @@ static gpointer rygel_external_thumbnail_factory_parent_class = NULL;
 
 gpointer rygel_external_thumbnail_factory_ref (gpointer instance);
 void rygel_external_thumbnail_factory_unref (gpointer instance);
-GParamSpec* rygel_param_spec_external_thumbnail_factory (const gchar* name, const gchar* nick, const gchar* blurb, GType object_type, GParamFlags flags);
-void rygel_value_set_external_thumbnail_factory (GValue* value, gpointer v_object);
-void rygel_value_take_external_thumbnail_factory (GValue* value, gpointer v_object);
-gpointer rygel_value_get_external_thumbnail_factory (const GValue* value);
+GParamSpec* rygel_external_param_spec_thumbnail_factory (const gchar* name, const gchar* nick, const gchar* blurb, GType object_type, GParamFlags flags);
+void rygel_external_value_set_thumbnail_factory (GValue* value, gpointer v_object);
+void rygel_external_value_take_thumbnail_factory (GValue* value, gpointer v_object);
+gpointer rygel_external_value_get_thumbnail_factory (const GValue* value);
 GType rygel_external_thumbnail_factory_get_type (void);
 enum  {
 	RYGEL_EXTERNAL_THUMBNAIL_FACTORY_DUMMY_PROPERTY
@@ -135,7 +135,7 @@ FreeDesktopProperties* free_desktop_properties_dbus_proxy_new (DBusGConnection* 
 GType free_desktop_properties_get_type (void);
 void free_desktop_properties_get_all (FreeDesktopProperties* self, const char* iface, GAsyncReadyCallback _callback_, gpointer _user_data_);
 GHashTable* free_desktop_properties_get_all_finish (FreeDesktopProperties* self, GAsyncResult* _res_, GError** error);
-#define RYGEL_EXTERNAL_MEDIA_ITEM_IFACE "org.gnome.UPnP.MediaItem2"
+#define RYGEL_EXTERNAL_MEDIA_ITEM_PROXY_IFACE "org.gnome.UPnP.MediaItem2"
 static GValue* _g_value_dup (GValue* self);
 void rygel_external_thumbnail_factory_create (RygelExternalThumbnailFactory* self, const char* service_name, const char* object_path, const char* host_ip, GAsyncReadyCallback _callback_, gpointer _user_data_);
 RygelThumbnail* rygel_external_thumbnail_factory_create_finish (RygelExternalThumbnailFactory* self, GAsyncResult* _res_, GError** error);
@@ -299,7 +299,7 @@ static gboolean rygel_external_thumbnail_factory_create_co (RygelExternalThumbna
 		}
 		data->props = free_desktop_properties_dbus_proxy_new (data->connection, data->service_name, data->object_path);
 		data->_state_ = 13;
-		free_desktop_properties_get_all (data->props, RYGEL_EXTERNAL_MEDIA_ITEM_IFACE, rygel_external_thumbnail_factory_create_ready, data);
+		free_desktop_properties_get_all (data->props, RYGEL_EXTERNAL_MEDIA_ITEM_PROXY_IFACE, rygel_external_thumbnail_factory_create_ready, data);
 		return FALSE;
 		_state_13:
 		data->item_props = free_desktop_properties_get_all_finish (data->props, data->_res_, &data->_inner_error_);
@@ -426,24 +426,24 @@ RygelExternalThumbnailFactory* rygel_external_thumbnail_factory_construct (GType
 #line 31 "rygel-external-thumbnail-factory.vala"
 RygelExternalThumbnailFactory* rygel_external_thumbnail_factory_new (void) {
 #line 31 "rygel-external-thumbnail-factory.vala"
-	return rygel_external_thumbnail_factory_construct (RYGEL_TYPE_EXTERNAL_THUMBNAIL_FACTORY);
+	return rygel_external_thumbnail_factory_construct (RYGEL_EXTERNAL_TYPE_THUMBNAIL_FACTORY);
 #line 431 "rygel-external-thumbnail-factory.c"
 }
 
 
-static void rygel_value_external_thumbnail_factory_init (GValue* value) {
+static void rygel_external_value_thumbnail_factory_init (GValue* value) {
 	value->data[0].v_pointer = NULL;
 }
 
 
-static void rygel_value_external_thumbnail_factory_free_value (GValue* value) {
+static void rygel_external_value_thumbnail_factory_free_value (GValue* value) {
 	if (value->data[0].v_pointer) {
 		rygel_external_thumbnail_factory_unref (value->data[0].v_pointer);
 	}
 }
 
 
-static void rygel_value_external_thumbnail_factory_copy_value (const GValue* src_value, GValue* dest_value) {
+static void rygel_external_value_thumbnail_factory_copy_value (const GValue* src_value, GValue* dest_value) {
 	if (src_value->data[0].v_pointer) {
 		dest_value->data[0].v_pointer = rygel_external_thumbnail_factory_ref (src_value->data[0].v_pointer);
 	} else {
@@ -452,12 +452,12 @@ static void rygel_value_external_thumbnail_factory_copy_value (const GValue* src
 }
 
 
-static gpointer rygel_value_external_thumbnail_factory_peek_pointer (const GValue* value) {
+static gpointer rygel_external_value_thumbnail_factory_peek_pointer (const GValue* value) {
 	return value->data[0].v_pointer;
 }
 
 
-static gchar* rygel_value_external_thumbnail_factory_collect_value (GValue* value, guint n_collect_values, GTypeCValue* collect_values, guint collect_flags) {
+static gchar* rygel_external_value_thumbnail_factory_collect_value (GValue* value, guint n_collect_values, GTypeCValue* collect_values, guint collect_flags) {
 	if (collect_values[0].v_pointer) {
 		RygelExternalThumbnailFactory* object;
 		object = collect_values[0].v_pointer;
@@ -474,7 +474,7 @@ static gchar* rygel_value_external_thumbnail_factory_collect_value (GValue* valu
 }
 
 
-static gchar* rygel_value_external_thumbnail_factory_lcopy_value (const GValue* value, guint n_collect_values, GTypeCValue* collect_values, guint collect_flags) {
+static gchar* rygel_external_value_thumbnail_factory_lcopy_value (const GValue* value, guint n_collect_values, GTypeCValue* collect_values, guint collect_flags) {
 	RygelExternalThumbnailFactory** object_p;
 	object_p = collect_values[0].v_pointer;
 	if (!object_p) {
@@ -491,27 +491,27 @@ static gchar* rygel_value_external_thumbnail_factory_lcopy_value (const GValue* 
 }
 
 
-GParamSpec* rygel_param_spec_external_thumbnail_factory (const gchar* name, const gchar* nick, const gchar* blurb, GType object_type, GParamFlags flags) {
-	RygelParamSpecExternalThumbnailFactory* spec;
-	g_return_val_if_fail (g_type_is_a (object_type, RYGEL_TYPE_EXTERNAL_THUMBNAIL_FACTORY), NULL);
+GParamSpec* rygel_external_param_spec_thumbnail_factory (const gchar* name, const gchar* nick, const gchar* blurb, GType object_type, GParamFlags flags) {
+	RygelExternalParamSpecThumbnailFactory* spec;
+	g_return_val_if_fail (g_type_is_a (object_type, RYGEL_EXTERNAL_TYPE_THUMBNAIL_FACTORY), NULL);
 	spec = g_param_spec_internal (G_TYPE_PARAM_OBJECT, name, nick, blurb, flags);
 	G_PARAM_SPEC (spec)->value_type = object_type;
 	return G_PARAM_SPEC (spec);
 }
 
 
-gpointer rygel_value_get_external_thumbnail_factory (const GValue* value) {
-	g_return_val_if_fail (G_TYPE_CHECK_VALUE_TYPE (value, RYGEL_TYPE_EXTERNAL_THUMBNAIL_FACTORY), NULL);
+gpointer rygel_external_value_get_thumbnail_factory (const GValue* value) {
+	g_return_val_if_fail (G_TYPE_CHECK_VALUE_TYPE (value, RYGEL_EXTERNAL_TYPE_THUMBNAIL_FACTORY), NULL);
 	return value->data[0].v_pointer;
 }
 
 
-void rygel_value_set_external_thumbnail_factory (GValue* value, gpointer v_object) {
+void rygel_external_value_set_thumbnail_factory (GValue* value, gpointer v_object) {
 	RygelExternalThumbnailFactory* old;
-	g_return_if_fail (G_TYPE_CHECK_VALUE_TYPE (value, RYGEL_TYPE_EXTERNAL_THUMBNAIL_FACTORY));
+	g_return_if_fail (G_TYPE_CHECK_VALUE_TYPE (value, RYGEL_EXTERNAL_TYPE_THUMBNAIL_FACTORY));
 	old = value->data[0].v_pointer;
 	if (v_object) {
-		g_return_if_fail (G_TYPE_CHECK_INSTANCE_TYPE (v_object, RYGEL_TYPE_EXTERNAL_THUMBNAIL_FACTORY));
+		g_return_if_fail (G_TYPE_CHECK_INSTANCE_TYPE (v_object, RYGEL_EXTERNAL_TYPE_THUMBNAIL_FACTORY));
 		g_return_if_fail (g_value_type_compatible (G_TYPE_FROM_INSTANCE (v_object), G_VALUE_TYPE (value)));
 		value->data[0].v_pointer = v_object;
 		rygel_external_thumbnail_factory_ref (value->data[0].v_pointer);
@@ -524,12 +524,12 @@ void rygel_value_set_external_thumbnail_factory (GValue* value, gpointer v_objec
 }
 
 
-void rygel_value_take_external_thumbnail_factory (GValue* value, gpointer v_object) {
+void rygel_external_value_take_thumbnail_factory (GValue* value, gpointer v_object) {
 	RygelExternalThumbnailFactory* old;
-	g_return_if_fail (G_TYPE_CHECK_VALUE_TYPE (value, RYGEL_TYPE_EXTERNAL_THUMBNAIL_FACTORY));
+	g_return_if_fail (G_TYPE_CHECK_VALUE_TYPE (value, RYGEL_EXTERNAL_TYPE_THUMBNAIL_FACTORY));
 	old = value->data[0].v_pointer;
 	if (v_object) {
-		g_return_if_fail (G_TYPE_CHECK_INSTANCE_TYPE (v_object, RYGEL_TYPE_EXTERNAL_THUMBNAIL_FACTORY));
+		g_return_if_fail (G_TYPE_CHECK_INSTANCE_TYPE (v_object, RYGEL_EXTERNAL_TYPE_THUMBNAIL_FACTORY));
 		g_return_if_fail (g_value_type_compatible (G_TYPE_FROM_INSTANCE (v_object), G_VALUE_TYPE (value)));
 		value->data[0].v_pointer = v_object;
 	} else {
@@ -561,7 +561,7 @@ static void rygel_external_thumbnail_factory_finalize (RygelExternalThumbnailFac
 GType rygel_external_thumbnail_factory_get_type (void) {
 	static volatile gsize rygel_external_thumbnail_factory_type_id__volatile = 0;
 	if (g_once_init_enter (&rygel_external_thumbnail_factory_type_id__volatile)) {
-		static const GTypeValueTable g_define_type_value_table = { rygel_value_external_thumbnail_factory_init, rygel_value_external_thumbnail_factory_free_value, rygel_value_external_thumbnail_factory_copy_value, rygel_value_external_thumbnail_factory_peek_pointer, "p", rygel_value_external_thumbnail_factory_collect_value, "p", rygel_value_external_thumbnail_factory_lcopy_value };
+		static const GTypeValueTable g_define_type_value_table = { rygel_external_value_thumbnail_factory_init, rygel_external_value_thumbnail_factory_free_value, rygel_external_value_thumbnail_factory_copy_value, rygel_external_value_thumbnail_factory_peek_pointer, "p", rygel_external_value_thumbnail_factory_collect_value, "p", rygel_external_value_thumbnail_factory_lcopy_value };
 		static const GTypeInfo g_define_type_info = { sizeof (RygelExternalThumbnailFactoryClass), (GBaseInitFunc) NULL, (GBaseFinalizeFunc) NULL, (GClassInitFunc) rygel_external_thumbnail_factory_class_init, (GClassFinalizeFunc) NULL, NULL, sizeof (RygelExternalThumbnailFactory), 0, (GInstanceInitFunc) rygel_external_thumbnail_factory_instance_init, &g_define_type_value_table };
 		static const GTypeFundamentalInfo g_define_type_fundamental_info = { (G_TYPE_FLAG_CLASSED | G_TYPE_FLAG_INSTANTIATABLE | G_TYPE_FLAG_DERIVABLE | G_TYPE_FLAG_DEEP_DERIVABLE) };
 		GType rygel_external_thumbnail_factory_type_id;

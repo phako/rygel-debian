@@ -6,28 +6,24 @@
  *         Zeeshan Ali (Khattak) <zeeshanak@gnome.org>
  *                               <zeeshan.ali@nokia.com>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
+ * Rygel is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
  *
- * This program is distributed in the hope that it will be useful,
+ * Rygel is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License along
- * with this program; if not, write to the Free Software Foundation,
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Library General Public
- * License as published by the Free Software Foundation; either
- * version 2 of the License, or (at your option) any later version.
  */
 
 using GUPnP;
 
-public class Rygel.GstAVTransport : Service {
+public class Rygel.GstRenderer.AVTransport : Service {
     public const string UPNP_ID = "urn:upnp-org:serviceId:AVTransport";
     public const string UPNP_TYPE =
                     "urn:schemas-upnp-org:service:AVTransport:2";
@@ -135,12 +131,12 @@ public class Rygel.GstAVTransport : Service {
         }
     }
 
-    private GstChangeLog changelog;
-    private GstPlayer player;
+    private ChangeLog changelog;
+    private Player player;
 
     public override void constructed () {
-        this.changelog = new GstChangeLog (this, LAST_CHANGE_NS);
-        this.player = GstPlayer.get_default ();
+        this.changelog = new ChangeLog (this, LAST_CHANGE_NS);
+        this.player = Player.get_default ();
 
         query_variable["LastChange"].connect (this.query_last_change_cb);
 
@@ -168,7 +164,7 @@ public class Rygel.GstAVTransport : Service {
                                        string         variable,
                                        ref Value      value) {
         // Send current state
-        GstChangeLog log = new GstChangeLog (null, LAST_CHANGE_NS);
+        ChangeLog log = new ChangeLog (null, LAST_CHANGE_NS);
 
         log.log ("TransportState",               this.player.playback_state);
         log.log ("TransportStatus",              this.status);

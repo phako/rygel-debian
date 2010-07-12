@@ -168,7 +168,7 @@ RygelMediaExportDBusService* rygel_media_export_dbus_service_construct (GType ob
 #line 169 "rygel-media-export-dbus-service.c"
 		if (_inner_error_ != NULL) {
 			if (_inner_error_->domain == DBUS_GERROR) {
-				goto __catch29_dbus_gerror;
+				goto __catch31_dbus_gerror;
 			}
 			g_critical ("file %s: line %d: unexpected error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
 			g_clear_error (&_inner_error_);
@@ -182,8 +182,8 @@ RygelMediaExportDBusService* rygel_media_export_dbus_service_construct (GType ob
 		}
 		_dbus_g_connection_unref0 (conn);
 	}
-	goto __finally29;
-	__catch29_dbus_gerror:
+	goto __finally31;
+	__catch31_dbus_gerror:
 	{
 		GError * err;
 		err = _inner_error_;
@@ -195,7 +195,7 @@ RygelMediaExportDBusService* rygel_media_export_dbus_service_construct (GType ob
 			_g_error_free0 (err);
 		}
 	}
-	__finally29:
+	__finally31:
 	if (_inner_error_ != NULL) {
 		g_propagate_error (error, _inner_error_);
 		g_object_unref (self);

@@ -33,24 +33,24 @@
 #include <string.h>
 
 
-#define RYGEL_TYPE_TEST_CONTENT_DIR (rygel_test_content_dir_get_type ())
-#define RYGEL_TEST_CONTENT_DIR(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_TEST_CONTENT_DIR, RygelTestContentDir))
-#define RYGEL_TEST_CONTENT_DIR_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TYPE_TEST_CONTENT_DIR, RygelTestContentDirClass))
-#define RYGEL_IS_TEST_CONTENT_DIR(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TYPE_TEST_CONTENT_DIR))
-#define RYGEL_IS_TEST_CONTENT_DIR_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_TYPE_TEST_CONTENT_DIR))
-#define RYGEL_TEST_CONTENT_DIR_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_TYPE_TEST_CONTENT_DIR, RygelTestContentDirClass))
+#define RYGEL_TEST_TYPE_CONTENT_DIR (rygel_test_content_dir_get_type ())
+#define RYGEL_TEST_CONTENT_DIR(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TEST_TYPE_CONTENT_DIR, RygelTestContentDir))
+#define RYGEL_TEST_CONTENT_DIR_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TEST_TYPE_CONTENT_DIR, RygelTestContentDirClass))
+#define RYGEL_TEST_IS_CONTENT_DIR(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TEST_TYPE_CONTENT_DIR))
+#define RYGEL_TEST_IS_CONTENT_DIR_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_TEST_TYPE_CONTENT_DIR))
+#define RYGEL_TEST_CONTENT_DIR_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_TEST_TYPE_CONTENT_DIR, RygelTestContentDirClass))
 
 typedef struct _RygelTestContentDir RygelTestContentDir;
 typedef struct _RygelTestContentDirClass RygelTestContentDirClass;
 typedef struct _RygelTestContentDirPrivate RygelTestContentDirPrivate;
 #define _g_object_unref0(var) ((var == NULL) ? NULL : (var = (g_object_unref (var), NULL)))
 
-#define RYGEL_TYPE_TEST_ROOT_CONTAINER (rygel_test_root_container_get_type ())
-#define RYGEL_TEST_ROOT_CONTAINER(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_TEST_ROOT_CONTAINER, RygelTestRootContainer))
-#define RYGEL_TEST_ROOT_CONTAINER_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TYPE_TEST_ROOT_CONTAINER, RygelTestRootContainerClass))
-#define RYGEL_IS_TEST_ROOT_CONTAINER(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TYPE_TEST_ROOT_CONTAINER))
-#define RYGEL_IS_TEST_ROOT_CONTAINER_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_TYPE_TEST_ROOT_CONTAINER))
-#define RYGEL_TEST_ROOT_CONTAINER_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_TYPE_TEST_ROOT_CONTAINER, RygelTestRootContainerClass))
+#define RYGEL_TEST_TYPE_ROOT_CONTAINER (rygel_test_root_container_get_type ())
+#define RYGEL_TEST_ROOT_CONTAINER(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TEST_TYPE_ROOT_CONTAINER, RygelTestRootContainer))
+#define RYGEL_TEST_ROOT_CONTAINER_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TEST_TYPE_ROOT_CONTAINER, RygelTestRootContainerClass))
+#define RYGEL_TEST_IS_ROOT_CONTAINER(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TEST_TYPE_ROOT_CONTAINER))
+#define RYGEL_TEST_IS_ROOT_CONTAINER_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_TEST_TYPE_ROOT_CONTAINER))
+#define RYGEL_TEST_ROOT_CONTAINER_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_TEST_TYPE_ROOT_CONTAINER, RygelTestRootContainerClass))
 
 typedef struct _RygelTestRootContainer RygelTestRootContainer;
 typedef struct _RygelTestRootContainerClass RygelTestRootContainerClass;
@@ -116,7 +116,7 @@ RygelTestContentDir* rygel_test_content_dir_construct (GType object_type) {
 #line 31 "rygel-test-content-dir.vala"
 RygelTestContentDir* rygel_test_content_dir_new (void) {
 #line 31 "rygel-test-content-dir.vala"
-	return rygel_test_content_dir_construct (RYGEL_TYPE_TEST_CONTENT_DIR);
+	return rygel_test_content_dir_construct (RYGEL_TEST_TYPE_CONTENT_DIR);
 #line 121 "rygel-test-content-dir.c"
 }
 

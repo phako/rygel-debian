@@ -25,16 +25,45 @@ using Gee;
 /**
  * Represents a list of SPARQL Triplet
  */
-public class Rygel.TrackerQueryTriplets : ArrayList<TrackerQueryTriplet> {
-    public TrackerQueryTriplets () {
-        base ((EqualFunc) TrackerQueryTriplet.equal_func);
+public class Rygel.Tracker.QueryTriplets : ArrayList<QueryTriplet> {
+    public QueryTriplets () {
+        base ((EqualFunc) QueryTriplet.equal_func);
     }
 
-    public TrackerQueryTriplets.clone (TrackerQueryTriplets triplets) {
-        base ((EqualFunc) TrackerQueryTriplet.equal_func);
+    public QueryTriplets.clone (QueryTriplets triplets) {
+        base ((EqualFunc) QueryTriplet.equal_func);
 
         foreach (var triplet in triplets) {
-            this.add (new TrackerQueryTriplet.clone (triplet));
+            this.add (new QueryTriplet.clone (triplet));
+        }
+    }
+
+    public string serialize () {
+        string str = "";
+        var include_subject = true;
+
+        for (int i = 0; i < this.size; i++) {
+            str += this[i].to_string (include_subject);
+
+            if (i < this.size - 1) {
+                include_subject = this[i].subject != this[i + 1].subject;
+
+                if (include_subject) {
+                    str += " . ";
+                } else {
+                    str += " ; ";
+                }
+            }
+        }
+
+        return str;
+    }
+
+    // FIXME: Remove this method and override 'add' method from the base class
+    //        instead once bug#623685 is fixed.
+    public void add_triplet (QueryTriplet triplet) {
+        if (!this.contains (triplet)) {
+            this.add (triplet);
         }
     }
 }

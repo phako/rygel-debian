@@ -97,6 +97,13 @@ struct _RygelMediaExportQueryContainerPrivate {
 	char* pattern;
 };
 
+typedef enum  {
+	RYGEL_MEDIA_DB_ERROR_SQLITE_ERROR,
+	RYGEL_MEDIA_DB_ERROR_GENERAL_ERROR,
+	RYGEL_MEDIA_DB_ERROR_INVALID_TYPE,
+	RYGEL_MEDIA_DB_ERROR_UNSUPPORTED_SEARCH
+} RygelMediaDBError;
+#define RYGEL_MEDIA_DB_ERROR rygel_media_db_error_quark ()
 struct _RygelMediaExportQueryContainerSearchData {
 	int _state_;
 	GAsyncResult* _res_;
@@ -108,11 +115,15 @@ struct _RygelMediaExportQueryContainerSearchData {
 	guint total_matches;
 	GCancellable* cancellable;
 	GeeList* result;
+	GeeList* children;
 	RygelLogicalExpression* combined_expression;
 	RygelSearchExpression* _tmp0_;
 	RygelSearchExpression* _tmp1_;
 	guint max_objects;
-	GeeList* children;
+	GeeList* _tmp2_;
+	GeeList* _tmp3_;
+	GeeList* _tmp4_;
+	GError * _error_;
 	GError * _inner_error_;
 };
 
@@ -169,6 +180,7 @@ static void rygel_media_export_query_container_real_search_data_free (gpointer _
 static void rygel_media_export_query_container_real_search (RygelMediaContainer* base, RygelSearchExpression* expression, guint offset, guint max_count, GCancellable* cancellable, GAsyncReadyCallback _callback_, gpointer _user_data_);
 static void rygel_media_export_query_container_search_ready (GObject* source_object, GAsyncResult* _res_, gpointer _user_data_);
 GeeList* rygel_media_export_media_cache_get_objects_by_search_expression (RygelMediaExportMediaCache* self, RygelSearchExpression* expression, const char* container_id, guint offset, guint max_count, guint* total_matches, GError** error);
+GQuark rygel_media_db_error_quark (void);
 static gboolean rygel_media_export_query_container_real_search_co (RygelMediaExportQueryContainerSearchData* data);
 static void rygel_media_export_query_container_real_get_children_data_free (gpointer _data);
 static void rygel_media_export_query_container_real_get_children (RygelMediaContainer* base, guint offset, guint max_count, GCancellable* cancellable, GAsyncReadyCallback _callback_, gpointer _user_data_);
@@ -185,7 +197,7 @@ static int _vala_strcmp0 (const char * str1, const char * str2);
 
 #line 38 "rygel-media-export-query-container.vala"
 gboolean rygel_media_export_query_container_validate_virtual_id (const char* id) {
-#line 189 "rygel-media-export-query-container.c"
+#line 201 "rygel-media-export-query-container.c"
 	gboolean result = FALSE;
 	char** _tmp1_;
 	gint _args_size_;
@@ -196,42 +208,42 @@ gboolean rygel_media_export_query_container_validate_virtual_id (const char* id)
 	g_return_val_if_fail (id != NULL, FALSE);
 #line 39 "rygel-media-export-query-container.vala"
 	if (!g_str_has_prefix (id, RYGEL_MEDIA_EXPORT_QUERY_CONTAINER_PREFIX)) {
-#line 200 "rygel-media-export-query-container.c"
+#line 212 "rygel-media-export-query-container.c"
 		result = FALSE;
 #line 41 "rygel-media-export-query-container.vala"
 		return result;
-#line 204 "rygel-media-export-query-container.c"
+#line 216 "rygel-media-export-query-container.c"
 	}
 	args = (_tmp1_ = _tmp0_ = g_strsplit (id, ",", 0), args_length1 = _vala_array_length (_tmp0_), _args_size_ = args_length1, _tmp1_);
 #line 46 "rygel-media-export-query-container.vala"
 	if ((args_length1 % 2) != 0) {
 #line 47 "rygel-media-export-query-container.vala"
 		g_warning ("rygel-media-export-query-container.vala:47: %s", _ ("ID does not contain pairs"));
-#line 211 "rygel-media-export-query-container.c"
+#line 223 "rygel-media-export-query-container.c"
 		result = FALSE;
 		args = (_vala_array_free (args, args_length1, (GDestroyNotify) g_free), NULL);
 #line 49 "rygel-media-export-query-container.vala"
 		return result;
-#line 216 "rygel-media-export-query-container.c"
+#line 228 "rygel-media-export-query-container.c"
 	}
 	{
 		gint i;
 #line 52 "rygel-media-export-query-container.vala"
 		i = 0;
-#line 222 "rygel-media-export-query-container.c"
+#line 234 "rygel-media-export-query-container.c"
 		{
 			gboolean _tmp2_;
 #line 52 "rygel-media-export-query-container.vala"
 			_tmp2_ = TRUE;
 #line 52 "rygel-media-export-query-container.vala"
 			while (TRUE) {
-#line 229 "rygel-media-export-query-container.c"
+#line 241 "rygel-media-export-query-container.c"
 				gboolean _tmp3_ = FALSE;
 #line 52 "rygel-media-export-query-container.vala"
 				if (!_tmp2_) {
 #line 52 "rygel-media-export-query-container.vala"
 					i = i + 2;
-#line 235 "rygel-media-export-query-container.c"
+#line 247 "rygel-media-export-query-container.c"
 				}
 #line 52 "rygel-media-export-query-container.vala"
 				_tmp2_ = FALSE;
@@ -239,39 +251,39 @@ gboolean rygel_media_export_query_container_validate_virtual_id (const char* id)
 				if (!(i < args_length1)) {
 #line 52 "rygel-media-export-query-container.vala"
 					break;
-#line 243 "rygel-media-export-query-container.c"
+#line 255 "rygel-media-export-query-container.c"
 				}
 #line 53 "rygel-media-export-query-container.vala"
 				if (_vala_strcmp0 (args[i], "") == 0) {
 #line 53 "rygel-media-export-query-container.vala"
 					_tmp3_ = TRUE;
-#line 249 "rygel-media-export-query-container.c"
+#line 261 "rygel-media-export-query-container.c"
 				} else {
 #line 53 "rygel-media-export-query-container.vala"
 					_tmp3_ = _vala_strcmp0 (args[i + 1], "") == 0;
-#line 253 "rygel-media-export-query-container.c"
+#line 265 "rygel-media-export-query-container.c"
 				}
 #line 53 "rygel-media-export-query-container.vala"
 				if (_tmp3_) {
 #line 54 "rygel-media-export-query-container.vala"
 					g_warning ("rygel-media-export-query-container.vala:54: %s", _ ("Empty part not allowed in virtual ID"));
-#line 259 "rygel-media-export-query-container.c"
+#line 271 "rygel-media-export-query-container.c"
 					result = FALSE;
 					args = (_vala_array_free (args, args_length1, (GDestroyNotify) g_free), NULL);
 #line 56 "rygel-media-export-query-container.vala"
 					return result;
-#line 264 "rygel-media-export-query-container.c"
+#line 276 "rygel-media-export-query-container.c"
 				}
 #line 59 "rygel-media-export-query-container.vala"
 				if (_vala_strcmp0 (args[i], "?") == 0) {
 #line 60 "rygel-media-export-query-container.vala"
 					g_warning ("rygel-media-export-query-container.vala:60: %s", _ ("Placeholder can only be on second place"));
-#line 270 "rygel-media-export-query-container.c"
+#line 282 "rygel-media-export-query-container.c"
 					result = FALSE;
 					args = (_vala_array_free (args, args_length1, (GDestroyNotify) g_free), NULL);
 #line 62 "rygel-media-export-query-container.vala"
 					return result;
-#line 275 "rygel-media-export-query-container.c"
+#line 287 "rygel-media-export-query-container.c"
 				}
 			}
 		}
@@ -280,13 +292,13 @@ gboolean rygel_media_export_query_container_validate_virtual_id (const char* id)
 	args = (_vala_array_free (args, args_length1, (GDestroyNotify) g_free), NULL);
 #line 66 "rygel-media-export-query-container.vala"
 	return result;
-#line 284 "rygel-media-export-query-container.c"
+#line 296 "rygel-media-export-query-container.c"
 }
 
 
 #line 1148 "glib-2.0.vapi"
 static char* string_replace (const char* self, const char* old, const char* replacement) {
-#line 290 "rygel-media-export-query-container.c"
+#line 302 "rygel-media-export-query-container.c"
 	char* result = NULL;
 	GError * _inner_error_;
 #line 1148 "glib-2.0.vapi"
@@ -295,7 +307,7 @@ static char* string_replace (const char* self, const char* old, const char* repl
 	g_return_val_if_fail (old != NULL, NULL);
 #line 1148 "glib-2.0.vapi"
 	g_return_val_if_fail (replacement != NULL, NULL);
-#line 299 "rygel-media-export-query-container.c"
+#line 311 "rygel-media-export-query-container.c"
 	_inner_error_ = NULL;
 	{
 		char* _tmp0_;
@@ -304,10 +316,10 @@ static char* string_replace (const char* self, const char* old, const char* repl
 		char* _tmp2_;
 #line 1150 "glib-2.0.vapi"
 		regex = (_tmp1_ = g_regex_new (_tmp0_ = g_regex_escape_string (old, -1), 0, 0, &_inner_error_), _g_free0 (_tmp0_), _tmp1_);
-#line 308 "rygel-media-export-query-container.c"
+#line 320 "rygel-media-export-query-container.c"
 		if (_inner_error_ != NULL) {
 			if (_inner_error_->domain == G_REGEX_ERROR) {
-				goto __catch27_g_regex_error;
+				goto __catch28_g_regex_error;
 			}
 			g_critical ("file %s: line %d: unexpected error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
 			g_clear_error (&_inner_error_);
@@ -315,11 +327,11 @@ static char* string_replace (const char* self, const char* old, const char* repl
 		}
 #line 1151 "glib-2.0.vapi"
 		_tmp2_ = g_regex_replace_literal (regex, self, (gssize) (-1), 0, replacement, 0, &_inner_error_);
-#line 319 "rygel-media-export-query-container.c"
+#line 331 "rygel-media-export-query-container.c"
 		if (_inner_error_ != NULL) {
 			_g_regex_unref0 (regex);
 			if (_inner_error_->domain == G_REGEX_ERROR) {
-				goto __catch27_g_regex_error;
+				goto __catch28_g_regex_error;
 			}
 			_g_regex_unref0 (regex);
 			g_critical ("file %s: line %d: unexpected error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
@@ -330,10 +342,10 @@ static char* string_replace (const char* self, const char* old, const char* repl
 		_g_regex_unref0 (regex);
 #line 1151 "glib-2.0.vapi"
 		return result;
-#line 334 "rygel-media-export-query-container.c"
+#line 346 "rygel-media-export-query-container.c"
 	}
-	goto __finally27;
-	__catch27_g_regex_error:
+	goto __finally28;
+	__catch28_g_regex_error:
 	{
 		GError * e;
 		e = _inner_error_;
@@ -341,11 +353,11 @@ static char* string_replace (const char* self, const char* old, const char* repl
 		{
 #line 1153 "glib-2.0.vapi"
 			g_assert_not_reached ();
-#line 345 "rygel-media-export-query-container.c"
+#line 357 "rygel-media-export-query-container.c"
 			_g_error_free0 (e);
 		}
 	}
-	__finally27:
+	__finally28:
 	if (_inner_error_ != NULL) {
 		g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
 		g_clear_error (&_inner_error_);
@@ -356,7 +368,7 @@ static char* string_replace (const char* self, const char* old, const char* repl
 
 #line 69 "rygel-media-export-query-container.vala"
 RygelMediaExportQueryContainer* rygel_media_export_query_container_construct (GType object_type, RygelMediaExportMediaCache* media_db, const char* id, const char* name) {
-#line 360 "rygel-media-export-query-container.c"
+#line 372 "rygel-media-export-query-container.c"
 	RygelMediaExportQueryContainer * self;
 	char* _tmp0_;
 	char** _tmp2_;
@@ -377,13 +389,13 @@ RygelMediaExportQueryContainer* rygel_media_export_query_container_construct (GT
 	self->plaintext_id = (_tmp0_ = rygel_media_export_query_container_get_virtual_container_definition (id), _g_free0 (self->plaintext_id), _tmp0_);
 #line 94 "rygel-media-export-query-container.vala"
 	g_debug ("rygel-media-export-query-container.vala:94: plaintext ID is: %s", self->plaintext_id);
-#line 381 "rygel-media-export-query-container.c"
+#line 393 "rygel-media-export-query-container.c"
 	args = (_tmp2_ = _tmp1_ = g_strsplit (self->plaintext_id, ",", 0), args_length1 = _vala_array_length (_tmp1_), _args_size_ = args_length1, _tmp2_);
 #line 97 "rygel-media-export-query-container.vala"
 	if ((args_length1 % 2) != 0) {
 #line 98 "rygel-media-export-query-container.vala"
 		g_assert_not_reached ();
-#line 387 "rygel-media-export-query-container.c"
+#line 399 "rygel-media-export-query-container.c"
 	}
 #line 101 "rygel-media-export-query-container.vala"
 	i = 0;
@@ -393,7 +405,7 @@ RygelMediaExportQueryContainer* rygel_media_export_query_container_construct (GT
 		if (!(i < args_length1)) {
 #line 102 "rygel-media-export-query-container.vala"
 			break;
-#line 397 "rygel-media-export-query-container.c"
+#line 409 "rygel-media-export-query-container.c"
 		}
 #line 103 "rygel-media-export-query-container.vala"
 		if (_vala_strcmp0 (args[i + 1], "?") != 0) {
@@ -403,7 +415,7 @@ RygelMediaExportQueryContainer* rygel_media_export_query_container_construct (GT
 			if (_vala_strcmp0 (name, "") == 0) {
 #line 106 "rygel-media-export-query-container.vala"
 				rygel_media_object_set_title ((RygelMediaObject*) self, args[i + 1]);
-#line 407 "rygel-media-export-query-container.c"
+#line 419 "rygel-media-export-query-container.c"
 			}
 		} else {
 			char* _tmp3_;
@@ -420,15 +432,15 @@ RygelMediaExportQueryContainer* rygel_media_export_query_container_construct (GT
 			self->priv->pattern = (_tmp6_ = g_strjoinv (",", args), _g_free0 (self->priv->pattern), _tmp6_);
 #line 113 "rygel-media-export-query-container.vala"
 			break;
-#line 424 "rygel-media-export-query-container.c"
+#line 436 "rygel-media-export-query-container.c"
 		}
 #line 115 "rygel-media-export-query-container.vala"
 		i = i + 2;
-#line 428 "rygel-media-export-query-container.c"
+#line 440 "rygel-media-export-query-container.c"
 	}
 #line 117 "rygel-media-export-query-container.vala"
 	((RygelMediaContainer*) self)->child_count = rygel_media_export_query_container_count_children (self);
-#line 432 "rygel-media-export-query-container.c"
+#line 444 "rygel-media-export-query-container.c"
 	args = (_vala_array_free (args, args_length1, (GDestroyNotify) g_free), NULL);
 	return self;
 }
@@ -438,34 +450,34 @@ RygelMediaExportQueryContainer* rygel_media_export_query_container_construct (GT
 RygelMediaExportQueryContainer* rygel_media_export_query_container_new (RygelMediaExportMediaCache* media_db, const char* id, const char* name) {
 #line 69 "rygel-media-export-query-container.vala"
 	return rygel_media_export_query_container_construct (RYGEL_MEDIA_EXPORT_TYPE_QUERY_CONTAINER, media_db, id, name);
-#line 442 "rygel-media-export-query-container.c"
+#line 454 "rygel-media-export-query-container.c"
 }
 
 
 #line 120 "rygel-media-export-query-container.vala"
 static gint rygel_media_export_query_container_count_children (RygelMediaExportQueryContainer* self) {
-#line 448 "rygel-media-export-query-container.c"
+#line 460 "rygel-media-export-query-container.c"
 	gint result = 0;
 	GError * _inner_error_;
 #line 120 "rygel-media-export-query-container.vala"
 	g_return_val_if_fail (self != NULL, 0);
-#line 453 "rygel-media-export-query-container.c"
+#line 465 "rygel-media-export-query-container.c"
 	_inner_error_ = NULL;
 	{
 #line 122 "rygel-media-export-query-container.vala"
 		if (_vala_strcmp0 (self->priv->pattern, "") == 0) {
-#line 458 "rygel-media-export-query-container.c"
+#line 470 "rygel-media-export-query-container.c"
 			glong _tmp0_;
 #line 123 "rygel-media-export-query-container.vala"
 			_tmp0_ = rygel_media_export_media_cache_get_object_count_by_search_expression (((RygelMediaExportDBContainer*) self)->media_db, self->priv->expression, "0", (guint) 0, (guint) (-1), &_inner_error_);
-#line 462 "rygel-media-export-query-container.c"
+#line 474 "rygel-media-export-query-container.c"
 			if (_inner_error_ != NULL) {
-				goto __catch28_g_error;
+				goto __catch29_g_error;
 			}
 			result = (gint) _tmp0_;
 #line 123 "rygel-media-export-query-container.vala"
 			return result;
-#line 469 "rygel-media-export-query-container.c"
+#line 481 "rygel-media-export-query-container.c"
 		} else {
 			gint retval;
 			GeeList* data;
@@ -473,22 +485,22 @@ static gint rygel_media_export_query_container_count_children (RygelMediaExportQ
 			retval = 0;
 #line 130 "rygel-media-export-query-container.vala"
 			data = rygel_media_export_media_cache_get_object_attribute_by_search_expression (((RygelMediaExportDBContainer*) self)->media_db, self->priv->attribute, self->priv->expression, (glong) 0, (glong) (-1), &_inner_error_);
-#line 477 "rygel-media-export-query-container.c"
+#line 489 "rygel-media-export-query-container.c"
 			if (_inner_error_ != NULL) {
-				goto __catch28_g_error;
+				goto __catch29_g_error;
 			}
 			{
 				GeeIterator* _meta_data_it;
 				_meta_data_it = gee_iterable_iterator ((GeeIterable*) data);
 #line 136 "rygel-media-export-query-container.vala"
 				while (TRUE) {
-#line 486 "rygel-media-export-query-container.c"
+#line 498 "rygel-media-export-query-container.c"
 					char* meta_data;
 #line 136 "rygel-media-export-query-container.vala"
 					if (!gee_iterator_next (_meta_data_it)) {
 #line 136 "rygel-media-export-query-container.vala"
 						break;
-#line 492 "rygel-media-export-query-container.c"
+#line 504 "rygel-media-export-query-container.c"
 					}
 #line 136 "rygel-media-export-query-container.vala"
 					meta_data = (char*) gee_iterator_get (_meta_data_it);
@@ -496,7 +508,7 @@ static gint rygel_media_export_query_container_count_children (RygelMediaExportQ
 					if (meta_data != NULL) {
 #line 138 "rygel-media-export-query-container.vala"
 						retval++;
-#line 500 "rygel-media-export-query-container.c"
+#line 512 "rygel-media-export-query-container.c"
 					}
 					_g_free0 (meta_data);
 				}
@@ -506,11 +518,11 @@ static gint rygel_media_export_query_container_count_children (RygelMediaExportQ
 			_g_object_unref0 (data);
 #line 142 "rygel-media-export-query-container.vala"
 			return result;
-#line 510 "rygel-media-export-query-container.c"
+#line 522 "rygel-media-export-query-container.c"
 		}
 	}
-	goto __finally28;
-	__catch28_g_error:
+	goto __finally29;
+	__catch29_g_error:
 	{
 		GError * e;
 		e = _inner_error_;
@@ -520,10 +532,10 @@ static gint rygel_media_export_query_container_count_children (RygelMediaExportQ
 			_g_error_free0 (e);
 #line 145 "rygel-media-export-query-container.vala"
 			return result;
-#line 524 "rygel-media-export-query-container.c"
+#line 536 "rygel-media-export-query-container.c"
 		}
 	}
-	__finally28:
+	__finally29:
 	{
 		g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
 		g_clear_error (&_inner_error_);
@@ -591,6 +603,11 @@ static void rygel_media_export_query_container_search_ready (GObject* source_obj
 }
 
 
+static gpointer _g_error_copy0 (gpointer self) {
+	return self ? g_error_copy (self) : NULL;
+}
+
+
 static gboolean rygel_media_export_query_container_real_search_co (RygelMediaExportQueryContainerSearchData* data) {
 	switch (data->_state_) {
 		case 0:
@@ -600,25 +617,64 @@ static gboolean rygel_media_export_query_container_real_search_co (RygelMediaExp
 	}
 	_state_0:
 	{
+		data->children = NULL;
 		data->combined_expression = rygel_logical_expression_new ();
-#line 157 "rygel-media-export-query-container.vala"
-		((RygelSearchExpression*) data->combined_expression)->operand1 = (data->_tmp0_ = _rygel_search_expression_ref0 (data->self->priv->expression), _rygel_search_expression_unref0 (((RygelSearchExpression*) data->combined_expression)->operand1), data->_tmp0_);
-#line 158 "rygel-media-export-query-container.vala"
-		((RygelSearchExpression*) data->combined_expression)->op = GINT_TO_POINTER (RYGEL_LOGICAL_OPERATOR_AND);
 #line 159 "rygel-media-export-query-container.vala"
+		((RygelSearchExpression*) data->combined_expression)->operand1 = (data->_tmp0_ = _rygel_search_expression_ref0 (data->self->priv->expression), _rygel_search_expression_unref0 (((RygelSearchExpression*) data->combined_expression)->operand1), data->_tmp0_);
+#line 160 "rygel-media-export-query-container.vala"
+		((RygelSearchExpression*) data->combined_expression)->op = GINT_TO_POINTER (RYGEL_LOGICAL_OPERATOR_AND);
+#line 161 "rygel-media-export-query-container.vala"
 		((RygelSearchExpression*) data->combined_expression)->operand2 = (data->_tmp1_ = _rygel_search_expression_ref0 (data->expression), _rygel_search_expression_unref0 (((RygelSearchExpression*) data->combined_expression)->operand2), data->_tmp1_);
-#line 611 "rygel-media-export-query-container.c"
+#line 629 "rygel-media-export-query-container.c"
 		data->max_objects = data->max_count;
-#line 162 "rygel-media-export-query-container.vala"
+#line 164 "rygel-media-export-query-container.vala"
 		if (data->max_objects == 0) {
-#line 163 "rygel-media-export-query-container.vala"
+#line 165 "rygel-media-export-query-container.vala"
 			data->max_objects = (guint) (-1);
-#line 617 "rygel-media-export-query-container.c"
+#line 635 "rygel-media-export-query-container.c"
 		}
-		data->children = rygel_media_export_media_cache_get_objects_by_search_expression (((RygelMediaExportDBContainer*) data->self)->media_db, (RygelSearchExpression*) data->combined_expression, "0", data->offset, data->max_objects, &data->total_matches, &data->_inner_error_);
+		{
+			data->_tmp2_ = rygel_media_export_media_cache_get_objects_by_search_expression (((RygelMediaExportDBContainer*) data->self)->media_db, (RygelSearchExpression*) data->combined_expression, "0", data->offset, data->max_objects, &data->total_matches, &data->_inner_error_);
+			if (data->_inner_error_ != NULL) {
+				if (data->_inner_error_->domain == RYGEL_MEDIA_DB_ERROR) {
+					goto __catch30_rygel_media_db_error;
+				}
+				goto __finally30;
+			}
+#line 169 "rygel-media-export-query-container.vala"
+			data->children = (data->_tmp3_ = data->_tmp2_, _g_object_unref0 (data->children), data->_tmp3_);
+#line 647 "rygel-media-export-query-container.c"
+		}
+		goto __finally30;
+		__catch30_rygel_media_db_error:
+		{
+			data->_error_ = data->_inner_error_;
+			data->_inner_error_ = NULL;
+			{
+#line 176 "rygel-media-export-query-container.vala"
+				if (g_error_matches (data->_error_, RYGEL_MEDIA_DB_ERROR, RYGEL_MEDIA_DB_ERROR_UNSUPPORTED_SEARCH)) {
+#line 177 "rygel-media-export-query-container.vala"
+					data->children = (data->_tmp4_ = (GeeList*) gee_array_list_new (RYGEL_TYPE_MEDIA_OBJECT, (GBoxedCopyFunc) g_object_ref, g_object_unref, NULL), _g_object_unref0 (data->children), data->_tmp4_);
+#line 178 "rygel-media-export-query-container.vala"
+					data->total_matches = (guint) 0;
+#line 661 "rygel-media-export-query-container.c"
+				} else {
+					data->_inner_error_ = _g_error_copy0 (data->_error_);
+					{
+						_g_error_free0 (data->_error_);
+						_g_object_unref0 (data->children);
+						_rygel_search_expression_unref0 (data->combined_expression);
+						goto __finally30;
+					}
+				}
+				_g_error_free0 (data->_error_);
+			}
+		}
+		__finally30:
 		if (data->_inner_error_ != NULL) {
 			g_simple_async_result_set_from_error (data->_async_result, data->_inner_error_);
 			g_error_free (data->_inner_error_);
+			_g_object_unref0 (data->children);
 			_rygel_search_expression_unref0 (data->combined_expression);
 			{
 				if (data->_state_ == 0) {
@@ -641,8 +697,8 @@ static gboolean rygel_media_export_query_container_real_search_co (RygelMediaExp
 			g_object_unref (data->_async_result);
 			return FALSE;
 		}
-		_rygel_search_expression_unref0 (data->combined_expression);
 		_g_object_unref0 (data->children);
+		_rygel_search_expression_unref0 (data->combined_expression);
 	}
 	{
 		if (data->_state_ == 0) {
@@ -706,20 +762,20 @@ static gboolean rygel_media_export_query_container_real_get_children_co (RygelMe
 	switch (data->_state_) {
 		case 0:
 		goto _state_0;
-		case 3:
-		goto _state_3;
+		case 5:
+		goto _state_5;
 		default:
 		g_assert_not_reached ();
 	}
 	_state_0:
 	{
-#line 183 "rygel-media-export-query-container.vala"
+#line 194 "rygel-media-export-query-container.vala"
 		if (_vala_strcmp0 (data->self->priv->pattern, "") == 0) {
-#line 719 "rygel-media-export-query-container.c"
-			data->_state_ = 3;
+#line 775 "rygel-media-export-query-container.c"
+			data->_state_ = 5;
 			rygel_media_container_search ((RygelMediaContainer*) data->self, data->self->priv->expression, data->offset, data->max_count, data->cancellable, rygel_media_export_query_container_get_children_ready, data);
 			return FALSE;
-			_state_3:
+			_state_5:
 			data->_tmp0_ = rygel_media_container_search_finish ((RygelMediaContainer*) data->self, data->_res_, &data->total_matches, &data->_inner_error_);
 			if (data->_inner_error_ != NULL) {
 				g_simple_async_result_set_from_error (data->_async_result, data->_inner_error_);
@@ -735,20 +791,20 @@ static gboolean rygel_media_export_query_container_real_get_children_co (RygelMe
 					return FALSE;
 				}
 			}
-#line 187 "rygel-media-export-query-container.vala"
+#line 198 "rygel-media-export-query-container.vala"
 			data->children = (data->_tmp1_ = data->_tmp0_, _g_object_unref0 (data->children), data->_tmp1_);
-#line 741 "rygel-media-export-query-container.c"
+#line 797 "rygel-media-export-query-container.c"
 		} else {
 			data->max_objects = data->max_count;
-#line 194 "rygel-media-export-query-container.vala"
+#line 205 "rygel-media-export-query-container.vala"
 			if (data->max_objects == 0) {
-#line 195 "rygel-media-export-query-container.vala"
+#line 206 "rygel-media-export-query-container.vala"
 				data->max_objects = (guint) (-1);
-#line 748 "rygel-media-export-query-container.c"
+#line 804 "rygel-media-export-query-container.c"
 			}
-#line 198 "rygel-media-export-query-container.vala"
+#line 209 "rygel-media-export-query-container.vala"
 			data->children = (data->_tmp2_ = (GeeList*) gee_array_list_new (RYGEL_TYPE_MEDIA_OBJECT, (GBoxedCopyFunc) g_object_ref, g_object_unref, NULL), _g_object_unref0 (data->children), data->_tmp2_);
-#line 752 "rygel-media-export-query-container.c"
+#line 808 "rygel-media-export-query-container.c"
 			data->data = rygel_media_export_media_cache_get_object_attribute_by_search_expression (((RygelMediaExportDBContainer*) data->self)->media_db, data->self->priv->attribute, data->self->priv->expression, (glong) data->offset, (glong) data->max_objects, &data->_inner_error_);
 			if (data->_inner_error_ != NULL) {
 				g_simple_async_result_set_from_error (data->_async_result, data->_inner_error_);
@@ -766,33 +822,33 @@ static gboolean rygel_media_export_query_container_real_get_children_co (RygelMe
 			}
 			{
 				data->_meta_data_it = gee_iterable_iterator ((GeeIterable*) data->data);
-#line 204 "rygel-media-export-query-container.vala"
+#line 215 "rygel-media-export-query-container.vala"
 				while (TRUE) {
-#line 204 "rygel-media-export-query-container.vala"
+#line 215 "rygel-media-export-query-container.vala"
 					if (!gee_iterator_next (data->_meta_data_it)) {
-#line 204 "rygel-media-export-query-container.vala"
+#line 215 "rygel-media-export-query-container.vala"
 						break;
-#line 776 "rygel-media-export-query-container.c"
+#line 832 "rygel-media-export-query-container.c"
 					}
 					data->meta_data = (char*) gee_iterator_get (data->_meta_data_it);
-#line 205 "rygel-media-export-query-container.vala"
+#line 216 "rygel-media-export-query-container.vala"
 					if (data->meta_data == NULL) {
-#line 781 "rygel-media-export-query-container.c"
+#line 837 "rygel-media-export-query-container.c"
 						_g_free0 (data->meta_data);
-#line 206 "rygel-media-export-query-container.vala"
+#line 217 "rygel-media-export-query-container.vala"
 						continue;
-#line 785 "rygel-media-export-query-container.c"
+#line 841 "rygel-media-export-query-container.c"
 					}
 					data->new_id = g_uri_escape_string (data->meta_data, "", TRUE);
-#line 212 "rygel-media-export-query-container.vala"
+#line 223 "rygel-media-export-query-container.vala"
 					data->new_id = (data->_tmp3_ = string_replace (data->self->priv->pattern, "%s", data->new_id), _g_free0 (data->new_id), data->_tmp3_);
-#line 213 "rygel-media-export-query-container.vala"
+#line 224 "rygel-media-export-query-container.vala"
 					rygel_media_export_query_container_register_id (&data->new_id);
-#line 792 "rygel-media-export-query-container.c"
+#line 848 "rygel-media-export-query-container.c"
 					data->container = rygel_media_export_query_container_new (((RygelMediaExportDBContainer*) data->self)->media_db, data->new_id, data->meta_data);
-#line 217 "rygel-media-export-query-container.vala"
+#line 228 "rygel-media-export-query-container.vala"
 					gee_collection_add ((GeeCollection*) data->children, (RygelMediaObject*) data->container);
-#line 796 "rygel-media-export-query-container.c"
+#line 852 "rygel-media-export-query-container.c"
 					_g_free0 (data->meta_data);
 					_g_free0 (data->new_id);
 					_g_object_unref0 (data->container);
@@ -803,18 +859,18 @@ static gboolean rygel_media_export_query_container_real_get_children_co (RygelMe
 		}
 		{
 			data->_child_it = gee_iterable_iterator ((GeeIterable*) data->children);
-#line 221 "rygel-media-export-query-container.vala"
+#line 232 "rygel-media-export-query-container.vala"
 			while (TRUE) {
-#line 221 "rygel-media-export-query-container.vala"
+#line 232 "rygel-media-export-query-container.vala"
 				if (!gee_iterator_next (data->_child_it)) {
-#line 221 "rygel-media-export-query-container.vala"
+#line 232 "rygel-media-export-query-container.vala"
 					break;
-#line 813 "rygel-media-export-query-container.c"
+#line 869 "rygel-media-export-query-container.c"
 				}
 				data->child = (RygelMediaObject*) gee_iterator_get (data->_child_it);
-#line 222 "rygel-media-export-query-container.vala"
+#line 233 "rygel-media-export-query-container.vala"
 				data->child->parent = (RygelMediaContainer*) data->self;
-#line 818 "rygel-media-export-query-container.c"
+#line 874 "rygel-media-export-query-container.c"
 				_g_object_unref0 (data->child);
 			}
 			_g_object_unref0 (data->_child_it);
@@ -843,122 +899,122 @@ static gboolean rygel_media_export_query_container_real_get_children_co (RygelMe
 }
 
 
-#line 228 "rygel-media-export-query-container.vala"
+#line 239 "rygel-media-export-query-container.vala"
 void rygel_media_export_query_container_register_id (char** id) {
-#line 849 "rygel-media-export-query-container.c"
+#line 905 "rygel-media-export-query-container.c"
 	char* md5;
 	char* _tmp1_;
-#line 228 "rygel-media-export-query-container.vala"
+#line 239 "rygel-media-export-query-container.vala"
 	g_return_if_fail (id != NULL);
-#line 229 "rygel-media-export-query-container.vala"
+#line 240 "rygel-media-export-query-container.vala"
 	md5 = g_compute_checksum_for_string (G_CHECKSUM_MD5, *id, -1);
-#line 230 "rygel-media-export-query-container.vala"
+#line 241 "rygel-media-export-query-container.vala"
 	if (rygel_media_export_query_container_virtual_container_map == NULL) {
-#line 858 "rygel-media-export-query-container.c"
+#line 914 "rygel-media-export-query-container.c"
 		GeeHashMap* _tmp0_;
-#line 231 "rygel-media-export-query-container.vala"
+#line 242 "rygel-media-export-query-container.vala"
 		rygel_media_export_query_container_virtual_container_map = (_tmp0_ = gee_hash_map_new (G_TYPE_STRING, (GBoxedCopyFunc) g_strdup, g_free, G_TYPE_STRING, (GBoxedCopyFunc) g_strdup, g_free, NULL, NULL, NULL), _g_object_unref0 (rygel_media_export_query_container_virtual_container_map), _tmp0_);
-#line 862 "rygel-media-export-query-container.c"
+#line 918 "rygel-media-export-query-container.c"
 	}
-#line 233 "rygel-media-export-query-container.vala"
+#line 244 "rygel-media-export-query-container.vala"
 	if (!gee_abstract_map_has_key ((GeeAbstractMap*) rygel_media_export_query_container_virtual_container_map, md5)) {
-#line 234 "rygel-media-export-query-container.vala"
+#line 245 "rygel-media-export-query-container.vala"
 		gee_abstract_map_set ((GeeAbstractMap*) rygel_media_export_query_container_virtual_container_map, md5, *id);
-#line 235 "rygel-media-export-query-container.vala"
-		g_debug ("rygel-media-export-query-container.vala:235: Registering %s for %s", md5, *id);
-#line 870 "rygel-media-export-query-container.c"
+#line 246 "rygel-media-export-query-container.vala"
+		g_debug ("rygel-media-export-query-container.vala:246: Registering %s for %s", md5, *id);
+#line 926 "rygel-media-export-query-container.c"
 	}
-#line 238 "rygel-media-export-query-container.vala"
+#line 249 "rygel-media-export-query-container.vala"
 	*id = (_tmp1_ = g_strconcat (RYGEL_MEDIA_EXPORT_QUERY_CONTAINER_PREFIX, md5, NULL), _g_free0 (*id), _tmp1_);
-#line 874 "rygel-media-export-query-container.c"
+#line 930 "rygel-media-export-query-container.c"
 	_g_free0 (md5);
 }
 
 
-#line 241 "rygel-media-export-query-container.vala"
+#line 252 "rygel-media-export-query-container.vala"
 char* rygel_media_export_query_container_get_virtual_container_definition (const char* hash) {
-#line 881 "rygel-media-export-query-container.c"
+#line 937 "rygel-media-export-query-container.c"
 	char* result = NULL;
 	char* id;
 	gboolean _tmp0_ = FALSE;
-#line 241 "rygel-media-export-query-container.vala"
+#line 252 "rygel-media-export-query-container.vala"
 	g_return_val_if_fail (hash != NULL, NULL);
-#line 242 "rygel-media-export-query-container.vala"
+#line 253 "rygel-media-export-query-container.vala"
 	id = string_replace (hash, RYGEL_MEDIA_EXPORT_QUERY_CONTAINER_PREFIX, "");
-#line 243 "rygel-media-export-query-container.vala"
+#line 254 "rygel-media-export-query-container.vala"
 	if (rygel_media_export_query_container_virtual_container_map != NULL) {
-#line 244 "rygel-media-export-query-container.vala"
+#line 255 "rygel-media-export-query-container.vala"
 		_tmp0_ = gee_abstract_map_has_key ((GeeAbstractMap*) rygel_media_export_query_container_virtual_container_map, id);
-#line 893 "rygel-media-export-query-container.c"
+#line 949 "rygel-media-export-query-container.c"
 	} else {
-#line 243 "rygel-media-export-query-container.vala"
+#line 254 "rygel-media-export-query-container.vala"
 		_tmp0_ = FALSE;
-#line 897 "rygel-media-export-query-container.c"
+#line 953 "rygel-media-export-query-container.c"
 	}
-#line 243 "rygel-media-export-query-container.vala"
+#line 254 "rygel-media-export-query-container.vala"
 	if (_tmp0_) {
-#line 901 "rygel-media-export-query-container.c"
+#line 957 "rygel-media-export-query-container.c"
 		result = (char*) gee_abstract_map_get ((GeeAbstractMap*) rygel_media_export_query_container_virtual_container_map, id);
 		_g_free0 (id);
-#line 245 "rygel-media-export-query-container.vala"
+#line 256 "rygel-media-export-query-container.vala"
 		return result;
-#line 906 "rygel-media-export-query-container.c"
+#line 962 "rygel-media-export-query-container.c"
 	}
 	result = NULL;
 	_g_free0 (id);
-#line 248 "rygel-media-export-query-container.vala"
+#line 259 "rygel-media-export-query-container.vala"
 	return result;
-#line 912 "rygel-media-export-query-container.c"
+#line 968 "rygel-media-export-query-container.c"
 }
 
 
-#line 251 "rygel-media-export-query-container.vala"
+#line 262 "rygel-media-export-query-container.vala"
 static void rygel_media_export_query_container_update_search_expression (RygelMediaExportQueryContainer* self, const char* op1_, const char* op2) {
-#line 918 "rygel-media-export-query-container.c"
+#line 974 "rygel-media-export-query-container.c"
 	RygelRelationalExpression* exp;
 	char* op1;
 	char* _tmp0_;
 	char* _tmp1_;
-#line 251 "rygel-media-export-query-container.vala"
+#line 262 "rygel-media-export-query-container.vala"
 	g_return_if_fail (self != NULL);
-#line 251 "rygel-media-export-query-container.vala"
+#line 262 "rygel-media-export-query-container.vala"
 	g_return_if_fail (op1_ != NULL);
-#line 251 "rygel-media-export-query-container.vala"
+#line 262 "rygel-media-export-query-container.vala"
 	g_return_if_fail (op2 != NULL);
-#line 252 "rygel-media-export-query-container.vala"
+#line 263 "rygel-media-export-query-container.vala"
 	exp = rygel_relational_expression_new ();
-#line 253 "rygel-media-export-query-container.vala"
+#line 264 "rygel-media-export-query-container.vala"
 	op1 = string_replace (op1_, RYGEL_MEDIA_EXPORT_QUERY_CONTAINER_PREFIX, "");
-#line 254 "rygel-media-export-query-container.vala"
+#line 265 "rygel-media-export-query-container.vala"
 	((RygelSearchExpression*) exp)->operand1 = (_tmp0_ = g_uri_unescape_string (op1, NULL), _g_free0 (((RygelSearchExpression*) exp)->operand1), _tmp0_);
-#line 255 "rygel-media-export-query-container.vala"
+#line 266 "rygel-media-export-query-container.vala"
 	((RygelSearchExpression*) exp)->op = GINT_TO_POINTER (GUPNP_SEARCH_CRITERIA_OP_EQ);
-#line 256 "rygel-media-export-query-container.vala"
+#line 267 "rygel-media-export-query-container.vala"
 	((RygelSearchExpression*) exp)->operand2 = (_tmp1_ = g_uri_unescape_string (op2, NULL), _g_free0 (((RygelSearchExpression*) exp)->operand2), _tmp1_);
-#line 257 "rygel-media-export-query-container.vala"
+#line 268 "rygel-media-export-query-container.vala"
 	if (self->priv->expression != NULL) {
-#line 941 "rygel-media-export-query-container.c"
+#line 997 "rygel-media-export-query-container.c"
 		RygelLogicalExpression* exp2;
 		RygelSearchExpression* _tmp2_;
 		RygelSearchExpression* _tmp3_;
 		RygelSearchExpression* _tmp4_;
-#line 258 "rygel-media-export-query-container.vala"
+#line 269 "rygel-media-export-query-container.vala"
 		exp2 = rygel_logical_expression_new ();
-#line 259 "rygel-media-export-query-container.vala"
+#line 270 "rygel-media-export-query-container.vala"
 		((RygelSearchExpression*) exp2)->operand1 = (_tmp2_ = _rygel_search_expression_ref0 (self->priv->expression), _rygel_search_expression_unref0 (((RygelSearchExpression*) exp2)->operand1), _tmp2_);
-#line 260 "rygel-media-export-query-container.vala"
+#line 271 "rygel-media-export-query-container.vala"
 		((RygelSearchExpression*) exp2)->operand2 = (_tmp3_ = _rygel_search_expression_ref0 ((RygelSearchExpression*) exp), _rygel_search_expression_unref0 (((RygelSearchExpression*) exp2)->operand2), _tmp3_);
-#line 261 "rygel-media-export-query-container.vala"
+#line 272 "rygel-media-export-query-container.vala"
 		((RygelSearchExpression*) exp2)->op = GINT_TO_POINTER (RYGEL_LOGICAL_OPERATOR_AND);
-#line 262 "rygel-media-export-query-container.vala"
+#line 273 "rygel-media-export-query-container.vala"
 		self->priv->expression = (_tmp4_ = _rygel_search_expression_ref0 ((RygelSearchExpression*) exp2), _rygel_search_expression_unref0 (self->priv->expression), _tmp4_);
-#line 956 "rygel-media-export-query-container.c"
+#line 1012 "rygel-media-export-query-container.c"
 		_rygel_search_expression_unref0 (exp2);
 	} else {
 		RygelSearchExpression* _tmp5_;
-#line 264 "rygel-media-export-query-container.vala"
+#line 275 "rygel-media-export-query-container.vala"
 		self->priv->expression = (_tmp5_ = _rygel_search_expression_ref0 ((RygelSearchExpression*) exp), _rygel_search_expression_unref0 (self->priv->expression), _tmp5_);
-#line 962 "rygel-media-export-query-container.c"
+#line 1018 "rygel-media-export-query-container.c"
 	}
 	_rygel_search_expression_unref0 (exp);
 	_g_free0 (op1);

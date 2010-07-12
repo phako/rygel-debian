@@ -28,24 +28,24 @@
 #include <rygel.h>
 
 
-#define RYGEL_TYPE_MEDIATHEK_CONTENT_DIR (rygel_mediathek_content_dir_get_type ())
-#define RYGEL_MEDIATHEK_CONTENT_DIR(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_MEDIATHEK_CONTENT_DIR, RygelMediathekContentDir))
-#define RYGEL_MEDIATHEK_CONTENT_DIR_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TYPE_MEDIATHEK_CONTENT_DIR, RygelMediathekContentDirClass))
-#define RYGEL_IS_MEDIATHEK_CONTENT_DIR(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TYPE_MEDIATHEK_CONTENT_DIR))
-#define RYGEL_IS_MEDIATHEK_CONTENT_DIR_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_TYPE_MEDIATHEK_CONTENT_DIR))
-#define RYGEL_MEDIATHEK_CONTENT_DIR_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_TYPE_MEDIATHEK_CONTENT_DIR, RygelMediathekContentDirClass))
+#define RYGEL_MEDIATHEK_TYPE_CONTENT_DIR (rygel_mediathek_content_dir_get_type ())
+#define RYGEL_MEDIATHEK_CONTENT_DIR(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_MEDIATHEK_TYPE_CONTENT_DIR, RygelMediathekContentDir))
+#define RYGEL_MEDIATHEK_CONTENT_DIR_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_MEDIATHEK_TYPE_CONTENT_DIR, RygelMediathekContentDirClass))
+#define RYGEL_MEDIATHEK_IS_CONTENT_DIR(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_MEDIATHEK_TYPE_CONTENT_DIR))
+#define RYGEL_MEDIATHEK_IS_CONTENT_DIR_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_MEDIATHEK_TYPE_CONTENT_DIR))
+#define RYGEL_MEDIATHEK_CONTENT_DIR_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_MEDIATHEK_TYPE_CONTENT_DIR, RygelMediathekContentDirClass))
 
 typedef struct _RygelMediathekContentDir RygelMediathekContentDir;
 typedef struct _RygelMediathekContentDirClass RygelMediathekContentDirClass;
 #define _g_object_unref0(var) ((var == NULL) ? NULL : (var = (g_object_unref (var), NULL)))
 typedef struct _RygelMediathekContentDirPrivate RygelMediathekContentDirPrivate;
 
-#define RYGEL_TYPE_MEDIATHEK_ROOT_CONTAINER (rygel_mediathek_root_container_get_type ())
-#define RYGEL_MEDIATHEK_ROOT_CONTAINER(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_MEDIATHEK_ROOT_CONTAINER, RygelMediathekRootContainer))
-#define RYGEL_MEDIATHEK_ROOT_CONTAINER_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TYPE_MEDIATHEK_ROOT_CONTAINER, RygelMediathekRootContainerClass))
-#define RYGEL_IS_MEDIATHEK_ROOT_CONTAINER(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TYPE_MEDIATHEK_ROOT_CONTAINER))
-#define RYGEL_IS_MEDIATHEK_ROOT_CONTAINER_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_TYPE_MEDIATHEK_ROOT_CONTAINER))
-#define RYGEL_MEDIATHEK_ROOT_CONTAINER_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_TYPE_MEDIATHEK_ROOT_CONTAINER, RygelMediathekRootContainerClass))
+#define RYGEL_MEDIATHEK_TYPE_ROOT_CONTAINER (rygel_mediathek_root_container_get_type ())
+#define RYGEL_MEDIATHEK_ROOT_CONTAINER(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_MEDIATHEK_TYPE_ROOT_CONTAINER, RygelMediathekRootContainer))
+#define RYGEL_MEDIATHEK_ROOT_CONTAINER_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_MEDIATHEK_TYPE_ROOT_CONTAINER, RygelMediathekRootContainerClass))
+#define RYGEL_MEDIATHEK_IS_ROOT_CONTAINER(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_MEDIATHEK_TYPE_ROOT_CONTAINER))
+#define RYGEL_MEDIATHEK_IS_ROOT_CONTAINER_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_MEDIATHEK_TYPE_ROOT_CONTAINER))
+#define RYGEL_MEDIATHEK_ROOT_CONTAINER_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_MEDIATHEK_TYPE_ROOT_CONTAINER, RygelMediathekRootContainerClass))
 
 typedef struct _RygelMediathekRootContainer RygelMediathekRootContainer;
 typedef struct _RygelMediathekRootContainerClass RygelMediathekRootContainerClass;
@@ -82,7 +82,7 @@ void module_init (RygelPluginLoader* loader) {
 #line 26 "rygel-mediathek-plugin.vala"
 	g_return_if_fail (loader != NULL);
 #line 27 "rygel-mediathek-plugin.vala"
-	plugin = rygel_plugin_new_MediaServer ("ZDFMediathek", "ZDF Mediathek", RYGEL_TYPE_MEDIATHEK_CONTENT_DIR, NULL);
+	plugin = rygel_plugin_new_MediaServer ("ZDFMediathek", "ZDF Mediathek", RYGEL_MEDIATHEK_TYPE_CONTENT_DIR, NULL);
 #line 30 "rygel-mediathek-plugin.vala"
 	rygel_plugin_loader_add_plugin (loader, plugin);
 #line 89 "rygel-mediathek-plugin.c"
@@ -117,7 +117,7 @@ RygelMediathekContentDir* rygel_mediathek_content_dir_construct (GType object_ty
 #line 33 "rygel-mediathek-plugin.vala"
 RygelMediathekContentDir* rygel_mediathek_content_dir_new (void) {
 #line 33 "rygel-mediathek-plugin.vala"
-	return rygel_mediathek_content_dir_construct (RYGEL_TYPE_MEDIATHEK_CONTENT_DIR);
+	return rygel_mediathek_content_dir_construct (RYGEL_MEDIATHEK_TYPE_CONTENT_DIR);
 #line 122 "rygel-mediathek-plugin.c"
 }
 

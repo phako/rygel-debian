@@ -36,12 +36,12 @@
 #include <gobject/gvaluecollector.h>
 
 
-#define RYGEL_TYPE_EXTERNAL_PLUGIN_FACTORY (rygel_external_plugin_factory_get_type ())
-#define RYGEL_EXTERNAL_PLUGIN_FACTORY(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_EXTERNAL_PLUGIN_FACTORY, RygelExternalPluginFactory))
-#define RYGEL_EXTERNAL_PLUGIN_FACTORY_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TYPE_EXTERNAL_PLUGIN_FACTORY, RygelExternalPluginFactoryClass))
-#define RYGEL_IS_EXTERNAL_PLUGIN_FACTORY(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TYPE_EXTERNAL_PLUGIN_FACTORY))
-#define RYGEL_IS_EXTERNAL_PLUGIN_FACTORY_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_TYPE_EXTERNAL_PLUGIN_FACTORY))
-#define RYGEL_EXTERNAL_PLUGIN_FACTORY_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_TYPE_EXTERNAL_PLUGIN_FACTORY, RygelExternalPluginFactoryClass))
+#define RYGEL_EXTERNAL_TYPE_PLUGIN_FACTORY (rygel_external_plugin_factory_get_type ())
+#define RYGEL_EXTERNAL_PLUGIN_FACTORY(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_EXTERNAL_TYPE_PLUGIN_FACTORY, RygelExternalPluginFactory))
+#define RYGEL_EXTERNAL_PLUGIN_FACTORY_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_EXTERNAL_TYPE_PLUGIN_FACTORY, RygelExternalPluginFactoryClass))
+#define RYGEL_EXTERNAL_IS_PLUGIN_FACTORY(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_EXTERNAL_TYPE_PLUGIN_FACTORY))
+#define RYGEL_EXTERNAL_IS_PLUGIN_FACTORY_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_EXTERNAL_TYPE_PLUGIN_FACTORY))
+#define RYGEL_EXTERNAL_PLUGIN_FACTORY_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_EXTERNAL_TYPE_PLUGIN_FACTORY, RygelExternalPluginFactoryClass))
 
 typedef struct _RygelExternalPluginFactory RygelExternalPluginFactory;
 typedef struct _RygelExternalPluginFactoryClass RygelExternalPluginFactoryClass;
@@ -57,12 +57,12 @@ typedef struct _RygelExternalPluginFactoryPrivate RygelExternalPluginFactoryPriv
 typedef struct _FreeDesktopDBusObject FreeDesktopDBusObject;
 typedef struct _FreeDesktopDBusObjectIface FreeDesktopDBusObjectIface;
 
-#define RYGEL_TYPE_EXTERNAL_ICON_FACTORY (rygel_external_icon_factory_get_type ())
-#define RYGEL_EXTERNAL_ICON_FACTORY(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_EXTERNAL_ICON_FACTORY, RygelExternalIconFactory))
-#define RYGEL_EXTERNAL_ICON_FACTORY_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TYPE_EXTERNAL_ICON_FACTORY, RygelExternalIconFactoryClass))
-#define RYGEL_IS_EXTERNAL_ICON_FACTORY(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TYPE_EXTERNAL_ICON_FACTORY))
-#define RYGEL_IS_EXTERNAL_ICON_FACTORY_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_TYPE_EXTERNAL_ICON_FACTORY))
-#define RYGEL_EXTERNAL_ICON_FACTORY_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_TYPE_EXTERNAL_ICON_FACTORY, RygelExternalIconFactoryClass))
+#define RYGEL_EXTERNAL_TYPE_ICON_FACTORY (rygel_external_icon_factory_get_type ())
+#define RYGEL_EXTERNAL_ICON_FACTORY(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_EXTERNAL_TYPE_ICON_FACTORY, RygelExternalIconFactory))
+#define RYGEL_EXTERNAL_ICON_FACTORY_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_EXTERNAL_TYPE_ICON_FACTORY, RygelExternalIconFactoryClass))
+#define RYGEL_EXTERNAL_IS_ICON_FACTORY(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_EXTERNAL_TYPE_ICON_FACTORY))
+#define RYGEL_EXTERNAL_IS_ICON_FACTORY_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_EXTERNAL_TYPE_ICON_FACTORY))
+#define RYGEL_EXTERNAL_ICON_FACTORY_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_EXTERNAL_TYPE_ICON_FACTORY, RygelExternalIconFactoryClass))
 
 typedef struct _RygelExternalIconFactory RygelExternalIconFactory;
 typedef struct _RygelExternalIconFactoryClass RygelExternalIconFactoryClass;
@@ -83,18 +83,18 @@ typedef struct _FreeDesktopProperties FreeDesktopProperties;
 typedef struct _FreeDesktopPropertiesIface FreeDesktopPropertiesIface;
 #define _g_hash_table_unref0(var) ((var == NULL) ? NULL : (var = (g_hash_table_unref (var), NULL)))
 
-#define RYGEL_TYPE_EXTERNAL_PLUGIN (rygel_external_plugin_get_type ())
-#define RYGEL_EXTERNAL_PLUGIN(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_EXTERNAL_PLUGIN, RygelExternalPlugin))
-#define RYGEL_EXTERNAL_PLUGIN_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TYPE_EXTERNAL_PLUGIN, RygelExternalPluginClass))
-#define RYGEL_IS_EXTERNAL_PLUGIN(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TYPE_EXTERNAL_PLUGIN))
-#define RYGEL_IS_EXTERNAL_PLUGIN_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_TYPE_EXTERNAL_PLUGIN))
-#define RYGEL_EXTERNAL_PLUGIN_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_TYPE_EXTERNAL_PLUGIN, RygelExternalPluginClass))
+#define RYGEL_EXTERNAL_TYPE_PLUGIN (rygel_external_plugin_get_type ())
+#define RYGEL_EXTERNAL_PLUGIN(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_EXTERNAL_TYPE_PLUGIN, RygelExternalPlugin))
+#define RYGEL_EXTERNAL_PLUGIN_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_EXTERNAL_TYPE_PLUGIN, RygelExternalPluginClass))
+#define RYGEL_EXTERNAL_IS_PLUGIN(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_EXTERNAL_TYPE_PLUGIN))
+#define RYGEL_EXTERNAL_IS_PLUGIN_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_EXTERNAL_TYPE_PLUGIN))
+#define RYGEL_EXTERNAL_PLUGIN_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_EXTERNAL_TYPE_PLUGIN, RygelExternalPluginClass))
 
 typedef struct _RygelExternalPlugin RygelExternalPlugin;
 typedef struct _RygelExternalPluginClass RygelExternalPluginClass;
 #define _rygel_icon_info_unref0(var) ((var == NULL) ? NULL : (var = (rygel_icon_info_unref (var), NULL)))
 typedef struct _RygelExternalPluginFactoryLoadPluginData RygelExternalPluginFactoryLoadPluginData;
-typedef struct _RygelParamSpecExternalPluginFactory RygelParamSpecExternalPluginFactory;
+typedef struct _RygelExternalParamSpecPluginFactory RygelExternalParamSpecPluginFactory;
 
 struct _RygelExternalPluginFactory {
 	GTypeInstance parent_instance;
@@ -194,7 +194,7 @@ struct _RygelExternalPluginFactoryLoadPluginData {
 	GError * _inner_error_;
 };
 
-struct _RygelParamSpecExternalPluginFactory {
+struct _RygelExternalParamSpecPluginFactory {
 	GParamSpec parent_instance;
 };
 
@@ -209,10 +209,10 @@ static gpointer rygel_external_plugin_factory_parent_class = NULL;
 
 gpointer rygel_external_plugin_factory_ref (gpointer instance);
 void rygel_external_plugin_factory_unref (gpointer instance);
-GParamSpec* rygel_param_spec_external_plugin_factory (const gchar* name, const gchar* nick, const gchar* blurb, GType object_type, GParamFlags flags);
-void rygel_value_set_external_plugin_factory (GValue* value, gpointer v_object);
-void rygel_value_take_external_plugin_factory (GValue* value, gpointer v_object);
-gpointer rygel_value_get_external_plugin_factory (const GValue* value);
+GParamSpec* rygel_external_param_spec_plugin_factory (const gchar* name, const gchar* nick, const gchar* blurb, GType object_type, GParamFlags flags);
+void rygel_external_value_set_plugin_factory (GValue* value, gpointer v_object);
+void rygel_external_value_take_plugin_factory (GValue* value, gpointer v_object);
+gpointer rygel_external_value_get_plugin_factory (const GValue* value);
 GType rygel_external_plugin_factory_get_type (void);
 RygelExternalPluginFactory* rygel_external_plugin_factory_new (RygelPluginLoader* loader, GError** error);
 RygelExternalPluginFactory* rygel_external_plugin_factory_construct (GType object_type, RygelPluginLoader* loader, GError** error);
@@ -221,12 +221,12 @@ FreeDesktopDBusObject* free_desktop_dbus_object_dbus_proxy_new (DBusGConnection*
 GType free_desktop_dbus_object_get_type (void);
 gpointer rygel_external_icon_factory_ref (gpointer instance);
 void rygel_external_icon_factory_unref (gpointer instance);
-GParamSpec* rygel_param_spec_external_icon_factory (const gchar* name, const gchar* nick, const gchar* blurb, GType object_type, GParamFlags flags);
-void rygel_value_set_external_icon_factory (GValue* value, gpointer v_object);
-void rygel_value_take_external_icon_factory (GValue* value, gpointer v_object);
-gpointer rygel_value_get_external_icon_factory (const GValue* value);
+GParamSpec* rygel_external_param_spec_icon_factory (const gchar* name, const gchar* nick, const gchar* blurb, GType object_type, GParamFlags flags);
+void rygel_external_value_set_icon_factory (GValue* value, gpointer v_object);
+void rygel_external_value_take_icon_factory (GValue* value, gpointer v_object);
+gpointer rygel_external_value_get_icon_factory (const GValue* value);
 GType rygel_external_icon_factory_get_type (void);
-#define RYGEL_EXTERNAL_PLUGIN_FACTORY_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), RYGEL_TYPE_EXTERNAL_PLUGIN_FACTORY, RygelExternalPluginFactoryPrivate))
+#define RYGEL_EXTERNAL_PLUGIN_FACTORY_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), RYGEL_EXTERNAL_TYPE_PLUGIN_FACTORY, RygelExternalPluginFactoryPrivate))
 enum  {
 	RYGEL_EXTERNAL_PLUGIN_FACTORY_DUMMY_PROPERTY
 };
@@ -363,9 +363,9 @@ RygelExternalPluginFactory* rygel_external_plugin_factory_construct (GType objec
 	self->priv->icon_factory = (_tmp2_ = rygel_external_icon_factory_new (self->priv->connection), _rygel_external_icon_factory_unref0 (self->priv->icon_factory), _tmp2_);
 #line 59 "rygel-external-plugin-factory.vala"
 	self->priv->dbus_obj = (_tmp3_ = free_desktop_dbus_object_dbus_proxy_new (self->priv->connection, RYGEL_EXTERNAL_PLUGIN_FACTORY_DBUS_SERVICE, RYGEL_EXTERNAL_PLUGIN_FACTORY_DBUS_OBJECT), _g_object_unref0 (self->priv->dbus_obj), _tmp3_);
-#line 62 "rygel-external-plugin-factory.vala"
+#line 61 "rygel-external-plugin-factory.vala"
 	self->priv->loader = (_tmp4_ = _g_object_ref0 (loader), _g_object_unref0 (self->priv->loader), _tmp4_);
-#line 64 "rygel-external-plugin-factory.vala"
+#line 63 "rygel-external-plugin-factory.vala"
 	rygel_external_plugin_factory_load_plugins (self, NULL, NULL);
 #line 370 "rygel-external-plugin-factory.c"
 	return self;
@@ -375,7 +375,7 @@ RygelExternalPluginFactory* rygel_external_plugin_factory_construct (GType objec
 #line 55 "rygel-external-plugin-factory.vala"
 RygelExternalPluginFactory* rygel_external_plugin_factory_new (RygelPluginLoader* loader, GError** error) {
 #line 55 "rygel-external-plugin-factory.vala"
-	return rygel_external_plugin_factory_construct (RYGEL_TYPE_EXTERNAL_PLUGIN_FACTORY, loader, error);
+	return rygel_external_plugin_factory_construct (RYGEL_EXTERNAL_TYPE_PLUGIN_FACTORY, loader, error);
 #line 379 "rygel-external-plugin-factory.c"
 }
 
@@ -460,25 +460,25 @@ static gboolean rygel_external_plugin_factory_load_plugins_co (RygelExternalPlug
 			for (data->service_it = 0; data->service_it < data->services_length1; data->service_it = data->service_it + 1) {
 				data->service = g_strdup (data->service_collection[data->service_it]);
 				{
-#line 71 "rygel-external-plugin-factory.vala"
+#line 70 "rygel-external-plugin-factory.vala"
 					if (g_str_has_prefix (data->service, RYGEL_EXTERNAL_PLUGIN_FACTORY_SERVICE_PREFIX)) {
-#line 72 "rygel-external-plugin-factory.vala"
+#line 71 "rygel-external-plugin-factory.vala"
 						data->_tmp2_ = (data->_tmp3_ = rygel_plugin_loader_get_plugin_by_name (data->self->priv->loader, data->service)) == NULL;
 #line 467 "rygel-external-plugin-factory.c"
 						_g_object_unref0 (data->_tmp3_);
 					} else {
-#line 71 "rygel-external-plugin-factory.vala"
+#line 70 "rygel-external-plugin-factory.vala"
 						data->_tmp2_ = FALSE;
 #line 472 "rygel-external-plugin-factory.c"
 					}
-#line 71 "rygel-external-plugin-factory.vala"
+#line 70 "rygel-external-plugin-factory.vala"
 					if (data->_tmp2_) {
 #line 476 "rygel-external-plugin-factory.c"
 						data->_state_ = 15;
 						rygel_external_plugin_factory_load_plugin (data->self, data->service, rygel_external_plugin_factory_load_plugins_ready, data);
 						return FALSE;
 						_state_15:
-#line 73 "rygel-external-plugin-factory.vala"
+#line 72 "rygel-external-plugin-factory.vala"
 						rygel_external_plugin_factory_load_plugin_finish (data->self, data->_res_);
 #line 483 "rygel-external-plugin-factory.c"
 					}
@@ -490,7 +490,7 @@ static gboolean rygel_external_plugin_factory_load_plugins_co (RygelExternalPlug
 		rygel_external_plugin_factory_load_activatable_plugins (data->self, rygel_external_plugin_factory_load_plugins_ready, data);
 		return FALSE;
 		_state_16:
-#line 77 "rygel-external-plugin-factory.vala"
+#line 76 "rygel-external-plugin-factory.vala"
 		rygel_external_plugin_factory_load_activatable_plugins_finish (data->self, data->_res_, &data->_inner_error_);
 #line 495 "rygel-external-plugin-factory.c"
 		if (data->_inner_error_ != NULL) {
@@ -563,7 +563,7 @@ static void rygel_external_plugin_factory_load_activatable_plugins_ready (GObjec
 }
 
 
-#line 93 "rygel-external-plugin-factory.vala"
+#line 92 "rygel-external-plugin-factory.vala"
 static void _rygel_external_plugin_factory_name_owner_changed_free_desktop_dbus_object_name_owner_changed (FreeDesktopDBusObject* _sender, const char* name, const char* old_owner, const char* new_owner, gpointer self) {
 #line 568 "rygel-external-plugin-factory.c"
 	rygel_external_plugin_factory_name_owner_changed (self, _sender, name, old_owner, new_owner);
@@ -613,25 +613,25 @@ static gboolean rygel_external_plugin_factory_load_activatable_plugins_co (Rygel
 			for (data->service_it = 0; data->service_it < data->services_length1; data->service_it = data->service_it + 1) {
 				data->service = g_strdup (data->service_collection[data->service_it]);
 				{
-#line 84 "rygel-external-plugin-factory.vala"
+#line 83 "rygel-external-plugin-factory.vala"
 					if (g_str_has_prefix (data->service, RYGEL_EXTERNAL_PLUGIN_FACTORY_SERVICE_PREFIX)) {
-#line 85 "rygel-external-plugin-factory.vala"
+#line 84 "rygel-external-plugin-factory.vala"
 						data->_tmp2_ = (data->_tmp3_ = rygel_plugin_loader_get_plugin_by_name (data->self->priv->loader, data->service)) == NULL;
 #line 620 "rygel-external-plugin-factory.c"
 						_g_object_unref0 (data->_tmp3_);
 					} else {
-#line 84 "rygel-external-plugin-factory.vala"
+#line 83 "rygel-external-plugin-factory.vala"
 						data->_tmp2_ = FALSE;
 #line 625 "rygel-external-plugin-factory.c"
 					}
-#line 84 "rygel-external-plugin-factory.vala"
+#line 83 "rygel-external-plugin-factory.vala"
 					if (data->_tmp2_) {
 #line 629 "rygel-external-plugin-factory.c"
 						data->_state_ = 18;
 						rygel_external_plugin_factory_load_plugin (data->self, data->service, rygel_external_plugin_factory_load_activatable_plugins_ready, data);
 						return FALSE;
 						_state_18:
-#line 86 "rygel-external-plugin-factory.vala"
+#line 85 "rygel-external-plugin-factory.vala"
 						rygel_external_plugin_factory_load_plugin_finish (data->self, data->_res_);
 #line 636 "rygel-external-plugin-factory.c"
 					}
@@ -639,7 +639,7 @@ static gboolean rygel_external_plugin_factory_load_activatable_plugins_co (Rygel
 				}
 			}
 		}
-#line 90 "rygel-external-plugin-factory.vala"
+#line 89 "rygel-external-plugin-factory.vala"
 		g_signal_connect (data->self->priv->dbus_obj, "name-owner-changed", (GCallback) _rygel_external_plugin_factory_name_owner_changed_free_desktop_dbus_object_name_owner_changed, data->self);
 #line 644 "rygel-external-plugin-factory.c"
 		data->services = (_vala_array_free (data->services, data->services_length1, (GDestroyNotify) g_free), NULL);
@@ -656,70 +656,70 @@ static gboolean rygel_external_plugin_factory_load_activatable_plugins_co (Rygel
 }
 
 
-#line 93 "rygel-external-plugin-factory.vala"
+#line 92 "rygel-external-plugin-factory.vala"
 static void rygel_external_plugin_factory_name_owner_changed (RygelExternalPluginFactory* self, FreeDesktopDBusObject* dbus_obj, const char* name, const char* old_owner, const char* new_owner) {
 #line 661 "rygel-external-plugin-factory.c"
 	RygelPlugin* plugin;
-#line 93 "rygel-external-plugin-factory.vala"
+#line 92 "rygel-external-plugin-factory.vala"
 	g_return_if_fail (self != NULL);
-#line 93 "rygel-external-plugin-factory.vala"
+#line 92 "rygel-external-plugin-factory.vala"
 	g_return_if_fail (dbus_obj != NULL);
-#line 93 "rygel-external-plugin-factory.vala"
+#line 92 "rygel-external-plugin-factory.vala"
 	g_return_if_fail (name != NULL);
-#line 93 "rygel-external-plugin-factory.vala"
+#line 92 "rygel-external-plugin-factory.vala"
 	g_return_if_fail (old_owner != NULL);
-#line 93 "rygel-external-plugin-factory.vala"
+#line 92 "rygel-external-plugin-factory.vala"
 	g_return_if_fail (new_owner != NULL);
-#line 97 "rygel-external-plugin-factory.vala"
+#line 96 "rygel-external-plugin-factory.vala"
 	plugin = rygel_plugin_loader_get_plugin_by_name (self->priv->loader, name);
-#line 99 "rygel-external-plugin-factory.vala"
+#line 98 "rygel-external-plugin-factory.vala"
 	if (plugin != NULL) {
 #line 677 "rygel-external-plugin-factory.c"
 		gboolean _tmp0_ = FALSE;
-#line 100 "rygel-external-plugin-factory.vala"
+#line 99 "rygel-external-plugin-factory.vala"
 		if (_vala_strcmp0 (old_owner, "") != 0) {
-#line 100 "rygel-external-plugin-factory.vala"
+#line 99 "rygel-external-plugin-factory.vala"
 			_tmp0_ = _vala_strcmp0 (new_owner, "") == 0;
 #line 683 "rygel-external-plugin-factory.c"
 		} else {
-#line 100 "rygel-external-plugin-factory.vala"
+#line 99 "rygel-external-plugin-factory.vala"
 			_tmp0_ = FALSE;
 #line 687 "rygel-external-plugin-factory.c"
 		}
-#line 100 "rygel-external-plugin-factory.vala"
+#line 99 "rygel-external-plugin-factory.vala"
 		if (_tmp0_) {
-#line 101 "rygel-external-plugin-factory.vala"
-			g_debug ("rygel-external-plugin-factory.vala:101: Service '%s' going down, marki" \
+#line 100 "rygel-external-plugin-factory.vala"
+			g_debug ("rygel-external-plugin-factory.vala:100: Service '%s' going down, marki" \
 "ng it as unavailable", name);
-#line 103 "rygel-external-plugin-factory.vala"
+#line 102 "rygel-external-plugin-factory.vala"
 			rygel_plugin_set_available (plugin, FALSE);
 #line 695 "rygel-external-plugin-factory.c"
 		} else {
 			gboolean _tmp1_ = FALSE;
-#line 104 "rygel-external-plugin-factory.vala"
+#line 103 "rygel-external-plugin-factory.vala"
 			if (_vala_strcmp0 (old_owner, "") == 0) {
-#line 104 "rygel-external-plugin-factory.vala"
+#line 103 "rygel-external-plugin-factory.vala"
 				_tmp1_ = _vala_strcmp0 (new_owner, "") != 0;
 #line 702 "rygel-external-plugin-factory.c"
 			} else {
-#line 104 "rygel-external-plugin-factory.vala"
+#line 103 "rygel-external-plugin-factory.vala"
 				_tmp1_ = FALSE;
 #line 706 "rygel-external-plugin-factory.c"
 			}
-#line 104 "rygel-external-plugin-factory.vala"
+#line 103 "rygel-external-plugin-factory.vala"
 			if (_tmp1_) {
-#line 105 "rygel-external-plugin-factory.vala"
-				g_debug ("rygel-external-plugin-factory.vala:105: Service '%s' up again, marking" \
+#line 104 "rygel-external-plugin-factory.vala"
+				g_debug ("rygel-external-plugin-factory.vala:104: Service '%s' up again, marking" \
 " it as available", name);
-#line 107 "rygel-external-plugin-factory.vala"
+#line 105 "rygel-external-plugin-factory.vala"
 				rygel_plugin_set_available (plugin, TRUE);
 #line 714 "rygel-external-plugin-factory.c"
 			}
 		}
 	} else {
-#line 109 "rygel-external-plugin-factory.vala"
+#line 107 "rygel-external-plugin-factory.vala"
 		if (g_str_has_prefix (name, RYGEL_EXTERNAL_PLUGIN_FACTORY_SERVICE_PREFIX)) {
-#line 111 "rygel-external-plugin-factory.vala"
+#line 109 "rygel-external-plugin-factory.vala"
 			rygel_external_plugin_factory_load_plugin (self, name, NULL, NULL);
 #line 722 "rygel-external-plugin-factory.c"
 		}
@@ -857,7 +857,7 @@ static gboolean rygel_external_plugin_factory_load_plugin_co (RygelExternalPlugi
 	}
 	_state_0:
 	{
-#line 116 "rygel-external-plugin-factory.vala"
+#line 114 "rygel-external-plugin-factory.vala"
 		if (g_str_has_prefix (data->service_name, RYGEL_EXTERNAL_PLUGIN_FACTORY_GRILO_UPNP_PREFIX)) {
 #line 860 "rygel-external-plugin-factory.c"
 			{
@@ -890,7 +890,7 @@ static gboolean rygel_external_plugin_factory_load_plugin_co (RygelExternalPlugi
 				g_clear_error (&data->_inner_error_);
 				return FALSE;
 			}
-#line 133 "rygel-external-plugin-factory.vala"
+#line 130 "rygel-external-plugin-factory.vala"
 			data->object_props = (data->_tmp3_ = data->_tmp2_, _g_hash_table_unref0 (data->object_props), data->_tmp3_);
 #line 893 "rygel-external-plugin-factory.c"
 			data->_state_ = 20;
@@ -910,7 +910,7 @@ static gboolean rygel_external_plugin_factory_load_plugin_co (RygelExternalPlugi
 				g_clear_error (&data->_inner_error_);
 				return FALSE;
 			}
-#line 134 "rygel-external-plugin-factory.vala"
+#line 131 "rygel-external-plugin-factory.vala"
 			data->container_props = (data->_tmp5_ = data->_tmp4_, _g_hash_table_unref0 (data->container_props), data->_tmp5_);
 #line 913 "rygel-external-plugin-factory.c"
 		}
@@ -920,8 +920,8 @@ static gboolean rygel_external_plugin_factory_load_plugin_co (RygelExternalPlugi
 			data->err = data->_inner_error_;
 			data->_inner_error_ = NULL;
 			{
-#line 136 "rygel-external-plugin-factory.vala"
-				g_warning ("rygel-external-plugin-factory.vala:136: Failed to fetch properties of " \
+#line 133 "rygel-external-plugin-factory.vala"
+				g_warning ("rygel-external-plugin-factory.vala:133: Failed to fetch properties of " \
 "plugin %s: %s.", data->service_name, data->err->message);
 #line 923 "rygel-external-plugin-factory.c"
 				_g_error_free0 (data->err);
@@ -957,20 +957,20 @@ static gboolean rygel_external_plugin_factory_load_plugin_co (RygelExternalPlugi
 		_state_21:
 		data->icon = rygel_external_icon_factory_create_finish (data->self->priv->icon_factory, data->_res_);
 		data->value = __g_value_dup0 ((GValue*) g_hash_table_lookup (data->object_props, "DisplayName"));
-#line 148 "rygel-external-plugin-factory.vala"
+#line 145 "rygel-external-plugin-factory.vala"
 		if (data->value != NULL) {
-#line 149 "rygel-external-plugin-factory.vala"
+#line 146 "rygel-external-plugin-factory.vala"
 			data->title = (data->_tmp6_ = g_strdup (g_value_get_string (data->value)), _g_free0 (data->title), data->_tmp6_);
 #line 961 "rygel-external-plugin-factory.c"
 		} else {
-#line 151 "rygel-external-plugin-factory.vala"
+#line 148 "rygel-external-plugin-factory.vala"
 			data->title = (data->_tmp7_ = g_strdup (data->service_name), _g_free0 (data->title), data->_tmp7_);
 #line 965 "rygel-external-plugin-factory.c"
 		}
 		data->child_count = g_value_get_uint ((GValue*) g_hash_table_lookup (data->container_props, "ChildCount"));
 		data->searchable = g_value_get_boolean ((GValue*) g_hash_table_lookup (data->container_props, "Searchable"));
 		data->plugin = rygel_external_plugin_new (data->service_name, data->title, data->child_count, data->searchable, data->root_object, data->icon);
-#line 164 "rygel-external-plugin-factory.vala"
+#line 161 "rygel-external-plugin-factory.vala"
 		rygel_plugin_loader_add_plugin (data->self->priv->loader, (RygelPlugin*) data->plugin);
 #line 972 "rygel-external-plugin-factory.c"
 		_g_free0 (data->root_object);
@@ -994,19 +994,19 @@ static gboolean rygel_external_plugin_factory_load_plugin_co (RygelExternalPlugi
 }
 
 
-static void rygel_value_external_plugin_factory_init (GValue* value) {
+static void rygel_external_value_plugin_factory_init (GValue* value) {
 	value->data[0].v_pointer = NULL;
 }
 
 
-static void rygel_value_external_plugin_factory_free_value (GValue* value) {
+static void rygel_external_value_plugin_factory_free_value (GValue* value) {
 	if (value->data[0].v_pointer) {
 		rygel_external_plugin_factory_unref (value->data[0].v_pointer);
 	}
 }
 
 
-static void rygel_value_external_plugin_factory_copy_value (const GValue* src_value, GValue* dest_value) {
+static void rygel_external_value_plugin_factory_copy_value (const GValue* src_value, GValue* dest_value) {
 	if (src_value->data[0].v_pointer) {
 		dest_value->data[0].v_pointer = rygel_external_plugin_factory_ref (src_value->data[0].v_pointer);
 	} else {
@@ -1015,12 +1015,12 @@ static void rygel_value_external_plugin_factory_copy_value (const GValue* src_va
 }
 
 
-static gpointer rygel_value_external_plugin_factory_peek_pointer (const GValue* value) {
+static gpointer rygel_external_value_plugin_factory_peek_pointer (const GValue* value) {
 	return value->data[0].v_pointer;
 }
 
 
-static gchar* rygel_value_external_plugin_factory_collect_value (GValue* value, guint n_collect_values, GTypeCValue* collect_values, guint collect_flags) {
+static gchar* rygel_external_value_plugin_factory_collect_value (GValue* value, guint n_collect_values, GTypeCValue* collect_values, guint collect_flags) {
 	if (collect_values[0].v_pointer) {
 		RygelExternalPluginFactory* object;
 		object = collect_values[0].v_pointer;
@@ -1037,7 +1037,7 @@ static gchar* rygel_value_external_plugin_factory_collect_value (GValue* value, 
 }
 
 
-static gchar* rygel_value_external_plugin_factory_lcopy_value (const GValue* value, guint n_collect_values, GTypeCValue* collect_values, guint collect_flags) {
+static gchar* rygel_external_value_plugin_factory_lcopy_value (const GValue* value, guint n_collect_values, GTypeCValue* collect_values, guint collect_flags) {
 	RygelExternalPluginFactory** object_p;
 	object_p = collect_values[0].v_pointer;
 	if (!object_p) {
@@ -1054,27 +1054,27 @@ static gchar* rygel_value_external_plugin_factory_lcopy_value (const GValue* val
 }
 
 
-GParamSpec* rygel_param_spec_external_plugin_factory (const gchar* name, const gchar* nick, const gchar* blurb, GType object_type, GParamFlags flags) {
-	RygelParamSpecExternalPluginFactory* spec;
-	g_return_val_if_fail (g_type_is_a (object_type, RYGEL_TYPE_EXTERNAL_PLUGIN_FACTORY), NULL);
+GParamSpec* rygel_external_param_spec_plugin_factory (const gchar* name, const gchar* nick, const gchar* blurb, GType object_type, GParamFlags flags) {
+	RygelExternalParamSpecPluginFactory* spec;
+	g_return_val_if_fail (g_type_is_a (object_type, RYGEL_EXTERNAL_TYPE_PLUGIN_FACTORY), NULL);
 	spec = g_param_spec_internal (G_TYPE_PARAM_OBJECT, name, nick, blurb, flags);
 	G_PARAM_SPEC (spec)->value_type = object_type;
 	return G_PARAM_SPEC (spec);
 }
 
 
-gpointer rygel_value_get_external_plugin_factory (const GValue* value) {
-	g_return_val_if_fail (G_TYPE_CHECK_VALUE_TYPE (value, RYGEL_TYPE_EXTERNAL_PLUGIN_FACTORY), NULL);
+gpointer rygel_external_value_get_plugin_factory (const GValue* value) {
+	g_return_val_if_fail (G_TYPE_CHECK_VALUE_TYPE (value, RYGEL_EXTERNAL_TYPE_PLUGIN_FACTORY), NULL);
 	return value->data[0].v_pointer;
 }
 
 
-void rygel_value_set_external_plugin_factory (GValue* value, gpointer v_object) {
+void rygel_external_value_set_plugin_factory (GValue* value, gpointer v_object) {
 	RygelExternalPluginFactory* old;
-	g_return_if_fail (G_TYPE_CHECK_VALUE_TYPE (value, RYGEL_TYPE_EXTERNAL_PLUGIN_FACTORY));
+	g_return_if_fail (G_TYPE_CHECK_VALUE_TYPE (value, RYGEL_EXTERNAL_TYPE_PLUGIN_FACTORY));
 	old = value->data[0].v_pointer;
 	if (v_object) {
-		g_return_if_fail (G_TYPE_CHECK_INSTANCE_TYPE (v_object, RYGEL_TYPE_EXTERNAL_PLUGIN_FACTORY));
+		g_return_if_fail (G_TYPE_CHECK_INSTANCE_TYPE (v_object, RYGEL_EXTERNAL_TYPE_PLUGIN_FACTORY));
 		g_return_if_fail (g_value_type_compatible (G_TYPE_FROM_INSTANCE (v_object), G_VALUE_TYPE (value)));
 		value->data[0].v_pointer = v_object;
 		rygel_external_plugin_factory_ref (value->data[0].v_pointer);
@@ -1087,12 +1087,12 @@ void rygel_value_set_external_plugin_factory (GValue* value, gpointer v_object) 
 }
 
 
-void rygel_value_take_external_plugin_factory (GValue* value, gpointer v_object) {
+void rygel_external_value_take_plugin_factory (GValue* value, gpointer v_object) {
 	RygelExternalPluginFactory* old;
-	g_return_if_fail (G_TYPE_CHECK_VALUE_TYPE (value, RYGEL_TYPE_EXTERNAL_PLUGIN_FACTORY));
+	g_return_if_fail (G_TYPE_CHECK_VALUE_TYPE (value, RYGEL_EXTERNAL_TYPE_PLUGIN_FACTORY));
 	old = value->data[0].v_pointer;
 	if (v_object) {
-		g_return_if_fail (G_TYPE_CHECK_INSTANCE_TYPE (v_object, RYGEL_TYPE_EXTERNAL_PLUGIN_FACTORY));
+		g_return_if_fail (G_TYPE_CHECK_INSTANCE_TYPE (v_object, RYGEL_EXTERNAL_TYPE_PLUGIN_FACTORY));
 		g_return_if_fail (g_value_type_compatible (G_TYPE_FROM_INSTANCE (v_object), G_VALUE_TYPE (value)));
 		value->data[0].v_pointer = v_object;
 	} else {
@@ -1132,7 +1132,7 @@ static void rygel_external_plugin_factory_finalize (RygelExternalPluginFactory* 
 GType rygel_external_plugin_factory_get_type (void) {
 	static volatile gsize rygel_external_plugin_factory_type_id__volatile = 0;
 	if (g_once_init_enter (&rygel_external_plugin_factory_type_id__volatile)) {
-		static const GTypeValueTable g_define_type_value_table = { rygel_value_external_plugin_factory_init, rygel_value_external_plugin_factory_free_value, rygel_value_external_plugin_factory_copy_value, rygel_value_external_plugin_factory_peek_pointer, "p", rygel_value_external_plugin_factory_collect_value, "p", rygel_value_external_plugin_factory_lcopy_value };
+		static const GTypeValueTable g_define_type_value_table = { rygel_external_value_plugin_factory_init, rygel_external_value_plugin_factory_free_value, rygel_external_value_plugin_factory_copy_value, rygel_external_value_plugin_factory_peek_pointer, "p", rygel_external_value_plugin_factory_collect_value, "p", rygel_external_value_plugin_factory_lcopy_value };
 		static const GTypeInfo g_define_type_info = { sizeof (RygelExternalPluginFactoryClass), (GBaseInitFunc) NULL, (GBaseFinalizeFunc) NULL, (GClassInitFunc) rygel_external_plugin_factory_class_init, (GClassFinalizeFunc) NULL, NULL, sizeof (RygelExternalPluginFactory), 0, (GInstanceInitFunc) rygel_external_plugin_factory_instance_init, &g_define_type_value_table };
 		static const GTypeFundamentalInfo g_define_type_fundamental_info = { (G_TYPE_FLAG_CLASSED | G_TYPE_FLAG_INSTANTIATABLE | G_TYPE_FLAG_DERIVABLE | G_TYPE_FLAG_DEEP_DERIVABLE) };
 		GType rygel_external_plugin_factory_type_id;

@@ -32,24 +32,24 @@
 #include <string.h>
 
 
-#define RYGEL_TYPE_EXTERNAL_PLUGIN (rygel_external_plugin_get_type ())
-#define RYGEL_EXTERNAL_PLUGIN(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_EXTERNAL_PLUGIN, RygelExternalPlugin))
-#define RYGEL_EXTERNAL_PLUGIN_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TYPE_EXTERNAL_PLUGIN, RygelExternalPluginClass))
-#define RYGEL_IS_EXTERNAL_PLUGIN(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TYPE_EXTERNAL_PLUGIN))
-#define RYGEL_IS_EXTERNAL_PLUGIN_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_TYPE_EXTERNAL_PLUGIN))
-#define RYGEL_EXTERNAL_PLUGIN_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_TYPE_EXTERNAL_PLUGIN, RygelExternalPluginClass))
+#define RYGEL_EXTERNAL_TYPE_PLUGIN (rygel_external_plugin_get_type ())
+#define RYGEL_EXTERNAL_PLUGIN(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_EXTERNAL_TYPE_PLUGIN, RygelExternalPlugin))
+#define RYGEL_EXTERNAL_PLUGIN_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_EXTERNAL_TYPE_PLUGIN, RygelExternalPluginClass))
+#define RYGEL_EXTERNAL_IS_PLUGIN(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_EXTERNAL_TYPE_PLUGIN))
+#define RYGEL_EXTERNAL_IS_PLUGIN_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_EXTERNAL_TYPE_PLUGIN))
+#define RYGEL_EXTERNAL_PLUGIN_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_EXTERNAL_TYPE_PLUGIN, RygelExternalPluginClass))
 
 typedef struct _RygelExternalPlugin RygelExternalPlugin;
 typedef struct _RygelExternalPluginClass RygelExternalPluginClass;
 typedef struct _RygelExternalPluginPrivate RygelExternalPluginPrivate;
 #define _g_free0(var) (var = (g_free (var), NULL))
 
-#define RYGEL_TYPE_EXTERNAL_CONTENT_DIR (rygel_external_content_dir_get_type ())
-#define RYGEL_EXTERNAL_CONTENT_DIR(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_EXTERNAL_CONTENT_DIR, RygelExternalContentDir))
-#define RYGEL_EXTERNAL_CONTENT_DIR_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TYPE_EXTERNAL_CONTENT_DIR, RygelExternalContentDirClass))
-#define RYGEL_IS_EXTERNAL_CONTENT_DIR(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TYPE_EXTERNAL_CONTENT_DIR))
-#define RYGEL_IS_EXTERNAL_CONTENT_DIR_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_TYPE_EXTERNAL_CONTENT_DIR))
-#define RYGEL_EXTERNAL_CONTENT_DIR_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_TYPE_EXTERNAL_CONTENT_DIR, RygelExternalContentDirClass))
+#define RYGEL_EXTERNAL_TYPE_CONTENT_DIR (rygel_external_content_dir_get_type ())
+#define RYGEL_EXTERNAL_CONTENT_DIR(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_EXTERNAL_TYPE_CONTENT_DIR, RygelExternalContentDir))
+#define RYGEL_EXTERNAL_CONTENT_DIR_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_EXTERNAL_TYPE_CONTENT_DIR, RygelExternalContentDirClass))
+#define RYGEL_EXTERNAL_IS_CONTENT_DIR(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_EXTERNAL_TYPE_CONTENT_DIR))
+#define RYGEL_EXTERNAL_IS_CONTENT_DIR_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_EXTERNAL_TYPE_CONTENT_DIR))
+#define RYGEL_EXTERNAL_CONTENT_DIR_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_EXTERNAL_TYPE_CONTENT_DIR, RygelExternalContentDirClass))
 
 typedef struct _RygelExternalContentDir RygelExternalContentDir;
 typedef struct _RygelExternalContentDirClass RygelExternalContentDirClass;
@@ -95,7 +95,7 @@ RygelExternalPlugin* rygel_external_plugin_construct (GType object_type, const c
 #line 35 "rygel-external-plugin.vala"
 	g_return_val_if_fail (root_object != NULL, NULL);
 #line 41 "rygel-external-plugin.vala"
-	self = (RygelExternalPlugin*) rygel_plugin_construct_MediaServer (object_type, service_name, title, RYGEL_TYPE_EXTERNAL_CONTENT_DIR, _tmp0_ = g_strconcat ("Rygel External ", title, NULL));
+	self = (RygelExternalPlugin*) rygel_plugin_construct_MediaServer (object_type, service_name, title, RYGEL_EXTERNAL_TYPE_CONTENT_DIR, _tmp0_ = g_strconcat ("Rygel External ", title, NULL));
 #line 100 "rygel-external-plugin.c"
 	_g_free0 (_tmp0_);
 #line 46 "rygel-external-plugin.vala"
@@ -119,7 +119,7 @@ RygelExternalPlugin* rygel_external_plugin_construct (GType object_type, const c
 #line 35 "rygel-external-plugin.vala"
 RygelExternalPlugin* rygel_external_plugin_new (const char* service_name, const char* title, guint child_count, gboolean searchable, const char* root_object, RygelIconInfo* icon) {
 #line 35 "rygel-external-plugin.vala"
-	return rygel_external_plugin_construct (RYGEL_TYPE_EXTERNAL_PLUGIN, service_name, title, child_count, searchable, root_object, icon);
+	return rygel_external_plugin_construct (RYGEL_EXTERNAL_TYPE_PLUGIN, service_name, title, child_count, searchable, root_object, icon);
 #line 124 "rygel-external-plugin.c"
 }
 

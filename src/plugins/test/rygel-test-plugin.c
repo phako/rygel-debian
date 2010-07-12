@@ -30,12 +30,12 @@
 #include <rygel.h>
 
 
-#define RYGEL_TYPE_TEST_CONTENT_DIR (rygel_test_content_dir_get_type ())
-#define RYGEL_TEST_CONTENT_DIR(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_TEST_CONTENT_DIR, RygelTestContentDir))
-#define RYGEL_TEST_CONTENT_DIR_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TYPE_TEST_CONTENT_DIR, RygelTestContentDirClass))
-#define RYGEL_IS_TEST_CONTENT_DIR(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TYPE_TEST_CONTENT_DIR))
-#define RYGEL_IS_TEST_CONTENT_DIR_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_TYPE_TEST_CONTENT_DIR))
-#define RYGEL_TEST_CONTENT_DIR_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_TYPE_TEST_CONTENT_DIR, RygelTestContentDirClass))
+#define RYGEL_TEST_TYPE_CONTENT_DIR (rygel_test_content_dir_get_type ())
+#define RYGEL_TEST_CONTENT_DIR(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TEST_TYPE_CONTENT_DIR, RygelTestContentDir))
+#define RYGEL_TEST_CONTENT_DIR_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TEST_TYPE_CONTENT_DIR, RygelTestContentDirClass))
+#define RYGEL_TEST_IS_CONTENT_DIR(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TEST_TYPE_CONTENT_DIR))
+#define RYGEL_TEST_IS_CONTENT_DIR_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_TEST_TYPE_CONTENT_DIR))
+#define RYGEL_TEST_CONTENT_DIR_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_TEST_TYPE_CONTENT_DIR, RygelTestContentDirClass))
 
 typedef struct _RygelTestContentDir RygelTestContentDir;
 typedef struct _RygelTestContentDirClass RygelTestContentDirClass;
@@ -55,7 +55,7 @@ void module_init (RygelPluginLoader* loader) {
 #line 28 "rygel-test-plugin.vala"
 	g_return_if_fail (loader != NULL);
 #line 29 "rygel-test-plugin.vala"
-	plugin = rygel_plugin_new_MediaServer ("Test", "Test Streams", RYGEL_TYPE_TEST_CONTENT_DIR, NULL);
+	plugin = rygel_plugin_new_MediaServer ("Test", "Test Streams", RYGEL_TEST_TYPE_CONTENT_DIR, NULL);
 #line 32 "rygel-test-plugin.vala"
 	rygel_plugin_loader_add_plugin (loader, plugin);
 #line 62 "rygel-test-plugin.c"

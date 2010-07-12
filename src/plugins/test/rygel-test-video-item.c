@@ -33,23 +33,23 @@
 #include <gst/gst.h>
 
 
-#define RYGEL_TYPE_TEST_ITEM (rygel_test_item_get_type ())
-#define RYGEL_TEST_ITEM(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_TEST_ITEM, RygelTestItem))
-#define RYGEL_TEST_ITEM_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TYPE_TEST_ITEM, RygelTestItemClass))
-#define RYGEL_IS_TEST_ITEM(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TYPE_TEST_ITEM))
-#define RYGEL_IS_TEST_ITEM_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_TYPE_TEST_ITEM))
-#define RYGEL_TEST_ITEM_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_TYPE_TEST_ITEM, RygelTestItemClass))
+#define RYGEL_TEST_TYPE_ITEM (rygel_test_item_get_type ())
+#define RYGEL_TEST_ITEM(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TEST_TYPE_ITEM, RygelTestItem))
+#define RYGEL_TEST_ITEM_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TEST_TYPE_ITEM, RygelTestItemClass))
+#define RYGEL_TEST_IS_ITEM(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TEST_TYPE_ITEM))
+#define RYGEL_TEST_IS_ITEM_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_TEST_TYPE_ITEM))
+#define RYGEL_TEST_ITEM_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_TEST_TYPE_ITEM, RygelTestItemClass))
 
 typedef struct _RygelTestItem RygelTestItem;
 typedef struct _RygelTestItemClass RygelTestItemClass;
 typedef struct _RygelTestItemPrivate RygelTestItemPrivate;
 
-#define RYGEL_TYPE_TEST_VIDEO_ITEM (rygel_test_video_item_get_type ())
-#define RYGEL_TEST_VIDEO_ITEM(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_TEST_VIDEO_ITEM, RygelTestVideoItem))
-#define RYGEL_TEST_VIDEO_ITEM_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TYPE_TEST_VIDEO_ITEM, RygelTestVideoItemClass))
-#define RYGEL_IS_TEST_VIDEO_ITEM(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TYPE_TEST_VIDEO_ITEM))
-#define RYGEL_IS_TEST_VIDEO_ITEM_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_TYPE_TEST_VIDEO_ITEM))
-#define RYGEL_TEST_VIDEO_ITEM_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_TYPE_TEST_VIDEO_ITEM, RygelTestVideoItemClass))
+#define RYGEL_TEST_TYPE_VIDEO_ITEM (rygel_test_video_item_get_type ())
+#define RYGEL_TEST_VIDEO_ITEM(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TEST_TYPE_VIDEO_ITEM, RygelTestVideoItem))
+#define RYGEL_TEST_VIDEO_ITEM_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TEST_TYPE_VIDEO_ITEM, RygelTestVideoItemClass))
+#define RYGEL_TEST_IS_VIDEO_ITEM(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TEST_TYPE_VIDEO_ITEM))
+#define RYGEL_TEST_IS_VIDEO_ITEM_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_TEST_TYPE_VIDEO_ITEM))
+#define RYGEL_TEST_VIDEO_ITEM_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_TEST_TYPE_VIDEO_ITEM, RygelTestVideoItemClass))
 
 typedef struct _RygelTestVideoItem RygelTestVideoItem;
 typedef struct _RygelTestVideoItemClass RygelTestVideoItemClass;
@@ -101,7 +101,7 @@ RygelTestVideoItem* rygel_test_video_item_construct (GType object_type, const ch
 	g_return_val_if_fail (parent != NULL, NULL);
 #line 36 "rygel-test-video-item.vala"
 	g_return_val_if_fail (title != NULL, NULL);
-#line 39 "rygel-test-video-item.vala"
+#line 37 "rygel-test-video-item.vala"
 	self = (RygelTestVideoItem*) rygel_test_item_construct (object_type, id, parent, title, RYGEL_TEST_VIDEO_ITEM_TEST_MIMETYPE, RYGEL_MEDIA_ITEM_VIDEO_CLASS);
 #line 107 "rygel-test-video-item.c"
 	return self;
@@ -111,12 +111,12 @@ RygelTestVideoItem* rygel_test_video_item_construct (GType object_type, const ch
 #line 36 "rygel-test-video-item.vala"
 RygelTestVideoItem* rygel_test_video_item_new (const char* id, RygelMediaContainer* parent, const char* title) {
 #line 36 "rygel-test-video-item.vala"
-	return rygel_test_video_item_construct (RYGEL_TYPE_TEST_VIDEO_ITEM, id, parent, title);
+	return rygel_test_video_item_construct (RYGEL_TEST_TYPE_VIDEO_ITEM, id, parent, title);
 #line 116 "rygel-test-video-item.c"
 }
 
 
-#line 46 "rygel-test-video-item.vala"
+#line 44 "rygel-test-video-item.vala"
 static GstElement* rygel_test_video_item_real_create_stream_source (RygelMediaItem* base) {
 #line 122 "rygel-test-video-item.c"
 	RygelTestVideoItem * self;
@@ -126,14 +126,14 @@ static GstElement* rygel_test_video_item_real_create_stream_source (RygelMediaIt
 	_inner_error_ = NULL;
 	{
 		GstElement* _tmp0_;
-#line 48 "rygel-test-video-item.vala"
+#line 46 "rygel-test-video-item.vala"
 		_tmp0_ = gst_parse_bin_from_description (RYGEL_TEST_VIDEO_ITEM_PIPELINE, TRUE, &_inner_error_);
 #line 132 "rygel-test-video-item.c"
 		if (_inner_error_ != NULL) {
 			goto __catch1_g_error;
 		}
 		result = _tmp0_;
-#line 48 "rygel-test-video-item.vala"
+#line 46 "rygel-test-video-item.vala"
 		return result;
 #line 139 "rygel-test-video-item.c"
 	}
@@ -144,12 +144,12 @@ static GstElement* rygel_test_video_item_real_create_stream_source (RygelMediaIt
 		err = _inner_error_;
 		_inner_error_ = NULL;
 		{
-#line 50 "rygel-test-video-item.vala"
-			g_warning ("rygel-test-video-item.vala:50: Required plugin missing (%s)", err->message);
+#line 48 "rygel-test-video-item.vala"
+			g_warning ("rygel-test-video-item.vala:48: Required plugin missing (%s)", err->message);
 #line 150 "rygel-test-video-item.c"
 			result = NULL;
 			_g_error_free0 (err);
-#line 52 "rygel-test-video-item.vala"
+#line 50 "rygel-test-video-item.vala"
 			return result;
 #line 155 "rygel-test-video-item.c"
 		}
@@ -178,7 +178,7 @@ GType rygel_test_video_item_get_type (void) {
 	if (g_once_init_enter (&rygel_test_video_item_type_id__volatile)) {
 		static const GTypeInfo g_define_type_info = { sizeof (RygelTestVideoItemClass), (GBaseInitFunc) NULL, (GBaseFinalizeFunc) NULL, (GClassInitFunc) rygel_test_video_item_class_init, (GClassFinalizeFunc) NULL, NULL, sizeof (RygelTestVideoItem), 0, (GInstanceInitFunc) rygel_test_video_item_instance_init, NULL };
 		GType rygel_test_video_item_type_id;
-		rygel_test_video_item_type_id = g_type_register_static (RYGEL_TYPE_TEST_ITEM, "RygelTestVideoItem", &g_define_type_info, 0);
+		rygel_test_video_item_type_id = g_type_register_static (RYGEL_TEST_TYPE_ITEM, "RygelTestVideoItem", &g_define_type_info, 0);
 		g_once_init_leave (&rygel_test_video_item_type_id__volatile, rygel_test_video_item_type_id);
 	}
 	return rygel_test_video_item_type_id__volatile;

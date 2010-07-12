@@ -36,9 +36,10 @@ build_triplet = @build@
 host_triplet = @host@
 subdir = src/plugins/tracker
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in \
-	librygel_media_tracker_la_vala.stamp rygel-media-tracker.c \
+	librygel_media_tracker_la_vala.stamp \
 	rygel-tracker-category-all-container.c \
 	rygel-tracker-category-container.c \
+	rygel-tracker-content-directory.c \
 	rygel-tracker-insertion-query.c rygel-tracker-interfaces.c \
 	rygel-tracker-item-creation.c rygel-tracker-item-factory.c \
 	rygel-tracker-metadata-values.c \
@@ -90,7 +91,8 @@ librygel_media_tracker_la_DEPENDENCIES = $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1)
-am_librygel_media_tracker_la_OBJECTS = rygel-media-tracker.lo \
+am_librygel_media_tracker_la_OBJECTS =  \
+	rygel-tracker-content-directory.lo \
 	rygel-tracker-root-container.lo \
 	rygel-tracker-category-container.lo rygel-tracker-music.lo \
 	rygel-tracker-videos.lo rygel-tracker-pictures.lo \
@@ -328,7 +330,7 @@ AM_CFLAGS = $(LIBGUPNP_CFLAGS) \
 	    -include config.h
 
 librygel_media_tracker_la_SOURCES = \
-				    rygel-media-tracker.vala \
+				    rygel-tracker-content-directory.vala \
 				    rygel-tracker-root-container.vala \
 				    rygel-tracker-category-container.vala \
 				    rygel-tracker-music.vala \
@@ -442,9 +444,9 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-media-tracker.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-tracker-category-all-container.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-tracker-category-container.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-tracker-content-directory.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-tracker-insertion-query.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-tracker-interfaces.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-tracker-item-creation.Plo@am__quote@
@@ -490,7 +492,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$<' object='$@' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LTCOMPILE) -c -o $@ $<
-$(srcdir)/rygel-media-tracker.c: $(srcdir)/librygel_media_tracker_la_vala.stamp
+$(srcdir)/rygel-tracker-content-directory.c: $(srcdir)/librygel_media_tracker_la_vala.stamp
 	@if test -f $@; then :; else \
 	  rm -f $(srcdir)/librygel_media_tracker_la_vala.stamp; \
 	  $(am__cd) $(srcdir) && $(MAKE) $(AM_MAKEFLAGS) librygel_media_tracker_la_vala.stamp; \
@@ -735,9 +737,9 @@ maintainer-clean-generic:
 	@echo "This command is intended for maintainers to use"
 	@echo "it deletes files that may require special tools to rebuild."
 	-rm -f librygel_media_tracker_la_vala.stamp
-	-rm -f rygel-media-tracker.c
 	-rm -f rygel-tracker-category-all-container.c
 	-rm -f rygel-tracker-category-container.c
+	-rm -f rygel-tracker-content-directory.c
 	-rm -f rygel-tracker-insertion-query.c
 	-rm -f rygel-tracker-interfaces.c
 	-rm -f rygel-tracker-item-creation.c

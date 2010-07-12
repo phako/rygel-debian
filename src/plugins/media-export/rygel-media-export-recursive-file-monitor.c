@@ -226,21 +226,21 @@ static gboolean rygel_media_export_recursive_file_monitor_monitor_co (RygelMedia
 	switch (data->_state_) {
 		case 0:
 		goto _state_0;
-		case 4:
-		goto _state_4;
+		case 6:
+		goto _state_6;
 		default:
 		g_assert_not_reached ();
 	}
 	_state_0:
 	{
 		{
-			data->_state_ = 4;
+			data->_state_ = 6;
 			g_file_query_info_async (data->file, G_FILE_ATTRIBUTE_STANDARD_TYPE, G_FILE_QUERY_INFO_NONE, G_PRIORITY_DEFAULT, NULL, rygel_media_export_recursive_file_monitor_monitor_ready, data);
 			return FALSE;
-			_state_4:
+			_state_6:
 			data->info = g_file_query_info_finish (data->file, data->_res_, &data->_inner_error_);
 			if (data->_inner_error_ != NULL) {
-				goto __catch30_g_error;
+				goto __catch32_g_error;
 			}
 #line 67 "rygel-media-export-recursive-file-monitor.vala"
 			if (g_file_info_get_file_type (data->info) == G_FILE_TYPE_DIRECTORY) {
@@ -248,7 +248,7 @@ static gboolean rygel_media_export_recursive_file_monitor_monitor_co (RygelMedia
 				data->file_monitor = g_file_monitor_directory (data->file, G_FILE_MONITOR_NONE, data->self->priv->cancellable, &data->_inner_error_);
 				if (data->_inner_error_ != NULL) {
 					_g_object_unref0 (data->info);
-					goto __catch30_g_error;
+					goto __catch32_g_error;
 				}
 #line 71 "rygel-media-export-recursive-file-monitor.vala"
 				gee_abstract_map_set ((GeeAbstractMap*) data->self->priv->monitors, data->file, data->file_monitor);
@@ -259,8 +259,8 @@ static gboolean rygel_media_export_recursive_file_monitor_monitor_co (RygelMedia
 			}
 			_g_object_unref0 (data->info);
 		}
-		goto __finally30;
-		__catch30_g_error:
+		goto __finally32;
+		__catch32_g_error:
 		{
 			data->err = data->_inner_error_;
 			data->_inner_error_ = NULL;
@@ -272,7 +272,7 @@ static gboolean rygel_media_export_recursive_file_monitor_monitor_co (RygelMedia
 				_g_error_free0 (data->err);
 			}
 		}
-		__finally30:
+		__finally32:
 		if (data->_inner_error_ != NULL) {
 			g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, data->_inner_error_->message, g_quark_to_string (data->_inner_error_->domain), data->_inner_error_->code);
 			g_clear_error (&data->_inner_error_);

@@ -25,7 +25,7 @@ using Gee;
 /**
  * Represents Tracker SPARQL Selection query
  */
-public class Rygel.TrackerSelectionQuery : Rygel.TrackerQuery {
+public class Rygel.Tracker.SelectionQuery : Query {
     public ArrayList<string> variables;
     public ArrayList<string> filters;
 
@@ -35,14 +35,13 @@ public class Rygel.TrackerSelectionQuery : Rygel.TrackerQuery {
 
     public string[,] result;
 
-    public TrackerSelectionQuery (ArrayList<string>     variables,
-                                  TrackerQueryTriplets  mandatory,
-                                  TrackerQueryTriplets? optional,
-                                  ArrayList<string>?    filters,
-                                  string?               order_by = null,
-                                  int                   offset = 0,
-                                  int                   max_count = -1) {
-        base (mandatory, optional);
+    public SelectionQuery (ArrayList<string>  variables,
+                           QueryTriplets      triplets,
+                           ArrayList<string>? filters,
+                           string?            order_by = null,
+                           int                offset = 0,
+                           int                max_count = -1) {
+        base (triplets);
 
         if (filters != null) {
             this.filters = filters;
@@ -56,17 +55,16 @@ public class Rygel.TrackerSelectionQuery : Rygel.TrackerQuery {
         this.max_count = max_count;
     }
 
-    public TrackerSelectionQuery.clone (TrackerSelectionQuery query) {
+    public SelectionQuery.clone (SelectionQuery query) {
         this (copy_str_list (query.variables),
-              new TrackerQueryTriplets.clone (query.mandatory),
-              new TrackerQueryTriplets.clone (query.optional),
+              new QueryTriplets.clone (query.triplets),
               copy_str_list (query.filters),
               query.order_by,
               query.offset,
               query.max_count);
     }
 
-    public override async void execute (TrackerResourcesIface resources)
+    public override async void execute (ResourcesIface resources)
                                         throws DBus.Error {
         var str = this.to_string ();
 
@@ -111,7 +109,7 @@ public class Rygel.TrackerSelectionQuery : Rygel.TrackerQuery {
         return query;
     }
 
-     private static ArrayList<string> copy_str_list (Gee.List<string> str_list) {
+    private static ArrayList<string> copy_str_list (Gee.List<string> str_list) {
         var copy = new ArrayList<string> ();
 
         copy.add_all (str_list);

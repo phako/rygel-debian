@@ -6,29 +6,25 @@
  *         Zeeshan Ali (Khattak) <zeeshanak@gnome.org>
  *                               <zeeshan.ali@nokia.com>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
+ * Rygel is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
  *
- * This program is distributed in the hope that it will be useful,
+ * Rygel is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License along
- * with this program; if not, write to the Free Software Foundation,
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Library General Public
- * License as published by the Free Software Foundation; either
- * version 2 of the License, or (at your option) any later version.
  */
 
 using Gst;
 
-public class Rygel.GstPlayer : GLib.Object {
-    private static GstPlayer player;
+public class Rygel.GstRenderer.Player : GLib.Object {
+    private static Player player;
 
     private dynamic Element playbin;
 
@@ -106,7 +102,7 @@ public class Rygel.GstPlayer : GLib.Object {
         }
     }
 
-    private GstPlayer () {
+    private Player () {
         this.playbin = ElementFactory.make ("playbin2", null);
         assert (this.playbin != null);
 
@@ -115,9 +111,9 @@ public class Rygel.GstPlayer : GLib.Object {
         bus.add_watch (this.bus_handler);
     }
 
-    public static GstPlayer get_default () {
+    public static Player get_default () {
         if (player == null) {
-            player = new GstPlayer ();
+            player = new Player ();
         }
 
         return player;
@@ -144,28 +140,3 @@ public class Rygel.GstPlayer : GLib.Object {
         return true;
     }
 }
-
-// Helper class for converting between Gstreamer time units and string
-// representations of time.
-private class Time {
-    public static ClockTime from_string (string str) {
-        uint64 hours, minutes, seconds;
-
-        str.scanf ("%llu:%2llu:%2llu%*s", out hours, out minutes, out seconds);
-
-        return (ClockTime) ((hours * 3600 + minutes * 60 + seconds) *
-                            Gst.SECOND);
-    }
-
-    public static string to_string (ClockTime time) {
-        uint64 hours, minutes, seconds;
-
-        hours   = time / Gst.SECOND / 3600;
-        seconds = time / Gst.SECOND % 3600;
-        minutes = seconds / 60;
-        seconds = seconds % 60;
-
-        return "%llu:%.2llu:%.2llu".printf (hours, minutes, seconds);
-    }
-}
-

@@ -25,39 +25,30 @@ using Gee;
 /**
  * Represents SPARQL Triplet
  */
-public class Rygel.TrackerQueryTriplet {
+public class Rygel.Tracker.QueryTriplet {
     public string subject;
     public string predicate;
     public string obj;
 
-    public bool optional;
+    public QueryTriplet next;
 
-    public TrackerQueryTriplet next;
-
-    public TrackerQueryTriplet (string? subject,
-                                string  predicate,
-                                string  obj,
-                                bool    optional = true) {
+    public QueryTriplet (string subject, string predicate, string obj) {
         this.subject = subject;
         this.predicate = predicate;
         this.obj = obj;
-        this.optional = optional;
     }
 
-    public TrackerQueryTriplet.chain (string?             subject,
-                                      string              predicate,
-                                      TrackerQueryTriplet next,
-                                      bool                optional = true) {
+    public QueryTriplet.chain (string       subject,
+                               string       predicate,
+                               QueryTriplet next) {
         this.subject = subject;
         this.predicate = predicate;
         this.next = next;
-        this.optional = optional;
     }
 
-    public TrackerQueryTriplet.clone (TrackerQueryTriplet triplet) {
+    public QueryTriplet.clone (QueryTriplet triplet) {
         this.subject = triplet.subject;
         this.predicate = triplet.predicate;
-        this.optional = triplet.optional;
 
         if (triplet.next != null) {
             this.next = triplet.next;
@@ -66,8 +57,7 @@ public class Rygel.TrackerQueryTriplet {
         }
     }
 
-    public static bool equal_func (TrackerQueryTriplet a,
-                                   TrackerQueryTriplet b) {
+    public static bool equal_func (QueryTriplet a, QueryTriplet b) {
         bool chain_equal;
 
         if (a.next != null && b.next != null) {
@@ -79,18 +69,13 @@ public class Rygel.TrackerQueryTriplet {
         return a.subject == b.subject &&
                a.obj == b.obj &&
                a.predicate == b.predicate &&
-               a.optional == b.optional &&
                chain_equal;
     }
 
-    public string to_string () {
+    public string to_string (bool include_subject = true) {
         string str = "";
 
-        if (this.optional) {
-            str += "OPTIONAL {";
-        }
-
-        if (this.subject != null) {
+        if (include_subject) {
             str += " " + subject;
         }
 
@@ -100,10 +85,6 @@ public class Rygel.TrackerQueryTriplet {
             str += " [ " + this.next.to_string () + " ] ";
         } else {
             str += " " + this.obj;
-        }
-
-        if (this.optional) {
-            str += " }";
         }
 
         return str;

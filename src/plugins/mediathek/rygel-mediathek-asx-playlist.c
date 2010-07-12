@@ -34,12 +34,12 @@
 #include <libxml/xpath.h>
 
 
-#define RYGEL_TYPE_MEDIATHEK_ASX_PLAYLIST (rygel_mediathek_asx_playlist_get_type ())
-#define RYGEL_MEDIATHEK_ASX_PLAYLIST(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_MEDIATHEK_ASX_PLAYLIST, RygelMediathekAsxPlaylist))
-#define RYGEL_MEDIATHEK_ASX_PLAYLIST_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TYPE_MEDIATHEK_ASX_PLAYLIST, RygelMediathekAsxPlaylistClass))
-#define RYGEL_IS_MEDIATHEK_ASX_PLAYLIST(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TYPE_MEDIATHEK_ASX_PLAYLIST))
-#define RYGEL_IS_MEDIATHEK_ASX_PLAYLIST_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_TYPE_MEDIATHEK_ASX_PLAYLIST))
-#define RYGEL_MEDIATHEK_ASX_PLAYLIST_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_TYPE_MEDIATHEK_ASX_PLAYLIST, RygelMediathekAsxPlaylistClass))
+#define RYGEL_MEDIATHEK_TYPE_ASX_PLAYLIST (rygel_mediathek_asx_playlist_get_type ())
+#define RYGEL_MEDIATHEK_ASX_PLAYLIST(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_MEDIATHEK_TYPE_ASX_PLAYLIST, RygelMediathekAsxPlaylist))
+#define RYGEL_MEDIATHEK_ASX_PLAYLIST_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_MEDIATHEK_TYPE_ASX_PLAYLIST, RygelMediathekAsxPlaylistClass))
+#define RYGEL_MEDIATHEK_IS_ASX_PLAYLIST(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_MEDIATHEK_TYPE_ASX_PLAYLIST))
+#define RYGEL_MEDIATHEK_IS_ASX_PLAYLIST_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_MEDIATHEK_TYPE_ASX_PLAYLIST))
+#define RYGEL_MEDIATHEK_ASX_PLAYLIST_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_MEDIATHEK_TYPE_ASX_PLAYLIST, RygelMediathekAsxPlaylistClass))
 
 typedef struct _RygelMediathekAsxPlaylist RygelMediathekAsxPlaylist;
 typedef struct _RygelMediathekAsxPlaylistClass RygelMediathekAsxPlaylistClass;
@@ -74,7 +74,7 @@ static gpointer rygel_mediathek_asx_playlist_parent_class = NULL;
 
 GQuark rygel_mediathek_asx_playlist_error_quark (void);
 GType rygel_mediathek_asx_playlist_get_type (void);
-#define RYGEL_MEDIATHEK_ASX_PLAYLIST_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), RYGEL_TYPE_MEDIATHEK_ASX_PLAYLIST, RygelMediathekAsxPlaylistPrivate))
+#define RYGEL_MEDIATHEK_ASX_PLAYLIST_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), RYGEL_MEDIATHEK_TYPE_ASX_PLAYLIST, RygelMediathekAsxPlaylistPrivate))
 enum  {
 	RYGEL_MEDIATHEK_ASX_PLAYLIST_DUMMY_PROPERTY
 };
@@ -112,7 +112,7 @@ RygelMediathekAsxPlaylist* rygel_mediathek_asx_playlist_construct (GType object_
 #line 46 "rygel-mediathek-asx-playlist.vala"
 RygelMediathekAsxPlaylist* rygel_mediathek_asx_playlist_new (const char* uri) {
 #line 46 "rygel-mediathek-asx-playlist.vala"
-	return rygel_mediathek_asx_playlist_construct (RYGEL_TYPE_MEDIATHEK_ASX_PLAYLIST, uri);
+	return rygel_mediathek_asx_playlist_construct (RYGEL_MEDIATHEK_TYPE_ASX_PLAYLIST, uri);
 #line 117 "rygel-mediathek-asx-playlist.c"
 }
 

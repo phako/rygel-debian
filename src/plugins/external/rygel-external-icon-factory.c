@@ -36,12 +36,12 @@
 #include <gobject/gvaluecollector.h>
 
 
-#define RYGEL_TYPE_EXTERNAL_ICON_FACTORY (rygel_external_icon_factory_get_type ())
-#define RYGEL_EXTERNAL_ICON_FACTORY(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_EXTERNAL_ICON_FACTORY, RygelExternalIconFactory))
-#define RYGEL_EXTERNAL_ICON_FACTORY_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TYPE_EXTERNAL_ICON_FACTORY, RygelExternalIconFactoryClass))
-#define RYGEL_IS_EXTERNAL_ICON_FACTORY(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TYPE_EXTERNAL_ICON_FACTORY))
-#define RYGEL_IS_EXTERNAL_ICON_FACTORY_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_TYPE_EXTERNAL_ICON_FACTORY))
-#define RYGEL_EXTERNAL_ICON_FACTORY_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_TYPE_EXTERNAL_ICON_FACTORY, RygelExternalIconFactoryClass))
+#define RYGEL_EXTERNAL_TYPE_ICON_FACTORY (rygel_external_icon_factory_get_type ())
+#define RYGEL_EXTERNAL_ICON_FACTORY(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_EXTERNAL_TYPE_ICON_FACTORY, RygelExternalIconFactory))
+#define RYGEL_EXTERNAL_ICON_FACTORY_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_EXTERNAL_TYPE_ICON_FACTORY, RygelExternalIconFactoryClass))
+#define RYGEL_EXTERNAL_IS_ICON_FACTORY(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_EXTERNAL_TYPE_ICON_FACTORY))
+#define RYGEL_EXTERNAL_IS_ICON_FACTORY_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_EXTERNAL_TYPE_ICON_FACTORY))
+#define RYGEL_EXTERNAL_ICON_FACTORY_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_EXTERNAL_TYPE_ICON_FACTORY, RygelExternalIconFactoryClass))
 
 typedef struct _RygelExternalIconFactory RygelExternalIconFactory;
 typedef struct _RygelExternalIconFactoryClass RygelExternalIconFactoryClass;
@@ -61,7 +61,7 @@ typedef struct _FreeDesktopPropertiesIface FreeDesktopPropertiesIface;
 #define _g_object_unref0(var) ((var == NULL) ? NULL : (var = (g_object_unref (var), NULL)))
 #define _g_error_free0(var) ((var == NULL) ? NULL : (var = (g_error_free (var), NULL)))
 typedef struct _RygelExternalIconFactoryCreateData RygelExternalIconFactoryCreateData;
-typedef struct _RygelParamSpecExternalIconFactory RygelParamSpecExternalIconFactory;
+typedef struct _RygelExternalParamSpecIconFactory RygelExternalParamSpecIconFactory;
 
 struct _RygelExternalIconFactory {
 	GTypeInstance parent_instance;
@@ -115,7 +115,7 @@ struct _RygelExternalIconFactoryCreateData {
 	GError * _inner_error_;
 };
 
-struct _RygelParamSpecExternalIconFactory {
+struct _RygelExternalParamSpecIconFactory {
 	GParamSpec parent_instance;
 };
 
@@ -126,12 +126,12 @@ static gpointer rygel_external_icon_factory_parent_class = NULL;
 
 gpointer rygel_external_icon_factory_ref (gpointer instance);
 void rygel_external_icon_factory_unref (gpointer instance);
-GParamSpec* rygel_param_spec_external_icon_factory (const gchar* name, const gchar* nick, const gchar* blurb, GType object_type, GParamFlags flags);
-void rygel_value_set_external_icon_factory (GValue* value, gpointer v_object);
-void rygel_value_take_external_icon_factory (GValue* value, gpointer v_object);
-gpointer rygel_value_get_external_icon_factory (const GValue* value);
+GParamSpec* rygel_external_param_spec_icon_factory (const gchar* name, const gchar* nick, const gchar* blurb, GType object_type, GParamFlags flags);
+void rygel_external_value_set_icon_factory (GValue* value, gpointer v_object);
+void rygel_external_value_take_icon_factory (GValue* value, gpointer v_object);
+gpointer rygel_external_value_get_icon_factory (const GValue* value);
 GType rygel_external_icon_factory_get_type (void);
-#define RYGEL_EXTERNAL_ICON_FACTORY_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), RYGEL_TYPE_EXTERNAL_ICON_FACTORY, RygelExternalIconFactoryPrivate))
+#define RYGEL_EXTERNAL_ICON_FACTORY_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), RYGEL_EXTERNAL_TYPE_ICON_FACTORY, RygelExternalIconFactoryPrivate))
 enum  {
 	RYGEL_EXTERNAL_ICON_FACTORY_DUMMY_PROPERTY
 };
@@ -175,7 +175,7 @@ RygelExternalIconFactory* rygel_external_icon_factory_construct (GType object_ty
 #line 32 "rygel-external-icon-factory.vala"
 RygelExternalIconFactory* rygel_external_icon_factory_new (DBusGConnection* connection) {
 #line 32 "rygel-external-icon-factory.vala"
-	return rygel_external_icon_factory_construct (RYGEL_TYPE_EXTERNAL_ICON_FACTORY, connection);
+	return rygel_external_icon_factory_construct (RYGEL_EXTERNAL_TYPE_ICON_FACTORY, connection);
 #line 180 "rygel-external-icon-factory.c"
 }
 
@@ -413,19 +413,19 @@ static gboolean rygel_external_icon_factory_create_co (RygelExternalIconFactoryC
 }
 
 
-static void rygel_value_external_icon_factory_init (GValue* value) {
+static void rygel_external_value_icon_factory_init (GValue* value) {
 	value->data[0].v_pointer = NULL;
 }
 
 
-static void rygel_value_external_icon_factory_free_value (GValue* value) {
+static void rygel_external_value_icon_factory_free_value (GValue* value) {
 	if (value->data[0].v_pointer) {
 		rygel_external_icon_factory_unref (value->data[0].v_pointer);
 	}
 }
 
 
-static void rygel_value_external_icon_factory_copy_value (const GValue* src_value, GValue* dest_value) {
+static void rygel_external_value_icon_factory_copy_value (const GValue* src_value, GValue* dest_value) {
 	if (src_value->data[0].v_pointer) {
 		dest_value->data[0].v_pointer = rygel_external_icon_factory_ref (src_value->data[0].v_pointer);
 	} else {
@@ -434,12 +434,12 @@ static void rygel_value_external_icon_factory_copy_value (const GValue* src_valu
 }
 
 
-static gpointer rygel_value_external_icon_factory_peek_pointer (const GValue* value) {
+static gpointer rygel_external_value_icon_factory_peek_pointer (const GValue* value) {
 	return value->data[0].v_pointer;
 }
 
 
-static gchar* rygel_value_external_icon_factory_collect_value (GValue* value, guint n_collect_values, GTypeCValue* collect_values, guint collect_flags) {
+static gchar* rygel_external_value_icon_factory_collect_value (GValue* value, guint n_collect_values, GTypeCValue* collect_values, guint collect_flags) {
 	if (collect_values[0].v_pointer) {
 		RygelExternalIconFactory* object;
 		object = collect_values[0].v_pointer;
@@ -456,7 +456,7 @@ static gchar* rygel_value_external_icon_factory_collect_value (GValue* value, gu
 }
 
 
-static gchar* rygel_value_external_icon_factory_lcopy_value (const GValue* value, guint n_collect_values, GTypeCValue* collect_values, guint collect_flags) {
+static gchar* rygel_external_value_icon_factory_lcopy_value (const GValue* value, guint n_collect_values, GTypeCValue* collect_values, guint collect_flags) {
 	RygelExternalIconFactory** object_p;
 	object_p = collect_values[0].v_pointer;
 	if (!object_p) {
@@ -473,27 +473,27 @@ static gchar* rygel_value_external_icon_factory_lcopy_value (const GValue* value
 }
 
 
-GParamSpec* rygel_param_spec_external_icon_factory (const gchar* name, const gchar* nick, const gchar* blurb, GType object_type, GParamFlags flags) {
-	RygelParamSpecExternalIconFactory* spec;
-	g_return_val_if_fail (g_type_is_a (object_type, RYGEL_TYPE_EXTERNAL_ICON_FACTORY), NULL);
+GParamSpec* rygel_external_param_spec_icon_factory (const gchar* name, const gchar* nick, const gchar* blurb, GType object_type, GParamFlags flags) {
+	RygelExternalParamSpecIconFactory* spec;
+	g_return_val_if_fail (g_type_is_a (object_type, RYGEL_EXTERNAL_TYPE_ICON_FACTORY), NULL);
 	spec = g_param_spec_internal (G_TYPE_PARAM_OBJECT, name, nick, blurb, flags);
 	G_PARAM_SPEC (spec)->value_type = object_type;
 	return G_PARAM_SPEC (spec);
 }
 
 
-gpointer rygel_value_get_external_icon_factory (const GValue* value) {
-	g_return_val_if_fail (G_TYPE_CHECK_VALUE_TYPE (value, RYGEL_TYPE_EXTERNAL_ICON_FACTORY), NULL);
+gpointer rygel_external_value_get_icon_factory (const GValue* value) {
+	g_return_val_if_fail (G_TYPE_CHECK_VALUE_TYPE (value, RYGEL_EXTERNAL_TYPE_ICON_FACTORY), NULL);
 	return value->data[0].v_pointer;
 }
 
 
-void rygel_value_set_external_icon_factory (GValue* value, gpointer v_object) {
+void rygel_external_value_set_icon_factory (GValue* value, gpointer v_object) {
 	RygelExternalIconFactory* old;
-	g_return_if_fail (G_TYPE_CHECK_VALUE_TYPE (value, RYGEL_TYPE_EXTERNAL_ICON_FACTORY));
+	g_return_if_fail (G_TYPE_CHECK_VALUE_TYPE (value, RYGEL_EXTERNAL_TYPE_ICON_FACTORY));
 	old = value->data[0].v_pointer;
 	if (v_object) {
-		g_return_if_fail (G_TYPE_CHECK_INSTANCE_TYPE (v_object, RYGEL_TYPE_EXTERNAL_ICON_FACTORY));
+		g_return_if_fail (G_TYPE_CHECK_INSTANCE_TYPE (v_object, RYGEL_EXTERNAL_TYPE_ICON_FACTORY));
 		g_return_if_fail (g_value_type_compatible (G_TYPE_FROM_INSTANCE (v_object), G_VALUE_TYPE (value)));
 		value->data[0].v_pointer = v_object;
 		rygel_external_icon_factory_ref (value->data[0].v_pointer);
@@ -506,12 +506,12 @@ void rygel_value_set_external_icon_factory (GValue* value, gpointer v_object) {
 }
 
 
-void rygel_value_take_external_icon_factory (GValue* value, gpointer v_object) {
+void rygel_external_value_take_icon_factory (GValue* value, gpointer v_object) {
 	RygelExternalIconFactory* old;
-	g_return_if_fail (G_TYPE_CHECK_VALUE_TYPE (value, RYGEL_TYPE_EXTERNAL_ICON_FACTORY));
+	g_return_if_fail (G_TYPE_CHECK_VALUE_TYPE (value, RYGEL_EXTERNAL_TYPE_ICON_FACTORY));
 	old = value->data[0].v_pointer;
 	if (v_object) {
-		g_return_if_fail (G_TYPE_CHECK_INSTANCE_TYPE (v_object, RYGEL_TYPE_EXTERNAL_ICON_FACTORY));
+		g_return_if_fail (G_TYPE_CHECK_INSTANCE_TYPE (v_object, RYGEL_EXTERNAL_TYPE_ICON_FACTORY));
 		g_return_if_fail (g_value_type_compatible (G_TYPE_FROM_INSTANCE (v_object), G_VALUE_TYPE (value)));
 		value->data[0].v_pointer = v_object;
 	} else {
@@ -547,7 +547,7 @@ static void rygel_external_icon_factory_finalize (RygelExternalIconFactory* obj)
 GType rygel_external_icon_factory_get_type (void) {
 	static volatile gsize rygel_external_icon_factory_type_id__volatile = 0;
 	if (g_once_init_enter (&rygel_external_icon_factory_type_id__volatile)) {
-		static const GTypeValueTable g_define_type_value_table = { rygel_value_external_icon_factory_init, rygel_value_external_icon_factory_free_value, rygel_value_external_icon_factory_copy_value, rygel_value_external_icon_factory_peek_pointer, "p", rygel_value_external_icon_factory_collect_value, "p", rygel_value_external_icon_factory_lcopy_value };
+		static const GTypeValueTable g_define_type_value_table = { rygel_external_value_icon_factory_init, rygel_external_value_icon_factory_free_value, rygel_external_value_icon_factory_copy_value, rygel_external_value_icon_factory_peek_pointer, "p", rygel_external_value_icon_factory_collect_value, "p", rygel_external_value_icon_factory_lcopy_value };
 		static const GTypeInfo g_define_type_info = { sizeof (RygelExternalIconFactoryClass), (GBaseInitFunc) NULL, (GBaseFinalizeFunc) NULL, (GClassInitFunc) rygel_external_icon_factory_class_init, (GClassFinalizeFunc) NULL, NULL, sizeof (RygelExternalIconFactory), 0, (GInstanceInitFunc) rygel_external_icon_factory_instance_init, &g_define_type_value_table };
 		static const GTypeFundamentalInfo g_define_type_fundamental_info = { (G_TYPE_FLAG_CLASSED | G_TYPE_FLAG_INSTANTIATABLE | G_TYPE_FLAG_DERIVABLE | G_TYPE_FLAG_DEEP_DERIVABLE) };
 		GType rygel_external_icon_factory_type_id;

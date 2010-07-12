@@ -31,26 +31,26 @@
 #include <glib/gi18n-lib.h>
 
 
-#define RYGEL_TYPE_TRACKER_PLUGIN (rygel_tracker_plugin_get_type ())
-#define RYGEL_TRACKER_PLUGIN(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_TRACKER_PLUGIN, RygelTrackerPlugin))
-#define RYGEL_TRACKER_PLUGIN_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TYPE_TRACKER_PLUGIN, RygelTrackerPluginClass))
-#define RYGEL_IS_TRACKER_PLUGIN(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TYPE_TRACKER_PLUGIN))
-#define RYGEL_IS_TRACKER_PLUGIN_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_TYPE_TRACKER_PLUGIN))
-#define RYGEL_TRACKER_PLUGIN_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_TYPE_TRACKER_PLUGIN, RygelTrackerPluginClass))
+#define RYGEL_TRACKER_TYPE_PLUGIN (rygel_tracker_plugin_get_type ())
+#define RYGEL_TRACKER_PLUGIN(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TRACKER_TYPE_PLUGIN, RygelTrackerPlugin))
+#define RYGEL_TRACKER_PLUGIN_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TRACKER_TYPE_PLUGIN, RygelTrackerPluginClass))
+#define RYGEL_TRACKER_IS_PLUGIN(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TRACKER_TYPE_PLUGIN))
+#define RYGEL_TRACKER_IS_PLUGIN_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_TRACKER_TYPE_PLUGIN))
+#define RYGEL_TRACKER_PLUGIN_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_TRACKER_TYPE_PLUGIN, RygelTrackerPluginClass))
 
 typedef struct _RygelTrackerPlugin RygelTrackerPlugin;
 typedef struct _RygelTrackerPluginClass RygelTrackerPluginClass;
 typedef struct _RygelTrackerPluginPrivate RygelTrackerPluginPrivate;
 
-#define RYGEL_TYPE_MEDIA_TRACKER (rygel_media_tracker_get_type ())
-#define RYGEL_MEDIA_TRACKER(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_MEDIA_TRACKER, RygelMediaTracker))
-#define RYGEL_MEDIA_TRACKER_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TYPE_MEDIA_TRACKER, RygelMediaTrackerClass))
-#define RYGEL_IS_MEDIA_TRACKER(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TYPE_MEDIA_TRACKER))
-#define RYGEL_IS_MEDIA_TRACKER_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_TYPE_MEDIA_TRACKER))
-#define RYGEL_MEDIA_TRACKER_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_TYPE_MEDIA_TRACKER, RygelMediaTrackerClass))
+#define RYGEL_TRACKER_TYPE_CONTENT_DIRECTORY (rygel_tracker_content_directory_get_type ())
+#define RYGEL_TRACKER_CONTENT_DIRECTORY(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TRACKER_TYPE_CONTENT_DIRECTORY, RygelTrackerContentDirectory))
+#define RYGEL_TRACKER_CONTENT_DIRECTORY_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TRACKER_TYPE_CONTENT_DIRECTORY, RygelTrackerContentDirectoryClass))
+#define RYGEL_TRACKER_IS_CONTENT_DIRECTORY(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TRACKER_TYPE_CONTENT_DIRECTORY))
+#define RYGEL_TRACKER_IS_CONTENT_DIRECTORY_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_TRACKER_TYPE_CONTENT_DIRECTORY))
+#define RYGEL_TRACKER_CONTENT_DIRECTORY_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_TRACKER_TYPE_CONTENT_DIRECTORY, RygelTrackerContentDirectoryClass))
 
-typedef struct _RygelMediaTracker RygelMediaTracker;
-typedef struct _RygelMediaTrackerClass RygelMediaTrackerClass;
+typedef struct _RygelTrackerContentDirectory RygelTrackerContentDirectory;
+typedef struct _RygelTrackerContentDirectoryClass RygelTrackerContentDirectoryClass;
 #define _rygel_icon_info_unref0(var) ((var == NULL) ? NULL : (var = (rygel_icon_info_unref (var), NULL)))
 #define _g_free0(var) (var = (g_free (var), NULL))
 #define _g_error_free0(var) ((var == NULL) ? NULL : (var = (g_error_free (var), NULL)))
@@ -72,7 +72,7 @@ enum  {
 	RYGEL_TRACKER_PLUGIN_DUMMY_PROPERTY
 };
 #define RYGEL_TRACKER_PLUGIN_ICON DATA_DIR "/icons/hicolor/48x48/apps/tracker.png"
-GType rygel_media_tracker_get_type (void);
+GType rygel_tracker_content_directory_get_type (void);
 RygelTrackerPlugin* rygel_tracker_plugin_new (void);
 RygelTrackerPlugin* rygel_tracker_plugin_construct (GType object_type);
 
@@ -86,7 +86,7 @@ RygelTrackerPlugin* rygel_tracker_plugin_construct (GType object_type) {
 	RygelIconInfo* icon_info;
 	_inner_error_ = NULL;
 #line 31 "rygel-tracker-plugin.vala"
-	self = (RygelTrackerPlugin*) rygel_plugin_construct_MediaServer (object_type, "Tracker", _ ("@REALNAME@'s media"), RYGEL_TYPE_MEDIA_TRACKER, NULL);
+	self = (RygelTrackerPlugin*) rygel_plugin_construct_MediaServer (object_type, "Tracker", _ ("@REALNAME@'s media"), RYGEL_TRACKER_TYPE_CONTENT_DIRECTORY, NULL);
 #line 37 "rygel-tracker-plugin.vala"
 	icon_info = rygel_icon_info_new ("image/png");
 #line 93 "rygel-tracker-plugin.c"
@@ -98,7 +98,7 @@ RygelTrackerPlugin* rygel_tracker_plugin_construct (GType object_type) {
 #line 99 "rygel-tracker-plugin.c"
 		if (_inner_error_ != NULL) {
 			if (_inner_error_->domain == G_CONVERT_ERROR) {
-				goto __catch9_g_convert_error;
+				goto __catch8_g_convert_error;
 			}
 			_rygel_icon_info_unref0 (icon_info);
 			g_critical ("file %s: line %d: unexpected error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
@@ -117,8 +117,8 @@ RygelTrackerPlugin* rygel_tracker_plugin_construct (GType object_type) {
 		rygel_plugin_add_icon ((RygelPlugin*) self, icon_info);
 #line 119 "rygel-tracker-plugin.c"
 	}
-	goto __finally9;
-	__catch9_g_convert_error:
+	goto __finally8;
+	__catch8_g_convert_error:
 	{
 		GError * err;
 		err = _inner_error_;
@@ -130,7 +130,7 @@ RygelTrackerPlugin* rygel_tracker_plugin_construct (GType object_type) {
 			_g_error_free0 (err);
 		}
 	}
-	__finally9:
+	__finally8:
 	if (_inner_error_ != NULL) {
 		_rygel_icon_info_unref0 (icon_info);
 		g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
@@ -145,7 +145,7 @@ RygelTrackerPlugin* rygel_tracker_plugin_construct (GType object_type) {
 #line 30 "rygel-tracker-plugin.vala"
 RygelTrackerPlugin* rygel_tracker_plugin_new (void) {
 #line 30 "rygel-tracker-plugin.vala"
-	return rygel_tracker_plugin_construct (RYGEL_TYPE_TRACKER_PLUGIN);
+	return rygel_tracker_plugin_construct (RYGEL_TRACKER_TYPE_PLUGIN);
 #line 150 "rygel-tracker-plugin.c"
 }
 

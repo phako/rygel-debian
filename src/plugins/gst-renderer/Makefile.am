@@ -17,12 +17,14 @@ AM_CFLAGS = $(LIBGUPNP_CFLAGS) \
             -I$(top_srcdir)/src/rygel -DDATA_DIR='"$(shareddir)"' \
 	    -include config.h
 
-librygel_gst_renderer_la_SOURCES = rygel-gst-connection-manager.vala \
-				   rygel-gst-rendering-control.vala \
-				   rygel-gst-av-transport.vala \
-				   rygel-gst-player.vala \
-				   rygel-gst-changelog.vala \
-				   rygel-gst-plugin.vala
+librygel_gst_renderer_la_SOURCES = rygel-gst-renderer-connection-manager.vala \
+				   rygel-gst-renderer-rendering-control.vala \
+				   rygel-gst-renderer-av-transport.vala \
+				   rygel-gst-renderer-player.vala \
+				   rygel-gst-renderer-changelog.vala \
+				   rygel-gst-renderer-plugin.vala \
+				   rygel-gst-renderer-volume.vala \
+				   rygel-gst-renderer-time.vala
 
 librygel_gst_renderer_la_VALAFLAGS = --vapidir=$(top_srcdir)/src/rygel \
                      	             --vapidir=$(srcdir) \

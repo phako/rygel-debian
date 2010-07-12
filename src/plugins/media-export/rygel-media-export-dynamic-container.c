@@ -145,7 +145,7 @@ GeeList* rygel_media_export_dynamic_container_get_uris (RygelMediaExportDynamicC
 		children = rygel_media_export_media_cache_get_children (((RygelMediaExportDBContainer*) self)->media_db, ((RygelMediaObject*) self)->id, (glong) (-1), (glong) (-1), &_inner_error_);
 #line 147 "rygel-media-export-dynamic-container.c"
 		if (_inner_error_ != NULL) {
-			goto __catch14_g_error;
+			goto __catch15_g_error;
 		}
 #line 35 "rygel-media-export-dynamic-container.vala"
 		if (children != NULL) {
@@ -175,8 +175,8 @@ GeeList* rygel_media_export_dynamic_container_get_uris (RygelMediaExportDynamicC
 		}
 		_g_object_unref0 (children);
 	}
-	goto __finally14;
-	__catch14_g_error:
+	goto __finally15;
+	__catch15_g_error:
 	{
 		GError * err;
 		err = _inner_error_;
@@ -185,7 +185,7 @@ GeeList* rygel_media_export_dynamic_container_get_uris (RygelMediaExportDynamicC
 			_g_error_free0 (err);
 		}
 	}
-	__finally14:
+	__finally15:
 	if (_inner_error_ != NULL) {
 		_g_object_unref0 (_result_);
 		g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);

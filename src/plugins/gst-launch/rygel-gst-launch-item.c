@@ -31,12 +31,12 @@
 #include <gst/gst.h>
 
 
-#define RYGEL_TYPE_GST_LAUNCH_ITEM (rygel_gst_launch_item_get_type ())
-#define RYGEL_GST_LAUNCH_ITEM(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_GST_LAUNCH_ITEM, RygelGstLaunchItem))
-#define RYGEL_GST_LAUNCH_ITEM_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TYPE_GST_LAUNCH_ITEM, RygelGstLaunchItemClass))
-#define RYGEL_IS_GST_LAUNCH_ITEM(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TYPE_GST_LAUNCH_ITEM))
-#define RYGEL_IS_GST_LAUNCH_ITEM_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_TYPE_GST_LAUNCH_ITEM))
-#define RYGEL_GST_LAUNCH_ITEM_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_TYPE_GST_LAUNCH_ITEM, RygelGstLaunchItemClass))
+#define RYGEL_GST_LAUNCH_TYPE_ITEM (rygel_gst_launch_item_get_type ())
+#define RYGEL_GST_LAUNCH_ITEM(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_GST_LAUNCH_TYPE_ITEM, RygelGstLaunchItem))
+#define RYGEL_GST_LAUNCH_ITEM_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_GST_LAUNCH_TYPE_ITEM, RygelGstLaunchItemClass))
+#define RYGEL_GST_LAUNCH_IS_ITEM(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_GST_LAUNCH_TYPE_ITEM))
+#define RYGEL_GST_LAUNCH_IS_ITEM_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_GST_LAUNCH_TYPE_ITEM))
+#define RYGEL_GST_LAUNCH_ITEM_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_GST_LAUNCH_TYPE_ITEM, RygelGstLaunchItemClass))
 
 typedef struct _RygelGstLaunchItem RygelGstLaunchItem;
 typedef struct _RygelGstLaunchItemClass RygelGstLaunchItemClass;
@@ -61,7 +61,7 @@ struct _RygelGstLaunchItemPrivate {
 static gpointer rygel_gst_launch_item_parent_class = NULL;
 
 GType rygel_gst_launch_item_get_type (void);
-#define RYGEL_GST_LAUNCH_ITEM_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), RYGEL_TYPE_GST_LAUNCH_ITEM, RygelGstLaunchItemPrivate))
+#define RYGEL_GST_LAUNCH_ITEM_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), RYGEL_GST_LAUNCH_TYPE_ITEM, RygelGstLaunchItemPrivate))
 enum  {
 	RYGEL_GST_LAUNCH_ITEM_DUMMY_PROPERTY
 };
@@ -76,9 +76,9 @@ static void rygel_gst_launch_item_finalize (GObject* obj);
 RygelGstLaunchItem* rygel_gst_launch_item_construct (GType object_type, const char* id, RygelMediaContainer* parent, const char* title, const char* mime_type, const char* launch_line) {
 #line 78 "rygel-gst-launch-item.c"
 	RygelGstLaunchItem * self;
-	const char* _tmp0_;
-	char* _tmp1_;
+	char* upnp_class;
 	char* _tmp2_;
+	char* _tmp3_;
 #line 34 "rygel-gst-launch-item.vala"
 	g_return_val_if_fail (id != NULL, NULL);
 #line 34 "rygel-gst-launch-item.vala"
@@ -90,24 +90,28 @@ RygelGstLaunchItem* rygel_gst_launch_item_construct (GType object_type, const ch
 #line 34 "rygel-gst-launch-item.vala"
 	g_return_val_if_fail (launch_line != NULL, NULL);
 #line 93 "rygel-gst-launch-item.c"
-	_tmp0_ = NULL;
-#line 42 "rygel-gst-launch-item.vala"
+	upnp_class = NULL;
+#line 41 "rygel-gst-launch-item.vala"
 	if (g_str_has_prefix (mime_type, "audio")) {
+#line 97 "rygel-gst-launch-item.c"
+		char* _tmp0_;
 #line 42 "rygel-gst-launch-item.vala"
-		_tmp0_ = RYGEL_MEDIA_ITEM_AUDIO_CLASS;
-#line 99 "rygel-gst-launch-item.c"
+		upnp_class = (_tmp0_ = g_strdup (RYGEL_MEDIA_ITEM_AUDIO_CLASS), _g_free0 (upnp_class), _tmp0_);
+#line 101 "rygel-gst-launch-item.c"
 	} else {
-#line 42 "rygel-gst-launch-item.vala"
-		_tmp0_ = RYGEL_MEDIA_ITEM_VIDEO_CLASS;
-#line 103 "rygel-gst-launch-item.c"
-	}
-#line 39 "rygel-gst-launch-item.vala"
-	self = (RygelGstLaunchItem*) rygel_media_item_construct (object_type, id, parent, title, _tmp0_);
-#line 43 "rygel-gst-launch-item.vala"
-	((RygelMediaItem*) self)->mime_type = (_tmp1_ = g_strdup (mime_type), _g_free0 (((RygelMediaItem*) self)->mime_type), _tmp1_);
+		char* _tmp1_;
 #line 44 "rygel-gst-launch-item.vala"
-	self->priv->launch_line = (_tmp2_ = g_strdup (launch_line), _g_free0 (self->priv->launch_line), _tmp2_);
-#line 111 "rygel-gst-launch-item.c"
+		upnp_class = (_tmp1_ = g_strdup (RYGEL_MEDIA_ITEM_VIDEO_CLASS), _g_free0 (upnp_class), _tmp1_);
+#line 106 "rygel-gst-launch-item.c"
+	}
+#line 47 "rygel-gst-launch-item.vala"
+	self = (RygelGstLaunchItem*) rygel_media_item_construct (object_type, id, parent, title, upnp_class);
+#line 49 "rygel-gst-launch-item.vala"
+	((RygelMediaItem*) self)->mime_type = (_tmp2_ = g_strdup (mime_type), _g_free0 (((RygelMediaItem*) self)->mime_type), _tmp2_);
+#line 50 "rygel-gst-launch-item.vala"
+	self->priv->launch_line = (_tmp3_ = g_strdup (launch_line), _g_free0 (self->priv->launch_line), _tmp3_);
+#line 114 "rygel-gst-launch-item.c"
+	_g_free0 (upnp_class);
 	return self;
 }
 
@@ -115,14 +119,14 @@ RygelGstLaunchItem* rygel_gst_launch_item_construct (GType object_type, const ch
 #line 34 "rygel-gst-launch-item.vala"
 RygelGstLaunchItem* rygel_gst_launch_item_new (const char* id, RygelMediaContainer* parent, const char* title, const char* mime_type, const char* launch_line) {
 #line 34 "rygel-gst-launch-item.vala"
-	return rygel_gst_launch_item_construct (RYGEL_TYPE_GST_LAUNCH_ITEM, id, parent, title, mime_type, launch_line);
-#line 120 "rygel-gst-launch-item.c"
+	return rygel_gst_launch_item_construct (RYGEL_GST_LAUNCH_TYPE_ITEM, id, parent, title, mime_type, launch_line);
+#line 124 "rygel-gst-launch-item.c"
 }
 
 
-#line 47 "rygel-gst-launch-item.vala"
+#line 53 "rygel-gst-launch-item.vala"
 static GstElement* rygel_gst_launch_item_real_create_stream_source (RygelMediaItem* base) {
-#line 126 "rygel-gst-launch-item.c"
+#line 130 "rygel-gst-launch-item.c"
 	RygelGstLaunchItem * self;
 	GstElement* result = NULL;
 	GError * _inner_error_;
@@ -130,16 +134,16 @@ static GstElement* rygel_gst_launch_item_real_create_stream_source (RygelMediaIt
 	_inner_error_ = NULL;
 	{
 		GstElement* _tmp0_;
-#line 49 "rygel-gst-launch-item.vala"
+#line 55 "rygel-gst-launch-item.vala"
 		_tmp0_ = gst_parse_bin_from_description (self->priv->launch_line, TRUE, &_inner_error_);
-#line 136 "rygel-gst-launch-item.c"
+#line 140 "rygel-gst-launch-item.c"
 		if (_inner_error_ != NULL) {
 			goto __catch2_g_error;
 		}
 		result = _tmp0_;
-#line 49 "rygel-gst-launch-item.vala"
+#line 55 "rygel-gst-launch-item.vala"
 		return result;
-#line 143 "rygel-gst-launch-item.c"
+#line 147 "rygel-gst-launch-item.c"
 	}
 	goto __finally2;
 	__catch2_g_error:
@@ -148,14 +152,14 @@ static GstElement* rygel_gst_launch_item_real_create_stream_source (RygelMediaIt
 		err = _inner_error_;
 		_inner_error_ = NULL;
 		{
-#line 51 "rygel-gst-launch-item.vala"
-			g_warning ("rygel-gst-launch-item.vala:51: parse launchline failed: %s", err->message);
-#line 154 "rygel-gst-launch-item.c"
+#line 57 "rygel-gst-launch-item.vala"
+			g_warning ("rygel-gst-launch-item.vala:57: parse launchline failed: %s", err->message);
+#line 158 "rygel-gst-launch-item.c"
 			result = NULL;
 			_g_error_free0 (err);
-#line 52 "rygel-gst-launch-item.vala"
+#line 58 "rygel-gst-launch-item.vala"
 			return result;
-#line 159 "rygel-gst-launch-item.c"
+#line 163 "rygel-gst-launch-item.c"
 		}
 	}
 	__finally2:

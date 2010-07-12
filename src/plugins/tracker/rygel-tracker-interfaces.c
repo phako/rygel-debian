@@ -34,10 +34,10 @@
 #include <dbus/dbus.h>
 
 
-#define RYGEL_TYPE_TRACKER_STATS_IFACE (rygel_tracker_stats_iface_get_type ())
-#define RYGEL_TRACKER_STATS_IFACE(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_TRACKER_STATS_IFACE, RygelTrackerStatsIface))
-#define RYGEL_IS_TRACKER_STATS_IFACE(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TYPE_TRACKER_STATS_IFACE))
-#define RYGEL_TRACKER_STATS_IFACE_GET_INTERFACE(obj) (G_TYPE_INSTANCE_GET_INTERFACE ((obj), RYGEL_TYPE_TRACKER_STATS_IFACE, RygelTrackerStatsIfaceIface))
+#define RYGEL_TRACKER_TYPE_STATS_IFACE (rygel_tracker_stats_iface_get_type ())
+#define RYGEL_TRACKER_STATS_IFACE(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TRACKER_TYPE_STATS_IFACE, RygelTrackerStatsIface))
+#define RYGEL_TRACKER_IS_STATS_IFACE(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TRACKER_TYPE_STATS_IFACE))
+#define RYGEL_TRACKER_STATS_IFACE_GET_INTERFACE(obj) (G_TYPE_INSTANCE_GET_INTERFACE ((obj), RYGEL_TRACKER_TYPE_STATS_IFACE, RygelTrackerStatsIfaceIface))
 
 typedef struct _RygelTrackerStatsIface RygelTrackerStatsIface;
 typedef struct _RygelTrackerStatsIfaceIface RygelTrackerStatsIfaceIface;
@@ -46,10 +46,10 @@ typedef struct _RygelTrackerStatsIfaceDBusProxy RygelTrackerStatsIfaceDBusProxy;
 typedef DBusGProxyClass RygelTrackerStatsIfaceDBusProxyClass;
 typedef struct _RygelTrackerStatsIfaceDBusProxyGetStatisticsData RygelTrackerStatsIfaceDBusProxyGetStatisticsData;
 
-#define RYGEL_TYPE_TRACKER_RESOURCES_IFACE (rygel_tracker_resources_iface_get_type ())
-#define RYGEL_TRACKER_RESOURCES_IFACE(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_TRACKER_RESOURCES_IFACE, RygelTrackerResourcesIface))
-#define RYGEL_IS_TRACKER_RESOURCES_IFACE(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TYPE_TRACKER_RESOURCES_IFACE))
-#define RYGEL_TRACKER_RESOURCES_IFACE_GET_INTERFACE(obj) (G_TYPE_INSTANCE_GET_INTERFACE ((obj), RYGEL_TYPE_TRACKER_RESOURCES_IFACE, RygelTrackerResourcesIfaceIface))
+#define RYGEL_TRACKER_TYPE_RESOURCES_IFACE (rygel_tracker_resources_iface_get_type ())
+#define RYGEL_TRACKER_RESOURCES_IFACE(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TRACKER_TYPE_RESOURCES_IFACE, RygelTrackerResourcesIface))
+#define RYGEL_TRACKER_IS_RESOURCES_IFACE(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TRACKER_TYPE_RESOURCES_IFACE))
+#define RYGEL_TRACKER_RESOURCES_IFACE_GET_INTERFACE(obj) (G_TYPE_INSTANCE_GET_INTERFACE ((obj), RYGEL_TRACKER_TYPE_RESOURCES_IFACE, RygelTrackerResourcesIfaceIface))
 
 typedef struct _RygelTrackerResourcesIface RygelTrackerResourcesIface;
 typedef struct _RygelTrackerResourcesIfaceIface RygelTrackerResourcesIfaceIface;
@@ -59,20 +59,20 @@ typedef DBusGProxyClass RygelTrackerResourcesIfaceDBusProxyClass;
 typedef struct _RygelTrackerResourcesIfaceDBusProxySparqlQueryData RygelTrackerResourcesIfaceDBusProxySparqlQueryData;
 typedef struct _RygelTrackerResourcesIfaceDBusProxySparqlUpdateBlankData RygelTrackerResourcesIfaceDBusProxySparqlUpdateBlankData;
 
-#define RYGEL_TYPE_TRACKER_RESOURCES_CLASS_IFACE (rygel_tracker_resources_class_iface_get_type ())
-#define RYGEL_TRACKER_RESOURCES_CLASS_IFACE(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_TRACKER_RESOURCES_CLASS_IFACE, RygelTrackerResourcesClassIface))
-#define RYGEL_IS_TRACKER_RESOURCES_CLASS_IFACE(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TYPE_TRACKER_RESOURCES_CLASS_IFACE))
-#define RYGEL_TRACKER_RESOURCES_CLASS_IFACE_GET_INTERFACE(obj) (G_TYPE_INSTANCE_GET_INTERFACE ((obj), RYGEL_TYPE_TRACKER_RESOURCES_CLASS_IFACE, RygelTrackerResourcesClassIfaceIface))
+#define RYGEL_TRACKER_TYPE_RESOURCES_CLASS_IFACE (rygel_tracker_resources_class_iface_get_type ())
+#define RYGEL_TRACKER_RESOURCES_CLASS_IFACE(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TRACKER_TYPE_RESOURCES_CLASS_IFACE, RygelTrackerResourcesClassIface))
+#define RYGEL_TRACKER_IS_RESOURCES_CLASS_IFACE(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TRACKER_TYPE_RESOURCES_CLASS_IFACE))
+#define RYGEL_TRACKER_RESOURCES_CLASS_IFACE_GET_INTERFACE(obj) (G_TYPE_INSTANCE_GET_INTERFACE ((obj), RYGEL_TRACKER_TYPE_RESOURCES_CLASS_IFACE, RygelTrackerResourcesClassIfaceIface))
 
 typedef struct _RygelTrackerResourcesClassIface RygelTrackerResourcesClassIface;
 typedef struct _RygelTrackerResourcesClassIfaceIface RygelTrackerResourcesClassIfaceIface;
 typedef struct _RygelTrackerResourcesClassIfaceDBusProxy RygelTrackerResourcesClassIfaceDBusProxy;
 typedef DBusGProxyClass RygelTrackerResourcesClassIfaceDBusProxyClass;
 
-#define RYGEL_TYPE_TRACKER_MINER_IFACE (rygel_tracker_miner_iface_get_type ())
-#define RYGEL_TRACKER_MINER_IFACE(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_TRACKER_MINER_IFACE, RygelTrackerMinerIface))
-#define RYGEL_IS_TRACKER_MINER_IFACE(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TYPE_TRACKER_MINER_IFACE))
-#define RYGEL_TRACKER_MINER_IFACE_GET_INTERFACE(obj) (G_TYPE_INSTANCE_GET_INTERFACE ((obj), RYGEL_TYPE_TRACKER_MINER_IFACE, RygelTrackerMinerIfaceIface))
+#define RYGEL_TRACKER_TYPE_MINER_IFACE (rygel_tracker_miner_iface_get_type ())
+#define RYGEL_TRACKER_MINER_IFACE(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TRACKER_TYPE_MINER_IFACE, RygelTrackerMinerIface))
+#define RYGEL_TRACKER_IS_MINER_IFACE(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TRACKER_TYPE_MINER_IFACE))
+#define RYGEL_TRACKER_MINER_IFACE_GET_INTERFACE(obj) (G_TYPE_INSTANCE_GET_INTERFACE ((obj), RYGEL_TRACKER_TYPE_MINER_IFACE, RygelTrackerMinerIfaceIface))
 
 typedef struct _RygelTrackerMinerIface RygelTrackerMinerIface;
 typedef struct _RygelTrackerMinerIfaceIface RygelTrackerMinerIfaceIface;
@@ -566,7 +566,7 @@ static void rygel_tracker_stats_iface_base_init (RygelTrackerStatsIfaceIface * i
 	static gboolean initialized = FALSE;
 	if (!initialized) {
 		initialized = TRUE;
-		g_type_set_qdata (RYGEL_TYPE_TRACKER_STATS_IFACE, g_quark_from_static_string ("DBusObjectVTable"), (void*) (&_rygel_tracker_stats_iface_dbus_vtable));
+		g_type_set_qdata (RYGEL_TRACKER_TYPE_STATS_IFACE, g_quark_from_static_string ("DBusObjectVTable"), (void*) (&_rygel_tracker_stats_iface_dbus_vtable));
 	}
 }
 
@@ -585,7 +585,7 @@ GType rygel_tracker_stats_iface_get_type (void) {
 }
 
 
-G_DEFINE_TYPE_EXTENDED (RygelTrackerStatsIfaceDBusProxy, rygel_tracker_stats_iface_dbus_proxy, DBUS_TYPE_G_PROXY, 0, G_IMPLEMENT_INTERFACE (RYGEL_TYPE_TRACKER_STATS_IFACE, rygel_tracker_stats_iface_dbus_proxy_rygel_tracker_stats_iface__interface_init) );
+G_DEFINE_TYPE_EXTENDED (RygelTrackerStatsIfaceDBusProxy, rygel_tracker_stats_iface_dbus_proxy, DBUS_TYPE_G_PROXY, 0, G_IMPLEMENT_INTERFACE (RYGEL_TRACKER_TYPE_STATS_IFACE, rygel_tracker_stats_iface_dbus_proxy_rygel_tracker_stats_iface__interface_init) );
 RygelTrackerStatsIface* rygel_tracker_stats_iface_dbus_proxy_new (DBusGConnection* connection, const char* name, const char* path) {
 	RygelTrackerStatsIface* self;
 	self = g_object_new (rygel_tracker_stats_iface_dbus_proxy_get_type (), "connection", connection, "name", name, "path", path, "interface", "org.freedesktop.Tracker1.Statistics", NULL);
@@ -1321,7 +1321,7 @@ static void rygel_tracker_resources_iface_base_init (RygelTrackerResourcesIfaceI
 	static gboolean initialized = FALSE;
 	if (!initialized) {
 		initialized = TRUE;
-		g_type_set_qdata (RYGEL_TYPE_TRACKER_RESOURCES_IFACE, g_quark_from_static_string ("DBusObjectVTable"), (void*) (&_rygel_tracker_resources_iface_dbus_vtable));
+		g_type_set_qdata (RYGEL_TRACKER_TYPE_RESOURCES_IFACE, g_quark_from_static_string ("DBusObjectVTable"), (void*) (&_rygel_tracker_resources_iface_dbus_vtable));
 	}
 }
 
@@ -1340,7 +1340,7 @@ GType rygel_tracker_resources_iface_get_type (void) {
 }
 
 
-G_DEFINE_TYPE_EXTENDED (RygelTrackerResourcesIfaceDBusProxy, rygel_tracker_resources_iface_dbus_proxy, DBUS_TYPE_G_PROXY, 0, G_IMPLEMENT_INTERFACE (RYGEL_TYPE_TRACKER_RESOURCES_IFACE, rygel_tracker_resources_iface_dbus_proxy_rygel_tracker_resources_iface__interface_init) );
+G_DEFINE_TYPE_EXTENDED (RygelTrackerResourcesIfaceDBusProxy, rygel_tracker_resources_iface_dbus_proxy, DBUS_TYPE_G_PROXY, 0, G_IMPLEMENT_INTERFACE (RYGEL_TRACKER_TYPE_RESOURCES_IFACE, rygel_tracker_resources_iface_dbus_proxy_rygel_tracker_resources_iface__interface_init) );
 RygelTrackerResourcesIface* rygel_tracker_resources_iface_dbus_proxy_new (DBusGConnection* connection, const char* name, const char* path) {
 	RygelTrackerResourcesIface* self;
 	self = g_object_new (rygel_tracker_resources_iface_dbus_proxy_get_type (), "connection", connection, "name", name, "path", path, "interface", "org.freedesktop.Tracker1.Resources", NULL);
@@ -1963,10 +1963,10 @@ static void rygel_tracker_resources_class_iface_base_init (RygelTrackerResources
 	static gboolean initialized = FALSE;
 	if (!initialized) {
 		initialized = TRUE;
-		g_signal_new ("subjects_added", RYGEL_TYPE_TRACKER_RESOURCES_CLASS_IFACE, G_SIGNAL_RUN_LAST, 0, NULL, NULL, g_cclosure_user_marshal_VOID__BOXED_INT, G_TYPE_NONE, 2, G_TYPE_STRV, G_TYPE_INT);
-		g_signal_new ("subjects_removed", RYGEL_TYPE_TRACKER_RESOURCES_CLASS_IFACE, G_SIGNAL_RUN_LAST, 0, NULL, NULL, g_cclosure_user_marshal_VOID__BOXED_INT, G_TYPE_NONE, 2, G_TYPE_STRV, G_TYPE_INT);
-		g_signal_new ("subjects_changed", RYGEL_TYPE_TRACKER_RESOURCES_CLASS_IFACE, G_SIGNAL_RUN_LAST, 0, NULL, NULL, g_cclosure_user_marshal_VOID__BOXED_INT_BOXED_INT, G_TYPE_NONE, 4, G_TYPE_STRV, G_TYPE_INT, G_TYPE_STRV, G_TYPE_INT);
-		g_type_set_qdata (RYGEL_TYPE_TRACKER_RESOURCES_CLASS_IFACE, g_quark_from_static_string ("DBusObjectVTable"), (void*) (&_rygel_tracker_resources_class_iface_dbus_vtable));
+		g_signal_new ("subjects_added", RYGEL_TRACKER_TYPE_RESOURCES_CLASS_IFACE, G_SIGNAL_RUN_LAST, 0, NULL, NULL, g_cclosure_user_marshal_VOID__BOXED_INT, G_TYPE_NONE, 2, G_TYPE_STRV, G_TYPE_INT);
+		g_signal_new ("subjects_removed", RYGEL_TRACKER_TYPE_RESOURCES_CLASS_IFACE, G_SIGNAL_RUN_LAST, 0, NULL, NULL, g_cclosure_user_marshal_VOID__BOXED_INT, G_TYPE_NONE, 2, G_TYPE_STRV, G_TYPE_INT);
+		g_signal_new ("subjects_changed", RYGEL_TRACKER_TYPE_RESOURCES_CLASS_IFACE, G_SIGNAL_RUN_LAST, 0, NULL, NULL, g_cclosure_user_marshal_VOID__BOXED_INT_BOXED_INT, G_TYPE_NONE, 4, G_TYPE_STRV, G_TYPE_INT, G_TYPE_STRV, G_TYPE_INT);
+		g_type_set_qdata (RYGEL_TRACKER_TYPE_RESOURCES_CLASS_IFACE, g_quark_from_static_string ("DBusObjectVTable"), (void*) (&_rygel_tracker_resources_class_iface_dbus_vtable));
 	}
 }
 
@@ -1985,7 +1985,7 @@ GType rygel_tracker_resources_class_iface_get_type (void) {
 }
 
 
-G_DEFINE_TYPE_EXTENDED (RygelTrackerResourcesClassIfaceDBusProxy, rygel_tracker_resources_class_iface_dbus_proxy, DBUS_TYPE_G_PROXY, 0, G_IMPLEMENT_INTERFACE (RYGEL_TYPE_TRACKER_RESOURCES_CLASS_IFACE, rygel_tracker_resources_class_iface_dbus_proxy_rygel_tracker_resources_class_iface__interface_init) );
+G_DEFINE_TYPE_EXTENDED (RygelTrackerResourcesClassIfaceDBusProxy, rygel_tracker_resources_class_iface_dbus_proxy, DBUS_TYPE_G_PROXY, 0, G_IMPLEMENT_INTERFACE (RYGEL_TRACKER_TYPE_RESOURCES_CLASS_IFACE, rygel_tracker_resources_class_iface_dbus_proxy_rygel_tracker_resources_class_iface__interface_init) );
 RygelTrackerResourcesClassIface* rygel_tracker_resources_class_iface_dbus_proxy_new (DBusGConnection* connection, const char* name, const char* path) {
 	RygelTrackerResourcesClassIface* self;
 	self = g_object_new (rygel_tracker_resources_class_iface_dbus_proxy_get_type (), "connection", connection, "name", name, "path", path, "interface", "org.freedesktop.Tracker1.Resources.Class", NULL);
@@ -2488,7 +2488,7 @@ static void rygel_tracker_miner_iface_base_init (RygelTrackerMinerIfaceIface * i
 	static gboolean initialized = FALSE;
 	if (!initialized) {
 		initialized = TRUE;
-		g_type_set_qdata (RYGEL_TYPE_TRACKER_MINER_IFACE, g_quark_from_static_string ("DBusObjectVTable"), (void*) (&_rygel_tracker_miner_iface_dbus_vtable));
+		g_type_set_qdata (RYGEL_TRACKER_TYPE_MINER_IFACE, g_quark_from_static_string ("DBusObjectVTable"), (void*) (&_rygel_tracker_miner_iface_dbus_vtable));
 	}
 }
 
@@ -2507,7 +2507,7 @@ GType rygel_tracker_miner_iface_get_type (void) {
 }
 
 
-G_DEFINE_TYPE_EXTENDED (RygelTrackerMinerIfaceDBusProxy, rygel_tracker_miner_iface_dbus_proxy, DBUS_TYPE_G_PROXY, 0, G_IMPLEMENT_INTERFACE (RYGEL_TYPE_TRACKER_MINER_IFACE, rygel_tracker_miner_iface_dbus_proxy_rygel_tracker_miner_iface__interface_init) );
+G_DEFINE_TYPE_EXTENDED (RygelTrackerMinerIfaceDBusProxy, rygel_tracker_miner_iface_dbus_proxy, DBUS_TYPE_G_PROXY, 0, G_IMPLEMENT_INTERFACE (RYGEL_TRACKER_TYPE_MINER_IFACE, rygel_tracker_miner_iface_dbus_proxy_rygel_tracker_miner_iface__interface_init) );
 RygelTrackerMinerIface* rygel_tracker_miner_iface_dbus_proxy_new (DBusGConnection* connection, const char* name, const char* path) {
 	RygelTrackerMinerIface* self;
 	self = g_object_new (rygel_tracker_miner_iface_dbus_proxy_get_type (), "connection", connection, "name", name, "path", path, "interface", "org.freedesktop.Tracker1.Miner", NULL);

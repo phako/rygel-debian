@@ -36,49 +36,49 @@
 #include <glib/gi18n-lib.h>
 
 
-#define RYGEL_TYPE_TRACKER_ITEM_CREATION (rygel_tracker_item_creation_get_type ())
-#define RYGEL_TRACKER_ITEM_CREATION(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_TRACKER_ITEM_CREATION, RygelTrackerItemCreation))
-#define RYGEL_TRACKER_ITEM_CREATION_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TYPE_TRACKER_ITEM_CREATION, RygelTrackerItemCreationClass))
-#define RYGEL_IS_TRACKER_ITEM_CREATION(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TYPE_TRACKER_ITEM_CREATION))
-#define RYGEL_IS_TRACKER_ITEM_CREATION_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_TYPE_TRACKER_ITEM_CREATION))
-#define RYGEL_TRACKER_ITEM_CREATION_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_TYPE_TRACKER_ITEM_CREATION, RygelTrackerItemCreationClass))
+#define RYGEL_TRACKER_TYPE_ITEM_CREATION (rygel_tracker_item_creation_get_type ())
+#define RYGEL_TRACKER_ITEM_CREATION(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TRACKER_TYPE_ITEM_CREATION, RygelTrackerItemCreation))
+#define RYGEL_TRACKER_ITEM_CREATION_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TRACKER_TYPE_ITEM_CREATION, RygelTrackerItemCreationClass))
+#define RYGEL_TRACKER_IS_ITEM_CREATION(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TRACKER_TYPE_ITEM_CREATION))
+#define RYGEL_TRACKER_IS_ITEM_CREATION_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_TRACKER_TYPE_ITEM_CREATION))
+#define RYGEL_TRACKER_ITEM_CREATION_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_TRACKER_TYPE_ITEM_CREATION, RygelTrackerItemCreationClass))
 
 typedef struct _RygelTrackerItemCreation RygelTrackerItemCreation;
 typedef struct _RygelTrackerItemCreationClass RygelTrackerItemCreationClass;
 typedef struct _RygelTrackerItemCreationPrivate RygelTrackerItemCreationPrivate;
 
-#define RYGEL_TYPE_TRACKER_SEARCH_CONTAINER (rygel_tracker_search_container_get_type ())
-#define RYGEL_TRACKER_SEARCH_CONTAINER(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_TRACKER_SEARCH_CONTAINER, RygelTrackerSearchContainer))
-#define RYGEL_TRACKER_SEARCH_CONTAINER_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TYPE_TRACKER_SEARCH_CONTAINER, RygelTrackerSearchContainerClass))
-#define RYGEL_IS_TRACKER_SEARCH_CONTAINER(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TYPE_TRACKER_SEARCH_CONTAINER))
-#define RYGEL_IS_TRACKER_SEARCH_CONTAINER_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_TYPE_TRACKER_SEARCH_CONTAINER))
-#define RYGEL_TRACKER_SEARCH_CONTAINER_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_TYPE_TRACKER_SEARCH_CONTAINER, RygelTrackerSearchContainerClass))
+#define RYGEL_TRACKER_TYPE_SEARCH_CONTAINER (rygel_tracker_search_container_get_type ())
+#define RYGEL_TRACKER_SEARCH_CONTAINER(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TRACKER_TYPE_SEARCH_CONTAINER, RygelTrackerSearchContainer))
+#define RYGEL_TRACKER_SEARCH_CONTAINER_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TRACKER_TYPE_SEARCH_CONTAINER, RygelTrackerSearchContainerClass))
+#define RYGEL_TRACKER_IS_SEARCH_CONTAINER(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TRACKER_TYPE_SEARCH_CONTAINER))
+#define RYGEL_TRACKER_IS_SEARCH_CONTAINER_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_TRACKER_TYPE_SEARCH_CONTAINER))
+#define RYGEL_TRACKER_SEARCH_CONTAINER_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_TRACKER_TYPE_SEARCH_CONTAINER, RygelTrackerSearchContainerClass))
 
 typedef struct _RygelTrackerSearchContainer RygelTrackerSearchContainer;
 typedef struct _RygelTrackerSearchContainerClass RygelTrackerSearchContainerClass;
 
-#define RYGEL_TYPE_TRACKER_CATEGORY_ALL_CONTAINER (rygel_tracker_category_all_container_get_type ())
-#define RYGEL_TRACKER_CATEGORY_ALL_CONTAINER(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_TRACKER_CATEGORY_ALL_CONTAINER, RygelTrackerCategoryAllContainer))
-#define RYGEL_TRACKER_CATEGORY_ALL_CONTAINER_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TYPE_TRACKER_CATEGORY_ALL_CONTAINER, RygelTrackerCategoryAllContainerClass))
-#define RYGEL_IS_TRACKER_CATEGORY_ALL_CONTAINER(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TYPE_TRACKER_CATEGORY_ALL_CONTAINER))
-#define RYGEL_IS_TRACKER_CATEGORY_ALL_CONTAINER_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_TYPE_TRACKER_CATEGORY_ALL_CONTAINER))
-#define RYGEL_TRACKER_CATEGORY_ALL_CONTAINER_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_TYPE_TRACKER_CATEGORY_ALL_CONTAINER, RygelTrackerCategoryAllContainerClass))
+#define RYGEL_TRACKER_TYPE_CATEGORY_ALL_CONTAINER (rygel_tracker_category_all_container_get_type ())
+#define RYGEL_TRACKER_CATEGORY_ALL_CONTAINER(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TRACKER_TYPE_CATEGORY_ALL_CONTAINER, RygelTrackerCategoryAllContainer))
+#define RYGEL_TRACKER_CATEGORY_ALL_CONTAINER_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TRACKER_TYPE_CATEGORY_ALL_CONTAINER, RygelTrackerCategoryAllContainerClass))
+#define RYGEL_TRACKER_IS_CATEGORY_ALL_CONTAINER(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TRACKER_TYPE_CATEGORY_ALL_CONTAINER))
+#define RYGEL_TRACKER_IS_CATEGORY_ALL_CONTAINER_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_TRACKER_TYPE_CATEGORY_ALL_CONTAINER))
+#define RYGEL_TRACKER_CATEGORY_ALL_CONTAINER_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_TRACKER_TYPE_CATEGORY_ALL_CONTAINER, RygelTrackerCategoryAllContainerClass))
 
 typedef struct _RygelTrackerCategoryAllContainer RygelTrackerCategoryAllContainer;
 typedef struct _RygelTrackerCategoryAllContainerClass RygelTrackerCategoryAllContainerClass;
 
-#define RYGEL_TYPE_TRACKER_RESOURCES_IFACE (rygel_tracker_resources_iface_get_type ())
-#define RYGEL_TRACKER_RESOURCES_IFACE(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_TRACKER_RESOURCES_IFACE, RygelTrackerResourcesIface))
-#define RYGEL_IS_TRACKER_RESOURCES_IFACE(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TYPE_TRACKER_RESOURCES_IFACE))
-#define RYGEL_TRACKER_RESOURCES_IFACE_GET_INTERFACE(obj) (G_TYPE_INSTANCE_GET_INTERFACE ((obj), RYGEL_TYPE_TRACKER_RESOURCES_IFACE, RygelTrackerResourcesIfaceIface))
+#define RYGEL_TRACKER_TYPE_RESOURCES_IFACE (rygel_tracker_resources_iface_get_type ())
+#define RYGEL_TRACKER_RESOURCES_IFACE(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TRACKER_TYPE_RESOURCES_IFACE, RygelTrackerResourcesIface))
+#define RYGEL_TRACKER_IS_RESOURCES_IFACE(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TRACKER_TYPE_RESOURCES_IFACE))
+#define RYGEL_TRACKER_RESOURCES_IFACE_GET_INTERFACE(obj) (G_TYPE_INSTANCE_GET_INTERFACE ((obj), RYGEL_TRACKER_TYPE_RESOURCES_IFACE, RygelTrackerResourcesIfaceIface))
 
 typedef struct _RygelTrackerResourcesIface RygelTrackerResourcesIface;
 typedef struct _RygelTrackerResourcesIfaceIface RygelTrackerResourcesIfaceIface;
 
-#define RYGEL_TYPE_TRACKER_MINER_IFACE (rygel_tracker_miner_iface_get_type ())
-#define RYGEL_TRACKER_MINER_IFACE(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_TRACKER_MINER_IFACE, RygelTrackerMinerIface))
-#define RYGEL_IS_TRACKER_MINER_IFACE(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TYPE_TRACKER_MINER_IFACE))
-#define RYGEL_TRACKER_MINER_IFACE_GET_INTERFACE(obj) (G_TYPE_INSTANCE_GET_INTERFACE ((obj), RYGEL_TYPE_TRACKER_MINER_IFACE, RygelTrackerMinerIfaceIface))
+#define RYGEL_TRACKER_TYPE_MINER_IFACE (rygel_tracker_miner_iface_get_type ())
+#define RYGEL_TRACKER_MINER_IFACE(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TRACKER_TYPE_MINER_IFACE, RygelTrackerMinerIface))
+#define RYGEL_TRACKER_IS_MINER_IFACE(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TRACKER_TYPE_MINER_IFACE))
+#define RYGEL_TRACKER_MINER_IFACE_GET_INTERFACE(obj) (G_TYPE_INSTANCE_GET_INTERFACE ((obj), RYGEL_TRACKER_TYPE_MINER_IFACE, RygelTrackerMinerIfaceIface))
 
 typedef struct _RygelTrackerMinerIface RygelTrackerMinerIface;
 typedef struct _RygelTrackerMinerIfaceIface RygelTrackerMinerIfaceIface;
@@ -89,55 +89,55 @@ typedef struct _RygelTrackerItemCreationRunData RygelTrackerItemCreationRunData;
 typedef struct _RygelTrackerItemCreationPrepareFileData RygelTrackerItemCreationPrepareFileData;
 typedef struct _RygelTrackerSearchContainerPrivate RygelTrackerSearchContainerPrivate;
 
-#define RYGEL_TYPE_TRACKER_QUERY (rygel_tracker_query_get_type ())
-#define RYGEL_TRACKER_QUERY(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_TRACKER_QUERY, RygelTrackerQuery))
-#define RYGEL_TRACKER_QUERY_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TYPE_TRACKER_QUERY, RygelTrackerQueryClass))
-#define RYGEL_IS_TRACKER_QUERY(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TYPE_TRACKER_QUERY))
-#define RYGEL_IS_TRACKER_QUERY_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_TYPE_TRACKER_QUERY))
-#define RYGEL_TRACKER_QUERY_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_TYPE_TRACKER_QUERY, RygelTrackerQueryClass))
+#define RYGEL_TRACKER_TYPE_QUERY (rygel_tracker_query_get_type ())
+#define RYGEL_TRACKER_QUERY(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TRACKER_TYPE_QUERY, RygelTrackerQuery))
+#define RYGEL_TRACKER_QUERY_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TRACKER_TYPE_QUERY, RygelTrackerQueryClass))
+#define RYGEL_TRACKER_IS_QUERY(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TRACKER_TYPE_QUERY))
+#define RYGEL_TRACKER_IS_QUERY_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_TRACKER_TYPE_QUERY))
+#define RYGEL_TRACKER_QUERY_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_TRACKER_TYPE_QUERY, RygelTrackerQueryClass))
 
 typedef struct _RygelTrackerQuery RygelTrackerQuery;
 typedef struct _RygelTrackerQueryClass RygelTrackerQueryClass;
 
-#define RYGEL_TYPE_TRACKER_SELECTION_QUERY (rygel_tracker_selection_query_get_type ())
-#define RYGEL_TRACKER_SELECTION_QUERY(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_TRACKER_SELECTION_QUERY, RygelTrackerSelectionQuery))
-#define RYGEL_TRACKER_SELECTION_QUERY_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TYPE_TRACKER_SELECTION_QUERY, RygelTrackerSelectionQueryClass))
-#define RYGEL_IS_TRACKER_SELECTION_QUERY(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TYPE_TRACKER_SELECTION_QUERY))
-#define RYGEL_IS_TRACKER_SELECTION_QUERY_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_TYPE_TRACKER_SELECTION_QUERY))
-#define RYGEL_TRACKER_SELECTION_QUERY_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_TYPE_TRACKER_SELECTION_QUERY, RygelTrackerSelectionQueryClass))
+#define RYGEL_TRACKER_TYPE_SELECTION_QUERY (rygel_tracker_selection_query_get_type ())
+#define RYGEL_TRACKER_SELECTION_QUERY(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TRACKER_TYPE_SELECTION_QUERY, RygelTrackerSelectionQuery))
+#define RYGEL_TRACKER_SELECTION_QUERY_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TRACKER_TYPE_SELECTION_QUERY, RygelTrackerSelectionQueryClass))
+#define RYGEL_TRACKER_IS_SELECTION_QUERY(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TRACKER_TYPE_SELECTION_QUERY))
+#define RYGEL_TRACKER_IS_SELECTION_QUERY_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_TRACKER_TYPE_SELECTION_QUERY))
+#define RYGEL_TRACKER_SELECTION_QUERY_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_TRACKER_TYPE_SELECTION_QUERY, RygelTrackerSelectionQueryClass))
 
 typedef struct _RygelTrackerSelectionQuery RygelTrackerSelectionQuery;
 typedef struct _RygelTrackerSelectionQueryClass RygelTrackerSelectionQueryClass;
 
-#define RYGEL_TYPE_TRACKER_ITEM_FACTORY (rygel_tracker_item_factory_get_type ())
-#define RYGEL_TRACKER_ITEM_FACTORY(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_TRACKER_ITEM_FACTORY, RygelTrackerItemFactory))
-#define RYGEL_TRACKER_ITEM_FACTORY_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TYPE_TRACKER_ITEM_FACTORY, RygelTrackerItemFactoryClass))
-#define RYGEL_IS_TRACKER_ITEM_FACTORY(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TYPE_TRACKER_ITEM_FACTORY))
-#define RYGEL_IS_TRACKER_ITEM_FACTORY_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_TYPE_TRACKER_ITEM_FACTORY))
-#define RYGEL_TRACKER_ITEM_FACTORY_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_TYPE_TRACKER_ITEM_FACTORY, RygelTrackerItemFactoryClass))
+#define RYGEL_TRACKER_TYPE_ITEM_FACTORY (rygel_tracker_item_factory_get_type ())
+#define RYGEL_TRACKER_ITEM_FACTORY(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TRACKER_TYPE_ITEM_FACTORY, RygelTrackerItemFactory))
+#define RYGEL_TRACKER_ITEM_FACTORY_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TRACKER_TYPE_ITEM_FACTORY, RygelTrackerItemFactoryClass))
+#define RYGEL_TRACKER_IS_ITEM_FACTORY(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TRACKER_TYPE_ITEM_FACTORY))
+#define RYGEL_TRACKER_IS_ITEM_FACTORY_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_TRACKER_TYPE_ITEM_FACTORY))
+#define RYGEL_TRACKER_ITEM_FACTORY_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_TRACKER_TYPE_ITEM_FACTORY, RygelTrackerItemFactoryClass))
 
 typedef struct _RygelTrackerItemFactory RygelTrackerItemFactory;
 typedef struct _RygelTrackerItemFactoryClass RygelTrackerItemFactoryClass;
 typedef struct _RygelTrackerItemFactoryPrivate RygelTrackerItemFactoryPrivate;
 
-#define RYGEL_TYPE_TRACKER_INSERTION_QUERY (rygel_tracker_insertion_query_get_type ())
-#define RYGEL_TRACKER_INSERTION_QUERY(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_TRACKER_INSERTION_QUERY, RygelTrackerInsertionQuery))
-#define RYGEL_TRACKER_INSERTION_QUERY_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TYPE_TRACKER_INSERTION_QUERY, RygelTrackerInsertionQueryClass))
-#define RYGEL_IS_TRACKER_INSERTION_QUERY(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TYPE_TRACKER_INSERTION_QUERY))
-#define RYGEL_IS_TRACKER_INSERTION_QUERY_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_TYPE_TRACKER_INSERTION_QUERY))
-#define RYGEL_TRACKER_INSERTION_QUERY_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_TYPE_TRACKER_INSERTION_QUERY, RygelTrackerInsertionQueryClass))
+#define RYGEL_TRACKER_TYPE_INSERTION_QUERY (rygel_tracker_insertion_query_get_type ())
+#define RYGEL_TRACKER_INSERTION_QUERY(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TRACKER_TYPE_INSERTION_QUERY, RygelTrackerInsertionQuery))
+#define RYGEL_TRACKER_INSERTION_QUERY_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TRACKER_TYPE_INSERTION_QUERY, RygelTrackerInsertionQueryClass))
+#define RYGEL_TRACKER_IS_INSERTION_QUERY(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TRACKER_TYPE_INSERTION_QUERY))
+#define RYGEL_TRACKER_IS_INSERTION_QUERY_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_TRACKER_TYPE_INSERTION_QUERY))
+#define RYGEL_TRACKER_INSERTION_QUERY_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_TRACKER_TYPE_INSERTION_QUERY, RygelTrackerInsertionQueryClass))
 
 typedef struct _RygelTrackerInsertionQuery RygelTrackerInsertionQuery;
 typedef struct _RygelTrackerInsertionQueryClass RygelTrackerInsertionQueryClass;
 #define _rygel_tracker_query_unref0(var) ((var == NULL) ? NULL : (var = (rygel_tracker_query_unref (var), NULL)))
 typedef struct _RygelTrackerQueryPrivate RygelTrackerQueryPrivate;
 
-#define RYGEL_TYPE_TRACKER_QUERY_TRIPLETS (rygel_tracker_query_triplets_get_type ())
-#define RYGEL_TRACKER_QUERY_TRIPLETS(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_TRACKER_QUERY_TRIPLETS, RygelTrackerQueryTriplets))
-#define RYGEL_TRACKER_QUERY_TRIPLETS_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TYPE_TRACKER_QUERY_TRIPLETS, RygelTrackerQueryTripletsClass))
-#define RYGEL_IS_TRACKER_QUERY_TRIPLETS(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TYPE_TRACKER_QUERY_TRIPLETS))
-#define RYGEL_IS_TRACKER_QUERY_TRIPLETS_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_TYPE_TRACKER_QUERY_TRIPLETS))
-#define RYGEL_TRACKER_QUERY_TRIPLETS_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_TYPE_TRACKER_QUERY_TRIPLETS, RygelTrackerQueryTripletsClass))
+#define RYGEL_TRACKER_TYPE_QUERY_TRIPLETS (rygel_tracker_query_triplets_get_type ())
+#define RYGEL_TRACKER_QUERY_TRIPLETS(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TRACKER_TYPE_QUERY_TRIPLETS, RygelTrackerQueryTriplets))
+#define RYGEL_TRACKER_QUERY_TRIPLETS_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TRACKER_TYPE_QUERY_TRIPLETS, RygelTrackerQueryTripletsClass))
+#define RYGEL_TRACKER_IS_QUERY_TRIPLETS(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TRACKER_TYPE_QUERY_TRIPLETS))
+#define RYGEL_TRACKER_IS_QUERY_TRIPLETS_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_TRACKER_TYPE_QUERY_TRIPLETS))
+#define RYGEL_TRACKER_QUERY_TRIPLETS_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_TRACKER_TYPE_QUERY_TRIPLETS, RygelTrackerQueryTripletsClass))
 
 typedef struct _RygelTrackerQueryTriplets RygelTrackerQueryTriplets;
 typedef struct _RygelTrackerQueryTripletsClass RygelTrackerQueryTripletsClass;
@@ -239,8 +239,7 @@ struct _RygelTrackerQuery {
 	GTypeInstance parent_instance;
 	volatile int ref_count;
 	RygelTrackerQueryPrivate * priv;
-	RygelTrackerQueryTriplets* mandatory;
-	RygelTrackerQueryTriplets* optional;
+	RygelTrackerQueryTriplets* triplets;
 };
 
 struct _RygelTrackerQueryClass {
@@ -283,7 +282,7 @@ RygelTrackerResourcesIface* rygel_tracker_resources_iface_dbus_proxy_new (DBusGC
 GType rygel_tracker_resources_iface_get_type (void);
 RygelTrackerMinerIface* rygel_tracker_miner_iface_dbus_proxy_new (DBusGConnection* connection, const char* name, const char* path);
 GType rygel_tracker_miner_iface_get_type (void);
-#define RYGEL_TRACKER_ITEM_CREATION_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), RYGEL_TYPE_TRACKER_ITEM_CREATION, RygelTrackerItemCreationPrivate))
+#define RYGEL_TRACKER_ITEM_CREATION_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), RYGEL_TRACKER_TYPE_ITEM_CREATION, RygelTrackerItemCreationPrivate))
 enum  {
 	RYGEL_TRACKER_ITEM_CREATION_DUMMY_PROPERTY,
 	RYGEL_TRACKER_ITEM_CREATION_CANCELLABLE,
@@ -315,18 +314,18 @@ static void rygel_tracker_item_creation_create_entry_in_store_data_free (gpointe
 static void rygel_tracker_item_creation_create_entry_in_store_ready (GObject* source_object, GAsyncResult* _res_, gpointer _user_data_);
 gpointer rygel_tracker_query_ref (gpointer instance);
 void rygel_tracker_query_unref (gpointer instance);
-GParamSpec* rygel_param_spec_tracker_query (const gchar* name, const gchar* nick, const gchar* blurb, GType object_type, GParamFlags flags);
-void rygel_value_set_tracker_query (GValue* value, gpointer v_object);
-void rygel_value_take_tracker_query (GValue* value, gpointer v_object);
-gpointer rygel_value_get_tracker_query (const GValue* value);
+GParamSpec* rygel_tracker_param_spec_query (const gchar* name, const gchar* nick, const gchar* blurb, GType object_type, GParamFlags flags);
+void rygel_tracker_value_set_query (GValue* value, gpointer v_object);
+void rygel_tracker_value_take_query (GValue* value, gpointer v_object);
+gpointer rygel_tracker_value_get_query (const GValue* value);
 GType rygel_tracker_query_get_type (void);
 GType rygel_tracker_selection_query_get_type (void);
 gpointer rygel_tracker_item_factory_ref (gpointer instance);
 void rygel_tracker_item_factory_unref (gpointer instance);
-GParamSpec* rygel_param_spec_tracker_item_factory (const gchar* name, const gchar* nick, const gchar* blurb, GType object_type, GParamFlags flags);
-void rygel_value_set_tracker_item_factory (GValue* value, gpointer v_object);
-void rygel_value_take_tracker_item_factory (GValue* value, gpointer v_object);
-gpointer rygel_value_get_tracker_item_factory (const GValue* value);
+GParamSpec* rygel_tracker_param_spec_item_factory (const gchar* name, const gchar* nick, const gchar* blurb, GType object_type, GParamFlags flags);
+void rygel_tracker_value_set_item_factory (GValue* value, gpointer v_object);
+void rygel_tracker_value_take_item_factory (GValue* value, gpointer v_object);
+gpointer rygel_tracker_value_get_item_factory (const GValue* value);
 GType rygel_tracker_item_factory_get_type (void);
 RygelTrackerInsertionQuery* rygel_tracker_insertion_query_new (RygelMediaItem* item, const char* category);
 RygelTrackerInsertionQuery* rygel_tracker_insertion_query_construct (GType object_type, RygelMediaItem* item, const char* category);
@@ -351,7 +350,7 @@ static gpointer _g_object_ref0 (gpointer self) {
 
 #line 44 "rygel-tracker-item-creation.vala"
 RygelTrackerItemCreation* rygel_tracker_item_creation_construct (GType object_type, RygelMediaItem* item, RygelTrackerCategoryAllContainer* container, GCancellable* cancellable, GError** error) {
-#line 355 "rygel-tracker-item-creation.c"
+#line 354 "rygel-tracker-item-creation.c"
 	GError * _inner_error_;
 	RygelTrackerItemCreation * self;
 	RygelMediaItem* _tmp0_;
@@ -360,19 +359,19 @@ RygelTrackerItemCreation* rygel_tracker_item_creation_construct (GType object_ty
 	g_return_val_if_fail (item != NULL, NULL);
 #line 44 "rygel-tracker-item-creation.vala"
 	g_return_val_if_fail (container != NULL, NULL);
-#line 364 "rygel-tracker-item-creation.c"
+#line 363 "rygel-tracker-item-creation.c"
 	_inner_error_ = NULL;
 #line 44 "rygel-tracker-item-creation.vala"
 	self = (RygelTrackerItemCreation*) g_object_new (object_type, NULL);
-#line 48 "rygel-tracker-item-creation.vala"
+#line 47 "rygel-tracker-item-creation.vala"
 	self->priv->item = (_tmp0_ = _g_object_ref0 (item), _g_object_unref0 (self->priv->item), _tmp0_);
-#line 49 "rygel-tracker-item-creation.vala"
+#line 48 "rygel-tracker-item-creation.vala"
 	self->priv->container = (_tmp1_ = _g_object_ref0 (container), _g_object_unref0 (self->priv->container), _tmp1_);
-#line 50 "rygel-tracker-item-creation.vala"
+#line 49 "rygel-tracker-item-creation.vala"
 	rygel_state_machine_set_cancellable ((RygelStateMachine*) self, cancellable);
-#line 51 "rygel-tracker-item-creation.vala"
+#line 50 "rygel-tracker-item-creation.vala"
 	rygel_tracker_item_creation_create_proxies (self, &_inner_error_);
-#line 376 "rygel-tracker-item-creation.c"
+#line 375 "rygel-tracker-item-creation.c"
 	if (_inner_error_ != NULL) {
 		g_propagate_error (error, _inner_error_);
 		g_object_unref (self);
@@ -385,8 +384,8 @@ RygelTrackerItemCreation* rygel_tracker_item_creation_construct (GType object_ty
 #line 44 "rygel-tracker-item-creation.vala"
 RygelTrackerItemCreation* rygel_tracker_item_creation_new (RygelMediaItem* item, RygelTrackerCategoryAllContainer* container, GCancellable* cancellable, GError** error) {
 #line 44 "rygel-tracker-item-creation.vala"
-	return rygel_tracker_item_creation_construct (RYGEL_TYPE_TRACKER_ITEM_CREATION, item, container, cancellable, error);
-#line 390 "rygel-tracker-item-creation.c"
+	return rygel_tracker_item_creation_construct (RYGEL_TRACKER_TYPE_ITEM_CREATION, item, container, cancellable, error);
+#line 389 "rygel-tracker-item-creation.c"
 }
 
 
@@ -448,7 +447,7 @@ static gboolean rygel_tracker_item_creation_real_run_co (RygelTrackerItemCreatio
 			_state_9:
 			data->file = rygel_tracker_item_creation_prepare_file_finish (data->self, data->_res_, &data->_inner_error_);
 			if (data->_inner_error_ != NULL) {
-				goto __catch8_g_error;
+				goto __catch7_g_error;
 			}
 			data->_state_ = 10;
 			rygel_tracker_item_creation_create_entry_in_store (data->self, rygel_tracker_item_creation_run_ready, data);
@@ -457,7 +456,7 @@ static gboolean rygel_tracker_item_creation_real_run_co (RygelTrackerItemCreatio
 			data->urn = rygel_tracker_item_creation_create_entry_in_store_finish (data->self, data->_res_, &data->_inner_error_);
 			if (data->_inner_error_ != NULL) {
 				_g_object_unref0 (data->file);
-				goto __catch8_g_error;
+				goto __catch7_g_error;
 			}
 			data->_tmp0_ = NULL;
 			data->uris = (data->_tmp1_ = (data->_tmp0_ = g_new0 (char*, 1 + 1), data->_tmp0_[0] = (char*) gee_abstract_list_get ((GeeAbstractList*) ((RygelMediaObject*) data->self->priv->item)->uris, 0), data->_tmp0_), data->uris_length1 = 1, data->_uris_size_ = data->uris_length1, data->_tmp1_);
@@ -465,51 +464,51 @@ static gboolean rygel_tracker_item_creation_real_run_co (RygelTrackerItemCreatio
 			rygel_tracker_miner_iface_ignore_next_update (data->self->priv->miner, data->uris, data->uris_length1, rygel_tracker_item_creation_run_ready, data);
 			return FALSE;
 			_state_11:
-#line 61 "rygel-tracker-item-creation.vala"
+#line 60 "rygel-tracker-item-creation.vala"
 			rygel_tracker_miner_iface_ignore_next_update_finish (data->self->priv->miner, data->_res_, &data->_inner_error_);
-#line 471 "rygel-tracker-item-creation.c"
+#line 470 "rygel-tracker-item-creation.c"
 			if (data->_inner_error_ != NULL) {
 				_g_object_unref0 (data->file);
 				_g_free0 (data->urn);
 				data->uris = (_vala_array_free (data->uris, data->uris_length1, (GDestroyNotify) g_free), NULL);
-				goto __catch8_g_error;
+				goto __catch7_g_error;
 			}
 			data->_state_ = 12;
 			g_file_create_async (data->file, G_FILE_CREATE_NONE, G_PRIORITY_DEFAULT, rygel_state_machine_get_cancellable ((RygelStateMachine*) data->self), rygel_tracker_item_creation_run_ready, data);
 			return FALSE;
 			_state_12:
-#line 62 "rygel-tracker-item-creation.vala"
+#line 61 "rygel-tracker-item-creation.vala"
 			data->_tmp2_ = g_file_create_finish (data->file, data->_res_, &data->_inner_error_);
-#line 484 "rygel-tracker-item-creation.c"
+#line 483 "rygel-tracker-item-creation.c"
 			_g_object_unref0 (data->_tmp2_);
 			if (data->_inner_error_ != NULL) {
 				_g_object_unref0 (data->file);
 				_g_free0 (data->urn);
 				data->uris = (_vala_array_free (data->uris, data->uris_length1, (GDestroyNotify) g_free), NULL);
-				goto __catch8_g_error;
+				goto __catch7_g_error;
 			}
-#line 66 "rygel-tracker-item-creation.vala"
+#line 65 "rygel-tracker-item-creation.vala"
 			((RygelMediaObject*) data->self->priv->item)->id = (data->_tmp3_ = rygel_tracker_search_container_create_child_id_for_urn ((RygelTrackerSearchContainer*) data->self->priv->container, data->urn), _g_free0 (((RygelMediaObject*) data->self->priv->item)->id), data->_tmp3_);
-#line 67 "rygel-tracker-item-creation.vala"
+#line 66 "rygel-tracker-item-creation.vala"
 			((RygelMediaObject*) data->self->priv->item)->parent = (RygelMediaContainer*) data->self->priv->container;
-#line 496 "rygel-tracker-item-creation.c"
+#line 495 "rygel-tracker-item-creation.c"
 			_g_object_unref0 (data->file);
 			_g_free0 (data->urn);
 			data->uris = (_vala_array_free (data->uris, data->uris_length1, (GDestroyNotify) g_free), NULL);
 		}
-		goto __finally8;
-		__catch8_g_error:
+		goto __finally7;
+		__catch7_g_error:
 		{
 			data->_error_ = data->_inner_error_;
 			data->_inner_error_ = NULL;
 			{
-#line 69 "rygel-tracker-item-creation.vala"
+#line 68 "rygel-tracker-item-creation.vala"
 				rygel_tracker_item_creation_set_error (data->self, data->_error_);
-#line 509 "rygel-tracker-item-creation.c"
+#line 508 "rygel-tracker-item-creation.c"
 				_g_error_free0 (data->_error_);
 			}
 		}
-		__finally8:
+		__finally7:
 		if (data->_inner_error_ != NULL) {
 			g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, data->_inner_error_->message, g_quark_to_string (data->_inner_error_->domain), data->_inner_error_->code);
 			g_clear_error (&data->_inner_error_);
@@ -597,9 +596,9 @@ static gboolean rygel_tracker_item_creation_prepare_file_co (RygelTrackerItemCre
 				return FALSE;
 			}
 		}
-#line 75 "rygel-tracker-item-creation.vala"
+#line 74 "rygel-tracker-item-creation.vala"
 		if (data->dir == NULL) {
-#line 603 "rygel-tracker-item-creation.c"
+#line 602 "rygel-tracker-item-creation.c"
 			data->_inner_error_ = g_error_new (RYGEL_CONTENT_DIRECTORY_ERROR, RYGEL_CONTENT_DIRECTORY_ERROR_RESTRICTED_PARENT, _ ("Object creation in %s not allowed"), ((RygelMediaObject*) data->self->priv->container)->id);
 			{
 				g_simple_async_result_set_from_error (data->_async_result, data->_inner_error_);
@@ -631,9 +630,9 @@ static gboolean rygel_tracker_item_creation_prepare_file_co (RygelTrackerItemCre
 				return FALSE;
 			}
 		}
-#line 83 "rygel-tracker-item-creation.vala"
+#line 82 "rygel-tracker-item-creation.vala"
 		gee_abstract_collection_add ((GeeAbstractCollection*) ((RygelMediaObject*) data->self->priv->item)->uris, data->_tmp0_ = g_file_get_uri (data->file));
-#line 637 "rygel-tracker-item-creation.c"
+#line 636 "rygel-tracker-item-creation.c"
 		_g_free0 (data->_tmp0_);
 		data->result = data->file;
 		_g_object_unref0 (data->dir);
@@ -718,9 +717,9 @@ static gboolean rygel_tracker_item_creation_create_entry_in_store_co (RygelTrack
 		rygel_tracker_query_execute ((RygelTrackerQuery*) data->query, data->self->priv->resources, rygel_tracker_item_creation_create_entry_in_store_ready, data);
 		return FALSE;
 		_state_14:
-#line 92 "rygel-tracker-item-creation.vala"
+#line 91 "rygel-tracker-item-creation.vala"
 		rygel_tracker_query_execute_finish ((RygelTrackerQuery*) data->query, data->_res_, &data->_inner_error_);
-#line 724 "rygel-tracker-item-creation.c"
+#line 723 "rygel-tracker-item-creation.c"
 		if (data->_inner_error_ != NULL) {
 			g_simple_async_result_set_from_error (data->_async_result, data->_inner_error_);
 			g_error_free (data->_inner_error_);
@@ -763,20 +762,20 @@ static gboolean rygel_tracker_item_creation_create_entry_in_store_co (RygelTrack
 }
 
 
-#line 97 "rygel-tracker-item-creation.vala"
+#line 96 "rygel-tracker-item-creation.vala"
 static void rygel_tracker_item_creation_create_proxies (RygelTrackerItemCreation* self, GError** error) {
-#line 769 "rygel-tracker-item-creation.c"
+#line 768 "rygel-tracker-item-creation.c"
 	GError * _inner_error_;
 	DBusGConnection* connection;
 	RygelTrackerResourcesIface* _tmp0_;
 	RygelTrackerMinerIface* _tmp1_;
-#line 97 "rygel-tracker-item-creation.vala"
+#line 96 "rygel-tracker-item-creation.vala"
 	g_return_if_fail (self != NULL);
-#line 776 "rygel-tracker-item-creation.c"
+#line 775 "rygel-tracker-item-creation.c"
 	_inner_error_ = NULL;
-#line 98 "rygel-tracker-item-creation.vala"
+#line 97 "rygel-tracker-item-creation.vala"
 	connection = dbus_g_bus_get (DBUS_BUS_SESSION, &_inner_error_);
-#line 780 "rygel-tracker-item-creation.c"
+#line 779 "rygel-tracker-item-creation.c"
 	if (_inner_error_ != NULL) {
 		if (_inner_error_->domain == DBUS_GERROR) {
 			g_propagate_error (error, _inner_error_);
@@ -787,11 +786,11 @@ static void rygel_tracker_item_creation_create_proxies (RygelTrackerItemCreation
 			return;
 		}
 	}
-#line 100 "rygel-tracker-item-creation.vala"
+#line 99 "rygel-tracker-item-creation.vala"
 	self->priv->resources = (_tmp0_ = rygel_tracker_resources_iface_dbus_proxy_new (connection, RYGEL_TRACKER_ITEM_CREATION_TRACKER_SERVICE, RYGEL_TRACKER_ITEM_CREATION_RESOURCES_PATH), _g_object_unref0 (self->priv->resources), _tmp0_);
-#line 103 "rygel-tracker-item-creation.vala"
+#line 101 "rygel-tracker-item-creation.vala"
 	self->priv->miner = (_tmp1_ = rygel_tracker_miner_iface_dbus_proxy_new (connection, RYGEL_TRACKER_ITEM_CREATION_MINER_SERVICE, RYGEL_TRACKER_ITEM_CREATION_MINER_PATH), _g_object_unref0 (self->priv->miner), _tmp1_);
-#line 795 "rygel-tracker-item-creation.c"
+#line 794 "rygel-tracker-item-creation.c"
 	_dbus_g_connection_unref0 (connection);
 }
 
@@ -803,7 +802,7 @@ static GCancellable* rygel_tracker_item_creation_real_get_cancellable (RygelStat
 	result = self->priv->_cancellable;
 #line 36 "rygel-tracker-item-creation.vala"
 	return result;
-#line 807 "rygel-tracker-item-creation.c"
+#line 806 "rygel-tracker-item-creation.c"
 }
 
 
@@ -822,7 +821,7 @@ GError* rygel_tracker_item_creation_get_error (RygelTrackerItemCreation* self) {
 	result = self->priv->_error;
 #line 37 "rygel-tracker-item-creation.vala"
 	return result;
-#line 826 "rygel-tracker-item-creation.c"
+#line 825 "rygel-tracker-item-creation.c"
 }
 
 

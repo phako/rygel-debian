@@ -31,12 +31,12 @@
 #include <gee.h>
 
 
-#define RYGEL_TYPE_GST_LAUNCH_ROOT_CONTAINER (rygel_gst_launch_root_container_get_type ())
-#define RYGEL_GST_LAUNCH_ROOT_CONTAINER(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_GST_LAUNCH_ROOT_CONTAINER, RygelGstLaunchRootContainer))
-#define RYGEL_GST_LAUNCH_ROOT_CONTAINER_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TYPE_GST_LAUNCH_ROOT_CONTAINER, RygelGstLaunchRootContainerClass))
-#define RYGEL_IS_GST_LAUNCH_ROOT_CONTAINER(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TYPE_GST_LAUNCH_ROOT_CONTAINER))
-#define RYGEL_IS_GST_LAUNCH_ROOT_CONTAINER_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_TYPE_GST_LAUNCH_ROOT_CONTAINER))
-#define RYGEL_GST_LAUNCH_ROOT_CONTAINER_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_TYPE_GST_LAUNCH_ROOT_CONTAINER, RygelGstLaunchRootContainerClass))
+#define RYGEL_GST_LAUNCH_TYPE_ROOT_CONTAINER (rygel_gst_launch_root_container_get_type ())
+#define RYGEL_GST_LAUNCH_ROOT_CONTAINER(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_GST_LAUNCH_TYPE_ROOT_CONTAINER, RygelGstLaunchRootContainer))
+#define RYGEL_GST_LAUNCH_ROOT_CONTAINER_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_GST_LAUNCH_TYPE_ROOT_CONTAINER, RygelGstLaunchRootContainerClass))
+#define RYGEL_GST_LAUNCH_IS_ROOT_CONTAINER(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_GST_LAUNCH_TYPE_ROOT_CONTAINER))
+#define RYGEL_GST_LAUNCH_IS_ROOT_CONTAINER_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_GST_LAUNCH_TYPE_ROOT_CONTAINER))
+#define RYGEL_GST_LAUNCH_ROOT_CONTAINER_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_GST_LAUNCH_TYPE_ROOT_CONTAINER, RygelGstLaunchRootContainerClass))
 
 typedef struct _RygelGstLaunchRootContainer RygelGstLaunchRootContainer;
 typedef struct _RygelGstLaunchRootContainerClass RygelGstLaunchRootContainerClass;
@@ -45,12 +45,12 @@ typedef struct _RygelGstLaunchRootContainerPrivate RygelGstLaunchRootContainerPr
 #define _g_free0(var) (var = (g_free (var), NULL))
 #define _g_error_free0(var) ((var == NULL) ? NULL : (var = (g_error_free (var), NULL)))
 
-#define RYGEL_TYPE_GST_LAUNCH_ITEM (rygel_gst_launch_item_get_type ())
-#define RYGEL_GST_LAUNCH_ITEM(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_GST_LAUNCH_ITEM, RygelGstLaunchItem))
-#define RYGEL_GST_LAUNCH_ITEM_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TYPE_GST_LAUNCH_ITEM, RygelGstLaunchItemClass))
-#define RYGEL_IS_GST_LAUNCH_ITEM(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TYPE_GST_LAUNCH_ITEM))
-#define RYGEL_IS_GST_LAUNCH_ITEM_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_TYPE_GST_LAUNCH_ITEM))
-#define RYGEL_GST_LAUNCH_ITEM_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_TYPE_GST_LAUNCH_ITEM, RygelGstLaunchItemClass))
+#define RYGEL_GST_LAUNCH_TYPE_ITEM (rygel_gst_launch_item_get_type ())
+#define RYGEL_GST_LAUNCH_ITEM(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_GST_LAUNCH_TYPE_ITEM, RygelGstLaunchItem))
+#define RYGEL_GST_LAUNCH_ITEM_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_GST_LAUNCH_TYPE_ITEM, RygelGstLaunchItemClass))
+#define RYGEL_GST_LAUNCH_IS_ITEM(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_GST_LAUNCH_TYPE_ITEM))
+#define RYGEL_GST_LAUNCH_IS_ITEM_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_GST_LAUNCH_TYPE_ITEM))
+#define RYGEL_GST_LAUNCH_ITEM_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_GST_LAUNCH_TYPE_ITEM, RygelGstLaunchItemClass))
 
 typedef struct _RygelGstLaunchItem RygelGstLaunchItem;
 typedef struct _RygelGstLaunchItemClass RygelGstLaunchItemClass;
@@ -72,7 +72,7 @@ struct _RygelGstLaunchRootContainerPrivate {
 static gpointer rygel_gst_launch_root_container_parent_class = NULL;
 
 GType rygel_gst_launch_root_container_get_type (void);
-#define RYGEL_GST_LAUNCH_ROOT_CONTAINER_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), RYGEL_TYPE_GST_LAUNCH_ROOT_CONTAINER, RygelGstLaunchRootContainerPrivate))
+#define RYGEL_GST_LAUNCH_ROOT_CONTAINER_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), RYGEL_GST_LAUNCH_TYPE_ROOT_CONTAINER, RygelGstLaunchRootContainerPrivate))
 enum  {
 	RYGEL_GST_LAUNCH_ROOT_CONTAINER_DUMMY_PROPERTY
 };
@@ -161,7 +161,7 @@ RygelGstLaunchRootContainer* rygel_gst_launch_root_container_construct (GType ob
 #line 37 "rygel-gst-launch-root-container.vala"
 RygelGstLaunchRootContainer* rygel_gst_launch_root_container_new (const char* title) {
 #line 37 "rygel-gst-launch-root-container.vala"
-	return rygel_gst_launch_root_container_construct (RYGEL_TYPE_GST_LAUNCH_ROOT_CONTAINER, title);
+	return rygel_gst_launch_root_container_construct (RYGEL_GST_LAUNCH_TYPE_ROOT_CONTAINER, title);
 #line 166 "rygel-gst-launch-root-container.c"
 }
 

@@ -33,23 +33,23 @@
 #include <gst/gst.h>
 
 
-#define RYGEL_TYPE_TEST_ITEM (rygel_test_item_get_type ())
-#define RYGEL_TEST_ITEM(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_TEST_ITEM, RygelTestItem))
-#define RYGEL_TEST_ITEM_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TYPE_TEST_ITEM, RygelTestItemClass))
-#define RYGEL_IS_TEST_ITEM(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TYPE_TEST_ITEM))
-#define RYGEL_IS_TEST_ITEM_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_TYPE_TEST_ITEM))
-#define RYGEL_TEST_ITEM_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_TYPE_TEST_ITEM, RygelTestItemClass))
+#define RYGEL_TEST_TYPE_ITEM (rygel_test_item_get_type ())
+#define RYGEL_TEST_ITEM(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TEST_TYPE_ITEM, RygelTestItem))
+#define RYGEL_TEST_ITEM_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TEST_TYPE_ITEM, RygelTestItemClass))
+#define RYGEL_TEST_IS_ITEM(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TEST_TYPE_ITEM))
+#define RYGEL_TEST_IS_ITEM_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_TEST_TYPE_ITEM))
+#define RYGEL_TEST_ITEM_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_TEST_TYPE_ITEM, RygelTestItemClass))
 
 typedef struct _RygelTestItem RygelTestItem;
 typedef struct _RygelTestItemClass RygelTestItemClass;
 typedef struct _RygelTestItemPrivate RygelTestItemPrivate;
 
-#define RYGEL_TYPE_TEST_AUDIO_ITEM (rygel_test_audio_item_get_type ())
-#define RYGEL_TEST_AUDIO_ITEM(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_TEST_AUDIO_ITEM, RygelTestAudioItem))
-#define RYGEL_TEST_AUDIO_ITEM_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TYPE_TEST_AUDIO_ITEM, RygelTestAudioItemClass))
-#define RYGEL_IS_TEST_AUDIO_ITEM(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TYPE_TEST_AUDIO_ITEM))
-#define RYGEL_IS_TEST_AUDIO_ITEM_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_TYPE_TEST_AUDIO_ITEM))
-#define RYGEL_TEST_AUDIO_ITEM_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_TYPE_TEST_AUDIO_ITEM, RygelTestAudioItemClass))
+#define RYGEL_TEST_TYPE_AUDIO_ITEM (rygel_test_audio_item_get_type ())
+#define RYGEL_TEST_AUDIO_ITEM(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TEST_TYPE_AUDIO_ITEM, RygelTestAudioItem))
+#define RYGEL_TEST_AUDIO_ITEM_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TEST_TYPE_AUDIO_ITEM, RygelTestAudioItemClass))
+#define RYGEL_TEST_IS_AUDIO_ITEM(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TEST_TYPE_AUDIO_ITEM))
+#define RYGEL_TEST_IS_AUDIO_ITEM_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_TEST_TYPE_AUDIO_ITEM))
+#define RYGEL_TEST_AUDIO_ITEM_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_TEST_TYPE_AUDIO_ITEM, RygelTestAudioItemClass))
 
 typedef struct _RygelTestAudioItem RygelTestAudioItem;
 typedef struct _RygelTestAudioItemClass RygelTestAudioItemClass;
@@ -101,7 +101,7 @@ RygelTestAudioItem* rygel_test_audio_item_construct (GType object_type, const ch
 	g_return_val_if_fail (parent != NULL, NULL);
 #line 34 "rygel-test-audio-item.vala"
 	g_return_val_if_fail (title != NULL, NULL);
-#line 37 "rygel-test-audio-item.vala"
+#line 35 "rygel-test-audio-item.vala"
 	self = (RygelTestAudioItem*) rygel_test_item_construct (object_type, id, parent, title, RYGEL_TEST_AUDIO_ITEM_TEST_MIMETYPE, RYGEL_MEDIA_ITEM_AUDIO_CLASS);
 #line 107 "rygel-test-audio-item.c"
 	return self;
@@ -111,12 +111,12 @@ RygelTestAudioItem* rygel_test_audio_item_construct (GType object_type, const ch
 #line 34 "rygel-test-audio-item.vala"
 RygelTestAudioItem* rygel_test_audio_item_new (const char* id, RygelMediaContainer* parent, const char* title) {
 #line 34 "rygel-test-audio-item.vala"
-	return rygel_test_audio_item_construct (RYGEL_TYPE_TEST_AUDIO_ITEM, id, parent, title);
+	return rygel_test_audio_item_construct (RYGEL_TEST_TYPE_AUDIO_ITEM, id, parent, title);
 #line 116 "rygel-test-audio-item.c"
 }
 
 
-#line 44 "rygel-test-audio-item.vala"
+#line 42 "rygel-test-audio-item.vala"
 static GstElement* rygel_test_audio_item_real_create_stream_source (RygelMediaItem* base) {
 #line 122 "rygel-test-audio-item.c"
 	RygelTestAudioItem * self;
@@ -126,14 +126,14 @@ static GstElement* rygel_test_audio_item_real_create_stream_source (RygelMediaIt
 	_inner_error_ = NULL;
 	{
 		GstElement* _tmp0_;
-#line 46 "rygel-test-audio-item.vala"
+#line 44 "rygel-test-audio-item.vala"
 		_tmp0_ = gst_parse_bin_from_description (RYGEL_TEST_AUDIO_ITEM_PIPELINE, TRUE, &_inner_error_);
 #line 132 "rygel-test-audio-item.c"
 		if (_inner_error_ != NULL) {
 			goto __catch0_g_error;
 		}
 		result = _tmp0_;
-#line 46 "rygel-test-audio-item.vala"
+#line 44 "rygel-test-audio-item.vala"
 		return result;
 #line 139 "rygel-test-audio-item.c"
 	}
@@ -144,12 +144,12 @@ static GstElement* rygel_test_audio_item_real_create_stream_source (RygelMediaIt
 		err = _inner_error_;
 		_inner_error_ = NULL;
 		{
-#line 48 "rygel-test-audio-item.vala"
-			g_warning ("rygel-test-audio-item.vala:48: Required plugin missing (%s)", err->message);
+#line 46 "rygel-test-audio-item.vala"
+			g_warning ("rygel-test-audio-item.vala:46: Required plugin missing (%s)", err->message);
 #line 150 "rygel-test-audio-item.c"
 			result = NULL;
 			_g_error_free0 (err);
-#line 50 "rygel-test-audio-item.vala"
+#line 48 "rygel-test-audio-item.vala"
 			return result;
 #line 155 "rygel-test-audio-item.c"
 		}
@@ -178,7 +178,7 @@ GType rygel_test_audio_item_get_type (void) {
 	if (g_once_init_enter (&rygel_test_audio_item_type_id__volatile)) {
 		static const GTypeInfo g_define_type_info = { sizeof (RygelTestAudioItemClass), (GBaseInitFunc) NULL, (GBaseFinalizeFunc) NULL, (GClassInitFunc) rygel_test_audio_item_class_init, (GClassFinalizeFunc) NULL, NULL, sizeof (RygelTestAudioItem), 0, (GInstanceInitFunc) rygel_test_audio_item_instance_init, NULL };
 		GType rygel_test_audio_item_type_id;
-		rygel_test_audio_item_type_id = g_type_register_static (RYGEL_TYPE_TEST_ITEM, "RygelTestAudioItem", &g_define_type_info, 0);
+		rygel_test_audio_item_type_id = g_type_register_static (RYGEL_TEST_TYPE_ITEM, "RygelTestAudioItem", &g_define_type_info, 0);
 		g_once_init_leave (&rygel_test_audio_item_type_id__volatile, rygel_test_audio_item_type_id);
 	}
 	return rygel_test_audio_item_type_id__volatile;

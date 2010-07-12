@@ -34,41 +34,41 @@
 #include <gio/gio.h>
 
 
-#define RYGEL_TYPE_EXTERNAL_MEDIA_OBJECT (rygel_external_media_object_get_type ())
-#define RYGEL_EXTERNAL_MEDIA_OBJECT(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_EXTERNAL_MEDIA_OBJECT, RygelExternalMediaObject))
-#define RYGEL_IS_EXTERNAL_MEDIA_OBJECT(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TYPE_EXTERNAL_MEDIA_OBJECT))
-#define RYGEL_EXTERNAL_MEDIA_OBJECT_GET_INTERFACE(obj) (G_TYPE_INSTANCE_GET_INTERFACE ((obj), RYGEL_TYPE_EXTERNAL_MEDIA_OBJECT, RygelExternalMediaObjectIface))
+#define RYGEL_EXTERNAL_TYPE_MEDIA_OBJECT_PROXY (rygel_external_media_object_proxy_get_type ())
+#define RYGEL_EXTERNAL_MEDIA_OBJECT_PROXY(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_EXTERNAL_TYPE_MEDIA_OBJECT_PROXY, RygelExternalMediaObjectProxy))
+#define RYGEL_EXTERNAL_IS_MEDIA_OBJECT_PROXY(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_EXTERNAL_TYPE_MEDIA_OBJECT_PROXY))
+#define RYGEL_EXTERNAL_MEDIA_OBJECT_PROXY_GET_INTERFACE(obj) (G_TYPE_INSTANCE_GET_INTERFACE ((obj), RYGEL_EXTERNAL_TYPE_MEDIA_OBJECT_PROXY, RygelExternalMediaObjectProxyIface))
 
-typedef struct _RygelExternalMediaObject RygelExternalMediaObject;
-typedef struct _RygelExternalMediaObjectIface RygelExternalMediaObjectIface;
+typedef struct _RygelExternalMediaObjectProxy RygelExternalMediaObjectProxy;
+typedef struct _RygelExternalMediaObjectProxyIface RygelExternalMediaObjectProxyIface;
 typedef struct _DBusObjectVTable _DBusObjectVTable;
 #define _g_free0(var) (var = (g_free (var), NULL))
-typedef struct _RygelExternalMediaObjectDBusProxy RygelExternalMediaObjectDBusProxy;
-typedef DBusGProxyClass RygelExternalMediaObjectDBusProxyClass;
+typedef struct _RygelExternalMediaObjectProxyDBusProxy RygelExternalMediaObjectProxyDBusProxy;
+typedef DBusGProxyClass RygelExternalMediaObjectProxyDBusProxyClass;
 
-#define RYGEL_TYPE_EXTERNAL_MEDIA_CONTAINER (rygel_external_media_container_get_type ())
-#define RYGEL_EXTERNAL_MEDIA_CONTAINER(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_EXTERNAL_MEDIA_CONTAINER, RygelExternalMediaContainer))
-#define RYGEL_IS_EXTERNAL_MEDIA_CONTAINER(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TYPE_EXTERNAL_MEDIA_CONTAINER))
-#define RYGEL_EXTERNAL_MEDIA_CONTAINER_GET_INTERFACE(obj) (G_TYPE_INSTANCE_GET_INTERFACE ((obj), RYGEL_TYPE_EXTERNAL_MEDIA_CONTAINER, RygelExternalMediaContainerIface))
+#define RYGEL_EXTERNAL_TYPE_MEDIA_CONTAINER_PROXY (rygel_external_media_container_proxy_get_type ())
+#define RYGEL_EXTERNAL_MEDIA_CONTAINER_PROXY(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_EXTERNAL_TYPE_MEDIA_CONTAINER_PROXY, RygelExternalMediaContainerProxy))
+#define RYGEL_EXTERNAL_IS_MEDIA_CONTAINER_PROXY(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_EXTERNAL_TYPE_MEDIA_CONTAINER_PROXY))
+#define RYGEL_EXTERNAL_MEDIA_CONTAINER_PROXY_GET_INTERFACE(obj) (G_TYPE_INSTANCE_GET_INTERFACE ((obj), RYGEL_EXTERNAL_TYPE_MEDIA_CONTAINER_PROXY, RygelExternalMediaContainerProxyIface))
 
-typedef struct _RygelExternalMediaContainer RygelExternalMediaContainer;
-typedef struct _RygelExternalMediaContainerIface RygelExternalMediaContainerIface;
-typedef struct _RygelExternalMediaContainerDBusProxy RygelExternalMediaContainerDBusProxy;
-typedef DBusGProxyClass RygelExternalMediaContainerDBusProxyClass;
-typedef struct _RygelExternalMediaContainerDBusProxyListChildrenData RygelExternalMediaContainerDBusProxyListChildrenData;
-typedef struct _RygelExternalMediaContainerDBusProxyListContainersData RygelExternalMediaContainerDBusProxyListContainersData;
-typedef struct _RygelExternalMediaContainerDBusProxyListItemsData RygelExternalMediaContainerDBusProxyListItemsData;
-typedef struct _RygelExternalMediaContainerDBusProxySearchObjectsData RygelExternalMediaContainerDBusProxySearchObjectsData;
+typedef struct _RygelExternalMediaContainerProxy RygelExternalMediaContainerProxy;
+typedef struct _RygelExternalMediaContainerProxyIface RygelExternalMediaContainerProxyIface;
+typedef struct _RygelExternalMediaContainerProxyDBusProxy RygelExternalMediaContainerProxyDBusProxy;
+typedef DBusGProxyClass RygelExternalMediaContainerProxyDBusProxyClass;
+typedef struct _RygelExternalMediaContainerProxyDBusProxyListChildrenData RygelExternalMediaContainerProxyDBusProxyListChildrenData;
+typedef struct _RygelExternalMediaContainerProxyDBusProxyListContainersData RygelExternalMediaContainerProxyDBusProxyListContainersData;
+typedef struct _RygelExternalMediaContainerProxyDBusProxyListItemsData RygelExternalMediaContainerProxyDBusProxyListItemsData;
+typedef struct _RygelExternalMediaContainerProxyDBusProxySearchObjectsData RygelExternalMediaContainerProxyDBusProxySearchObjectsData;
 
-#define RYGEL_TYPE_EXTERNAL_MEDIA_ITEM (rygel_external_media_item_get_type ())
-#define RYGEL_EXTERNAL_MEDIA_ITEM(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_EXTERNAL_MEDIA_ITEM, RygelExternalMediaItem))
-#define RYGEL_IS_EXTERNAL_MEDIA_ITEM(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TYPE_EXTERNAL_MEDIA_ITEM))
-#define RYGEL_EXTERNAL_MEDIA_ITEM_GET_INTERFACE(obj) (G_TYPE_INSTANCE_GET_INTERFACE ((obj), RYGEL_TYPE_EXTERNAL_MEDIA_ITEM, RygelExternalMediaItemIface))
+#define RYGEL_EXTERNAL_TYPE_MEDIA_ITEM_PROXY (rygel_external_media_item_proxy_get_type ())
+#define RYGEL_EXTERNAL_MEDIA_ITEM_PROXY(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_EXTERNAL_TYPE_MEDIA_ITEM_PROXY, RygelExternalMediaItemProxy))
+#define RYGEL_EXTERNAL_IS_MEDIA_ITEM_PROXY(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_EXTERNAL_TYPE_MEDIA_ITEM_PROXY))
+#define RYGEL_EXTERNAL_MEDIA_ITEM_PROXY_GET_INTERFACE(obj) (G_TYPE_INSTANCE_GET_INTERFACE ((obj), RYGEL_EXTERNAL_TYPE_MEDIA_ITEM_PROXY, RygelExternalMediaItemProxyIface))
 
-typedef struct _RygelExternalMediaItem RygelExternalMediaItem;
-typedef struct _RygelExternalMediaItemIface RygelExternalMediaItemIface;
-typedef struct _RygelExternalMediaItemDBusProxy RygelExternalMediaItemDBusProxy;
-typedef DBusGProxyClass RygelExternalMediaItemDBusProxyClass;
+typedef struct _RygelExternalMediaItemProxy RygelExternalMediaItemProxy;
+typedef struct _RygelExternalMediaItemProxyIface RygelExternalMediaItemProxyIface;
+typedef struct _RygelExternalMediaItemProxyDBusProxy RygelExternalMediaItemProxyDBusProxy;
+typedef DBusGProxyClass RygelExternalMediaItemProxyDBusProxyClass;
 
 #define FREE_DESKTOP_TYPE_DBUS_OBJECT (free_desktop_dbus_object_get_type ())
 #define FREE_DESKTOP_DBUS_OBJECT(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), FREE_DESKTOP_TYPE_DBUS_OBJECT, FreeDesktopDBusObject))
@@ -94,115 +94,115 @@ typedef struct _FreeDesktopPropertiesDBusProxy FreeDesktopPropertiesDBusProxy;
 typedef DBusGProxyClass FreeDesktopPropertiesDBusProxyClass;
 typedef struct _FreeDesktopPropertiesDBusProxyGetAllData FreeDesktopPropertiesDBusProxyGetAllData;
 
-struct _RygelExternalMediaObjectIface {
+struct _RygelExternalMediaObjectProxyIface {
 	GTypeInterface parent_iface;
-	char* (*get_parent) (RygelExternalMediaObject* self);
-	void (*set_parent) (RygelExternalMediaObject* self, const char* value);
-	char* (*get_display_name) (RygelExternalMediaObject* self);
-	void (*set_display_name) (RygelExternalMediaObject* self, const char* value);
-	char* (*get_object_type) (RygelExternalMediaObject* self);
-	void (*set_object_type) (RygelExternalMediaObject* self, const char* value);
+	char* (*get_parent) (RygelExternalMediaObjectProxy* self);
+	void (*set_parent) (RygelExternalMediaObjectProxy* self, const char* value);
+	char* (*get_display_name) (RygelExternalMediaObjectProxy* self);
+	void (*set_display_name) (RygelExternalMediaObjectProxy* self, const char* value);
+	char* (*get_object_type) (RygelExternalMediaObjectProxy* self);
+	void (*set_object_type) (RygelExternalMediaObjectProxy* self, const char* value);
 };
 
 struct _DBusObjectVTable {
 	void (*register_object) (DBusConnection*, const char*, void*);
 };
 
-struct _RygelExternalMediaObjectDBusProxy {
+struct _RygelExternalMediaObjectProxyDBusProxy {
 	DBusGProxy parent_instance;
 	gboolean disposed;
 };
 
-struct _RygelExternalMediaContainerIface {
+struct _RygelExternalMediaContainerProxyIface {
 	GTypeInterface parent_iface;
-	void (*list_children) (RygelExternalMediaContainer* self, guint offset, guint max_count, char** filter, int filter_length1, GAsyncReadyCallback _callback_, gpointer _user_data_);
-	GHashTable** (*list_children_finish) (RygelExternalMediaContainer* self, GAsyncResult* _res_, int* result_length1, GError** error);
-	void (*list_containers) (RygelExternalMediaContainer* self, guint offset, guint max_count, char** filter, int filter_length1, GAsyncReadyCallback _callback_, gpointer _user_data_);
-	GHashTable** (*list_containers_finish) (RygelExternalMediaContainer* self, GAsyncResult* _res_, int* result_length1, GError** error);
-	void (*list_items) (RygelExternalMediaContainer* self, guint offset, guint max_count, char** filter, int filter_length1, GAsyncReadyCallback _callback_, gpointer _user_data_);
-	GHashTable** (*list_items_finish) (RygelExternalMediaContainer* self, GAsyncResult* _res_, int* result_length1, GError** error);
-	void (*search_objects) (RygelExternalMediaContainer* self, const char* query, guint offset, guint max_count, char** filter, int filter_length1, GAsyncReadyCallback _callback_, gpointer _user_data_);
-	GHashTable** (*search_objects_finish) (RygelExternalMediaContainer* self, GAsyncResult* _res_, int* result_length1, GError** error);
-	guint (*get_child_count) (RygelExternalMediaContainer* self);
-	void (*set_child_count) (RygelExternalMediaContainer* self, guint value);
-	guint (*get_item_count) (RygelExternalMediaContainer* self);
-	void (*set_item_count) (RygelExternalMediaContainer* self, guint value);
-	guint (*get_container_count) (RygelExternalMediaContainer* self);
-	void (*set_container_count) (RygelExternalMediaContainer* self, guint value);
-	gboolean (*get_searchable) (RygelExternalMediaContainer* self);
-	void (*set_searchable) (RygelExternalMediaContainer* self, gboolean value);
-	char* (*get_icon) (RygelExternalMediaContainer* self);
-	void (*set_icon) (RygelExternalMediaContainer* self, const char* value);
+	void (*list_children) (RygelExternalMediaContainerProxy* self, guint offset, guint max_count, char** filter, int filter_length1, GAsyncReadyCallback _callback_, gpointer _user_data_);
+	GHashTable** (*list_children_finish) (RygelExternalMediaContainerProxy* self, GAsyncResult* _res_, int* result_length1, GError** error);
+	void (*list_containers) (RygelExternalMediaContainerProxy* self, guint offset, guint max_count, char** filter, int filter_length1, GAsyncReadyCallback _callback_, gpointer _user_data_);
+	GHashTable** (*list_containers_finish) (RygelExternalMediaContainerProxy* self, GAsyncResult* _res_, int* result_length1, GError** error);
+	void (*list_items) (RygelExternalMediaContainerProxy* self, guint offset, guint max_count, char** filter, int filter_length1, GAsyncReadyCallback _callback_, gpointer _user_data_);
+	GHashTable** (*list_items_finish) (RygelExternalMediaContainerProxy* self, GAsyncResult* _res_, int* result_length1, GError** error);
+	void (*search_objects) (RygelExternalMediaContainerProxy* self, const char* query, guint offset, guint max_count, char** filter, int filter_length1, GAsyncReadyCallback _callback_, gpointer _user_data_);
+	GHashTable** (*search_objects_finish) (RygelExternalMediaContainerProxy* self, GAsyncResult* _res_, int* result_length1, GError** error);
+	guint (*get_child_count) (RygelExternalMediaContainerProxy* self);
+	void (*set_child_count) (RygelExternalMediaContainerProxy* self, guint value);
+	guint (*get_item_count) (RygelExternalMediaContainerProxy* self);
+	void (*set_item_count) (RygelExternalMediaContainerProxy* self, guint value);
+	guint (*get_container_count) (RygelExternalMediaContainerProxy* self);
+	void (*set_container_count) (RygelExternalMediaContainerProxy* self, guint value);
+	gboolean (*get_searchable) (RygelExternalMediaContainerProxy* self);
+	void (*set_searchable) (RygelExternalMediaContainerProxy* self, gboolean value);
+	char* (*get_icon) (RygelExternalMediaContainerProxy* self);
+	void (*set_icon) (RygelExternalMediaContainerProxy* self, const char* value);
 };
 
-struct _RygelExternalMediaContainerDBusProxy {
+struct _RygelExternalMediaContainerProxyDBusProxy {
 	DBusGProxy parent_instance;
 	gboolean disposed;
 };
 
-struct _RygelExternalMediaContainerDBusProxyListChildrenData {
+struct _RygelExternalMediaContainerProxyDBusProxyListChildrenData {
 	GAsyncReadyCallback _callback_;
 	gpointer _user_data_;
 	DBusPendingCall* pending;
 };
 
-struct _RygelExternalMediaContainerDBusProxyListContainersData {
+struct _RygelExternalMediaContainerProxyDBusProxyListContainersData {
 	GAsyncReadyCallback _callback_;
 	gpointer _user_data_;
 	DBusPendingCall* pending;
 };
 
-struct _RygelExternalMediaContainerDBusProxyListItemsData {
+struct _RygelExternalMediaContainerProxyDBusProxyListItemsData {
 	GAsyncReadyCallback _callback_;
 	gpointer _user_data_;
 	DBusPendingCall* pending;
 };
 
-struct _RygelExternalMediaContainerDBusProxySearchObjectsData {
+struct _RygelExternalMediaContainerProxyDBusProxySearchObjectsData {
 	GAsyncReadyCallback _callback_;
 	gpointer _user_data_;
 	DBusPendingCall* pending;
 };
 
-struct _RygelExternalMediaItemIface {
+struct _RygelExternalMediaItemProxyIface {
 	GTypeInterface parent_iface;
-	char** (*get_urls) (RygelExternalMediaItem* self, int* result_length1);
-	void (*set_urls) (RygelExternalMediaItem* self, char** value, int value_length1);
-	char* (*get_mime_type) (RygelExternalMediaItem* self);
-	void (*set_mime_type) (RygelExternalMediaItem* self, const char* value);
-	gint (*get_size) (RygelExternalMediaItem* self);
-	void (*set_size) (RygelExternalMediaItem* self, gint value);
-	char* (*get_artist) (RygelExternalMediaItem* self);
-	void (*set_artist) (RygelExternalMediaItem* self, const char* value);
-	char* (*get_album) (RygelExternalMediaItem* self);
-	void (*set_album) (RygelExternalMediaItem* self, const char* value);
-	char* (*get_date) (RygelExternalMediaItem* self);
-	void (*set_date) (RygelExternalMediaItem* self, const char* value);
-	char* (*get_genre) (RygelExternalMediaItem* self);
-	void (*set_genre) (RygelExternalMediaItem* self, const char* value);
-	char* (*get_dlna_profile) (RygelExternalMediaItem* self);
-	void (*set_dlna_profile) (RygelExternalMediaItem* self, const char* value);
-	gint (*get_duration) (RygelExternalMediaItem* self);
-	void (*set_duration) (RygelExternalMediaItem* self, gint value);
-	gint (*get_bitrate) (RygelExternalMediaItem* self);
-	void (*set_bitrate) (RygelExternalMediaItem* self, gint value);
-	gint (*get_sample_rate) (RygelExternalMediaItem* self);
-	void (*set_sample_rate) (RygelExternalMediaItem* self, gint value);
-	gint (*get_bits_per_sample) (RygelExternalMediaItem* self);
-	void (*set_bits_per_sample) (RygelExternalMediaItem* self, gint value);
-	gint (*get_width) (RygelExternalMediaItem* self);
-	void (*set_width) (RygelExternalMediaItem* self, gint value);
-	gint (*get_height) (RygelExternalMediaItem* self);
-	void (*set_height) (RygelExternalMediaItem* self, gint value);
-	gint (*get_color_depth) (RygelExternalMediaItem* self);
-	void (*set_color_depth) (RygelExternalMediaItem* self, gint value);
-	char* (*get_thumbnail) (RygelExternalMediaItem* self);
-	void (*set_thumbnail) (RygelExternalMediaItem* self, const char* value);
-	char* (*get_album_art) (RygelExternalMediaItem* self);
-	void (*set_album_art) (RygelExternalMediaItem* self, const char* value);
+	char** (*get_urls) (RygelExternalMediaItemProxy* self, int* result_length1);
+	void (*set_urls) (RygelExternalMediaItemProxy* self, char** value, int value_length1);
+	char* (*get_mime_type) (RygelExternalMediaItemProxy* self);
+	void (*set_mime_type) (RygelExternalMediaItemProxy* self, const char* value);
+	gint (*get_size) (RygelExternalMediaItemProxy* self);
+	void (*set_size) (RygelExternalMediaItemProxy* self, gint value);
+	char* (*get_artist) (RygelExternalMediaItemProxy* self);
+	void (*set_artist) (RygelExternalMediaItemProxy* self, const char* value);
+	char* (*get_album) (RygelExternalMediaItemProxy* self);
+	void (*set_album) (RygelExternalMediaItemProxy* self, const char* value);
+	char* (*get_date) (RygelExternalMediaItemProxy* self);
+	void (*set_date) (RygelExternalMediaItemProxy* self, const char* value);
+	char* (*get_genre) (RygelExternalMediaItemProxy* self);
+	void (*set_genre) (RygelExternalMediaItemProxy* self, const char* value);
+	char* (*get_dlna_profile) (RygelExternalMediaItemProxy* self);
+	void (*set_dlna_profile) (RygelExternalMediaItemProxy* self, const char* value);
+	gint (*get_duration) (RygelExternalMediaItemProxy* self);
+	void (*set_duration) (RygelExternalMediaItemProxy* self, gint value);
+	gint (*get_bitrate) (RygelExternalMediaItemProxy* self);
+	void (*set_bitrate) (RygelExternalMediaItemProxy* self, gint value);
+	gint (*get_sample_rate) (RygelExternalMediaItemProxy* self);
+	void (*set_sample_rate) (RygelExternalMediaItemProxy* self, gint value);
+	gint (*get_bits_per_sample) (RygelExternalMediaItemProxy* self);
+	void (*set_bits_per_sample) (RygelExternalMediaItemProxy* self, gint value);
+	gint (*get_width) (RygelExternalMediaItemProxy* self);
+	void (*set_width) (RygelExternalMediaItemProxy* self, gint value);
+	gint (*get_height) (RygelExternalMediaItemProxy* self);
+	void (*set_height) (RygelExternalMediaItemProxy* self, gint value);
+	gint (*get_color_depth) (RygelExternalMediaItemProxy* self);
+	void (*set_color_depth) (RygelExternalMediaItemProxy* self, gint value);
+	char* (*get_thumbnail) (RygelExternalMediaItemProxy* self);
+	void (*set_thumbnail) (RygelExternalMediaItemProxy* self, const char* value);
+	char* (*get_album_art) (RygelExternalMediaItemProxy* self);
+	void (*set_album_art) (RygelExternalMediaItemProxy* self, const char* value);
 };
 
-struct _RygelExternalMediaItemDBusProxy {
+struct _RygelExternalMediaItemProxyDBusProxy {
 	DBusGProxy parent_instance;
 	gboolean disposed;
 };
@@ -251,237 +251,237 @@ struct _FreeDesktopPropertiesDBusProxyGetAllData {
 
 
 
-GType rygel_external_media_object_get_type (void);
-RygelExternalMediaObject* rygel_external_media_object_dbus_proxy_new (DBusGConnection* connection, const char* name, const char* path);
-#define RYGEL_EXTERNAL_MEDIA_OBJECT_IFACE "org.gnome.UPnP.MediaObject2"
-char* rygel_external_media_object_get_parent (RygelExternalMediaObject* self);
-void rygel_external_media_object_set_parent (RygelExternalMediaObject* self, const char* value);
-char* rygel_external_media_object_get_display_name (RygelExternalMediaObject* self);
-void rygel_external_media_object_set_display_name (RygelExternalMediaObject* self, const char* value);
-char* rygel_external_media_object_get_object_type (RygelExternalMediaObject* self);
-void rygel_external_media_object_set_object_type (RygelExternalMediaObject* self, const char* value);
+GType rygel_external_media_object_proxy_get_type (void);
+RygelExternalMediaObjectProxy* rygel_external_media_object_proxy_dbus_proxy_new (DBusGConnection* connection, const char* name, const char* path);
+#define RYGEL_EXTERNAL_MEDIA_OBJECT_PROXY_IFACE "org.gnome.UPnP.MediaObject2"
+char* rygel_external_media_object_proxy_get_parent (RygelExternalMediaObjectProxy* self);
+void rygel_external_media_object_proxy_set_parent (RygelExternalMediaObjectProxy* self, const char* value);
+char* rygel_external_media_object_proxy_get_display_name (RygelExternalMediaObjectProxy* self);
+void rygel_external_media_object_proxy_set_display_name (RygelExternalMediaObjectProxy* self, const char* value);
+char* rygel_external_media_object_proxy_get_object_type (RygelExternalMediaObjectProxy* self);
+void rygel_external_media_object_proxy_set_object_type (RygelExternalMediaObjectProxy* self, const char* value);
 static void _vala_dbus_register_object (DBusConnection* connection, const char* path, void* object);
 static void _vala_dbus_unregister_object (gpointer connection, GObject* object);
-void rygel_external_media_object_dbus_register_object (DBusConnection* connection, const char* path, void* object);
-void _rygel_external_media_object_dbus_unregister (DBusConnection* connection, void* _user_data_);
-DBusHandlerResult rygel_external_media_object_dbus_message (DBusConnection* connection, DBusMessage* message, void* object);
-static DBusHandlerResult _dbus_rygel_external_media_object_introspect (RygelExternalMediaObject* self, DBusConnection* connection, DBusMessage* message);
-static DBusHandlerResult _dbus_rygel_external_media_object_property_get (RygelExternalMediaObject* self, DBusConnection* connection, DBusMessage* message);
-static DBusHandlerResult _dbus_rygel_external_media_object_property_set (RygelExternalMediaObject* self, DBusConnection* connection, DBusMessage* message);
-static DBusHandlerResult _dbus_rygel_external_media_object_property_get_all (RygelExternalMediaObject* self, DBusConnection* connection, DBusMessage* message);
-GType rygel_external_media_object_dbus_proxy_get_type (void);
-DBusHandlerResult rygel_external_media_object_dbus_proxy_filter (DBusConnection* connection, DBusMessage* message, void* user_data);
+void rygel_external_media_object_proxy_dbus_register_object (DBusConnection* connection, const char* path, void* object);
+void _rygel_external_media_object_proxy_dbus_unregister (DBusConnection* connection, void* _user_data_);
+DBusHandlerResult rygel_external_media_object_proxy_dbus_message (DBusConnection* connection, DBusMessage* message, void* object);
+static DBusHandlerResult _dbus_rygel_external_media_object_proxy_introspect (RygelExternalMediaObjectProxy* self, DBusConnection* connection, DBusMessage* message);
+static DBusHandlerResult _dbus_rygel_external_media_object_proxy_property_get (RygelExternalMediaObjectProxy* self, DBusConnection* connection, DBusMessage* message);
+static DBusHandlerResult _dbus_rygel_external_media_object_proxy_property_set (RygelExternalMediaObjectProxy* self, DBusConnection* connection, DBusMessage* message);
+static DBusHandlerResult _dbus_rygel_external_media_object_proxy_property_get_all (RygelExternalMediaObjectProxy* self, DBusConnection* connection, DBusMessage* message);
+GType rygel_external_media_object_proxy_dbus_proxy_get_type (void);
+DBusHandlerResult rygel_external_media_object_proxy_dbus_proxy_filter (DBusConnection* connection, DBusMessage* message, void* user_data);
 enum  {
-	RYGEL_EXTERNAL_MEDIA_OBJECT_DBUS_PROXY_DUMMY_PROPERTY,
-	RYGEL_EXTERNAL_MEDIA_OBJECT_DBUS_PROXY_PARENT,
-	RYGEL_EXTERNAL_MEDIA_OBJECT_DBUS_PROXY_DISPLAY_NAME,
-	RYGEL_EXTERNAL_MEDIA_OBJECT_DBUS_PROXY_OBJECT_TYPE
+	RYGEL_EXTERNAL_MEDIA_OBJECT_PROXY_DBUS_PROXY_DUMMY_PROPERTY,
+	RYGEL_EXTERNAL_MEDIA_OBJECT_PROXY_DBUS_PROXY_PARENT,
+	RYGEL_EXTERNAL_MEDIA_OBJECT_PROXY_DBUS_PROXY_DISPLAY_NAME,
+	RYGEL_EXTERNAL_MEDIA_OBJECT_PROXY_DBUS_PROXY_OBJECT_TYPE
 };
-static char* rygel_external_media_object_dbus_proxy_get_parent (RygelExternalMediaObject* self);
-static void rygel_external_media_object_dbus_proxy_set_parent (RygelExternalMediaObject* self, const char* value);
-static char* rygel_external_media_object_dbus_proxy_get_display_name (RygelExternalMediaObject* self);
-static void rygel_external_media_object_dbus_proxy_set_display_name (RygelExternalMediaObject* self, const char* value);
-static char* rygel_external_media_object_dbus_proxy_get_object_type (RygelExternalMediaObject* self);
-static void rygel_external_media_object_dbus_proxy_set_object_type (RygelExternalMediaObject* self, const char* value);
-static void rygel_external_media_object_dbus_proxy_rygel_external_media_object__interface_init (RygelExternalMediaObjectIface* iface);
-static void rygel_external_media_object_dbus_proxy_get_property (GObject * object, guint property_id, GValue * value, GParamSpec * pspec);
-static void rygel_external_media_object_dbus_proxy_set_property (GObject * object, guint property_id, const GValue * value, GParamSpec * pspec);
-RygelExternalMediaContainer* rygel_external_media_container_dbus_proxy_new (DBusGConnection* connection, const char* name, const char* path);
-GType rygel_external_media_container_get_type (void);
-void rygel_external_media_container_list_children (RygelExternalMediaContainer* self, guint offset, guint max_count, char** filter, int filter_length1, GAsyncReadyCallback _callback_, gpointer _user_data_);
-GHashTable** rygel_external_media_container_list_children_finish (RygelExternalMediaContainer* self, GAsyncResult* _res_, int* result_length1, GError** error);
-void rygel_external_media_container_list_containers (RygelExternalMediaContainer* self, guint offset, guint max_count, char** filter, int filter_length1, GAsyncReadyCallback _callback_, gpointer _user_data_);
-GHashTable** rygel_external_media_container_list_containers_finish (RygelExternalMediaContainer* self, GAsyncResult* _res_, int* result_length1, GError** error);
-void rygel_external_media_container_list_items (RygelExternalMediaContainer* self, guint offset, guint max_count, char** filter, int filter_length1, GAsyncReadyCallback _callback_, gpointer _user_data_);
-GHashTable** rygel_external_media_container_list_items_finish (RygelExternalMediaContainer* self, GAsyncResult* _res_, int* result_length1, GError** error);
-void rygel_external_media_container_search_objects (RygelExternalMediaContainer* self, const char* query, guint offset, guint max_count, char** filter, int filter_length1, GAsyncReadyCallback _callback_, gpointer _user_data_);
-GHashTable** rygel_external_media_container_search_objects_finish (RygelExternalMediaContainer* self, GAsyncResult* _res_, int* result_length1, GError** error);
-#define RYGEL_EXTERNAL_MEDIA_CONTAINER_IFACE "org.gnome.UPnP.MediaContainer2"
-guint rygel_external_media_container_get_child_count (RygelExternalMediaContainer* self);
-void rygel_external_media_container_set_child_count (RygelExternalMediaContainer* self, guint value);
-guint rygel_external_media_container_get_item_count (RygelExternalMediaContainer* self);
-void rygel_external_media_container_set_item_count (RygelExternalMediaContainer* self, guint value);
-guint rygel_external_media_container_get_container_count (RygelExternalMediaContainer* self);
-void rygel_external_media_container_set_container_count (RygelExternalMediaContainer* self, guint value);
-gboolean rygel_external_media_container_get_searchable (RygelExternalMediaContainer* self);
-void rygel_external_media_container_set_searchable (RygelExternalMediaContainer* self, gboolean value);
-char* rygel_external_media_container_get_icon (RygelExternalMediaContainer* self);
-void rygel_external_media_container_set_icon (RygelExternalMediaContainer* self, const char* value);
-void rygel_external_media_container_dbus_register_object (DBusConnection* connection, const char* path, void* object);
-void _rygel_external_media_container_dbus_unregister (DBusConnection* connection, void* _user_data_);
-DBusHandlerResult rygel_external_media_container_dbus_message (DBusConnection* connection, DBusMessage* message, void* object);
-static DBusHandlerResult _dbus_rygel_external_media_container_introspect (RygelExternalMediaContainer* self, DBusConnection* connection, DBusMessage* message);
-static DBusHandlerResult _dbus_rygel_external_media_container_property_get (RygelExternalMediaContainer* self, DBusConnection* connection, DBusMessage* message);
-static DBusHandlerResult _dbus_rygel_external_media_container_property_set (RygelExternalMediaContainer* self, DBusConnection* connection, DBusMessage* message);
-static DBusHandlerResult _dbus_rygel_external_media_container_property_get_all (RygelExternalMediaContainer* self, DBusConnection* connection, DBusMessage* message);
-static DBusHandlerResult _dbus_rygel_external_media_container_list_children (RygelExternalMediaContainer* self, DBusConnection* connection, DBusMessage* message);
-static void _dbus_rygel_external_media_container_list_children_ready (GObject * source_object, GAsyncResult * _res_, gpointer * _user_data_);
-static DBusHandlerResult _dbus_rygel_external_media_container_list_containers (RygelExternalMediaContainer* self, DBusConnection* connection, DBusMessage* message);
-static void _dbus_rygel_external_media_container_list_containers_ready (GObject * source_object, GAsyncResult * _res_, gpointer * _user_data_);
-static DBusHandlerResult _dbus_rygel_external_media_container_list_items (RygelExternalMediaContainer* self, DBusConnection* connection, DBusMessage* message);
-static void _dbus_rygel_external_media_container_list_items_ready (GObject * source_object, GAsyncResult * _res_, gpointer * _user_data_);
-static DBusHandlerResult _dbus_rygel_external_media_container_search_objects (RygelExternalMediaContainer* self, DBusConnection* connection, DBusMessage* message);
-static void _dbus_rygel_external_media_container_search_objects_ready (GObject * source_object, GAsyncResult * _res_, gpointer * _user_data_);
-static void _dbus_rygel_external_media_container_updated (GObject* _sender, DBusConnection* _connection);
-GType rygel_external_media_container_dbus_proxy_get_type (void);
-static void _dbus_handle_rygel_external_media_container_updated (RygelExternalMediaContainer* self, DBusConnection* connection, DBusMessage* message);
-DBusHandlerResult rygel_external_media_container_dbus_proxy_filter (DBusConnection* connection, DBusMessage* message, void* user_data);
+static char* rygel_external_media_object_proxy_dbus_proxy_get_parent (RygelExternalMediaObjectProxy* self);
+static void rygel_external_media_object_proxy_dbus_proxy_set_parent (RygelExternalMediaObjectProxy* self, const char* value);
+static char* rygel_external_media_object_proxy_dbus_proxy_get_display_name (RygelExternalMediaObjectProxy* self);
+static void rygel_external_media_object_proxy_dbus_proxy_set_display_name (RygelExternalMediaObjectProxy* self, const char* value);
+static char* rygel_external_media_object_proxy_dbus_proxy_get_object_type (RygelExternalMediaObjectProxy* self);
+static void rygel_external_media_object_proxy_dbus_proxy_set_object_type (RygelExternalMediaObjectProxy* self, const char* value);
+static void rygel_external_media_object_proxy_dbus_proxy_rygel_external_media_object_proxy__interface_init (RygelExternalMediaObjectProxyIface* iface);
+static void rygel_external_media_object_proxy_dbus_proxy_get_property (GObject * object, guint property_id, GValue * value, GParamSpec * pspec);
+static void rygel_external_media_object_proxy_dbus_proxy_set_property (GObject * object, guint property_id, const GValue * value, GParamSpec * pspec);
+RygelExternalMediaContainerProxy* rygel_external_media_container_proxy_dbus_proxy_new (DBusGConnection* connection, const char* name, const char* path);
+GType rygel_external_media_container_proxy_get_type (void);
+void rygel_external_media_container_proxy_list_children (RygelExternalMediaContainerProxy* self, guint offset, guint max_count, char** filter, int filter_length1, GAsyncReadyCallback _callback_, gpointer _user_data_);
+GHashTable** rygel_external_media_container_proxy_list_children_finish (RygelExternalMediaContainerProxy* self, GAsyncResult* _res_, int* result_length1, GError** error);
+void rygel_external_media_container_proxy_list_containers (RygelExternalMediaContainerProxy* self, guint offset, guint max_count, char** filter, int filter_length1, GAsyncReadyCallback _callback_, gpointer _user_data_);
+GHashTable** rygel_external_media_container_proxy_list_containers_finish (RygelExternalMediaContainerProxy* self, GAsyncResult* _res_, int* result_length1, GError** error);
+void rygel_external_media_container_proxy_list_items (RygelExternalMediaContainerProxy* self, guint offset, guint max_count, char** filter, int filter_length1, GAsyncReadyCallback _callback_, gpointer _user_data_);
+GHashTable** rygel_external_media_container_proxy_list_items_finish (RygelExternalMediaContainerProxy* self, GAsyncResult* _res_, int* result_length1, GError** error);
+void rygel_external_media_container_proxy_search_objects (RygelExternalMediaContainerProxy* self, const char* query, guint offset, guint max_count, char** filter, int filter_length1, GAsyncReadyCallback _callback_, gpointer _user_data_);
+GHashTable** rygel_external_media_container_proxy_search_objects_finish (RygelExternalMediaContainerProxy* self, GAsyncResult* _res_, int* result_length1, GError** error);
+#define RYGEL_EXTERNAL_MEDIA_CONTAINER_PROXY_IFACE "org.gnome.UPnP.MediaContainer2"
+guint rygel_external_media_container_proxy_get_child_count (RygelExternalMediaContainerProxy* self);
+void rygel_external_media_container_proxy_set_child_count (RygelExternalMediaContainerProxy* self, guint value);
+guint rygel_external_media_container_proxy_get_item_count (RygelExternalMediaContainerProxy* self);
+void rygel_external_media_container_proxy_set_item_count (RygelExternalMediaContainerProxy* self, guint value);
+guint rygel_external_media_container_proxy_get_container_count (RygelExternalMediaContainerProxy* self);
+void rygel_external_media_container_proxy_set_container_count (RygelExternalMediaContainerProxy* self, guint value);
+gboolean rygel_external_media_container_proxy_get_searchable (RygelExternalMediaContainerProxy* self);
+void rygel_external_media_container_proxy_set_searchable (RygelExternalMediaContainerProxy* self, gboolean value);
+char* rygel_external_media_container_proxy_get_icon (RygelExternalMediaContainerProxy* self);
+void rygel_external_media_container_proxy_set_icon (RygelExternalMediaContainerProxy* self, const char* value);
+void rygel_external_media_container_proxy_dbus_register_object (DBusConnection* connection, const char* path, void* object);
+void _rygel_external_media_container_proxy_dbus_unregister (DBusConnection* connection, void* _user_data_);
+DBusHandlerResult rygel_external_media_container_proxy_dbus_message (DBusConnection* connection, DBusMessage* message, void* object);
+static DBusHandlerResult _dbus_rygel_external_media_container_proxy_introspect (RygelExternalMediaContainerProxy* self, DBusConnection* connection, DBusMessage* message);
+static DBusHandlerResult _dbus_rygel_external_media_container_proxy_property_get (RygelExternalMediaContainerProxy* self, DBusConnection* connection, DBusMessage* message);
+static DBusHandlerResult _dbus_rygel_external_media_container_proxy_property_set (RygelExternalMediaContainerProxy* self, DBusConnection* connection, DBusMessage* message);
+static DBusHandlerResult _dbus_rygel_external_media_container_proxy_property_get_all (RygelExternalMediaContainerProxy* self, DBusConnection* connection, DBusMessage* message);
+static DBusHandlerResult _dbus_rygel_external_media_container_proxy_list_children (RygelExternalMediaContainerProxy* self, DBusConnection* connection, DBusMessage* message);
+static void _dbus_rygel_external_media_container_proxy_list_children_ready (GObject * source_object, GAsyncResult * _res_, gpointer * _user_data_);
+static DBusHandlerResult _dbus_rygel_external_media_container_proxy_list_containers (RygelExternalMediaContainerProxy* self, DBusConnection* connection, DBusMessage* message);
+static void _dbus_rygel_external_media_container_proxy_list_containers_ready (GObject * source_object, GAsyncResult * _res_, gpointer * _user_data_);
+static DBusHandlerResult _dbus_rygel_external_media_container_proxy_list_items (RygelExternalMediaContainerProxy* self, DBusConnection* connection, DBusMessage* message);
+static void _dbus_rygel_external_media_container_proxy_list_items_ready (GObject * source_object, GAsyncResult * _res_, gpointer * _user_data_);
+static DBusHandlerResult _dbus_rygel_external_media_container_proxy_search_objects (RygelExternalMediaContainerProxy* self, DBusConnection* connection, DBusMessage* message);
+static void _dbus_rygel_external_media_container_proxy_search_objects_ready (GObject * source_object, GAsyncResult * _res_, gpointer * _user_data_);
+static void _dbus_rygel_external_media_container_proxy_updated (GObject* _sender, DBusConnection* _connection);
+GType rygel_external_media_container_proxy_dbus_proxy_get_type (void);
+static void _dbus_handle_rygel_external_media_container_proxy_updated (RygelExternalMediaContainerProxy* self, DBusConnection* connection, DBusMessage* message);
+DBusHandlerResult rygel_external_media_container_proxy_dbus_proxy_filter (DBusConnection* connection, DBusMessage* message, void* user_data);
 enum  {
-	RYGEL_EXTERNAL_MEDIA_CONTAINER_DBUS_PROXY_DUMMY_PROPERTY,
-	RYGEL_EXTERNAL_MEDIA_CONTAINER_DBUS_PROXY_PARENT,
-	RYGEL_EXTERNAL_MEDIA_CONTAINER_DBUS_PROXY_DISPLAY_NAME,
-	RYGEL_EXTERNAL_MEDIA_CONTAINER_DBUS_PROXY_OBJECT_TYPE,
-	RYGEL_EXTERNAL_MEDIA_CONTAINER_DBUS_PROXY_CHILD_COUNT,
-	RYGEL_EXTERNAL_MEDIA_CONTAINER_DBUS_PROXY_ITEM_COUNT,
-	RYGEL_EXTERNAL_MEDIA_CONTAINER_DBUS_PROXY_CONTAINER_COUNT,
-	RYGEL_EXTERNAL_MEDIA_CONTAINER_DBUS_PROXY_SEARCHABLE,
-	RYGEL_EXTERNAL_MEDIA_CONTAINER_DBUS_PROXY_ICON
+	RYGEL_EXTERNAL_MEDIA_CONTAINER_PROXY_DBUS_PROXY_DUMMY_PROPERTY,
+	RYGEL_EXTERNAL_MEDIA_CONTAINER_PROXY_DBUS_PROXY_PARENT,
+	RYGEL_EXTERNAL_MEDIA_CONTAINER_PROXY_DBUS_PROXY_DISPLAY_NAME,
+	RYGEL_EXTERNAL_MEDIA_CONTAINER_PROXY_DBUS_PROXY_OBJECT_TYPE,
+	RYGEL_EXTERNAL_MEDIA_CONTAINER_PROXY_DBUS_PROXY_CHILD_COUNT,
+	RYGEL_EXTERNAL_MEDIA_CONTAINER_PROXY_DBUS_PROXY_ITEM_COUNT,
+	RYGEL_EXTERNAL_MEDIA_CONTAINER_PROXY_DBUS_PROXY_CONTAINER_COUNT,
+	RYGEL_EXTERNAL_MEDIA_CONTAINER_PROXY_DBUS_PROXY_SEARCHABLE,
+	RYGEL_EXTERNAL_MEDIA_CONTAINER_PROXY_DBUS_PROXY_ICON
 };
-static char* rygel_external_media_container_dbus_proxy_get_parent (RygelExternalMediaObject* self);
-static void rygel_external_media_container_dbus_proxy_set_parent (RygelExternalMediaObject* self, const char* value);
-static char* rygel_external_media_container_dbus_proxy_get_display_name (RygelExternalMediaObject* self);
-static void rygel_external_media_container_dbus_proxy_set_display_name (RygelExternalMediaObject* self, const char* value);
-static char* rygel_external_media_container_dbus_proxy_get_object_type (RygelExternalMediaObject* self);
-static void rygel_external_media_container_dbus_proxy_set_object_type (RygelExternalMediaObject* self, const char* value);
-static void rygel_external_media_container_dbus_proxy_rygel_external_media_object__interface_init (RygelExternalMediaObjectIface* iface);
-static void rygel_external_media_container_dbus_proxy_list_children_async (RygelExternalMediaContainer* self, guint offset, guint max_count, char** filter, int filter_length1, GAsyncReadyCallback _callback_, gpointer _user_data_);
-static void rygel_external_media_container_dbus_proxy_list_children_ready (DBusPendingCall* pending, void* user_data);
-static GHashTable** rygel_external_media_container_dbus_proxy_list_children_finish (RygelExternalMediaContainer* self, GAsyncResult* _res_, int* result_length1, GError** error);
-static void rygel_external_media_container_dbus_proxy_list_containers_async (RygelExternalMediaContainer* self, guint offset, guint max_count, char** filter, int filter_length1, GAsyncReadyCallback _callback_, gpointer _user_data_);
-static void rygel_external_media_container_dbus_proxy_list_containers_ready (DBusPendingCall* pending, void* user_data);
-static GHashTable** rygel_external_media_container_dbus_proxy_list_containers_finish (RygelExternalMediaContainer* self, GAsyncResult* _res_, int* result_length1, GError** error);
-static void rygel_external_media_container_dbus_proxy_list_items_async (RygelExternalMediaContainer* self, guint offset, guint max_count, char** filter, int filter_length1, GAsyncReadyCallback _callback_, gpointer _user_data_);
-static void rygel_external_media_container_dbus_proxy_list_items_ready (DBusPendingCall* pending, void* user_data);
-static GHashTable** rygel_external_media_container_dbus_proxy_list_items_finish (RygelExternalMediaContainer* self, GAsyncResult* _res_, int* result_length1, GError** error);
-static void rygel_external_media_container_dbus_proxy_search_objects_async (RygelExternalMediaContainer* self, const char* query, guint offset, guint max_count, char** filter, int filter_length1, GAsyncReadyCallback _callback_, gpointer _user_data_);
-static void rygel_external_media_container_dbus_proxy_search_objects_ready (DBusPendingCall* pending, void* user_data);
-static GHashTable** rygel_external_media_container_dbus_proxy_search_objects_finish (RygelExternalMediaContainer* self, GAsyncResult* _res_, int* result_length1, GError** error);
-static guint rygel_external_media_container_dbus_proxy_get_child_count (RygelExternalMediaContainer* self);
-static void rygel_external_media_container_dbus_proxy_set_child_count (RygelExternalMediaContainer* self, guint value);
-static guint rygel_external_media_container_dbus_proxy_get_item_count (RygelExternalMediaContainer* self);
-static void rygel_external_media_container_dbus_proxy_set_item_count (RygelExternalMediaContainer* self, guint value);
-static guint rygel_external_media_container_dbus_proxy_get_container_count (RygelExternalMediaContainer* self);
-static void rygel_external_media_container_dbus_proxy_set_container_count (RygelExternalMediaContainer* self, guint value);
-static gboolean rygel_external_media_container_dbus_proxy_get_searchable (RygelExternalMediaContainer* self);
-static void rygel_external_media_container_dbus_proxy_set_searchable (RygelExternalMediaContainer* self, gboolean value);
-static char* rygel_external_media_container_dbus_proxy_get_icon (RygelExternalMediaContainer* self);
-static void rygel_external_media_container_dbus_proxy_set_icon (RygelExternalMediaContainer* self, const char* value);
-static void rygel_external_media_container_dbus_proxy_rygel_external_media_container__interface_init (RygelExternalMediaContainerIface* iface);
-static void rygel_external_media_container_dbus_proxy_get_property (GObject * object, guint property_id, GValue * value, GParamSpec * pspec);
-static void rygel_external_media_container_dbus_proxy_set_property (GObject * object, guint property_id, const GValue * value, GParamSpec * pspec);
-GType rygel_external_media_item_get_type (void);
-RygelExternalMediaItem* rygel_external_media_item_dbus_proxy_new (DBusGConnection* connection, const char* name, const char* path);
-#define RYGEL_EXTERNAL_MEDIA_ITEM_IFACE "org.gnome.UPnP.MediaItem2"
-char** rygel_external_media_item_get_urls (RygelExternalMediaItem* self, int* result_length1);
-void rygel_external_media_item_set_urls (RygelExternalMediaItem* self, char** value, int value_length1);
-char* rygel_external_media_item_get_mime_type (RygelExternalMediaItem* self);
-void rygel_external_media_item_set_mime_type (RygelExternalMediaItem* self, const char* value);
-gint rygel_external_media_item_get_size (RygelExternalMediaItem* self);
-void rygel_external_media_item_set_size (RygelExternalMediaItem* self, gint value);
-char* rygel_external_media_item_get_artist (RygelExternalMediaItem* self);
-void rygel_external_media_item_set_artist (RygelExternalMediaItem* self, const char* value);
-char* rygel_external_media_item_get_album (RygelExternalMediaItem* self);
-void rygel_external_media_item_set_album (RygelExternalMediaItem* self, const char* value);
-char* rygel_external_media_item_get_date (RygelExternalMediaItem* self);
-void rygel_external_media_item_set_date (RygelExternalMediaItem* self, const char* value);
-char* rygel_external_media_item_get_genre (RygelExternalMediaItem* self);
-void rygel_external_media_item_set_genre (RygelExternalMediaItem* self, const char* value);
-char* rygel_external_media_item_get_dlna_profile (RygelExternalMediaItem* self);
-void rygel_external_media_item_set_dlna_profile (RygelExternalMediaItem* self, const char* value);
-gint rygel_external_media_item_get_duration (RygelExternalMediaItem* self);
-void rygel_external_media_item_set_duration (RygelExternalMediaItem* self, gint value);
-gint rygel_external_media_item_get_bitrate (RygelExternalMediaItem* self);
-void rygel_external_media_item_set_bitrate (RygelExternalMediaItem* self, gint value);
-gint rygel_external_media_item_get_sample_rate (RygelExternalMediaItem* self);
-void rygel_external_media_item_set_sample_rate (RygelExternalMediaItem* self, gint value);
-gint rygel_external_media_item_get_bits_per_sample (RygelExternalMediaItem* self);
-void rygel_external_media_item_set_bits_per_sample (RygelExternalMediaItem* self, gint value);
-gint rygel_external_media_item_get_width (RygelExternalMediaItem* self);
-void rygel_external_media_item_set_width (RygelExternalMediaItem* self, gint value);
-gint rygel_external_media_item_get_height (RygelExternalMediaItem* self);
-void rygel_external_media_item_set_height (RygelExternalMediaItem* self, gint value);
-gint rygel_external_media_item_get_color_depth (RygelExternalMediaItem* self);
-void rygel_external_media_item_set_color_depth (RygelExternalMediaItem* self, gint value);
-char* rygel_external_media_item_get_thumbnail (RygelExternalMediaItem* self);
-void rygel_external_media_item_set_thumbnail (RygelExternalMediaItem* self, const char* value);
-char* rygel_external_media_item_get_album_art (RygelExternalMediaItem* self);
-void rygel_external_media_item_set_album_art (RygelExternalMediaItem* self, const char* value);
-void rygel_external_media_item_dbus_register_object (DBusConnection* connection, const char* path, void* object);
-void _rygel_external_media_item_dbus_unregister (DBusConnection* connection, void* _user_data_);
-DBusHandlerResult rygel_external_media_item_dbus_message (DBusConnection* connection, DBusMessage* message, void* object);
-static DBusHandlerResult _dbus_rygel_external_media_item_introspect (RygelExternalMediaItem* self, DBusConnection* connection, DBusMessage* message);
-static DBusHandlerResult _dbus_rygel_external_media_item_property_get (RygelExternalMediaItem* self, DBusConnection* connection, DBusMessage* message);
-static DBusHandlerResult _dbus_rygel_external_media_item_property_set (RygelExternalMediaItem* self, DBusConnection* connection, DBusMessage* message);
-static DBusHandlerResult _dbus_rygel_external_media_item_property_get_all (RygelExternalMediaItem* self, DBusConnection* connection, DBusMessage* message);
-GType rygel_external_media_item_dbus_proxy_get_type (void);
-DBusHandlerResult rygel_external_media_item_dbus_proxy_filter (DBusConnection* connection, DBusMessage* message, void* user_data);
+static char* rygel_external_media_container_proxy_dbus_proxy_get_parent (RygelExternalMediaObjectProxy* self);
+static void rygel_external_media_container_proxy_dbus_proxy_set_parent (RygelExternalMediaObjectProxy* self, const char* value);
+static char* rygel_external_media_container_proxy_dbus_proxy_get_display_name (RygelExternalMediaObjectProxy* self);
+static void rygel_external_media_container_proxy_dbus_proxy_set_display_name (RygelExternalMediaObjectProxy* self, const char* value);
+static char* rygel_external_media_container_proxy_dbus_proxy_get_object_type (RygelExternalMediaObjectProxy* self);
+static void rygel_external_media_container_proxy_dbus_proxy_set_object_type (RygelExternalMediaObjectProxy* self, const char* value);
+static void rygel_external_media_container_proxy_dbus_proxy_rygel_external_media_object_proxy__interface_init (RygelExternalMediaObjectProxyIface* iface);
+static void rygel_external_media_container_proxy_dbus_proxy_list_children_async (RygelExternalMediaContainerProxy* self, guint offset, guint max_count, char** filter, int filter_length1, GAsyncReadyCallback _callback_, gpointer _user_data_);
+static void rygel_external_media_container_proxy_dbus_proxy_list_children_ready (DBusPendingCall* pending, void* user_data);
+static GHashTable** rygel_external_media_container_proxy_dbus_proxy_list_children_finish (RygelExternalMediaContainerProxy* self, GAsyncResult* _res_, int* result_length1, GError** error);
+static void rygel_external_media_container_proxy_dbus_proxy_list_containers_async (RygelExternalMediaContainerProxy* self, guint offset, guint max_count, char** filter, int filter_length1, GAsyncReadyCallback _callback_, gpointer _user_data_);
+static void rygel_external_media_container_proxy_dbus_proxy_list_containers_ready (DBusPendingCall* pending, void* user_data);
+static GHashTable** rygel_external_media_container_proxy_dbus_proxy_list_containers_finish (RygelExternalMediaContainerProxy* self, GAsyncResult* _res_, int* result_length1, GError** error);
+static void rygel_external_media_container_proxy_dbus_proxy_list_items_async (RygelExternalMediaContainerProxy* self, guint offset, guint max_count, char** filter, int filter_length1, GAsyncReadyCallback _callback_, gpointer _user_data_);
+static void rygel_external_media_container_proxy_dbus_proxy_list_items_ready (DBusPendingCall* pending, void* user_data);
+static GHashTable** rygel_external_media_container_proxy_dbus_proxy_list_items_finish (RygelExternalMediaContainerProxy* self, GAsyncResult* _res_, int* result_length1, GError** error);
+static void rygel_external_media_container_proxy_dbus_proxy_search_objects_async (RygelExternalMediaContainerProxy* self, const char* query, guint offset, guint max_count, char** filter, int filter_length1, GAsyncReadyCallback _callback_, gpointer _user_data_);
+static void rygel_external_media_container_proxy_dbus_proxy_search_objects_ready (DBusPendingCall* pending, void* user_data);
+static GHashTable** rygel_external_media_container_proxy_dbus_proxy_search_objects_finish (RygelExternalMediaContainerProxy* self, GAsyncResult* _res_, int* result_length1, GError** error);
+static guint rygel_external_media_container_proxy_dbus_proxy_get_child_count (RygelExternalMediaContainerProxy* self);
+static void rygel_external_media_container_proxy_dbus_proxy_set_child_count (RygelExternalMediaContainerProxy* self, guint value);
+static guint rygel_external_media_container_proxy_dbus_proxy_get_item_count (RygelExternalMediaContainerProxy* self);
+static void rygel_external_media_container_proxy_dbus_proxy_set_item_count (RygelExternalMediaContainerProxy* self, guint value);
+static guint rygel_external_media_container_proxy_dbus_proxy_get_container_count (RygelExternalMediaContainerProxy* self);
+static void rygel_external_media_container_proxy_dbus_proxy_set_container_count (RygelExternalMediaContainerProxy* self, guint value);
+static gboolean rygel_external_media_container_proxy_dbus_proxy_get_searchable (RygelExternalMediaContainerProxy* self);
+static void rygel_external_media_container_proxy_dbus_proxy_set_searchable (RygelExternalMediaContainerProxy* self, gboolean value);
+static char* rygel_external_media_container_proxy_dbus_proxy_get_icon (RygelExternalMediaContainerProxy* self);
+static void rygel_external_media_container_proxy_dbus_proxy_set_icon (RygelExternalMediaContainerProxy* self, const char* value);
+static void rygel_external_media_container_proxy_dbus_proxy_rygel_external_media_container_proxy__interface_init (RygelExternalMediaContainerProxyIface* iface);
+static void rygel_external_media_container_proxy_dbus_proxy_get_property (GObject * object, guint property_id, GValue * value, GParamSpec * pspec);
+static void rygel_external_media_container_proxy_dbus_proxy_set_property (GObject * object, guint property_id, const GValue * value, GParamSpec * pspec);
+GType rygel_external_media_item_proxy_get_type (void);
+RygelExternalMediaItemProxy* rygel_external_media_item_proxy_dbus_proxy_new (DBusGConnection* connection, const char* name, const char* path);
+#define RYGEL_EXTERNAL_MEDIA_ITEM_PROXY_IFACE "org.gnome.UPnP.MediaItem2"
+char** rygel_external_media_item_proxy_get_urls (RygelExternalMediaItemProxy* self, int* result_length1);
+void rygel_external_media_item_proxy_set_urls (RygelExternalMediaItemProxy* self, char** value, int value_length1);
+char* rygel_external_media_item_proxy_get_mime_type (RygelExternalMediaItemProxy* self);
+void rygel_external_media_item_proxy_set_mime_type (RygelExternalMediaItemProxy* self, const char* value);
+gint rygel_external_media_item_proxy_get_size (RygelExternalMediaItemProxy* self);
+void rygel_external_media_item_proxy_set_size (RygelExternalMediaItemProxy* self, gint value);
+char* rygel_external_media_item_proxy_get_artist (RygelExternalMediaItemProxy* self);
+void rygel_external_media_item_proxy_set_artist (RygelExternalMediaItemProxy* self, const char* value);
+char* rygel_external_media_item_proxy_get_album (RygelExternalMediaItemProxy* self);
+void rygel_external_media_item_proxy_set_album (RygelExternalMediaItemProxy* self, const char* value);
+char* rygel_external_media_item_proxy_get_date (RygelExternalMediaItemProxy* self);
+void rygel_external_media_item_proxy_set_date (RygelExternalMediaItemProxy* self, const char* value);
+char* rygel_external_media_item_proxy_get_genre (RygelExternalMediaItemProxy* self);
+void rygel_external_media_item_proxy_set_genre (RygelExternalMediaItemProxy* self, const char* value);
+char* rygel_external_media_item_proxy_get_dlna_profile (RygelExternalMediaItemProxy* self);
+void rygel_external_media_item_proxy_set_dlna_profile (RygelExternalMediaItemProxy* self, const char* value);
+gint rygel_external_media_item_proxy_get_duration (RygelExternalMediaItemProxy* self);
+void rygel_external_media_item_proxy_set_duration (RygelExternalMediaItemProxy* self, gint value);
+gint rygel_external_media_item_proxy_get_bitrate (RygelExternalMediaItemProxy* self);
+void rygel_external_media_item_proxy_set_bitrate (RygelExternalMediaItemProxy* self, gint value);
+gint rygel_external_media_item_proxy_get_sample_rate (RygelExternalMediaItemProxy* self);
+void rygel_external_media_item_proxy_set_sample_rate (RygelExternalMediaItemProxy* self, gint value);
+gint rygel_external_media_item_proxy_get_bits_per_sample (RygelExternalMediaItemProxy* self);
+void rygel_external_media_item_proxy_set_bits_per_sample (RygelExternalMediaItemProxy* self, gint value);
+gint rygel_external_media_item_proxy_get_width (RygelExternalMediaItemProxy* self);
+void rygel_external_media_item_proxy_set_width (RygelExternalMediaItemProxy* self, gint value);
+gint rygel_external_media_item_proxy_get_height (RygelExternalMediaItemProxy* self);
+void rygel_external_media_item_proxy_set_height (RygelExternalMediaItemProxy* self, gint value);
+gint rygel_external_media_item_proxy_get_color_depth (RygelExternalMediaItemProxy* self);
+void rygel_external_media_item_proxy_set_color_depth (RygelExternalMediaItemProxy* self, gint value);
+char* rygel_external_media_item_proxy_get_thumbnail (RygelExternalMediaItemProxy* self);
+void rygel_external_media_item_proxy_set_thumbnail (RygelExternalMediaItemProxy* self, const char* value);
+char* rygel_external_media_item_proxy_get_album_art (RygelExternalMediaItemProxy* self);
+void rygel_external_media_item_proxy_set_album_art (RygelExternalMediaItemProxy* self, const char* value);
+void rygel_external_media_item_proxy_dbus_register_object (DBusConnection* connection, const char* path, void* object);
+void _rygel_external_media_item_proxy_dbus_unregister (DBusConnection* connection, void* _user_data_);
+DBusHandlerResult rygel_external_media_item_proxy_dbus_message (DBusConnection* connection, DBusMessage* message, void* object);
+static DBusHandlerResult _dbus_rygel_external_media_item_proxy_introspect (RygelExternalMediaItemProxy* self, DBusConnection* connection, DBusMessage* message);
+static DBusHandlerResult _dbus_rygel_external_media_item_proxy_property_get (RygelExternalMediaItemProxy* self, DBusConnection* connection, DBusMessage* message);
+static DBusHandlerResult _dbus_rygel_external_media_item_proxy_property_set (RygelExternalMediaItemProxy* self, DBusConnection* connection, DBusMessage* message);
+static DBusHandlerResult _dbus_rygel_external_media_item_proxy_property_get_all (RygelExternalMediaItemProxy* self, DBusConnection* connection, DBusMessage* message);
+GType rygel_external_media_item_proxy_dbus_proxy_get_type (void);
+DBusHandlerResult rygel_external_media_item_proxy_dbus_proxy_filter (DBusConnection* connection, DBusMessage* message, void* user_data);
 enum  {
-	RYGEL_EXTERNAL_MEDIA_ITEM_DBUS_PROXY_DUMMY_PROPERTY,
-	RYGEL_EXTERNAL_MEDIA_ITEM_DBUS_PROXY_PARENT,
-	RYGEL_EXTERNAL_MEDIA_ITEM_DBUS_PROXY_DISPLAY_NAME,
-	RYGEL_EXTERNAL_MEDIA_ITEM_DBUS_PROXY_OBJECT_TYPE,
-	RYGEL_EXTERNAL_MEDIA_ITEM_DBUS_PROXY_URLS,
-	RYGEL_EXTERNAL_MEDIA_ITEM_DBUS_PROXY_MIME_TYPE,
-	RYGEL_EXTERNAL_MEDIA_ITEM_DBUS_PROXY_SIZE,
-	RYGEL_EXTERNAL_MEDIA_ITEM_DBUS_PROXY_ARTIST,
-	RYGEL_EXTERNAL_MEDIA_ITEM_DBUS_PROXY_ALBUM,
-	RYGEL_EXTERNAL_MEDIA_ITEM_DBUS_PROXY_DATE,
-	RYGEL_EXTERNAL_MEDIA_ITEM_DBUS_PROXY_GENRE,
-	RYGEL_EXTERNAL_MEDIA_ITEM_DBUS_PROXY_DLNA_PROFILE,
-	RYGEL_EXTERNAL_MEDIA_ITEM_DBUS_PROXY_DURATION,
-	RYGEL_EXTERNAL_MEDIA_ITEM_DBUS_PROXY_BITRATE,
-	RYGEL_EXTERNAL_MEDIA_ITEM_DBUS_PROXY_SAMPLE_RATE,
-	RYGEL_EXTERNAL_MEDIA_ITEM_DBUS_PROXY_BITS_PER_SAMPLE,
-	RYGEL_EXTERNAL_MEDIA_ITEM_DBUS_PROXY_WIDTH,
-	RYGEL_EXTERNAL_MEDIA_ITEM_DBUS_PROXY_HEIGHT,
-	RYGEL_EXTERNAL_MEDIA_ITEM_DBUS_PROXY_COLOR_DEPTH,
-	RYGEL_EXTERNAL_MEDIA_ITEM_DBUS_PROXY_THUMBNAIL,
-	RYGEL_EXTERNAL_MEDIA_ITEM_DBUS_PROXY_ALBUM_ART
+	RYGEL_EXTERNAL_MEDIA_ITEM_PROXY_DBUS_PROXY_DUMMY_PROPERTY,
+	RYGEL_EXTERNAL_MEDIA_ITEM_PROXY_DBUS_PROXY_PARENT,
+	RYGEL_EXTERNAL_MEDIA_ITEM_PROXY_DBUS_PROXY_DISPLAY_NAME,
+	RYGEL_EXTERNAL_MEDIA_ITEM_PROXY_DBUS_PROXY_OBJECT_TYPE,
+	RYGEL_EXTERNAL_MEDIA_ITEM_PROXY_DBUS_PROXY_URLS,
+	RYGEL_EXTERNAL_MEDIA_ITEM_PROXY_DBUS_PROXY_MIME_TYPE,
+	RYGEL_EXTERNAL_MEDIA_ITEM_PROXY_DBUS_PROXY_SIZE,
+	RYGEL_EXTERNAL_MEDIA_ITEM_PROXY_DBUS_PROXY_ARTIST,
+	RYGEL_EXTERNAL_MEDIA_ITEM_PROXY_DBUS_PROXY_ALBUM,
+	RYGEL_EXTERNAL_MEDIA_ITEM_PROXY_DBUS_PROXY_DATE,
+	RYGEL_EXTERNAL_MEDIA_ITEM_PROXY_DBUS_PROXY_GENRE,
+	RYGEL_EXTERNAL_MEDIA_ITEM_PROXY_DBUS_PROXY_DLNA_PROFILE,
+	RYGEL_EXTERNAL_MEDIA_ITEM_PROXY_DBUS_PROXY_DURATION,
+	RYGEL_EXTERNAL_MEDIA_ITEM_PROXY_DBUS_PROXY_BITRATE,
+	RYGEL_EXTERNAL_MEDIA_ITEM_PROXY_DBUS_PROXY_SAMPLE_RATE,
+	RYGEL_EXTERNAL_MEDIA_ITEM_PROXY_DBUS_PROXY_BITS_PER_SAMPLE,
+	RYGEL_EXTERNAL_MEDIA_ITEM_PROXY_DBUS_PROXY_WIDTH,
+	RYGEL_EXTERNAL_MEDIA_ITEM_PROXY_DBUS_PROXY_HEIGHT,
+	RYGEL_EXTERNAL_MEDIA_ITEM_PROXY_DBUS_PROXY_COLOR_DEPTH,
+	RYGEL_EXTERNAL_MEDIA_ITEM_PROXY_DBUS_PROXY_THUMBNAIL,
+	RYGEL_EXTERNAL_MEDIA_ITEM_PROXY_DBUS_PROXY_ALBUM_ART
 };
-static char* rygel_external_media_item_dbus_proxy_get_parent (RygelExternalMediaObject* self);
-static void rygel_external_media_item_dbus_proxy_set_parent (RygelExternalMediaObject* self, const char* value);
-static char* rygel_external_media_item_dbus_proxy_get_display_name (RygelExternalMediaObject* self);
-static void rygel_external_media_item_dbus_proxy_set_display_name (RygelExternalMediaObject* self, const char* value);
-static char* rygel_external_media_item_dbus_proxy_get_object_type (RygelExternalMediaObject* self);
-static void rygel_external_media_item_dbus_proxy_set_object_type (RygelExternalMediaObject* self, const char* value);
-static void rygel_external_media_item_dbus_proxy_rygel_external_media_object__interface_init (RygelExternalMediaObjectIface* iface);
-static char** rygel_external_media_item_dbus_proxy_get_urls (RygelExternalMediaItem* self, int* result_length1);
-static void rygel_external_media_item_dbus_proxy_set_urls (RygelExternalMediaItem* self, char** value, int value_length1);
-static char* rygel_external_media_item_dbus_proxy_get_mime_type (RygelExternalMediaItem* self);
-static void rygel_external_media_item_dbus_proxy_set_mime_type (RygelExternalMediaItem* self, const char* value);
-static gint rygel_external_media_item_dbus_proxy_get_size (RygelExternalMediaItem* self);
-static void rygel_external_media_item_dbus_proxy_set_size (RygelExternalMediaItem* self, gint value);
-static char* rygel_external_media_item_dbus_proxy_get_artist (RygelExternalMediaItem* self);
-static void rygel_external_media_item_dbus_proxy_set_artist (RygelExternalMediaItem* self, const char* value);
-static char* rygel_external_media_item_dbus_proxy_get_album (RygelExternalMediaItem* self);
-static void rygel_external_media_item_dbus_proxy_set_album (RygelExternalMediaItem* self, const char* value);
-static char* rygel_external_media_item_dbus_proxy_get_date (RygelExternalMediaItem* self);
-static void rygel_external_media_item_dbus_proxy_set_date (RygelExternalMediaItem* self, const char* value);
-static char* rygel_external_media_item_dbus_proxy_get_genre (RygelExternalMediaItem* self);
-static void rygel_external_media_item_dbus_proxy_set_genre (RygelExternalMediaItem* self, const char* value);
-static char* rygel_external_media_item_dbus_proxy_get_dlna_profile (RygelExternalMediaItem* self);
-static void rygel_external_media_item_dbus_proxy_set_dlna_profile (RygelExternalMediaItem* self, const char* value);
-static gint rygel_external_media_item_dbus_proxy_get_duration (RygelExternalMediaItem* self);
-static void rygel_external_media_item_dbus_proxy_set_duration (RygelExternalMediaItem* self, gint value);
-static gint rygel_external_media_item_dbus_proxy_get_bitrate (RygelExternalMediaItem* self);
-static void rygel_external_media_item_dbus_proxy_set_bitrate (RygelExternalMediaItem* self, gint value);
-static gint rygel_external_media_item_dbus_proxy_get_sample_rate (RygelExternalMediaItem* self);
-static void rygel_external_media_item_dbus_proxy_set_sample_rate (RygelExternalMediaItem* self, gint value);
-static gint rygel_external_media_item_dbus_proxy_get_bits_per_sample (RygelExternalMediaItem* self);
-static void rygel_external_media_item_dbus_proxy_set_bits_per_sample (RygelExternalMediaItem* self, gint value);
-static gint rygel_external_media_item_dbus_proxy_get_width (RygelExternalMediaItem* self);
-static void rygel_external_media_item_dbus_proxy_set_width (RygelExternalMediaItem* self, gint value);
-static gint rygel_external_media_item_dbus_proxy_get_height (RygelExternalMediaItem* self);
-static void rygel_external_media_item_dbus_proxy_set_height (RygelExternalMediaItem* self, gint value);
-static gint rygel_external_media_item_dbus_proxy_get_color_depth (RygelExternalMediaItem* self);
-static void rygel_external_media_item_dbus_proxy_set_color_depth (RygelExternalMediaItem* self, gint value);
-static char* rygel_external_media_item_dbus_proxy_get_thumbnail (RygelExternalMediaItem* self);
-static void rygel_external_media_item_dbus_proxy_set_thumbnail (RygelExternalMediaItem* self, const char* value);
-static char* rygel_external_media_item_dbus_proxy_get_album_art (RygelExternalMediaItem* self);
-static void rygel_external_media_item_dbus_proxy_set_album_art (RygelExternalMediaItem* self, const char* value);
-static void rygel_external_media_item_dbus_proxy_rygel_external_media_item__interface_init (RygelExternalMediaItemIface* iface);
-static void rygel_external_media_item_dbus_proxy_get_property (GObject * object, guint property_id, GValue * value, GParamSpec * pspec);
-static void rygel_external_media_item_dbus_proxy_set_property (GObject * object, guint property_id, const GValue * value, GParamSpec * pspec);
+static char* rygel_external_media_item_proxy_dbus_proxy_get_parent (RygelExternalMediaObjectProxy* self);
+static void rygel_external_media_item_proxy_dbus_proxy_set_parent (RygelExternalMediaObjectProxy* self, const char* value);
+static char* rygel_external_media_item_proxy_dbus_proxy_get_display_name (RygelExternalMediaObjectProxy* self);
+static void rygel_external_media_item_proxy_dbus_proxy_set_display_name (RygelExternalMediaObjectProxy* self, const char* value);
+static char* rygel_external_media_item_proxy_dbus_proxy_get_object_type (RygelExternalMediaObjectProxy* self);
+static void rygel_external_media_item_proxy_dbus_proxy_set_object_type (RygelExternalMediaObjectProxy* self, const char* value);
+static void rygel_external_media_item_proxy_dbus_proxy_rygel_external_media_object_proxy__interface_init (RygelExternalMediaObjectProxyIface* iface);
+static char** rygel_external_media_item_proxy_dbus_proxy_get_urls (RygelExternalMediaItemProxy* self, int* result_length1);
+static void rygel_external_media_item_proxy_dbus_proxy_set_urls (RygelExternalMediaItemProxy* self, char** value, int value_length1);
+static char* rygel_external_media_item_proxy_dbus_proxy_get_mime_type (RygelExternalMediaItemProxy* self);
+static void rygel_external_media_item_proxy_dbus_proxy_set_mime_type (RygelExternalMediaItemProxy* self, const char* value);
+static gint rygel_external_media_item_proxy_dbus_proxy_get_size (RygelExternalMediaItemProxy* self);
+static void rygel_external_media_item_proxy_dbus_proxy_set_size (RygelExternalMediaItemProxy* self, gint value);
+static char* rygel_external_media_item_proxy_dbus_proxy_get_artist (RygelExternalMediaItemProxy* self);
+static void rygel_external_media_item_proxy_dbus_proxy_set_artist (RygelExternalMediaItemProxy* self, const char* value);
+static char* rygel_external_media_item_proxy_dbus_proxy_get_album (RygelExternalMediaItemProxy* self);
+static void rygel_external_media_item_proxy_dbus_proxy_set_album (RygelExternalMediaItemProxy* self, const char* value);
+static char* rygel_external_media_item_proxy_dbus_proxy_get_date (RygelExternalMediaItemProxy* self);
+static void rygel_external_media_item_proxy_dbus_proxy_set_date (RygelExternalMediaItemProxy* self, const char* value);
+static char* rygel_external_media_item_proxy_dbus_proxy_get_genre (RygelExternalMediaItemProxy* self);
+static void rygel_external_media_item_proxy_dbus_proxy_set_genre (RygelExternalMediaItemProxy* self, const char* value);
+static char* rygel_external_media_item_proxy_dbus_proxy_get_dlna_profile (RygelExternalMediaItemProxy* self);
+static void rygel_external_media_item_proxy_dbus_proxy_set_dlna_profile (RygelExternalMediaItemProxy* self, const char* value);
+static gint rygel_external_media_item_proxy_dbus_proxy_get_duration (RygelExternalMediaItemProxy* self);
+static void rygel_external_media_item_proxy_dbus_proxy_set_duration (RygelExternalMediaItemProxy* self, gint value);
+static gint rygel_external_media_item_proxy_dbus_proxy_get_bitrate (RygelExternalMediaItemProxy* self);
+static void rygel_external_media_item_proxy_dbus_proxy_set_bitrate (RygelExternalMediaItemProxy* self, gint value);
+static gint rygel_external_media_item_proxy_dbus_proxy_get_sample_rate (RygelExternalMediaItemProxy* self);
+static void rygel_external_media_item_proxy_dbus_proxy_set_sample_rate (RygelExternalMediaItemProxy* self, gint value);
+static gint rygel_external_media_item_proxy_dbus_proxy_get_bits_per_sample (RygelExternalMediaItemProxy* self);
+static void rygel_external_media_item_proxy_dbus_proxy_set_bits_per_sample (RygelExternalMediaItemProxy* self, gint value);
+static gint rygel_external_media_item_proxy_dbus_proxy_get_width (RygelExternalMediaItemProxy* self);
+static void rygel_external_media_item_proxy_dbus_proxy_set_width (RygelExternalMediaItemProxy* self, gint value);
+static gint rygel_external_media_item_proxy_dbus_proxy_get_height (RygelExternalMediaItemProxy* self);
+static void rygel_external_media_item_proxy_dbus_proxy_set_height (RygelExternalMediaItemProxy* self, gint value);
+static gint rygel_external_media_item_proxy_dbus_proxy_get_color_depth (RygelExternalMediaItemProxy* self);
+static void rygel_external_media_item_proxy_dbus_proxy_set_color_depth (RygelExternalMediaItemProxy* self, gint value);
+static char* rygel_external_media_item_proxy_dbus_proxy_get_thumbnail (RygelExternalMediaItemProxy* self);
+static void rygel_external_media_item_proxy_dbus_proxy_set_thumbnail (RygelExternalMediaItemProxy* self, const char* value);
+static char* rygel_external_media_item_proxy_dbus_proxy_get_album_art (RygelExternalMediaItemProxy* self);
+static void rygel_external_media_item_proxy_dbus_proxy_set_album_art (RygelExternalMediaItemProxy* self, const char* value);
+static void rygel_external_media_item_proxy_dbus_proxy_rygel_external_media_item_proxy__interface_init (RygelExternalMediaItemProxyIface* iface);
+static void rygel_external_media_item_proxy_dbus_proxy_get_property (GObject * object, guint property_id, GValue * value, GParamSpec * pspec);
+static void rygel_external_media_item_proxy_dbus_proxy_set_property (GObject * object, guint property_id, const GValue * value, GParamSpec * pspec);
 FreeDesktopDBusObject* free_desktop_dbus_object_dbus_proxy_new (DBusGConnection* connection, const char* name, const char* path);
 GType free_desktop_dbus_object_get_type (void);
 void free_desktop_dbus_object_list_names (FreeDesktopDBusObject* self, GAsyncReadyCallback _callback_, gpointer _user_data_);
@@ -538,15 +538,15 @@ static void free_desktop_properties_dbus_proxy_set_property (GObject * object, g
 static void _vala_array_destroy (gpointer array, gint array_length, GDestroyNotify destroy_func);
 static void _vala_array_free (gpointer array, gint array_length, GDestroyNotify destroy_func);
 
-const char* RYGEL_EXTERNAL_MEDIA_OBJECT_PROPERTIES[4] = {"Parent", "Type", "Path", "DisplayName"};
-static const DBusObjectPathVTable _rygel_external_media_object_dbus_path_vtable = {_rygel_external_media_object_dbus_unregister, rygel_external_media_object_dbus_message};
-static const _DBusObjectVTable _rygel_external_media_object_dbus_vtable = {rygel_external_media_object_dbus_register_object};
-const char* RYGEL_EXTERNAL_MEDIA_CONTAINER_PROPERTIES[2] = {"ChildCount", "Searchable"};
-static const DBusObjectPathVTable _rygel_external_media_container_dbus_path_vtable = {_rygel_external_media_container_dbus_unregister, rygel_external_media_container_dbus_message};
-static const _DBusObjectVTable _rygel_external_media_container_dbus_vtable = {rygel_external_media_container_dbus_register_object};
-const char* RYGEL_EXTERNAL_MEDIA_ITEM_PROPERTIES[18] = {"URLs", "MIMEType", "DLNAProfile", "Size", "Artist", "Album", "Date", "Duration", "Bitrate", "SampleRate", "BitsPerSample", "Width", "Height", "ColorDepth", "PixelWidth", "PixelHeight", "Thumbnail", "AlbumArt"};
-static const DBusObjectPathVTable _rygel_external_media_item_dbus_path_vtable = {_rygel_external_media_item_dbus_unregister, rygel_external_media_item_dbus_message};
-static const _DBusObjectVTable _rygel_external_media_item_dbus_vtable = {rygel_external_media_item_dbus_register_object};
+const char* RYGEL_EXTERNAL_MEDIA_OBJECT_PROXY_PROPERTIES[4] = {"Parent", "Type", "Path", "DisplayName"};
+static const DBusObjectPathVTable _rygel_external_media_object_proxy_dbus_path_vtable = {_rygel_external_media_object_proxy_dbus_unregister, rygel_external_media_object_proxy_dbus_message};
+static const _DBusObjectVTable _rygel_external_media_object_proxy_dbus_vtable = {rygel_external_media_object_proxy_dbus_register_object};
+const char* RYGEL_EXTERNAL_MEDIA_CONTAINER_PROXY_PROPERTIES[2] = {"ChildCount", "Searchable"};
+static const DBusObjectPathVTable _rygel_external_media_container_proxy_dbus_path_vtable = {_rygel_external_media_container_proxy_dbus_unregister, rygel_external_media_container_proxy_dbus_message};
+static const _DBusObjectVTable _rygel_external_media_container_proxy_dbus_vtable = {rygel_external_media_container_proxy_dbus_register_object};
+const char* RYGEL_EXTERNAL_MEDIA_ITEM_PROXY_PROPERTIES[18] = {"URLs", "MIMEType", "DLNAProfile", "Size", "Artist", "Album", "Date", "Duration", "Bitrate", "SampleRate", "BitsPerSample", "Width", "Height", "ColorDepth", "PixelWidth", "PixelHeight", "Thumbnail", "AlbumArt"};
+static const DBusObjectPathVTable _rygel_external_media_item_proxy_dbus_path_vtable = {_rygel_external_media_item_proxy_dbus_unregister, rygel_external_media_item_proxy_dbus_message};
+static const _DBusObjectVTable _rygel_external_media_item_proxy_dbus_vtable = {rygel_external_media_item_proxy_dbus_register_object};
 static const DBusObjectPathVTable _free_desktop_dbus_object_dbus_path_vtable = {_free_desktop_dbus_object_dbus_unregister, free_desktop_dbus_object_dbus_message};
 static const _DBusObjectVTable _free_desktop_dbus_object_dbus_vtable = {free_desktop_dbus_object_dbus_register_object};
 static const DBusObjectPathVTable _free_desktop_properties_dbus_path_vtable = {_free_desktop_properties_dbus_unregister, free_desktop_properties_dbus_message};
@@ -554,33 +554,33 @@ static const _DBusObjectVTable _free_desktop_properties_dbus_vtable = {free_desk
 
 static void g_cclosure_user_marshal_VOID__STRING_STRING_STRING (GClosure * closure, GValue * return_value, guint n_param_values, const GValue * param_values, gpointer invocation_hint, gpointer marshal_data);
 
-char* rygel_external_media_object_get_parent (RygelExternalMediaObject* self) {
-	return RYGEL_EXTERNAL_MEDIA_OBJECT_GET_INTERFACE (self)->get_parent (self);
+char* rygel_external_media_object_proxy_get_parent (RygelExternalMediaObjectProxy* self) {
+	return RYGEL_EXTERNAL_MEDIA_OBJECT_PROXY_GET_INTERFACE (self)->get_parent (self);
 }
 
 
-void rygel_external_media_object_set_parent (RygelExternalMediaObject* self, const char* value) {
-	RYGEL_EXTERNAL_MEDIA_OBJECT_GET_INTERFACE (self)->set_parent (self, value);
+void rygel_external_media_object_proxy_set_parent (RygelExternalMediaObjectProxy* self, const char* value) {
+	RYGEL_EXTERNAL_MEDIA_OBJECT_PROXY_GET_INTERFACE (self)->set_parent (self, value);
 }
 
 
-char* rygel_external_media_object_get_display_name (RygelExternalMediaObject* self) {
-	return RYGEL_EXTERNAL_MEDIA_OBJECT_GET_INTERFACE (self)->get_display_name (self);
+char* rygel_external_media_object_proxy_get_display_name (RygelExternalMediaObjectProxy* self) {
+	return RYGEL_EXTERNAL_MEDIA_OBJECT_PROXY_GET_INTERFACE (self)->get_display_name (self);
 }
 
 
-void rygel_external_media_object_set_display_name (RygelExternalMediaObject* self, const char* value) {
-	RYGEL_EXTERNAL_MEDIA_OBJECT_GET_INTERFACE (self)->set_display_name (self, value);
+void rygel_external_media_object_proxy_set_display_name (RygelExternalMediaObjectProxy* self, const char* value) {
+	RYGEL_EXTERNAL_MEDIA_OBJECT_PROXY_GET_INTERFACE (self)->set_display_name (self, value);
 }
 
 
-char* rygel_external_media_object_get_object_type (RygelExternalMediaObject* self) {
-	return RYGEL_EXTERNAL_MEDIA_OBJECT_GET_INTERFACE (self)->get_object_type (self);
+char* rygel_external_media_object_proxy_get_object_type (RygelExternalMediaObjectProxy* self) {
+	return RYGEL_EXTERNAL_MEDIA_OBJECT_PROXY_GET_INTERFACE (self)->get_object_type (self);
 }
 
 
-void rygel_external_media_object_set_object_type (RygelExternalMediaObject* self, const char* value) {
-	RYGEL_EXTERNAL_MEDIA_OBJECT_GET_INTERFACE (self)->set_object_type (self, value);
+void rygel_external_media_object_proxy_set_object_type (RygelExternalMediaObjectProxy* self, const char* value) {
+	RYGEL_EXTERNAL_MEDIA_OBJECT_PROXY_GET_INTERFACE (self)->set_object_type (self, value);
 }
 
 
@@ -603,11 +603,11 @@ static void _vala_dbus_unregister_object (gpointer connection, GObject* object) 
 }
 
 
-void _rygel_external_media_object_dbus_unregister (DBusConnection* connection, void* _user_data_) {
+void _rygel_external_media_object_proxy_dbus_unregister (DBusConnection* connection, void* _user_data_) {
 }
 
 
-static DBusHandlerResult _dbus_rygel_external_media_object_introspect (RygelExternalMediaObject* self, DBusConnection* connection, DBusMessage* message) {
+static DBusHandlerResult _dbus_rygel_external_media_object_proxy_introspect (RygelExternalMediaObjectProxy* self, DBusConnection* connection, DBusMessage* message) {
 	DBusMessage* reply;
 	DBusMessageIter iter;
 	GString* xml_data;
@@ -635,7 +635,7 @@ static DBusHandlerResult _dbus_rygel_external_media_object_introspect (RygelExte
 }
 
 
-static DBusHandlerResult _dbus_rygel_external_media_object_property_get (RygelExternalMediaObject* self, DBusConnection* connection, DBusMessage* message) {
+static DBusHandlerResult _dbus_rygel_external_media_object_proxy_property_get (RygelExternalMediaObjectProxy* self, DBusConnection* connection, DBusMessage* message) {
 	DBusMessage* reply;
 	DBusMessageIter iter, reply_iter, subiter;
 	char* interface_name;
@@ -658,7 +658,7 @@ static DBusHandlerResult _dbus_rygel_external_media_object_property_get (RygelEx
 		char* result;
 		const char* _tmp2_;
 		dbus_message_iter_open_container (&reply_iter, DBUS_TYPE_VARIANT, "o", &subiter);
-		result = rygel_external_media_object_get_parent (self);
+		result = rygel_external_media_object_proxy_get_parent (self);
 		_tmp2_ = result;
 		dbus_message_iter_append_basic (&subiter, DBUS_TYPE_OBJECT_PATH, &_tmp2_);
 		_g_free0 (result);
@@ -667,7 +667,7 @@ static DBusHandlerResult _dbus_rygel_external_media_object_property_get (RygelEx
 		char* result;
 		const char* _tmp3_;
 		dbus_message_iter_open_container (&reply_iter, DBUS_TYPE_VARIANT, "s", &subiter);
-		result = rygel_external_media_object_get_display_name (self);
+		result = rygel_external_media_object_proxy_get_display_name (self);
 		_tmp3_ = result;
 		dbus_message_iter_append_basic (&subiter, DBUS_TYPE_STRING, &_tmp3_);
 		_g_free0 (result);
@@ -676,7 +676,7 @@ static DBusHandlerResult _dbus_rygel_external_media_object_property_get (RygelEx
 		char* result;
 		const char* _tmp4_;
 		dbus_message_iter_open_container (&reply_iter, DBUS_TYPE_VARIANT, "s", &subiter);
-		result = rygel_external_media_object_get_object_type (self);
+		result = rygel_external_media_object_proxy_get_object_type (self);
 		_tmp4_ = result;
 		dbus_message_iter_append_basic (&subiter, DBUS_TYPE_STRING, &_tmp4_);
 		_g_free0 (result);
@@ -697,7 +697,7 @@ static DBusHandlerResult _dbus_rygel_external_media_object_property_get (RygelEx
 }
 
 
-static DBusHandlerResult _dbus_rygel_external_media_object_property_set (RygelExternalMediaObject* self, DBusConnection* connection, DBusMessage* message) {
+static DBusHandlerResult _dbus_rygel_external_media_object_proxy_property_set (RygelExternalMediaObjectProxy* self, DBusConnection* connection, DBusMessage* message) {
 	DBusMessage* reply;
 	DBusMessageIter iter, subiter;
 	char* interface_name;
@@ -722,7 +722,7 @@ static DBusHandlerResult _dbus_rygel_external_media_object_property_set (RygelEx
 		dbus_message_iter_get_basic (&subiter, &_tmp7_);
 		dbus_message_iter_next (&subiter);
 		value = g_strdup (_tmp7_);
-		rygel_external_media_object_set_parent (self, value);
+		rygel_external_media_object_proxy_set_parent (self, value);
 		_g_free0 (value);
 	} else if ((strcmp (interface_name, "org.gnome.UPnP.MediaObject2") == 0) && (strcmp (property_name, "DisplayName") == 0)) {
 		char* value;
@@ -730,7 +730,7 @@ static DBusHandlerResult _dbus_rygel_external_media_object_property_set (RygelEx
 		dbus_message_iter_get_basic (&subiter, &_tmp8_);
 		dbus_message_iter_next (&subiter);
 		value = g_strdup (_tmp8_);
-		rygel_external_media_object_set_display_name (self, value);
+		rygel_external_media_object_proxy_set_display_name (self, value);
 		_g_free0 (value);
 	} else if ((strcmp (interface_name, "org.gnome.UPnP.MediaObject2") == 0) && (strcmp (property_name, "Type") == 0)) {
 		char* value;
@@ -738,7 +738,7 @@ static DBusHandlerResult _dbus_rygel_external_media_object_property_set (RygelEx
 		dbus_message_iter_get_basic (&subiter, &_tmp9_);
 		dbus_message_iter_next (&subiter);
 		value = g_strdup (_tmp9_);
-		rygel_external_media_object_set_object_type (self, value);
+		rygel_external_media_object_proxy_set_object_type (self, value);
 		_g_free0 (value);
 	} else {
 		dbus_message_unref (reply);
@@ -756,7 +756,7 @@ static DBusHandlerResult _dbus_rygel_external_media_object_property_set (RygelEx
 }
 
 
-static DBusHandlerResult _dbus_rygel_external_media_object_property_get_all (RygelExternalMediaObject* self, DBusConnection* connection, DBusMessage* message) {
+static DBusHandlerResult _dbus_rygel_external_media_object_proxy_property_get_all (RygelExternalMediaObjectProxy* self, DBusConnection* connection, DBusMessage* message) {
 	DBusMessage* reply;
 	DBusMessageIter iter, reply_iter, subiter, entry_iter, value_iter;
 	char* interface_name;
@@ -780,7 +780,7 @@ static DBusHandlerResult _dbus_rygel_external_media_object_property_get_all (Ryg
 			property_name = "Parent";
 			dbus_message_iter_append_basic (&entry_iter, DBUS_TYPE_STRING, &property_name);
 			dbus_message_iter_open_container (&entry_iter, DBUS_TYPE_VARIANT, "o", &value_iter);
-			result = rygel_external_media_object_get_parent (self);
+			result = rygel_external_media_object_proxy_get_parent (self);
 			_tmp11_ = result;
 			dbus_message_iter_append_basic (&value_iter, DBUS_TYPE_OBJECT_PATH, &_tmp11_);
 			_g_free0 (result);
@@ -794,7 +794,7 @@ static DBusHandlerResult _dbus_rygel_external_media_object_property_get_all (Ryg
 			property_name = "DisplayName";
 			dbus_message_iter_append_basic (&entry_iter, DBUS_TYPE_STRING, &property_name);
 			dbus_message_iter_open_container (&entry_iter, DBUS_TYPE_VARIANT, "s", &value_iter);
-			result = rygel_external_media_object_get_display_name (self);
+			result = rygel_external_media_object_proxy_get_display_name (self);
 			_tmp12_ = result;
 			dbus_message_iter_append_basic (&value_iter, DBUS_TYPE_STRING, &_tmp12_);
 			_g_free0 (result);
@@ -808,7 +808,7 @@ static DBusHandlerResult _dbus_rygel_external_media_object_property_get_all (Ryg
 			property_name = "Type";
 			dbus_message_iter_append_basic (&entry_iter, DBUS_TYPE_STRING, &property_name);
 			dbus_message_iter_open_container (&entry_iter, DBUS_TYPE_VARIANT, "s", &value_iter);
-			result = rygel_external_media_object_get_object_type (self);
+			result = rygel_external_media_object_proxy_get_object_type (self);
 			_tmp13_ = result;
 			dbus_message_iter_append_basic (&value_iter, DBUS_TYPE_STRING, &_tmp13_);
 			_g_free0 (result);
@@ -831,17 +831,17 @@ static DBusHandlerResult _dbus_rygel_external_media_object_property_get_all (Ryg
 }
 
 
-DBusHandlerResult rygel_external_media_object_dbus_message (DBusConnection* connection, DBusMessage* message, void* object) {
+DBusHandlerResult rygel_external_media_object_proxy_dbus_message (DBusConnection* connection, DBusMessage* message, void* object) {
 	DBusHandlerResult result;
 	result = DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
 	if (dbus_message_is_method_call (message, "org.freedesktop.DBus.Introspectable", "Introspect")) {
-		result = _dbus_rygel_external_media_object_introspect (object, connection, message);
+		result = _dbus_rygel_external_media_object_proxy_introspect (object, connection, message);
 	} else if (dbus_message_is_method_call (message, "org.freedesktop.DBus.Properties", "Get")) {
-		result = _dbus_rygel_external_media_object_property_get (object, connection, message);
+		result = _dbus_rygel_external_media_object_proxy_property_get (object, connection, message);
 	} else if (dbus_message_is_method_call (message, "org.freedesktop.DBus.Properties", "Set")) {
-		result = _dbus_rygel_external_media_object_property_set (object, connection, message);
+		result = _dbus_rygel_external_media_object_proxy_property_set (object, connection, message);
 	} else if (dbus_message_is_method_call (message, "org.freedesktop.DBus.Properties", "GetAll")) {
-		result = _dbus_rygel_external_media_object_property_get_all (object, connection, message);
+		result = _dbus_rygel_external_media_object_proxy_property_get_all (object, connection, message);
 	}
 	if (result == DBUS_HANDLER_RESULT_HANDLED) {
 		return result;
@@ -851,58 +851,58 @@ DBusHandlerResult rygel_external_media_object_dbus_message (DBusConnection* conn
 }
 
 
-void rygel_external_media_object_dbus_register_object (DBusConnection* connection, const char* path, void* object) {
+void rygel_external_media_object_proxy_dbus_register_object (DBusConnection* connection, const char* path, void* object) {
 	if (!g_object_get_data (object, "dbus_object_path")) {
 		g_object_set_data (object, "dbus_object_path", g_strdup (path));
-		dbus_connection_register_object_path (connection, path, &_rygel_external_media_object_dbus_path_vtable, object);
+		dbus_connection_register_object_path (connection, path, &_rygel_external_media_object_proxy_dbus_path_vtable, object);
 		g_object_weak_ref (object, _vala_dbus_unregister_object, connection);
 	}
 }
 
 
-static void rygel_external_media_object_base_init (RygelExternalMediaObjectIface * iface) {
+static void rygel_external_media_object_proxy_base_init (RygelExternalMediaObjectProxyIface * iface) {
 	static gboolean initialized = FALSE;
 	if (!initialized) {
 		initialized = TRUE;
 		g_object_interface_install_property (iface, g_param_spec_string ("parent", "parent", "parent", NULL, G_PARAM_STATIC_NAME | G_PARAM_STATIC_NICK | G_PARAM_STATIC_BLURB | G_PARAM_READABLE | G_PARAM_WRITABLE));
 		g_object_interface_install_property (iface, g_param_spec_string ("display-name", "display-name", "display-name", NULL, G_PARAM_STATIC_NAME | G_PARAM_STATIC_NICK | G_PARAM_STATIC_BLURB | G_PARAM_READABLE | G_PARAM_WRITABLE));
 		g_object_interface_install_property (iface, g_param_spec_string ("object-type", "object-type", "object-type", NULL, G_PARAM_STATIC_NAME | G_PARAM_STATIC_NICK | G_PARAM_STATIC_BLURB | G_PARAM_READABLE | G_PARAM_WRITABLE));
-		g_type_set_qdata (RYGEL_TYPE_EXTERNAL_MEDIA_OBJECT, g_quark_from_static_string ("DBusObjectVTable"), (void*) (&_rygel_external_media_object_dbus_vtable));
+		g_type_set_qdata (RYGEL_EXTERNAL_TYPE_MEDIA_OBJECT_PROXY, g_quark_from_static_string ("DBusObjectVTable"), (void*) (&_rygel_external_media_object_proxy_dbus_vtable));
 	}
 }
 
 
-GType rygel_external_media_object_get_type (void) {
-	static volatile gsize rygel_external_media_object_type_id__volatile = 0;
-	if (g_once_init_enter (&rygel_external_media_object_type_id__volatile)) {
-		static const GTypeInfo g_define_type_info = { sizeof (RygelExternalMediaObjectIface), (GBaseInitFunc) rygel_external_media_object_base_init, (GBaseFinalizeFunc) NULL, (GClassInitFunc) NULL, (GClassFinalizeFunc) NULL, NULL, 0, 0, (GInstanceInitFunc) NULL, NULL };
-		GType rygel_external_media_object_type_id;
-		rygel_external_media_object_type_id = g_type_register_static (G_TYPE_INTERFACE, "RygelExternalMediaObject", &g_define_type_info, 0);
-		g_type_interface_add_prerequisite (rygel_external_media_object_type_id, DBUS_TYPE_G_PROXY);
-		g_type_set_qdata (rygel_external_media_object_type_id, g_quark_from_string ("ValaDBusInterfaceProxyType"), &rygel_external_media_object_dbus_proxy_get_type);
-		g_once_init_leave (&rygel_external_media_object_type_id__volatile, rygel_external_media_object_type_id);
+GType rygel_external_media_object_proxy_get_type (void) {
+	static volatile gsize rygel_external_media_object_proxy_type_id__volatile = 0;
+	if (g_once_init_enter (&rygel_external_media_object_proxy_type_id__volatile)) {
+		static const GTypeInfo g_define_type_info = { sizeof (RygelExternalMediaObjectProxyIface), (GBaseInitFunc) rygel_external_media_object_proxy_base_init, (GBaseFinalizeFunc) NULL, (GClassInitFunc) NULL, (GClassFinalizeFunc) NULL, NULL, 0, 0, (GInstanceInitFunc) NULL, NULL };
+		GType rygel_external_media_object_proxy_type_id;
+		rygel_external_media_object_proxy_type_id = g_type_register_static (G_TYPE_INTERFACE, "RygelExternalMediaObjectProxy", &g_define_type_info, 0);
+		g_type_interface_add_prerequisite (rygel_external_media_object_proxy_type_id, DBUS_TYPE_G_PROXY);
+		g_type_set_qdata (rygel_external_media_object_proxy_type_id, g_quark_from_string ("ValaDBusInterfaceProxyType"), &rygel_external_media_object_proxy_dbus_proxy_get_type);
+		g_once_init_leave (&rygel_external_media_object_proxy_type_id__volatile, rygel_external_media_object_proxy_type_id);
 	}
-	return rygel_external_media_object_type_id__volatile;
+	return rygel_external_media_object_proxy_type_id__volatile;
 }
 
 
-G_DEFINE_TYPE_EXTENDED (RygelExternalMediaObjectDBusProxy, rygel_external_media_object_dbus_proxy, DBUS_TYPE_G_PROXY, 0, G_IMPLEMENT_INTERFACE (RYGEL_TYPE_EXTERNAL_MEDIA_OBJECT, rygel_external_media_object_dbus_proxy_rygel_external_media_object__interface_init) );
-RygelExternalMediaObject* rygel_external_media_object_dbus_proxy_new (DBusGConnection* connection, const char* name, const char* path) {
-	RygelExternalMediaObject* self;
-	self = g_object_new (rygel_external_media_object_dbus_proxy_get_type (), "connection", connection, "name", name, "path", path, "interface", "org.gnome.UPnP.MediaObject2", NULL);
+G_DEFINE_TYPE_EXTENDED (RygelExternalMediaObjectProxyDBusProxy, rygel_external_media_object_proxy_dbus_proxy, DBUS_TYPE_G_PROXY, 0, G_IMPLEMENT_INTERFACE (RYGEL_EXTERNAL_TYPE_MEDIA_OBJECT_PROXY, rygel_external_media_object_proxy_dbus_proxy_rygel_external_media_object_proxy__interface_init) );
+RygelExternalMediaObjectProxy* rygel_external_media_object_proxy_dbus_proxy_new (DBusGConnection* connection, const char* name, const char* path) {
+	RygelExternalMediaObjectProxy* self;
+	self = g_object_new (rygel_external_media_object_proxy_dbus_proxy_get_type (), "connection", connection, "name", name, "path", path, "interface", "org.gnome.UPnP.MediaObject2", NULL);
 	return self;
 }
 
 
-static GObject* rygel_external_media_object_dbus_proxy_construct (GType gtype, guint n_properties, GObjectConstructParam* properties) {
+static GObject* rygel_external_media_object_proxy_dbus_proxy_construct (GType gtype, guint n_properties, GObjectConstructParam* properties) {
 	GObject* self;
 	DBusGConnection *connection;
 	char* path;
 	char* filter;
-	self = G_OBJECT_CLASS (rygel_external_media_object_dbus_proxy_parent_class)->constructor (gtype, n_properties, properties);
+	self = G_OBJECT_CLASS (rygel_external_media_object_proxy_dbus_proxy_parent_class)->constructor (gtype, n_properties, properties);
 	g_object_get (self, "connection", &connection, NULL);
 	g_object_get (self, "path", &path, NULL);
-	dbus_connection_add_filter (dbus_g_connection_get_connection (connection), rygel_external_media_object_dbus_proxy_filter, self, NULL);
+	dbus_connection_add_filter (dbus_g_connection_get_connection (connection), rygel_external_media_object_proxy_dbus_proxy_filter, self, NULL);
 	filter = g_strdup_printf ("type='signal',path='%s'", path);
 	dbus_bus_add_match (dbus_g_connection_get_connection (connection), filter, NULL);
 	dbus_g_connection_unref (connection);
@@ -912,41 +912,41 @@ static GObject* rygel_external_media_object_dbus_proxy_construct (GType gtype, g
 }
 
 
-DBusHandlerResult rygel_external_media_object_dbus_proxy_filter (DBusConnection* connection, DBusMessage* message, void* user_data) {
+DBusHandlerResult rygel_external_media_object_proxy_dbus_proxy_filter (DBusConnection* connection, DBusMessage* message, void* user_data) {
 	if (dbus_message_has_path (message, dbus_g_proxy_get_path (user_data))) {
 	}
 	return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
 }
 
 
-static void rygel_external_media_object_dbus_proxy_dispose (GObject* self) {
+static void rygel_external_media_object_proxy_dbus_proxy_dispose (GObject* self) {
 	DBusGConnection *connection;
-	if (((RygelExternalMediaObjectDBusProxy*) self)->disposed) {
+	if (((RygelExternalMediaObjectProxyDBusProxy*) self)->disposed) {
 		return;
 	}
-	((RygelExternalMediaObjectDBusProxy*) self)->disposed = TRUE;
+	((RygelExternalMediaObjectProxyDBusProxy*) self)->disposed = TRUE;
 	g_object_get (self, "connection", &connection, NULL);
-	dbus_connection_remove_filter (dbus_g_connection_get_connection (connection), rygel_external_media_object_dbus_proxy_filter, self);
-	G_OBJECT_CLASS (rygel_external_media_object_dbus_proxy_parent_class)->dispose (self);
+	dbus_connection_remove_filter (dbus_g_connection_get_connection (connection), rygel_external_media_object_proxy_dbus_proxy_filter, self);
+	G_OBJECT_CLASS (rygel_external_media_object_proxy_dbus_proxy_parent_class)->dispose (self);
 }
 
 
-static void rygel_external_media_object_dbus_proxy_class_init (RygelExternalMediaObjectDBusProxyClass* klass) {
-	G_OBJECT_CLASS (klass)->constructor = rygel_external_media_object_dbus_proxy_construct;
-	G_OBJECT_CLASS (klass)->dispose = rygel_external_media_object_dbus_proxy_dispose;
-	G_OBJECT_CLASS (klass)->get_property = rygel_external_media_object_dbus_proxy_get_property;
-	G_OBJECT_CLASS (klass)->set_property = rygel_external_media_object_dbus_proxy_set_property;
-	g_object_class_override_property (G_OBJECT_CLASS (klass), RYGEL_EXTERNAL_MEDIA_OBJECT_DBUS_PROXY_PARENT, "parent");
-	g_object_class_override_property (G_OBJECT_CLASS (klass), RYGEL_EXTERNAL_MEDIA_OBJECT_DBUS_PROXY_DISPLAY_NAME, "display-name");
-	g_object_class_override_property (G_OBJECT_CLASS (klass), RYGEL_EXTERNAL_MEDIA_OBJECT_DBUS_PROXY_OBJECT_TYPE, "object-type");
+static void rygel_external_media_object_proxy_dbus_proxy_class_init (RygelExternalMediaObjectProxyDBusProxyClass* klass) {
+	G_OBJECT_CLASS (klass)->constructor = rygel_external_media_object_proxy_dbus_proxy_construct;
+	G_OBJECT_CLASS (klass)->dispose = rygel_external_media_object_proxy_dbus_proxy_dispose;
+	G_OBJECT_CLASS (klass)->get_property = rygel_external_media_object_proxy_dbus_proxy_get_property;
+	G_OBJECT_CLASS (klass)->set_property = rygel_external_media_object_proxy_dbus_proxy_set_property;
+	g_object_class_override_property (G_OBJECT_CLASS (klass), RYGEL_EXTERNAL_MEDIA_OBJECT_PROXY_DBUS_PROXY_PARENT, "parent");
+	g_object_class_override_property (G_OBJECT_CLASS (klass), RYGEL_EXTERNAL_MEDIA_OBJECT_PROXY_DBUS_PROXY_DISPLAY_NAME, "display-name");
+	g_object_class_override_property (G_OBJECT_CLASS (klass), RYGEL_EXTERNAL_MEDIA_OBJECT_PROXY_DBUS_PROXY_OBJECT_TYPE, "object-type");
 }
 
 
-static void rygel_external_media_object_dbus_proxy_init (RygelExternalMediaObjectDBusProxy* self) {
+static void rygel_external_media_object_proxy_dbus_proxy_init (RygelExternalMediaObjectProxyDBusProxy* self) {
 }
 
 
-static char* rygel_external_media_object_dbus_proxy_get_parent (RygelExternalMediaObject* self) {
+static char* rygel_external_media_object_proxy_dbus_proxy_get_parent (RygelExternalMediaObjectProxy* self) {
 	DBusError _dbus_error;
 	DBusGConnection *_connection;
 	DBusMessage *_message, *_reply;
@@ -955,7 +955,7 @@ static char* rygel_external_media_object_dbus_proxy_get_parent (RygelExternalMed
 	const char* _tmp15_;
 	char* _result;
 	const char* _tmp16_;
-	if (((RygelExternalMediaObjectDBusProxy*) self)->disposed) {
+	if (((RygelExternalMediaObjectProxyDBusProxy*) self)->disposed) {
 		return NULL;
 	}
 	_message = dbus_message_new_method_call (dbus_g_proxy_get_bus_name ((DBusGProxy*) self), dbus_g_proxy_get_path ((DBusGProxy*) self), "org.freedesktop.DBus.Properties", "Get");
@@ -994,7 +994,7 @@ static char* rygel_external_media_object_dbus_proxy_get_parent (RygelExternalMed
 }
 
 
-static void rygel_external_media_object_dbus_proxy_set_parent (RygelExternalMediaObject* self, const char* value) {
+static void rygel_external_media_object_proxy_dbus_proxy_set_parent (RygelExternalMediaObjectProxy* self, const char* value) {
 	DBusError _dbus_error;
 	DBusGConnection *_connection;
 	DBusMessage *_message, *_reply;
@@ -1002,7 +1002,7 @@ static void rygel_external_media_object_dbus_proxy_set_parent (RygelExternalMedi
 	const char* _tmp17_;
 	const char* _tmp18_;
 	const char* _tmp19_;
-	if (((RygelExternalMediaObjectDBusProxy*) self)->disposed) {
+	if (((RygelExternalMediaObjectProxyDBusProxy*) self)->disposed) {
 		return;
 	}
 	_message = dbus_message_new_method_call (dbus_g_proxy_get_bus_name ((DBusGProxy*) self), dbus_g_proxy_get_path ((DBusGProxy*) self), "org.freedesktop.DBus.Properties", "Set");
@@ -1035,7 +1035,7 @@ static void rygel_external_media_object_dbus_proxy_set_parent (RygelExternalMedi
 }
 
 
-static char* rygel_external_media_object_dbus_proxy_get_display_name (RygelExternalMediaObject* self) {
+static char* rygel_external_media_object_proxy_dbus_proxy_get_display_name (RygelExternalMediaObjectProxy* self) {
 	DBusError _dbus_error;
 	DBusGConnection *_connection;
 	DBusMessage *_message, *_reply;
@@ -1044,7 +1044,7 @@ static char* rygel_external_media_object_dbus_proxy_get_display_name (RygelExter
 	const char* _tmp21_;
 	char* _result;
 	const char* _tmp22_;
-	if (((RygelExternalMediaObjectDBusProxy*) self)->disposed) {
+	if (((RygelExternalMediaObjectProxyDBusProxy*) self)->disposed) {
 		return NULL;
 	}
 	_message = dbus_message_new_method_call (dbus_g_proxy_get_bus_name ((DBusGProxy*) self), dbus_g_proxy_get_path ((DBusGProxy*) self), "org.freedesktop.DBus.Properties", "Get");
@@ -1083,7 +1083,7 @@ static char* rygel_external_media_object_dbus_proxy_get_display_name (RygelExter
 }
 
 
-static void rygel_external_media_object_dbus_proxy_set_display_name (RygelExternalMediaObject* self, const char* value) {
+static void rygel_external_media_object_proxy_dbus_proxy_set_display_name (RygelExternalMediaObjectProxy* self, const char* value) {
 	DBusError _dbus_error;
 	DBusGConnection *_connection;
 	DBusMessage *_message, *_reply;
@@ -1091,7 +1091,7 @@ static void rygel_external_media_object_dbus_proxy_set_display_name (RygelExtern
 	const char* _tmp23_;
 	const char* _tmp24_;
 	const char* _tmp25_;
-	if (((RygelExternalMediaObjectDBusProxy*) self)->disposed) {
+	if (((RygelExternalMediaObjectProxyDBusProxy*) self)->disposed) {
 		return;
 	}
 	_message = dbus_message_new_method_call (dbus_g_proxy_get_bus_name ((DBusGProxy*) self), dbus_g_proxy_get_path ((DBusGProxy*) self), "org.freedesktop.DBus.Properties", "Set");
@@ -1124,7 +1124,7 @@ static void rygel_external_media_object_dbus_proxy_set_display_name (RygelExtern
 }
 
 
-static char* rygel_external_media_object_dbus_proxy_get_object_type (RygelExternalMediaObject* self) {
+static char* rygel_external_media_object_proxy_dbus_proxy_get_object_type (RygelExternalMediaObjectProxy* self) {
 	DBusError _dbus_error;
 	DBusGConnection *_connection;
 	DBusMessage *_message, *_reply;
@@ -1133,7 +1133,7 @@ static char* rygel_external_media_object_dbus_proxy_get_object_type (RygelExtern
 	const char* _tmp27_;
 	char* _result;
 	const char* _tmp28_;
-	if (((RygelExternalMediaObjectDBusProxy*) self)->disposed) {
+	if (((RygelExternalMediaObjectProxyDBusProxy*) self)->disposed) {
 		return NULL;
 	}
 	_message = dbus_message_new_method_call (dbus_g_proxy_get_bus_name ((DBusGProxy*) self), dbus_g_proxy_get_path ((DBusGProxy*) self), "org.freedesktop.DBus.Properties", "Get");
@@ -1172,7 +1172,7 @@ static char* rygel_external_media_object_dbus_proxy_get_object_type (RygelExtern
 }
 
 
-static void rygel_external_media_object_dbus_proxy_set_object_type (RygelExternalMediaObject* self, const char* value) {
+static void rygel_external_media_object_proxy_dbus_proxy_set_object_type (RygelExternalMediaObjectProxy* self, const char* value) {
 	DBusError _dbus_error;
 	DBusGConnection *_connection;
 	DBusMessage *_message, *_reply;
@@ -1180,7 +1180,7 @@ static void rygel_external_media_object_dbus_proxy_set_object_type (RygelExterna
 	const char* _tmp29_;
 	const char* _tmp30_;
 	const char* _tmp31_;
-	if (((RygelExternalMediaObjectDBusProxy*) self)->disposed) {
+	if (((RygelExternalMediaObjectProxyDBusProxy*) self)->disposed) {
 		return;
 	}
 	_message = dbus_message_new_method_call (dbus_g_proxy_get_bus_name ((DBusGProxy*) self), dbus_g_proxy_get_path ((DBusGProxy*) self), "org.freedesktop.DBus.Properties", "Set");
@@ -1213,119 +1213,119 @@ static void rygel_external_media_object_dbus_proxy_set_object_type (RygelExterna
 }
 
 
-static void rygel_external_media_object_dbus_proxy_rygel_external_media_object__interface_init (RygelExternalMediaObjectIface* iface) {
-	iface->get_parent = rygel_external_media_object_dbus_proxy_get_parent;
-	iface->set_parent = rygel_external_media_object_dbus_proxy_set_parent;
-	iface->get_display_name = rygel_external_media_object_dbus_proxy_get_display_name;
-	iface->set_display_name = rygel_external_media_object_dbus_proxy_set_display_name;
-	iface->get_object_type = rygel_external_media_object_dbus_proxy_get_object_type;
-	iface->set_object_type = rygel_external_media_object_dbus_proxy_set_object_type;
+static void rygel_external_media_object_proxy_dbus_proxy_rygel_external_media_object_proxy__interface_init (RygelExternalMediaObjectProxyIface* iface) {
+	iface->get_parent = rygel_external_media_object_proxy_dbus_proxy_get_parent;
+	iface->set_parent = rygel_external_media_object_proxy_dbus_proxy_set_parent;
+	iface->get_display_name = rygel_external_media_object_proxy_dbus_proxy_get_display_name;
+	iface->set_display_name = rygel_external_media_object_proxy_dbus_proxy_set_display_name;
+	iface->get_object_type = rygel_external_media_object_proxy_dbus_proxy_get_object_type;
+	iface->set_object_type = rygel_external_media_object_proxy_dbus_proxy_set_object_type;
 }
 
 
-static void rygel_external_media_object_dbus_proxy_get_property (GObject * object, guint property_id, GValue * value, GParamSpec * pspec) {
+static void rygel_external_media_object_proxy_dbus_proxy_get_property (GObject * object, guint property_id, GValue * value, GParamSpec * pspec) {
 }
 
 
-static void rygel_external_media_object_dbus_proxy_set_property (GObject * object, guint property_id, const GValue * value, GParamSpec * pspec) {
+static void rygel_external_media_object_proxy_dbus_proxy_set_property (GObject * object, guint property_id, const GValue * value, GParamSpec * pspec) {
 }
 
 
-void rygel_external_media_container_list_children (RygelExternalMediaContainer* self, guint offset, guint max_count, char** filter, int filter_length1, GAsyncReadyCallback _callback_, gpointer _user_data_) {
-	RYGEL_EXTERNAL_MEDIA_CONTAINER_GET_INTERFACE (self)->list_children (self, offset, max_count, filter, filter_length1, _callback_, _user_data_);
+void rygel_external_media_container_proxy_list_children (RygelExternalMediaContainerProxy* self, guint offset, guint max_count, char** filter, int filter_length1, GAsyncReadyCallback _callback_, gpointer _user_data_) {
+	RYGEL_EXTERNAL_MEDIA_CONTAINER_PROXY_GET_INTERFACE (self)->list_children (self, offset, max_count, filter, filter_length1, _callback_, _user_data_);
 }
 
 
-GHashTable** rygel_external_media_container_list_children_finish (RygelExternalMediaContainer* self, GAsyncResult* _res_, int* result_length1, GError** error) {
-	return RYGEL_EXTERNAL_MEDIA_CONTAINER_GET_INTERFACE (self)->list_children_finish (self, _res_, result_length1, error);
+GHashTable** rygel_external_media_container_proxy_list_children_finish (RygelExternalMediaContainerProxy* self, GAsyncResult* _res_, int* result_length1, GError** error) {
+	return RYGEL_EXTERNAL_MEDIA_CONTAINER_PROXY_GET_INTERFACE (self)->list_children_finish (self, _res_, result_length1, error);
 }
 
 
-void rygel_external_media_container_list_containers (RygelExternalMediaContainer* self, guint offset, guint max_count, char** filter, int filter_length1, GAsyncReadyCallback _callback_, gpointer _user_data_) {
-	RYGEL_EXTERNAL_MEDIA_CONTAINER_GET_INTERFACE (self)->list_containers (self, offset, max_count, filter, filter_length1, _callback_, _user_data_);
+void rygel_external_media_container_proxy_list_containers (RygelExternalMediaContainerProxy* self, guint offset, guint max_count, char** filter, int filter_length1, GAsyncReadyCallback _callback_, gpointer _user_data_) {
+	RYGEL_EXTERNAL_MEDIA_CONTAINER_PROXY_GET_INTERFACE (self)->list_containers (self, offset, max_count, filter, filter_length1, _callback_, _user_data_);
 }
 
 
-GHashTable** rygel_external_media_container_list_containers_finish (RygelExternalMediaContainer* self, GAsyncResult* _res_, int* result_length1, GError** error) {
-	return RYGEL_EXTERNAL_MEDIA_CONTAINER_GET_INTERFACE (self)->list_containers_finish (self, _res_, result_length1, error);
+GHashTable** rygel_external_media_container_proxy_list_containers_finish (RygelExternalMediaContainerProxy* self, GAsyncResult* _res_, int* result_length1, GError** error) {
+	return RYGEL_EXTERNAL_MEDIA_CONTAINER_PROXY_GET_INTERFACE (self)->list_containers_finish (self, _res_, result_length1, error);
 }
 
 
-void rygel_external_media_container_list_items (RygelExternalMediaContainer* self, guint offset, guint max_count, char** filter, int filter_length1, GAsyncReadyCallback _callback_, gpointer _user_data_) {
-	RYGEL_EXTERNAL_MEDIA_CONTAINER_GET_INTERFACE (self)->list_items (self, offset, max_count, filter, filter_length1, _callback_, _user_data_);
+void rygel_external_media_container_proxy_list_items (RygelExternalMediaContainerProxy* self, guint offset, guint max_count, char** filter, int filter_length1, GAsyncReadyCallback _callback_, gpointer _user_data_) {
+	RYGEL_EXTERNAL_MEDIA_CONTAINER_PROXY_GET_INTERFACE (self)->list_items (self, offset, max_count, filter, filter_length1, _callback_, _user_data_);
 }
 
 
-GHashTable** rygel_external_media_container_list_items_finish (RygelExternalMediaContainer* self, GAsyncResult* _res_, int* result_length1, GError** error) {
-	return RYGEL_EXTERNAL_MEDIA_CONTAINER_GET_INTERFACE (self)->list_items_finish (self, _res_, result_length1, error);
+GHashTable** rygel_external_media_container_proxy_list_items_finish (RygelExternalMediaContainerProxy* self, GAsyncResult* _res_, int* result_length1, GError** error) {
+	return RYGEL_EXTERNAL_MEDIA_CONTAINER_PROXY_GET_INTERFACE (self)->list_items_finish (self, _res_, result_length1, error);
 }
 
 
-void rygel_external_media_container_search_objects (RygelExternalMediaContainer* self, const char* query, guint offset, guint max_count, char** filter, int filter_length1, GAsyncReadyCallback _callback_, gpointer _user_data_) {
-	RYGEL_EXTERNAL_MEDIA_CONTAINER_GET_INTERFACE (self)->search_objects (self, query, offset, max_count, filter, filter_length1, _callback_, _user_data_);
+void rygel_external_media_container_proxy_search_objects (RygelExternalMediaContainerProxy* self, const char* query, guint offset, guint max_count, char** filter, int filter_length1, GAsyncReadyCallback _callback_, gpointer _user_data_) {
+	RYGEL_EXTERNAL_MEDIA_CONTAINER_PROXY_GET_INTERFACE (self)->search_objects (self, query, offset, max_count, filter, filter_length1, _callback_, _user_data_);
 }
 
 
-GHashTable** rygel_external_media_container_search_objects_finish (RygelExternalMediaContainer* self, GAsyncResult* _res_, int* result_length1, GError** error) {
-	return RYGEL_EXTERNAL_MEDIA_CONTAINER_GET_INTERFACE (self)->search_objects_finish (self, _res_, result_length1, error);
+GHashTable** rygel_external_media_container_proxy_search_objects_finish (RygelExternalMediaContainerProxy* self, GAsyncResult* _res_, int* result_length1, GError** error) {
+	return RYGEL_EXTERNAL_MEDIA_CONTAINER_PROXY_GET_INTERFACE (self)->search_objects_finish (self, _res_, result_length1, error);
 }
 
 
-guint rygel_external_media_container_get_child_count (RygelExternalMediaContainer* self) {
-	return RYGEL_EXTERNAL_MEDIA_CONTAINER_GET_INTERFACE (self)->get_child_count (self);
+guint rygel_external_media_container_proxy_get_child_count (RygelExternalMediaContainerProxy* self) {
+	return RYGEL_EXTERNAL_MEDIA_CONTAINER_PROXY_GET_INTERFACE (self)->get_child_count (self);
 }
 
 
-void rygel_external_media_container_set_child_count (RygelExternalMediaContainer* self, guint value) {
-	RYGEL_EXTERNAL_MEDIA_CONTAINER_GET_INTERFACE (self)->set_child_count (self, value);
+void rygel_external_media_container_proxy_set_child_count (RygelExternalMediaContainerProxy* self, guint value) {
+	RYGEL_EXTERNAL_MEDIA_CONTAINER_PROXY_GET_INTERFACE (self)->set_child_count (self, value);
 }
 
 
-guint rygel_external_media_container_get_item_count (RygelExternalMediaContainer* self) {
-	return RYGEL_EXTERNAL_MEDIA_CONTAINER_GET_INTERFACE (self)->get_item_count (self);
+guint rygel_external_media_container_proxy_get_item_count (RygelExternalMediaContainerProxy* self) {
+	return RYGEL_EXTERNAL_MEDIA_CONTAINER_PROXY_GET_INTERFACE (self)->get_item_count (self);
 }
 
 
-void rygel_external_media_container_set_item_count (RygelExternalMediaContainer* self, guint value) {
-	RYGEL_EXTERNAL_MEDIA_CONTAINER_GET_INTERFACE (self)->set_item_count (self, value);
+void rygel_external_media_container_proxy_set_item_count (RygelExternalMediaContainerProxy* self, guint value) {
+	RYGEL_EXTERNAL_MEDIA_CONTAINER_PROXY_GET_INTERFACE (self)->set_item_count (self, value);
 }
 
 
-guint rygel_external_media_container_get_container_count (RygelExternalMediaContainer* self) {
-	return RYGEL_EXTERNAL_MEDIA_CONTAINER_GET_INTERFACE (self)->get_container_count (self);
+guint rygel_external_media_container_proxy_get_container_count (RygelExternalMediaContainerProxy* self) {
+	return RYGEL_EXTERNAL_MEDIA_CONTAINER_PROXY_GET_INTERFACE (self)->get_container_count (self);
 }
 
 
-void rygel_external_media_container_set_container_count (RygelExternalMediaContainer* self, guint value) {
-	RYGEL_EXTERNAL_MEDIA_CONTAINER_GET_INTERFACE (self)->set_container_count (self, value);
+void rygel_external_media_container_proxy_set_container_count (RygelExternalMediaContainerProxy* self, guint value) {
+	RYGEL_EXTERNAL_MEDIA_CONTAINER_PROXY_GET_INTERFACE (self)->set_container_count (self, value);
 }
 
 
-gboolean rygel_external_media_container_get_searchable (RygelExternalMediaContainer* self) {
-	return RYGEL_EXTERNAL_MEDIA_CONTAINER_GET_INTERFACE (self)->get_searchable (self);
+gboolean rygel_external_media_container_proxy_get_searchable (RygelExternalMediaContainerProxy* self) {
+	return RYGEL_EXTERNAL_MEDIA_CONTAINER_PROXY_GET_INTERFACE (self)->get_searchable (self);
 }
 
 
-void rygel_external_media_container_set_searchable (RygelExternalMediaContainer* self, gboolean value) {
-	RYGEL_EXTERNAL_MEDIA_CONTAINER_GET_INTERFACE (self)->set_searchable (self, value);
+void rygel_external_media_container_proxy_set_searchable (RygelExternalMediaContainerProxy* self, gboolean value) {
+	RYGEL_EXTERNAL_MEDIA_CONTAINER_PROXY_GET_INTERFACE (self)->set_searchable (self, value);
 }
 
 
-char* rygel_external_media_container_get_icon (RygelExternalMediaContainer* self) {
-	return RYGEL_EXTERNAL_MEDIA_CONTAINER_GET_INTERFACE (self)->get_icon (self);
+char* rygel_external_media_container_proxy_get_icon (RygelExternalMediaContainerProxy* self) {
+	return RYGEL_EXTERNAL_MEDIA_CONTAINER_PROXY_GET_INTERFACE (self)->get_icon (self);
 }
 
 
-void rygel_external_media_container_set_icon (RygelExternalMediaContainer* self, const char* value) {
-	RYGEL_EXTERNAL_MEDIA_CONTAINER_GET_INTERFACE (self)->set_icon (self, value);
+void rygel_external_media_container_proxy_set_icon (RygelExternalMediaContainerProxy* self, const char* value) {
+	RYGEL_EXTERNAL_MEDIA_CONTAINER_PROXY_GET_INTERFACE (self)->set_icon (self, value);
 }
 
 
-void _rygel_external_media_container_dbus_unregister (DBusConnection* connection, void* _user_data_) {
+void _rygel_external_media_container_proxy_dbus_unregister (DBusConnection* connection, void* _user_data_) {
 }
 
 
-static DBusHandlerResult _dbus_rygel_external_media_container_introspect (RygelExternalMediaContainer* self, DBusConnection* connection, DBusMessage* message) {
+static DBusHandlerResult _dbus_rygel_external_media_container_proxy_introspect (RygelExternalMediaContainerProxy* self, DBusConnection* connection, DBusMessage* message) {
 	DBusMessage* reply;
 	DBusMessageIter iter;
 	GString* xml_data;
@@ -1353,7 +1353,7 @@ static DBusHandlerResult _dbus_rygel_external_media_container_introspect (RygelE
 }
 
 
-static DBusHandlerResult _dbus_rygel_external_media_container_property_get (RygelExternalMediaContainer* self, DBusConnection* connection, DBusMessage* message) {
+static DBusHandlerResult _dbus_rygel_external_media_container_proxy_property_get (RygelExternalMediaContainerProxy* self, DBusConnection* connection, DBusMessage* message) {
 	DBusMessage* reply;
 	DBusMessageIter iter, reply_iter, subiter;
 	char* interface_name;
@@ -1376,7 +1376,7 @@ static DBusHandlerResult _dbus_rygel_external_media_container_property_get (Ryge
 		guint result;
 		dbus_uint32_t _tmp34_;
 		dbus_message_iter_open_container (&reply_iter, DBUS_TYPE_VARIANT, "u", &subiter);
-		result = rygel_external_media_container_get_child_count (self);
+		result = rygel_external_media_container_proxy_get_child_count (self);
 		_tmp34_ = result;
 		dbus_message_iter_append_basic (&subiter, DBUS_TYPE_UINT32, &_tmp34_);
 		dbus_message_iter_close_container (&reply_iter, &subiter);
@@ -1384,7 +1384,7 @@ static DBusHandlerResult _dbus_rygel_external_media_container_property_get (Ryge
 		guint result;
 		dbus_uint32_t _tmp35_;
 		dbus_message_iter_open_container (&reply_iter, DBUS_TYPE_VARIANT, "u", &subiter);
-		result = rygel_external_media_container_get_item_count (self);
+		result = rygel_external_media_container_proxy_get_item_count (self);
 		_tmp35_ = result;
 		dbus_message_iter_append_basic (&subiter, DBUS_TYPE_UINT32, &_tmp35_);
 		dbus_message_iter_close_container (&reply_iter, &subiter);
@@ -1392,7 +1392,7 @@ static DBusHandlerResult _dbus_rygel_external_media_container_property_get (Ryge
 		guint result;
 		dbus_uint32_t _tmp36_;
 		dbus_message_iter_open_container (&reply_iter, DBUS_TYPE_VARIANT, "u", &subiter);
-		result = rygel_external_media_container_get_container_count (self);
+		result = rygel_external_media_container_proxy_get_container_count (self);
 		_tmp36_ = result;
 		dbus_message_iter_append_basic (&subiter, DBUS_TYPE_UINT32, &_tmp36_);
 		dbus_message_iter_close_container (&reply_iter, &subiter);
@@ -1400,7 +1400,7 @@ static DBusHandlerResult _dbus_rygel_external_media_container_property_get (Ryge
 		gboolean result;
 		dbus_bool_t _tmp37_;
 		dbus_message_iter_open_container (&reply_iter, DBUS_TYPE_VARIANT, "b", &subiter);
-		result = rygel_external_media_container_get_searchable (self);
+		result = rygel_external_media_container_proxy_get_searchable (self);
 		_tmp37_ = result;
 		dbus_message_iter_append_basic (&subiter, DBUS_TYPE_BOOLEAN, &_tmp37_);
 		dbus_message_iter_close_container (&reply_iter, &subiter);
@@ -1408,7 +1408,7 @@ static DBusHandlerResult _dbus_rygel_external_media_container_property_get (Ryge
 		char* result;
 		const char* _tmp38_;
 		dbus_message_iter_open_container (&reply_iter, DBUS_TYPE_VARIANT, "o", &subiter);
-		result = rygel_external_media_container_get_icon (self);
+		result = rygel_external_media_container_proxy_get_icon (self);
 		_tmp38_ = result;
 		dbus_message_iter_append_basic (&subiter, DBUS_TYPE_OBJECT_PATH, &_tmp38_);
 		_g_free0 (result);
@@ -1429,7 +1429,7 @@ static DBusHandlerResult _dbus_rygel_external_media_container_property_get (Ryge
 }
 
 
-static DBusHandlerResult _dbus_rygel_external_media_container_property_set (RygelExternalMediaContainer* self, DBusConnection* connection, DBusMessage* message) {
+static DBusHandlerResult _dbus_rygel_external_media_container_proxy_property_set (RygelExternalMediaContainerProxy* self, DBusConnection* connection, DBusMessage* message) {
 	DBusMessage* reply;
 	DBusMessageIter iter, subiter;
 	char* interface_name;
@@ -1454,35 +1454,35 @@ static DBusHandlerResult _dbus_rygel_external_media_container_property_set (Ryge
 		dbus_message_iter_get_basic (&subiter, &_tmp41_);
 		dbus_message_iter_next (&subiter);
 		value = _tmp41_;
-		rygel_external_media_container_set_child_count (self, value);
+		rygel_external_media_container_proxy_set_child_count (self, value);
 	} else if ((strcmp (interface_name, "org.gnome.UPnP.MediaContainer2") == 0) && (strcmp (property_name, "ItemCount") == 0)) {
 		guint value;
 		dbus_uint32_t _tmp42_;
 		dbus_message_iter_get_basic (&subiter, &_tmp42_);
 		dbus_message_iter_next (&subiter);
 		value = _tmp42_;
-		rygel_external_media_container_set_item_count (self, value);
+		rygel_external_media_container_proxy_set_item_count (self, value);
 	} else if ((strcmp (interface_name, "org.gnome.UPnP.MediaContainer2") == 0) && (strcmp (property_name, "ContainerCount") == 0)) {
 		guint value;
 		dbus_uint32_t _tmp43_;
 		dbus_message_iter_get_basic (&subiter, &_tmp43_);
 		dbus_message_iter_next (&subiter);
 		value = _tmp43_;
-		rygel_external_media_container_set_container_count (self, value);
+		rygel_external_media_container_proxy_set_container_count (self, value);
 	} else if ((strcmp (interface_name, "org.gnome.UPnP.MediaContainer2") == 0) && (strcmp (property_name, "Searchable") == 0)) {
 		gboolean value;
 		dbus_bool_t _tmp44_;
 		dbus_message_iter_get_basic (&subiter, &_tmp44_);
 		dbus_message_iter_next (&subiter);
 		value = _tmp44_;
-		rygel_external_media_container_set_searchable (self, value);
+		rygel_external_media_container_proxy_set_searchable (self, value);
 	} else if ((strcmp (interface_name, "org.gnome.UPnP.MediaContainer2") == 0) && (strcmp (property_name, "Icon") == 0)) {
 		char* value;
 		const char* _tmp45_;
 		dbus_message_iter_get_basic (&subiter, &_tmp45_);
 		dbus_message_iter_next (&subiter);
 		value = g_strdup (_tmp45_);
-		rygel_external_media_container_set_icon (self, value);
+		rygel_external_media_container_proxy_set_icon (self, value);
 		_g_free0 (value);
 	} else {
 		dbus_message_unref (reply);
@@ -1500,7 +1500,7 @@ static DBusHandlerResult _dbus_rygel_external_media_container_property_set (Ryge
 }
 
 
-static DBusHandlerResult _dbus_rygel_external_media_container_property_get_all (RygelExternalMediaContainer* self, DBusConnection* connection, DBusMessage* message) {
+static DBusHandlerResult _dbus_rygel_external_media_container_proxy_property_get_all (RygelExternalMediaContainerProxy* self, DBusConnection* connection, DBusMessage* message) {
 	DBusMessage* reply;
 	DBusMessageIter iter, reply_iter, subiter, entry_iter, value_iter;
 	char* interface_name;
@@ -1524,7 +1524,7 @@ static DBusHandlerResult _dbus_rygel_external_media_container_property_get_all (
 			property_name = "ChildCount";
 			dbus_message_iter_append_basic (&entry_iter, DBUS_TYPE_STRING, &property_name);
 			dbus_message_iter_open_container (&entry_iter, DBUS_TYPE_VARIANT, "u", &value_iter);
-			result = rygel_external_media_container_get_child_count (self);
+			result = rygel_external_media_container_proxy_get_child_count (self);
 			_tmp47_ = result;
 			dbus_message_iter_append_basic (&value_iter, DBUS_TYPE_UINT32, &_tmp47_);
 			dbus_message_iter_close_container (&entry_iter, &value_iter);
@@ -1537,7 +1537,7 @@ static DBusHandlerResult _dbus_rygel_external_media_container_property_get_all (
 			property_name = "ItemCount";
 			dbus_message_iter_append_basic (&entry_iter, DBUS_TYPE_STRING, &property_name);
 			dbus_message_iter_open_container (&entry_iter, DBUS_TYPE_VARIANT, "u", &value_iter);
-			result = rygel_external_media_container_get_item_count (self);
+			result = rygel_external_media_container_proxy_get_item_count (self);
 			_tmp48_ = result;
 			dbus_message_iter_append_basic (&value_iter, DBUS_TYPE_UINT32, &_tmp48_);
 			dbus_message_iter_close_container (&entry_iter, &value_iter);
@@ -1550,7 +1550,7 @@ static DBusHandlerResult _dbus_rygel_external_media_container_property_get_all (
 			property_name = "ContainerCount";
 			dbus_message_iter_append_basic (&entry_iter, DBUS_TYPE_STRING, &property_name);
 			dbus_message_iter_open_container (&entry_iter, DBUS_TYPE_VARIANT, "u", &value_iter);
-			result = rygel_external_media_container_get_container_count (self);
+			result = rygel_external_media_container_proxy_get_container_count (self);
 			_tmp49_ = result;
 			dbus_message_iter_append_basic (&value_iter, DBUS_TYPE_UINT32, &_tmp49_);
 			dbus_message_iter_close_container (&entry_iter, &value_iter);
@@ -1563,7 +1563,7 @@ static DBusHandlerResult _dbus_rygel_external_media_container_property_get_all (
 			property_name = "Searchable";
 			dbus_message_iter_append_basic (&entry_iter, DBUS_TYPE_STRING, &property_name);
 			dbus_message_iter_open_container (&entry_iter, DBUS_TYPE_VARIANT, "b", &value_iter);
-			result = rygel_external_media_container_get_searchable (self);
+			result = rygel_external_media_container_proxy_get_searchable (self);
 			_tmp50_ = result;
 			dbus_message_iter_append_basic (&value_iter, DBUS_TYPE_BOOLEAN, &_tmp50_);
 			dbus_message_iter_close_container (&entry_iter, &value_iter);
@@ -1576,7 +1576,7 @@ static DBusHandlerResult _dbus_rygel_external_media_container_property_get_all (
 			property_name = "Icon";
 			dbus_message_iter_append_basic (&entry_iter, DBUS_TYPE_STRING, &property_name);
 			dbus_message_iter_open_container (&entry_iter, DBUS_TYPE_VARIANT, "o", &value_iter);
-			result = rygel_external_media_container_get_icon (self);
+			result = rygel_external_media_container_proxy_get_icon (self);
 			_tmp51_ = result;
 			dbus_message_iter_append_basic (&value_iter, DBUS_TYPE_OBJECT_PATH, &_tmp51_);
 			_g_free0 (result);
@@ -1599,7 +1599,7 @@ static DBusHandlerResult _dbus_rygel_external_media_container_property_get_all (
 }
 
 
-static DBusHandlerResult _dbus_rygel_external_media_container_list_children (RygelExternalMediaContainer* self, DBusConnection* connection, DBusMessage* message) {
+static DBusHandlerResult _dbus_rygel_external_media_container_proxy_list_children (RygelExternalMediaContainerProxy* self, DBusConnection* connection, DBusMessage* message) {
 	DBusMessageIter iter;
 	guint offset = 0U;
 	dbus_uint32_t _tmp52_;
@@ -1646,13 +1646,13 @@ static DBusHandlerResult _dbus_rygel_external_media_container_list_children (Ryg
 	_user_data_ = g_new0 (gpointer, 2);
 	_user_data_[0] = dbus_connection_ref (connection);
 	_user_data_[1] = dbus_message_ref (message);
-	rygel_external_media_container_list_children (self, offset, max_count, filter, filter_length1, (GAsyncReadyCallback) _dbus_rygel_external_media_container_list_children_ready, _user_data_);
+	rygel_external_media_container_proxy_list_children (self, offset, max_count, filter, filter_length1, (GAsyncReadyCallback) _dbus_rygel_external_media_container_proxy_list_children_ready, _user_data_);
 	filter = (_vala_array_free (filter, filter_length1, (GDestroyNotify) g_free), NULL);
 	return DBUS_HANDLER_RESULT_HANDLED;
 }
 
 
-static void _dbus_rygel_external_media_container_list_children_ready (GObject * source_object, GAsyncResult * _res_, gpointer * _user_data_) {
+static void _dbus_rygel_external_media_container_proxy_list_children_ready (GObject * source_object, GAsyncResult * _res_, gpointer * _user_data_) {
 	DBusConnection * connection;
 	DBusMessage * message;
 	DBusMessageIter iter;
@@ -1667,7 +1667,7 @@ static void _dbus_rygel_external_media_container_list_children_ready (GObject * 
 	message = _user_data_[1];
 	error = NULL;
 	result_length1 = 0;
-	result = rygel_external_media_container_list_children_finish ((RygelExternalMediaContainer*) source_object, _res_, &result_length1, &error);
+	result = rygel_external_media_container_proxy_list_children_finish ((RygelExternalMediaContainerProxy*) source_object, _res_, &result_length1, &error);
 	if (error) {
 		if (error->domain == DBUS_GERROR) {
 			switch (error->code) {
@@ -1875,7 +1875,7 @@ static void _dbus_rygel_external_media_container_list_children_ready (GObject * 
 }
 
 
-static DBusHandlerResult _dbus_rygel_external_media_container_list_containers (RygelExternalMediaContainer* self, DBusConnection* connection, DBusMessage* message) {
+static DBusHandlerResult _dbus_rygel_external_media_container_proxy_list_containers (RygelExternalMediaContainerProxy* self, DBusConnection* connection, DBusMessage* message) {
 	DBusMessageIter iter;
 	guint offset = 0U;
 	dbus_uint32_t _tmp79_;
@@ -1922,13 +1922,13 @@ static DBusHandlerResult _dbus_rygel_external_media_container_list_containers (R
 	_user_data_ = g_new0 (gpointer, 2);
 	_user_data_[0] = dbus_connection_ref (connection);
 	_user_data_[1] = dbus_message_ref (message);
-	rygel_external_media_container_list_containers (self, offset, max_count, filter, filter_length1, (GAsyncReadyCallback) _dbus_rygel_external_media_container_list_containers_ready, _user_data_);
+	rygel_external_media_container_proxy_list_containers (self, offset, max_count, filter, filter_length1, (GAsyncReadyCallback) _dbus_rygel_external_media_container_proxy_list_containers_ready, _user_data_);
 	filter = (_vala_array_free (filter, filter_length1, (GDestroyNotify) g_free), NULL);
 	return DBUS_HANDLER_RESULT_HANDLED;
 }
 
 
-static void _dbus_rygel_external_media_container_list_containers_ready (GObject * source_object, GAsyncResult * _res_, gpointer * _user_data_) {
+static void _dbus_rygel_external_media_container_proxy_list_containers_ready (GObject * source_object, GAsyncResult * _res_, gpointer * _user_data_) {
 	DBusConnection * connection;
 	DBusMessage * message;
 	DBusMessageIter iter;
@@ -1943,7 +1943,7 @@ static void _dbus_rygel_external_media_container_list_containers_ready (GObject 
 	message = _user_data_[1];
 	error = NULL;
 	result_length1 = 0;
-	result = rygel_external_media_container_list_containers_finish ((RygelExternalMediaContainer*) source_object, _res_, &result_length1, &error);
+	result = rygel_external_media_container_proxy_list_containers_finish ((RygelExternalMediaContainerProxy*) source_object, _res_, &result_length1, &error);
 	if (error) {
 		if (error->domain == DBUS_GERROR) {
 			switch (error->code) {
@@ -2151,7 +2151,7 @@ static void _dbus_rygel_external_media_container_list_containers_ready (GObject 
 }
 
 
-static DBusHandlerResult _dbus_rygel_external_media_container_list_items (RygelExternalMediaContainer* self, DBusConnection* connection, DBusMessage* message) {
+static DBusHandlerResult _dbus_rygel_external_media_container_proxy_list_items (RygelExternalMediaContainerProxy* self, DBusConnection* connection, DBusMessage* message) {
 	DBusMessageIter iter;
 	guint offset = 0U;
 	dbus_uint32_t _tmp106_;
@@ -2198,13 +2198,13 @@ static DBusHandlerResult _dbus_rygel_external_media_container_list_items (RygelE
 	_user_data_ = g_new0 (gpointer, 2);
 	_user_data_[0] = dbus_connection_ref (connection);
 	_user_data_[1] = dbus_message_ref (message);
-	rygel_external_media_container_list_items (self, offset, max_count, filter, filter_length1, (GAsyncReadyCallback) _dbus_rygel_external_media_container_list_items_ready, _user_data_);
+	rygel_external_media_container_proxy_list_items (self, offset, max_count, filter, filter_length1, (GAsyncReadyCallback) _dbus_rygel_external_media_container_proxy_list_items_ready, _user_data_);
 	filter = (_vala_array_free (filter, filter_length1, (GDestroyNotify) g_free), NULL);
 	return DBUS_HANDLER_RESULT_HANDLED;
 }
 
 
-static void _dbus_rygel_external_media_container_list_items_ready (GObject * source_object, GAsyncResult * _res_, gpointer * _user_data_) {
+static void _dbus_rygel_external_media_container_proxy_list_items_ready (GObject * source_object, GAsyncResult * _res_, gpointer * _user_data_) {
 	DBusConnection * connection;
 	DBusMessage * message;
 	DBusMessageIter iter;
@@ -2219,7 +2219,7 @@ static void _dbus_rygel_external_media_container_list_items_ready (GObject * sou
 	message = _user_data_[1];
 	error = NULL;
 	result_length1 = 0;
-	result = rygel_external_media_container_list_items_finish ((RygelExternalMediaContainer*) source_object, _res_, &result_length1, &error);
+	result = rygel_external_media_container_proxy_list_items_finish ((RygelExternalMediaContainerProxy*) source_object, _res_, &result_length1, &error);
 	if (error) {
 		if (error->domain == DBUS_GERROR) {
 			switch (error->code) {
@@ -2427,7 +2427,7 @@ static void _dbus_rygel_external_media_container_list_items_ready (GObject * sou
 }
 
 
-static DBusHandlerResult _dbus_rygel_external_media_container_search_objects (RygelExternalMediaContainer* self, DBusConnection* connection, DBusMessage* message) {
+static DBusHandlerResult _dbus_rygel_external_media_container_proxy_search_objects (RygelExternalMediaContainerProxy* self, DBusConnection* connection, DBusMessage* message) {
 	DBusMessageIter iter;
 	char* query = NULL;
 	const char* _tmp133_;
@@ -2479,14 +2479,14 @@ static DBusHandlerResult _dbus_rygel_external_media_container_search_objects (Ry
 	_user_data_ = g_new0 (gpointer, 2);
 	_user_data_[0] = dbus_connection_ref (connection);
 	_user_data_[1] = dbus_message_ref (message);
-	rygel_external_media_container_search_objects (self, query, offset, max_count, filter, filter_length1, (GAsyncReadyCallback) _dbus_rygel_external_media_container_search_objects_ready, _user_data_);
+	rygel_external_media_container_proxy_search_objects (self, query, offset, max_count, filter, filter_length1, (GAsyncReadyCallback) _dbus_rygel_external_media_container_proxy_search_objects_ready, _user_data_);
 	_g_free0 (query);
 	filter = (_vala_array_free (filter, filter_length1, (GDestroyNotify) g_free), NULL);
 	return DBUS_HANDLER_RESULT_HANDLED;
 }
 
 
-static void _dbus_rygel_external_media_container_search_objects_ready (GObject * source_object, GAsyncResult * _res_, gpointer * _user_data_) {
+static void _dbus_rygel_external_media_container_proxy_search_objects_ready (GObject * source_object, GAsyncResult * _res_, gpointer * _user_data_) {
 	DBusConnection * connection;
 	DBusMessage * message;
 	DBusMessageIter iter;
@@ -2501,7 +2501,7 @@ static void _dbus_rygel_external_media_container_search_objects_ready (GObject *
 	message = _user_data_[1];
 	error = NULL;
 	result_length1 = 0;
-	result = rygel_external_media_container_search_objects_finish ((RygelExternalMediaContainer*) source_object, _res_, &result_length1, &error);
+	result = rygel_external_media_container_proxy_search_objects_finish ((RygelExternalMediaContainerProxy*) source_object, _res_, &result_length1, &error);
 	if (error) {
 		if (error->domain == DBUS_GERROR) {
 			switch (error->code) {
@@ -2709,25 +2709,25 @@ static void _dbus_rygel_external_media_container_search_objects_ready (GObject *
 }
 
 
-DBusHandlerResult rygel_external_media_container_dbus_message (DBusConnection* connection, DBusMessage* message, void* object) {
+DBusHandlerResult rygel_external_media_container_proxy_dbus_message (DBusConnection* connection, DBusMessage* message, void* object) {
 	DBusHandlerResult result;
 	result = DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
 	if (dbus_message_is_method_call (message, "org.freedesktop.DBus.Introspectable", "Introspect")) {
-		result = _dbus_rygel_external_media_container_introspect (object, connection, message);
+		result = _dbus_rygel_external_media_container_proxy_introspect (object, connection, message);
 	} else if (dbus_message_is_method_call (message, "org.freedesktop.DBus.Properties", "Get")) {
-		result = _dbus_rygel_external_media_container_property_get (object, connection, message);
+		result = _dbus_rygel_external_media_container_proxy_property_get (object, connection, message);
 	} else if (dbus_message_is_method_call (message, "org.freedesktop.DBus.Properties", "Set")) {
-		result = _dbus_rygel_external_media_container_property_set (object, connection, message);
+		result = _dbus_rygel_external_media_container_proxy_property_set (object, connection, message);
 	} else if (dbus_message_is_method_call (message, "org.freedesktop.DBus.Properties", "GetAll")) {
-		result = _dbus_rygel_external_media_container_property_get_all (object, connection, message);
+		result = _dbus_rygel_external_media_container_proxy_property_get_all (object, connection, message);
 	} else if (dbus_message_is_method_call (message, "org.gnome.UPnP.MediaContainer2", "ListChildren")) {
-		result = _dbus_rygel_external_media_container_list_children (object, connection, message);
+		result = _dbus_rygel_external_media_container_proxy_list_children (object, connection, message);
 	} else if (dbus_message_is_method_call (message, "org.gnome.UPnP.MediaContainer2", "ListContainers")) {
-		result = _dbus_rygel_external_media_container_list_containers (object, connection, message);
+		result = _dbus_rygel_external_media_container_proxy_list_containers (object, connection, message);
 	} else if (dbus_message_is_method_call (message, "org.gnome.UPnP.MediaContainer2", "ListItems")) {
-		result = _dbus_rygel_external_media_container_list_items (object, connection, message);
+		result = _dbus_rygel_external_media_container_proxy_list_items (object, connection, message);
 	} else if (dbus_message_is_method_call (message, "org.gnome.UPnP.MediaContainer2", "SearchObjects")) {
-		result = _dbus_rygel_external_media_container_search_objects (object, connection, message);
+		result = _dbus_rygel_external_media_container_proxy_search_objects (object, connection, message);
 	}
 	if (result == DBUS_HANDLER_RESULT_HANDLED) {
 		return result;
@@ -2737,7 +2737,7 @@ DBusHandlerResult rygel_external_media_container_dbus_message (DBusConnection* c
 }
 
 
-static void _dbus_rygel_external_media_container_updated (GObject* _sender, DBusConnection* _connection) {
+static void _dbus_rygel_external_media_container_proxy_updated (GObject* _sender, DBusConnection* _connection) {
 	const char * _path;
 	DBusMessage *_message;
 	DBusMessageIter _iter;
@@ -2749,17 +2749,17 @@ static void _dbus_rygel_external_media_container_updated (GObject* _sender, DBus
 }
 
 
-void rygel_external_media_container_dbus_register_object (DBusConnection* connection, const char* path, void* object) {
+void rygel_external_media_container_proxy_dbus_register_object (DBusConnection* connection, const char* path, void* object) {
 	if (!g_object_get_data (object, "dbus_object_path")) {
 		g_object_set_data (object, "dbus_object_path", g_strdup (path));
-		dbus_connection_register_object_path (connection, path, &_rygel_external_media_container_dbus_path_vtable, object);
+		dbus_connection_register_object_path (connection, path, &_rygel_external_media_container_proxy_dbus_path_vtable, object);
 		g_object_weak_ref (object, _vala_dbus_unregister_object, connection);
 	}
-	g_signal_connect (object, "updated", (GCallback) _dbus_rygel_external_media_container_updated, connection);
+	g_signal_connect (object, "updated", (GCallback) _dbus_rygel_external_media_container_proxy_updated, connection);
 }
 
 
-static void rygel_external_media_container_base_init (RygelExternalMediaContainerIface * iface) {
+static void rygel_external_media_container_proxy_base_init (RygelExternalMediaContainerProxyIface * iface) {
 	static gboolean initialized = FALSE;
 	if (!initialized) {
 		initialized = TRUE;
@@ -2768,44 +2768,44 @@ static void rygel_external_media_container_base_init (RygelExternalMediaContaine
 		g_object_interface_install_property (iface, g_param_spec_uint ("container-count", "container-count", "container-count", 0, G_MAXUINT, 0U, G_PARAM_STATIC_NAME | G_PARAM_STATIC_NICK | G_PARAM_STATIC_BLURB | G_PARAM_READABLE | G_PARAM_WRITABLE));
 		g_object_interface_install_property (iface, g_param_spec_boolean ("searchable", "searchable", "searchable", FALSE, G_PARAM_STATIC_NAME | G_PARAM_STATIC_NICK | G_PARAM_STATIC_BLURB | G_PARAM_READABLE | G_PARAM_WRITABLE));
 		g_object_interface_install_property (iface, g_param_spec_string ("icon", "icon", "icon", NULL, G_PARAM_STATIC_NAME | G_PARAM_STATIC_NICK | G_PARAM_STATIC_BLURB | G_PARAM_READABLE | G_PARAM_WRITABLE));
-		g_signal_new ("updated", RYGEL_TYPE_EXTERNAL_MEDIA_CONTAINER, G_SIGNAL_RUN_LAST, 0, NULL, NULL, g_cclosure_marshal_VOID__VOID, G_TYPE_NONE, 0);
-		g_type_set_qdata (RYGEL_TYPE_EXTERNAL_MEDIA_CONTAINER, g_quark_from_static_string ("DBusObjectVTable"), (void*) (&_rygel_external_media_container_dbus_vtable));
+		g_signal_new ("updated", RYGEL_EXTERNAL_TYPE_MEDIA_CONTAINER_PROXY, G_SIGNAL_RUN_LAST, 0, NULL, NULL, g_cclosure_marshal_VOID__VOID, G_TYPE_NONE, 0);
+		g_type_set_qdata (RYGEL_EXTERNAL_TYPE_MEDIA_CONTAINER_PROXY, g_quark_from_static_string ("DBusObjectVTable"), (void*) (&_rygel_external_media_container_proxy_dbus_vtable));
 	}
 }
 
 
-GType rygel_external_media_container_get_type (void) {
-	static volatile gsize rygel_external_media_container_type_id__volatile = 0;
-	if (g_once_init_enter (&rygel_external_media_container_type_id__volatile)) {
-		static const GTypeInfo g_define_type_info = { sizeof (RygelExternalMediaContainerIface), (GBaseInitFunc) rygel_external_media_container_base_init, (GBaseFinalizeFunc) NULL, (GClassInitFunc) NULL, (GClassFinalizeFunc) NULL, NULL, 0, 0, (GInstanceInitFunc) NULL, NULL };
-		GType rygel_external_media_container_type_id;
-		rygel_external_media_container_type_id = g_type_register_static (G_TYPE_INTERFACE, "RygelExternalMediaContainer", &g_define_type_info, 0);
-		g_type_interface_add_prerequisite (rygel_external_media_container_type_id, DBUS_TYPE_G_PROXY);
-		g_type_interface_add_prerequisite (rygel_external_media_container_type_id, RYGEL_TYPE_EXTERNAL_MEDIA_OBJECT);
-		g_type_set_qdata (rygel_external_media_container_type_id, g_quark_from_string ("ValaDBusInterfaceProxyType"), &rygel_external_media_container_dbus_proxy_get_type);
-		g_once_init_leave (&rygel_external_media_container_type_id__volatile, rygel_external_media_container_type_id);
+GType rygel_external_media_container_proxy_get_type (void) {
+	static volatile gsize rygel_external_media_container_proxy_type_id__volatile = 0;
+	if (g_once_init_enter (&rygel_external_media_container_proxy_type_id__volatile)) {
+		static const GTypeInfo g_define_type_info = { sizeof (RygelExternalMediaContainerProxyIface), (GBaseInitFunc) rygel_external_media_container_proxy_base_init, (GBaseFinalizeFunc) NULL, (GClassInitFunc) NULL, (GClassFinalizeFunc) NULL, NULL, 0, 0, (GInstanceInitFunc) NULL, NULL };
+		GType rygel_external_media_container_proxy_type_id;
+		rygel_external_media_container_proxy_type_id = g_type_register_static (G_TYPE_INTERFACE, "RygelExternalMediaContainerProxy", &g_define_type_info, 0);
+		g_type_interface_add_prerequisite (rygel_external_media_container_proxy_type_id, DBUS_TYPE_G_PROXY);
+		g_type_interface_add_prerequisite (rygel_external_media_container_proxy_type_id, RYGEL_EXTERNAL_TYPE_MEDIA_OBJECT_PROXY);
+		g_type_set_qdata (rygel_external_media_container_proxy_type_id, g_quark_from_string ("ValaDBusInterfaceProxyType"), &rygel_external_media_container_proxy_dbus_proxy_get_type);
+		g_once_init_leave (&rygel_external_media_container_proxy_type_id__volatile, rygel_external_media_container_proxy_type_id);
 	}
-	return rygel_external_media_container_type_id__volatile;
+	return rygel_external_media_container_proxy_type_id__volatile;
 }
 
 
-G_DEFINE_TYPE_EXTENDED (RygelExternalMediaContainerDBusProxy, rygel_external_media_container_dbus_proxy, DBUS_TYPE_G_PROXY, 0, G_IMPLEMENT_INTERFACE (RYGEL_TYPE_EXTERNAL_MEDIA_OBJECT, rygel_external_media_container_dbus_proxy_rygel_external_media_object__interface_init) G_IMPLEMENT_INTERFACE (RYGEL_TYPE_EXTERNAL_MEDIA_CONTAINER, rygel_external_media_container_dbus_proxy_rygel_external_media_container__interface_init) );
-RygelExternalMediaContainer* rygel_external_media_container_dbus_proxy_new (DBusGConnection* connection, const char* name, const char* path) {
-	RygelExternalMediaContainer* self;
-	self = g_object_new (rygel_external_media_container_dbus_proxy_get_type (), "connection", connection, "name", name, "path", path, "interface", "org.gnome.UPnP.MediaContainer2", NULL);
+G_DEFINE_TYPE_EXTENDED (RygelExternalMediaContainerProxyDBusProxy, rygel_external_media_container_proxy_dbus_proxy, DBUS_TYPE_G_PROXY, 0, G_IMPLEMENT_INTERFACE (RYGEL_EXTERNAL_TYPE_MEDIA_OBJECT_PROXY, rygel_external_media_container_proxy_dbus_proxy_rygel_external_media_object_proxy__interface_init) G_IMPLEMENT_INTERFACE (RYGEL_EXTERNAL_TYPE_MEDIA_CONTAINER_PROXY, rygel_external_media_container_proxy_dbus_proxy_rygel_external_media_container_proxy__interface_init) );
+RygelExternalMediaContainerProxy* rygel_external_media_container_proxy_dbus_proxy_new (DBusGConnection* connection, const char* name, const char* path) {
+	RygelExternalMediaContainerProxy* self;
+	self = g_object_new (rygel_external_media_container_proxy_dbus_proxy_get_type (), "connection", connection, "name", name, "path", path, "interface", "org.gnome.UPnP.MediaContainer2", NULL);
 	return self;
 }
 
 
-static GObject* rygel_external_media_container_dbus_proxy_construct (GType gtype, guint n_properties, GObjectConstructParam* properties) {
+static GObject* rygel_external_media_container_proxy_dbus_proxy_construct (GType gtype, guint n_properties, GObjectConstructParam* properties) {
 	GObject* self;
 	DBusGConnection *connection;
 	char* path;
 	char* filter;
-	self = G_OBJECT_CLASS (rygel_external_media_container_dbus_proxy_parent_class)->constructor (gtype, n_properties, properties);
+	self = G_OBJECT_CLASS (rygel_external_media_container_proxy_dbus_proxy_parent_class)->constructor (gtype, n_properties, properties);
 	g_object_get (self, "connection", &connection, NULL);
 	g_object_get (self, "path", &path, NULL);
-	dbus_connection_add_filter (dbus_g_connection_get_connection (connection), rygel_external_media_container_dbus_proxy_filter, self, NULL);
+	dbus_connection_add_filter (dbus_g_connection_get_connection (connection), rygel_external_media_container_proxy_dbus_proxy_filter, self, NULL);
 	filter = g_strdup_printf ("type='signal',path='%s'", path);
 	dbus_bus_add_match (dbus_g_connection_get_connection (connection), filter, NULL);
 	dbus_g_connection_unref (connection);
@@ -2815,7 +2815,7 @@ static GObject* rygel_external_media_container_dbus_proxy_construct (GType gtype
 }
 
 
-static void _dbus_handle_rygel_external_media_container_updated (RygelExternalMediaContainer* self, DBusConnection* connection, DBusMessage* message) {
+static void _dbus_handle_rygel_external_media_container_proxy_updated (RygelExternalMediaContainerProxy* self, DBusConnection* connection, DBusMessage* message) {
 	DBusMessageIter iter;
 	DBusMessage* reply;
 	if (strcmp (dbus_message_get_signature (message), "")) {
@@ -2826,49 +2826,49 @@ static void _dbus_handle_rygel_external_media_container_updated (RygelExternalMe
 }
 
 
-DBusHandlerResult rygel_external_media_container_dbus_proxy_filter (DBusConnection* connection, DBusMessage* message, void* user_data) {
+DBusHandlerResult rygel_external_media_container_proxy_dbus_proxy_filter (DBusConnection* connection, DBusMessage* message, void* user_data) {
 	if (dbus_message_has_path (message, dbus_g_proxy_get_path (user_data))) {
 		if (dbus_message_is_signal (message, "org.gnome.UPnP.MediaContainer2", "Updated")) {
-			_dbus_handle_rygel_external_media_container_updated (user_data, connection, message);
+			_dbus_handle_rygel_external_media_container_proxy_updated (user_data, connection, message);
 		}
 	}
 	return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
 }
 
 
-static void rygel_external_media_container_dbus_proxy_dispose (GObject* self) {
+static void rygel_external_media_container_proxy_dbus_proxy_dispose (GObject* self) {
 	DBusGConnection *connection;
-	if (((RygelExternalMediaContainerDBusProxy*) self)->disposed) {
+	if (((RygelExternalMediaContainerProxyDBusProxy*) self)->disposed) {
 		return;
 	}
-	((RygelExternalMediaContainerDBusProxy*) self)->disposed = TRUE;
+	((RygelExternalMediaContainerProxyDBusProxy*) self)->disposed = TRUE;
 	g_object_get (self, "connection", &connection, NULL);
-	dbus_connection_remove_filter (dbus_g_connection_get_connection (connection), rygel_external_media_container_dbus_proxy_filter, self);
-	G_OBJECT_CLASS (rygel_external_media_container_dbus_proxy_parent_class)->dispose (self);
+	dbus_connection_remove_filter (dbus_g_connection_get_connection (connection), rygel_external_media_container_proxy_dbus_proxy_filter, self);
+	G_OBJECT_CLASS (rygel_external_media_container_proxy_dbus_proxy_parent_class)->dispose (self);
 }
 
 
-static void rygel_external_media_container_dbus_proxy_class_init (RygelExternalMediaContainerDBusProxyClass* klass) {
-	G_OBJECT_CLASS (klass)->constructor = rygel_external_media_container_dbus_proxy_construct;
-	G_OBJECT_CLASS (klass)->dispose = rygel_external_media_container_dbus_proxy_dispose;
-	G_OBJECT_CLASS (klass)->get_property = rygel_external_media_container_dbus_proxy_get_property;
-	G_OBJECT_CLASS (klass)->set_property = rygel_external_media_container_dbus_proxy_set_property;
-	g_object_class_override_property (G_OBJECT_CLASS (klass), RYGEL_EXTERNAL_MEDIA_CONTAINER_DBUS_PROXY_PARENT, "parent");
-	g_object_class_override_property (G_OBJECT_CLASS (klass), RYGEL_EXTERNAL_MEDIA_CONTAINER_DBUS_PROXY_DISPLAY_NAME, "display-name");
-	g_object_class_override_property (G_OBJECT_CLASS (klass), RYGEL_EXTERNAL_MEDIA_CONTAINER_DBUS_PROXY_OBJECT_TYPE, "object-type");
-	g_object_class_override_property (G_OBJECT_CLASS (klass), RYGEL_EXTERNAL_MEDIA_CONTAINER_DBUS_PROXY_CHILD_COUNT, "child-count");
-	g_object_class_override_property (G_OBJECT_CLASS (klass), RYGEL_EXTERNAL_MEDIA_CONTAINER_DBUS_PROXY_ITEM_COUNT, "item-count");
-	g_object_class_override_property (G_OBJECT_CLASS (klass), RYGEL_EXTERNAL_MEDIA_CONTAINER_DBUS_PROXY_CONTAINER_COUNT, "container-count");
-	g_object_class_override_property (G_OBJECT_CLASS (klass), RYGEL_EXTERNAL_MEDIA_CONTAINER_DBUS_PROXY_SEARCHABLE, "searchable");
-	g_object_class_override_property (G_OBJECT_CLASS (klass), RYGEL_EXTERNAL_MEDIA_CONTAINER_DBUS_PROXY_ICON, "icon");
+static void rygel_external_media_container_proxy_dbus_proxy_class_init (RygelExternalMediaContainerProxyDBusProxyClass* klass) {
+	G_OBJECT_CLASS (klass)->constructor = rygel_external_media_container_proxy_dbus_proxy_construct;
+	G_OBJECT_CLASS (klass)->dispose = rygel_external_media_container_proxy_dbus_proxy_dispose;
+	G_OBJECT_CLASS (klass)->get_property = rygel_external_media_container_proxy_dbus_proxy_get_property;
+	G_OBJECT_CLASS (klass)->set_property = rygel_external_media_container_proxy_dbus_proxy_set_property;
+	g_object_class_override_property (G_OBJECT_CLASS (klass), RYGEL_EXTERNAL_MEDIA_CONTAINER_PROXY_DBUS_PROXY_PARENT, "parent");
+	g_object_class_override_property (G_OBJECT_CLASS (klass), RYGEL_EXTERNAL_MEDIA_CONTAINER_PROXY_DBUS_PROXY_DISPLAY_NAME, "display-name");
+	g_object_class_override_property (G_OBJECT_CLASS (klass), RYGEL_EXTERNAL_MEDIA_CONTAINER_PROXY_DBUS_PROXY_OBJECT_TYPE, "object-type");
+	g_object_class_override_property (G_OBJECT_CLASS (klass), RYGEL_EXTERNAL_MEDIA_CONTAINER_PROXY_DBUS_PROXY_CHILD_COUNT, "child-count");
+	g_object_class_override_property (G_OBJECT_CLASS (klass), RYGEL_EXTERNAL_MEDIA_CONTAINER_PROXY_DBUS_PROXY_ITEM_COUNT, "item-count");
+	g_object_class_override_property (G_OBJECT_CLASS (klass), RYGEL_EXTERNAL_MEDIA_CONTAINER_PROXY_DBUS_PROXY_CONTAINER_COUNT, "container-count");
+	g_object_class_override_property (G_OBJECT_CLASS (klass), RYGEL_EXTERNAL_MEDIA_CONTAINER_PROXY_DBUS_PROXY_SEARCHABLE, "searchable");
+	g_object_class_override_property (G_OBJECT_CLASS (klass), RYGEL_EXTERNAL_MEDIA_CONTAINER_PROXY_DBUS_PROXY_ICON, "icon");
 }
 
 
-static void rygel_external_media_container_dbus_proxy_init (RygelExternalMediaContainerDBusProxy* self) {
+static void rygel_external_media_container_proxy_dbus_proxy_init (RygelExternalMediaContainerProxyDBusProxy* self) {
 }
 
 
-static char* rygel_external_media_container_dbus_proxy_get_parent (RygelExternalMediaObject* self) {
+static char* rygel_external_media_container_proxy_dbus_proxy_get_parent (RygelExternalMediaObjectProxy* self) {
 	DBusError _dbus_error;
 	DBusGConnection *_connection;
 	DBusMessage *_message, *_reply;
@@ -2877,7 +2877,7 @@ static char* rygel_external_media_container_dbus_proxy_get_parent (RygelExternal
 	const char* _tmp162_;
 	char* _result;
 	const char* _tmp163_;
-	if (((RygelExternalMediaObjectDBusProxy*) self)->disposed) {
+	if (((RygelExternalMediaObjectProxyDBusProxy*) self)->disposed) {
 		return NULL;
 	}
 	_message = dbus_message_new_method_call (dbus_g_proxy_get_bus_name ((DBusGProxy*) self), dbus_g_proxy_get_path ((DBusGProxy*) self), "org.freedesktop.DBus.Properties", "Get");
@@ -2916,7 +2916,7 @@ static char* rygel_external_media_container_dbus_proxy_get_parent (RygelExternal
 }
 
 
-static void rygel_external_media_container_dbus_proxy_set_parent (RygelExternalMediaObject* self, const char* value) {
+static void rygel_external_media_container_proxy_dbus_proxy_set_parent (RygelExternalMediaObjectProxy* self, const char* value) {
 	DBusError _dbus_error;
 	DBusGConnection *_connection;
 	DBusMessage *_message, *_reply;
@@ -2924,7 +2924,7 @@ static void rygel_external_media_container_dbus_proxy_set_parent (RygelExternalM
 	const char* _tmp164_;
 	const char* _tmp165_;
 	const char* _tmp166_;
-	if (((RygelExternalMediaObjectDBusProxy*) self)->disposed) {
+	if (((RygelExternalMediaObjectProxyDBusProxy*) self)->disposed) {
 		return;
 	}
 	_message = dbus_message_new_method_call (dbus_g_proxy_get_bus_name ((DBusGProxy*) self), dbus_g_proxy_get_path ((DBusGProxy*) self), "org.freedesktop.DBus.Properties", "Set");
@@ -2957,7 +2957,7 @@ static void rygel_external_media_container_dbus_proxy_set_parent (RygelExternalM
 }
 
 
-static char* rygel_external_media_container_dbus_proxy_get_display_name (RygelExternalMediaObject* self) {
+static char* rygel_external_media_container_proxy_dbus_proxy_get_display_name (RygelExternalMediaObjectProxy* self) {
 	DBusError _dbus_error;
 	DBusGConnection *_connection;
 	DBusMessage *_message, *_reply;
@@ -2966,7 +2966,7 @@ static char* rygel_external_media_container_dbus_proxy_get_display_name (RygelEx
 	const char* _tmp168_;
 	char* _result;
 	const char* _tmp169_;
-	if (((RygelExternalMediaObjectDBusProxy*) self)->disposed) {
+	if (((RygelExternalMediaObjectProxyDBusProxy*) self)->disposed) {
 		return NULL;
 	}
 	_message = dbus_message_new_method_call (dbus_g_proxy_get_bus_name ((DBusGProxy*) self), dbus_g_proxy_get_path ((DBusGProxy*) self), "org.freedesktop.DBus.Properties", "Get");
@@ -3005,7 +3005,7 @@ static char* rygel_external_media_container_dbus_proxy_get_display_name (RygelEx
 }
 
 
-static void rygel_external_media_container_dbus_proxy_set_display_name (RygelExternalMediaObject* self, const char* value) {
+static void rygel_external_media_container_proxy_dbus_proxy_set_display_name (RygelExternalMediaObjectProxy* self, const char* value) {
 	DBusError _dbus_error;
 	DBusGConnection *_connection;
 	DBusMessage *_message, *_reply;
@@ -3013,7 +3013,7 @@ static void rygel_external_media_container_dbus_proxy_set_display_name (RygelExt
 	const char* _tmp170_;
 	const char* _tmp171_;
 	const char* _tmp172_;
-	if (((RygelExternalMediaObjectDBusProxy*) self)->disposed) {
+	if (((RygelExternalMediaObjectProxyDBusProxy*) self)->disposed) {
 		return;
 	}
 	_message = dbus_message_new_method_call (dbus_g_proxy_get_bus_name ((DBusGProxy*) self), dbus_g_proxy_get_path ((DBusGProxy*) self), "org.freedesktop.DBus.Properties", "Set");
@@ -3046,7 +3046,7 @@ static void rygel_external_media_container_dbus_proxy_set_display_name (RygelExt
 }
 
 
-static char* rygel_external_media_container_dbus_proxy_get_object_type (RygelExternalMediaObject* self) {
+static char* rygel_external_media_container_proxy_dbus_proxy_get_object_type (RygelExternalMediaObjectProxy* self) {
 	DBusError _dbus_error;
 	DBusGConnection *_connection;
 	DBusMessage *_message, *_reply;
@@ -3055,7 +3055,7 @@ static char* rygel_external_media_container_dbus_proxy_get_object_type (RygelExt
 	const char* _tmp174_;
 	char* _result;
 	const char* _tmp175_;
-	if (((RygelExternalMediaObjectDBusProxy*) self)->disposed) {
+	if (((RygelExternalMediaObjectProxyDBusProxy*) self)->disposed) {
 		return NULL;
 	}
 	_message = dbus_message_new_method_call (dbus_g_proxy_get_bus_name ((DBusGProxy*) self), dbus_g_proxy_get_path ((DBusGProxy*) self), "org.freedesktop.DBus.Properties", "Get");
@@ -3094,7 +3094,7 @@ static char* rygel_external_media_container_dbus_proxy_get_object_type (RygelExt
 }
 
 
-static void rygel_external_media_container_dbus_proxy_set_object_type (RygelExternalMediaObject* self, const char* value) {
+static void rygel_external_media_container_proxy_dbus_proxy_set_object_type (RygelExternalMediaObjectProxy* self, const char* value) {
 	DBusError _dbus_error;
 	DBusGConnection *_connection;
 	DBusMessage *_message, *_reply;
@@ -3102,7 +3102,7 @@ static void rygel_external_media_container_dbus_proxy_set_object_type (RygelExte
 	const char* _tmp176_;
 	const char* _tmp177_;
 	const char* _tmp178_;
-	if (((RygelExternalMediaObjectDBusProxy*) self)->disposed) {
+	if (((RygelExternalMediaObjectProxyDBusProxy*) self)->disposed) {
 		return;
 	}
 	_message = dbus_message_new_method_call (dbus_g_proxy_get_bus_name ((DBusGProxy*) self), dbus_g_proxy_get_path ((DBusGProxy*) self), "org.freedesktop.DBus.Properties", "Set");
@@ -3135,17 +3135,17 @@ static void rygel_external_media_container_dbus_proxy_set_object_type (RygelExte
 }
 
 
-static void rygel_external_media_container_dbus_proxy_rygel_external_media_object__interface_init (RygelExternalMediaObjectIface* iface) {
-	iface->get_parent = rygel_external_media_container_dbus_proxy_get_parent;
-	iface->set_parent = rygel_external_media_container_dbus_proxy_set_parent;
-	iface->get_display_name = rygel_external_media_container_dbus_proxy_get_display_name;
-	iface->set_display_name = rygel_external_media_container_dbus_proxy_set_display_name;
-	iface->get_object_type = rygel_external_media_container_dbus_proxy_get_object_type;
-	iface->set_object_type = rygel_external_media_container_dbus_proxy_set_object_type;
+static void rygel_external_media_container_proxy_dbus_proxy_rygel_external_media_object_proxy__interface_init (RygelExternalMediaObjectProxyIface* iface) {
+	iface->get_parent = rygel_external_media_container_proxy_dbus_proxy_get_parent;
+	iface->set_parent = rygel_external_media_container_proxy_dbus_proxy_set_parent;
+	iface->get_display_name = rygel_external_media_container_proxy_dbus_proxy_get_display_name;
+	iface->set_display_name = rygel_external_media_container_proxy_dbus_proxy_set_display_name;
+	iface->get_object_type = rygel_external_media_container_proxy_dbus_proxy_get_object_type;
+	iface->set_object_type = rygel_external_media_container_proxy_dbus_proxy_set_object_type;
 }
 
 
-static void rygel_external_media_container_dbus_proxy_list_children_async (RygelExternalMediaContainer* self, guint offset, guint max_count, char** filter, int filter_length1, GAsyncReadyCallback _callback_, gpointer _user_data_) {
+static void rygel_external_media_container_proxy_dbus_proxy_list_children_async (RygelExternalMediaContainerProxy* self, guint offset, guint max_count, char** filter, int filter_length1, GAsyncReadyCallback _callback_, gpointer _user_data_) {
 	DBusGConnection *_connection;
 	DBusMessage *_message;
 	DBusPendingCall *_pending;
@@ -3155,7 +3155,7 @@ static void rygel_external_media_container_dbus_proxy_list_children_async (Rygel
 	char** _tmp181_;
 	DBusMessageIter _tmp182_;
 	int _tmp183_;
-	RygelExternalMediaContainerDBusProxyListChildrenData* _data_;
+	RygelExternalMediaContainerProxyDBusProxyListChildrenData* _data_;
 	_message = dbus_message_new_method_call (dbus_g_proxy_get_bus_name ((DBusGProxy*) self), dbus_g_proxy_get_path ((DBusGProxy*) self), "org.gnome.UPnP.MediaContainer2", "ListChildren");
 	dbus_message_iter_init_append (_message, &_iter);
 	_tmp179_ = offset;
@@ -3175,16 +3175,16 @@ static void rygel_external_media_container_dbus_proxy_list_children_async (Rygel
 	dbus_connection_send_with_reply (dbus_g_connection_get_connection (_connection), _message, &_pending, -1);
 	dbus_g_connection_unref (_connection);
 	dbus_message_unref (_message);
-	_data_ = g_slice_new0 (RygelExternalMediaContainerDBusProxyListChildrenData);
+	_data_ = g_slice_new0 (RygelExternalMediaContainerProxyDBusProxyListChildrenData);
 	_data_->_callback_ = _callback_;
 	_data_->_user_data_ = _user_data_;
 	_data_->pending = _pending;
-	dbus_pending_call_set_notify (_pending, rygel_external_media_container_dbus_proxy_list_children_ready, _data_, NULL);
+	dbus_pending_call_set_notify (_pending, rygel_external_media_container_proxy_dbus_proxy_list_children_ready, _data_, NULL);
 }
 
 
-static void rygel_external_media_container_dbus_proxy_list_children_ready (DBusPendingCall* pending, void* user_data) {
-	RygelExternalMediaContainerDBusProxyListChildrenData* _data_;
+static void rygel_external_media_container_proxy_dbus_proxy_list_children_ready (DBusPendingCall* pending, void* user_data) {
+	RygelExternalMediaContainerProxyDBusProxyListChildrenData* _data_;
 	GObject * _obj_;
 	GSimpleAsyncResult * _res_;
 	_data_ = user_data;
@@ -3193,13 +3193,13 @@ static void rygel_external_media_container_dbus_proxy_list_children_ready (DBusP
 	g_simple_async_result_complete (_res_);
 	g_object_unref (_obj_);
 	g_object_unref (_res_);
-	g_slice_free (RygelExternalMediaContainerDBusProxyListChildrenData, _data_);
+	g_slice_free (RygelExternalMediaContainerProxyDBusProxyListChildrenData, _data_);
 	dbus_pending_call_unref (pending);
 }
 
 
-static GHashTable** rygel_external_media_container_dbus_proxy_list_children_finish (RygelExternalMediaContainer* self, GAsyncResult* _res_, int* result_length1, GError** error) {
-	RygelExternalMediaContainerDBusProxyListChildrenData* _data_;
+static GHashTable** rygel_external_media_container_proxy_dbus_proxy_list_children_finish (RygelExternalMediaContainerProxy* self, GAsyncResult* _res_, int* result_length1, GError** error) {
+	RygelExternalMediaContainerProxyDBusProxyListChildrenData* _data_;
 	DBusError _dbus_error;
 	DBusMessage *_reply;
 	DBusMessageIter _iter;
@@ -3429,7 +3429,7 @@ static GHashTable** rygel_external_media_container_dbus_proxy_list_children_fini
 }
 
 
-static void rygel_external_media_container_dbus_proxy_list_containers_async (RygelExternalMediaContainer* self, guint offset, guint max_count, char** filter, int filter_length1, GAsyncReadyCallback _callback_, gpointer _user_data_) {
+static void rygel_external_media_container_proxy_dbus_proxy_list_containers_async (RygelExternalMediaContainerProxy* self, guint offset, guint max_count, char** filter, int filter_length1, GAsyncReadyCallback _callback_, gpointer _user_data_) {
 	DBusGConnection *_connection;
 	DBusMessage *_message;
 	DBusPendingCall *_pending;
@@ -3439,7 +3439,7 @@ static void rygel_external_media_container_dbus_proxy_list_containers_async (Ryg
 	char** _tmp240_;
 	DBusMessageIter _tmp241_;
 	int _tmp242_;
-	RygelExternalMediaContainerDBusProxyListContainersData* _data_;
+	RygelExternalMediaContainerProxyDBusProxyListContainersData* _data_;
 	_message = dbus_message_new_method_call (dbus_g_proxy_get_bus_name ((DBusGProxy*) self), dbus_g_proxy_get_path ((DBusGProxy*) self), "org.gnome.UPnP.MediaContainer2", "ListContainers");
 	dbus_message_iter_init_append (_message, &_iter);
 	_tmp238_ = offset;
@@ -3459,16 +3459,16 @@ static void rygel_external_media_container_dbus_proxy_list_containers_async (Ryg
 	dbus_connection_send_with_reply (dbus_g_connection_get_connection (_connection), _message, &_pending, -1);
 	dbus_g_connection_unref (_connection);
 	dbus_message_unref (_message);
-	_data_ = g_slice_new0 (RygelExternalMediaContainerDBusProxyListContainersData);
+	_data_ = g_slice_new0 (RygelExternalMediaContainerProxyDBusProxyListContainersData);
 	_data_->_callback_ = _callback_;
 	_data_->_user_data_ = _user_data_;
 	_data_->pending = _pending;
-	dbus_pending_call_set_notify (_pending, rygel_external_media_container_dbus_proxy_list_containers_ready, _data_, NULL);
+	dbus_pending_call_set_notify (_pending, rygel_external_media_container_proxy_dbus_proxy_list_containers_ready, _data_, NULL);
 }
 
 
-static void rygel_external_media_container_dbus_proxy_list_containers_ready (DBusPendingCall* pending, void* user_data) {
-	RygelExternalMediaContainerDBusProxyListContainersData* _data_;
+static void rygel_external_media_container_proxy_dbus_proxy_list_containers_ready (DBusPendingCall* pending, void* user_data) {
+	RygelExternalMediaContainerProxyDBusProxyListContainersData* _data_;
 	GObject * _obj_;
 	GSimpleAsyncResult * _res_;
 	_data_ = user_data;
@@ -3477,13 +3477,13 @@ static void rygel_external_media_container_dbus_proxy_list_containers_ready (DBu
 	g_simple_async_result_complete (_res_);
 	g_object_unref (_obj_);
 	g_object_unref (_res_);
-	g_slice_free (RygelExternalMediaContainerDBusProxyListContainersData, _data_);
+	g_slice_free (RygelExternalMediaContainerProxyDBusProxyListContainersData, _data_);
 	dbus_pending_call_unref (pending);
 }
 
 
-static GHashTable** rygel_external_media_container_dbus_proxy_list_containers_finish (RygelExternalMediaContainer* self, GAsyncResult* _res_, int* result_length1, GError** error) {
-	RygelExternalMediaContainerDBusProxyListContainersData* _data_;
+static GHashTable** rygel_external_media_container_proxy_dbus_proxy_list_containers_finish (RygelExternalMediaContainerProxy* self, GAsyncResult* _res_, int* result_length1, GError** error) {
+	RygelExternalMediaContainerProxyDBusProxyListContainersData* _data_;
 	DBusError _dbus_error;
 	DBusMessage *_reply;
 	DBusMessageIter _iter;
@@ -3713,7 +3713,7 @@ static GHashTable** rygel_external_media_container_dbus_proxy_list_containers_fi
 }
 
 
-static void rygel_external_media_container_dbus_proxy_list_items_async (RygelExternalMediaContainer* self, guint offset, guint max_count, char** filter, int filter_length1, GAsyncReadyCallback _callback_, gpointer _user_data_) {
+static void rygel_external_media_container_proxy_dbus_proxy_list_items_async (RygelExternalMediaContainerProxy* self, guint offset, guint max_count, char** filter, int filter_length1, GAsyncReadyCallback _callback_, gpointer _user_data_) {
 	DBusGConnection *_connection;
 	DBusMessage *_message;
 	DBusPendingCall *_pending;
@@ -3723,7 +3723,7 @@ static void rygel_external_media_container_dbus_proxy_list_items_async (RygelExt
 	char** _tmp299_;
 	DBusMessageIter _tmp300_;
 	int _tmp301_;
-	RygelExternalMediaContainerDBusProxyListItemsData* _data_;
+	RygelExternalMediaContainerProxyDBusProxyListItemsData* _data_;
 	_message = dbus_message_new_method_call (dbus_g_proxy_get_bus_name ((DBusGProxy*) self), dbus_g_proxy_get_path ((DBusGProxy*) self), "org.gnome.UPnP.MediaContainer2", "ListItems");
 	dbus_message_iter_init_append (_message, &_iter);
 	_tmp297_ = offset;
@@ -3743,16 +3743,16 @@ static void rygel_external_media_container_dbus_proxy_list_items_async (RygelExt
 	dbus_connection_send_with_reply (dbus_g_connection_get_connection (_connection), _message, &_pending, -1);
 	dbus_g_connection_unref (_connection);
 	dbus_message_unref (_message);
-	_data_ = g_slice_new0 (RygelExternalMediaContainerDBusProxyListItemsData);
+	_data_ = g_slice_new0 (RygelExternalMediaContainerProxyDBusProxyListItemsData);
 	_data_->_callback_ = _callback_;
 	_data_->_user_data_ = _user_data_;
 	_data_->pending = _pending;
-	dbus_pending_call_set_notify (_pending, rygel_external_media_container_dbus_proxy_list_items_ready, _data_, NULL);
+	dbus_pending_call_set_notify (_pending, rygel_external_media_container_proxy_dbus_proxy_list_items_ready, _data_, NULL);
 }
 
 
-static void rygel_external_media_container_dbus_proxy_list_items_ready (DBusPendingCall* pending, void* user_data) {
-	RygelExternalMediaContainerDBusProxyListItemsData* _data_;
+static void rygel_external_media_container_proxy_dbus_proxy_list_items_ready (DBusPendingCall* pending, void* user_data) {
+	RygelExternalMediaContainerProxyDBusProxyListItemsData* _data_;
 	GObject * _obj_;
 	GSimpleAsyncResult * _res_;
 	_data_ = user_data;
@@ -3761,13 +3761,13 @@ static void rygel_external_media_container_dbus_proxy_list_items_ready (DBusPend
 	g_simple_async_result_complete (_res_);
 	g_object_unref (_obj_);
 	g_object_unref (_res_);
-	g_slice_free (RygelExternalMediaContainerDBusProxyListItemsData, _data_);
+	g_slice_free (RygelExternalMediaContainerProxyDBusProxyListItemsData, _data_);
 	dbus_pending_call_unref (pending);
 }
 
 
-static GHashTable** rygel_external_media_container_dbus_proxy_list_items_finish (RygelExternalMediaContainer* self, GAsyncResult* _res_, int* result_length1, GError** error) {
-	RygelExternalMediaContainerDBusProxyListItemsData* _data_;
+static GHashTable** rygel_external_media_container_proxy_dbus_proxy_list_items_finish (RygelExternalMediaContainerProxy* self, GAsyncResult* _res_, int* result_length1, GError** error) {
+	RygelExternalMediaContainerProxyDBusProxyListItemsData* _data_;
 	DBusError _dbus_error;
 	DBusMessage *_reply;
 	DBusMessageIter _iter;
@@ -3997,7 +3997,7 @@ static GHashTable** rygel_external_media_container_dbus_proxy_list_items_finish 
 }
 
 
-static void rygel_external_media_container_dbus_proxy_search_objects_async (RygelExternalMediaContainer* self, const char* query, guint offset, guint max_count, char** filter, int filter_length1, GAsyncReadyCallback _callback_, gpointer _user_data_) {
+static void rygel_external_media_container_proxy_dbus_proxy_search_objects_async (RygelExternalMediaContainerProxy* self, const char* query, guint offset, guint max_count, char** filter, int filter_length1, GAsyncReadyCallback _callback_, gpointer _user_data_) {
 	DBusGConnection *_connection;
 	DBusMessage *_message;
 	DBusPendingCall *_pending;
@@ -4008,7 +4008,7 @@ static void rygel_external_media_container_dbus_proxy_search_objects_async (Ryge
 	char** _tmp359_;
 	DBusMessageIter _tmp360_;
 	int _tmp361_;
-	RygelExternalMediaContainerDBusProxySearchObjectsData* _data_;
+	RygelExternalMediaContainerProxyDBusProxySearchObjectsData* _data_;
 	_message = dbus_message_new_method_call (dbus_g_proxy_get_bus_name ((DBusGProxy*) self), dbus_g_proxy_get_path ((DBusGProxy*) self), "org.gnome.UPnP.MediaContainer2", "SearchObjects");
 	dbus_message_iter_init_append (_message, &_iter);
 	_tmp356_ = query;
@@ -4030,16 +4030,16 @@ static void rygel_external_media_container_dbus_proxy_search_objects_async (Ryge
 	dbus_connection_send_with_reply (dbus_g_connection_get_connection (_connection), _message, &_pending, -1);
 	dbus_g_connection_unref (_connection);
 	dbus_message_unref (_message);
-	_data_ = g_slice_new0 (RygelExternalMediaContainerDBusProxySearchObjectsData);
+	_data_ = g_slice_new0 (RygelExternalMediaContainerProxyDBusProxySearchObjectsData);
 	_data_->_callback_ = _callback_;
 	_data_->_user_data_ = _user_data_;
 	_data_->pending = _pending;
-	dbus_pending_call_set_notify (_pending, rygel_external_media_container_dbus_proxy_search_objects_ready, _data_, NULL);
+	dbus_pending_call_set_notify (_pending, rygel_external_media_container_proxy_dbus_proxy_search_objects_ready, _data_, NULL);
 }
 
 
-static void rygel_external_media_container_dbus_proxy_search_objects_ready (DBusPendingCall* pending, void* user_data) {
-	RygelExternalMediaContainerDBusProxySearchObjectsData* _data_;
+static void rygel_external_media_container_proxy_dbus_proxy_search_objects_ready (DBusPendingCall* pending, void* user_data) {
+	RygelExternalMediaContainerProxyDBusProxySearchObjectsData* _data_;
 	GObject * _obj_;
 	GSimpleAsyncResult * _res_;
 	_data_ = user_data;
@@ -4048,13 +4048,13 @@ static void rygel_external_media_container_dbus_proxy_search_objects_ready (DBus
 	g_simple_async_result_complete (_res_);
 	g_object_unref (_obj_);
 	g_object_unref (_res_);
-	g_slice_free (RygelExternalMediaContainerDBusProxySearchObjectsData, _data_);
+	g_slice_free (RygelExternalMediaContainerProxyDBusProxySearchObjectsData, _data_);
 	dbus_pending_call_unref (pending);
 }
 
 
-static GHashTable** rygel_external_media_container_dbus_proxy_search_objects_finish (RygelExternalMediaContainer* self, GAsyncResult* _res_, int* result_length1, GError** error) {
-	RygelExternalMediaContainerDBusProxySearchObjectsData* _data_;
+static GHashTable** rygel_external_media_container_proxy_dbus_proxy_search_objects_finish (RygelExternalMediaContainerProxy* self, GAsyncResult* _res_, int* result_length1, GError** error) {
+	RygelExternalMediaContainerProxyDBusProxySearchObjectsData* _data_;
 	DBusError _dbus_error;
 	DBusMessage *_reply;
 	DBusMessageIter _iter;
@@ -4284,7 +4284,7 @@ static GHashTable** rygel_external_media_container_dbus_proxy_search_objects_fin
 }
 
 
-static guint rygel_external_media_container_dbus_proxy_get_child_count (RygelExternalMediaContainer* self) {
+static guint rygel_external_media_container_proxy_dbus_proxy_get_child_count (RygelExternalMediaContainerProxy* self) {
 	DBusError _dbus_error;
 	DBusGConnection *_connection;
 	DBusMessage *_message, *_reply;
@@ -4293,7 +4293,7 @@ static guint rygel_external_media_container_dbus_proxy_get_child_count (RygelExt
 	const char* _tmp418_;
 	guint _result;
 	dbus_uint32_t _tmp419_;
-	if (((RygelExternalMediaContainerDBusProxy*) self)->disposed) {
+	if (((RygelExternalMediaContainerProxyDBusProxy*) self)->disposed) {
 		return 0U;
 	}
 	_message = dbus_message_new_method_call (dbus_g_proxy_get_bus_name ((DBusGProxy*) self), dbus_g_proxy_get_path ((DBusGProxy*) self), "org.freedesktop.DBus.Properties", "Get");
@@ -4332,7 +4332,7 @@ static guint rygel_external_media_container_dbus_proxy_get_child_count (RygelExt
 }
 
 
-static void rygel_external_media_container_dbus_proxy_set_child_count (RygelExternalMediaContainer* self, guint value) {
+static void rygel_external_media_container_proxy_dbus_proxy_set_child_count (RygelExternalMediaContainerProxy* self, guint value) {
 	DBusError _dbus_error;
 	DBusGConnection *_connection;
 	DBusMessage *_message, *_reply;
@@ -4340,7 +4340,7 @@ static void rygel_external_media_container_dbus_proxy_set_child_count (RygelExte
 	const char* _tmp420_;
 	const char* _tmp421_;
 	dbus_uint32_t _tmp422_;
-	if (((RygelExternalMediaContainerDBusProxy*) self)->disposed) {
+	if (((RygelExternalMediaContainerProxyDBusProxy*) self)->disposed) {
 		return;
 	}
 	_message = dbus_message_new_method_call (dbus_g_proxy_get_bus_name ((DBusGProxy*) self), dbus_g_proxy_get_path ((DBusGProxy*) self), "org.freedesktop.DBus.Properties", "Set");
@@ -4373,7 +4373,7 @@ static void rygel_external_media_container_dbus_proxy_set_child_count (RygelExte
 }
 
 
-static guint rygel_external_media_container_dbus_proxy_get_item_count (RygelExternalMediaContainer* self) {
+static guint rygel_external_media_container_proxy_dbus_proxy_get_item_count (RygelExternalMediaContainerProxy* self) {
 	DBusError _dbus_error;
 	DBusGConnection *_connection;
 	DBusMessage *_message, *_reply;
@@ -4382,7 +4382,7 @@ static guint rygel_external_media_container_dbus_proxy_get_item_count (RygelExte
 	const char* _tmp424_;
 	guint _result;
 	dbus_uint32_t _tmp425_;
-	if (((RygelExternalMediaContainerDBusProxy*) self)->disposed) {
+	if (((RygelExternalMediaContainerProxyDBusProxy*) self)->disposed) {
 		return 0U;
 	}
 	_message = dbus_message_new_method_call (dbus_g_proxy_get_bus_name ((DBusGProxy*) self), dbus_g_proxy_get_path ((DBusGProxy*) self), "org.freedesktop.DBus.Properties", "Get");
@@ -4421,7 +4421,7 @@ static guint rygel_external_media_container_dbus_proxy_get_item_count (RygelExte
 }
 
 
-static void rygel_external_media_container_dbus_proxy_set_item_count (RygelExternalMediaContainer* self, guint value) {
+static void rygel_external_media_container_proxy_dbus_proxy_set_item_count (RygelExternalMediaContainerProxy* self, guint value) {
 	DBusError _dbus_error;
 	DBusGConnection *_connection;
 	DBusMessage *_message, *_reply;
@@ -4429,7 +4429,7 @@ static void rygel_external_media_container_dbus_proxy_set_item_count (RygelExter
 	const char* _tmp426_;
 	const char* _tmp427_;
 	dbus_uint32_t _tmp428_;
-	if (((RygelExternalMediaContainerDBusProxy*) self)->disposed) {
+	if (((RygelExternalMediaContainerProxyDBusProxy*) self)->disposed) {
 		return;
 	}
 	_message = dbus_message_new_method_call (dbus_g_proxy_get_bus_name ((DBusGProxy*) self), dbus_g_proxy_get_path ((DBusGProxy*) self), "org.freedesktop.DBus.Properties", "Set");
@@ -4462,7 +4462,7 @@ static void rygel_external_media_container_dbus_proxy_set_item_count (RygelExter
 }
 
 
-static guint rygel_external_media_container_dbus_proxy_get_container_count (RygelExternalMediaContainer* self) {
+static guint rygel_external_media_container_proxy_dbus_proxy_get_container_count (RygelExternalMediaContainerProxy* self) {
 	DBusError _dbus_error;
 	DBusGConnection *_connection;
 	DBusMessage *_message, *_reply;
@@ -4471,7 +4471,7 @@ static guint rygel_external_media_container_dbus_proxy_get_container_count (Ryge
 	const char* _tmp430_;
 	guint _result;
 	dbus_uint32_t _tmp431_;
-	if (((RygelExternalMediaContainerDBusProxy*) self)->disposed) {
+	if (((RygelExternalMediaContainerProxyDBusProxy*) self)->disposed) {
 		return 0U;
 	}
 	_message = dbus_message_new_method_call (dbus_g_proxy_get_bus_name ((DBusGProxy*) self), dbus_g_proxy_get_path ((DBusGProxy*) self), "org.freedesktop.DBus.Properties", "Get");
@@ -4510,7 +4510,7 @@ static guint rygel_external_media_container_dbus_proxy_get_container_count (Ryge
 }
 
 
-static void rygel_external_media_container_dbus_proxy_set_container_count (RygelExternalMediaContainer* self, guint value) {
+static void rygel_external_media_container_proxy_dbus_proxy_set_container_count (RygelExternalMediaContainerProxy* self, guint value) {
 	DBusError _dbus_error;
 	DBusGConnection *_connection;
 	DBusMessage *_message, *_reply;
@@ -4518,7 +4518,7 @@ static void rygel_external_media_container_dbus_proxy_set_container_count (Rygel
 	const char* _tmp432_;
 	const char* _tmp433_;
 	dbus_uint32_t _tmp434_;
-	if (((RygelExternalMediaContainerDBusProxy*) self)->disposed) {
+	if (((RygelExternalMediaContainerProxyDBusProxy*) self)->disposed) {
 		return;
 	}
 	_message = dbus_message_new_method_call (dbus_g_proxy_get_bus_name ((DBusGProxy*) self), dbus_g_proxy_get_path ((DBusGProxy*) self), "org.freedesktop.DBus.Properties", "Set");
@@ -4551,7 +4551,7 @@ static void rygel_external_media_container_dbus_proxy_set_container_count (Rygel
 }
 
 
-static gboolean rygel_external_media_container_dbus_proxy_get_searchable (RygelExternalMediaContainer* self) {
+static gboolean rygel_external_media_container_proxy_dbus_proxy_get_searchable (RygelExternalMediaContainerProxy* self) {
 	DBusError _dbus_error;
 	DBusGConnection *_connection;
 	DBusMessage *_message, *_reply;
@@ -4560,7 +4560,7 @@ static gboolean rygel_external_media_container_dbus_proxy_get_searchable (RygelE
 	const char* _tmp436_;
 	gboolean _result;
 	dbus_bool_t _tmp437_;
-	if (((RygelExternalMediaContainerDBusProxy*) self)->disposed) {
+	if (((RygelExternalMediaContainerProxyDBusProxy*) self)->disposed) {
 		return FALSE;
 	}
 	_message = dbus_message_new_method_call (dbus_g_proxy_get_bus_name ((DBusGProxy*) self), dbus_g_proxy_get_path ((DBusGProxy*) self), "org.freedesktop.DBus.Properties", "Get");
@@ -4599,7 +4599,7 @@ static gboolean rygel_external_media_container_dbus_proxy_get_searchable (RygelE
 }
 
 
-static void rygel_external_media_container_dbus_proxy_set_searchable (RygelExternalMediaContainer* self, gboolean value) {
+static void rygel_external_media_container_proxy_dbus_proxy_set_searchable (RygelExternalMediaContainerProxy* self, gboolean value) {
 	DBusError _dbus_error;
 	DBusGConnection *_connection;
 	DBusMessage *_message, *_reply;
@@ -4607,7 +4607,7 @@ static void rygel_external_media_container_dbus_proxy_set_searchable (RygelExter
 	const char* _tmp438_;
 	const char* _tmp439_;
 	dbus_bool_t _tmp440_;
-	if (((RygelExternalMediaContainerDBusProxy*) self)->disposed) {
+	if (((RygelExternalMediaContainerProxyDBusProxy*) self)->disposed) {
 		return;
 	}
 	_message = dbus_message_new_method_call (dbus_g_proxy_get_bus_name ((DBusGProxy*) self), dbus_g_proxy_get_path ((DBusGProxy*) self), "org.freedesktop.DBus.Properties", "Set");
@@ -4640,7 +4640,7 @@ static void rygel_external_media_container_dbus_proxy_set_searchable (RygelExter
 }
 
 
-static char* rygel_external_media_container_dbus_proxy_get_icon (RygelExternalMediaContainer* self) {
+static char* rygel_external_media_container_proxy_dbus_proxy_get_icon (RygelExternalMediaContainerProxy* self) {
 	DBusError _dbus_error;
 	DBusGConnection *_connection;
 	DBusMessage *_message, *_reply;
@@ -4649,7 +4649,7 @@ static char* rygel_external_media_container_dbus_proxy_get_icon (RygelExternalMe
 	const char* _tmp442_;
 	char* _result;
 	const char* _tmp443_;
-	if (((RygelExternalMediaContainerDBusProxy*) self)->disposed) {
+	if (((RygelExternalMediaContainerProxyDBusProxy*) self)->disposed) {
 		return NULL;
 	}
 	_message = dbus_message_new_method_call (dbus_g_proxy_get_bus_name ((DBusGProxy*) self), dbus_g_proxy_get_path ((DBusGProxy*) self), "org.freedesktop.DBus.Properties", "Get");
@@ -4688,7 +4688,7 @@ static char* rygel_external_media_container_dbus_proxy_get_icon (RygelExternalMe
 }
 
 
-static void rygel_external_media_container_dbus_proxy_set_icon (RygelExternalMediaContainer* self, const char* value) {
+static void rygel_external_media_container_proxy_dbus_proxy_set_icon (RygelExternalMediaContainerProxy* self, const char* value) {
 	DBusError _dbus_error;
 	DBusGConnection *_connection;
 	DBusMessage *_message, *_reply;
@@ -4696,7 +4696,7 @@ static void rygel_external_media_container_dbus_proxy_set_icon (RygelExternalMed
 	const char* _tmp444_;
 	const char* _tmp445_;
 	const char* _tmp446_;
-	if (((RygelExternalMediaContainerDBusProxy*) self)->disposed) {
+	if (((RygelExternalMediaContainerProxyDBusProxy*) self)->disposed) {
 		return;
 	}
 	_message = dbus_message_new_method_call (dbus_g_proxy_get_bus_name ((DBusGProxy*) self), dbus_g_proxy_get_path ((DBusGProxy*) self), "org.freedesktop.DBus.Properties", "Set");
@@ -4729,211 +4729,211 @@ static void rygel_external_media_container_dbus_proxy_set_icon (RygelExternalMed
 }
 
 
-static void rygel_external_media_container_dbus_proxy_rygel_external_media_container__interface_init (RygelExternalMediaContainerIface* iface) {
-	iface->list_children = rygel_external_media_container_dbus_proxy_list_children_async;
-	iface->list_children_finish = rygel_external_media_container_dbus_proxy_list_children_finish;
-	iface->list_containers = rygel_external_media_container_dbus_proxy_list_containers_async;
-	iface->list_containers_finish = rygel_external_media_container_dbus_proxy_list_containers_finish;
-	iface->list_items = rygel_external_media_container_dbus_proxy_list_items_async;
-	iface->list_items_finish = rygel_external_media_container_dbus_proxy_list_items_finish;
-	iface->search_objects = rygel_external_media_container_dbus_proxy_search_objects_async;
-	iface->search_objects_finish = rygel_external_media_container_dbus_proxy_search_objects_finish;
-	iface->get_child_count = rygel_external_media_container_dbus_proxy_get_child_count;
-	iface->set_child_count = rygel_external_media_container_dbus_proxy_set_child_count;
-	iface->get_item_count = rygel_external_media_container_dbus_proxy_get_item_count;
-	iface->set_item_count = rygel_external_media_container_dbus_proxy_set_item_count;
-	iface->get_container_count = rygel_external_media_container_dbus_proxy_get_container_count;
-	iface->set_container_count = rygel_external_media_container_dbus_proxy_set_container_count;
-	iface->get_searchable = rygel_external_media_container_dbus_proxy_get_searchable;
-	iface->set_searchable = rygel_external_media_container_dbus_proxy_set_searchable;
-	iface->get_icon = rygel_external_media_container_dbus_proxy_get_icon;
-	iface->set_icon = rygel_external_media_container_dbus_proxy_set_icon;
+static void rygel_external_media_container_proxy_dbus_proxy_rygel_external_media_container_proxy__interface_init (RygelExternalMediaContainerProxyIface* iface) {
+	iface->list_children = rygel_external_media_container_proxy_dbus_proxy_list_children_async;
+	iface->list_children_finish = rygel_external_media_container_proxy_dbus_proxy_list_children_finish;
+	iface->list_containers = rygel_external_media_container_proxy_dbus_proxy_list_containers_async;
+	iface->list_containers_finish = rygel_external_media_container_proxy_dbus_proxy_list_containers_finish;
+	iface->list_items = rygel_external_media_container_proxy_dbus_proxy_list_items_async;
+	iface->list_items_finish = rygel_external_media_container_proxy_dbus_proxy_list_items_finish;
+	iface->search_objects = rygel_external_media_container_proxy_dbus_proxy_search_objects_async;
+	iface->search_objects_finish = rygel_external_media_container_proxy_dbus_proxy_search_objects_finish;
+	iface->get_child_count = rygel_external_media_container_proxy_dbus_proxy_get_child_count;
+	iface->set_child_count = rygel_external_media_container_proxy_dbus_proxy_set_child_count;
+	iface->get_item_count = rygel_external_media_container_proxy_dbus_proxy_get_item_count;
+	iface->set_item_count = rygel_external_media_container_proxy_dbus_proxy_set_item_count;
+	iface->get_container_count = rygel_external_media_container_proxy_dbus_proxy_get_container_count;
+	iface->set_container_count = rygel_external_media_container_proxy_dbus_proxy_set_container_count;
+	iface->get_searchable = rygel_external_media_container_proxy_dbus_proxy_get_searchable;
+	iface->set_searchable = rygel_external_media_container_proxy_dbus_proxy_set_searchable;
+	iface->get_icon = rygel_external_media_container_proxy_dbus_proxy_get_icon;
+	iface->set_icon = rygel_external_media_container_proxy_dbus_proxy_set_icon;
 }
 
 
-static void rygel_external_media_container_dbus_proxy_get_property (GObject * object, guint property_id, GValue * value, GParamSpec * pspec) {
+static void rygel_external_media_container_proxy_dbus_proxy_get_property (GObject * object, guint property_id, GValue * value, GParamSpec * pspec) {
 }
 
 
-static void rygel_external_media_container_dbus_proxy_set_property (GObject * object, guint property_id, const GValue * value, GParamSpec * pspec) {
+static void rygel_external_media_container_proxy_dbus_proxy_set_property (GObject * object, guint property_id, const GValue * value, GParamSpec * pspec) {
 }
 
 
-char** rygel_external_media_item_get_urls (RygelExternalMediaItem* self, int* result_length1) {
-	return RYGEL_EXTERNAL_MEDIA_ITEM_GET_INTERFACE (self)->get_urls (self, result_length1);
+char** rygel_external_media_item_proxy_get_urls (RygelExternalMediaItemProxy* self, int* result_length1) {
+	return RYGEL_EXTERNAL_MEDIA_ITEM_PROXY_GET_INTERFACE (self)->get_urls (self, result_length1);
 }
 
 
-void rygel_external_media_item_set_urls (RygelExternalMediaItem* self, char** value, int value_length1) {
-	RYGEL_EXTERNAL_MEDIA_ITEM_GET_INTERFACE (self)->set_urls (self, value, value_length1);
+void rygel_external_media_item_proxy_set_urls (RygelExternalMediaItemProxy* self, char** value, int value_length1) {
+	RYGEL_EXTERNAL_MEDIA_ITEM_PROXY_GET_INTERFACE (self)->set_urls (self, value, value_length1);
 }
 
 
-char* rygel_external_media_item_get_mime_type (RygelExternalMediaItem* self) {
-	return RYGEL_EXTERNAL_MEDIA_ITEM_GET_INTERFACE (self)->get_mime_type (self);
+char* rygel_external_media_item_proxy_get_mime_type (RygelExternalMediaItemProxy* self) {
+	return RYGEL_EXTERNAL_MEDIA_ITEM_PROXY_GET_INTERFACE (self)->get_mime_type (self);
 }
 
 
-void rygel_external_media_item_set_mime_type (RygelExternalMediaItem* self, const char* value) {
-	RYGEL_EXTERNAL_MEDIA_ITEM_GET_INTERFACE (self)->set_mime_type (self, value);
+void rygel_external_media_item_proxy_set_mime_type (RygelExternalMediaItemProxy* self, const char* value) {
+	RYGEL_EXTERNAL_MEDIA_ITEM_PROXY_GET_INTERFACE (self)->set_mime_type (self, value);
 }
 
 
-gint rygel_external_media_item_get_size (RygelExternalMediaItem* self) {
-	return RYGEL_EXTERNAL_MEDIA_ITEM_GET_INTERFACE (self)->get_size (self);
+gint rygel_external_media_item_proxy_get_size (RygelExternalMediaItemProxy* self) {
+	return RYGEL_EXTERNAL_MEDIA_ITEM_PROXY_GET_INTERFACE (self)->get_size (self);
 }
 
 
-void rygel_external_media_item_set_size (RygelExternalMediaItem* self, gint value) {
-	RYGEL_EXTERNAL_MEDIA_ITEM_GET_INTERFACE (self)->set_size (self, value);
+void rygel_external_media_item_proxy_set_size (RygelExternalMediaItemProxy* self, gint value) {
+	RYGEL_EXTERNAL_MEDIA_ITEM_PROXY_GET_INTERFACE (self)->set_size (self, value);
 }
 
 
-char* rygel_external_media_item_get_artist (RygelExternalMediaItem* self) {
-	return RYGEL_EXTERNAL_MEDIA_ITEM_GET_INTERFACE (self)->get_artist (self);
+char* rygel_external_media_item_proxy_get_artist (RygelExternalMediaItemProxy* self) {
+	return RYGEL_EXTERNAL_MEDIA_ITEM_PROXY_GET_INTERFACE (self)->get_artist (self);
 }
 
 
-void rygel_external_media_item_set_artist (RygelExternalMediaItem* self, const char* value) {
-	RYGEL_EXTERNAL_MEDIA_ITEM_GET_INTERFACE (self)->set_artist (self, value);
+void rygel_external_media_item_proxy_set_artist (RygelExternalMediaItemProxy* self, const char* value) {
+	RYGEL_EXTERNAL_MEDIA_ITEM_PROXY_GET_INTERFACE (self)->set_artist (self, value);
 }
 
 
-char* rygel_external_media_item_get_album (RygelExternalMediaItem* self) {
-	return RYGEL_EXTERNAL_MEDIA_ITEM_GET_INTERFACE (self)->get_album (self);
+char* rygel_external_media_item_proxy_get_album (RygelExternalMediaItemProxy* self) {
+	return RYGEL_EXTERNAL_MEDIA_ITEM_PROXY_GET_INTERFACE (self)->get_album (self);
 }
 
 
-void rygel_external_media_item_set_album (RygelExternalMediaItem* self, const char* value) {
-	RYGEL_EXTERNAL_MEDIA_ITEM_GET_INTERFACE (self)->set_album (self, value);
+void rygel_external_media_item_proxy_set_album (RygelExternalMediaItemProxy* self, const char* value) {
+	RYGEL_EXTERNAL_MEDIA_ITEM_PROXY_GET_INTERFACE (self)->set_album (self, value);
 }
 
 
-char* rygel_external_media_item_get_date (RygelExternalMediaItem* self) {
-	return RYGEL_EXTERNAL_MEDIA_ITEM_GET_INTERFACE (self)->get_date (self);
+char* rygel_external_media_item_proxy_get_date (RygelExternalMediaItemProxy* self) {
+	return RYGEL_EXTERNAL_MEDIA_ITEM_PROXY_GET_INTERFACE (self)->get_date (self);
 }
 
 
-void rygel_external_media_item_set_date (RygelExternalMediaItem* self, const char* value) {
-	RYGEL_EXTERNAL_MEDIA_ITEM_GET_INTERFACE (self)->set_date (self, value);
+void rygel_external_media_item_proxy_set_date (RygelExternalMediaItemProxy* self, const char* value) {
+	RYGEL_EXTERNAL_MEDIA_ITEM_PROXY_GET_INTERFACE (self)->set_date (self, value);
 }
 
 
-char* rygel_external_media_item_get_genre (RygelExternalMediaItem* self) {
-	return RYGEL_EXTERNAL_MEDIA_ITEM_GET_INTERFACE (self)->get_genre (self);
+char* rygel_external_media_item_proxy_get_genre (RygelExternalMediaItemProxy* self) {
+	return RYGEL_EXTERNAL_MEDIA_ITEM_PROXY_GET_INTERFACE (self)->get_genre (self);
 }
 
 
-void rygel_external_media_item_set_genre (RygelExternalMediaItem* self, const char* value) {
-	RYGEL_EXTERNAL_MEDIA_ITEM_GET_INTERFACE (self)->set_genre (self, value);
+void rygel_external_media_item_proxy_set_genre (RygelExternalMediaItemProxy* self, const char* value) {
+	RYGEL_EXTERNAL_MEDIA_ITEM_PROXY_GET_INTERFACE (self)->set_genre (self, value);
 }
 
 
-char* rygel_external_media_item_get_dlna_profile (RygelExternalMediaItem* self) {
-	return RYGEL_EXTERNAL_MEDIA_ITEM_GET_INTERFACE (self)->get_dlna_profile (self);
+char* rygel_external_media_item_proxy_get_dlna_profile (RygelExternalMediaItemProxy* self) {
+	return RYGEL_EXTERNAL_MEDIA_ITEM_PROXY_GET_INTERFACE (self)->get_dlna_profile (self);
 }
 
 
-void rygel_external_media_item_set_dlna_profile (RygelExternalMediaItem* self, const char* value) {
-	RYGEL_EXTERNAL_MEDIA_ITEM_GET_INTERFACE (self)->set_dlna_profile (self, value);
+void rygel_external_media_item_proxy_set_dlna_profile (RygelExternalMediaItemProxy* self, const char* value) {
+	RYGEL_EXTERNAL_MEDIA_ITEM_PROXY_GET_INTERFACE (self)->set_dlna_profile (self, value);
 }
 
 
-gint rygel_external_media_item_get_duration (RygelExternalMediaItem* self) {
-	return RYGEL_EXTERNAL_MEDIA_ITEM_GET_INTERFACE (self)->get_duration (self);
+gint rygel_external_media_item_proxy_get_duration (RygelExternalMediaItemProxy* self) {
+	return RYGEL_EXTERNAL_MEDIA_ITEM_PROXY_GET_INTERFACE (self)->get_duration (self);
 }
 
 
-void rygel_external_media_item_set_duration (RygelExternalMediaItem* self, gint value) {
-	RYGEL_EXTERNAL_MEDIA_ITEM_GET_INTERFACE (self)->set_duration (self, value);
+void rygel_external_media_item_proxy_set_duration (RygelExternalMediaItemProxy* self, gint value) {
+	RYGEL_EXTERNAL_MEDIA_ITEM_PROXY_GET_INTERFACE (self)->set_duration (self, value);
 }
 
 
-gint rygel_external_media_item_get_bitrate (RygelExternalMediaItem* self) {
-	return RYGEL_EXTERNAL_MEDIA_ITEM_GET_INTERFACE (self)->get_bitrate (self);
+gint rygel_external_media_item_proxy_get_bitrate (RygelExternalMediaItemProxy* self) {
+	return RYGEL_EXTERNAL_MEDIA_ITEM_PROXY_GET_INTERFACE (self)->get_bitrate (self);
 }
 
 
-void rygel_external_media_item_set_bitrate (RygelExternalMediaItem* self, gint value) {
-	RYGEL_EXTERNAL_MEDIA_ITEM_GET_INTERFACE (self)->set_bitrate (self, value);
+void rygel_external_media_item_proxy_set_bitrate (RygelExternalMediaItemProxy* self, gint value) {
+	RYGEL_EXTERNAL_MEDIA_ITEM_PROXY_GET_INTERFACE (self)->set_bitrate (self, value);
 }
 
 
-gint rygel_external_media_item_get_sample_rate (RygelExternalMediaItem* self) {
-	return RYGEL_EXTERNAL_MEDIA_ITEM_GET_INTERFACE (self)->get_sample_rate (self);
+gint rygel_external_media_item_proxy_get_sample_rate (RygelExternalMediaItemProxy* self) {
+	return RYGEL_EXTERNAL_MEDIA_ITEM_PROXY_GET_INTERFACE (self)->get_sample_rate (self);
 }
 
 
-void rygel_external_media_item_set_sample_rate (RygelExternalMediaItem* self, gint value) {
-	RYGEL_EXTERNAL_MEDIA_ITEM_GET_INTERFACE (self)->set_sample_rate (self, value);
+void rygel_external_media_item_proxy_set_sample_rate (RygelExternalMediaItemProxy* self, gint value) {
+	RYGEL_EXTERNAL_MEDIA_ITEM_PROXY_GET_INTERFACE (self)->set_sample_rate (self, value);
 }
 
 
-gint rygel_external_media_item_get_bits_per_sample (RygelExternalMediaItem* self) {
-	return RYGEL_EXTERNAL_MEDIA_ITEM_GET_INTERFACE (self)->get_bits_per_sample (self);
+gint rygel_external_media_item_proxy_get_bits_per_sample (RygelExternalMediaItemProxy* self) {
+	return RYGEL_EXTERNAL_MEDIA_ITEM_PROXY_GET_INTERFACE (self)->get_bits_per_sample (self);
 }
 
 
-void rygel_external_media_item_set_bits_per_sample (RygelExternalMediaItem* self, gint value) {
-	RYGEL_EXTERNAL_MEDIA_ITEM_GET_INTERFACE (self)->set_bits_per_sample (self, value);
+void rygel_external_media_item_proxy_set_bits_per_sample (RygelExternalMediaItemProxy* self, gint value) {
+	RYGEL_EXTERNAL_MEDIA_ITEM_PROXY_GET_INTERFACE (self)->set_bits_per_sample (self, value);
 }
 
 
-gint rygel_external_media_item_get_width (RygelExternalMediaItem* self) {
-	return RYGEL_EXTERNAL_MEDIA_ITEM_GET_INTERFACE (self)->get_width (self);
+gint rygel_external_media_item_proxy_get_width (RygelExternalMediaItemProxy* self) {
+	return RYGEL_EXTERNAL_MEDIA_ITEM_PROXY_GET_INTERFACE (self)->get_width (self);
 }
 
 
-void rygel_external_media_item_set_width (RygelExternalMediaItem* self, gint value) {
-	RYGEL_EXTERNAL_MEDIA_ITEM_GET_INTERFACE (self)->set_width (self, value);
+void rygel_external_media_item_proxy_set_width (RygelExternalMediaItemProxy* self, gint value) {
+	RYGEL_EXTERNAL_MEDIA_ITEM_PROXY_GET_INTERFACE (self)->set_width (self, value);
 }
 
 
-gint rygel_external_media_item_get_height (RygelExternalMediaItem* self) {
-	return RYGEL_EXTERNAL_MEDIA_ITEM_GET_INTERFACE (self)->get_height (self);
+gint rygel_external_media_item_proxy_get_height (RygelExternalMediaItemProxy* self) {
+	return RYGEL_EXTERNAL_MEDIA_ITEM_PROXY_GET_INTERFACE (self)->get_height (self);
 }
 
 
-void rygel_external_media_item_set_height (RygelExternalMediaItem* self, gint value) {
-	RYGEL_EXTERNAL_MEDIA_ITEM_GET_INTERFACE (self)->set_height (self, value);
+void rygel_external_media_item_proxy_set_height (RygelExternalMediaItemProxy* self, gint value) {
+	RYGEL_EXTERNAL_MEDIA_ITEM_PROXY_GET_INTERFACE (self)->set_height (self, value);
 }
 
 
-gint rygel_external_media_item_get_color_depth (RygelExternalMediaItem* self) {
-	return RYGEL_EXTERNAL_MEDIA_ITEM_GET_INTERFACE (self)->get_color_depth (self);
+gint rygel_external_media_item_proxy_get_color_depth (RygelExternalMediaItemProxy* self) {
+	return RYGEL_EXTERNAL_MEDIA_ITEM_PROXY_GET_INTERFACE (self)->get_color_depth (self);
 }
 
 
-void rygel_external_media_item_set_color_depth (RygelExternalMediaItem* self, gint value) {
-	RYGEL_EXTERNAL_MEDIA_ITEM_GET_INTERFACE (self)->set_color_depth (self, value);
+void rygel_external_media_item_proxy_set_color_depth (RygelExternalMediaItemProxy* self, gint value) {
+	RYGEL_EXTERNAL_MEDIA_ITEM_PROXY_GET_INTERFACE (self)->set_color_depth (self, value);
 }
 
 
-char* rygel_external_media_item_get_thumbnail (RygelExternalMediaItem* self) {
-	return RYGEL_EXTERNAL_MEDIA_ITEM_GET_INTERFACE (self)->get_thumbnail (self);
+char* rygel_external_media_item_proxy_get_thumbnail (RygelExternalMediaItemProxy* self) {
+	return RYGEL_EXTERNAL_MEDIA_ITEM_PROXY_GET_INTERFACE (self)->get_thumbnail (self);
 }
 
 
-void rygel_external_media_item_set_thumbnail (RygelExternalMediaItem* self, const char* value) {
-	RYGEL_EXTERNAL_MEDIA_ITEM_GET_INTERFACE (self)->set_thumbnail (self, value);
+void rygel_external_media_item_proxy_set_thumbnail (RygelExternalMediaItemProxy* self, const char* value) {
+	RYGEL_EXTERNAL_MEDIA_ITEM_PROXY_GET_INTERFACE (self)->set_thumbnail (self, value);
 }
 
 
-char* rygel_external_media_item_get_album_art (RygelExternalMediaItem* self) {
-	return RYGEL_EXTERNAL_MEDIA_ITEM_GET_INTERFACE (self)->get_album_art (self);
+char* rygel_external_media_item_proxy_get_album_art (RygelExternalMediaItemProxy* self) {
+	return RYGEL_EXTERNAL_MEDIA_ITEM_PROXY_GET_INTERFACE (self)->get_album_art (self);
 }
 
 
-void rygel_external_media_item_set_album_art (RygelExternalMediaItem* self, const char* value) {
-	RYGEL_EXTERNAL_MEDIA_ITEM_GET_INTERFACE (self)->set_album_art (self, value);
+void rygel_external_media_item_proxy_set_album_art (RygelExternalMediaItemProxy* self, const char* value) {
+	RYGEL_EXTERNAL_MEDIA_ITEM_PROXY_GET_INTERFACE (self)->set_album_art (self, value);
 }
 
 
-void _rygel_external_media_item_dbus_unregister (DBusConnection* connection, void* _user_data_) {
+void _rygel_external_media_item_proxy_dbus_unregister (DBusConnection* connection, void* _user_data_) {
 }
 
 
-static DBusHandlerResult _dbus_rygel_external_media_item_introspect (RygelExternalMediaItem* self, DBusConnection* connection, DBusMessage* message) {
+static DBusHandlerResult _dbus_rygel_external_media_item_proxy_introspect (RygelExternalMediaItemProxy* self, DBusConnection* connection, DBusMessage* message) {
 	DBusMessage* reply;
 	DBusMessageIter iter;
 	GString* xml_data;
@@ -4961,7 +4961,7 @@ static DBusHandlerResult _dbus_rygel_external_media_item_introspect (RygelExtern
 }
 
 
-static DBusHandlerResult _dbus_rygel_external_media_item_property_get (RygelExternalMediaItem* self, DBusConnection* connection, DBusMessage* message) {
+static DBusHandlerResult _dbus_rygel_external_media_item_proxy_property_get (RygelExternalMediaItemProxy* self, DBusConnection* connection, DBusMessage* message) {
 	DBusMessage* reply;
 	DBusMessageIter iter, reply_iter, subiter;
 	char* interface_name;
@@ -4987,7 +4987,7 @@ static DBusHandlerResult _dbus_rygel_external_media_item_property_get (RygelExte
 		DBusMessageIter _tmp450_;
 		int _tmp451_;
 		dbus_message_iter_open_container (&reply_iter, DBUS_TYPE_VARIANT, "as", &subiter);
-		result = rygel_external_media_item_get_urls (self, &result_length1);
+		result = rygel_external_media_item_proxy_get_urls (self, &result_length1);
 		_tmp449_ = result;
 		dbus_message_iter_open_container (&subiter, DBUS_TYPE_ARRAY, "s", &_tmp450_);
 		for (_tmp451_ = 0; _tmp451_ < result_length1; _tmp451_++) {
@@ -5003,7 +5003,7 @@ static DBusHandlerResult _dbus_rygel_external_media_item_property_get (RygelExte
 		char* result;
 		const char* _tmp453_;
 		dbus_message_iter_open_container (&reply_iter, DBUS_TYPE_VARIANT, "s", &subiter);
-		result = rygel_external_media_item_get_mime_type (self);
+		result = rygel_external_media_item_proxy_get_mime_type (self);
 		_tmp453_ = result;
 		dbus_message_iter_append_basic (&subiter, DBUS_TYPE_STRING, &_tmp453_);
 		_g_free0 (result);
@@ -5012,7 +5012,7 @@ static DBusHandlerResult _dbus_rygel_external_media_item_property_get (RygelExte
 		gint result;
 		dbus_int32_t _tmp454_;
 		dbus_message_iter_open_container (&reply_iter, DBUS_TYPE_VARIANT, "i", &subiter);
-		result = rygel_external_media_item_get_size (self);
+		result = rygel_external_media_item_proxy_get_size (self);
 		_tmp454_ = result;
 		dbus_message_iter_append_basic (&subiter, DBUS_TYPE_INT32, &_tmp454_);
 		dbus_message_iter_close_container (&reply_iter, &subiter);
@@ -5020,7 +5020,7 @@ static DBusHandlerResult _dbus_rygel_external_media_item_property_get (RygelExte
 		char* result;
 		const char* _tmp455_;
 		dbus_message_iter_open_container (&reply_iter, DBUS_TYPE_VARIANT, "s", &subiter);
-		result = rygel_external_media_item_get_artist (self);
+		result = rygel_external_media_item_proxy_get_artist (self);
 		_tmp455_ = result;
 		dbus_message_iter_append_basic (&subiter, DBUS_TYPE_STRING, &_tmp455_);
 		_g_free0 (result);
@@ -5029,7 +5029,7 @@ static DBusHandlerResult _dbus_rygel_external_media_item_property_get (RygelExte
 		char* result;
 		const char* _tmp456_;
 		dbus_message_iter_open_container (&reply_iter, DBUS_TYPE_VARIANT, "s", &subiter);
-		result = rygel_external_media_item_get_album (self);
+		result = rygel_external_media_item_proxy_get_album (self);
 		_tmp456_ = result;
 		dbus_message_iter_append_basic (&subiter, DBUS_TYPE_STRING, &_tmp456_);
 		_g_free0 (result);
@@ -5038,7 +5038,7 @@ static DBusHandlerResult _dbus_rygel_external_media_item_property_get (RygelExte
 		char* result;
 		const char* _tmp457_;
 		dbus_message_iter_open_container (&reply_iter, DBUS_TYPE_VARIANT, "s", &subiter);
-		result = rygel_external_media_item_get_date (self);
+		result = rygel_external_media_item_proxy_get_date (self);
 		_tmp457_ = result;
 		dbus_message_iter_append_basic (&subiter, DBUS_TYPE_STRING, &_tmp457_);
 		_g_free0 (result);
@@ -5047,7 +5047,7 @@ static DBusHandlerResult _dbus_rygel_external_media_item_property_get (RygelExte
 		char* result;
 		const char* _tmp458_;
 		dbus_message_iter_open_container (&reply_iter, DBUS_TYPE_VARIANT, "s", &subiter);
-		result = rygel_external_media_item_get_genre (self);
+		result = rygel_external_media_item_proxy_get_genre (self);
 		_tmp458_ = result;
 		dbus_message_iter_append_basic (&subiter, DBUS_TYPE_STRING, &_tmp458_);
 		_g_free0 (result);
@@ -5056,7 +5056,7 @@ static DBusHandlerResult _dbus_rygel_external_media_item_property_get (RygelExte
 		char* result;
 		const char* _tmp459_;
 		dbus_message_iter_open_container (&reply_iter, DBUS_TYPE_VARIANT, "s", &subiter);
-		result = rygel_external_media_item_get_dlna_profile (self);
+		result = rygel_external_media_item_proxy_get_dlna_profile (self);
 		_tmp459_ = result;
 		dbus_message_iter_append_basic (&subiter, DBUS_TYPE_STRING, &_tmp459_);
 		_g_free0 (result);
@@ -5065,7 +5065,7 @@ static DBusHandlerResult _dbus_rygel_external_media_item_property_get (RygelExte
 		gint result;
 		dbus_int32_t _tmp460_;
 		dbus_message_iter_open_container (&reply_iter, DBUS_TYPE_VARIANT, "i", &subiter);
-		result = rygel_external_media_item_get_duration (self);
+		result = rygel_external_media_item_proxy_get_duration (self);
 		_tmp460_ = result;
 		dbus_message_iter_append_basic (&subiter, DBUS_TYPE_INT32, &_tmp460_);
 		dbus_message_iter_close_container (&reply_iter, &subiter);
@@ -5073,7 +5073,7 @@ static DBusHandlerResult _dbus_rygel_external_media_item_property_get (RygelExte
 		gint result;
 		dbus_int32_t _tmp461_;
 		dbus_message_iter_open_container (&reply_iter, DBUS_TYPE_VARIANT, "i", &subiter);
-		result = rygel_external_media_item_get_bitrate (self);
+		result = rygel_external_media_item_proxy_get_bitrate (self);
 		_tmp461_ = result;
 		dbus_message_iter_append_basic (&subiter, DBUS_TYPE_INT32, &_tmp461_);
 		dbus_message_iter_close_container (&reply_iter, &subiter);
@@ -5081,7 +5081,7 @@ static DBusHandlerResult _dbus_rygel_external_media_item_property_get (RygelExte
 		gint result;
 		dbus_int32_t _tmp462_;
 		dbus_message_iter_open_container (&reply_iter, DBUS_TYPE_VARIANT, "i", &subiter);
-		result = rygel_external_media_item_get_sample_rate (self);
+		result = rygel_external_media_item_proxy_get_sample_rate (self);
 		_tmp462_ = result;
 		dbus_message_iter_append_basic (&subiter, DBUS_TYPE_INT32, &_tmp462_);
 		dbus_message_iter_close_container (&reply_iter, &subiter);
@@ -5089,7 +5089,7 @@ static DBusHandlerResult _dbus_rygel_external_media_item_property_get (RygelExte
 		gint result;
 		dbus_int32_t _tmp463_;
 		dbus_message_iter_open_container (&reply_iter, DBUS_TYPE_VARIANT, "i", &subiter);
-		result = rygel_external_media_item_get_bits_per_sample (self);
+		result = rygel_external_media_item_proxy_get_bits_per_sample (self);
 		_tmp463_ = result;
 		dbus_message_iter_append_basic (&subiter, DBUS_TYPE_INT32, &_tmp463_);
 		dbus_message_iter_close_container (&reply_iter, &subiter);
@@ -5097,7 +5097,7 @@ static DBusHandlerResult _dbus_rygel_external_media_item_property_get (RygelExte
 		gint result;
 		dbus_int32_t _tmp464_;
 		dbus_message_iter_open_container (&reply_iter, DBUS_TYPE_VARIANT, "i", &subiter);
-		result = rygel_external_media_item_get_width (self);
+		result = rygel_external_media_item_proxy_get_width (self);
 		_tmp464_ = result;
 		dbus_message_iter_append_basic (&subiter, DBUS_TYPE_INT32, &_tmp464_);
 		dbus_message_iter_close_container (&reply_iter, &subiter);
@@ -5105,7 +5105,7 @@ static DBusHandlerResult _dbus_rygel_external_media_item_property_get (RygelExte
 		gint result;
 		dbus_int32_t _tmp465_;
 		dbus_message_iter_open_container (&reply_iter, DBUS_TYPE_VARIANT, "i", &subiter);
-		result = rygel_external_media_item_get_height (self);
+		result = rygel_external_media_item_proxy_get_height (self);
 		_tmp465_ = result;
 		dbus_message_iter_append_basic (&subiter, DBUS_TYPE_INT32, &_tmp465_);
 		dbus_message_iter_close_container (&reply_iter, &subiter);
@@ -5113,7 +5113,7 @@ static DBusHandlerResult _dbus_rygel_external_media_item_property_get (RygelExte
 		gint result;
 		dbus_int32_t _tmp466_;
 		dbus_message_iter_open_container (&reply_iter, DBUS_TYPE_VARIANT, "i", &subiter);
-		result = rygel_external_media_item_get_color_depth (self);
+		result = rygel_external_media_item_proxy_get_color_depth (self);
 		_tmp466_ = result;
 		dbus_message_iter_append_basic (&subiter, DBUS_TYPE_INT32, &_tmp466_);
 		dbus_message_iter_close_container (&reply_iter, &subiter);
@@ -5121,7 +5121,7 @@ static DBusHandlerResult _dbus_rygel_external_media_item_property_get (RygelExte
 		char* result;
 		const char* _tmp467_;
 		dbus_message_iter_open_container (&reply_iter, DBUS_TYPE_VARIANT, "o", &subiter);
-		result = rygel_external_media_item_get_thumbnail (self);
+		result = rygel_external_media_item_proxy_get_thumbnail (self);
 		_tmp467_ = result;
 		dbus_message_iter_append_basic (&subiter, DBUS_TYPE_OBJECT_PATH, &_tmp467_);
 		_g_free0 (result);
@@ -5130,7 +5130,7 @@ static DBusHandlerResult _dbus_rygel_external_media_item_property_get (RygelExte
 		char* result;
 		const char* _tmp468_;
 		dbus_message_iter_open_container (&reply_iter, DBUS_TYPE_VARIANT, "o", &subiter);
-		result = rygel_external_media_item_get_album_art (self);
+		result = rygel_external_media_item_proxy_get_album_art (self);
 		_tmp468_ = result;
 		dbus_message_iter_append_basic (&subiter, DBUS_TYPE_OBJECT_PATH, &_tmp468_);
 		_g_free0 (result);
@@ -5151,7 +5151,7 @@ static DBusHandlerResult _dbus_rygel_external_media_item_property_get (RygelExte
 }
 
 
-static DBusHandlerResult _dbus_rygel_external_media_item_property_set (RygelExternalMediaItem* self, DBusConnection* connection, DBusMessage* message) {
+static DBusHandlerResult _dbus_rygel_external_media_item_proxy_property_set (RygelExternalMediaItemProxy* self, DBusConnection* connection, DBusMessage* message) {
 	DBusMessage* reply;
 	DBusMessageIter iter, subiter;
 	char* interface_name;
@@ -5197,7 +5197,7 @@ static DBusHandlerResult _dbus_rygel_external_media_item_property_set (RygelExte
 		_tmp471_[_tmp471__length] = NULL;
 		dbus_message_iter_next (&subiter);
 		value = _tmp471_;
-		rygel_external_media_item_set_urls (self, value, value_length1);
+		rygel_external_media_item_proxy_set_urls (self, value, value_length1);
 		value = (_vala_array_free (value, value_length1, (GDestroyNotify) g_free), NULL);
 	} else if ((strcmp (interface_name, "org.gnome.UPnP.MediaItem2") == 0) && (strcmp (property_name, "MimeType") == 0)) {
 		char* value;
@@ -5205,7 +5205,7 @@ static DBusHandlerResult _dbus_rygel_external_media_item_property_set (RygelExte
 		dbus_message_iter_get_basic (&subiter, &_tmp474_);
 		dbus_message_iter_next (&subiter);
 		value = g_strdup (_tmp474_);
-		rygel_external_media_item_set_mime_type (self, value);
+		rygel_external_media_item_proxy_set_mime_type (self, value);
 		_g_free0 (value);
 	} else if ((strcmp (interface_name, "org.gnome.UPnP.MediaItem2") == 0) && (strcmp (property_name, "Size") == 0)) {
 		gint value;
@@ -5213,14 +5213,14 @@ static DBusHandlerResult _dbus_rygel_external_media_item_property_set (RygelExte
 		dbus_message_iter_get_basic (&subiter, &_tmp475_);
 		dbus_message_iter_next (&subiter);
 		value = _tmp475_;
-		rygel_external_media_item_set_size (self, value);
+		rygel_external_media_item_proxy_set_size (self, value);
 	} else if ((strcmp (interface_name, "org.gnome.UPnP.MediaItem2") == 0) && (strcmp (property_name, "Artist") == 0)) {
 		char* value;
 		const char* _tmp476_;
 		dbus_message_iter_get_basic (&subiter, &_tmp476_);
 		dbus_message_iter_next (&subiter);
 		value = g_strdup (_tmp476_);
-		rygel_external_media_item_set_artist (self, value);
+		rygel_external_media_item_proxy_set_artist (self, value);
 		_g_free0 (value);
 	} else if ((strcmp (interface_name, "org.gnome.UPnP.MediaItem2") == 0) && (strcmp (property_name, "Album") == 0)) {
 		char* value;
@@ -5228,7 +5228,7 @@ static DBusHandlerResult _dbus_rygel_external_media_item_property_set (RygelExte
 		dbus_message_iter_get_basic (&subiter, &_tmp477_);
 		dbus_message_iter_next (&subiter);
 		value = g_strdup (_tmp477_);
-		rygel_external_media_item_set_album (self, value);
+		rygel_external_media_item_proxy_set_album (self, value);
 		_g_free0 (value);
 	} else if ((strcmp (interface_name, "org.gnome.UPnP.MediaItem2") == 0) && (strcmp (property_name, "Date") == 0)) {
 		char* value;
@@ -5236,7 +5236,7 @@ static DBusHandlerResult _dbus_rygel_external_media_item_property_set (RygelExte
 		dbus_message_iter_get_basic (&subiter, &_tmp478_);
 		dbus_message_iter_next (&subiter);
 		value = g_strdup (_tmp478_);
-		rygel_external_media_item_set_date (self, value);
+		rygel_external_media_item_proxy_set_date (self, value);
 		_g_free0 (value);
 	} else if ((strcmp (interface_name, "org.gnome.UPnP.MediaItem2") == 0) && (strcmp (property_name, "Genre") == 0)) {
 		char* value;
@@ -5244,7 +5244,7 @@ static DBusHandlerResult _dbus_rygel_external_media_item_property_set (RygelExte
 		dbus_message_iter_get_basic (&subiter, &_tmp479_);
 		dbus_message_iter_next (&subiter);
 		value = g_strdup (_tmp479_);
-		rygel_external_media_item_set_genre (self, value);
+		rygel_external_media_item_proxy_set_genre (self, value);
 		_g_free0 (value);
 	} else if ((strcmp (interface_name, "org.gnome.UPnP.MediaItem2") == 0) && (strcmp (property_name, "DlnaProfile") == 0)) {
 		char* value;
@@ -5252,7 +5252,7 @@ static DBusHandlerResult _dbus_rygel_external_media_item_property_set (RygelExte
 		dbus_message_iter_get_basic (&subiter, &_tmp480_);
 		dbus_message_iter_next (&subiter);
 		value = g_strdup (_tmp480_);
-		rygel_external_media_item_set_dlna_profile (self, value);
+		rygel_external_media_item_proxy_set_dlna_profile (self, value);
 		_g_free0 (value);
 	} else if ((strcmp (interface_name, "org.gnome.UPnP.MediaItem2") == 0) && (strcmp (property_name, "Duration") == 0)) {
 		gint value;
@@ -5260,56 +5260,56 @@ static DBusHandlerResult _dbus_rygel_external_media_item_property_set (RygelExte
 		dbus_message_iter_get_basic (&subiter, &_tmp481_);
 		dbus_message_iter_next (&subiter);
 		value = _tmp481_;
-		rygel_external_media_item_set_duration (self, value);
+		rygel_external_media_item_proxy_set_duration (self, value);
 	} else if ((strcmp (interface_name, "org.gnome.UPnP.MediaItem2") == 0) && (strcmp (property_name, "Bitrate") == 0)) {
 		gint value;
 		dbus_int32_t _tmp482_;
 		dbus_message_iter_get_basic (&subiter, &_tmp482_);
 		dbus_message_iter_next (&subiter);
 		value = _tmp482_;
-		rygel_external_media_item_set_bitrate (self, value);
+		rygel_external_media_item_proxy_set_bitrate (self, value);
 	} else if ((strcmp (interface_name, "org.gnome.UPnP.MediaItem2") == 0) && (strcmp (property_name, "SampleRate") == 0)) {
 		gint value;
 		dbus_int32_t _tmp483_;
 		dbus_message_iter_get_basic (&subiter, &_tmp483_);
 		dbus_message_iter_next (&subiter);
 		value = _tmp483_;
-		rygel_external_media_item_set_sample_rate (self, value);
+		rygel_external_media_item_proxy_set_sample_rate (self, value);
 	} else if ((strcmp (interface_name, "org.gnome.UPnP.MediaItem2") == 0) && (strcmp (property_name, "BitsPerSample") == 0)) {
 		gint value;
 		dbus_int32_t _tmp484_;
 		dbus_message_iter_get_basic (&subiter, &_tmp484_);
 		dbus_message_iter_next (&subiter);
 		value = _tmp484_;
-		rygel_external_media_item_set_bits_per_sample (self, value);
+		rygel_external_media_item_proxy_set_bits_per_sample (self, value);
 	} else if ((strcmp (interface_name, "org.gnome.UPnP.MediaItem2") == 0) && (strcmp (property_name, "Width") == 0)) {
 		gint value;
 		dbus_int32_t _tmp485_;
 		dbus_message_iter_get_basic (&subiter, &_tmp485_);
 		dbus_message_iter_next (&subiter);
 		value = _tmp485_;
-		rygel_external_media_item_set_width (self, value);
+		rygel_external_media_item_proxy_set_width (self, value);
 	} else if ((strcmp (interface_name, "org.gnome.UPnP.MediaItem2") == 0) && (strcmp (property_name, "Height") == 0)) {
 		gint value;
 		dbus_int32_t _tmp486_;
 		dbus_message_iter_get_basic (&subiter, &_tmp486_);
 		dbus_message_iter_next (&subiter);
 		value = _tmp486_;
-		rygel_external_media_item_set_height (self, value);
+		rygel_external_media_item_proxy_set_height (self, value);
 	} else if ((strcmp (interface_name, "org.gnome.UPnP.MediaItem2") == 0) && (strcmp (property_name, "ColorDepth") == 0)) {
 		gint value;
 		dbus_int32_t _tmp487_;
 		dbus_message_iter_get_basic (&subiter, &_tmp487_);
 		dbus_message_iter_next (&subiter);
 		value = _tmp487_;
-		rygel_external_media_item_set_color_depth (self, value);
+		rygel_external_media_item_proxy_set_color_depth (self, value);
 	} else if ((strcmp (interface_name, "org.gnome.UPnP.MediaItem2") == 0) && (strcmp (property_name, "Thumbnail") == 0)) {
 		char* value;
 		const char* _tmp488_;
 		dbus_message_iter_get_basic (&subiter, &_tmp488_);
 		dbus_message_iter_next (&subiter);
 		value = g_strdup (_tmp488_);
-		rygel_external_media_item_set_thumbnail (self, value);
+		rygel_external_media_item_proxy_set_thumbnail (self, value);
 		_g_free0 (value);
 	} else if ((strcmp (interface_name, "org.gnome.UPnP.MediaItem2") == 0) && (strcmp (property_name, "AlbumArt") == 0)) {
 		char* value;
@@ -5317,7 +5317,7 @@ static DBusHandlerResult _dbus_rygel_external_media_item_property_set (RygelExte
 		dbus_message_iter_get_basic (&subiter, &_tmp489_);
 		dbus_message_iter_next (&subiter);
 		value = g_strdup (_tmp489_);
-		rygel_external_media_item_set_album_art (self, value);
+		rygel_external_media_item_proxy_set_album_art (self, value);
 		_g_free0 (value);
 	} else {
 		dbus_message_unref (reply);
@@ -5335,7 +5335,7 @@ static DBusHandlerResult _dbus_rygel_external_media_item_property_set (RygelExte
 }
 
 
-static DBusHandlerResult _dbus_rygel_external_media_item_property_get_all (RygelExternalMediaItem* self, DBusConnection* connection, DBusMessage* message) {
+static DBusHandlerResult _dbus_rygel_external_media_item_proxy_property_get_all (RygelExternalMediaItemProxy* self, DBusConnection* connection, DBusMessage* message) {
 	DBusMessage* reply;
 	DBusMessageIter iter, reply_iter, subiter, entry_iter, value_iter;
 	char* interface_name;
@@ -5362,7 +5362,7 @@ static DBusHandlerResult _dbus_rygel_external_media_item_property_get_all (Rygel
 			property_name = "URLs";
 			dbus_message_iter_append_basic (&entry_iter, DBUS_TYPE_STRING, &property_name);
 			dbus_message_iter_open_container (&entry_iter, DBUS_TYPE_VARIANT, "as", &value_iter);
-			result = rygel_external_media_item_get_urls (self, &result_length1);
+			result = rygel_external_media_item_proxy_get_urls (self, &result_length1);
 			_tmp491_ = result;
 			dbus_message_iter_open_container (&value_iter, DBUS_TYPE_ARRAY, "s", &_tmp492_);
 			for (_tmp493_ = 0; _tmp493_ < result_length1; _tmp493_++) {
@@ -5383,7 +5383,7 @@ static DBusHandlerResult _dbus_rygel_external_media_item_property_get_all (Rygel
 			property_name = "MimeType";
 			dbus_message_iter_append_basic (&entry_iter, DBUS_TYPE_STRING, &property_name);
 			dbus_message_iter_open_container (&entry_iter, DBUS_TYPE_VARIANT, "s", &value_iter);
-			result = rygel_external_media_item_get_mime_type (self);
+			result = rygel_external_media_item_proxy_get_mime_type (self);
 			_tmp495_ = result;
 			dbus_message_iter_append_basic (&value_iter, DBUS_TYPE_STRING, &_tmp495_);
 			_g_free0 (result);
@@ -5397,7 +5397,7 @@ static DBusHandlerResult _dbus_rygel_external_media_item_property_get_all (Rygel
 			property_name = "Size";
 			dbus_message_iter_append_basic (&entry_iter, DBUS_TYPE_STRING, &property_name);
 			dbus_message_iter_open_container (&entry_iter, DBUS_TYPE_VARIANT, "i", &value_iter);
-			result = rygel_external_media_item_get_size (self);
+			result = rygel_external_media_item_proxy_get_size (self);
 			_tmp496_ = result;
 			dbus_message_iter_append_basic (&value_iter, DBUS_TYPE_INT32, &_tmp496_);
 			dbus_message_iter_close_container (&entry_iter, &value_iter);
@@ -5410,7 +5410,7 @@ static DBusHandlerResult _dbus_rygel_external_media_item_property_get_all (Rygel
 			property_name = "Artist";
 			dbus_message_iter_append_basic (&entry_iter, DBUS_TYPE_STRING, &property_name);
 			dbus_message_iter_open_container (&entry_iter, DBUS_TYPE_VARIANT, "s", &value_iter);
-			result = rygel_external_media_item_get_artist (self);
+			result = rygel_external_media_item_proxy_get_artist (self);
 			_tmp497_ = result;
 			dbus_message_iter_append_basic (&value_iter, DBUS_TYPE_STRING, &_tmp497_);
 			_g_free0 (result);
@@ -5424,7 +5424,7 @@ static DBusHandlerResult _dbus_rygel_external_media_item_property_get_all (Rygel
 			property_name = "Album";
 			dbus_message_iter_append_basic (&entry_iter, DBUS_TYPE_STRING, &property_name);
 			dbus_message_iter_open_container (&entry_iter, DBUS_TYPE_VARIANT, "s", &value_iter);
-			result = rygel_external_media_item_get_album (self);
+			result = rygel_external_media_item_proxy_get_album (self);
 			_tmp498_ = result;
 			dbus_message_iter_append_basic (&value_iter, DBUS_TYPE_STRING, &_tmp498_);
 			_g_free0 (result);
@@ -5438,7 +5438,7 @@ static DBusHandlerResult _dbus_rygel_external_media_item_property_get_all (Rygel
 			property_name = "Date";
 			dbus_message_iter_append_basic (&entry_iter, DBUS_TYPE_STRING, &property_name);
 			dbus_message_iter_open_container (&entry_iter, DBUS_TYPE_VARIANT, "s", &value_iter);
-			result = rygel_external_media_item_get_date (self);
+			result = rygel_external_media_item_proxy_get_date (self);
 			_tmp499_ = result;
 			dbus_message_iter_append_basic (&value_iter, DBUS_TYPE_STRING, &_tmp499_);
 			_g_free0 (result);
@@ -5452,7 +5452,7 @@ static DBusHandlerResult _dbus_rygel_external_media_item_property_get_all (Rygel
 			property_name = "Genre";
 			dbus_message_iter_append_basic (&entry_iter, DBUS_TYPE_STRING, &property_name);
 			dbus_message_iter_open_container (&entry_iter, DBUS_TYPE_VARIANT, "s", &value_iter);
-			result = rygel_external_media_item_get_genre (self);
+			result = rygel_external_media_item_proxy_get_genre (self);
 			_tmp500_ = result;
 			dbus_message_iter_append_basic (&value_iter, DBUS_TYPE_STRING, &_tmp500_);
 			_g_free0 (result);
@@ -5466,7 +5466,7 @@ static DBusHandlerResult _dbus_rygel_external_media_item_property_get_all (Rygel
 			property_name = "DlnaProfile";
 			dbus_message_iter_append_basic (&entry_iter, DBUS_TYPE_STRING, &property_name);
 			dbus_message_iter_open_container (&entry_iter, DBUS_TYPE_VARIANT, "s", &value_iter);
-			result = rygel_external_media_item_get_dlna_profile (self);
+			result = rygel_external_media_item_proxy_get_dlna_profile (self);
 			_tmp501_ = result;
 			dbus_message_iter_append_basic (&value_iter, DBUS_TYPE_STRING, &_tmp501_);
 			_g_free0 (result);
@@ -5480,7 +5480,7 @@ static DBusHandlerResult _dbus_rygel_external_media_item_property_get_all (Rygel
 			property_name = "Duration";
 			dbus_message_iter_append_basic (&entry_iter, DBUS_TYPE_STRING, &property_name);
 			dbus_message_iter_open_container (&entry_iter, DBUS_TYPE_VARIANT, "i", &value_iter);
-			result = rygel_external_media_item_get_duration (self);
+			result = rygel_external_media_item_proxy_get_duration (self);
 			_tmp502_ = result;
 			dbus_message_iter_append_basic (&value_iter, DBUS_TYPE_INT32, &_tmp502_);
 			dbus_message_iter_close_container (&entry_iter, &value_iter);
@@ -5493,7 +5493,7 @@ static DBusHandlerResult _dbus_rygel_external_media_item_property_get_all (Rygel
 			property_name = "Bitrate";
 			dbus_message_iter_append_basic (&entry_iter, DBUS_TYPE_STRING, &property_name);
 			dbus_message_iter_open_container (&entry_iter, DBUS_TYPE_VARIANT, "i", &value_iter);
-			result = rygel_external_media_item_get_bitrate (self);
+			result = rygel_external_media_item_proxy_get_bitrate (self);
 			_tmp503_ = result;
 			dbus_message_iter_append_basic (&value_iter, DBUS_TYPE_INT32, &_tmp503_);
 			dbus_message_iter_close_container (&entry_iter, &value_iter);
@@ -5506,7 +5506,7 @@ static DBusHandlerResult _dbus_rygel_external_media_item_property_get_all (Rygel
 			property_name = "SampleRate";
 			dbus_message_iter_append_basic (&entry_iter, DBUS_TYPE_STRING, &property_name);
 			dbus_message_iter_open_container (&entry_iter, DBUS_TYPE_VARIANT, "i", &value_iter);
-			result = rygel_external_media_item_get_sample_rate (self);
+			result = rygel_external_media_item_proxy_get_sample_rate (self);
 			_tmp504_ = result;
 			dbus_message_iter_append_basic (&value_iter, DBUS_TYPE_INT32, &_tmp504_);
 			dbus_message_iter_close_container (&entry_iter, &value_iter);
@@ -5519,7 +5519,7 @@ static DBusHandlerResult _dbus_rygel_external_media_item_property_get_all (Rygel
 			property_name = "BitsPerSample";
 			dbus_message_iter_append_basic (&entry_iter, DBUS_TYPE_STRING, &property_name);
 			dbus_message_iter_open_container (&entry_iter, DBUS_TYPE_VARIANT, "i", &value_iter);
-			result = rygel_external_media_item_get_bits_per_sample (self);
+			result = rygel_external_media_item_proxy_get_bits_per_sample (self);
 			_tmp505_ = result;
 			dbus_message_iter_append_basic (&value_iter, DBUS_TYPE_INT32, &_tmp505_);
 			dbus_message_iter_close_container (&entry_iter, &value_iter);
@@ -5532,7 +5532,7 @@ static DBusHandlerResult _dbus_rygel_external_media_item_property_get_all (Rygel
 			property_name = "Width";
 			dbus_message_iter_append_basic (&entry_iter, DBUS_TYPE_STRING, &property_name);
 			dbus_message_iter_open_container (&entry_iter, DBUS_TYPE_VARIANT, "i", &value_iter);
-			result = rygel_external_media_item_get_width (self);
+			result = rygel_external_media_item_proxy_get_width (self);
 			_tmp506_ = result;
 			dbus_message_iter_append_basic (&value_iter, DBUS_TYPE_INT32, &_tmp506_);
 			dbus_message_iter_close_container (&entry_iter, &value_iter);
@@ -5545,7 +5545,7 @@ static DBusHandlerResult _dbus_rygel_external_media_item_property_get_all (Rygel
 			property_name = "Height";
 			dbus_message_iter_append_basic (&entry_iter, DBUS_TYPE_STRING, &property_name);
 			dbus_message_iter_open_container (&entry_iter, DBUS_TYPE_VARIANT, "i", &value_iter);
-			result = rygel_external_media_item_get_height (self);
+			result = rygel_external_media_item_proxy_get_height (self);
 			_tmp507_ = result;
 			dbus_message_iter_append_basic (&value_iter, DBUS_TYPE_INT32, &_tmp507_);
 			dbus_message_iter_close_container (&entry_iter, &value_iter);
@@ -5558,7 +5558,7 @@ static DBusHandlerResult _dbus_rygel_external_media_item_property_get_all (Rygel
 			property_name = "ColorDepth";
 			dbus_message_iter_append_basic (&entry_iter, DBUS_TYPE_STRING, &property_name);
 			dbus_message_iter_open_container (&entry_iter, DBUS_TYPE_VARIANT, "i", &value_iter);
-			result = rygel_external_media_item_get_color_depth (self);
+			result = rygel_external_media_item_proxy_get_color_depth (self);
 			_tmp508_ = result;
 			dbus_message_iter_append_basic (&value_iter, DBUS_TYPE_INT32, &_tmp508_);
 			dbus_message_iter_close_container (&entry_iter, &value_iter);
@@ -5571,7 +5571,7 @@ static DBusHandlerResult _dbus_rygel_external_media_item_property_get_all (Rygel
 			property_name = "Thumbnail";
 			dbus_message_iter_append_basic (&entry_iter, DBUS_TYPE_STRING, &property_name);
 			dbus_message_iter_open_container (&entry_iter, DBUS_TYPE_VARIANT, "o", &value_iter);
-			result = rygel_external_media_item_get_thumbnail (self);
+			result = rygel_external_media_item_proxy_get_thumbnail (self);
 			_tmp509_ = result;
 			dbus_message_iter_append_basic (&value_iter, DBUS_TYPE_OBJECT_PATH, &_tmp509_);
 			_g_free0 (result);
@@ -5585,7 +5585,7 @@ static DBusHandlerResult _dbus_rygel_external_media_item_property_get_all (Rygel
 			property_name = "AlbumArt";
 			dbus_message_iter_append_basic (&entry_iter, DBUS_TYPE_STRING, &property_name);
 			dbus_message_iter_open_container (&entry_iter, DBUS_TYPE_VARIANT, "o", &value_iter);
-			result = rygel_external_media_item_get_album_art (self);
+			result = rygel_external_media_item_proxy_get_album_art (self);
 			_tmp510_ = result;
 			dbus_message_iter_append_basic (&value_iter, DBUS_TYPE_OBJECT_PATH, &_tmp510_);
 			_g_free0 (result);
@@ -5608,17 +5608,17 @@ static DBusHandlerResult _dbus_rygel_external_media_item_property_get_all (Rygel
 }
 
 
-DBusHandlerResult rygel_external_media_item_dbus_message (DBusConnection* connection, DBusMessage* message, void* object) {
+DBusHandlerResult rygel_external_media_item_proxy_dbus_message (DBusConnection* connection, DBusMessage* message, void* object) {
 	DBusHandlerResult result;
 	result = DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
 	if (dbus_message_is_method_call (message, "org.freedesktop.DBus.Introspectable", "Introspect")) {
-		result = _dbus_rygel_external_media_item_introspect (object, connection, message);
+		result = _dbus_rygel_external_media_item_proxy_introspect (object, connection, message);
 	} else if (dbus_message_is_method_call (message, "org.freedesktop.DBus.Properties", "Get")) {
-		result = _dbus_rygel_external_media_item_property_get (object, connection, message);
+		result = _dbus_rygel_external_media_item_proxy_property_get (object, connection, message);
 	} else if (dbus_message_is_method_call (message, "org.freedesktop.DBus.Properties", "Set")) {
-		result = _dbus_rygel_external_media_item_property_set (object, connection, message);
+		result = _dbus_rygel_external_media_item_proxy_property_set (object, connection, message);
 	} else if (dbus_message_is_method_call (message, "org.freedesktop.DBus.Properties", "GetAll")) {
-		result = _dbus_rygel_external_media_item_property_get_all (object, connection, message);
+		result = _dbus_rygel_external_media_item_proxy_property_get_all (object, connection, message);
 	}
 	if (result == DBUS_HANDLER_RESULT_HANDLED) {
 		return result;
@@ -5628,16 +5628,16 @@ DBusHandlerResult rygel_external_media_item_dbus_message (DBusConnection* connec
 }
 
 
-void rygel_external_media_item_dbus_register_object (DBusConnection* connection, const char* path, void* object) {
+void rygel_external_media_item_proxy_dbus_register_object (DBusConnection* connection, const char* path, void* object) {
 	if (!g_object_get_data (object, "dbus_object_path")) {
 		g_object_set_data (object, "dbus_object_path", g_strdup (path));
-		dbus_connection_register_object_path (connection, path, &_rygel_external_media_item_dbus_path_vtable, object);
+		dbus_connection_register_object_path (connection, path, &_rygel_external_media_item_proxy_dbus_path_vtable, object);
 		g_object_weak_ref (object, _vala_dbus_unregister_object, connection);
 	}
 }
 
 
-static void rygel_external_media_item_base_init (RygelExternalMediaItemIface * iface) {
+static void rygel_external_media_item_proxy_base_init (RygelExternalMediaItemProxyIface * iface) {
 	static gboolean initialized = FALSE;
 	if (!initialized) {
 		initialized = TRUE;
@@ -5658,43 +5658,43 @@ static void rygel_external_media_item_base_init (RygelExternalMediaItemIface * i
 		g_object_interface_install_property (iface, g_param_spec_int ("color-depth", "color-depth", "color-depth", G_MININT, G_MAXINT, 0, G_PARAM_STATIC_NAME | G_PARAM_STATIC_NICK | G_PARAM_STATIC_BLURB | G_PARAM_READABLE | G_PARAM_WRITABLE));
 		g_object_interface_install_property (iface, g_param_spec_string ("thumbnail", "thumbnail", "thumbnail", NULL, G_PARAM_STATIC_NAME | G_PARAM_STATIC_NICK | G_PARAM_STATIC_BLURB | G_PARAM_READABLE | G_PARAM_WRITABLE));
 		g_object_interface_install_property (iface, g_param_spec_string ("album-art", "album-art", "album-art", NULL, G_PARAM_STATIC_NAME | G_PARAM_STATIC_NICK | G_PARAM_STATIC_BLURB | G_PARAM_READABLE | G_PARAM_WRITABLE));
-		g_type_set_qdata (RYGEL_TYPE_EXTERNAL_MEDIA_ITEM, g_quark_from_static_string ("DBusObjectVTable"), (void*) (&_rygel_external_media_item_dbus_vtable));
+		g_type_set_qdata (RYGEL_EXTERNAL_TYPE_MEDIA_ITEM_PROXY, g_quark_from_static_string ("DBusObjectVTable"), (void*) (&_rygel_external_media_item_proxy_dbus_vtable));
 	}
 }
 
 
-GType rygel_external_media_item_get_type (void) {
-	static volatile gsize rygel_external_media_item_type_id__volatile = 0;
-	if (g_once_init_enter (&rygel_external_media_item_type_id__volatile)) {
-		static const GTypeInfo g_define_type_info = { sizeof (RygelExternalMediaItemIface), (GBaseInitFunc) rygel_external_media_item_base_init, (GBaseFinalizeFunc) NULL, (GClassInitFunc) NULL, (GClassFinalizeFunc) NULL, NULL, 0, 0, (GInstanceInitFunc) NULL, NULL };
-		GType rygel_external_media_item_type_id;
-		rygel_external_media_item_type_id = g_type_register_static (G_TYPE_INTERFACE, "RygelExternalMediaItem", &g_define_type_info, 0);
-		g_type_interface_add_prerequisite (rygel_external_media_item_type_id, DBUS_TYPE_G_PROXY);
-		g_type_interface_add_prerequisite (rygel_external_media_item_type_id, RYGEL_TYPE_EXTERNAL_MEDIA_OBJECT);
-		g_type_set_qdata (rygel_external_media_item_type_id, g_quark_from_string ("ValaDBusInterfaceProxyType"), &rygel_external_media_item_dbus_proxy_get_type);
-		g_once_init_leave (&rygel_external_media_item_type_id__volatile, rygel_external_media_item_type_id);
+GType rygel_external_media_item_proxy_get_type (void) {
+	static volatile gsize rygel_external_media_item_proxy_type_id__volatile = 0;
+	if (g_once_init_enter (&rygel_external_media_item_proxy_type_id__volatile)) {
+		static const GTypeInfo g_define_type_info = { sizeof (RygelExternalMediaItemProxyIface), (GBaseInitFunc) rygel_external_media_item_proxy_base_init, (GBaseFinalizeFunc) NULL, (GClassInitFunc) NULL, (GClassFinalizeFunc) NULL, NULL, 0, 0, (GInstanceInitFunc) NULL, NULL };
+		GType rygel_external_media_item_proxy_type_id;
+		rygel_external_media_item_proxy_type_id = g_type_register_static (G_TYPE_INTERFACE, "RygelExternalMediaItemProxy", &g_define_type_info, 0);
+		g_type_interface_add_prerequisite (rygel_external_media_item_proxy_type_id, DBUS_TYPE_G_PROXY);
+		g_type_interface_add_prerequisite (rygel_external_media_item_proxy_type_id, RYGEL_EXTERNAL_TYPE_MEDIA_OBJECT_PROXY);
+		g_type_set_qdata (rygel_external_media_item_proxy_type_id, g_quark_from_string ("ValaDBusInterfaceProxyType"), &rygel_external_media_item_proxy_dbus_proxy_get_type);
+		g_once_init_leave (&rygel_external_media_item_proxy_type_id__volatile, rygel_external_media_item_proxy_type_id);
 	}
-	return rygel_external_media_item_type_id__volatile;
+	return rygel_external_media_item_proxy_type_id__volatile;
 }
 
 
-G_DEFINE_TYPE_EXTENDED (RygelExternalMediaItemDBusProxy, rygel_external_media_item_dbus_proxy, DBUS_TYPE_G_PROXY, 0, G_IMPLEMENT_INTERFACE (RYGEL_TYPE_EXTERNAL_MEDIA_OBJECT, rygel_external_media_item_dbus_proxy_rygel_external_media_object__interface_init) G_IMPLEMENT_INTERFACE (RYGEL_TYPE_EXTERNAL_MEDIA_ITEM, rygel_external_media_item_dbus_proxy_rygel_external_media_item__interface_init) );
-RygelExternalMediaItem* rygel_external_media_item_dbus_proxy_new (DBusGConnection* connection, const char* name, const char* path) {
-	RygelExternalMediaItem* self;
-	self = g_object_new (rygel_external_media_item_dbus_proxy_get_type (), "connection", connection, "name", name, "path", path, "interface", "org.gnome.UPnP.MediaItem2", NULL);
+G_DEFINE_TYPE_EXTENDED (RygelExternalMediaItemProxyDBusProxy, rygel_external_media_item_proxy_dbus_proxy, DBUS_TYPE_G_PROXY, 0, G_IMPLEMENT_INTERFACE (RYGEL_EXTERNAL_TYPE_MEDIA_OBJECT_PROXY, rygel_external_media_item_proxy_dbus_proxy_rygel_external_media_object_proxy__interface_init) G_IMPLEMENT_INTERFACE (RYGEL_EXTERNAL_TYPE_MEDIA_ITEM_PROXY, rygel_external_media_item_proxy_dbus_proxy_rygel_external_media_item_proxy__interface_init) );
+RygelExternalMediaItemProxy* rygel_external_media_item_proxy_dbus_proxy_new (DBusGConnection* connection, const char* name, const char* path) {
+	RygelExternalMediaItemProxy* self;
+	self = g_object_new (rygel_external_media_item_proxy_dbus_proxy_get_type (), "connection", connection, "name", name, "path", path, "interface", "org.gnome.UPnP.MediaItem2", NULL);
 	return self;
 }
 
 
-static GObject* rygel_external_media_item_dbus_proxy_construct (GType gtype, guint n_properties, GObjectConstructParam* properties) {
+static GObject* rygel_external_media_item_proxy_dbus_proxy_construct (GType gtype, guint n_properties, GObjectConstructParam* properties) {
 	GObject* self;
 	DBusGConnection *connection;
 	char* path;
 	char* filter;
-	self = G_OBJECT_CLASS (rygel_external_media_item_dbus_proxy_parent_class)->constructor (gtype, n_properties, properties);
+	self = G_OBJECT_CLASS (rygel_external_media_item_proxy_dbus_proxy_parent_class)->constructor (gtype, n_properties, properties);
 	g_object_get (self, "connection", &connection, NULL);
 	g_object_get (self, "path", &path, NULL);
-	dbus_connection_add_filter (dbus_g_connection_get_connection (connection), rygel_external_media_item_dbus_proxy_filter, self, NULL);
+	dbus_connection_add_filter (dbus_g_connection_get_connection (connection), rygel_external_media_item_proxy_dbus_proxy_filter, self, NULL);
 	filter = g_strdup_printf ("type='signal',path='%s'", path);
 	dbus_bus_add_match (dbus_g_connection_get_connection (connection), filter, NULL);
 	dbus_g_connection_unref (connection);
@@ -5704,58 +5704,58 @@ static GObject* rygel_external_media_item_dbus_proxy_construct (GType gtype, gui
 }
 
 
-DBusHandlerResult rygel_external_media_item_dbus_proxy_filter (DBusConnection* connection, DBusMessage* message, void* user_data) {
+DBusHandlerResult rygel_external_media_item_proxy_dbus_proxy_filter (DBusConnection* connection, DBusMessage* message, void* user_data) {
 	if (dbus_message_has_path (message, dbus_g_proxy_get_path (user_data))) {
 	}
 	return DBUS_HANDLER_RESULT_NOT_YET_HANDLED;
 }
 
 
-static void rygel_external_media_item_dbus_proxy_dispose (GObject* self) {
+static void rygel_external_media_item_proxy_dbus_proxy_dispose (GObject* self) {
 	DBusGConnection *connection;
-	if (((RygelExternalMediaItemDBusProxy*) self)->disposed) {
+	if (((RygelExternalMediaItemProxyDBusProxy*) self)->disposed) {
 		return;
 	}
-	((RygelExternalMediaItemDBusProxy*) self)->disposed = TRUE;
+	((RygelExternalMediaItemProxyDBusProxy*) self)->disposed = TRUE;
 	g_object_get (self, "connection", &connection, NULL);
-	dbus_connection_remove_filter (dbus_g_connection_get_connection (connection), rygel_external_media_item_dbus_proxy_filter, self);
-	G_OBJECT_CLASS (rygel_external_media_item_dbus_proxy_parent_class)->dispose (self);
+	dbus_connection_remove_filter (dbus_g_connection_get_connection (connection), rygel_external_media_item_proxy_dbus_proxy_filter, self);
+	G_OBJECT_CLASS (rygel_external_media_item_proxy_dbus_proxy_parent_class)->dispose (self);
 }
 
 
-static void rygel_external_media_item_dbus_proxy_class_init (RygelExternalMediaItemDBusProxyClass* klass) {
-	G_OBJECT_CLASS (klass)->constructor = rygel_external_media_item_dbus_proxy_construct;
-	G_OBJECT_CLASS (klass)->dispose = rygel_external_media_item_dbus_proxy_dispose;
-	G_OBJECT_CLASS (klass)->get_property = rygel_external_media_item_dbus_proxy_get_property;
-	G_OBJECT_CLASS (klass)->set_property = rygel_external_media_item_dbus_proxy_set_property;
-	g_object_class_override_property (G_OBJECT_CLASS (klass), RYGEL_EXTERNAL_MEDIA_ITEM_DBUS_PROXY_PARENT, "parent");
-	g_object_class_override_property (G_OBJECT_CLASS (klass), RYGEL_EXTERNAL_MEDIA_ITEM_DBUS_PROXY_DISPLAY_NAME, "display-name");
-	g_object_class_override_property (G_OBJECT_CLASS (klass), RYGEL_EXTERNAL_MEDIA_ITEM_DBUS_PROXY_OBJECT_TYPE, "object-type");
-	g_object_class_override_property (G_OBJECT_CLASS (klass), RYGEL_EXTERNAL_MEDIA_ITEM_DBUS_PROXY_URLS, "urls");
-	g_object_class_override_property (G_OBJECT_CLASS (klass), RYGEL_EXTERNAL_MEDIA_ITEM_DBUS_PROXY_MIME_TYPE, "mime-type");
-	g_object_class_override_property (G_OBJECT_CLASS (klass), RYGEL_EXTERNAL_MEDIA_ITEM_DBUS_PROXY_SIZE, "size");
-	g_object_class_override_property (G_OBJECT_CLASS (klass), RYGEL_EXTERNAL_MEDIA_ITEM_DBUS_PROXY_ARTIST, "artist");
-	g_object_class_override_property (G_OBJECT_CLASS (klass), RYGEL_EXTERNAL_MEDIA_ITEM_DBUS_PROXY_ALBUM, "album");
-	g_object_class_override_property (G_OBJECT_CLASS (klass), RYGEL_EXTERNAL_MEDIA_ITEM_DBUS_PROXY_DATE, "date");
-	g_object_class_override_property (G_OBJECT_CLASS (klass), RYGEL_EXTERNAL_MEDIA_ITEM_DBUS_PROXY_GENRE, "genre");
-	g_object_class_override_property (G_OBJECT_CLASS (klass), RYGEL_EXTERNAL_MEDIA_ITEM_DBUS_PROXY_DLNA_PROFILE, "dlna-profile");
-	g_object_class_override_property (G_OBJECT_CLASS (klass), RYGEL_EXTERNAL_MEDIA_ITEM_DBUS_PROXY_DURATION, "duration");
-	g_object_class_override_property (G_OBJECT_CLASS (klass), RYGEL_EXTERNAL_MEDIA_ITEM_DBUS_PROXY_BITRATE, "bitrate");
-	g_object_class_override_property (G_OBJECT_CLASS (klass), RYGEL_EXTERNAL_MEDIA_ITEM_DBUS_PROXY_SAMPLE_RATE, "sample-rate");
-	g_object_class_override_property (G_OBJECT_CLASS (klass), RYGEL_EXTERNAL_MEDIA_ITEM_DBUS_PROXY_BITS_PER_SAMPLE, "bits-per-sample");
-	g_object_class_override_property (G_OBJECT_CLASS (klass), RYGEL_EXTERNAL_MEDIA_ITEM_DBUS_PROXY_WIDTH, "width");
-	g_object_class_override_property (G_OBJECT_CLASS (klass), RYGEL_EXTERNAL_MEDIA_ITEM_DBUS_PROXY_HEIGHT, "height");
-	g_object_class_override_property (G_OBJECT_CLASS (klass), RYGEL_EXTERNAL_MEDIA_ITEM_DBUS_PROXY_COLOR_DEPTH, "color-depth");
-	g_object_class_override_property (G_OBJECT_CLASS (klass), RYGEL_EXTERNAL_MEDIA_ITEM_DBUS_PROXY_THUMBNAIL, "thumbnail");
-	g_object_class_override_property (G_OBJECT_CLASS (klass), RYGEL_EXTERNAL_MEDIA_ITEM_DBUS_PROXY_ALBUM_ART, "album-art");
+static void rygel_external_media_item_proxy_dbus_proxy_class_init (RygelExternalMediaItemProxyDBusProxyClass* klass) {
+	G_OBJECT_CLASS (klass)->constructor = rygel_external_media_item_proxy_dbus_proxy_construct;
+	G_OBJECT_CLASS (klass)->dispose = rygel_external_media_item_proxy_dbus_proxy_dispose;
+	G_OBJECT_CLASS (klass)->get_property = rygel_external_media_item_proxy_dbus_proxy_get_property;
+	G_OBJECT_CLASS (klass)->set_property = rygel_external_media_item_proxy_dbus_proxy_set_property;
+	g_object_class_override_property (G_OBJECT_CLASS (klass), RYGEL_EXTERNAL_MEDIA_ITEM_PROXY_DBUS_PROXY_PARENT, "parent");
+	g_object_class_override_property (G_OBJECT_CLASS (klass), RYGEL_EXTERNAL_MEDIA_ITEM_PROXY_DBUS_PROXY_DISPLAY_NAME, "display-name");
+	g_object_class_override_property (G_OBJECT_CLASS (klass), RYGEL_EXTERNAL_MEDIA_ITEM_PROXY_DBUS_PROXY_OBJECT_TYPE, "object-type");
+	g_object_class_override_property (G_OBJECT_CLASS (klass), RYGEL_EXTERNAL_MEDIA_ITEM_PROXY_DBUS_PROXY_URLS, "urls");
+	g_object_class_override_property (G_OBJECT_CLASS (klass), RYGEL_EXTERNAL_MEDIA_ITEM_PROXY_DBUS_PROXY_MIME_TYPE, "mime-type");
+	g_object_class_override_property (G_OBJECT_CLASS (klass), RYGEL_EXTERNAL_MEDIA_ITEM_PROXY_DBUS_PROXY_SIZE, "size");
+	g_object_class_override_property (G_OBJECT_CLASS (klass), RYGEL_EXTERNAL_MEDIA_ITEM_PROXY_DBUS_PROXY_ARTIST, "artist");
+	g_object_class_override_property (G_OBJECT_CLASS (klass), RYGEL_EXTERNAL_MEDIA_ITEM_PROXY_DBUS_PROXY_ALBUM, "album");
+	g_object_class_override_property (G_OBJECT_CLASS (klass), RYGEL_EXTERNAL_MEDIA_ITEM_PROXY_DBUS_PROXY_DATE, "date");
+	g_object_class_override_property (G_OBJECT_CLASS (klass), RYGEL_EXTERNAL_MEDIA_ITEM_PROXY_DBUS_PROXY_GENRE, "genre");
+	g_object_class_override_property (G_OBJECT_CLASS (klass), RYGEL_EXTERNAL_MEDIA_ITEM_PROXY_DBUS_PROXY_DLNA_PROFILE, "dlna-profile");
+	g_object_class_override_property (G_OBJECT_CLASS (klass), RYGEL_EXTERNAL_MEDIA_ITEM_PROXY_DBUS_PROXY_DURATION, "duration");
+	g_object_class_override_property (G_OBJECT_CLASS (klass), RYGEL_EXTERNAL_MEDIA_ITEM_PROXY_DBUS_PROXY_BITRATE, "bitrate");
+	g_object_class_override_property (G_OBJECT_CLASS (klass), RYGEL_EXTERNAL_MEDIA_ITEM_PROXY_DBUS_PROXY_SAMPLE_RATE, "sample-rate");
+	g_object_class_override_property (G_OBJECT_CLASS (klass), RYGEL_EXTERNAL_MEDIA_ITEM_PROXY_DBUS_PROXY_BITS_PER_SAMPLE, "bits-per-sample");
+	g_object_class_override_property (G_OBJECT_CLASS (klass), RYGEL_EXTERNAL_MEDIA_ITEM_PROXY_DBUS_PROXY_WIDTH, "width");
+	g_object_class_override_property (G_OBJECT_CLASS (klass), RYGEL_EXTERNAL_MEDIA_ITEM_PROXY_DBUS_PROXY_HEIGHT, "height");
+	g_object_class_override_property (G_OBJECT_CLASS (klass), RYGEL_EXTERNAL_MEDIA_ITEM_PROXY_DBUS_PROXY_COLOR_DEPTH, "color-depth");
+	g_object_class_override_property (G_OBJECT_CLASS (klass), RYGEL_EXTERNAL_MEDIA_ITEM_PROXY_DBUS_PROXY_THUMBNAIL, "thumbnail");
+	g_object_class_override_property (G_OBJECT_CLASS (klass), RYGEL_EXTERNAL_MEDIA_ITEM_PROXY_DBUS_PROXY_ALBUM_ART, "album-art");
 }
 
 
-static void rygel_external_media_item_dbus_proxy_init (RygelExternalMediaItemDBusProxy* self) {
+static void rygel_external_media_item_proxy_dbus_proxy_init (RygelExternalMediaItemProxyDBusProxy* self) {
 }
 
 
-static char* rygel_external_media_item_dbus_proxy_get_parent (RygelExternalMediaObject* self) {
+static char* rygel_external_media_item_proxy_dbus_proxy_get_parent (RygelExternalMediaObjectProxy* self) {
 	DBusError _dbus_error;
 	DBusGConnection *_connection;
 	DBusMessage *_message, *_reply;
@@ -5764,7 +5764,7 @@ static char* rygel_external_media_item_dbus_proxy_get_parent (RygelExternalMedia
 	const char* _tmp512_;
 	char* _result;
 	const char* _tmp513_;
-	if (((RygelExternalMediaObjectDBusProxy*) self)->disposed) {
+	if (((RygelExternalMediaObjectProxyDBusProxy*) self)->disposed) {
 		return NULL;
 	}
 	_message = dbus_message_new_method_call (dbus_g_proxy_get_bus_name ((DBusGProxy*) self), dbus_g_proxy_get_path ((DBusGProxy*) self), "org.freedesktop.DBus.Properties", "Get");
@@ -5803,7 +5803,7 @@ static char* rygel_external_media_item_dbus_proxy_get_parent (RygelExternalMedia
 }
 
 
-static void rygel_external_media_item_dbus_proxy_set_parent (RygelExternalMediaObject* self, const char* value) {
+static void rygel_external_media_item_proxy_dbus_proxy_set_parent (RygelExternalMediaObjectProxy* self, const char* value) {
 	DBusError _dbus_error;
 	DBusGConnection *_connection;
 	DBusMessage *_message, *_reply;
@@ -5811,7 +5811,7 @@ static void rygel_external_media_item_dbus_proxy_set_parent (RygelExternalMediaO
 	const char* _tmp514_;
 	const char* _tmp515_;
 	const char* _tmp516_;
-	if (((RygelExternalMediaObjectDBusProxy*) self)->disposed) {
+	if (((RygelExternalMediaObjectProxyDBusProxy*) self)->disposed) {
 		return;
 	}
 	_message = dbus_message_new_method_call (dbus_g_proxy_get_bus_name ((DBusGProxy*) self), dbus_g_proxy_get_path ((DBusGProxy*) self), "org.freedesktop.DBus.Properties", "Set");
@@ -5844,7 +5844,7 @@ static void rygel_external_media_item_dbus_proxy_set_parent (RygelExternalMediaO
 }
 
 
-static char* rygel_external_media_item_dbus_proxy_get_display_name (RygelExternalMediaObject* self) {
+static char* rygel_external_media_item_proxy_dbus_proxy_get_display_name (RygelExternalMediaObjectProxy* self) {
 	DBusError _dbus_error;
 	DBusGConnection *_connection;
 	DBusMessage *_message, *_reply;
@@ -5853,7 +5853,7 @@ static char* rygel_external_media_item_dbus_proxy_get_display_name (RygelExterna
 	const char* _tmp518_;
 	char* _result;
 	const char* _tmp519_;
-	if (((RygelExternalMediaObjectDBusProxy*) self)->disposed) {
+	if (((RygelExternalMediaObjectProxyDBusProxy*) self)->disposed) {
 		return NULL;
 	}
 	_message = dbus_message_new_method_call (dbus_g_proxy_get_bus_name ((DBusGProxy*) self), dbus_g_proxy_get_path ((DBusGProxy*) self), "org.freedesktop.DBus.Properties", "Get");
@@ -5892,7 +5892,7 @@ static char* rygel_external_media_item_dbus_proxy_get_display_name (RygelExterna
 }
 
 
-static void rygel_external_media_item_dbus_proxy_set_display_name (RygelExternalMediaObject* self, const char* value) {
+static void rygel_external_media_item_proxy_dbus_proxy_set_display_name (RygelExternalMediaObjectProxy* self, const char* value) {
 	DBusError _dbus_error;
 	DBusGConnection *_connection;
 	DBusMessage *_message, *_reply;
@@ -5900,7 +5900,7 @@ static void rygel_external_media_item_dbus_proxy_set_display_name (RygelExternal
 	const char* _tmp520_;
 	const char* _tmp521_;
 	const char* _tmp522_;
-	if (((RygelExternalMediaObjectDBusProxy*) self)->disposed) {
+	if (((RygelExternalMediaObjectProxyDBusProxy*) self)->disposed) {
 		return;
 	}
 	_message = dbus_message_new_method_call (dbus_g_proxy_get_bus_name ((DBusGProxy*) self), dbus_g_proxy_get_path ((DBusGProxy*) self), "org.freedesktop.DBus.Properties", "Set");
@@ -5933,7 +5933,7 @@ static void rygel_external_media_item_dbus_proxy_set_display_name (RygelExternal
 }
 
 
-static char* rygel_external_media_item_dbus_proxy_get_object_type (RygelExternalMediaObject* self) {
+static char* rygel_external_media_item_proxy_dbus_proxy_get_object_type (RygelExternalMediaObjectProxy* self) {
 	DBusError _dbus_error;
 	DBusGConnection *_connection;
 	DBusMessage *_message, *_reply;
@@ -5942,7 +5942,7 @@ static char* rygel_external_media_item_dbus_proxy_get_object_type (RygelExternal
 	const char* _tmp524_;
 	char* _result;
 	const char* _tmp525_;
-	if (((RygelExternalMediaObjectDBusProxy*) self)->disposed) {
+	if (((RygelExternalMediaObjectProxyDBusProxy*) self)->disposed) {
 		return NULL;
 	}
 	_message = dbus_message_new_method_call (dbus_g_proxy_get_bus_name ((DBusGProxy*) self), dbus_g_proxy_get_path ((DBusGProxy*) self), "org.freedesktop.DBus.Properties", "Get");
@@ -5981,7 +5981,7 @@ static char* rygel_external_media_item_dbus_proxy_get_object_type (RygelExternal
 }
 
 
-static void rygel_external_media_item_dbus_proxy_set_object_type (RygelExternalMediaObject* self, const char* value) {
+static void rygel_external_media_item_proxy_dbus_proxy_set_object_type (RygelExternalMediaObjectProxy* self, const char* value) {
 	DBusError _dbus_error;
 	DBusGConnection *_connection;
 	DBusMessage *_message, *_reply;
@@ -5989,7 +5989,7 @@ static void rygel_external_media_item_dbus_proxy_set_object_type (RygelExternalM
 	const char* _tmp526_;
 	const char* _tmp527_;
 	const char* _tmp528_;
-	if (((RygelExternalMediaObjectDBusProxy*) self)->disposed) {
+	if (((RygelExternalMediaObjectProxyDBusProxy*) self)->disposed) {
 		return;
 	}
 	_message = dbus_message_new_method_call (dbus_g_proxy_get_bus_name ((DBusGProxy*) self), dbus_g_proxy_get_path ((DBusGProxy*) self), "org.freedesktop.DBus.Properties", "Set");
@@ -6022,17 +6022,17 @@ static void rygel_external_media_item_dbus_proxy_set_object_type (RygelExternalM
 }
 
 
-static void rygel_external_media_item_dbus_proxy_rygel_external_media_object__interface_init (RygelExternalMediaObjectIface* iface) {
-	iface->get_parent = rygel_external_media_item_dbus_proxy_get_parent;
-	iface->set_parent = rygel_external_media_item_dbus_proxy_set_parent;
-	iface->get_display_name = rygel_external_media_item_dbus_proxy_get_display_name;
-	iface->set_display_name = rygel_external_media_item_dbus_proxy_set_display_name;
-	iface->get_object_type = rygel_external_media_item_dbus_proxy_get_object_type;
-	iface->set_object_type = rygel_external_media_item_dbus_proxy_set_object_type;
+static void rygel_external_media_item_proxy_dbus_proxy_rygel_external_media_object_proxy__interface_init (RygelExternalMediaObjectProxyIface* iface) {
+	iface->get_parent = rygel_external_media_item_proxy_dbus_proxy_get_parent;
+	iface->set_parent = rygel_external_media_item_proxy_dbus_proxy_set_parent;
+	iface->get_display_name = rygel_external_media_item_proxy_dbus_proxy_get_display_name;
+	iface->set_display_name = rygel_external_media_item_proxy_dbus_proxy_set_display_name;
+	iface->get_object_type = rygel_external_media_item_proxy_dbus_proxy_get_object_type;
+	iface->set_object_type = rygel_external_media_item_proxy_dbus_proxy_set_object_type;
 }
 
 
-static char** rygel_external_media_item_dbus_proxy_get_urls (RygelExternalMediaItem* self, int* result_length1) {
+static char** rygel_external_media_item_proxy_dbus_proxy_get_urls (RygelExternalMediaItemProxy* self, int* result_length1) {
 	DBusError _dbus_error;
 	DBusGConnection *_connection;
 	DBusMessage *_message, *_reply;
@@ -6046,7 +6046,7 @@ static char** rygel_external_media_item_dbus_proxy_get_urls (RygelExternalMediaI
 	int _tmp531__size;
 	int _tmp531__length1;
 	DBusMessageIter _tmp532_;
-	if (((RygelExternalMediaItemDBusProxy*) self)->disposed) {
+	if (((RygelExternalMediaItemProxyDBusProxy*) self)->disposed) {
 		return NULL;
 	}
 	_message = dbus_message_new_method_call (dbus_g_proxy_get_bus_name ((DBusGProxy*) self), dbus_g_proxy_get_path ((DBusGProxy*) self), "org.freedesktop.DBus.Properties", "Get");
@@ -6103,7 +6103,7 @@ static char** rygel_external_media_item_dbus_proxy_get_urls (RygelExternalMediaI
 }
 
 
-static void rygel_external_media_item_dbus_proxy_set_urls (RygelExternalMediaItem* self, char** value, int value_length1) {
+static void rygel_external_media_item_proxy_dbus_proxy_set_urls (RygelExternalMediaItemProxy* self, char** value, int value_length1) {
 	DBusError _dbus_error;
 	DBusGConnection *_connection;
 	DBusMessage *_message, *_reply;
@@ -6113,7 +6113,7 @@ static void rygel_external_media_item_dbus_proxy_set_urls (RygelExternalMediaIte
 	char** _tmp536_;
 	DBusMessageIter _tmp537_;
 	int _tmp538_;
-	if (((RygelExternalMediaItemDBusProxy*) self)->disposed) {
+	if (((RygelExternalMediaItemProxyDBusProxy*) self)->disposed) {
 		return;
 	}
 	_message = dbus_message_new_method_call (dbus_g_proxy_get_bus_name ((DBusGProxy*) self), dbus_g_proxy_get_path ((DBusGProxy*) self), "org.freedesktop.DBus.Properties", "Set");
@@ -6153,7 +6153,7 @@ static void rygel_external_media_item_dbus_proxy_set_urls (RygelExternalMediaIte
 }
 
 
-static char* rygel_external_media_item_dbus_proxy_get_mime_type (RygelExternalMediaItem* self) {
+static char* rygel_external_media_item_proxy_dbus_proxy_get_mime_type (RygelExternalMediaItemProxy* self) {
 	DBusError _dbus_error;
 	DBusGConnection *_connection;
 	DBusMessage *_message, *_reply;
@@ -6162,7 +6162,7 @@ static char* rygel_external_media_item_dbus_proxy_get_mime_type (RygelExternalMe
 	const char* _tmp541_;
 	char* _result;
 	const char* _tmp542_;
-	if (((RygelExternalMediaItemDBusProxy*) self)->disposed) {
+	if (((RygelExternalMediaItemProxyDBusProxy*) self)->disposed) {
 		return NULL;
 	}
 	_message = dbus_message_new_method_call (dbus_g_proxy_get_bus_name ((DBusGProxy*) self), dbus_g_proxy_get_path ((DBusGProxy*) self), "org.freedesktop.DBus.Properties", "Get");
@@ -6201,7 +6201,7 @@ static char* rygel_external_media_item_dbus_proxy_get_mime_type (RygelExternalMe
 }
 
 
-static void rygel_external_media_item_dbus_proxy_set_mime_type (RygelExternalMediaItem* self, const char* value) {
+static void rygel_external_media_item_proxy_dbus_proxy_set_mime_type (RygelExternalMediaItemProxy* self, const char* value) {
 	DBusError _dbus_error;
 	DBusGConnection *_connection;
 	DBusMessage *_message, *_reply;
@@ -6209,7 +6209,7 @@ static void rygel_external_media_item_dbus_proxy_set_mime_type (RygelExternalMed
 	const char* _tmp543_;
 	const char* _tmp544_;
 	const char* _tmp545_;
-	if (((RygelExternalMediaItemDBusProxy*) self)->disposed) {
+	if (((RygelExternalMediaItemProxyDBusProxy*) self)->disposed) {
 		return;
 	}
 	_message = dbus_message_new_method_call (dbus_g_proxy_get_bus_name ((DBusGProxy*) self), dbus_g_proxy_get_path ((DBusGProxy*) self), "org.freedesktop.DBus.Properties", "Set");
@@ -6242,7 +6242,7 @@ static void rygel_external_media_item_dbus_proxy_set_mime_type (RygelExternalMed
 }
 
 
-static gint rygel_external_media_item_dbus_proxy_get_size (RygelExternalMediaItem* self) {
+static gint rygel_external_media_item_proxy_dbus_proxy_get_size (RygelExternalMediaItemProxy* self) {
 	DBusError _dbus_error;
 	DBusGConnection *_connection;
 	DBusMessage *_message, *_reply;
@@ -6251,7 +6251,7 @@ static gint rygel_external_media_item_dbus_proxy_get_size (RygelExternalMediaIte
 	const char* _tmp547_;
 	gint _result;
 	dbus_int32_t _tmp548_;
-	if (((RygelExternalMediaItemDBusProxy*) self)->disposed) {
+	if (((RygelExternalMediaItemProxyDBusProxy*) self)->disposed) {
 		return 0;
 	}
 	_message = dbus_message_new_method_call (dbus_g_proxy_get_bus_name ((DBusGProxy*) self), dbus_g_proxy_get_path ((DBusGProxy*) self), "org.freedesktop.DBus.Properties", "Get");
@@ -6290,7 +6290,7 @@ static gint rygel_external_media_item_dbus_proxy_get_size (RygelExternalMediaIte
 }
 
 
-static void rygel_external_media_item_dbus_proxy_set_size (RygelExternalMediaItem* self, gint value) {
+static void rygel_external_media_item_proxy_dbus_proxy_set_size (RygelExternalMediaItemProxy* self, gint value) {
 	DBusError _dbus_error;
 	DBusGConnection *_connection;
 	DBusMessage *_message, *_reply;
@@ -6298,7 +6298,7 @@ static void rygel_external_media_item_dbus_proxy_set_size (RygelExternalMediaIte
 	const char* _tmp549_;
 	const char* _tmp550_;
 	dbus_int32_t _tmp551_;
-	if (((RygelExternalMediaItemDBusProxy*) self)->disposed) {
+	if (((RygelExternalMediaItemProxyDBusProxy*) self)->disposed) {
 		return;
 	}
 	_message = dbus_message_new_method_call (dbus_g_proxy_get_bus_name ((DBusGProxy*) self), dbus_g_proxy_get_path ((DBusGProxy*) self), "org.freedesktop.DBus.Properties", "Set");
@@ -6331,7 +6331,7 @@ static void rygel_external_media_item_dbus_proxy_set_size (RygelExternalMediaIte
 }
 
 
-static char* rygel_external_media_item_dbus_proxy_get_artist (RygelExternalMediaItem* self) {
+static char* rygel_external_media_item_proxy_dbus_proxy_get_artist (RygelExternalMediaItemProxy* self) {
 	DBusError _dbus_error;
 	DBusGConnection *_connection;
 	DBusMessage *_message, *_reply;
@@ -6340,7 +6340,7 @@ static char* rygel_external_media_item_dbus_proxy_get_artist (RygelExternalMedia
 	const char* _tmp553_;
 	char* _result;
 	const char* _tmp554_;
-	if (((RygelExternalMediaItemDBusProxy*) self)->disposed) {
+	if (((RygelExternalMediaItemProxyDBusProxy*) self)->disposed) {
 		return NULL;
 	}
 	_message = dbus_message_new_method_call (dbus_g_proxy_get_bus_name ((DBusGProxy*) self), dbus_g_proxy_get_path ((DBusGProxy*) self), "org.freedesktop.DBus.Properties", "Get");
@@ -6379,7 +6379,7 @@ static char* rygel_external_media_item_dbus_proxy_get_artist (RygelExternalMedia
 }
 
 
-static void rygel_external_media_item_dbus_proxy_set_artist (RygelExternalMediaItem* self, const char* value) {
+static void rygel_external_media_item_proxy_dbus_proxy_set_artist (RygelExternalMediaItemProxy* self, const char* value) {
 	DBusError _dbus_error;
 	DBusGConnection *_connection;
 	DBusMessage *_message, *_reply;
@@ -6387,7 +6387,7 @@ static void rygel_external_media_item_dbus_proxy_set_artist (RygelExternalMediaI
 	const char* _tmp555_;
 	const char* _tmp556_;
 	const char* _tmp557_;
-	if (((RygelExternalMediaItemDBusProxy*) self)->disposed) {
+	if (((RygelExternalMediaItemProxyDBusProxy*) self)->disposed) {
 		return;
 	}
 	_message = dbus_message_new_method_call (dbus_g_proxy_get_bus_name ((DBusGProxy*) self), dbus_g_proxy_get_path ((DBusGProxy*) self), "org.freedesktop.DBus.Properties", "Set");
@@ -6420,7 +6420,7 @@ static void rygel_external_media_item_dbus_proxy_set_artist (RygelExternalMediaI
 }
 
 
-static char* rygel_external_media_item_dbus_proxy_get_album (RygelExternalMediaItem* self) {
+static char* rygel_external_media_item_proxy_dbus_proxy_get_album (RygelExternalMediaItemProxy* self) {
 	DBusError _dbus_error;
 	DBusGConnection *_connection;
 	DBusMessage *_message, *_reply;
@@ -6429,7 +6429,7 @@ static char* rygel_external_media_item_dbus_proxy_get_album (RygelExternalMediaI
 	const char* _tmp559_;
 	char* _result;
 	const char* _tmp560_;
-	if (((RygelExternalMediaItemDBusProxy*) self)->disposed) {
+	if (((RygelExternalMediaItemProxyDBusProxy*) self)->disposed) {
 		return NULL;
 	}
 	_message = dbus_message_new_method_call (dbus_g_proxy_get_bus_name ((DBusGProxy*) self), dbus_g_proxy_get_path ((DBusGProxy*) self), "org.freedesktop.DBus.Properties", "Get");
@@ -6468,7 +6468,7 @@ static char* rygel_external_media_item_dbus_proxy_get_album (RygelExternalMediaI
 }
 
 
-static void rygel_external_media_item_dbus_proxy_set_album (RygelExternalMediaItem* self, const char* value) {
+static void rygel_external_media_item_proxy_dbus_proxy_set_album (RygelExternalMediaItemProxy* self, const char* value) {
 	DBusError _dbus_error;
 	DBusGConnection *_connection;
 	DBusMessage *_message, *_reply;
@@ -6476,7 +6476,7 @@ static void rygel_external_media_item_dbus_proxy_set_album (RygelExternalMediaIt
 	const char* _tmp561_;
 	const char* _tmp562_;
 	const char* _tmp563_;
-	if (((RygelExternalMediaItemDBusProxy*) self)->disposed) {
+	if (((RygelExternalMediaItemProxyDBusProxy*) self)->disposed) {
 		return;
 	}
 	_message = dbus_message_new_method_call (dbus_g_proxy_get_bus_name ((DBusGProxy*) self), dbus_g_proxy_get_path ((DBusGProxy*) self), "org.freedesktop.DBus.Properties", "Set");
@@ -6509,7 +6509,7 @@ static void rygel_external_media_item_dbus_proxy_set_album (RygelExternalMediaIt
 }
 
 
-static char* rygel_external_media_item_dbus_proxy_get_date (RygelExternalMediaItem* self) {
+static char* rygel_external_media_item_proxy_dbus_proxy_get_date (RygelExternalMediaItemProxy* self) {
 	DBusError _dbus_error;
 	DBusGConnection *_connection;
 	DBusMessage *_message, *_reply;
@@ -6518,7 +6518,7 @@ static char* rygel_external_media_item_dbus_proxy_get_date (RygelExternalMediaIt
 	const char* _tmp565_;
 	char* _result;
 	const char* _tmp566_;
-	if (((RygelExternalMediaItemDBusProxy*) self)->disposed) {
+	if (((RygelExternalMediaItemProxyDBusProxy*) self)->disposed) {
 		return NULL;
 	}
 	_message = dbus_message_new_method_call (dbus_g_proxy_get_bus_name ((DBusGProxy*) self), dbus_g_proxy_get_path ((DBusGProxy*) self), "org.freedesktop.DBus.Properties", "Get");
@@ -6557,7 +6557,7 @@ static char* rygel_external_media_item_dbus_proxy_get_date (RygelExternalMediaIt
 }
 
 
-static void rygel_external_media_item_dbus_proxy_set_date (RygelExternalMediaItem* self, const char* value) {
+static void rygel_external_media_item_proxy_dbus_proxy_set_date (RygelExternalMediaItemProxy* self, const char* value) {
 	DBusError _dbus_error;
 	DBusGConnection *_connection;
 	DBusMessage *_message, *_reply;
@@ -6565,7 +6565,7 @@ static void rygel_external_media_item_dbus_proxy_set_date (RygelExternalMediaIte
 	const char* _tmp567_;
 	const char* _tmp568_;
 	const char* _tmp569_;
-	if (((RygelExternalMediaItemDBusProxy*) self)->disposed) {
+	if (((RygelExternalMediaItemProxyDBusProxy*) self)->disposed) {
 		return;
 	}
 	_message = dbus_message_new_method_call (dbus_g_proxy_get_bus_name ((DBusGProxy*) self), dbus_g_proxy_get_path ((DBusGProxy*) self), "org.freedesktop.DBus.Properties", "Set");
@@ -6598,7 +6598,7 @@ static void rygel_external_media_item_dbus_proxy_set_date (RygelExternalMediaIte
 }
 
 
-static char* rygel_external_media_item_dbus_proxy_get_genre (RygelExternalMediaItem* self) {
+static char* rygel_external_media_item_proxy_dbus_proxy_get_genre (RygelExternalMediaItemProxy* self) {
 	DBusError _dbus_error;
 	DBusGConnection *_connection;
 	DBusMessage *_message, *_reply;
@@ -6607,7 +6607,7 @@ static char* rygel_external_media_item_dbus_proxy_get_genre (RygelExternalMediaI
 	const char* _tmp571_;
 	char* _result;
 	const char* _tmp572_;
-	if (((RygelExternalMediaItemDBusProxy*) self)->disposed) {
+	if (((RygelExternalMediaItemProxyDBusProxy*) self)->disposed) {
 		return NULL;
 	}
 	_message = dbus_message_new_method_call (dbus_g_proxy_get_bus_name ((DBusGProxy*) self), dbus_g_proxy_get_path ((DBusGProxy*) self), "org.freedesktop.DBus.Properties", "Get");
@@ -6646,7 +6646,7 @@ static char* rygel_external_media_item_dbus_proxy_get_genre (RygelExternalMediaI
 }
 
 
-static void rygel_external_media_item_dbus_proxy_set_genre (RygelExternalMediaItem* self, const char* value) {
+static void rygel_external_media_item_proxy_dbus_proxy_set_genre (RygelExternalMediaItemProxy* self, const char* value) {
 	DBusError _dbus_error;
 	DBusGConnection *_connection;
 	DBusMessage *_message, *_reply;
@@ -6654,7 +6654,7 @@ static void rygel_external_media_item_dbus_proxy_set_genre (RygelExternalMediaIt
 	const char* _tmp573_;
 	const char* _tmp574_;
 	const char* _tmp575_;
-	if (((RygelExternalMediaItemDBusProxy*) self)->disposed) {
+	if (((RygelExternalMediaItemProxyDBusProxy*) self)->disposed) {
 		return;
 	}
 	_message = dbus_message_new_method_call (dbus_g_proxy_get_bus_name ((DBusGProxy*) self), dbus_g_proxy_get_path ((DBusGProxy*) self), "org.freedesktop.DBus.Properties", "Set");
@@ -6687,7 +6687,7 @@ static void rygel_external_media_item_dbus_proxy_set_genre (RygelExternalMediaIt
 }
 
 
-static char* rygel_external_media_item_dbus_proxy_get_dlna_profile (RygelExternalMediaItem* self) {
+static char* rygel_external_media_item_proxy_dbus_proxy_get_dlna_profile (RygelExternalMediaItemProxy* self) {
 	DBusError _dbus_error;
 	DBusGConnection *_connection;
 	DBusMessage *_message, *_reply;
@@ -6696,7 +6696,7 @@ static char* rygel_external_media_item_dbus_proxy_get_dlna_profile (RygelExterna
 	const char* _tmp577_;
 	char* _result;
 	const char* _tmp578_;
-	if (((RygelExternalMediaItemDBusProxy*) self)->disposed) {
+	if (((RygelExternalMediaItemProxyDBusProxy*) self)->disposed) {
 		return NULL;
 	}
 	_message = dbus_message_new_method_call (dbus_g_proxy_get_bus_name ((DBusGProxy*) self), dbus_g_proxy_get_path ((DBusGProxy*) self), "org.freedesktop.DBus.Properties", "Get");
@@ -6735,7 +6735,7 @@ static char* rygel_external_media_item_dbus_proxy_get_dlna_profile (RygelExterna
 }
 
 
-static void rygel_external_media_item_dbus_proxy_set_dlna_profile (RygelExternalMediaItem* self, const char* value) {
+static void rygel_external_media_item_proxy_dbus_proxy_set_dlna_profile (RygelExternalMediaItemProxy* self, const char* value) {
 	DBusError _dbus_error;
 	DBusGConnection *_connection;
 	DBusMessage *_message, *_reply;
@@ -6743,7 +6743,7 @@ static void rygel_external_media_item_dbus_proxy_set_dlna_profile (RygelExternal
 	const char* _tmp579_;
 	const char* _tmp580_;
 	const char* _tmp581_;
-	if (((RygelExternalMediaItemDBusProxy*) self)->disposed) {
+	if (((RygelExternalMediaItemProxyDBusProxy*) self)->disposed) {
 		return;
 	}
 	_message = dbus_message_new_method_call (dbus_g_proxy_get_bus_name ((DBusGProxy*) self), dbus_g_proxy_get_path ((DBusGProxy*) self), "org.freedesktop.DBus.Properties", "Set");
@@ -6776,7 +6776,7 @@ static void rygel_external_media_item_dbus_proxy_set_dlna_profile (RygelExternal
 }
 
 
-static gint rygel_external_media_item_dbus_proxy_get_duration (RygelExternalMediaItem* self) {
+static gint rygel_external_media_item_proxy_dbus_proxy_get_duration (RygelExternalMediaItemProxy* self) {
 	DBusError _dbus_error;
 	DBusGConnection *_connection;
 	DBusMessage *_message, *_reply;
@@ -6785,7 +6785,7 @@ static gint rygel_external_media_item_dbus_proxy_get_duration (RygelExternalMedi
 	const char* _tmp583_;
 	gint _result;
 	dbus_int32_t _tmp584_;
-	if (((RygelExternalMediaItemDBusProxy*) self)->disposed) {
+	if (((RygelExternalMediaItemProxyDBusProxy*) self)->disposed) {
 		return 0;
 	}
 	_message = dbus_message_new_method_call (dbus_g_proxy_get_bus_name ((DBusGProxy*) self), dbus_g_proxy_get_path ((DBusGProxy*) self), "org.freedesktop.DBus.Properties", "Get");
@@ -6824,7 +6824,7 @@ static gint rygel_external_media_item_dbus_proxy_get_duration (RygelExternalMedi
 }
 
 
-static void rygel_external_media_item_dbus_proxy_set_duration (RygelExternalMediaItem* self, gint value) {
+static void rygel_external_media_item_proxy_dbus_proxy_set_duration (RygelExternalMediaItemProxy* self, gint value) {
 	DBusError _dbus_error;
 	DBusGConnection *_connection;
 	DBusMessage *_message, *_reply;
@@ -6832,7 +6832,7 @@ static void rygel_external_media_item_dbus_proxy_set_duration (RygelExternalMedi
 	const char* _tmp585_;
 	const char* _tmp586_;
 	dbus_int32_t _tmp587_;
-	if (((RygelExternalMediaItemDBusProxy*) self)->disposed) {
+	if (((RygelExternalMediaItemProxyDBusProxy*) self)->disposed) {
 		return;
 	}
 	_message = dbus_message_new_method_call (dbus_g_proxy_get_bus_name ((DBusGProxy*) self), dbus_g_proxy_get_path ((DBusGProxy*) self), "org.freedesktop.DBus.Properties", "Set");
@@ -6865,7 +6865,7 @@ static void rygel_external_media_item_dbus_proxy_set_duration (RygelExternalMedi
 }
 
 
-static gint rygel_external_media_item_dbus_proxy_get_bitrate (RygelExternalMediaItem* self) {
+static gint rygel_external_media_item_proxy_dbus_proxy_get_bitrate (RygelExternalMediaItemProxy* self) {
 	DBusError _dbus_error;
 	DBusGConnection *_connection;
 	DBusMessage *_message, *_reply;
@@ -6874,7 +6874,7 @@ static gint rygel_external_media_item_dbus_proxy_get_bitrate (RygelExternalMedia
 	const char* _tmp589_;
 	gint _result;
 	dbus_int32_t _tmp590_;
-	if (((RygelExternalMediaItemDBusProxy*) self)->disposed) {
+	if (((RygelExternalMediaItemProxyDBusProxy*) self)->disposed) {
 		return 0;
 	}
 	_message = dbus_message_new_method_call (dbus_g_proxy_get_bus_name ((DBusGProxy*) self), dbus_g_proxy_get_path ((DBusGProxy*) self), "org.freedesktop.DBus.Properties", "Get");
@@ -6913,7 +6913,7 @@ static gint rygel_external_media_item_dbus_proxy_get_bitrate (RygelExternalMedia
 }
 
 
-static void rygel_external_media_item_dbus_proxy_set_bitrate (RygelExternalMediaItem* self, gint value) {
+static void rygel_external_media_item_proxy_dbus_proxy_set_bitrate (RygelExternalMediaItemProxy* self, gint value) {
 	DBusError _dbus_error;
 	DBusGConnection *_connection;
 	DBusMessage *_message, *_reply;
@@ -6921,7 +6921,7 @@ static void rygel_external_media_item_dbus_proxy_set_bitrate (RygelExternalMedia
 	const char* _tmp591_;
 	const char* _tmp592_;
 	dbus_int32_t _tmp593_;
-	if (((RygelExternalMediaItemDBusProxy*) self)->disposed) {
+	if (((RygelExternalMediaItemProxyDBusProxy*) self)->disposed) {
 		return;
 	}
 	_message = dbus_message_new_method_call (dbus_g_proxy_get_bus_name ((DBusGProxy*) self), dbus_g_proxy_get_path ((DBusGProxy*) self), "org.freedesktop.DBus.Properties", "Set");
@@ -6954,7 +6954,7 @@ static void rygel_external_media_item_dbus_proxy_set_bitrate (RygelExternalMedia
 }
 
 
-static gint rygel_external_media_item_dbus_proxy_get_sample_rate (RygelExternalMediaItem* self) {
+static gint rygel_external_media_item_proxy_dbus_proxy_get_sample_rate (RygelExternalMediaItemProxy* self) {
 	DBusError _dbus_error;
 	DBusGConnection *_connection;
 	DBusMessage *_message, *_reply;
@@ -6963,7 +6963,7 @@ static gint rygel_external_media_item_dbus_proxy_get_sample_rate (RygelExternalM
 	const char* _tmp595_;
 	gint _result;
 	dbus_int32_t _tmp596_;
-	if (((RygelExternalMediaItemDBusProxy*) self)->disposed) {
+	if (((RygelExternalMediaItemProxyDBusProxy*) self)->disposed) {
 		return 0;
 	}
 	_message = dbus_message_new_method_call (dbus_g_proxy_get_bus_name ((DBusGProxy*) self), dbus_g_proxy_get_path ((DBusGProxy*) self), "org.freedesktop.DBus.Properties", "Get");
@@ -7002,7 +7002,7 @@ static gint rygel_external_media_item_dbus_proxy_get_sample_rate (RygelExternalM
 }
 
 
-static void rygel_external_media_item_dbus_proxy_set_sample_rate (RygelExternalMediaItem* self, gint value) {
+static void rygel_external_media_item_proxy_dbus_proxy_set_sample_rate (RygelExternalMediaItemProxy* self, gint value) {
 	DBusError _dbus_error;
 	DBusGConnection *_connection;
 	DBusMessage *_message, *_reply;
@@ -7010,7 +7010,7 @@ static void rygel_external_media_item_dbus_proxy_set_sample_rate (RygelExternalM
 	const char* _tmp597_;
 	const char* _tmp598_;
 	dbus_int32_t _tmp599_;
-	if (((RygelExternalMediaItemDBusProxy*) self)->disposed) {
+	if (((RygelExternalMediaItemProxyDBusProxy*) self)->disposed) {
 		return;
 	}
 	_message = dbus_message_new_method_call (dbus_g_proxy_get_bus_name ((DBusGProxy*) self), dbus_g_proxy_get_path ((DBusGProxy*) self), "org.freedesktop.DBus.Properties", "Set");
@@ -7043,7 +7043,7 @@ static void rygel_external_media_item_dbus_proxy_set_sample_rate (RygelExternalM
 }
 
 
-static gint rygel_external_media_item_dbus_proxy_get_bits_per_sample (RygelExternalMediaItem* self) {
+static gint rygel_external_media_item_proxy_dbus_proxy_get_bits_per_sample (RygelExternalMediaItemProxy* self) {
 	DBusError _dbus_error;
 	DBusGConnection *_connection;
 	DBusMessage *_message, *_reply;
@@ -7052,7 +7052,7 @@ static gint rygel_external_media_item_dbus_proxy_get_bits_per_sample (RygelExter
 	const char* _tmp601_;
 	gint _result;
 	dbus_int32_t _tmp602_;
-	if (((RygelExternalMediaItemDBusProxy*) self)->disposed) {
+	if (((RygelExternalMediaItemProxyDBusProxy*) self)->disposed) {
 		return 0;
 	}
 	_message = dbus_message_new_method_call (dbus_g_proxy_get_bus_name ((DBusGProxy*) self), dbus_g_proxy_get_path ((DBusGProxy*) self), "org.freedesktop.DBus.Properties", "Get");
@@ -7091,7 +7091,7 @@ static gint rygel_external_media_item_dbus_proxy_get_bits_per_sample (RygelExter
 }
 
 
-static void rygel_external_media_item_dbus_proxy_set_bits_per_sample (RygelExternalMediaItem* self, gint value) {
+static void rygel_external_media_item_proxy_dbus_proxy_set_bits_per_sample (RygelExternalMediaItemProxy* self, gint value) {
 	DBusError _dbus_error;
 	DBusGConnection *_connection;
 	DBusMessage *_message, *_reply;
@@ -7099,7 +7099,7 @@ static void rygel_external_media_item_dbus_proxy_set_bits_per_sample (RygelExter
 	const char* _tmp603_;
 	const char* _tmp604_;
 	dbus_int32_t _tmp605_;
-	if (((RygelExternalMediaItemDBusProxy*) self)->disposed) {
+	if (((RygelExternalMediaItemProxyDBusProxy*) self)->disposed) {
 		return;
 	}
 	_message = dbus_message_new_method_call (dbus_g_proxy_get_bus_name ((DBusGProxy*) self), dbus_g_proxy_get_path ((DBusGProxy*) self), "org.freedesktop.DBus.Properties", "Set");
@@ -7132,7 +7132,7 @@ static void rygel_external_media_item_dbus_proxy_set_bits_per_sample (RygelExter
 }
 
 
-static gint rygel_external_media_item_dbus_proxy_get_width (RygelExternalMediaItem* self) {
+static gint rygel_external_media_item_proxy_dbus_proxy_get_width (RygelExternalMediaItemProxy* self) {
 	DBusError _dbus_error;
 	DBusGConnection *_connection;
 	DBusMessage *_message, *_reply;
@@ -7141,7 +7141,7 @@ static gint rygel_external_media_item_dbus_proxy_get_width (RygelExternalMediaIt
 	const char* _tmp607_;
 	gint _result;
 	dbus_int32_t _tmp608_;
-	if (((RygelExternalMediaItemDBusProxy*) self)->disposed) {
+	if (((RygelExternalMediaItemProxyDBusProxy*) self)->disposed) {
 		return 0;
 	}
 	_message = dbus_message_new_method_call (dbus_g_proxy_get_bus_name ((DBusGProxy*) self), dbus_g_proxy_get_path ((DBusGProxy*) self), "org.freedesktop.DBus.Properties", "Get");
@@ -7180,7 +7180,7 @@ static gint rygel_external_media_item_dbus_proxy_get_width (RygelExternalMediaIt
 }
 
 
-static void rygel_external_media_item_dbus_proxy_set_width (RygelExternalMediaItem* self, gint value) {
+static void rygel_external_media_item_proxy_dbus_proxy_set_width (RygelExternalMediaItemProxy* self, gint value) {
 	DBusError _dbus_error;
 	DBusGConnection *_connection;
 	DBusMessage *_message, *_reply;
@@ -7188,7 +7188,7 @@ static void rygel_external_media_item_dbus_proxy_set_width (RygelExternalMediaIt
 	const char* _tmp609_;
 	const char* _tmp610_;
 	dbus_int32_t _tmp611_;
-	if (((RygelExternalMediaItemDBusProxy*) self)->disposed) {
+	if (((RygelExternalMediaItemProxyDBusProxy*) self)->disposed) {
 		return;
 	}
 	_message = dbus_message_new_method_call (dbus_g_proxy_get_bus_name ((DBusGProxy*) self), dbus_g_proxy_get_path ((DBusGProxy*) self), "org.freedesktop.DBus.Properties", "Set");
@@ -7221,7 +7221,7 @@ static void rygel_external_media_item_dbus_proxy_set_width (RygelExternalMediaIt
 }
 
 
-static gint rygel_external_media_item_dbus_proxy_get_height (RygelExternalMediaItem* self) {
+static gint rygel_external_media_item_proxy_dbus_proxy_get_height (RygelExternalMediaItemProxy* self) {
 	DBusError _dbus_error;
 	DBusGConnection *_connection;
 	DBusMessage *_message, *_reply;
@@ -7230,7 +7230,7 @@ static gint rygel_external_media_item_dbus_proxy_get_height (RygelExternalMediaI
 	const char* _tmp613_;
 	gint _result;
 	dbus_int32_t _tmp614_;
-	if (((RygelExternalMediaItemDBusProxy*) self)->disposed) {
+	if (((RygelExternalMediaItemProxyDBusProxy*) self)->disposed) {
 		return 0;
 	}
 	_message = dbus_message_new_method_call (dbus_g_proxy_get_bus_name ((DBusGProxy*) self), dbus_g_proxy_get_path ((DBusGProxy*) self), "org.freedesktop.DBus.Properties", "Get");
@@ -7269,7 +7269,7 @@ static gint rygel_external_media_item_dbus_proxy_get_height (RygelExternalMediaI
 }
 
 
-static void rygel_external_media_item_dbus_proxy_set_height (RygelExternalMediaItem* self, gint value) {
+static void rygel_external_media_item_proxy_dbus_proxy_set_height (RygelExternalMediaItemProxy* self, gint value) {
 	DBusError _dbus_error;
 	DBusGConnection *_connection;
 	DBusMessage *_message, *_reply;
@@ -7277,7 +7277,7 @@ static void rygel_external_media_item_dbus_proxy_set_height (RygelExternalMediaI
 	const char* _tmp615_;
 	const char* _tmp616_;
 	dbus_int32_t _tmp617_;
-	if (((RygelExternalMediaItemDBusProxy*) self)->disposed) {
+	if (((RygelExternalMediaItemProxyDBusProxy*) self)->disposed) {
 		return;
 	}
 	_message = dbus_message_new_method_call (dbus_g_proxy_get_bus_name ((DBusGProxy*) self), dbus_g_proxy_get_path ((DBusGProxy*) self), "org.freedesktop.DBus.Properties", "Set");
@@ -7310,7 +7310,7 @@ static void rygel_external_media_item_dbus_proxy_set_height (RygelExternalMediaI
 }
 
 
-static gint rygel_external_media_item_dbus_proxy_get_color_depth (RygelExternalMediaItem* self) {
+static gint rygel_external_media_item_proxy_dbus_proxy_get_color_depth (RygelExternalMediaItemProxy* self) {
 	DBusError _dbus_error;
 	DBusGConnection *_connection;
 	DBusMessage *_message, *_reply;
@@ -7319,7 +7319,7 @@ static gint rygel_external_media_item_dbus_proxy_get_color_depth (RygelExternalM
 	const char* _tmp619_;
 	gint _result;
 	dbus_int32_t _tmp620_;
-	if (((RygelExternalMediaItemDBusProxy*) self)->disposed) {
+	if (((RygelExternalMediaItemProxyDBusProxy*) self)->disposed) {
 		return 0;
 	}
 	_message = dbus_message_new_method_call (dbus_g_proxy_get_bus_name ((DBusGProxy*) self), dbus_g_proxy_get_path ((DBusGProxy*) self), "org.freedesktop.DBus.Properties", "Get");
@@ -7358,7 +7358,7 @@ static gint rygel_external_media_item_dbus_proxy_get_color_depth (RygelExternalM
 }
 
 
-static void rygel_external_media_item_dbus_proxy_set_color_depth (RygelExternalMediaItem* self, gint value) {
+static void rygel_external_media_item_proxy_dbus_proxy_set_color_depth (RygelExternalMediaItemProxy* self, gint value) {
 	DBusError _dbus_error;
 	DBusGConnection *_connection;
 	DBusMessage *_message, *_reply;
@@ -7366,7 +7366,7 @@ static void rygel_external_media_item_dbus_proxy_set_color_depth (RygelExternalM
 	const char* _tmp621_;
 	const char* _tmp622_;
 	dbus_int32_t _tmp623_;
-	if (((RygelExternalMediaItemDBusProxy*) self)->disposed) {
+	if (((RygelExternalMediaItemProxyDBusProxy*) self)->disposed) {
 		return;
 	}
 	_message = dbus_message_new_method_call (dbus_g_proxy_get_bus_name ((DBusGProxy*) self), dbus_g_proxy_get_path ((DBusGProxy*) self), "org.freedesktop.DBus.Properties", "Set");
@@ -7399,7 +7399,7 @@ static void rygel_external_media_item_dbus_proxy_set_color_depth (RygelExternalM
 }
 
 
-static char* rygel_external_media_item_dbus_proxy_get_thumbnail (RygelExternalMediaItem* self) {
+static char* rygel_external_media_item_proxy_dbus_proxy_get_thumbnail (RygelExternalMediaItemProxy* self) {
 	DBusError _dbus_error;
 	DBusGConnection *_connection;
 	DBusMessage *_message, *_reply;
@@ -7408,7 +7408,7 @@ static char* rygel_external_media_item_dbus_proxy_get_thumbnail (RygelExternalMe
 	const char* _tmp625_;
 	char* _result;
 	const char* _tmp626_;
-	if (((RygelExternalMediaItemDBusProxy*) self)->disposed) {
+	if (((RygelExternalMediaItemProxyDBusProxy*) self)->disposed) {
 		return NULL;
 	}
 	_message = dbus_message_new_method_call (dbus_g_proxy_get_bus_name ((DBusGProxy*) self), dbus_g_proxy_get_path ((DBusGProxy*) self), "org.freedesktop.DBus.Properties", "Get");
@@ -7447,7 +7447,7 @@ static char* rygel_external_media_item_dbus_proxy_get_thumbnail (RygelExternalMe
 }
 
 
-static void rygel_external_media_item_dbus_proxy_set_thumbnail (RygelExternalMediaItem* self, const char* value) {
+static void rygel_external_media_item_proxy_dbus_proxy_set_thumbnail (RygelExternalMediaItemProxy* self, const char* value) {
 	DBusError _dbus_error;
 	DBusGConnection *_connection;
 	DBusMessage *_message, *_reply;
@@ -7455,7 +7455,7 @@ static void rygel_external_media_item_dbus_proxy_set_thumbnail (RygelExternalMed
 	const char* _tmp627_;
 	const char* _tmp628_;
 	const char* _tmp629_;
-	if (((RygelExternalMediaItemDBusProxy*) self)->disposed) {
+	if (((RygelExternalMediaItemProxyDBusProxy*) self)->disposed) {
 		return;
 	}
 	_message = dbus_message_new_method_call (dbus_g_proxy_get_bus_name ((DBusGProxy*) self), dbus_g_proxy_get_path ((DBusGProxy*) self), "org.freedesktop.DBus.Properties", "Set");
@@ -7488,7 +7488,7 @@ static void rygel_external_media_item_dbus_proxy_set_thumbnail (RygelExternalMed
 }
 
 
-static char* rygel_external_media_item_dbus_proxy_get_album_art (RygelExternalMediaItem* self) {
+static char* rygel_external_media_item_proxy_dbus_proxy_get_album_art (RygelExternalMediaItemProxy* self) {
 	DBusError _dbus_error;
 	DBusGConnection *_connection;
 	DBusMessage *_message, *_reply;
@@ -7497,7 +7497,7 @@ static char* rygel_external_media_item_dbus_proxy_get_album_art (RygelExternalMe
 	const char* _tmp631_;
 	char* _result;
 	const char* _tmp632_;
-	if (((RygelExternalMediaItemDBusProxy*) self)->disposed) {
+	if (((RygelExternalMediaItemProxyDBusProxy*) self)->disposed) {
 		return NULL;
 	}
 	_message = dbus_message_new_method_call (dbus_g_proxy_get_bus_name ((DBusGProxy*) self), dbus_g_proxy_get_path ((DBusGProxy*) self), "org.freedesktop.DBus.Properties", "Get");
@@ -7536,7 +7536,7 @@ static char* rygel_external_media_item_dbus_proxy_get_album_art (RygelExternalMe
 }
 
 
-static void rygel_external_media_item_dbus_proxy_set_album_art (RygelExternalMediaItem* self, const char* value) {
+static void rygel_external_media_item_proxy_dbus_proxy_set_album_art (RygelExternalMediaItemProxy* self, const char* value) {
 	DBusError _dbus_error;
 	DBusGConnection *_connection;
 	DBusMessage *_message, *_reply;
@@ -7544,7 +7544,7 @@ static void rygel_external_media_item_dbus_proxy_set_album_art (RygelExternalMed
 	const char* _tmp633_;
 	const char* _tmp634_;
 	const char* _tmp635_;
-	if (((RygelExternalMediaItemDBusProxy*) self)->disposed) {
+	if (((RygelExternalMediaItemProxyDBusProxy*) self)->disposed) {
 		return;
 	}
 	_message = dbus_message_new_method_call (dbus_g_proxy_get_bus_name ((DBusGProxy*) self), dbus_g_proxy_get_path ((DBusGProxy*) self), "org.freedesktop.DBus.Properties", "Set");
@@ -7577,49 +7577,49 @@ static void rygel_external_media_item_dbus_proxy_set_album_art (RygelExternalMed
 }
 
 
-static void rygel_external_media_item_dbus_proxy_rygel_external_media_item__interface_init (RygelExternalMediaItemIface* iface) {
-	iface->get_urls = rygel_external_media_item_dbus_proxy_get_urls;
-	iface->set_urls = rygel_external_media_item_dbus_proxy_set_urls;
-	iface->get_mime_type = rygel_external_media_item_dbus_proxy_get_mime_type;
-	iface->set_mime_type = rygel_external_media_item_dbus_proxy_set_mime_type;
-	iface->get_size = rygel_external_media_item_dbus_proxy_get_size;
-	iface->set_size = rygel_external_media_item_dbus_proxy_set_size;
-	iface->get_artist = rygel_external_media_item_dbus_proxy_get_artist;
-	iface->set_artist = rygel_external_media_item_dbus_proxy_set_artist;
-	iface->get_album = rygel_external_media_item_dbus_proxy_get_album;
-	iface->set_album = rygel_external_media_item_dbus_proxy_set_album;
-	iface->get_date = rygel_external_media_item_dbus_proxy_get_date;
-	iface->set_date = rygel_external_media_item_dbus_proxy_set_date;
-	iface->get_genre = rygel_external_media_item_dbus_proxy_get_genre;
-	iface->set_genre = rygel_external_media_item_dbus_proxy_set_genre;
-	iface->get_dlna_profile = rygel_external_media_item_dbus_proxy_get_dlna_profile;
-	iface->set_dlna_profile = rygel_external_media_item_dbus_proxy_set_dlna_profile;
-	iface->get_duration = rygel_external_media_item_dbus_proxy_get_duration;
-	iface->set_duration = rygel_external_media_item_dbus_proxy_set_duration;
-	iface->get_bitrate = rygel_external_media_item_dbus_proxy_get_bitrate;
-	iface->set_bitrate = rygel_external_media_item_dbus_proxy_set_bitrate;
-	iface->get_sample_rate = rygel_external_media_item_dbus_proxy_get_sample_rate;
-	iface->set_sample_rate = rygel_external_media_item_dbus_proxy_set_sample_rate;
-	iface->get_bits_per_sample = rygel_external_media_item_dbus_proxy_get_bits_per_sample;
-	iface->set_bits_per_sample = rygel_external_media_item_dbus_proxy_set_bits_per_sample;
-	iface->get_width = rygel_external_media_item_dbus_proxy_get_width;
-	iface->set_width = rygel_external_media_item_dbus_proxy_set_width;
-	iface->get_height = rygel_external_media_item_dbus_proxy_get_height;
-	iface->set_height = rygel_external_media_item_dbus_proxy_set_height;
-	iface->get_color_depth = rygel_external_media_item_dbus_proxy_get_color_depth;
-	iface->set_color_depth = rygel_external_media_item_dbus_proxy_set_color_depth;
-	iface->get_thumbnail = rygel_external_media_item_dbus_proxy_get_thumbnail;
-	iface->set_thumbnail = rygel_external_media_item_dbus_proxy_set_thumbnail;
-	iface->get_album_art = rygel_external_media_item_dbus_proxy_get_album_art;
-	iface->set_album_art = rygel_external_media_item_dbus_proxy_set_album_art;
+static void rygel_external_media_item_proxy_dbus_proxy_rygel_external_media_item_proxy__interface_init (RygelExternalMediaItemProxyIface* iface) {
+	iface->get_urls = rygel_external_media_item_proxy_dbus_proxy_get_urls;
+	iface->set_urls = rygel_external_media_item_proxy_dbus_proxy_set_urls;
+	iface->get_mime_type = rygel_external_media_item_proxy_dbus_proxy_get_mime_type;
+	iface->set_mime_type = rygel_external_media_item_proxy_dbus_proxy_set_mime_type;
+	iface->get_size = rygel_external_media_item_proxy_dbus_proxy_get_size;
+	iface->set_size = rygel_external_media_item_proxy_dbus_proxy_set_size;
+	iface->get_artist = rygel_external_media_item_proxy_dbus_proxy_get_artist;
+	iface->set_artist = rygel_external_media_item_proxy_dbus_proxy_set_artist;
+	iface->get_album = rygel_external_media_item_proxy_dbus_proxy_get_album;
+	iface->set_album = rygel_external_media_item_proxy_dbus_proxy_set_album;
+	iface->get_date = rygel_external_media_item_proxy_dbus_proxy_get_date;
+	iface->set_date = rygel_external_media_item_proxy_dbus_proxy_set_date;
+	iface->get_genre = rygel_external_media_item_proxy_dbus_proxy_get_genre;
+	iface->set_genre = rygel_external_media_item_proxy_dbus_proxy_set_genre;
+	iface->get_dlna_profile = rygel_external_media_item_proxy_dbus_proxy_get_dlna_profile;
+	iface->set_dlna_profile = rygel_external_media_item_proxy_dbus_proxy_set_dlna_profile;
+	iface->get_duration = rygel_external_media_item_proxy_dbus_proxy_get_duration;
+	iface->set_duration = rygel_external_media_item_proxy_dbus_proxy_set_duration;
+	iface->get_bitrate = rygel_external_media_item_proxy_dbus_proxy_get_bitrate;
+	iface->set_bitrate = rygel_external_media_item_proxy_dbus_proxy_set_bitrate;
+	iface->get_sample_rate = rygel_external_media_item_proxy_dbus_proxy_get_sample_rate;
+	iface->set_sample_rate = rygel_external_media_item_proxy_dbus_proxy_set_sample_rate;
+	iface->get_bits_per_sample = rygel_external_media_item_proxy_dbus_proxy_get_bits_per_sample;
+	iface->set_bits_per_sample = rygel_external_media_item_proxy_dbus_proxy_set_bits_per_sample;
+	iface->get_width = rygel_external_media_item_proxy_dbus_proxy_get_width;
+	iface->set_width = rygel_external_media_item_proxy_dbus_proxy_set_width;
+	iface->get_height = rygel_external_media_item_proxy_dbus_proxy_get_height;
+	iface->set_height = rygel_external_media_item_proxy_dbus_proxy_set_height;
+	iface->get_color_depth = rygel_external_media_item_proxy_dbus_proxy_get_color_depth;
+	iface->set_color_depth = rygel_external_media_item_proxy_dbus_proxy_set_color_depth;
+	iface->get_thumbnail = rygel_external_media_item_proxy_dbus_proxy_get_thumbnail;
+	iface->set_thumbnail = rygel_external_media_item_proxy_dbus_proxy_set_thumbnail;
+	iface->get_album_art = rygel_external_media_item_proxy_dbus_proxy_get_album_art;
+	iface->set_album_art = rygel_external_media_item_proxy_dbus_proxy_set_album_art;
 }
 
 
-static void rygel_external_media_item_dbus_proxy_get_property (GObject * object, guint property_id, GValue * value, GParamSpec * pspec) {
+static void rygel_external_media_item_proxy_dbus_proxy_get_property (GObject * object, guint property_id, GValue * value, GParamSpec * pspec) {
 }
 
 
-static void rygel_external_media_item_dbus_proxy_set_property (GObject * object, guint property_id, const GValue * value, GParamSpec * pspec) {
+static void rygel_external_media_item_proxy_dbus_proxy_set_property (GObject * object, guint property_id, const GValue * value, GParamSpec * pspec) {
 }
 
 

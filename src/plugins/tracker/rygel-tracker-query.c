@@ -34,49 +34,36 @@
 #include <gobject/gvaluecollector.h>
 
 
-#define RYGEL_TYPE_TRACKER_QUERY (rygel_tracker_query_get_type ())
-#define RYGEL_TRACKER_QUERY(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_TRACKER_QUERY, RygelTrackerQuery))
-#define RYGEL_TRACKER_QUERY_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TYPE_TRACKER_QUERY, RygelTrackerQueryClass))
-#define RYGEL_IS_TRACKER_QUERY(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TYPE_TRACKER_QUERY))
-#define RYGEL_IS_TRACKER_QUERY_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_TYPE_TRACKER_QUERY))
-#define RYGEL_TRACKER_QUERY_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_TYPE_TRACKER_QUERY, RygelTrackerQueryClass))
+#define RYGEL_TRACKER_TYPE_QUERY (rygel_tracker_query_get_type ())
+#define RYGEL_TRACKER_QUERY(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TRACKER_TYPE_QUERY, RygelTrackerQuery))
+#define RYGEL_TRACKER_QUERY_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TRACKER_TYPE_QUERY, RygelTrackerQueryClass))
+#define RYGEL_TRACKER_IS_QUERY(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TRACKER_TYPE_QUERY))
+#define RYGEL_TRACKER_IS_QUERY_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_TRACKER_TYPE_QUERY))
+#define RYGEL_TRACKER_QUERY_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_TRACKER_TYPE_QUERY, RygelTrackerQueryClass))
 
 typedef struct _RygelTrackerQuery RygelTrackerQuery;
 typedef struct _RygelTrackerQueryClass RygelTrackerQueryClass;
 typedef struct _RygelTrackerQueryPrivate RygelTrackerQueryPrivate;
 
-#define RYGEL_TYPE_TRACKER_RESOURCES_IFACE (rygel_tracker_resources_iface_get_type ())
-#define RYGEL_TRACKER_RESOURCES_IFACE(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_TRACKER_RESOURCES_IFACE, RygelTrackerResourcesIface))
-#define RYGEL_IS_TRACKER_RESOURCES_IFACE(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TYPE_TRACKER_RESOURCES_IFACE))
-#define RYGEL_TRACKER_RESOURCES_IFACE_GET_INTERFACE(obj) (G_TYPE_INSTANCE_GET_INTERFACE ((obj), RYGEL_TYPE_TRACKER_RESOURCES_IFACE, RygelTrackerResourcesIfaceIface))
+#define RYGEL_TRACKER_TYPE_RESOURCES_IFACE (rygel_tracker_resources_iface_get_type ())
+#define RYGEL_TRACKER_RESOURCES_IFACE(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TRACKER_TYPE_RESOURCES_IFACE, RygelTrackerResourcesIface))
+#define RYGEL_TRACKER_IS_RESOURCES_IFACE(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TRACKER_TYPE_RESOURCES_IFACE))
+#define RYGEL_TRACKER_RESOURCES_IFACE_GET_INTERFACE(obj) (G_TYPE_INSTANCE_GET_INTERFACE ((obj), RYGEL_TRACKER_TYPE_RESOURCES_IFACE, RygelTrackerResourcesIfaceIface))
 
 typedef struct _RygelTrackerResourcesIface RygelTrackerResourcesIface;
 typedef struct _RygelTrackerResourcesIfaceIface RygelTrackerResourcesIfaceIface;
 
-#define RYGEL_TYPE_TRACKER_QUERY_TRIPLETS (rygel_tracker_query_triplets_get_type ())
-#define RYGEL_TRACKER_QUERY_TRIPLETS(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_TRACKER_QUERY_TRIPLETS, RygelTrackerQueryTriplets))
-#define RYGEL_TRACKER_QUERY_TRIPLETS_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TYPE_TRACKER_QUERY_TRIPLETS, RygelTrackerQueryTripletsClass))
-#define RYGEL_IS_TRACKER_QUERY_TRIPLETS(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TYPE_TRACKER_QUERY_TRIPLETS))
-#define RYGEL_IS_TRACKER_QUERY_TRIPLETS_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_TYPE_TRACKER_QUERY_TRIPLETS))
-#define RYGEL_TRACKER_QUERY_TRIPLETS_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_TYPE_TRACKER_QUERY_TRIPLETS, RygelTrackerQueryTripletsClass))
+#define RYGEL_TRACKER_TYPE_QUERY_TRIPLETS (rygel_tracker_query_triplets_get_type ())
+#define RYGEL_TRACKER_QUERY_TRIPLETS(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TRACKER_TYPE_QUERY_TRIPLETS, RygelTrackerQueryTriplets))
+#define RYGEL_TRACKER_QUERY_TRIPLETS_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TRACKER_TYPE_QUERY_TRIPLETS, RygelTrackerQueryTripletsClass))
+#define RYGEL_TRACKER_IS_QUERY_TRIPLETS(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TRACKER_TYPE_QUERY_TRIPLETS))
+#define RYGEL_TRACKER_IS_QUERY_TRIPLETS_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_TRACKER_TYPE_QUERY_TRIPLETS))
+#define RYGEL_TRACKER_QUERY_TRIPLETS_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_TRACKER_TYPE_QUERY_TRIPLETS, RygelTrackerQueryTripletsClass))
 
 typedef struct _RygelTrackerQueryTriplets RygelTrackerQueryTriplets;
 typedef struct _RygelTrackerQueryTripletsClass RygelTrackerQueryTripletsClass;
 #define _g_object_unref0(var) ((var == NULL) ? NULL : (var = (g_object_unref (var), NULL)))
-#define _g_free0(var) (var = (g_free (var), NULL))
-
-#define RYGEL_TYPE_TRACKER_QUERY_TRIPLET (rygel_tracker_query_triplet_get_type ())
-#define RYGEL_TRACKER_QUERY_TRIPLET(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_TRACKER_QUERY_TRIPLET, RygelTrackerQueryTriplet))
-#define RYGEL_TRACKER_QUERY_TRIPLET_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TYPE_TRACKER_QUERY_TRIPLET, RygelTrackerQueryTripletClass))
-#define RYGEL_IS_TRACKER_QUERY_TRIPLET(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TYPE_TRACKER_QUERY_TRIPLET))
-#define RYGEL_IS_TRACKER_QUERY_TRIPLET_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_TYPE_TRACKER_QUERY_TRIPLET))
-#define RYGEL_TRACKER_QUERY_TRIPLET_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_TYPE_TRACKER_QUERY_TRIPLET, RygelTrackerQueryTripletClass))
-
-typedef struct _RygelTrackerQueryTriplet RygelTrackerQueryTriplet;
-typedef struct _RygelTrackerQueryTripletClass RygelTrackerQueryTripletClass;
-#define _rygel_tracker_query_triplet_unref0(var) ((var == NULL) ? NULL : (var = (rygel_tracker_query_triplet_unref (var), NULL)))
-typedef struct _RygelTrackerQueryTripletPrivate RygelTrackerQueryTripletPrivate;
-typedef struct _RygelParamSpecTrackerQuery RygelParamSpecTrackerQuery;
+typedef struct _RygelTrackerParamSpecQuery RygelTrackerParamSpecQuery;
 
 struct _RygelTrackerResourcesIfaceIface {
 	GTypeInterface parent_iface;
@@ -90,8 +77,7 @@ struct _RygelTrackerQuery {
 	GTypeInstance parent_instance;
 	volatile int ref_count;
 	RygelTrackerQueryPrivate * priv;
-	RygelTrackerQueryTriplets* mandatory;
-	RygelTrackerQueryTriplets* optional;
+	RygelTrackerQueryTriplets* triplets;
 };
 
 struct _RygelTrackerQueryClass {
@@ -102,23 +88,7 @@ struct _RygelTrackerQueryClass {
 	char* (*to_string) (RygelTrackerQuery* self);
 };
 
-struct _RygelTrackerQueryTriplet {
-	GTypeInstance parent_instance;
-	volatile int ref_count;
-	RygelTrackerQueryTripletPrivate * priv;
-	char* subject;
-	char* predicate;
-	char* obj;
-	gboolean optional;
-	RygelTrackerQueryTriplet* next;
-};
-
-struct _RygelTrackerQueryTripletClass {
-	GTypeClass parent_class;
-	void (*finalize) (RygelTrackerQueryTriplet *self);
-};
-
-struct _RygelParamSpecTrackerQuery {
+struct _RygelTrackerParamSpecQuery {
 	GParamSpec parent_instance;
 };
 
@@ -127,10 +97,10 @@ static gpointer rygel_tracker_query_parent_class = NULL;
 
 gpointer rygel_tracker_query_ref (gpointer instance);
 void rygel_tracker_query_unref (gpointer instance);
-GParamSpec* rygel_param_spec_tracker_query (const gchar* name, const gchar* nick, const gchar* blurb, GType object_type, GParamFlags flags);
-void rygel_value_set_tracker_query (GValue* value, gpointer v_object);
-void rygel_value_take_tracker_query (GValue* value, gpointer v_object);
-gpointer rygel_value_get_tracker_query (const GValue* value);
+GParamSpec* rygel_tracker_param_spec_query (const gchar* name, const gchar* nick, const gchar* blurb, GType object_type, GParamFlags flags);
+void rygel_tracker_value_set_query (GValue* value, gpointer v_object);
+void rygel_tracker_value_take_query (GValue* value, gpointer v_object);
+gpointer rygel_tracker_value_get_query (const GValue* value);
 GType rygel_tracker_query_get_type (void);
 RygelTrackerResourcesIface* rygel_tracker_resources_iface_dbus_proxy_new (DBusGConnection* connection, const char* name, const char* path);
 GType rygel_tracker_resources_iface_get_type (void);
@@ -138,22 +108,12 @@ GType rygel_tracker_query_triplets_get_type (void);
 enum  {
 	RYGEL_TRACKER_QUERY_DUMMY_PROPERTY
 };
-RygelTrackerQueryTriplets* rygel_tracker_query_triplets_new (void);
-RygelTrackerQueryTriplets* rygel_tracker_query_triplets_construct (GType object_type);
-RygelTrackerQuery* rygel_tracker_query_construct (GType object_type, RygelTrackerQueryTriplets* mandatory, RygelTrackerQueryTriplets* optional);
+RygelTrackerQuery* rygel_tracker_query_construct (GType object_type, RygelTrackerQueryTriplets* triplets);
 void rygel_tracker_query_execute (RygelTrackerQuery* self, RygelTrackerResourcesIface* resources, GAsyncReadyCallback _callback_, gpointer _user_data_);
 void rygel_tracker_query_execute_finish (RygelTrackerQuery* self, GAsyncResult* _res_, GError** error);
-static char* rygel_tracker_query_serialize_triplets (RygelTrackerQuery* self, RygelTrackerQueryTriplets* triplets);
+char* rygel_tracker_query_triplets_serialize (RygelTrackerQueryTriplets* self);
 char* rygel_tracker_query_to_string (RygelTrackerQuery* self);
 static char* rygel_tracker_query_real_to_string (RygelTrackerQuery* self);
-gpointer rygel_tracker_query_triplet_ref (gpointer instance);
-void rygel_tracker_query_triplet_unref (gpointer instance);
-GParamSpec* rygel_param_spec_tracker_query_triplet (const gchar* name, const gchar* nick, const gchar* blurb, GType object_type, GParamFlags flags);
-void rygel_value_set_tracker_query_triplet (GValue* value, gpointer v_object);
-void rygel_value_take_tracker_query_triplet (GValue* value, gpointer v_object);
-gpointer rygel_value_get_tracker_query_triplet (const GValue* value);
-GType rygel_tracker_query_triplet_get_type (void);
-char* rygel_tracker_query_triplet_to_string (RygelTrackerQueryTriplet* self);
 static void rygel_tracker_query_finalize (RygelTrackerQuery* obj);
 
 
@@ -163,164 +123,73 @@ static gpointer _g_object_ref0 (gpointer self) {
 }
 
 
-#line 32 "rygel-tracker-query.vala"
-RygelTrackerQuery* rygel_tracker_query_construct (GType object_type, RygelTrackerQueryTriplets* mandatory, RygelTrackerQueryTriplets* optional) {
-#line 169 "rygel-tracker-query.c"
+#line 31 "rygel-tracker-query.vala"
+RygelTrackerQuery* rygel_tracker_query_construct (GType object_type, RygelTrackerQueryTriplets* triplets) {
+#line 129 "rygel-tracker-query.c"
 	RygelTrackerQuery* self;
 	RygelTrackerQueryTriplets* _tmp0_;
-#line 32 "rygel-tracker-query.vala"
-	g_return_val_if_fail (mandatory != NULL, NULL);
-#line 174 "rygel-tracker-query.c"
+#line 31 "rygel-tracker-query.vala"
+	g_return_val_if_fail (triplets != NULL, NULL);
+#line 134 "rygel-tracker-query.c"
 	self = (RygelTrackerQuery*) g_type_create_instance (object_type);
-#line 34 "rygel-tracker-query.vala"
-	self->mandatory = (_tmp0_ = _g_object_ref0 (mandatory), _g_object_unref0 (self->mandatory), _tmp0_);
-#line 36 "rygel-tracker-query.vala"
-	if (optional != NULL) {
-#line 180 "rygel-tracker-query.c"
-		RygelTrackerQueryTriplets* _tmp1_;
-#line 37 "rygel-tracker-query.vala"
-		self->optional = (_tmp1_ = _g_object_ref0 (optional), _g_object_unref0 (self->optional), _tmp1_);
-#line 184 "rygel-tracker-query.c"
-	} else {
-		RygelTrackerQueryTriplets* _tmp2_;
-#line 39 "rygel-tracker-query.vala"
-		self->optional = (_tmp2_ = rygel_tracker_query_triplets_new (), _g_object_unref0 (self->optional), _tmp2_);
-#line 189 "rygel-tracker-query.c"
-	}
+#line 32 "rygel-tracker-query.vala"
+	self->triplets = (_tmp0_ = _g_object_ref0 (triplets), _g_object_unref0 (self->triplets), _tmp0_);
+#line 138 "rygel-tracker-query.c"
 	return self;
 }
 
 
-#line 32 "rygel-tracker-query.vala"
+#line 31 "rygel-tracker-query.vala"
 void rygel_tracker_query_execute (RygelTrackerQuery* self, RygelTrackerResourcesIface* resources, GAsyncReadyCallback _callback_, gpointer _user_data_) {
-#line 32 "rygel-tracker-query.vala"
+#line 31 "rygel-tracker-query.vala"
 	RYGEL_TRACKER_QUERY_GET_CLASS (self)->execute (self, resources, _callback_, _user_data_);
-#line 199 "rygel-tracker-query.c"
+#line 147 "rygel-tracker-query.c"
 }
 
 
-#line 32 "rygel-tracker-query.vala"
+#line 31 "rygel-tracker-query.vala"
 void rygel_tracker_query_execute_finish (RygelTrackerQuery* self, GAsyncResult* _res_, GError** error) {
-#line 32 "rygel-tracker-query.vala"
+#line 31 "rygel-tracker-query.vala"
 	RYGEL_TRACKER_QUERY_GET_CLASS (self)->execute_finish (self, _res_, error);
-#line 207 "rygel-tracker-query.c"
+#line 155 "rygel-tracker-query.c"
 }
 
 
-#line 48 "rygel-tracker-query.vala"
+#line 40 "rygel-tracker-query.vala"
 static char* rygel_tracker_query_real_to_string (RygelTrackerQuery* self) {
-#line 213 "rygel-tracker-query.c"
+#line 161 "rygel-tracker-query.c"
 	char* result = NULL;
-	char* _tmp2_;
-	char* _tmp1_;
-	char* _tmp0_;
-	char* _tmp3_;
-#line 48 "rygel-tracker-query.vala"
+#line 40 "rygel-tracker-query.vala"
 	g_return_val_if_fail (self != NULL, NULL);
-#line 221 "rygel-tracker-query.c"
-	result = (_tmp3_ = g_strconcat (_tmp1_ = g_strconcat (_tmp0_ = rygel_tracker_query_serialize_triplets (self, self->mandatory), " . ", NULL), _tmp2_ = rygel_tracker_query_serialize_triplets (self, self->optional), NULL), _g_free0 (_tmp2_), _g_free0 (_tmp1_), _g_free0 (_tmp0_), _tmp3_);
-#line 49 "rygel-tracker-query.vala"
+#line 165 "rygel-tracker-query.c"
+	result = rygel_tracker_query_triplets_serialize (self->triplets);
+#line 41 "rygel-tracker-query.vala"
 	return result;
-#line 225 "rygel-tracker-query.c"
+#line 169 "rygel-tracker-query.c"
 }
 
 
-#line 48 "rygel-tracker-query.vala"
+#line 40 "rygel-tracker-query.vala"
 char* rygel_tracker_query_to_string (RygelTrackerQuery* self) {
-#line 48 "rygel-tracker-query.vala"
+#line 40 "rygel-tracker-query.vala"
 	return RYGEL_TRACKER_QUERY_GET_CLASS (self)->to_string (self);
-#line 233 "rygel-tracker-query.c"
+#line 177 "rygel-tracker-query.c"
 }
 
 
-#line 54 "rygel-tracker-query.vala"
-static char* rygel_tracker_query_serialize_triplets (RygelTrackerQuery* self, RygelTrackerQueryTriplets* triplets) {
-#line 239 "rygel-tracker-query.c"
-	char* result = NULL;
-	char* str;
-#line 54 "rygel-tracker-query.vala"
-	g_return_val_if_fail (self != NULL, NULL);
-#line 54 "rygel-tracker-query.vala"
-	g_return_val_if_fail (triplets != NULL, NULL);
-#line 55 "rygel-tracker-query.vala"
-	str = g_strdup ("");
-#line 248 "rygel-tracker-query.c"
-	{
-		gint i;
-#line 57 "rygel-tracker-query.vala"
-		i = 0;
-#line 253 "rygel-tracker-query.c"
-		{
-			gboolean _tmp0_;
-#line 57 "rygel-tracker-query.vala"
-			_tmp0_ = TRUE;
-#line 57 "rygel-tracker-query.vala"
-			while (TRUE) {
-#line 260 "rygel-tracker-query.c"
-				char* _tmp3_;
-				char* _tmp2_;
-				RygelTrackerQueryTriplet* _tmp1_;
-#line 57 "rygel-tracker-query.vala"
-				if (!_tmp0_) {
-#line 57 "rygel-tracker-query.vala"
-					i++;
-#line 268 "rygel-tracker-query.c"
-				}
-#line 57 "rygel-tracker-query.vala"
-				_tmp0_ = FALSE;
-#line 57 "rygel-tracker-query.vala"
-				if (!(i < gee_collection_get_size ((GeeCollection*) triplets))) {
-#line 57 "rygel-tracker-query.vala"
-					break;
-#line 276 "rygel-tracker-query.c"
-				}
-#line 58 "rygel-tracker-query.vala"
-				str = (_tmp3_ = g_strconcat (str, _tmp2_ = rygel_tracker_query_triplet_to_string (_tmp1_ = (RygelTrackerQueryTriplet*) gee_abstract_list_get ((GeeAbstractList*) triplets, i)), NULL), _g_free0 (str), _tmp3_);
-#line 280 "rygel-tracker-query.c"
-				_g_free0 (_tmp2_);
-				_rygel_tracker_query_triplet_unref0 (_tmp1_);
-#line 60 "rygel-tracker-query.vala"
-				if (i < (gee_collection_get_size ((GeeCollection*) triplets) - 1)) {
-#line 285 "rygel-tracker-query.c"
-					RygelTrackerQueryTriplet* _tmp4_;
-					gboolean _tmp5_;
-#line 61 "rygel-tracker-query.vala"
-					if ((_tmp5_ = (_tmp4_ = (RygelTrackerQueryTriplet*) gee_abstract_list_get ((GeeAbstractList*) triplets, i + 1))->subject != NULL, _rygel_tracker_query_triplet_unref0 (_tmp4_), _tmp5_)) {
-#line 290 "rygel-tracker-query.c"
-						char* _tmp6_;
-#line 62 "rygel-tracker-query.vala"
-						str = (_tmp6_ = g_strconcat (str, " . ", NULL), _g_free0 (str), _tmp6_);
-#line 294 "rygel-tracker-query.c"
-					} else {
-						char* _tmp7_;
-#line 66 "rygel-tracker-query.vala"
-						str = (_tmp7_ = g_strconcat (str, " ; ", NULL), _g_free0 (str), _tmp7_);
-#line 299 "rygel-tracker-query.c"
-					}
-				}
-			}
-		}
-	}
-	result = str;
-#line 71 "rygel-tracker-query.vala"
-	return result;
-#line 308 "rygel-tracker-query.c"
-}
-
-
-static void rygel_value_tracker_query_init (GValue* value) {
+static void rygel_tracker_value_query_init (GValue* value) {
 	value->data[0].v_pointer = NULL;
 }
 
 
-static void rygel_value_tracker_query_free_value (GValue* value) {
+static void rygel_tracker_value_query_free_value (GValue* value) {
 	if (value->data[0].v_pointer) {
 		rygel_tracker_query_unref (value->data[0].v_pointer);
 	}
 }
 
 
-static void rygel_value_tracker_query_copy_value (const GValue* src_value, GValue* dest_value) {
+static void rygel_tracker_value_query_copy_value (const GValue* src_value, GValue* dest_value) {
 	if (src_value->data[0].v_pointer) {
 		dest_value->data[0].v_pointer = rygel_tracker_query_ref (src_value->data[0].v_pointer);
 	} else {
@@ -329,12 +198,12 @@ static void rygel_value_tracker_query_copy_value (const GValue* src_value, GValu
 }
 
 
-static gpointer rygel_value_tracker_query_peek_pointer (const GValue* value) {
+static gpointer rygel_tracker_value_query_peek_pointer (const GValue* value) {
 	return value->data[0].v_pointer;
 }
 
 
-static gchar* rygel_value_tracker_query_collect_value (GValue* value, guint n_collect_values, GTypeCValue* collect_values, guint collect_flags) {
+static gchar* rygel_tracker_value_query_collect_value (GValue* value, guint n_collect_values, GTypeCValue* collect_values, guint collect_flags) {
 	if (collect_values[0].v_pointer) {
 		RygelTrackerQuery* object;
 		object = collect_values[0].v_pointer;
@@ -351,7 +220,7 @@ static gchar* rygel_value_tracker_query_collect_value (GValue* value, guint n_co
 }
 
 
-static gchar* rygel_value_tracker_query_lcopy_value (const GValue* value, guint n_collect_values, GTypeCValue* collect_values, guint collect_flags) {
+static gchar* rygel_tracker_value_query_lcopy_value (const GValue* value, guint n_collect_values, GTypeCValue* collect_values, guint collect_flags) {
 	RygelTrackerQuery** object_p;
 	object_p = collect_values[0].v_pointer;
 	if (!object_p) {
@@ -368,27 +237,27 @@ static gchar* rygel_value_tracker_query_lcopy_value (const GValue* value, guint 
 }
 
 
-GParamSpec* rygel_param_spec_tracker_query (const gchar* name, const gchar* nick, const gchar* blurb, GType object_type, GParamFlags flags) {
-	RygelParamSpecTrackerQuery* spec;
-	g_return_val_if_fail (g_type_is_a (object_type, RYGEL_TYPE_TRACKER_QUERY), NULL);
+GParamSpec* rygel_tracker_param_spec_query (const gchar* name, const gchar* nick, const gchar* blurb, GType object_type, GParamFlags flags) {
+	RygelTrackerParamSpecQuery* spec;
+	g_return_val_if_fail (g_type_is_a (object_type, RYGEL_TRACKER_TYPE_QUERY), NULL);
 	spec = g_param_spec_internal (G_TYPE_PARAM_OBJECT, name, nick, blurb, flags);
 	G_PARAM_SPEC (spec)->value_type = object_type;
 	return G_PARAM_SPEC (spec);
 }
 
 
-gpointer rygel_value_get_tracker_query (const GValue* value) {
-	g_return_val_if_fail (G_TYPE_CHECK_VALUE_TYPE (value, RYGEL_TYPE_TRACKER_QUERY), NULL);
+gpointer rygel_tracker_value_get_query (const GValue* value) {
+	g_return_val_if_fail (G_TYPE_CHECK_VALUE_TYPE (value, RYGEL_TRACKER_TYPE_QUERY), NULL);
 	return value->data[0].v_pointer;
 }
 
 
-void rygel_value_set_tracker_query (GValue* value, gpointer v_object) {
+void rygel_tracker_value_set_query (GValue* value, gpointer v_object) {
 	RygelTrackerQuery* old;
-	g_return_if_fail (G_TYPE_CHECK_VALUE_TYPE (value, RYGEL_TYPE_TRACKER_QUERY));
+	g_return_if_fail (G_TYPE_CHECK_VALUE_TYPE (value, RYGEL_TRACKER_TYPE_QUERY));
 	old = value->data[0].v_pointer;
 	if (v_object) {
-		g_return_if_fail (G_TYPE_CHECK_INSTANCE_TYPE (v_object, RYGEL_TYPE_TRACKER_QUERY));
+		g_return_if_fail (G_TYPE_CHECK_INSTANCE_TYPE (v_object, RYGEL_TRACKER_TYPE_QUERY));
 		g_return_if_fail (g_value_type_compatible (G_TYPE_FROM_INSTANCE (v_object), G_VALUE_TYPE (value)));
 		value->data[0].v_pointer = v_object;
 		rygel_tracker_query_ref (value->data[0].v_pointer);
@@ -401,12 +270,12 @@ void rygel_value_set_tracker_query (GValue* value, gpointer v_object) {
 }
 
 
-void rygel_value_take_tracker_query (GValue* value, gpointer v_object) {
+void rygel_tracker_value_take_query (GValue* value, gpointer v_object) {
 	RygelTrackerQuery* old;
-	g_return_if_fail (G_TYPE_CHECK_VALUE_TYPE (value, RYGEL_TYPE_TRACKER_QUERY));
+	g_return_if_fail (G_TYPE_CHECK_VALUE_TYPE (value, RYGEL_TRACKER_TYPE_QUERY));
 	old = value->data[0].v_pointer;
 	if (v_object) {
-		g_return_if_fail (G_TYPE_CHECK_INSTANCE_TYPE (v_object, RYGEL_TYPE_TRACKER_QUERY));
+		g_return_if_fail (G_TYPE_CHECK_INSTANCE_TYPE (v_object, RYGEL_TRACKER_TYPE_QUERY));
 		g_return_if_fail (g_value_type_compatible (G_TYPE_FROM_INSTANCE (v_object), G_VALUE_TYPE (value)));
 		value->data[0].v_pointer = v_object;
 	} else {
@@ -433,15 +302,14 @@ static void rygel_tracker_query_instance_init (RygelTrackerQuery * self) {
 static void rygel_tracker_query_finalize (RygelTrackerQuery* obj) {
 	RygelTrackerQuery * self;
 	self = RYGEL_TRACKER_QUERY (obj);
-	_g_object_unref0 (self->mandatory);
-	_g_object_unref0 (self->optional);
+	_g_object_unref0 (self->triplets);
 }
 
 
 GType rygel_tracker_query_get_type (void) {
 	static volatile gsize rygel_tracker_query_type_id__volatile = 0;
 	if (g_once_init_enter (&rygel_tracker_query_type_id__volatile)) {
-		static const GTypeValueTable g_define_type_value_table = { rygel_value_tracker_query_init, rygel_value_tracker_query_free_value, rygel_value_tracker_query_copy_value, rygel_value_tracker_query_peek_pointer, "p", rygel_value_tracker_query_collect_value, "p", rygel_value_tracker_query_lcopy_value };
+		static const GTypeValueTable g_define_type_value_table = { rygel_tracker_value_query_init, rygel_tracker_value_query_free_value, rygel_tracker_value_query_copy_value, rygel_tracker_value_query_peek_pointer, "p", rygel_tracker_value_query_collect_value, "p", rygel_tracker_value_query_lcopy_value };
 		static const GTypeInfo g_define_type_info = { sizeof (RygelTrackerQueryClass), (GBaseInitFunc) NULL, (GBaseFinalizeFunc) NULL, (GClassInitFunc) rygel_tracker_query_class_init, (GClassFinalizeFunc) NULL, NULL, sizeof (RygelTrackerQuery), 0, (GInstanceInitFunc) rygel_tracker_query_instance_init, &g_define_type_value_table };
 		static const GTypeFundamentalInfo g_define_type_fundamental_info = { (G_TYPE_FLAG_CLASSED | G_TYPE_FLAG_INSTANTIATABLE | G_TYPE_FLAG_DERIVABLE | G_TYPE_FLAG_DEEP_DERIVABLE) };
 		GType rygel_tracker_query_type_id;

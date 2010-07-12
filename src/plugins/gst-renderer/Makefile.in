@@ -36,10 +36,13 @@ build_triplet = @build@
 host_triplet = @host@
 subdir = src/plugins/gst-renderer
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in \
-	librygel_gst_renderer_la_vala.stamp rygel-gst-av-transport.c \
-	rygel-gst-changelog.c rygel-gst-connection-manager.c \
-	rygel-gst-player.c rygel-gst-plugin.c \
-	rygel-gst-rendering-control.c
+	librygel_gst_renderer_la_vala.stamp \
+	rygel-gst-renderer-av-transport.c \
+	rygel-gst-renderer-changelog.c \
+	rygel-gst-renderer-connection-manager.c \
+	rygel-gst-renderer-player.c rygel-gst-renderer-plugin.c \
+	rygel-gst-renderer-rendering-control.c \
+	rygel-gst-renderer-time.c rygel-gst-renderer-volume.c
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/intltool.m4 \
 	$(top_srcdir)/m4/libtool.m4 $(top_srcdir)/m4/ltoptions.m4 \
@@ -79,9 +82,13 @@ librygel_gst_renderer_la_DEPENDENCIES = $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1)
-am_librygel_gst_renderer_la_OBJECTS = rygel-gst-connection-manager.lo \
-	rygel-gst-rendering-control.lo rygel-gst-av-transport.lo \
-	rygel-gst-player.lo rygel-gst-changelog.lo rygel-gst-plugin.lo
+am_librygel_gst_renderer_la_OBJECTS =  \
+	rygel-gst-renderer-connection-manager.lo \
+	rygel-gst-renderer-rendering-control.lo \
+	rygel-gst-renderer-av-transport.lo \
+	rygel-gst-renderer-player.lo rygel-gst-renderer-changelog.lo \
+	rygel-gst-renderer-plugin.lo rygel-gst-renderer-volume.lo \
+	rygel-gst-renderer-time.lo
 librygel_gst_renderer_la_OBJECTS =  \
 	$(am_librygel_gst_renderer_la_OBJECTS)
 AM_V_lt = $(am__v_lt_$(V))
@@ -306,12 +313,14 @@ AM_CFLAGS = $(LIBGUPNP_CFLAGS) \
             -I$(top_srcdir)/src/rygel -DDATA_DIR='"$(shareddir)"' \
 	    -include config.h
 
-librygel_gst_renderer_la_SOURCES = rygel-gst-connection-manager.vala \
-				   rygel-gst-rendering-control.vala \
-				   rygel-gst-av-transport.vala \
-				   rygel-gst-player.vala \
-				   rygel-gst-changelog.vala \
-				   rygel-gst-plugin.vala
+librygel_gst_renderer_la_SOURCES = rygel-gst-renderer-connection-manager.vala \
+				   rygel-gst-renderer-rendering-control.vala \
+				   rygel-gst-renderer-av-transport.vala \
+				   rygel-gst-renderer-player.vala \
+				   rygel-gst-renderer-changelog.vala \
+				   rygel-gst-renderer-plugin.vala \
+				   rygel-gst-renderer-volume.vala \
+				   rygel-gst-renderer-time.vala
 
 librygel_gst_renderer_la_VALAFLAGS = --vapidir=$(top_srcdir)/src/rygel \
                      	             --vapidir=$(srcdir) \
@@ -402,12 +411,14 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-gst-av-transport.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-gst-changelog.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-gst-connection-manager.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-gst-player.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-gst-plugin.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-gst-rendering-control.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-gst-renderer-av-transport.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-gst-renderer-changelog.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-gst-renderer-connection-manager.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-gst-renderer-player.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-gst-renderer-plugin.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-gst-renderer-rendering-control.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-gst-renderer-time.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-gst-renderer-volume.Plo@am__quote@
 
 .c.o:
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
@@ -432,32 +443,42 @@ distclean-compile:
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$<' object='$@' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LTCOMPILE) -c -o $@ $<
-$(srcdir)/rygel-gst-connection-manager.c: $(srcdir)/librygel_gst_renderer_la_vala.stamp
+$(srcdir)/rygel-gst-renderer-connection-manager.c: $(srcdir)/librygel_gst_renderer_la_vala.stamp
 	@if test -f $@; then :; else \
 	  rm -f $(srcdir)/librygel_gst_renderer_la_vala.stamp; \
 	  $(am__cd) $(srcdir) && $(MAKE) $(AM_MAKEFLAGS) librygel_gst_renderer_la_vala.stamp; \
 	fi
-$(srcdir)/rygel-gst-rendering-control.c: $(srcdir)/librygel_gst_renderer_la_vala.stamp
+$(srcdir)/rygel-gst-renderer-rendering-control.c: $(srcdir)/librygel_gst_renderer_la_vala.stamp
 	@if test -f $@; then :; else \
 	  rm -f $(srcdir)/librygel_gst_renderer_la_vala.stamp; \
 	  $(am__cd) $(srcdir) && $(MAKE) $(AM_MAKEFLAGS) librygel_gst_renderer_la_vala.stamp; \
 	fi
-$(srcdir)/rygel-gst-av-transport.c: $(srcdir)/librygel_gst_renderer_la_vala.stamp
+$(srcdir)/rygel-gst-renderer-av-transport.c: $(srcdir)/librygel_gst_renderer_la_vala.stamp
 	@if test -f $@; then :; else \
 	  rm -f $(srcdir)/librygel_gst_renderer_la_vala.stamp; \
 	  $(am__cd) $(srcdir) && $(MAKE) $(AM_MAKEFLAGS) librygel_gst_renderer_la_vala.stamp; \
 	fi
-$(srcdir)/rygel-gst-player.c: $(srcdir)/librygel_gst_renderer_la_vala.stamp
+$(srcdir)/rygel-gst-renderer-player.c: $(srcdir)/librygel_gst_renderer_la_vala.stamp
 	@if test -f $@; then :; else \
 	  rm -f $(srcdir)/librygel_gst_renderer_la_vala.stamp; \
 	  $(am__cd) $(srcdir) && $(MAKE) $(AM_MAKEFLAGS) librygel_gst_renderer_la_vala.stamp; \
 	fi
-$(srcdir)/rygel-gst-changelog.c: $(srcdir)/librygel_gst_renderer_la_vala.stamp
+$(srcdir)/rygel-gst-renderer-changelog.c: $(srcdir)/librygel_gst_renderer_la_vala.stamp
 	@if test -f $@; then :; else \
 	  rm -f $(srcdir)/librygel_gst_renderer_la_vala.stamp; \
 	  $(am__cd) $(srcdir) && $(MAKE) $(AM_MAKEFLAGS) librygel_gst_renderer_la_vala.stamp; \
 	fi
-$(srcdir)/rygel-gst-plugin.c: $(srcdir)/librygel_gst_renderer_la_vala.stamp
+$(srcdir)/rygel-gst-renderer-plugin.c: $(srcdir)/librygel_gst_renderer_la_vala.stamp
+	@if test -f $@; then :; else \
+	  rm -f $(srcdir)/librygel_gst_renderer_la_vala.stamp; \
+	  $(am__cd) $(srcdir) && $(MAKE) $(AM_MAKEFLAGS) librygel_gst_renderer_la_vala.stamp; \
+	fi
+$(srcdir)/rygel-gst-renderer-volume.c: $(srcdir)/librygel_gst_renderer_la_vala.stamp
+	@if test -f $@; then :; else \
+	  rm -f $(srcdir)/librygel_gst_renderer_la_vala.stamp; \
+	  $(am__cd) $(srcdir) && $(MAKE) $(AM_MAKEFLAGS) librygel_gst_renderer_la_vala.stamp; \
+	fi
+$(srcdir)/rygel-gst-renderer-time.c: $(srcdir)/librygel_gst_renderer_la_vala.stamp
 	@if test -f $@; then :; else \
 	  rm -f $(srcdir)/librygel_gst_renderer_la_vala.stamp; \
 	  $(am__cd) $(srcdir) && $(MAKE) $(AM_MAKEFLAGS) librygel_gst_renderer_la_vala.stamp; \
@@ -587,12 +608,14 @@ maintainer-clean-generic:
 	@echo "This command is intended for maintainers to use"
 	@echo "it deletes files that may require special tools to rebuild."
 	-rm -f librygel_gst_renderer_la_vala.stamp
-	-rm -f rygel-gst-av-transport.c
-	-rm -f rygel-gst-changelog.c
-	-rm -f rygel-gst-connection-manager.c
-	-rm -f rygel-gst-player.c
-	-rm -f rygel-gst-plugin.c
-	-rm -f rygel-gst-rendering-control.c
+	-rm -f rygel-gst-renderer-av-transport.c
+	-rm -f rygel-gst-renderer-changelog.c
+	-rm -f rygel-gst-renderer-connection-manager.c
+	-rm -f rygel-gst-renderer-player.c
+	-rm -f rygel-gst-renderer-plugin.c
+	-rm -f rygel-gst-renderer-rendering-control.c
+	-rm -f rygel-gst-renderer-time.c
+	-rm -f rygel-gst-renderer-volume.c
 	-test -z "$(MAINTAINERCLEANFILES)" || rm -f $(MAINTAINERCLEANFILES)
 clean: clean-am
 

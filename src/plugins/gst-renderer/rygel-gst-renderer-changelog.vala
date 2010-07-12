@@ -6,30 +6,26 @@
  *         Zeeshan Ali (Khattak) <zeeshanak@gnome.org>
  *                               <zeeshan.ali@nokia.com>
  *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
+ * Rygel is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
  *
- * This program is distributed in the hope that it will be useful,
+ * Rygel is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License along
- * with this program; if not, write to the Free Software Foundation,
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Library General Public
- * License as published by the Free Software Foundation; either
- * version 2 of the License, or (at your option) any later version.
  */
 
 using GUPnP;
 using Gee;
 
 // Helper class for building LastChange messages
-public class Rygel.GstChangeLog : Object {
+public class Rygel.GstRenderer.ChangeLog : Object {
     public unowned Service service { get; set; }
 
     private string service_ns;
@@ -40,14 +36,14 @@ public class Rygel.GstChangeLog : Object {
 
     private uint timeout_id = 0;
 
-    public GstChangeLog (Service? service, string service_ns) {
+    public ChangeLog (Service? service, string service_ns) {
         this.service = service;
         this.service_ns = service_ns;
         this.str = new StringBuilder ();
         this.hash = new HashMap<string, string> ();
     }
 
-    ~GstChangeLog () {
+    ~ChangeLog () {
         if (this.timeout_id != 0) {
             Source.remove (this.timeout_id);
         }

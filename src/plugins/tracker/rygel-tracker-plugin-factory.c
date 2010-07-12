@@ -37,50 +37,50 @@
 #include <gobject/gvaluecollector.h>
 
 
-#define TYPE_TRACKER_PLUGIN_FACTORY (tracker_plugin_factory_get_type ())
-#define TRACKER_PLUGIN_FACTORY(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), TYPE_TRACKER_PLUGIN_FACTORY, TrackerPluginFactory))
-#define TRACKER_PLUGIN_FACTORY_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), TYPE_TRACKER_PLUGIN_FACTORY, TrackerPluginFactoryClass))
-#define IS_TRACKER_PLUGIN_FACTORY(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), TYPE_TRACKER_PLUGIN_FACTORY))
-#define IS_TRACKER_PLUGIN_FACTORY_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), TYPE_TRACKER_PLUGIN_FACTORY))
-#define TRACKER_PLUGIN_FACTORY_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), TYPE_TRACKER_PLUGIN_FACTORY, TrackerPluginFactoryClass))
+#define RYGEL_TRACKER_TYPE_PLUGIN_FACTORY (rygel_tracker_plugin_factory_get_type ())
+#define RYGEL_TRACKER_PLUGIN_FACTORY(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TRACKER_TYPE_PLUGIN_FACTORY, RygelTrackerPluginFactory))
+#define RYGEL_TRACKER_PLUGIN_FACTORY_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TRACKER_TYPE_PLUGIN_FACTORY, RygelTrackerPluginFactoryClass))
+#define RYGEL_TRACKER_IS_PLUGIN_FACTORY(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TRACKER_TYPE_PLUGIN_FACTORY))
+#define RYGEL_TRACKER_IS_PLUGIN_FACTORY_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_TRACKER_TYPE_PLUGIN_FACTORY))
+#define RYGEL_TRACKER_PLUGIN_FACTORY_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_TRACKER_TYPE_PLUGIN_FACTORY, RygelTrackerPluginFactoryClass))
 
-typedef struct _TrackerPluginFactory TrackerPluginFactory;
-typedef struct _TrackerPluginFactoryClass TrackerPluginFactoryClass;
-#define _tracker_plugin_factory_unref0(var) ((var == NULL) ? NULL : (var = (tracker_plugin_factory_unref (var), NULL)))
+typedef struct _RygelTrackerPluginFactory RygelTrackerPluginFactory;
+typedef struct _RygelTrackerPluginFactoryClass RygelTrackerPluginFactoryClass;
+#define _rygel_tracker_plugin_factory_unref0(var) ((var == NULL) ? NULL : (var = (rygel_tracker_plugin_factory_unref (var), NULL)))
 #define _g_free0(var) (var = (g_free (var), NULL))
 #define _g_error_free0(var) ((var == NULL) ? NULL : (var = (g_error_free (var), NULL)))
-typedef struct _TrackerPluginFactoryPrivate TrackerPluginFactoryPrivate;
+typedef struct _RygelTrackerPluginFactoryPrivate RygelTrackerPluginFactoryPrivate;
 
-#define RYGEL_TYPE_TRACKER_STATS_IFACE (rygel_tracker_stats_iface_get_type ())
-#define RYGEL_TRACKER_STATS_IFACE(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_TRACKER_STATS_IFACE, RygelTrackerStatsIface))
-#define RYGEL_IS_TRACKER_STATS_IFACE(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TYPE_TRACKER_STATS_IFACE))
-#define RYGEL_TRACKER_STATS_IFACE_GET_INTERFACE(obj) (G_TYPE_INSTANCE_GET_INTERFACE ((obj), RYGEL_TYPE_TRACKER_STATS_IFACE, RygelTrackerStatsIfaceIface))
+#define RYGEL_TRACKER_TYPE_STATS_IFACE (rygel_tracker_stats_iface_get_type ())
+#define RYGEL_TRACKER_STATS_IFACE(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TRACKER_TYPE_STATS_IFACE, RygelTrackerStatsIface))
+#define RYGEL_TRACKER_IS_STATS_IFACE(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TRACKER_TYPE_STATS_IFACE))
+#define RYGEL_TRACKER_STATS_IFACE_GET_INTERFACE(obj) (G_TYPE_INSTANCE_GET_INTERFACE ((obj), RYGEL_TRACKER_TYPE_STATS_IFACE, RygelTrackerStatsIfaceIface))
 
 typedef struct _RygelTrackerStatsIface RygelTrackerStatsIface;
 typedef struct _RygelTrackerStatsIfaceIface RygelTrackerStatsIfaceIface;
 #define _g_object_unref0(var) ((var == NULL) ? NULL : (var = (g_object_unref (var), NULL)))
 
-#define RYGEL_TYPE_TRACKER_PLUGIN (rygel_tracker_plugin_get_type ())
-#define RYGEL_TRACKER_PLUGIN(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_TRACKER_PLUGIN, RygelTrackerPlugin))
-#define RYGEL_TRACKER_PLUGIN_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TYPE_TRACKER_PLUGIN, RygelTrackerPluginClass))
-#define RYGEL_IS_TRACKER_PLUGIN(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TYPE_TRACKER_PLUGIN))
-#define RYGEL_IS_TRACKER_PLUGIN_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_TYPE_TRACKER_PLUGIN))
-#define RYGEL_TRACKER_PLUGIN_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_TYPE_TRACKER_PLUGIN, RygelTrackerPluginClass))
+#define RYGEL_TRACKER_TYPE_PLUGIN (rygel_tracker_plugin_get_type ())
+#define RYGEL_TRACKER_PLUGIN(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TRACKER_TYPE_PLUGIN, RygelTrackerPlugin))
+#define RYGEL_TRACKER_PLUGIN_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TRACKER_TYPE_PLUGIN, RygelTrackerPluginClass))
+#define RYGEL_TRACKER_IS_PLUGIN(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TRACKER_TYPE_PLUGIN))
+#define RYGEL_TRACKER_IS_PLUGIN_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_TRACKER_TYPE_PLUGIN))
+#define RYGEL_TRACKER_PLUGIN_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_TRACKER_TYPE_PLUGIN, RygelTrackerPluginClass))
 
 typedef struct _RygelTrackerPlugin RygelTrackerPlugin;
 typedef struct _RygelTrackerPluginClass RygelTrackerPluginClass;
 #define _dbus_g_connection_unref0(var) ((var == NULL) ? NULL : (var = (dbus_g_connection_unref (var), NULL)))
-typedef struct _ParamSpecTrackerPluginFactory ParamSpecTrackerPluginFactory;
+typedef struct _RygelTrackerParamSpecPluginFactory RygelTrackerParamSpecPluginFactory;
 
-struct _TrackerPluginFactory {
+struct _RygelTrackerPluginFactory {
 	GTypeInstance parent_instance;
 	volatile int ref_count;
-	TrackerPluginFactoryPrivate * priv;
+	RygelTrackerPluginFactoryPrivate * priv;
 };
 
-struct _TrackerPluginFactoryClass {
+struct _RygelTrackerPluginFactoryClass {
 	GTypeClass parent_class;
-	void (*finalize) (TrackerPluginFactory *self);
+	void (*finalize) (RygelTrackerPluginFactory *self);
 };
 
 struct _RygelTrackerStatsIfaceIface {
@@ -89,44 +89,44 @@ struct _RygelTrackerStatsIfaceIface {
 	char** (*get_statistics_finish) (RygelTrackerStatsIface* self, GAsyncResult* _res_, int* result_length1, int* result_length2, GError** error);
 };
 
-struct _TrackerPluginFactoryPrivate {
+struct _RygelTrackerPluginFactoryPrivate {
 	RygelTrackerStatsIface* stats;
 	RygelPluginLoader* loader;
 };
 
-struct _ParamSpecTrackerPluginFactory {
+struct _RygelTrackerParamSpecPluginFactory {
 	GParamSpec parent_instance;
 };
 
 
-extern TrackerPluginFactory* plugin_factory;
-TrackerPluginFactory* plugin_factory = NULL;
-static gpointer tracker_plugin_factory_parent_class = NULL;
+extern RygelTrackerPluginFactory* plugin_factory;
+RygelTrackerPluginFactory* plugin_factory = NULL;
+static gpointer rygel_tracker_plugin_factory_parent_class = NULL;
 
-gpointer tracker_plugin_factory_ref (gpointer instance);
-void tracker_plugin_factory_unref (gpointer instance);
-GParamSpec* param_spec_tracker_plugin_factory (const gchar* name, const gchar* nick, const gchar* blurb, GType object_type, GParamFlags flags);
-void value_set_tracker_plugin_factory (GValue* value, gpointer v_object);
-void value_take_tracker_plugin_factory (GValue* value, gpointer v_object);
-gpointer value_get_tracker_plugin_factory (const GValue* value);
-GType tracker_plugin_factory_get_type (void);
-TrackerPluginFactory* tracker_plugin_factory_new (RygelPluginLoader* loader, GError** error);
-TrackerPluginFactory* tracker_plugin_factory_construct (GType object_type, RygelPluginLoader* loader, GError** error);
+gpointer rygel_tracker_plugin_factory_ref (gpointer instance);
+void rygel_tracker_plugin_factory_unref (gpointer instance);
+GParamSpec* rygel_tracker_param_spec_plugin_factory (const gchar* name, const gchar* nick, const gchar* blurb, GType object_type, GParamFlags flags);
+void rygel_tracker_value_set_plugin_factory (GValue* value, gpointer v_object);
+void rygel_tracker_value_take_plugin_factory (GValue* value, gpointer v_object);
+gpointer rygel_tracker_value_get_plugin_factory (const GValue* value);
+GType rygel_tracker_plugin_factory_get_type (void);
+RygelTrackerPluginFactory* rygel_tracker_plugin_factory_new (RygelPluginLoader* loader, GError** error);
+RygelTrackerPluginFactory* rygel_tracker_plugin_factory_construct (GType object_type, RygelPluginLoader* loader, GError** error);
 void module_init (RygelPluginLoader* loader);
 RygelTrackerStatsIface* rygel_tracker_stats_iface_dbus_proxy_new (DBusGConnection* connection, const char* name, const char* path);
 GType rygel_tracker_stats_iface_get_type (void);
-#define TRACKER_PLUGIN_FACTORY_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), TYPE_TRACKER_PLUGIN_FACTORY, TrackerPluginFactoryPrivate))
+#define RYGEL_TRACKER_PLUGIN_FACTORY_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), RYGEL_TRACKER_TYPE_PLUGIN_FACTORY, RygelTrackerPluginFactoryPrivate))
 enum  {
-	TRACKER_PLUGIN_FACTORY_DUMMY_PROPERTY
+	RYGEL_TRACKER_PLUGIN_FACTORY_DUMMY_PROPERTY
 };
-#define TRACKER_PLUGIN_FACTORY_TRACKER_SERVICE "org.freedesktop.Tracker1"
-#define TRACKER_PLUGIN_FACTORY_STATISTICS_OBJECT "/org/freedesktop/Tracker1/Statistics"
+#define RYGEL_TRACKER_PLUGIN_FACTORY_TRACKER_SERVICE "org.freedesktop.Tracker1"
+#define RYGEL_TRACKER_PLUGIN_FACTORY_STATISTICS_OBJECT "/org/freedesktop/Tracker1/Statistics"
 void rygel_tracker_stats_iface_get_statistics (RygelTrackerStatsIface* self, GAsyncReadyCallback _callback_, gpointer _user_data_);
 char** rygel_tracker_stats_iface_get_statistics_finish (RygelTrackerStatsIface* self, GAsyncResult* _res_, int* result_length1, int* result_length2, GError** error);
 RygelTrackerPlugin* rygel_tracker_plugin_new (void);
 RygelTrackerPlugin* rygel_tracker_plugin_construct (GType object_type);
 GType rygel_tracker_plugin_get_type (void);
-static void tracker_plugin_factory_finalize (TrackerPluginFactory* obj);
+static void rygel_tracker_plugin_factory_finalize (RygelTrackerPluginFactory* obj);
 
 
 
@@ -139,25 +139,25 @@ void module_init (RygelPluginLoader* loader) {
 #line 140 "rygel-tracker-plugin-factory.c"
 	_inner_error_ = NULL;
 	{
-		TrackerPluginFactory* _tmp0_;
-		TrackerPluginFactory* _tmp1_;
+		RygelTrackerPluginFactory* _tmp0_;
+		RygelTrackerPluginFactory* _tmp1_;
 #line 32 "rygel-tracker-plugin-factory.vala"
-		_tmp0_ = tracker_plugin_factory_new (loader, &_inner_error_);
+		_tmp0_ = rygel_tracker_plugin_factory_new (loader, &_inner_error_);
 #line 147 "rygel-tracker-plugin-factory.c"
 		if (_inner_error_ != NULL) {
 			if (_inner_error_->domain == DBUS_GERROR) {
-				goto __catch10_dbus_gerror;
+				goto __catch9_dbus_gerror;
 			}
 			g_critical ("file %s: line %d: unexpected error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
 			g_clear_error (&_inner_error_);
 			return;
 		}
 #line 32 "rygel-tracker-plugin-factory.vala"
-		plugin_factory = (_tmp1_ = _tmp0_, _tracker_plugin_factory_unref0 (plugin_factory), _tmp1_);
+		plugin_factory = (_tmp1_ = _tmp0_, _rygel_tracker_plugin_factory_unref0 (plugin_factory), _tmp1_);
 #line 158 "rygel-tracker-plugin-factory.c"
 	}
-	goto __finally10;
-	__catch10_dbus_gerror:
+	goto __finally9;
+	__catch9_dbus_gerror:
 	{
 		GError * err;
 		err = _inner_error_;
@@ -171,7 +171,7 @@ void module_init (RygelPluginLoader* loader) {
 			_g_error_free0 (err);
 		}
 	}
-	__finally10:
+	__finally9:
 	if (_inner_error_ != NULL) {
 		g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
 		g_clear_error (&_inner_error_);
@@ -186,10 +186,10 @@ static gpointer _g_object_ref0 (gpointer self) {
 
 
 #line 47 "rygel-tracker-plugin-factory.vala"
-TrackerPluginFactory* tracker_plugin_factory_construct (GType object_type, RygelPluginLoader* loader, GError** error) {
+RygelTrackerPluginFactory* rygel_tracker_plugin_factory_construct (GType object_type, RygelPluginLoader* loader, GError** error) {
 #line 191 "rygel-tracker-plugin-factory.c"
 	GError * _inner_error_;
-	TrackerPluginFactory* self;
+	RygelTrackerPluginFactory* self;
 	DBusGConnection* connection;
 	RygelTrackerStatsIface* _tmp0_;
 	RygelPluginLoader* _tmp1_;
@@ -198,14 +198,14 @@ TrackerPluginFactory* tracker_plugin_factory_construct (GType object_type, Rygel
 	g_return_val_if_fail (loader != NULL, NULL);
 #line 200 "rygel-tracker-plugin-factory.c"
 	_inner_error_ = NULL;
-	self = (TrackerPluginFactory*) g_type_create_instance (object_type);
+	self = (RygelTrackerPluginFactory*) g_type_create_instance (object_type);
 #line 48 "rygel-tracker-plugin-factory.vala"
 	connection = dbus_g_bus_get (DBUS_BUS_SESSION, &_inner_error_);
 #line 205 "rygel-tracker-plugin-factory.c"
 	if (_inner_error_ != NULL) {
 		if (_inner_error_->domain == DBUS_GERROR) {
 			g_propagate_error (error, _inner_error_);
-			tracker_plugin_factory_unref (self);
+			rygel_tracker_plugin_factory_unref (self);
 			return NULL;
 		} else {
 			g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
@@ -214,12 +214,12 @@ TrackerPluginFactory* tracker_plugin_factory_construct (GType object_type, Rygel
 		}
 	}
 #line 50 "rygel-tracker-plugin-factory.vala"
-	self->priv->stats = (_tmp0_ = rygel_tracker_stats_iface_dbus_proxy_new (connection, TRACKER_PLUGIN_FACTORY_TRACKER_SERVICE, TRACKER_PLUGIN_FACTORY_STATISTICS_OBJECT), _g_object_unref0 (self->priv->stats), _tmp0_);
-#line 53 "rygel-tracker-plugin-factory.vala"
+	self->priv->stats = (_tmp0_ = rygel_tracker_stats_iface_dbus_proxy_new (connection, RYGEL_TRACKER_PLUGIN_FACTORY_TRACKER_SERVICE, RYGEL_TRACKER_PLUGIN_FACTORY_STATISTICS_OBJECT), _g_object_unref0 (self->priv->stats), _tmp0_);
+#line 52 "rygel-tracker-plugin-factory.vala"
 	self->priv->loader = (_tmp1_ = _g_object_ref0 (loader), _g_object_unref0 (self->priv->loader), _tmp1_);
-#line 55 "rygel-tracker-plugin-factory.vala"
+#line 54 "rygel-tracker-plugin-factory.vala"
 	rygel_tracker_stats_iface_get_statistics (self->priv->stats, NULL, NULL);
-#line 57 "rygel-tracker-plugin-factory.vala"
+#line 56 "rygel-tracker-plugin-factory.vala"
 	rygel_plugin_loader_add_plugin (self->priv->loader, (RygelPlugin*) (_tmp2_ = rygel_tracker_plugin_new ()));
 #line 225 "rygel-tracker-plugin-factory.c"
 	_g_object_unref0 (_tmp2_);
@@ -229,49 +229,49 @@ TrackerPluginFactory* tracker_plugin_factory_construct (GType object_type, Rygel
 
 
 #line 47 "rygel-tracker-plugin-factory.vala"
-TrackerPluginFactory* tracker_plugin_factory_new (RygelPluginLoader* loader, GError** error) {
+RygelTrackerPluginFactory* rygel_tracker_plugin_factory_new (RygelPluginLoader* loader, GError** error) {
 #line 47 "rygel-tracker-plugin-factory.vala"
-	return tracker_plugin_factory_construct (TYPE_TRACKER_PLUGIN_FACTORY, loader, error);
+	return rygel_tracker_plugin_factory_construct (RYGEL_TRACKER_TYPE_PLUGIN_FACTORY, loader, error);
 #line 236 "rygel-tracker-plugin-factory.c"
 }
 
 
-static void value_tracker_plugin_factory_init (GValue* value) {
+static void rygel_tracker_value_plugin_factory_init (GValue* value) {
 	value->data[0].v_pointer = NULL;
 }
 
 
-static void value_tracker_plugin_factory_free_value (GValue* value) {
+static void rygel_tracker_value_plugin_factory_free_value (GValue* value) {
 	if (value->data[0].v_pointer) {
-		tracker_plugin_factory_unref (value->data[0].v_pointer);
+		rygel_tracker_plugin_factory_unref (value->data[0].v_pointer);
 	}
 }
 
 
-static void value_tracker_plugin_factory_copy_value (const GValue* src_value, GValue* dest_value) {
+static void rygel_tracker_value_plugin_factory_copy_value (const GValue* src_value, GValue* dest_value) {
 	if (src_value->data[0].v_pointer) {
-		dest_value->data[0].v_pointer = tracker_plugin_factory_ref (src_value->data[0].v_pointer);
+		dest_value->data[0].v_pointer = rygel_tracker_plugin_factory_ref (src_value->data[0].v_pointer);
 	} else {
 		dest_value->data[0].v_pointer = NULL;
 	}
 }
 
 
-static gpointer value_tracker_plugin_factory_peek_pointer (const GValue* value) {
+static gpointer rygel_tracker_value_plugin_factory_peek_pointer (const GValue* value) {
 	return value->data[0].v_pointer;
 }
 
 
-static gchar* value_tracker_plugin_factory_collect_value (GValue* value, guint n_collect_values, GTypeCValue* collect_values, guint collect_flags) {
+static gchar* rygel_tracker_value_plugin_factory_collect_value (GValue* value, guint n_collect_values, GTypeCValue* collect_values, guint collect_flags) {
 	if (collect_values[0].v_pointer) {
-		TrackerPluginFactory* object;
+		RygelTrackerPluginFactory* object;
 		object = collect_values[0].v_pointer;
 		if (object->parent_instance.g_class == NULL) {
 			return g_strconcat ("invalid unclassed object pointer for value type `", G_VALUE_TYPE_NAME (value), "'", NULL);
 		} else if (!g_value_type_compatible (G_TYPE_FROM_INSTANCE (object), G_VALUE_TYPE (value))) {
 			return g_strconcat ("invalid object type `", g_type_name (G_TYPE_FROM_INSTANCE (object)), "' for value type `", G_VALUE_TYPE_NAME (value), "'", NULL);
 		}
-		value->data[0].v_pointer = tracker_plugin_factory_ref (object);
+		value->data[0].v_pointer = rygel_tracker_plugin_factory_ref (object);
 	} else {
 		value->data[0].v_pointer = NULL;
 	}
@@ -279,8 +279,8 @@ static gchar* value_tracker_plugin_factory_collect_value (GValue* value, guint n
 }
 
 
-static gchar* value_tracker_plugin_factory_lcopy_value (const GValue* value, guint n_collect_values, GTypeCValue* collect_values, guint collect_flags) {
-	TrackerPluginFactory** object_p;
+static gchar* rygel_tracker_value_plugin_factory_lcopy_value (const GValue* value, guint n_collect_values, GTypeCValue* collect_values, guint collect_flags) {
+	RygelTrackerPluginFactory** object_p;
 	object_p = collect_values[0].v_pointer;
 	if (!object_p) {
 		return g_strdup_printf ("value location for `%s' passed as NULL", G_VALUE_TYPE_NAME (value));
@@ -290,110 +290,110 @@ static gchar* value_tracker_plugin_factory_lcopy_value (const GValue* value, gui
 	} else if (collect_flags && G_VALUE_NOCOPY_CONTENTS) {
 		*object_p = value->data[0].v_pointer;
 	} else {
-		*object_p = tracker_plugin_factory_ref (value->data[0].v_pointer);
+		*object_p = rygel_tracker_plugin_factory_ref (value->data[0].v_pointer);
 	}
 	return NULL;
 }
 
 
-GParamSpec* param_spec_tracker_plugin_factory (const gchar* name, const gchar* nick, const gchar* blurb, GType object_type, GParamFlags flags) {
-	ParamSpecTrackerPluginFactory* spec;
-	g_return_val_if_fail (g_type_is_a (object_type, TYPE_TRACKER_PLUGIN_FACTORY), NULL);
+GParamSpec* rygel_tracker_param_spec_plugin_factory (const gchar* name, const gchar* nick, const gchar* blurb, GType object_type, GParamFlags flags) {
+	RygelTrackerParamSpecPluginFactory* spec;
+	g_return_val_if_fail (g_type_is_a (object_type, RYGEL_TRACKER_TYPE_PLUGIN_FACTORY), NULL);
 	spec = g_param_spec_internal (G_TYPE_PARAM_OBJECT, name, nick, blurb, flags);
 	G_PARAM_SPEC (spec)->value_type = object_type;
 	return G_PARAM_SPEC (spec);
 }
 
 
-gpointer value_get_tracker_plugin_factory (const GValue* value) {
-	g_return_val_if_fail (G_TYPE_CHECK_VALUE_TYPE (value, TYPE_TRACKER_PLUGIN_FACTORY), NULL);
+gpointer rygel_tracker_value_get_plugin_factory (const GValue* value) {
+	g_return_val_if_fail (G_TYPE_CHECK_VALUE_TYPE (value, RYGEL_TRACKER_TYPE_PLUGIN_FACTORY), NULL);
 	return value->data[0].v_pointer;
 }
 
 
-void value_set_tracker_plugin_factory (GValue* value, gpointer v_object) {
-	TrackerPluginFactory* old;
-	g_return_if_fail (G_TYPE_CHECK_VALUE_TYPE (value, TYPE_TRACKER_PLUGIN_FACTORY));
+void rygel_tracker_value_set_plugin_factory (GValue* value, gpointer v_object) {
+	RygelTrackerPluginFactory* old;
+	g_return_if_fail (G_TYPE_CHECK_VALUE_TYPE (value, RYGEL_TRACKER_TYPE_PLUGIN_FACTORY));
 	old = value->data[0].v_pointer;
 	if (v_object) {
-		g_return_if_fail (G_TYPE_CHECK_INSTANCE_TYPE (v_object, TYPE_TRACKER_PLUGIN_FACTORY));
+		g_return_if_fail (G_TYPE_CHECK_INSTANCE_TYPE (v_object, RYGEL_TRACKER_TYPE_PLUGIN_FACTORY));
 		g_return_if_fail (g_value_type_compatible (G_TYPE_FROM_INSTANCE (v_object), G_VALUE_TYPE (value)));
 		value->data[0].v_pointer = v_object;
-		tracker_plugin_factory_ref (value->data[0].v_pointer);
+		rygel_tracker_plugin_factory_ref (value->data[0].v_pointer);
 	} else {
 		value->data[0].v_pointer = NULL;
 	}
 	if (old) {
-		tracker_plugin_factory_unref (old);
+		rygel_tracker_plugin_factory_unref (old);
 	}
 }
 
 
-void value_take_tracker_plugin_factory (GValue* value, gpointer v_object) {
-	TrackerPluginFactory* old;
-	g_return_if_fail (G_TYPE_CHECK_VALUE_TYPE (value, TYPE_TRACKER_PLUGIN_FACTORY));
+void rygel_tracker_value_take_plugin_factory (GValue* value, gpointer v_object) {
+	RygelTrackerPluginFactory* old;
+	g_return_if_fail (G_TYPE_CHECK_VALUE_TYPE (value, RYGEL_TRACKER_TYPE_PLUGIN_FACTORY));
 	old = value->data[0].v_pointer;
 	if (v_object) {
-		g_return_if_fail (G_TYPE_CHECK_INSTANCE_TYPE (v_object, TYPE_TRACKER_PLUGIN_FACTORY));
+		g_return_if_fail (G_TYPE_CHECK_INSTANCE_TYPE (v_object, RYGEL_TRACKER_TYPE_PLUGIN_FACTORY));
 		g_return_if_fail (g_value_type_compatible (G_TYPE_FROM_INSTANCE (v_object), G_VALUE_TYPE (value)));
 		value->data[0].v_pointer = v_object;
 	} else {
 		value->data[0].v_pointer = NULL;
 	}
 	if (old) {
-		tracker_plugin_factory_unref (old);
+		rygel_tracker_plugin_factory_unref (old);
 	}
 }
 
 
-static void tracker_plugin_factory_class_init (TrackerPluginFactoryClass * klass) {
-	tracker_plugin_factory_parent_class = g_type_class_peek_parent (klass);
-	TRACKER_PLUGIN_FACTORY_CLASS (klass)->finalize = tracker_plugin_factory_finalize;
-	g_type_class_add_private (klass, sizeof (TrackerPluginFactoryPrivate));
+static void rygel_tracker_plugin_factory_class_init (RygelTrackerPluginFactoryClass * klass) {
+	rygel_tracker_plugin_factory_parent_class = g_type_class_peek_parent (klass);
+	RYGEL_TRACKER_PLUGIN_FACTORY_CLASS (klass)->finalize = rygel_tracker_plugin_factory_finalize;
+	g_type_class_add_private (klass, sizeof (RygelTrackerPluginFactoryPrivate));
 }
 
 
-static void tracker_plugin_factory_instance_init (TrackerPluginFactory * self) {
-	self->priv = TRACKER_PLUGIN_FACTORY_GET_PRIVATE (self);
+static void rygel_tracker_plugin_factory_instance_init (RygelTrackerPluginFactory * self) {
+	self->priv = RYGEL_TRACKER_PLUGIN_FACTORY_GET_PRIVATE (self);
 	self->ref_count = 1;
 }
 
 
-static void tracker_plugin_factory_finalize (TrackerPluginFactory* obj) {
-	TrackerPluginFactory * self;
-	self = TRACKER_PLUGIN_FACTORY (obj);
+static void rygel_tracker_plugin_factory_finalize (RygelTrackerPluginFactory* obj) {
+	RygelTrackerPluginFactory * self;
+	self = RYGEL_TRACKER_PLUGIN_FACTORY (obj);
 	_g_object_unref0 (self->priv->stats);
 	_g_object_unref0 (self->priv->loader);
 }
 
 
-GType tracker_plugin_factory_get_type (void) {
-	static volatile gsize tracker_plugin_factory_type_id__volatile = 0;
-	if (g_once_init_enter (&tracker_plugin_factory_type_id__volatile)) {
-		static const GTypeValueTable g_define_type_value_table = { value_tracker_plugin_factory_init, value_tracker_plugin_factory_free_value, value_tracker_plugin_factory_copy_value, value_tracker_plugin_factory_peek_pointer, "p", value_tracker_plugin_factory_collect_value, "p", value_tracker_plugin_factory_lcopy_value };
-		static const GTypeInfo g_define_type_info = { sizeof (TrackerPluginFactoryClass), (GBaseInitFunc) NULL, (GBaseFinalizeFunc) NULL, (GClassInitFunc) tracker_plugin_factory_class_init, (GClassFinalizeFunc) NULL, NULL, sizeof (TrackerPluginFactory), 0, (GInstanceInitFunc) tracker_plugin_factory_instance_init, &g_define_type_value_table };
+GType rygel_tracker_plugin_factory_get_type (void) {
+	static volatile gsize rygel_tracker_plugin_factory_type_id__volatile = 0;
+	if (g_once_init_enter (&rygel_tracker_plugin_factory_type_id__volatile)) {
+		static const GTypeValueTable g_define_type_value_table = { rygel_tracker_value_plugin_factory_init, rygel_tracker_value_plugin_factory_free_value, rygel_tracker_value_plugin_factory_copy_value, rygel_tracker_value_plugin_factory_peek_pointer, "p", rygel_tracker_value_plugin_factory_collect_value, "p", rygel_tracker_value_plugin_factory_lcopy_value };
+		static const GTypeInfo g_define_type_info = { sizeof (RygelTrackerPluginFactoryClass), (GBaseInitFunc) NULL, (GBaseFinalizeFunc) NULL, (GClassInitFunc) rygel_tracker_plugin_factory_class_init, (GClassFinalizeFunc) NULL, NULL, sizeof (RygelTrackerPluginFactory), 0, (GInstanceInitFunc) rygel_tracker_plugin_factory_instance_init, &g_define_type_value_table };
 		static const GTypeFundamentalInfo g_define_type_fundamental_info = { (G_TYPE_FLAG_CLASSED | G_TYPE_FLAG_INSTANTIATABLE | G_TYPE_FLAG_DERIVABLE | G_TYPE_FLAG_DEEP_DERIVABLE) };
-		GType tracker_plugin_factory_type_id;
-		tracker_plugin_factory_type_id = g_type_register_fundamental (g_type_fundamental_next (), "TrackerPluginFactory", &g_define_type_info, &g_define_type_fundamental_info, 0);
-		g_once_init_leave (&tracker_plugin_factory_type_id__volatile, tracker_plugin_factory_type_id);
+		GType rygel_tracker_plugin_factory_type_id;
+		rygel_tracker_plugin_factory_type_id = g_type_register_fundamental (g_type_fundamental_next (), "RygelTrackerPluginFactory", &g_define_type_info, &g_define_type_fundamental_info, 0);
+		g_once_init_leave (&rygel_tracker_plugin_factory_type_id__volatile, rygel_tracker_plugin_factory_type_id);
 	}
-	return tracker_plugin_factory_type_id__volatile;
+	return rygel_tracker_plugin_factory_type_id__volatile;
 }
 
 
-gpointer tracker_plugin_factory_ref (gpointer instance) {
-	TrackerPluginFactory* self;
+gpointer rygel_tracker_plugin_factory_ref (gpointer instance) {
+	RygelTrackerPluginFactory* self;
 	self = instance;
 	g_atomic_int_inc (&self->ref_count);
 	return instance;
 }
 
 
-void tracker_plugin_factory_unref (gpointer instance) {
-	TrackerPluginFactory* self;
+void rygel_tracker_plugin_factory_unref (gpointer instance) {
+	RygelTrackerPluginFactory* self;
 	self = instance;
 	if (g_atomic_int_dec_and_test (&self->ref_count)) {
-		TRACKER_PLUGIN_FACTORY_GET_CLASS (self)->finalize (self);
+		RYGEL_TRACKER_PLUGIN_FACTORY_GET_CLASS (self)->finalize (self);
 		g_type_free_instance ((GTypeInstance *) self);
 	}
 }

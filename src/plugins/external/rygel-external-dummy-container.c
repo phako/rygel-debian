@@ -35,12 +35,12 @@
 #include <gee.h>
 
 
-#define RYGEL_TYPE_EXTERNAL_DUMMY_CONTAINER (rygel_external_dummy_container_get_type ())
-#define RYGEL_EXTERNAL_DUMMY_CONTAINER(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_EXTERNAL_DUMMY_CONTAINER, RygelExternalDummyContainer))
-#define RYGEL_EXTERNAL_DUMMY_CONTAINER_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TYPE_EXTERNAL_DUMMY_CONTAINER, RygelExternalDummyContainerClass))
-#define RYGEL_IS_EXTERNAL_DUMMY_CONTAINER(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TYPE_EXTERNAL_DUMMY_CONTAINER))
-#define RYGEL_IS_EXTERNAL_DUMMY_CONTAINER_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_TYPE_EXTERNAL_DUMMY_CONTAINER))
-#define RYGEL_EXTERNAL_DUMMY_CONTAINER_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_TYPE_EXTERNAL_DUMMY_CONTAINER, RygelExternalDummyContainerClass))
+#define RYGEL_EXTERNAL_TYPE_DUMMY_CONTAINER (rygel_external_dummy_container_get_type ())
+#define RYGEL_EXTERNAL_DUMMY_CONTAINER(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_EXTERNAL_TYPE_DUMMY_CONTAINER, RygelExternalDummyContainer))
+#define RYGEL_EXTERNAL_DUMMY_CONTAINER_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_EXTERNAL_TYPE_DUMMY_CONTAINER, RygelExternalDummyContainerClass))
+#define RYGEL_EXTERNAL_IS_DUMMY_CONTAINER(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_EXTERNAL_TYPE_DUMMY_CONTAINER))
+#define RYGEL_EXTERNAL_IS_DUMMY_CONTAINER_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_EXTERNAL_TYPE_DUMMY_CONTAINER))
+#define RYGEL_EXTERNAL_DUMMY_CONTAINER_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_EXTERNAL_TYPE_DUMMY_CONTAINER, RygelExternalDummyContainerClass))
 
 typedef struct _RygelExternalDummyContainer RygelExternalDummyContainer;
 typedef struct _RygelExternalDummyContainerClass RygelExternalDummyContainerClass;
@@ -102,7 +102,7 @@ RygelExternalDummyContainer* rygel_external_dummy_container_construct (GType obj
 #line 34 "rygel-external-dummy-container.vala"
 RygelExternalDummyContainer* rygel_external_dummy_container_new (const char* id, const char* title, guint child_coult, RygelMediaContainer* parent) {
 #line 34 "rygel-external-dummy-container.vala"
-	return rygel_external_dummy_container_construct (RYGEL_TYPE_EXTERNAL_DUMMY_CONTAINER, id, title, child_coult, parent);
+	return rygel_external_dummy_container_construct (RYGEL_EXTERNAL_TYPE_DUMMY_CONTAINER, id, title, child_coult, parent);
 #line 107 "rygel-external-dummy-container.c"
 }
 

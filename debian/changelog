@@ -1,3 +1,10 @@
+rygel (0.7.2-1) experimental; urgency=low
+
+  * Imported Upstream version 0.7.2
+  * update debian/copyright: gstrenderer was re-licensed to LGPLv2+.
+
+ -- Andreas Henriksson <andreas@fatal.se>  Tue, 13 Jul 2010 09:38:10 +0200
+
 rygel (0.7.1-1) experimental; urgency=low
 
   [ Andreas Henriksson ]

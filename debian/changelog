@@ -1,3 +1,22 @@
+rygel (0.7.3-1) UNRELEASED; urgency=low
+
+  * Imported Upstream version 0.7.3
+  * debian/control: update build-dependencies.
+    - add gupnp-dlna (>= 0.2.1)
+    - bump gupnp to >= 0.13.4, gupnp-av to >= 0.5.8,
+      libgee to >= 0.5.2 and gtk+ to >= 2.21.5
+    (gupnp-dlna and the version of Gtk+ is only available for experimental)
+
+  (This round also included the following changes, which was
+   then dropped again because of getting a fix upstream:
+  * Add patches to revert building rygel-preferences against Gtk+ 3.x
+  * Revert "Temporarily disable installing rygel-preferences"
+  * .... upstream 0.7.3 introduces a configure switch ...
+  * drop "revert gtk3/autoreconf" patches.
+  )
+
+ -- Andreas Henriksson <andreas@fatal.se>  Tue, 03 Aug 2010 11:33:06 +0200
+
 rygel (0.7.2-1) experimental; urgency=low
 
   * Imported Upstream version 0.7.2

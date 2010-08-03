@@ -76,7 +76,7 @@ GParamSpec* rygel_param_spec_subtitle (const gchar* name, const gchar* nick, con
 void rygel_value_set_subtitle (GValue* value, gpointer v_object);
 void rygel_value_take_subtitle (GValue* value, gpointer v_object);
 gpointer rygel_value_get_subtitle (const GValue* value);
-GType rygel_subtitle_get_type (void);
+GType rygel_subtitle_get_type (void) G_GNUC_CONST;
 enum  {
 	RYGEL_SUBTITLE_DUMMY_PROPERTY
 };

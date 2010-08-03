@@ -27,428 +27,571 @@
 #include <glib.h>
 #include <glib-object.h>
 #include <rygel.h>
+#include <gio/gio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <gio/gio.h>
+#include <gst/discoverer/gstdiscoverer.h>
+#include <libgupnp-dlna/gupnp-dlna-information.h>
 #include <gst/gst.h>
-#include <glib/gi18n-lib.h>
 
 
-#define RYGEL_MEDIA_EXPORT_TYPE_MEDIA_EXPORT_ITEM (rygel_media_export_media_export_item_get_type ())
-#define RYGEL_MEDIA_EXPORT_MEDIA_EXPORT_ITEM(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_MEDIA_EXPORT_TYPE_MEDIA_EXPORT_ITEM, RygelMediaExportMediaExportItem))
-#define RYGEL_MEDIA_EXPORT_MEDIA_EXPORT_ITEM_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_MEDIA_EXPORT_TYPE_MEDIA_EXPORT_ITEM, RygelMediaExportMediaExportItemClass))
-#define RYGEL_MEDIA_EXPORT_IS_MEDIA_EXPORT_ITEM(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_MEDIA_EXPORT_TYPE_MEDIA_EXPORT_ITEM))
-#define RYGEL_MEDIA_EXPORT_IS_MEDIA_EXPORT_ITEM_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_MEDIA_EXPORT_TYPE_MEDIA_EXPORT_ITEM))
-#define RYGEL_MEDIA_EXPORT_MEDIA_EXPORT_ITEM_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_MEDIA_EXPORT_TYPE_MEDIA_EXPORT_ITEM, RygelMediaExportMediaExportItemClass))
+#define RYGEL_MEDIA_EXPORT_TYPE_ITEM (rygel_media_export_item_get_type ())
+#define RYGEL_MEDIA_EXPORT_ITEM(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_MEDIA_EXPORT_TYPE_ITEM, RygelMediaExportItem))
+#define RYGEL_MEDIA_EXPORT_ITEM_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_MEDIA_EXPORT_TYPE_ITEM, RygelMediaExportItemClass))
+#define RYGEL_MEDIA_EXPORT_IS_ITEM(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_MEDIA_EXPORT_TYPE_ITEM))
+#define RYGEL_MEDIA_EXPORT_IS_ITEM_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_MEDIA_EXPORT_TYPE_ITEM))
+#define RYGEL_MEDIA_EXPORT_ITEM_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_MEDIA_EXPORT_TYPE_ITEM, RygelMediaExportItemClass))
 
-typedef struct _RygelMediaExportMediaExportItem RygelMediaExportMediaExportItem;
-typedef struct _RygelMediaExportMediaExportItemClass RygelMediaExportMediaExportItemClass;
-typedef struct _RygelMediaExportMediaExportItemPrivate RygelMediaExportMediaExportItemPrivate;
+typedef struct _RygelMediaExportItem RygelMediaExportItem;
+typedef struct _RygelMediaExportItemClass RygelMediaExportItemClass;
+typedef struct _RygelMediaExportItemPrivate RygelMediaExportItemPrivate;
 #define _g_free0(var) (var = (g_free (var), NULL))
 
-struct _RygelMediaExportMediaExportItem {
+struct _RygelMediaExportItem {
 	RygelMediaItem parent_instance;
-	RygelMediaExportMediaExportItemPrivate * priv;
+	RygelMediaExportItemPrivate * priv;
 };
 
-struct _RygelMediaExportMediaExportItemClass {
+struct _RygelMediaExportItemClass {
 	RygelMediaItemClass parent_class;
 };
 
 
-static gpointer rygel_media_export_media_export_item_parent_class = NULL;
+static gpointer rygel_media_export_item_parent_class = NULL;
 
-GType rygel_media_export_media_export_item_get_type (void);
+GType rygel_media_export_item_get_type (void) G_GNUC_CONST;
 enum  {
-	RYGEL_MEDIA_EXPORT_MEDIA_EXPORT_ITEM_DUMMY_PROPERTY
+	RYGEL_MEDIA_EXPORT_ITEM_DUMMY_PROPERTY
 };
-#define RYGEL_MEDIA_EXPORT_METADATA_EXTRACTOR_TAG_RYGEL_WIDTH "rygel-width"
-#define RYGEL_MEDIA_EXPORT_MEDIA_EXPORT_ITEM_TAG_WIDTH RYGEL_MEDIA_EXPORT_METADATA_EXTRACTOR_TAG_RYGEL_WIDTH
-#define RYGEL_MEDIA_EXPORT_METADATA_EXTRACTOR_TAG_RYGEL_HEIGHT "rygel-height"
-#define RYGEL_MEDIA_EXPORT_MEDIA_EXPORT_ITEM_TAG_HEIGHT RYGEL_MEDIA_EXPORT_METADATA_EXTRACTOR_TAG_RYGEL_HEIGHT
-#define RYGEL_MEDIA_EXPORT_METADATA_EXTRACTOR_TAG_RYGEL_MIME "rygel-mime"
-static RygelMediaExportMediaExportItem* rygel_media_export_media_export_item_new (RygelMediaContainer* parent, const char* id, GFile* file, GstTagList* tag_list, const char* upnp_class);
-static RygelMediaExportMediaExportItem* rygel_media_export_media_export_item_construct (GType object_type, RygelMediaContainer* parent, const char* id, GFile* file, GstTagList* tag_list, const char* upnp_class);
-RygelMediaExportMediaExportItem* rygel_media_export_media_export_item_create_from_taglist (RygelMediaContainer* parent, GFile* file, GstTagList* tag_list);
-#define RYGEL_MEDIA_EXPORT_METADATA_EXTRACTOR_TAG_RYGEL_DEPTH "rygel-depth"
-#define RYGEL_MEDIA_EXPORT_METADATA_EXTRACTOR_TAG_RYGEL_CHANNELS "rygel-channels"
-#define RYGEL_MEDIA_EXPORT_METADATA_EXTRACTOR_TAG_RYGEL_RATE "rygel-rate"
-#define RYGEL_MEDIA_EXPORT_METADATA_EXTRACTOR_TAG_RYGEL_SIZE "rygel-size"
-#define RYGEL_MEDIA_EXPORT_METADATA_EXTRACTOR_TAG_RYGEL_MTIME "rygel-mtime"
-static int _vala_strcmp0 (const char * str1, const char * str2);
+char* rygel_media_export_item_get_id (GFile* file);
+RygelMediaExportItem* rygel_media_export_item_new_simple (RygelMediaContainer* parent, GFile* file, const char* mime, guint64 size, guint64 mtime);
+RygelMediaExportItem* rygel_media_export_item_construct_simple (GType object_type, RygelMediaContainer* parent, GFile* file, const char* mime, guint64 size, guint64 mtime);
+static RygelMediaExportItem* rygel_media_export_item_new_photo (RygelMediaContainer* parent, const char* id, GFile* file, GUPnPDLNAInformation* dlna_info, GstStreamVideoInformation* video_info, const char* mime, guint64 size, guint64 mtime);
+static RygelMediaExportItem* rygel_media_export_item_construct_photo (GType object_type, RygelMediaContainer* parent, const char* id, GFile* file, GUPnPDLNAInformation* dlna_info, GstStreamVideoInformation* video_info, const char* mime, guint64 size, guint64 mtime);
+static RygelMediaExportItem* rygel_media_export_item_new_video (RygelMediaContainer* parent, const char* id, GFile* file, GUPnPDLNAInformation* dlna_info, GstStreamVideoInformation* video_info, GstStreamAudioInformation* audio_info, const char* mime, guint64 size, guint64 mtime);
+static RygelMediaExportItem* rygel_media_export_item_construct_video (GType object_type, RygelMediaContainer* parent, const char* id, GFile* file, GUPnPDLNAInformation* dlna_info, GstStreamVideoInformation* video_info, GstStreamAudioInformation* audio_info, const char* mime, guint64 size, guint64 mtime);
+static RygelMediaExportItem* rygel_media_export_item_new_audio (RygelMediaContainer* parent, const char* id, GFile* file, GUPnPDLNAInformation* dlna_info, GstStreamAudioInformation* audio_info, const char* mime, guint64 size, guint64 mtime);
+static RygelMediaExportItem* rygel_media_export_item_construct_audio (GType object_type, RygelMediaContainer* parent, const char* id, GFile* file, GUPnPDLNAInformation* dlna_info, GstStreamAudioInformation* audio_info, const char* mime, guint64 size, guint64 mtime);
+RygelMediaExportItem* rygel_media_export_item_create_from_info (RygelMediaContainer* parent, GFile* file, GUPnPDLNAInformation* dlna_info, const char* mime, guint64 size, guint64 mtime);
+static RygelMediaExportItem* rygel_media_export_item_new (RygelMediaContainer* parent, const char* id, GFile* file, GUPnPDLNAInformation* dlna_info, const char* mime, guint64 size, guint64 mtime, const char* upnp_class);
+static RygelMediaExportItem* rygel_media_export_item_construct (GType object_type, RygelMediaContainer* parent, const char* id, GFile* file, GUPnPDLNAInformation* dlna_info, const char* mime, guint64 size, guint64 mtime, const char* upnp_class);
 
 
 
-#line 34 "rygel-media-export-item.vala"
-RygelMediaExportMediaExportItem* rygel_media_export_media_export_item_create_from_taglist (RygelMediaContainer* parent, GFile* file, GstTagList* tag_list) {
-#line 85 "rygel-media-export-item.c"
-	RygelMediaExportMediaExportItem* result = NULL;
+#line 31 "rygel-media-export-item.vala"
+char* rygel_media_export_item_get_id (GFile* file) {
+#line 84 "rygel-media-export-item.c"
+	char* result = NULL;
 	char* _tmp0_;
 	char* _tmp1_;
-	char* id;
-	gint width;
-	gint height;
-	char* class_guessed;
-#line 34 "rygel-media-export-item.vala"
-	g_return_val_if_fail (parent != NULL, NULL);
-#line 34 "rygel-media-export-item.vala"
+#line 31 "rygel-media-export-item.vala"
 	g_return_val_if_fail (file != NULL, NULL);
-#line 34 "rygel-media-export-item.vala"
-	g_return_val_if_fail (tag_list != NULL, NULL);
-#line 37 "rygel-media-export-item.vala"
-	id = (_tmp1_ = g_compute_checksum_for_string (G_CHECKSUM_MD5, _tmp0_ = g_file_get_uri (file), -1), _g_free0 (_tmp0_), _tmp1_);
-#line 39 "rygel-media-export-item.vala"
-	width = -1;
-#line 40 "rygel-media-export-item.vala"
-	height = -1;
-#line 41 "rygel-media-export-item.vala"
-	class_guessed = NULL;
-#line 43 "rygel-media-export-item.vala"
-	if (tag_list != NULL) {
-#line 109 "rygel-media-export-item.c"
-		char* codec;
-		char* _tmp4_;
-		gboolean _tmp3_;
-		char* _tmp2_ = NULL;
-		codec = NULL;
-#line 46 "rygel-media-export-item.vala"
-		if (!(_tmp3_ = gst_tag_list_get_string (tag_list, GST_TAG_VIDEO_CODEC, &_tmp2_), codec = (_tmp4_ = _tmp2_, _g_free0 (codec), _tmp4_), _tmp3_)) {
-#line 117 "rygel-media-export-item.c"
-			char* _tmp7_;
-			gboolean _tmp6_;
-			char* _tmp5_ = NULL;
-#line 47 "rygel-media-export-item.vala"
-			if (!(_tmp6_ = gst_tag_list_get_string (tag_list, GST_TAG_AUDIO_CODEC, &_tmp5_), codec = (_tmp7_ = _tmp5_, _g_free0 (codec), _tmp7_), _tmp6_)) {
-#line 123 "rygel-media-export-item.c"
-				gboolean _tmp8_ = FALSE;
-#line 48 "rygel-media-export-item.vala"
-				if (gst_tag_list_get_int (tag_list, RYGEL_MEDIA_EXPORT_MEDIA_EXPORT_ITEM_TAG_WIDTH, &width)) {
-#line 48 "rygel-media-export-item.vala"
-					_tmp8_ = TRUE;
-#line 129 "rygel-media-export-item.c"
-				} else {
-#line 49 "rygel-media-export-item.vala"
-					_tmp8_ = gst_tag_list_get_int (tag_list, RYGEL_MEDIA_EXPORT_MEDIA_EXPORT_ITEM_TAG_HEIGHT, &height);
-#line 133 "rygel-media-export-item.c"
-				}
-#line 48 "rygel-media-export-item.vala"
-				if (_tmp8_) {
-#line 137 "rygel-media-export-item.c"
-					char* _tmp9_;
-#line 50 "rygel-media-export-item.vala"
-					class_guessed = (_tmp9_ = g_strdup (RYGEL_MEDIA_ITEM_PHOTO_CLASS), _g_free0 (class_guessed), _tmp9_);
-#line 141 "rygel-media-export-item.c"
-				} else {
-					gint64 duration = 0LL;
-#line 56 "rygel-media-export-item.vala"
-					if (gst_tag_list_get_int64 (tag_list, GST_TAG_DURATION, &duration)) {
-#line 146 "rygel-media-export-item.c"
-						char* _tmp10_;
-#line 58 "rygel-media-export-item.vala"
-						class_guessed = (_tmp10_ = g_strdup (RYGEL_MEDIA_ITEM_VIDEO_CLASS), _g_free0 (class_guessed), _tmp10_);
-#line 150 "rygel-media-export-item.c"
-					} else {
-						char* content_type;
-						char* _tmp12_;
-						char* _tmp11_ = NULL;
-						char* _tmp13_;
-						content_type = NULL;
-#line 61 "rygel-media-export-item.vala"
-						gst_tag_list_get_string (tag_list, RYGEL_MEDIA_EXPORT_METADATA_EXTRACTOR_TAG_RYGEL_MIME, &_tmp11_);
-#line 61 "rygel-media-export-item.vala"
-						content_type = (_tmp12_ = _tmp11_, _g_free0 (content_type), _tmp12_);
-#line 63 "rygel-media-export-item.vala"
-						g_debug (_ ("File '%s' is of unknown format/type."), _tmp13_ = g_file_get_uri (file));
-#line 163 "rygel-media-export-item.c"
-						_g_free0 (_tmp13_);
-#line 65 "rygel-media-export-item.vala"
-						g_debug (_ ("Trying to guess from content type %s"), content_type);
-#line 67 "rygel-media-export-item.vala"
-						if (g_str_has_prefix (content_type, "video/")) {
-#line 169 "rygel-media-export-item.c"
-							char* _tmp14_;
-#line 68 "rygel-media-export-item.vala"
-							class_guessed = (_tmp14_ = g_strdup (RYGEL_MEDIA_ITEM_VIDEO_CLASS), _g_free0 (class_guessed), _tmp14_);
-#line 173 "rygel-media-export-item.c"
-						} else {
-#line 69 "rygel-media-export-item.vala"
-							if (g_str_has_prefix (content_type, "audio/")) {
-#line 177 "rygel-media-export-item.c"
-								char* _tmp15_;
-#line 70 "rygel-media-export-item.vala"
-								class_guessed = (_tmp15_ = g_strdup (RYGEL_MEDIA_ITEM_AUDIO_CLASS), _g_free0 (class_guessed), _tmp15_);
-#line 181 "rygel-media-export-item.c"
-							} else {
-#line 71 "rygel-media-export-item.vala"
-								if (g_str_has_prefix (content_type, "image/")) {
-#line 185 "rygel-media-export-item.c"
-									char* _tmp16_;
-#line 72 "rygel-media-export-item.vala"
-									class_guessed = (_tmp16_ = g_strdup (RYGEL_MEDIA_ITEM_PHOTO_CLASS), _g_free0 (class_guessed), _tmp16_);
-#line 189 "rygel-media-export-item.c"
-								}
-							}
-						}
-#line 75 "rygel-media-export-item.vala"
-						if (class_guessed == NULL) {
-#line 195 "rygel-media-export-item.c"
-							char* _tmp17_;
-							char* _tmp18_;
-#line 76 "rygel-media-export-item.vala"
-							class_guessed = (_tmp17_ = g_strdup (RYGEL_MEDIA_ITEM_AUDIO_CLASS), _g_free0 (class_guessed), _tmp17_);
-#line 77 "rygel-media-export-item.vala"
-							g_warning (_ ("Failed to detect UPnP class for '%s', assuming '%s'"), _tmp18_ = g_file_get_uri (file), class_guessed);
-#line 202 "rygel-media-export-item.c"
-							_g_free0 (_tmp18_);
-						}
-						_g_free0 (content_type);
-					}
-				}
-			} else {
-				gboolean _tmp19_ = FALSE;
-#line 87 "rygel-media-export-item.vala"
-				if (gst_tag_list_get_int (tag_list, RYGEL_MEDIA_EXPORT_MEDIA_EXPORT_ITEM_TAG_WIDTH, &width)) {
-#line 87 "rygel-media-export-item.vala"
-					_tmp19_ = TRUE;
-#line 214 "rygel-media-export-item.c"
-				} else {
-#line 88 "rygel-media-export-item.vala"
-					_tmp19_ = gst_tag_list_get_int (tag_list, RYGEL_MEDIA_EXPORT_MEDIA_EXPORT_ITEM_TAG_HEIGHT, &height);
-#line 218 "rygel-media-export-item.c"
-				}
-#line 87 "rygel-media-export-item.vala"
-				if (_tmp19_) {
-#line 222 "rygel-media-export-item.c"
-					char* _tmp20_;
-#line 89 "rygel-media-export-item.vala"
-					class_guessed = (_tmp20_ = g_strdup (RYGEL_MEDIA_ITEM_VIDEO_CLASS), _g_free0 (class_guessed), _tmp20_);
-#line 226 "rygel-media-export-item.c"
-				} else {
-					char* _tmp21_;
-#line 91 "rygel-media-export-item.vala"
-					class_guessed = (_tmp21_ = g_strdup (RYGEL_MEDIA_ITEM_AUDIO_CLASS), _g_free0 (class_guessed), _tmp21_);
-#line 231 "rygel-media-export-item.c"
-				}
-			}
-		} else {
-			char* _tmp22_;
-#line 95 "rygel-media-export-item.vala"
-			class_guessed = (_tmp22_ = g_strdup (RYGEL_MEDIA_ITEM_VIDEO_CLASS), _g_free0 (class_guessed), _tmp22_);
-#line 238 "rygel-media-export-item.c"
-		}
-		_g_free0 (codec);
-	} else {
-		char* _tmp23_;
-#line 99 "rygel-media-export-item.vala"
-		g_warning (_ ("Got empty taglist for file %s"), _tmp23_ = g_file_get_uri (file));
-#line 245 "rygel-media-export-item.c"
-		_g_free0 (_tmp23_);
-		result = NULL;
-		_g_free0 (id);
-		_g_free0 (class_guessed);
-#line 101 "rygel-media-export-item.vala"
-		return result;
-#line 252 "rygel-media-export-item.c"
-	}
-	result = rygel_media_export_media_export_item_new (parent, id, file, tag_list, class_guessed);
-	_g_free0 (id);
-	_g_free0 (class_guessed);
-#line 104 "rygel-media-export-item.vala"
+#line 90 "rygel-media-export-item.c"
+	result = (_tmp1_ = g_compute_checksum_for_string (G_CHECKSUM_MD5, _tmp0_ = g_file_get_uri (file), -1), _g_free0 (_tmp0_), _tmp1_);
+#line 32 "rygel-media-export-item.vala"
 	return result;
-#line 259 "rygel-media-export-item.c"
+#line 94 "rygel-media-export-item.c"
 }
 
 
-#line 111 "rygel-media-export-item.vala"
-static RygelMediaExportMediaExportItem* rygel_media_export_media_export_item_construct (GType object_type, RygelMediaContainer* parent, const char* id, GFile* file, GstTagList* tag_list, const char* upnp_class) {
-#line 265 "rygel-media-export-item.c"
-	RygelMediaExportMediaExportItem * self;
+#line 36 "rygel-media-export-item.vala"
+RygelMediaExportItem* rygel_media_export_item_construct_simple (GType object_type, RygelMediaContainer* parent, GFile* file, const char* mime, guint64 size, guint64 mtime) {
+#line 100 "rygel-media-export-item.c"
+	RygelMediaExportItem * self;
 	char* title;
-	gboolean _tmp0_ = FALSE;
-	guint64 duration = 0ULL;
-	glong _tmp6_ = 0L;
-	char* _tmp8_;
-	char* _tmp7_ = NULL;
-	char* _tmp10_;
-	char* _tmp9_ = NULL;
-	guint tmp = 0U;
-	gint64 size = 0LL;
-	guint64 mtime = 0ULL;
-	GDate* date = NULL;
-	GDate* _tmp13_;
-	gboolean _tmp12_;
-	GDate* _tmp11_ = NULL;
-	char* _tmp19_;
-	char* _tmp18_ = NULL;
-	char* _tmp20_;
-#line 111 "rygel-media-export-item.vala"
+	char* upnp_class;
+	char* _tmp3_;
+	char* _tmp4_;
+	char* _tmp5_;
+#line 36 "rygel-media-export-item.vala"
 	g_return_val_if_fail (parent != NULL, NULL);
-#line 111 "rygel-media-export-item.vala"
-	g_return_val_if_fail (id != NULL, NULL);
-#line 111 "rygel-media-export-item.vala"
+#line 36 "rygel-media-export-item.vala"
 	g_return_val_if_fail (file != NULL, NULL);
-#line 111 "rygel-media-export-item.vala"
-	g_return_val_if_fail (tag_list != NULL, NULL);
-#line 111 "rygel-media-export-item.vala"
-	g_return_val_if_fail (upnp_class != NULL, NULL);
-#line 116 "rygel-media-export-item.vala"
-	title = NULL;
-#line 117 "rygel-media-export-item.vala"
-	if (_vala_strcmp0 (upnp_class, RYGEL_MEDIA_ITEM_AUDIO_CLASS) == 0) {
-#line 117 "rygel-media-export-item.vala"
-		_tmp0_ = TRUE;
-#line 301 "rygel-media-export-item.c"
+#line 36 "rygel-media-export-item.vala"
+	g_return_val_if_fail (mime != NULL, NULL);
+#line 41 "rygel-media-export-item.vala"
+	title = g_file_get_basename (file);
+#line 115 "rygel-media-export-item.c"
+	upnp_class = NULL;
+#line 44 "rygel-media-export-item.vala"
+	if (g_str_has_prefix (mime, "video/")) {
+#line 119 "rygel-media-export-item.c"
+		char* _tmp0_;
+#line 45 "rygel-media-export-item.vala"
+		upnp_class = (_tmp0_ = g_strdup (RYGEL_MEDIA_ITEM_VIDEO_CLASS), _g_free0 (upnp_class), _tmp0_);
+#line 123 "rygel-media-export-item.c"
 	} else {
-#line 118 "rygel-media-export-item.vala"
-		_tmp0_ = _vala_strcmp0 (upnp_class, RYGEL_MEDIA_ITEM_MUSIC_CLASS) == 0;
-#line 305 "rygel-media-export-item.c"
-	}
-#line 117 "rygel-media-export-item.vala"
-	if (_tmp0_) {
-#line 309 "rygel-media-export-item.c"
-		char* _tmp3_;
-		gboolean _tmp2_;
-		char* _tmp1_ = NULL;
-#line 120 "rygel-media-export-item.vala"
-		if (!(_tmp2_ = gst_tag_list_get_string (tag_list, GST_TAG_TITLE, &_tmp1_), title = (_tmp3_ = _tmp1_, _g_free0 (title), _tmp3_), _tmp2_)) {
-#line 315 "rygel-media-export-item.c"
-			char* _tmp4_;
-#line 121 "rygel-media-export-item.vala"
-			title = (_tmp4_ = g_file_get_basename (file), _g_free0 (title), _tmp4_);
-#line 319 "rygel-media-export-item.c"
+#line 46 "rygel-media-export-item.vala"
+		if (g_str_has_prefix (mime, "image/")) {
+#line 127 "rygel-media-export-item.c"
+			char* _tmp1_;
+#line 47 "rygel-media-export-item.vala"
+			upnp_class = (_tmp1_ = g_strdup (RYGEL_MEDIA_ITEM_PHOTO_CLASS), _g_free0 (upnp_class), _tmp1_);
+#line 131 "rygel-media-export-item.c"
+		} else {
+			char* _tmp2_;
+#line 49 "rygel-media-export-item.vala"
+			upnp_class = (_tmp2_ = g_strdup (RYGEL_MEDIA_ITEM_AUDIO_CLASS), _g_free0 (upnp_class), _tmp2_);
+#line 136 "rygel-media-export-item.c"
 		}
-	} else {
-		char* _tmp5_;
-#line 125 "rygel-media-export-item.vala"
-		title = (_tmp5_ = g_file_get_basename (file), _g_free0 (title), _tmp5_);
-#line 325 "rygel-media-export-item.c"
 	}
-#line 127 "rygel-media-export-item.vala"
-	self = (RygelMediaExportMediaExportItem*) rygel_media_item_construct (object_type, id, parent, title, upnp_class);
-#line 129 "rygel-media-export-item.vala"
-	gst_tag_list_get_int (tag_list, RYGEL_MEDIA_EXPORT_MEDIA_EXPORT_ITEM_TAG_WIDTH, &((RygelMediaItem*) self)->width);
-#line 130 "rygel-media-export-item.vala"
-	gst_tag_list_get_int (tag_list, RYGEL_MEDIA_EXPORT_MEDIA_EXPORT_ITEM_TAG_HEIGHT, &((RygelMediaItem*) self)->height);
-#line 131 "rygel-media-export-item.vala"
-	gst_tag_list_get_int (tag_list, RYGEL_MEDIA_EXPORT_METADATA_EXTRACTOR_TAG_RYGEL_DEPTH, &((RygelMediaItem*) self)->color_depth);
-#line 134 "rygel-media-export-item.vala"
-	gst_tag_list_get_uint64 (tag_list, GST_TAG_DURATION, &duration);
-#line 135 "rygel-media-export-item.vala"
-	if (duration == (-1)) {
-#line 135 "rygel-media-export-item.vala"
-		_tmp6_ = (glong) (-1);
-#line 341 "rygel-media-export-item.c"
-	} else {
-#line 135 "rygel-media-export-item.vala"
-		_tmp6_ = (glong) (duration / 1000000000);
-#line 345 "rygel-media-export-item.c"
-	}
-#line 135 "rygel-media-export-item.vala"
-	((RygelMediaItem*) self)->duration = _tmp6_;
-#line 137 "rygel-media-export-item.vala"
-	gst_tag_list_get_int (tag_list, RYGEL_MEDIA_EXPORT_METADATA_EXTRACTOR_TAG_RYGEL_CHANNELS, &((RygelMediaItem*) self)->n_audio_channels);
-#line 140 "rygel-media-export-item.vala"
-	gst_tag_list_get_string (tag_list, GST_TAG_ARTIST, &_tmp7_);
-#line 140 "rygel-media-export-item.vala"
-	((RygelMediaItem*) self)->author = (_tmp8_ = _tmp7_, _g_free0 (((RygelMediaItem*) self)->author), _tmp8_);
-#line 141 "rygel-media-export-item.vala"
-	gst_tag_list_get_string (tag_list, GST_TAG_ALBUM, &_tmp9_);
-#line 141 "rygel-media-export-item.vala"
-	((RygelMediaItem*) self)->album = (_tmp10_ = _tmp9_, _g_free0 (((RygelMediaItem*) self)->album), _tmp10_);
-#line 144 "rygel-media-export-item.vala"
-	gst_tag_list_get_uint (tag_list, GST_TAG_TRACK_NUMBER, &tmp);
-#line 145 "rygel-media-export-item.vala"
-	((RygelMediaItem*) self)->track_number = (gint) tmp;
-#line 146 "rygel-media-export-item.vala"
-	gst_tag_list_get_uint (tag_list, GST_TAG_BITRATE, &tmp);
-#line 147 "rygel-media-export-item.vala"
-	((RygelMediaItem*) self)->bitrate = ((gint) tmp) / 8;
-#line 148 "rygel-media-export-item.vala"
-	gst_tag_list_get_int (tag_list, RYGEL_MEDIA_EXPORT_METADATA_EXTRACTOR_TAG_RYGEL_RATE, &((RygelMediaItem*) self)->sample_freq);
-#line 153 "rygel-media-export-item.vala"
-	gst_tag_list_get_int64 (tag_list, RYGEL_MEDIA_EXPORT_METADATA_EXTRACTOR_TAG_RYGEL_SIZE, &size);
-#line 155 "rygel-media-export-item.vala"
+#line 52 "rygel-media-export-item.vala"
+	self = (RygelMediaExportItem*) rygel_media_item_construct (object_type, _tmp3_ = rygel_media_export_item_get_id (file), parent, title, upnp_class);
+#line 141 "rygel-media-export-item.c"
+	_g_free0 (_tmp3_);
+#line 53 "rygel-media-export-item.vala"
+	((RygelMediaItem*) self)->mime_type = (_tmp4_ = g_strdup (mime), _g_free0 (((RygelMediaItem*) self)->mime_type), _tmp4_);
+#line 54 "rygel-media-export-item.vala"
 	((RygelMediaItem*) self)->size = (glong) size;
-#line 158 "rygel-media-export-item.vala"
-	gst_tag_list_get_uint64 (tag_list, RYGEL_MEDIA_EXPORT_METADATA_EXTRACTOR_TAG_RYGEL_MTIME, &mtime);
-#line 160 "rygel-media-export-item.vala"
-	((RygelMediaObject*) self)->modified = (guint64) ((gint64) mtime);
-#line 163 "rygel-media-export-item.vala"
-	if ((_tmp12_ = gst_tag_list_get_date (tag_list, GST_TAG_DATE, &_tmp11_), date = (_tmp13_ = _tmp11_, _g_free0 (date), _tmp13_), _tmp12_)) {
-#line 379 "rygel-media-export-item.c"
-		gchar* _tmp14_;
-		gint _datestr_size_;
-		gint datestr_length1;
-		gchar* datestr;
-		char* _tmp15_;
-		datestr = (_tmp14_ = g_new0 (gchar, 30), datestr_length1 = 30, _datestr_size_ = datestr_length1, _tmp14_);
-#line 165 "rygel-media-export-item.vala"
-		g_date_strftime (datestr, datestr_length1, "%F", date);
-#line 166 "rygel-media-export-item.vala"
-		((RygelMediaItem*) self)->date = (_tmp15_ = g_strdup ((const char*) datestr), _g_free0 (((RygelMediaItem*) self)->date), _tmp15_);
-#line 390 "rygel-media-export-item.c"
-		datestr = (g_free (datestr), NULL);
-	} else {
-		GTimeVal _tmp16_ = {0};
-		GTimeVal tv;
-		char* _tmp17_;
-#line 168 "rygel-media-export-item.vala"
-		tv = (_tmp16_.tv_sec = (glong) mtime, _tmp16_.tv_usec = (glong) 0, _tmp16_);
-#line 169 "rygel-media-export-item.vala"
-		((RygelMediaItem*) self)->date = (_tmp17_ = g_time_val_to_iso8601 (&tv), _g_free0 (((RygelMediaItem*) self)->date), _tmp17_);
-#line 400 "rygel-media-export-item.c"
-	}
-#line 173 "rygel-media-export-item.vala"
-	gst_tag_list_get_string (tag_list, RYGEL_MEDIA_EXPORT_METADATA_EXTRACTOR_TAG_RYGEL_MIME, &_tmp18_);
-#line 173 "rygel-media-export-item.vala"
-	((RygelMediaItem*) self)->mime_type = (_tmp19_ = _tmp18_, _g_free0 (((RygelMediaItem*) self)->mime_type), _tmp19_);
-#line 176 "rygel-media-export-item.vala"
-	rygel_media_item_add_uri ((RygelMediaItem*) self, _tmp20_ = g_file_get_uri (file), NULL);
-#line 408 "rygel-media-export-item.c"
-	_g_free0 (_tmp20_);
+#line 55 "rygel-media-export-item.vala"
+	((RygelMediaObject*) self)->modified = mtime;
+#line 56 "rygel-media-export-item.vala"
+	rygel_media_item_add_uri ((RygelMediaItem*) self, _tmp5_ = g_file_get_uri (file), NULL);
+#line 151 "rygel-media-export-item.c"
+	_g_free0 (_tmp5_);
+	_g_free0 (upnp_class);
 	_g_free0 (title);
-	_g_free0 (date);
 	return self;
 }
 
 
-#line 111 "rygel-media-export-item.vala"
-static RygelMediaExportMediaExportItem* rygel_media_export_media_export_item_new (RygelMediaContainer* parent, const char* id, GFile* file, GstTagList* tag_list, const char* upnp_class) {
-#line 111 "rygel-media-export-item.vala"
-	return rygel_media_export_media_export_item_construct (RYGEL_MEDIA_EXPORT_TYPE_MEDIA_EXPORT_ITEM, parent, id, file, tag_list, upnp_class);
-#line 420 "rygel-media-export-item.c"
+#line 36 "rygel-media-export-item.vala"
+RygelMediaExportItem* rygel_media_export_item_new_simple (RygelMediaContainer* parent, GFile* file, const char* mime, guint64 size, guint64 mtime) {
+#line 36 "rygel-media-export-item.vala"
+	return rygel_media_export_item_construct_simple (RYGEL_MEDIA_EXPORT_TYPE_ITEM, parent, file, mime, size, mtime);
+#line 163 "rygel-media-export-item.c"
 }
 
 
-static void rygel_media_export_media_export_item_class_init (RygelMediaExportMediaExportItemClass * klass) {
-	rygel_media_export_media_export_item_parent_class = g_type_class_peek_parent (klass);
-}
-
-
-static void rygel_media_export_media_export_item_instance_init (RygelMediaExportMediaExportItem * self) {
-}
-
-
-GType rygel_media_export_media_export_item_get_type (void) {
-	static volatile gsize rygel_media_export_media_export_item_type_id__volatile = 0;
-	if (g_once_init_enter (&rygel_media_export_media_export_item_type_id__volatile)) {
-		static const GTypeInfo g_define_type_info = { sizeof (RygelMediaExportMediaExportItemClass), (GBaseInitFunc) NULL, (GBaseFinalizeFunc) NULL, (GClassInitFunc) rygel_media_export_media_export_item_class_init, (GClassFinalizeFunc) NULL, NULL, sizeof (RygelMediaExportMediaExportItem), 0, (GInstanceInitFunc) rygel_media_export_media_export_item_instance_init, NULL };
-		GType rygel_media_export_media_export_item_type_id;
-		rygel_media_export_media_export_item_type_id = g_type_register_static (RYGEL_TYPE_MEDIA_ITEM, "RygelMediaExportMediaExportItem", &g_define_type_info, 0);
-		g_once_init_leave (&rygel_media_export_media_export_item_type_id__volatile, rygel_media_export_media_export_item_type_id);
+#line 59 "rygel-media-export-item.vala"
+RygelMediaExportItem* rygel_media_export_item_create_from_info (RygelMediaContainer* parent, GFile* file, GUPnPDLNAInformation* dlna_info, const char* mime, guint64 size, guint64 mtime) {
+#line 169 "rygel-media-export-item.c"
+	RygelMediaExportItem* result = NULL;
+	char* id;
+	GstStreamAudioInformation* audio_info;
+	GstStreamVideoInformation* video_info;
+#line 59 "rygel-media-export-item.vala"
+	g_return_val_if_fail (parent != NULL, NULL);
+#line 59 "rygel-media-export-item.vala"
+	g_return_val_if_fail (file != NULL, NULL);
+#line 59 "rygel-media-export-item.vala"
+	g_return_val_if_fail (dlna_info != NULL, NULL);
+#line 59 "rygel-media-export-item.vala"
+	g_return_val_if_fail (mime != NULL, NULL);
+#line 65 "rygel-media-export-item.vala"
+	id = rygel_media_export_item_get_id (file);
+#line 66 "rygel-media-export-item.vala"
+	audio_info = NULL;
+#line 67 "rygel-media-export-item.vala"
+	video_info = NULL;
+#line 188 "rygel-media-export-item.c"
+	{
+		GList* stream_info_collection;
+		GList* stream_info_it;
+#line 69 "rygel-media-export-item.vala"
+		stream_info_collection = gupnp_dlna_information_get_info (dlna_info)->stream_list;
+#line 194 "rygel-media-export-item.c"
+		for (stream_info_it = stream_info_collection; stream_info_it != NULL; stream_info_it = stream_info_it->next) {
+			GstStreamInformation* stream_info;
+#line 69 "rygel-media-export-item.vala"
+			stream_info = (GstStreamInformation*) stream_info_it->data;
+#line 199 "rygel-media-export-item.c"
+			{
+				gboolean _tmp0_ = FALSE;
+#line 71 "rygel-media-export-item.vala"
+				if (audio_info == NULL) {
+#line 72 "rygel-media-export-item.vala"
+					_tmp0_ = stream_info->streamtype == GST_STREAM_AUDIO;
+#line 206 "rygel-media-export-item.c"
+				} else {
+#line 71 "rygel-media-export-item.vala"
+					_tmp0_ = FALSE;
+#line 210 "rygel-media-export-item.c"
+				}
+#line 71 "rygel-media-export-item.vala"
+				if (_tmp0_) {
+#line 73 "rygel-media-export-item.vala"
+					audio_info = (GstStreamAudioInformation*) stream_info;
+#line 216 "rygel-media-export-item.c"
+				} else {
+					gboolean _tmp1_ = FALSE;
+#line 74 "rygel-media-export-item.vala"
+					if (video_info == NULL) {
+#line 221 "rygel-media-export-item.c"
+						gboolean _tmp2_ = FALSE;
+#line 75 "rygel-media-export-item.vala"
+						if (stream_info->streamtype == GST_STREAM_VIDEO) {
+#line 75 "rygel-media-export-item.vala"
+							_tmp2_ = TRUE;
+#line 227 "rygel-media-export-item.c"
+						} else {
+#line 76 "rygel-media-export-item.vala"
+							_tmp2_ = stream_info->streamtype == GST_STREAM_IMAGE;
+#line 231 "rygel-media-export-item.c"
+						}
+#line 75 "rygel-media-export-item.vala"
+						_tmp1_ = _tmp2_;
+#line 235 "rygel-media-export-item.c"
+					} else {
+#line 74 "rygel-media-export-item.vala"
+						_tmp1_ = FALSE;
+#line 239 "rygel-media-export-item.c"
+					}
+#line 74 "rygel-media-export-item.vala"
+					if (_tmp1_) {
+#line 77 "rygel-media-export-item.vala"
+						video_info = (GstStreamVideoInformation*) stream_info;
+#line 245 "rygel-media-export-item.c"
+					}
+				}
+			}
+		}
 	}
-	return rygel_media_export_media_export_item_type_id__volatile;
+#line 81 "rygel-media-export-item.vala"
+	if (video_info != NULL) {
+#line 253 "rygel-media-export-item.c"
+		gboolean _tmp3_ = FALSE;
+#line 82 "rygel-media-export-item.vala"
+		if (audio_info == NULL) {
+#line 83 "rygel-media-export-item.vala"
+			_tmp3_ = ((GstStreamInformation*) video_info)->streamtype == GST_STREAM_IMAGE;
+#line 259 "rygel-media-export-item.c"
+		} else {
+#line 82 "rygel-media-export-item.vala"
+			_tmp3_ = FALSE;
+#line 263 "rygel-media-export-item.c"
+		}
+#line 82 "rygel-media-export-item.vala"
+		if (_tmp3_) {
+#line 267 "rygel-media-export-item.c"
+			result = rygel_media_export_item_new_photo (parent, id, file, dlna_info, video_info, mime, size, mtime);
+			_g_free0 (id);
+#line 84 "rygel-media-export-item.vala"
+			return result;
+#line 272 "rygel-media-export-item.c"
+		} else {
+			result = rygel_media_export_item_new_video (parent, id, file, dlna_info, video_info, audio_info, mime, size, mtime);
+			_g_free0 (id);
+#line 93 "rygel-media-export-item.vala"
+			return result;
+#line 278 "rygel-media-export-item.c"
+		}
+	} else {
+#line 103 "rygel-media-export-item.vala"
+		if (audio_info != NULL) {
+#line 283 "rygel-media-export-item.c"
+			result = rygel_media_export_item_new_audio (parent, id, file, dlna_info, audio_info, mime, size, mtime);
+			_g_free0 (id);
+#line 104 "rygel-media-export-item.vala"
+			return result;
+#line 288 "rygel-media-export-item.c"
+		} else {
+			result = NULL;
+			_g_free0 (id);
+#line 113 "rygel-media-export-item.vala"
+			return result;
+#line 294 "rygel-media-export-item.c"
+		}
+	}
+	_g_free0 (id);
 }
 
 
-static int _vala_strcmp0 (const char * str1, const char * str2) {
-	if (str1 == NULL) {
-		return -(str1 != str2);
+#line 117 "rygel-media-export-item.vala"
+static RygelMediaExportItem* rygel_media_export_item_construct_video (GType object_type, RygelMediaContainer* parent, const char* id, GFile* file, GUPnPDLNAInformation* dlna_info, GstStreamVideoInformation* video_info, GstStreamAudioInformation* audio_info, const char* mime, guint64 size, guint64 mtime) {
+#line 303 "rygel-media-export-item.c"
+	RygelMediaExportItem * self;
+#line 117 "rygel-media-export-item.vala"
+	g_return_val_if_fail (parent != NULL, NULL);
+#line 117 "rygel-media-export-item.vala"
+	g_return_val_if_fail (id != NULL, NULL);
+#line 117 "rygel-media-export-item.vala"
+	g_return_val_if_fail (file != NULL, NULL);
+#line 117 "rygel-media-export-item.vala"
+	g_return_val_if_fail (dlna_info != NULL, NULL);
+#line 117 "rygel-media-export-item.vala"
+	g_return_val_if_fail (video_info != NULL, NULL);
+#line 117 "rygel-media-export-item.vala"
+	g_return_val_if_fail (mime != NULL, NULL);
+#line 126 "rygel-media-export-item.vala"
+	self = (RygelMediaExportItem*) rygel_media_export_item_construct (object_type, parent, id, file, dlna_info, mime, size, mtime, RYGEL_MEDIA_ITEM_VIDEO_CLASS);
+#line 135 "rygel-media-export-item.vala"
+	((RygelMediaItem*) self)->width = (gint) video_info->width;
+#line 136 "rygel-media-export-item.vala"
+	((RygelMediaItem*) self)->height = (gint) video_info->height;
+#line 137 "rygel-media-export-item.vala"
+	((RygelMediaItem*) self)->color_depth = (gint) video_info->depth;
+#line 139 "rygel-media-export-item.vala"
+	if (audio_info != NULL) {
+#line 140 "rygel-media-export-item.vala"
+		((RygelMediaItem*) self)->n_audio_channels = (gint) audio_info->channels;
+#line 141 "rygel-media-export-item.vala"
+		((RygelMediaItem*) self)->sample_freq = (gint) audio_info->sample_rate;
+#line 142 "rygel-media-export-item.vala"
+		if (((GstStreamInformation*) audio_info)->tags != NULL) {
+#line 333 "rygel-media-export-item.c"
+			guint tmp = 0U;
+#line 145 "rygel-media-export-item.vala"
+			gst_tag_list_get_uint (((GstStreamInformation*) audio_info)->tags, GST_TAG_BITRATE, &tmp);
+#line 146 "rygel-media-export-item.vala"
+			((RygelMediaItem*) self)->bitrate = ((gint) tmp) / 8;
+#line 339 "rygel-media-export-item.c"
+		}
 	}
-	if (str2 == NULL) {
-		return str1 != str2;
+	return self;
+}
+
+
+#line 117 "rygel-media-export-item.vala"
+static RygelMediaExportItem* rygel_media_export_item_new_video (RygelMediaContainer* parent, const char* id, GFile* file, GUPnPDLNAInformation* dlna_info, GstStreamVideoInformation* video_info, GstStreamAudioInformation* audio_info, const char* mime, guint64 size, guint64 mtime) {
+#line 117 "rygel-media-export-item.vala"
+	return rygel_media_export_item_construct_video (RYGEL_MEDIA_EXPORT_TYPE_ITEM, parent, id, file, dlna_info, video_info, audio_info, mime, size, mtime);
+#line 350 "rygel-media-export-item.c"
+}
+
+
+#line 151 "rygel-media-export-item.vala"
+static RygelMediaExportItem* rygel_media_export_item_construct_photo (GType object_type, RygelMediaContainer* parent, const char* id, GFile* file, GUPnPDLNAInformation* dlna_info, GstStreamVideoInformation* video_info, const char* mime, guint64 size, guint64 mtime) {
+#line 356 "rygel-media-export-item.c"
+	RygelMediaExportItem * self;
+#line 151 "rygel-media-export-item.vala"
+	g_return_val_if_fail (parent != NULL, NULL);
+#line 151 "rygel-media-export-item.vala"
+	g_return_val_if_fail (id != NULL, NULL);
+#line 151 "rygel-media-export-item.vala"
+	g_return_val_if_fail (file != NULL, NULL);
+#line 151 "rygel-media-export-item.vala"
+	g_return_val_if_fail (dlna_info != NULL, NULL);
+#line 151 "rygel-media-export-item.vala"
+	g_return_val_if_fail (video_info != NULL, NULL);
+#line 151 "rygel-media-export-item.vala"
+	g_return_val_if_fail (mime != NULL, NULL);
+#line 159 "rygel-media-export-item.vala"
+	self = (RygelMediaExportItem*) rygel_media_export_item_construct (object_type, parent, id, file, dlna_info, mime, size, mtime, RYGEL_MEDIA_ITEM_PHOTO_CLASS);
+#line 168 "rygel-media-export-item.vala"
+	((RygelMediaItem*) self)->width = (gint) video_info->width;
+#line 169 "rygel-media-export-item.vala"
+	((RygelMediaItem*) self)->height = (gint) video_info->height;
+#line 170 "rygel-media-export-item.vala"
+	((RygelMediaItem*) self)->color_depth = (gint) video_info->depth;
+#line 378 "rygel-media-export-item.c"
+	return self;
+}
+
+
+#line 151 "rygel-media-export-item.vala"
+static RygelMediaExportItem* rygel_media_export_item_new_photo (RygelMediaContainer* parent, const char* id, GFile* file, GUPnPDLNAInformation* dlna_info, GstStreamVideoInformation* video_info, const char* mime, guint64 size, guint64 mtime) {
+#line 151 "rygel-media-export-item.vala"
+	return rygel_media_export_item_construct_photo (RYGEL_MEDIA_EXPORT_TYPE_ITEM, parent, id, file, dlna_info, video_info, mime, size, mtime);
+#line 387 "rygel-media-export-item.c"
+}
+
+
+#line 173 "rygel-media-export-item.vala"
+static RygelMediaExportItem* rygel_media_export_item_construct_audio (GType object_type, RygelMediaContainer* parent, const char* id, GFile* file, GUPnPDLNAInformation* dlna_info, GstStreamAudioInformation* audio_info, const char* mime, guint64 size, guint64 mtime) {
+#line 393 "rygel-media-export-item.c"
+	RygelMediaExportItem * self;
+#line 173 "rygel-media-export-item.vala"
+	g_return_val_if_fail (parent != NULL, NULL);
+#line 173 "rygel-media-export-item.vala"
+	g_return_val_if_fail (id != NULL, NULL);
+#line 173 "rygel-media-export-item.vala"
+	g_return_val_if_fail (file != NULL, NULL);
+#line 173 "rygel-media-export-item.vala"
+	g_return_val_if_fail (dlna_info != NULL, NULL);
+#line 173 "rygel-media-export-item.vala"
+	g_return_val_if_fail (audio_info != NULL, NULL);
+#line 173 "rygel-media-export-item.vala"
+	g_return_val_if_fail (mime != NULL, NULL);
+#line 181 "rygel-media-export-item.vala"
+	self = (RygelMediaExportItem*) rygel_media_export_item_construct (object_type, parent, id, file, dlna_info, mime, size, mtime, RYGEL_MEDIA_ITEM_MUSIC_CLASS);
+#line 190 "rygel-media-export-item.vala"
+	if (((GstStreamInformation*) audio_info)->tags != NULL) {
+#line 411 "rygel-media-export-item.c"
+		guint tmp = 0U;
+#line 193 "rygel-media-export-item.vala"
+		gst_tag_list_get_uint (((GstStreamInformation*) audio_info)->tags, GST_TAG_BITRATE, &tmp);
+#line 194 "rygel-media-export-item.vala"
+		((RygelMediaItem*) self)->bitrate = ((gint) tmp) / 8;
+#line 417 "rygel-media-export-item.c"
 	}
-	return strcmp (str1, str2);
+#line 196 "rygel-media-export-item.vala"
+	((RygelMediaItem*) self)->n_audio_channels = (gint) audio_info->channels;
+#line 197 "rygel-media-export-item.vala"
+	((RygelMediaItem*) self)->sample_freq = (gint) audio_info->sample_rate;
+#line 423 "rygel-media-export-item.c"
+	return self;
+}
+
+
+#line 173 "rygel-media-export-item.vala"
+static RygelMediaExportItem* rygel_media_export_item_new_audio (RygelMediaContainer* parent, const char* id, GFile* file, GUPnPDLNAInformation* dlna_info, GstStreamAudioInformation* audio_info, const char* mime, guint64 size, guint64 mtime) {
+#line 173 "rygel-media-export-item.vala"
+	return rygel_media_export_item_construct_audio (RYGEL_MEDIA_EXPORT_TYPE_ITEM, parent, id, file, dlna_info, audio_info, mime, size, mtime);
+#line 432 "rygel-media-export-item.c"
+}
+
+
+#line 200 "rygel-media-export-item.vala"
+static RygelMediaExportItem* rygel_media_export_item_construct (GType object_type, RygelMediaContainer* parent, const char* id, GFile* file, GUPnPDLNAInformation* dlna_info, const char* mime, guint64 size, guint64 mtime, const char* upnp_class) {
+#line 438 "rygel-media-export-item.c"
+	RygelMediaExportItem * self;
+	char* title;
+	gboolean _tmp0_ = FALSE;
+	char* _tmp19_;
+#line 200 "rygel-media-export-item.vala"
+	g_return_val_if_fail (parent != NULL, NULL);
+#line 200 "rygel-media-export-item.vala"
+	g_return_val_if_fail (id != NULL, NULL);
+#line 200 "rygel-media-export-item.vala"
+	g_return_val_if_fail (file != NULL, NULL);
+#line 200 "rygel-media-export-item.vala"
+	g_return_val_if_fail (dlna_info != NULL, NULL);
+#line 200 "rygel-media-export-item.vala"
+	g_return_val_if_fail (mime != NULL, NULL);
+#line 200 "rygel-media-export-item.vala"
+	g_return_val_if_fail (upnp_class != NULL, NULL);
+#line 208 "rygel-media-export-item.vala"
+	title = NULL;
+#line 210 "rygel-media-export-item.vala"
+	if (gupnp_dlna_information_get_info (dlna_info)->tags == NULL) {
+#line 210 "rygel-media-export-item.vala"
+		_tmp0_ = TRUE;
+#line 461 "rygel-media-export-item.c"
+	} else {
+		char* _tmp3_;
+		gboolean _tmp2_;
+		char* _tmp1_ = NULL;
+#line 211 "rygel-media-export-item.vala"
+		_tmp0_ = !(_tmp2_ = gst_tag_list_get_string (gupnp_dlna_information_get_info (dlna_info)->tags, GST_TAG_TITLE, &_tmp1_), title = (_tmp3_ = _tmp1_, _g_free0 (title), _tmp3_), _tmp2_);
+#line 468 "rygel-media-export-item.c"
+	}
+#line 210 "rygel-media-export-item.vala"
+	if (_tmp0_) {
+#line 472 "rygel-media-export-item.c"
+		char* _tmp4_;
+#line 212 "rygel-media-export-item.vala"
+		title = (_tmp4_ = g_file_get_basename (file), _g_free0 (title), _tmp4_);
+#line 476 "rygel-media-export-item.c"
+	}
+#line 215 "rygel-media-export-item.vala"
+	self = (RygelMediaExportItem*) rygel_media_item_construct (object_type, id, parent, title, upnp_class);
+#line 217 "rygel-media-export-item.vala"
+	if (gupnp_dlna_information_get_info (dlna_info)->duration > 0) {
+#line 218 "rygel-media-export-item.vala"
+		((RygelMediaItem*) self)->duration = (glong) (gupnp_dlna_information_get_info (dlna_info)->duration / GST_SECOND);
+#line 484 "rygel-media-export-item.c"
+	} else {
+#line 220 "rygel-media-export-item.vala"
+		((RygelMediaItem*) self)->duration = (glong) (-1);
+#line 488 "rygel-media-export-item.c"
+	}
+#line 223 "rygel-media-export-item.vala"
+	if (gupnp_dlna_information_get_info (dlna_info)->tags != NULL) {
+#line 492 "rygel-media-export-item.c"
+		char* _tmp6_;
+		char* _tmp5_ = NULL;
+		char* _tmp8_;
+		char* _tmp7_ = NULL;
+		guint tmp = 0U;
+		GDate* date = NULL;
+		GDate* _tmp11_;
+		gboolean _tmp10_;
+		GDate* _tmp9_ = NULL;
+#line 224 "rygel-media-export-item.vala"
+		gst_tag_list_get_string (gupnp_dlna_information_get_info (dlna_info)->tags, GST_TAG_ARTIST, &_tmp5_);
+#line 224 "rygel-media-export-item.vala"
+		((RygelMediaItem*) self)->author = (_tmp6_ = _tmp5_, _g_free0 (((RygelMediaItem*) self)->author), _tmp6_);
+#line 225 "rygel-media-export-item.vala"
+		gst_tag_list_get_string (gupnp_dlna_information_get_info (dlna_info)->tags, GST_TAG_ALBUM, &_tmp7_);
+#line 225 "rygel-media-export-item.vala"
+		((RygelMediaItem*) self)->album = (_tmp8_ = _tmp7_, _g_free0 (((RygelMediaItem*) self)->album), _tmp8_);
+#line 228 "rygel-media-export-item.vala"
+		gst_tag_list_get_uint (gupnp_dlna_information_get_info (dlna_info)->tags, GST_TAG_TRACK_NUMBER, &tmp);
+#line 229 "rygel-media-export-item.vala"
+		((RygelMediaItem*) self)->track_number = (gint) tmp;
+#line 232 "rygel-media-export-item.vala"
+		if ((_tmp10_ = gst_tag_list_get_date (gupnp_dlna_information_get_info (dlna_info)->tags, GST_TAG_DATE, &_tmp9_), date = (_tmp11_ = _tmp9_, _g_free0 (date), _tmp11_), _tmp10_)) {
+#line 516 "rygel-media-export-item.c"
+			gchar* _tmp12_;
+			gint _datestr_size_;
+			gint datestr_length1;
+			gchar* datestr;
+			char* _tmp13_;
+			datestr = (_tmp12_ = g_new0 (gchar, 30), datestr_length1 = 30, _datestr_size_ = datestr_length1, _tmp12_);
+#line 234 "rygel-media-export-item.vala"
+			g_date_strftime (datestr, datestr_length1, "%F", date);
+#line 235 "rygel-media-export-item.vala"
+			((RygelMediaItem*) self)->date = (_tmp13_ = g_strdup ((const char*) datestr), _g_free0 (((RygelMediaItem*) self)->date), _tmp13_);
+#line 527 "rygel-media-export-item.c"
+			datestr = (g_free (datestr), NULL);
+		} else {
+			GTimeVal _tmp14_ = {0};
+			GTimeVal tv;
+			char* _tmp15_;
+#line 237 "rygel-media-export-item.vala"
+			tv = (_tmp14_.tv_sec = (glong) mtime, _tmp14_.tv_usec = (glong) 0, _tmp14_);
+#line 238 "rygel-media-export-item.vala"
+			((RygelMediaItem*) self)->date = (_tmp15_ = g_time_val_to_iso8601 (&tv), _g_free0 (((RygelMediaItem*) self)->date), _tmp15_);
+#line 537 "rygel-media-export-item.c"
+		}
+		_g_free0 (date);
+	}
+#line 242 "rygel-media-export-item.vala"
+	((RygelMediaItem*) self)->size = (glong) size;
+#line 243 "rygel-media-export-item.vala"
+	((RygelMediaObject*) self)->modified = (guint64) ((gint64) mtime);
+#line 245 "rygel-media-export-item.vala"
+	if (gupnp_dlna_information_get_name (dlna_info) != NULL) {
+#line 547 "rygel-media-export-item.c"
+		char* _tmp16_;
+		char* _tmp17_;
+#line 246 "rygel-media-export-item.vala"
+		((RygelMediaItem*) self)->dlna_profile = (_tmp16_ = g_strdup (gupnp_dlna_information_get_name (dlna_info)), _g_free0 (((RygelMediaItem*) self)->dlna_profile), _tmp16_);
+#line 247 "rygel-media-export-item.vala"
+		((RygelMediaItem*) self)->mime_type = (_tmp17_ = g_strdup (gupnp_dlna_information_get_mime (dlna_info)), _g_free0 (((RygelMediaItem*) self)->mime_type), _tmp17_);
+#line 554 "rygel-media-export-item.c"
+	} else {
+		char* _tmp18_;
+#line 249 "rygel-media-export-item.vala"
+		((RygelMediaItem*) self)->mime_type = (_tmp18_ = g_strdup (mime), _g_free0 (((RygelMediaItem*) self)->mime_type), _tmp18_);
+#line 559 "rygel-media-export-item.c"
+	}
+#line 252 "rygel-media-export-item.vala"
+	rygel_media_item_add_uri ((RygelMediaItem*) self, _tmp19_ = g_file_get_uri (file), NULL);
+#line 563 "rygel-media-export-item.c"
+	_g_free0 (_tmp19_);
+	_g_free0 (title);
+	return self;
+}
+
+
+#line 200 "rygel-media-export-item.vala"
+static RygelMediaExportItem* rygel_media_export_item_new (RygelMediaContainer* parent, const char* id, GFile* file, GUPnPDLNAInformation* dlna_info, const char* mime, guint64 size, guint64 mtime, const char* upnp_class) {
+#line 200 "rygel-media-export-item.vala"
+	return rygel_media_export_item_construct (RYGEL_MEDIA_EXPORT_TYPE_ITEM, parent, id, file, dlna_info, mime, size, mtime, upnp_class);
+#line 574 "rygel-media-export-item.c"
+}
+
+
+static void rygel_media_export_item_class_init (RygelMediaExportItemClass * klass) {
+	rygel_media_export_item_parent_class = g_type_class_peek_parent (klass);
+}
+
+
+static void rygel_media_export_item_instance_init (RygelMediaExportItem * self) {
+}
+
+
+GType rygel_media_export_item_get_type (void) {
+	static volatile gsize rygel_media_export_item_type_id__volatile = 0;
+	if (g_once_init_enter (&rygel_media_export_item_type_id__volatile)) {
+		static const GTypeInfo g_define_type_info = { sizeof (RygelMediaExportItemClass), (GBaseInitFunc) NULL, (GBaseFinalizeFunc) NULL, (GClassInitFunc) rygel_media_export_item_class_init, (GClassFinalizeFunc) NULL, NULL, sizeof (RygelMediaExportItem), 0, (GInstanceInitFunc) rygel_media_export_item_instance_init, NULL };
+		GType rygel_media_export_item_type_id;
+		rygel_media_export_item_type_id = g_type_register_static (RYGEL_TYPE_MEDIA_ITEM, "RygelMediaExportItem", &g_define_type_info, 0);
+		g_once_init_leave (&rygel_media_export_item_type_id__volatile, rygel_media_export_item_type_id);
+	}
+	return rygel_media_export_item_type_id__volatile;
 }
 
 

@@ -155,7 +155,7 @@ struct _RygelTrackerMinerIfaceDBusProxyIgnoreNextUpdateData {
 
 
 RygelTrackerStatsIface* rygel_tracker_stats_iface_dbus_proxy_new (DBusGConnection* connection, const char* name, const char* path);
-GType rygel_tracker_stats_iface_get_type (void);
+GType rygel_tracker_stats_iface_get_type (void) G_GNUC_CONST;
 void rygel_tracker_stats_iface_get_statistics (RygelTrackerStatsIface* self, GAsyncReadyCallback _callback_, gpointer _user_data_);
 char** rygel_tracker_stats_iface_get_statistics_finish (RygelTrackerStatsIface* self, GAsyncResult* _res_, int* result_length1, int* result_length2, GError** error);
 static void _vala_dbus_register_object (DBusConnection* connection, const char* path, void* object);
@@ -167,7 +167,7 @@ static DBusHandlerResult _dbus_rygel_tracker_stats_iface_introspect (RygelTracke
 static DBusHandlerResult _dbus_rygel_tracker_stats_iface_property_get_all (RygelTrackerStatsIface* self, DBusConnection* connection, DBusMessage* message);
 static DBusHandlerResult _dbus_rygel_tracker_stats_iface_get_statistics (RygelTrackerStatsIface* self, DBusConnection* connection, DBusMessage* message);
 static void _dbus_rygel_tracker_stats_iface_get_statistics_ready (GObject * source_object, GAsyncResult * _res_, gpointer * _user_data_);
-GType rygel_tracker_stats_iface_dbus_proxy_get_type (void);
+GType rygel_tracker_stats_iface_dbus_proxy_get_type (void) G_GNUC_CONST;
 DBusHandlerResult rygel_tracker_stats_iface_dbus_proxy_filter (DBusConnection* connection, DBusMessage* message, void* user_data);
 enum  {
 	RYGEL_TRACKER_STATS_IFACE_DBUS_PROXY_DUMMY_PROPERTY
@@ -179,7 +179,7 @@ static void rygel_tracker_stats_iface_dbus_proxy_rygel_tracker_stats_iface__inte
 static void rygel_tracker_stats_iface_dbus_proxy_get_property (GObject * object, guint property_id, GValue * value, GParamSpec * pspec);
 static void rygel_tracker_stats_iface_dbus_proxy_set_property (GObject * object, guint property_id, const GValue * value, GParamSpec * pspec);
 RygelTrackerResourcesIface* rygel_tracker_resources_iface_dbus_proxy_new (DBusGConnection* connection, const char* name, const char* path);
-GType rygel_tracker_resources_iface_get_type (void);
+GType rygel_tracker_resources_iface_get_type (void) G_GNUC_CONST;
 void rygel_tracker_resources_iface_sparql_query (RygelTrackerResourcesIface* self, const char* query, GAsyncReadyCallback _callback_, gpointer _user_data_);
 char** rygel_tracker_resources_iface_sparql_query_finish (RygelTrackerResourcesIface* self, GAsyncResult* _res_, int* result_length1, int* result_length2, GError** error);
 void rygel_tracker_resources_iface_sparql_update_blank (RygelTrackerResourcesIface* self, const char* query, GAsyncReadyCallback _callback_, gpointer _user_data_);
@@ -193,7 +193,7 @@ static DBusHandlerResult _dbus_rygel_tracker_resources_iface_sparql_query (Rygel
 static void _dbus_rygel_tracker_resources_iface_sparql_query_ready (GObject * source_object, GAsyncResult * _res_, gpointer * _user_data_);
 static DBusHandlerResult _dbus_rygel_tracker_resources_iface_sparql_update_blank (RygelTrackerResourcesIface* self, DBusConnection* connection, DBusMessage* message);
 static void _dbus_rygel_tracker_resources_iface_sparql_update_blank_ready (GObject * source_object, GAsyncResult * _res_, gpointer * _user_data_);
-GType rygel_tracker_resources_iface_dbus_proxy_get_type (void);
+GType rygel_tracker_resources_iface_dbus_proxy_get_type (void) G_GNUC_CONST;
 DBusHandlerResult rygel_tracker_resources_iface_dbus_proxy_filter (DBusConnection* connection, DBusMessage* message, void* user_data);
 enum  {
 	RYGEL_TRACKER_RESOURCES_IFACE_DBUS_PROXY_DUMMY_PROPERTY
@@ -207,7 +207,7 @@ static GHashTable** rygel_tracker_resources_iface_dbus_proxy_sparql_update_blank
 static void rygel_tracker_resources_iface_dbus_proxy_rygel_tracker_resources_iface__interface_init (RygelTrackerResourcesIfaceIface* iface);
 static void rygel_tracker_resources_iface_dbus_proxy_get_property (GObject * object, guint property_id, GValue * value, GParamSpec * pspec);
 static void rygel_tracker_resources_iface_dbus_proxy_set_property (GObject * object, guint property_id, const GValue * value, GParamSpec * pspec);
-GType rygel_tracker_resources_class_iface_get_type (void);
+GType rygel_tracker_resources_class_iface_get_type (void) G_GNUC_CONST;
 RygelTrackerResourcesClassIface* rygel_tracker_resources_class_iface_dbus_proxy_new (DBusGConnection* connection, const char* name, const char* path);
 void rygel_tracker_resources_class_iface_dbus_register_object (DBusConnection* connection, const char* path, void* object);
 void _rygel_tracker_resources_class_iface_dbus_unregister (DBusConnection* connection, void* _user_data_);
@@ -217,7 +217,7 @@ static DBusHandlerResult _dbus_rygel_tracker_resources_class_iface_property_get_
 static void _dbus_rygel_tracker_resources_class_iface_subjects_added (GObject* _sender, char** subjects, int subjects_length1, DBusConnection* _connection);
 static void _dbus_rygel_tracker_resources_class_iface_subjects_removed (GObject* _sender, char** subjects, int subjects_length1, DBusConnection* _connection);
 static void _dbus_rygel_tracker_resources_class_iface_subjects_changed (GObject* _sender, char** before, int before_length1, char** after, int after_length1, DBusConnection* _connection);
-GType rygel_tracker_resources_class_iface_dbus_proxy_get_type (void);
+GType rygel_tracker_resources_class_iface_dbus_proxy_get_type (void) G_GNUC_CONST;
 static void _dbus_handle_rygel_tracker_resources_class_iface_subjects_added (RygelTrackerResourcesClassIface* self, DBusConnection* connection, DBusMessage* message);
 static void _dbus_handle_rygel_tracker_resources_class_iface_subjects_removed (RygelTrackerResourcesClassIface* self, DBusConnection* connection, DBusMessage* message);
 static void _dbus_handle_rygel_tracker_resources_class_iface_subjects_changed (RygelTrackerResourcesClassIface* self, DBusConnection* connection, DBusMessage* message);
@@ -229,7 +229,7 @@ static void rygel_tracker_resources_class_iface_dbus_proxy_rygel_tracker_resourc
 static void rygel_tracker_resources_class_iface_dbus_proxy_get_property (GObject * object, guint property_id, GValue * value, GParamSpec * pspec);
 static void rygel_tracker_resources_class_iface_dbus_proxy_set_property (GObject * object, guint property_id, const GValue * value, GParamSpec * pspec);
 RygelTrackerMinerIface* rygel_tracker_miner_iface_dbus_proxy_new (DBusGConnection* connection, const char* name, const char* path);
-GType rygel_tracker_miner_iface_get_type (void);
+GType rygel_tracker_miner_iface_get_type (void) G_GNUC_CONST;
 void rygel_tracker_miner_iface_ignore_next_update (RygelTrackerMinerIface* self, char** urls, int urls_length1, GAsyncReadyCallback _callback_, gpointer _user_data_);
 void rygel_tracker_miner_iface_ignore_next_update_finish (RygelTrackerMinerIface* self, GAsyncResult* _res_, GError** error);
 void rygel_tracker_miner_iface_dbus_register_object (DBusConnection* connection, const char* path, void* object);
@@ -239,7 +239,7 @@ static DBusHandlerResult _dbus_rygel_tracker_miner_iface_introspect (RygelTracke
 static DBusHandlerResult _dbus_rygel_tracker_miner_iface_property_get_all (RygelTrackerMinerIface* self, DBusConnection* connection, DBusMessage* message);
 static DBusHandlerResult _dbus_rygel_tracker_miner_iface_ignore_next_update (RygelTrackerMinerIface* self, DBusConnection* connection, DBusMessage* message);
 static void _dbus_rygel_tracker_miner_iface_ignore_next_update_ready (GObject * source_object, GAsyncResult * _res_, gpointer * _user_data_);
-GType rygel_tracker_miner_iface_dbus_proxy_get_type (void);
+GType rygel_tracker_miner_iface_dbus_proxy_get_type (void) G_GNUC_CONST;
 DBusHandlerResult rygel_tracker_miner_iface_dbus_proxy_filter (DBusConnection* connection, DBusMessage* message, void* user_data);
 enum  {
 	RYGEL_TRACKER_MINER_IFACE_DBUS_PROXY_DUMMY_PROPERTY

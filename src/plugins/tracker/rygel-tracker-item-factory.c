@@ -98,12 +98,12 @@ GParamSpec* rygel_tracker_param_spec_item_factory (const gchar* name, const gcha
 void rygel_tracker_value_set_item_factory (GValue* value, gpointer v_object);
 void rygel_tracker_value_take_item_factory (GValue* value, gpointer v_object);
 gpointer rygel_tracker_value_get_item_factory (const GValue* value);
-GType rygel_tracker_item_factory_get_type (void);
-GType rygel_tracker_search_container_get_type (void);
+GType rygel_tracker_item_factory_get_type (void) G_GNUC_CONST;
+GType rygel_tracker_search_container_get_type (void) G_GNUC_CONST;
 enum  {
 	RYGEL_TRACKER_ITEM_FACTORY_DUMMY_PROPERTY
 };
-GType rygel_tracker_item_factory_metadata_get_type (void);
+GType rygel_tracker_item_factory_metadata_get_type (void) G_GNUC_CONST;
 RygelTrackerItemFactory* rygel_tracker_item_factory_construct (GType object_type, const char* category, const char* upnp_class, const char* resources_class_path, const char* upload_dir);
 RygelMediaItem* rygel_tracker_item_factory_create (RygelTrackerItemFactory* self, const char* id, const char* uri, RygelTrackerSearchContainer* parent, char** metadata, int metadata_length1, GError** error);
 static RygelMediaItem* rygel_tracker_item_factory_real_create (RygelTrackerItemFactory* self, const char* id, const char* uri, RygelTrackerSearchContainer* parent, char** metadata, int metadata_length1, GError** error);

@@ -103,17 +103,17 @@ struct _RygelMediathekRootContainerClass {
 
 static gpointer rygel_mediathek_rss_container_parent_class = NULL;
 
-GType rygel_mediathek_rss_container_get_type (void);
+GType rygel_mediathek_rss_container_get_type (void) G_GNUC_CONST;
 #define RYGEL_MEDIATHEK_RSS_CONTAINER_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), RYGEL_MEDIATHEK_TYPE_RSS_CONTAINER, RygelMediathekRssContainerPrivate))
 enum  {
 	RYGEL_MEDIATHEK_RSS_CONTAINER_DUMMY_PROPERTY
 };
 static gboolean rygel_mediathek_rss_container_parse_response (RygelMediathekRssContainer* self, const char* data, gsize length);
 static void rygel_mediathek_rss_container_on_feed_got (RygelMediathekRssContainer* self, SoupSession* session, SoupMessage* msg);
-GType rygel_mediathek_video_item_get_type (void);
+GType rygel_mediathek_video_item_get_type (void) G_GNUC_CONST;
 GQuark rygel_mediathek_video_item_error_quark (void);
 RygelMediathekVideoItem* rygel_mediathek_video_item_create_from_xml (RygelMediaContainer* parent, xmlNode* item, GError** error);
-GType rygel_mediathek_root_container_get_type (void);
+GType rygel_mediathek_root_container_get_type (void) G_GNUC_CONST;
 static void _rygel_mediathek_rss_container_on_feed_got_soup_session_callback (SoupSession* session, SoupMessage* msg, gpointer self);
 void rygel_mediathek_rss_container_update (RygelMediathekRssContainer* self);
 RygelMediathekRssContainer* rygel_mediathek_rss_container_new (RygelMediaContainer* parent, guint id);

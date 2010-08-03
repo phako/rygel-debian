@@ -60,7 +60,7 @@ struct _RygelConnectionManagerClass {
 
 static gpointer rygel_connection_manager_parent_class = NULL;
 
-GType rygel_connection_manager_get_type (void);
+GType rygel_connection_manager_get_type (void) G_GNUC_CONST;
 enum  {
 	RYGEL_CONNECTION_MANAGER_DUMMY_PROPERTY
 };

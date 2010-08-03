@@ -130,7 +130,7 @@ GParamSpec* rygel_external_param_spec_icon_factory (const gchar* name, const gch
 void rygel_external_value_set_icon_factory (GValue* value, gpointer v_object);
 void rygel_external_value_take_icon_factory (GValue* value, gpointer v_object);
 gpointer rygel_external_value_get_icon_factory (const GValue* value);
-GType rygel_external_icon_factory_get_type (void);
+GType rygel_external_icon_factory_get_type (void) G_GNUC_CONST;
 #define RYGEL_EXTERNAL_ICON_FACTORY_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), RYGEL_EXTERNAL_TYPE_ICON_FACTORY, RygelExternalIconFactoryPrivate))
 enum  {
 	RYGEL_EXTERNAL_ICON_FACTORY_DUMMY_PROPERTY
@@ -141,7 +141,7 @@ static void rygel_external_icon_factory_create_data_free (gpointer _data);
 static void rygel_external_icon_factory_create_ready (GObject* source_object, GAsyncResult* _res_, gpointer _user_data_);
 static GValue* _g_value_dup (GValue* self);
 FreeDesktopProperties* free_desktop_properties_dbus_proxy_new (DBusGConnection* connection, const char* name, const char* path);
-GType free_desktop_properties_get_type (void);
+GType free_desktop_properties_get_type (void) G_GNUC_CONST;
 void free_desktop_properties_get_all (FreeDesktopProperties* self, const char* iface, GAsyncReadyCallback _callback_, gpointer _user_data_);
 GHashTable* free_desktop_properties_get_all_finish (FreeDesktopProperties* self, GAsyncResult* _res_, GError** error);
 void rygel_external_icon_factory_create (RygelExternalIconFactory* self, const char* service_name, GHashTable* container_props, GAsyncReadyCallback _callback_, gpointer _user_data_);
@@ -275,10 +275,10 @@ static gboolean rygel_external_icon_factory_create_co (RygelExternalIconFactoryC
 				if (data->_inner_error_->domain == DBUS_GERROR) {
 					goto __catch7_dbus_gerror;
 				}
-				_g_free0 (data->value);
-				_g_free0 (data->icon_path);
-				_g_object_unref0 (data->props);
 				_g_hash_table_unref0 (data->item_props);
+				_g_object_unref0 (data->props);
+				_g_free0 (data->icon_path);
+				_g_free0 (data->value);
 				g_critical ("file %s: line %d: unexpected error: %s (%s, %d)", __FILE__, __LINE__, data->_inner_error_->message, g_quark_to_string (data->_inner_error_->domain), data->_inner_error_->code);
 				g_clear_error (&data->_inner_error_);
 				return FALSE;
@@ -299,10 +299,10 @@ static gboolean rygel_external_icon_factory_create_co (RygelExternalIconFactoryC
 #line 299 "rygel-external-icon-factory.c"
 				data->result = NULL;
 				_g_error_free0 (data->err);
-				_g_free0 (data->value);
-				_g_free0 (data->icon_path);
-				_g_object_unref0 (data->props);
 				_g_hash_table_unref0 (data->item_props);
+				_g_object_unref0 (data->props);
+				_g_free0 (data->icon_path);
+				_g_free0 (data->value);
 				{
 					if (data->_state_ == 0) {
 						g_simple_async_result_complete_in_idle (data->_async_result);
@@ -317,10 +317,10 @@ static gboolean rygel_external_icon_factory_create_co (RygelExternalIconFactoryC
 		}
 		__finally7:
 		if (data->_inner_error_ != NULL) {
-			_g_free0 (data->value);
-			_g_free0 (data->icon_path);
-			_g_object_unref0 (data->props);
 			_g_hash_table_unref0 (data->item_props);
+			_g_object_unref0 (data->props);
+			_g_free0 (data->icon_path);
+			_g_free0 (data->value);
 			g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, data->_inner_error_->message, g_quark_to_string (data->_inner_error_->domain), data->_inner_error_->code);
 			g_clear_error (&data->_inner_error_);
 			return FALSE;
@@ -382,10 +382,10 @@ static gboolean rygel_external_icon_factory_create_co (RygelExternalIconFactoryC
 #line 382 "rygel-external-icon-factory.c"
 		}
 		data->result = data->icon;
-		_g_free0 (data->value);
-		_g_free0 (data->icon_path);
-		_g_object_unref0 (data->props);
 		_g_hash_table_unref0 (data->item_props);
+		_g_object_unref0 (data->props);
+		_g_free0 (data->icon_path);
+		_g_free0 (data->value);
 		{
 			if (data->_state_ == 0) {
 				g_simple_async_result_complete_in_idle (data->_async_result);
@@ -395,11 +395,11 @@ static gboolean rygel_external_icon_factory_create_co (RygelExternalIconFactoryC
 			g_object_unref (data->_async_result);
 			return FALSE;
 		}
-		_g_free0 (data->value);
-		_g_free0 (data->icon_path);
-		_g_object_unref0 (data->props);
-		_g_hash_table_unref0 (data->item_props);
 		_rygel_icon_info_unref0 (data->icon);
+		_g_hash_table_unref0 (data->item_props);
+		_g_object_unref0 (data->props);
+		_g_free0 (data->icon_path);
+		_g_free0 (data->value);
 	}
 	{
 		if (data->_state_ == 0) {

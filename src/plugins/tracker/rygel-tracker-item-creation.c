@@ -275,13 +275,13 @@ struct _RygelTrackerItemCreationCreateEntryInStoreData {
 static gpointer rygel_tracker_item_creation_parent_class = NULL;
 static RygelStateMachineIface* rygel_tracker_item_creation_rygel_state_machine_parent_iface = NULL;
 
-GType rygel_tracker_item_creation_get_type (void);
-GType rygel_tracker_search_container_get_type (void);
-GType rygel_tracker_category_all_container_get_type (void);
+GType rygel_tracker_item_creation_get_type (void) G_GNUC_CONST;
+GType rygel_tracker_search_container_get_type (void) G_GNUC_CONST;
+GType rygel_tracker_category_all_container_get_type (void) G_GNUC_CONST;
 RygelTrackerResourcesIface* rygel_tracker_resources_iface_dbus_proxy_new (DBusGConnection* connection, const char* name, const char* path);
-GType rygel_tracker_resources_iface_get_type (void);
+GType rygel_tracker_resources_iface_get_type (void) G_GNUC_CONST;
 RygelTrackerMinerIface* rygel_tracker_miner_iface_dbus_proxy_new (DBusGConnection* connection, const char* name, const char* path);
-GType rygel_tracker_miner_iface_get_type (void);
+GType rygel_tracker_miner_iface_get_type (void) G_GNUC_CONST;
 #define RYGEL_TRACKER_ITEM_CREATION_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), RYGEL_TRACKER_TYPE_ITEM_CREATION, RygelTrackerItemCreationPrivate))
 enum  {
 	RYGEL_TRACKER_ITEM_CREATION_DUMMY_PROPERTY,
@@ -318,21 +318,21 @@ GParamSpec* rygel_tracker_param_spec_query (const gchar* name, const gchar* nick
 void rygel_tracker_value_set_query (GValue* value, gpointer v_object);
 void rygel_tracker_value_take_query (GValue* value, gpointer v_object);
 gpointer rygel_tracker_value_get_query (const GValue* value);
-GType rygel_tracker_query_get_type (void);
-GType rygel_tracker_selection_query_get_type (void);
+GType rygel_tracker_query_get_type (void) G_GNUC_CONST;
+GType rygel_tracker_selection_query_get_type (void) G_GNUC_CONST;
 gpointer rygel_tracker_item_factory_ref (gpointer instance);
 void rygel_tracker_item_factory_unref (gpointer instance);
 GParamSpec* rygel_tracker_param_spec_item_factory (const gchar* name, const gchar* nick, const gchar* blurb, GType object_type, GParamFlags flags);
 void rygel_tracker_value_set_item_factory (GValue* value, gpointer v_object);
 void rygel_tracker_value_take_item_factory (GValue* value, gpointer v_object);
 gpointer rygel_tracker_value_get_item_factory (const GValue* value);
-GType rygel_tracker_item_factory_get_type (void);
+GType rygel_tracker_item_factory_get_type (void) G_GNUC_CONST;
 RygelTrackerInsertionQuery* rygel_tracker_insertion_query_new (RygelMediaItem* item, const char* category);
 RygelTrackerInsertionQuery* rygel_tracker_insertion_query_construct (GType object_type, RygelMediaItem* item, const char* category);
-GType rygel_tracker_insertion_query_get_type (void);
+GType rygel_tracker_insertion_query_get_type (void) G_GNUC_CONST;
 void rygel_tracker_query_execute (RygelTrackerQuery* self, RygelTrackerResourcesIface* resources, GAsyncReadyCallback _callback_, gpointer _user_data_);
 void rygel_tracker_query_execute_finish (RygelTrackerQuery* self, GAsyncResult* _res_, GError** error);
-GType rygel_tracker_query_triplets_get_type (void);
+GType rygel_tracker_query_triplets_get_type (void) G_GNUC_CONST;
 static gboolean rygel_tracker_item_creation_create_entry_in_store_co (RygelTrackerItemCreationCreateEntryInStoreData* data);
 GError* rygel_tracker_item_creation_get_error (RygelTrackerItemCreation* self);
 static void rygel_tracker_item_creation_finalize (GObject* obj);
@@ -374,7 +374,7 @@ RygelTrackerItemCreation* rygel_tracker_item_creation_construct (GType object_ty
 #line 375 "rygel-tracker-item-creation.c"
 	if (_inner_error_ != NULL) {
 		g_propagate_error (error, _inner_error_);
-		g_object_unref (self);
+		_g_object_unref0 (self);
 		return NULL;
 	}
 	return self;
@@ -468,9 +468,9 @@ static gboolean rygel_tracker_item_creation_real_run_co (RygelTrackerItemCreatio
 			rygel_tracker_miner_iface_ignore_next_update_finish (data->self->priv->miner, data->_res_, &data->_inner_error_);
 #line 470 "rygel-tracker-item-creation.c"
 			if (data->_inner_error_ != NULL) {
-				_g_object_unref0 (data->file);
-				_g_free0 (data->urn);
 				data->uris = (_vala_array_free (data->uris, data->uris_length1, (GDestroyNotify) g_free), NULL);
+				_g_free0 (data->urn);
+				_g_object_unref0 (data->file);
 				goto __catch7_g_error;
 			}
 			data->_state_ = 12;
@@ -482,9 +482,9 @@ static gboolean rygel_tracker_item_creation_real_run_co (RygelTrackerItemCreatio
 #line 483 "rygel-tracker-item-creation.c"
 			_g_object_unref0 (data->_tmp2_);
 			if (data->_inner_error_ != NULL) {
-				_g_object_unref0 (data->file);
-				_g_free0 (data->urn);
 				data->uris = (_vala_array_free (data->uris, data->uris_length1, (GDestroyNotify) g_free), NULL);
+				_g_free0 (data->urn);
+				_g_object_unref0 (data->file);
 				goto __catch7_g_error;
 			}
 #line 65 "rygel-tracker-item-creation.vala"
@@ -492,9 +492,9 @@ static gboolean rygel_tracker_item_creation_real_run_co (RygelTrackerItemCreatio
 #line 66 "rygel-tracker-item-creation.vala"
 			((RygelMediaObject*) data->self->priv->item)->parent = (RygelMediaContainer*) data->self->priv->container;
 #line 495 "rygel-tracker-item-creation.c"
-			_g_object_unref0 (data->file);
-			_g_free0 (data->urn);
 			data->uris = (_vala_array_free (data->uris, data->uris_length1, (GDestroyNotify) g_free), NULL);
+			_g_free0 (data->urn);
+			_g_object_unref0 (data->file);
 		}
 		goto __finally7;
 		__catch7_g_error:
@@ -645,8 +645,8 @@ static gboolean rygel_tracker_item_creation_prepare_file_co (RygelTrackerItemCre
 			g_object_unref (data->_async_result);
 			return FALSE;
 		}
-		_g_object_unref0 (data->dir);
 		_g_object_unref0 (data->file);
+		_g_object_unref0 (data->dir);
 	}
 	{
 		if (data->_state_ == 0) {
@@ -723,8 +723,8 @@ static gboolean rygel_tracker_item_creation_create_entry_in_store_co (RygelTrack
 		if (data->_inner_error_ != NULL) {
 			g_simple_async_result_set_from_error (data->_async_result, data->_inner_error_);
 			g_error_free (data->_inner_error_);
-			_g_free0 (data->category);
 			_rygel_tracker_query_unref0 (data->query);
+			_g_free0 (data->category);
 			{
 				if (data->_state_ == 0) {
 					g_simple_async_result_complete_in_idle (data->_async_result);
@@ -736,8 +736,8 @@ static gboolean rygel_tracker_item_creation_create_entry_in_store_co (RygelTrack
 			}
 		}
 		data->result = g_strdup (data->query->id);
-		_g_free0 (data->category);
 		_rygel_tracker_query_unref0 (data->query);
+		_g_free0 (data->category);
 		{
 			if (data->_state_ == 0) {
 				g_simple_async_result_complete_in_idle (data->_async_result);
@@ -747,8 +747,8 @@ static gboolean rygel_tracker_item_creation_create_entry_in_store_co (RygelTrack
 			g_object_unref (data->_async_result);
 			return FALSE;
 		}
-		_g_free0 (data->category);
 		_rygel_tracker_query_unref0 (data->query);
+		_g_free0 (data->category);
 	}
 	{
 		if (data->_state_ == 0) {

@@ -175,7 +175,6 @@ struct _RygelContentDirectory {
 	GUPnPService parent_instance;
 	RygelContentDirectoryPrivate * priv;
 	char* feature_list;
-	char* sort_caps;
 	RygelHTTPServer* http_server;
 	RygelMediaContainer* root_container;
 	GCancellable* cancellable;
@@ -184,7 +183,6 @@ struct _RygelContentDirectory {
 
 struct _RygelContentDirectoryClass {
 	GUPnPServiceClass parent_class;
-	RygelMediaContainer* (*create_root_container) (RygelContentDirectory* self);
 };
 
 struct _RygelImportResourceRunData {
@@ -234,6 +232,7 @@ struct _RygelMediaObject {
 
 struct _RygelMediaObjectClass {
 	GObjectClass parent_class;
+	gint (*compare_by_property) (RygelMediaObject* self, RygelMediaObject* media_object, const char* property);
 };
 
 struct _RygelImportResourceGetOriginalUriData {
@@ -255,24 +254,24 @@ static guint32 rygel_import_resource_last_transfer_id = (guint32) 0;
 static gpointer rygel_import_resource_parent_class = NULL;
 static RygelStateMachineIface* rygel_import_resource_rygel_state_machine_parent_iface = NULL;
 
-GType rygel_transfer_status_get_type (void);
-GType rygel_state_machine_get_type (void);
-GType rygel_import_resource_get_type (void);
-GType rygel_transcode_manager_get_type (void);
-GType rygel_http_server_get_type (void);
-GType rygel_media_object_get_type (void);
-GType rygel_media_container_get_type (void);
+GType rygel_transfer_status_get_type (void) G_GNUC_CONST;
+GType rygel_state_machine_get_type (void) G_GNUC_CONST;
+GType rygel_import_resource_get_type (void) G_GNUC_CONST;
+GType rygel_transcode_manager_get_type (void) G_GNUC_CONST;
+GType rygel_http_server_get_type (void) G_GNUC_CONST;
+GType rygel_media_object_get_type (void) G_GNUC_CONST;
+GType rygel_media_container_get_type (void) G_GNUC_CONST;
 #define RYGEL_IMPORT_RESOURCE_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), RYGEL_TYPE_IMPORT_RESOURCE, RygelImportResourcePrivate))
 enum  {
 	RYGEL_IMPORT_RESOURCE_DUMMY_PROPERTY,
 	RYGEL_IMPORT_RESOURCE_STATUS_AS_STRING,
 	RYGEL_IMPORT_RESOURCE_CANCELLABLE
 };
-GType rygel_content_directory_get_type (void);
+GType rygel_content_directory_get_type (void) G_GNUC_CONST;
 void rygel_state_machine_set_cancellable (RygelStateMachine* self, GCancellable* value);
 GCancellable* rygel_state_machine_get_cancellable (RygelStateMachine* self);
-static void _lambda5_ (RygelImportResource* self);
-static void __lambda5__g_cancellable_cancelled (GCancellable* _sender, gpointer self);
+static void _lambda6_ (RygelImportResource* self);
+static void __lambda6__g_cancellable_cancelled (GCancellable* _sender, gpointer self);
 RygelImportResource* rygel_import_resource_new (RygelContentDirectory* content_dir, GUPnPServiceAction* action);
 RygelImportResource* rygel_import_resource_construct (GType object_type, RygelContentDirectory* content_dir, GUPnPServiceAction* action);
 static void rygel_import_resource_real_run_data_free (gpointer _data);
@@ -288,10 +287,10 @@ static void rygel_import_resource_get_original_uri_ready (GObject* source_object
 GQuark rygel_http_request_error_quark (void);
 RygelHTTPItemURI* rygel_http_item_uri_new_from_string (const char* uri, RygelHTTPServer* http_server, GError** error);
 RygelHTTPItemURI* rygel_http_item_uri_construct_from_string (GType object_type, const char* uri, RygelHTTPServer* http_server, GError** error);
-GType rygel_http_item_uri_get_type (void);
+GType rygel_http_item_uri_get_type (void) G_GNUC_CONST;
 void rygel_media_container_find_object (RygelMediaContainer* self, const char* id, GCancellable* cancellable, GAsyncReadyCallback _callback_, gpointer _user_data_);
 RygelMediaObject* rygel_media_container_find_object_finish (RygelMediaContainer* self, GAsyncResult* _res_, GError** error);
-GType rygel_media_item_get_type (void);
+GType rygel_media_item_get_type (void) G_GNUC_CONST;
 static gboolean rygel_import_resource_get_original_uri_co (RygelImportResourceGetOriginalUriData* data);
 const char* rygel_import_resource_get_status_as_string (RygelImportResource* self);
 static void rygel_import_resource_finalize (GObject* obj);
@@ -318,23 +317,23 @@ static gpointer _g_object_ref0 (gpointer self) {
 
 
 #line 87 "rygel-import-resource.vala"
-static void _lambda5_ (RygelImportResource* self) {
+static void _lambda6_ (RygelImportResource* self) {
 #line 88 "rygel-import-resource.vala"
 	g_cancellable_cancel (rygel_state_machine_get_cancellable ((RygelStateMachine*) self));
-#line 325 "rygel-import-resource.c"
+#line 324 "rygel-import-resource.c"
 }
 
 
 #line 87 "rygel-import-resource.vala"
-static void __lambda5__g_cancellable_cancelled (GCancellable* _sender, gpointer self) {
-#line 331 "rygel-import-resource.c"
-	_lambda5_ (self);
+static void __lambda6__g_cancellable_cancelled (GCancellable* _sender, gpointer self) {
+#line 330 "rygel-import-resource.c"
+	_lambda6_ (self);
 }
 
 
 #line 72 "rygel-import-resource.vala"
 RygelImportResource* rygel_import_resource_construct (GType object_type, RygelContentDirectory* content_dir, GUPnPServiceAction* action) {
-#line 338 "rygel-import-resource.c"
+#line 337 "rygel-import-resource.c"
 	RygelImportResource * self;
 	RygelMediaContainer* _tmp0_;
 	RygelHTTPServer* _tmp1_;
@@ -352,7 +351,7 @@ RygelImportResource* rygel_import_resource_construct (GType object_type, RygelCo
 	self->priv->http_server = (_tmp1_ = _g_object_ref0 (content_dir->http_server), _g_object_unref0 (self->priv->http_server), _tmp1_);
 #line 76 "rygel-import-resource.vala"
 	rygel_state_machine_set_cancellable ((RygelStateMachine*) self, _tmp2_ = g_cancellable_new ());
-#line 356 "rygel-import-resource.c"
+#line 355 "rygel-import-resource.c"
 	_g_object_unref0 (_tmp2_);
 #line 77 "rygel-import-resource.vala"
 	self->priv->action = (_tmp3_ = action, action = NULL, _tmp3_);
@@ -367,8 +366,8 @@ RygelImportResource* rygel_import_resource_construct (GType object_type, RygelCo
 #line 85 "rygel-import-resource.vala"
 	self->status = RYGEL_TRANSFER_STATUS_IN_PROGRESS;
 #line 87 "rygel-import-resource.vala"
-	g_signal_connect_object (content_dir->cancellable, "cancelled", (GCallback) __lambda5__g_cancellable_cancelled, self, 0);
-#line 372 "rygel-import-resource.c"
+	g_signal_connect_object (content_dir->cancellable, "cancelled", (GCallback) __lambda6__g_cancellable_cancelled, self, 0);
+#line 371 "rygel-import-resource.c"
 	return self;
 }
 
@@ -377,7 +376,7 @@ RygelImportResource* rygel_import_resource_construct (GType object_type, RygelCo
 RygelImportResource* rygel_import_resource_new (RygelContentDirectory* content_dir, GUPnPServiceAction* action) {
 #line 72 "rygel-import-resource.vala"
 	return rygel_import_resource_construct (RYGEL_TYPE_IMPORT_RESOURCE, content_dir, action);
-#line 381 "rygel-import-resource.c"
+#line 380 "rygel-import-resource.c"
 }
 
 
@@ -417,7 +416,7 @@ static void rygel_import_resource_run_ready (GObject* source_object, GAsyncResul
 
 #line 159 "rygel-import-resource.vala"
 static void _rygel_import_resource_copy_progress_cb_gfile_progress_callback (gint64 current_num_bytes, gint64 total_num_bytes, gpointer self) {
-#line 421 "rygel-import-resource.c"
+#line 420 "rygel-import-resource.c"
 	rygel_import_resource_copy_progress_cb (self, current_num_bytes, total_num_bytes);
 }
 
@@ -426,10 +425,10 @@ static gboolean rygel_import_resource_real_run_co (RygelImportResourceRunData* d
 	switch (data->_state_) {
 		case 0:
 		goto _state_0;
-		case 40:
-		goto _state_40;
-		case 41:
-		goto _state_41;
+		case 38:
+		goto _state_38;
+		case 39:
+		goto _state_39;
 		default:
 		g_assert_not_reached ();
 	}
@@ -439,22 +438,22 @@ static gboolean rygel_import_resource_real_run_co (RygelImportResourceRunData* d
 		gupnp_service_action_get (data->self->priv->action, "SourceURI", G_TYPE_STRING, &data->self->source_uri, "DestinationURI", G_TYPE_STRING, &data->self->destination_uri, NULL);
 #line 102 "rygel-import-resource.vala"
 		gupnp_service_action_set (data->self->priv->action, "TransferID", G_TYPE_UINT, data->self->transfer_id, NULL);
-#line 443 "rygel-import-resource.c"
+#line 442 "rygel-import-resource.c"
 		{
-			data->_state_ = 40;
+			data->_state_ = 38;
 			rygel_import_resource_get_original_uri (data->self, rygel_import_resource_run_ready, data);
 			return FALSE;
-			_state_40:
+			_state_38:
 			data->_tmp0_ = rygel_import_resource_get_original_uri_finish (data->self, data->_res_, &data->_inner_error_);
 			if (data->_inner_error_ != NULL) {
-				goto __catch52_g_error;
+				goto __catch50_g_error;
 			}
 #line 106 "rygel-import-resource.vala"
 			data->destination_uri = (data->_tmp1_ = data->_tmp0_, _g_free0 (data->destination_uri), data->_tmp1_);
-#line 455 "rygel-import-resource.c"
+#line 454 "rygel-import-resource.c"
 		}
-		goto __finally52;
-		__catch52_g_error:
+		goto __finally50;
+		__catch50_g_error:
 		{
 			data->_error_ = data->_inner_error_;
 			data->_inner_error_ = NULL;
@@ -467,7 +466,7 @@ static gboolean rygel_import_resource_real_run_co (RygelImportResourceRunData* d
 				data->self->status = RYGEL_TRANSFER_STATUS_ERROR;
 #line 114 "rygel-import-resource.vala"
 				g_signal_emit_by_name ((RygelStateMachine*) data->self, "completed");
-#line 471 "rygel-import-resource.c"
+#line 470 "rygel-import-resource.c"
 				_g_error_free0 (data->_error_);
 				_g_free0 (data->destination_uri);
 				{
@@ -482,7 +481,7 @@ static gboolean rygel_import_resource_real_run_co (RygelImportResourceRunData* d
 				_g_error_free0 (data->_error_);
 			}
 		}
-		__finally52:
+		__finally50:
 		if (data->_inner_error_ != NULL) {
 			_g_free0 (data->destination_uri);
 			g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, data->_inner_error_->message, g_quark_to_string (data->_inner_error_->domain), data->_inner_error_->code);
@@ -491,27 +490,27 @@ static gboolean rygel_import_resource_real_run_co (RygelImportResourceRunData* d
 		}
 #line 120 "rygel-import-resource.vala"
 		gupnp_service_action_return (data->self->priv->action);
-#line 495 "rygel-import-resource.c"
+#line 494 "rygel-import-resource.c"
 		{
 			data->destination_file = g_file_new_for_uri (data->destination_uri);
 			data->source_file = g_file_new_for_uri (data->self->source_uri);
-			data->_state_ = 41;
+			data->_state_ = 39;
 			g_file_copy_async (data->source_file, data->destination_file, G_FILE_COPY_OVERWRITE, G_PRIORITY_LOW, rygel_state_machine_get_cancellable ((RygelStateMachine*) data->self), _rygel_import_resource_copy_progress_cb_gfile_progress_callback, data->self, rygel_import_resource_run_ready, data);
 			return FALSE;
-			_state_41:
+			_state_39:
 #line 126 "rygel-import-resource.vala"
 			g_file_copy_finish (data->source_file, data->_res_, &data->_inner_error_);
-#line 505 "rygel-import-resource.c"
+#line 504 "rygel-import-resource.c"
 			if (data->_inner_error_ != NULL) {
-				_g_object_unref0 (data->destination_file);
 				_g_object_unref0 (data->source_file);
-				goto __catch53_g_error;
+				_g_object_unref0 (data->destination_file);
+				goto __catch51_g_error;
 			}
-			_g_object_unref0 (data->destination_file);
 			_g_object_unref0 (data->source_file);
+			_g_object_unref0 (data->destination_file);
 		}
-		goto __finally53;
-		__catch53_g_error:
+		goto __finally51;
+		__catch51_g_error:
 		{
 			data->err = data->_inner_error_;
 			data->_inner_error_ = NULL;
@@ -520,11 +519,11 @@ static gboolean rygel_import_resource_real_run_co (RygelImportResourceRunData* d
 				g_warning ("rygel-import-resource.vala:132: %s", data->err->message);
 #line 133 "rygel-import-resource.vala"
 				data->self->status = RYGEL_TRANSFER_STATUS_ERROR;
-#line 524 "rygel-import-resource.c"
+#line 523 "rygel-import-resource.c"
 				_g_error_free0 (data->err);
 			}
 		}
-		__finally53:
+		__finally51:
 		if (data->_inner_error_ != NULL) {
 			_g_free0 (data->destination_uri);
 			g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, data->_inner_error_->message, g_quark_to_string (data->_inner_error_->domain), data->_inner_error_->code);
@@ -537,7 +536,7 @@ static gboolean rygel_import_resource_real_run_co (RygelImportResourceRunData* d
 		g_debug (_ ("Import of '%s' to '%s' completed"), data->self->source_uri, data->destination_uri);
 #line 141 "rygel-import-resource.vala"
 		g_signal_emit_by_name ((RygelStateMachine*) data->self, "completed");
-#line 541 "rygel-import-resource.c"
+#line 540 "rygel-import-resource.c"
 		_g_free0 (data->destination_uri);
 	}
 	{
@@ -596,8 +595,8 @@ static gboolean rygel_import_resource_get_original_uri_co (RygelImportResourceGe
 	switch (data->_state_) {
 		case 0:
 		goto _state_0;
-		case 42:
-		goto _state_42;
+		case 40:
+		goto _state_40;
 		default:
 		g_assert_not_reached ();
 	}
@@ -617,10 +616,10 @@ static gboolean rygel_import_resource_get_original_uri_co (RygelImportResourceGe
 				return FALSE;
 			}
 		}
-		data->_state_ = 42;
+		data->_state_ = 40;
 		rygel_media_container_find_object (data->self->priv->root_container, data->uri->item_id, NULL, rygel_import_resource_get_original_uri_ready, data);
 		return FALSE;
-		_state_42:
+		_state_40:
 		data->media_object = rygel_media_container_find_object_finish (data->self->priv->root_container, data->_res_, &data->_inner_error_);
 		if (data->_inner_error_ != NULL) {
 			g_simple_async_result_set_from_error (data->_async_result, data->_inner_error_);
@@ -640,28 +639,28 @@ static gboolean rygel_import_resource_get_original_uri_co (RygelImportResourceGe
 		if (data->media_object == NULL) {
 #line 150 "rygel-import-resource.vala"
 			data->_tmp1_ = TRUE;
-#line 644 "rygel-import-resource.c"
+#line 643 "rygel-import-resource.c"
 		} else {
 #line 151 "rygel-import-resource.vala"
 			data->_tmp1_ = !RYGEL_IS_MEDIA_ITEM (data->media_object);
-#line 648 "rygel-import-resource.c"
+#line 647 "rygel-import-resource.c"
 		}
 #line 150 "rygel-import-resource.vala"
 		if (data->_tmp1_) {
 #line 150 "rygel-import-resource.vala"
 			data->_tmp0_ = TRUE;
-#line 654 "rygel-import-resource.c"
+#line 653 "rygel-import-resource.c"
 		} else {
 #line 152 "rygel-import-resource.vala"
 			data->_tmp0_ = gee_collection_get_size ((GeeCollection*) data->media_object->uris) < 1;
-#line 658 "rygel-import-resource.c"
+#line 657 "rygel-import-resource.c"
 		}
 #line 150 "rygel-import-resource.vala"
 		if (data->_tmp0_) {
-#line 662 "rygel-import-resource.c"
+#line 661 "rygel-import-resource.c"
 			data->result = g_strdup (data->self->destination_uri);
-			_g_object_unref0 (data->uri);
 			_g_object_unref0 (data->media_object);
+			_g_object_unref0 (data->uri);
 			{
 				if (data->_state_ == 0) {
 					g_simple_async_result_complete_in_idle (data->_async_result);
@@ -673,8 +672,8 @@ static gboolean rygel_import_resource_get_original_uri_co (RygelImportResourceGe
 			}
 		} else {
 			data->result = (char*) gee_abstract_list_get ((GeeAbstractList*) data->media_object->uris, 0);
-			_g_object_unref0 (data->uri);
 			_g_object_unref0 (data->media_object);
+			_g_object_unref0 (data->uri);
 			{
 				if (data->_state_ == 0) {
 					g_simple_async_result_complete_in_idle (data->_async_result);
@@ -685,8 +684,8 @@ static gboolean rygel_import_resource_get_original_uri_co (RygelImportResourceGe
 				return FALSE;
 			}
 		}
-		_g_object_unref0 (data->uri);
 		_g_object_unref0 (data->media_object);
+		_g_object_unref0 (data->uri);
 	}
 	{
 		if (data->_state_ == 0) {
@@ -708,7 +707,7 @@ static void rygel_import_resource_copy_progress_cb (RygelImportResource* self, g
 	self->bytes_copied = current_num_bytes;
 #line 162 "rygel-import-resource.vala"
 	self->bytes_total = total_num_bytes;
-#line 712 "rygel-import-resource.c"
+#line 711 "rygel-import-resource.c"
 }
 
 
@@ -717,34 +716,34 @@ const char* rygel_import_resource_get_status_as_string (RygelImportResource* sel
 	g_return_val_if_fail (self != NULL, NULL);
 #line 52 "rygel-import-resource.vala"
 	switch (self->status) {
-#line 721 "rygel-import-resource.c"
+#line 720 "rygel-import-resource.c"
 		case RYGEL_TRANSFER_STATUS_COMPLETED:
 		{
 			result = "COMPLETED";
 #line 54 "rygel-import-resource.vala"
 			return result;
-#line 727 "rygel-import-resource.c"
+#line 726 "rygel-import-resource.c"
 		}
 		case RYGEL_TRANSFER_STATUS_ERROR:
 		{
 			result = "ERROR";
 #line 56 "rygel-import-resource.vala"
 			return result;
-#line 734 "rygel-import-resource.c"
+#line 733 "rygel-import-resource.c"
 		}
 		case RYGEL_TRANSFER_STATUS_IN_PROGRESS:
 		{
 			result = "IN_PROGRESS";
 #line 58 "rygel-import-resource.vala"
 			return result;
-#line 741 "rygel-import-resource.c"
+#line 740 "rygel-import-resource.c"
 		}
 		default:
 		{
 			result = "STOPPED";
 #line 61 "rygel-import-resource.vala"
 			return result;
-#line 748 "rygel-import-resource.c"
+#line 747 "rygel-import-resource.c"
 		}
 	}
 }
@@ -757,7 +756,7 @@ static GCancellable* rygel_import_resource_real_get_cancellable (RygelStateMachi
 	result = self->priv->_cancellable;
 #line 66 "rygel-import-resource.vala"
 	return result;
-#line 761 "rygel-import-resource.c"
+#line 760 "rygel-import-resource.c"
 }
 
 

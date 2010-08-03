@@ -82,7 +82,7 @@ struct _RygelTrackerQueryTripletClass {
 
 static gpointer rygel_tracker_query_triplets_parent_class = NULL;
 
-GType rygel_tracker_query_triplets_get_type (void);
+GType rygel_tracker_query_triplets_get_type (void) G_GNUC_CONST;
 enum  {
 	RYGEL_TRACKER_QUERY_TRIPLETS_DUMMY_PROPERTY
 };
@@ -92,7 +92,7 @@ GParamSpec* rygel_tracker_param_spec_query_triplet (const gchar* name, const gch
 void rygel_tracker_value_set_query_triplet (GValue* value, gpointer v_object);
 void rygel_tracker_value_take_query_triplet (GValue* value, gpointer v_object);
 gpointer rygel_tracker_value_get_query_triplet (const GValue* value);
-GType rygel_tracker_query_triplet_get_type (void);
+GType rygel_tracker_query_triplet_get_type (void) G_GNUC_CONST;
 gboolean rygel_tracker_query_triplet_equal_func (RygelTrackerQueryTriplet* a, RygelTrackerQueryTriplet* b);
 RygelTrackerQueryTriplets* rygel_tracker_query_triplets_new (void);
 RygelTrackerQueryTriplets* rygel_tracker_query_triplets_construct (GType object_type);
@@ -137,23 +137,24 @@ RygelTrackerQueryTriplets* rygel_tracker_query_triplets_construct_clone (GType o
 #line 138 "rygel-tracker-query-triplets.c"
 	{
 		GeeIterator* _triplet_it;
+#line 36 "rygel-tracker-query-triplets.vala"
 		_triplet_it = gee_abstract_collection_iterator ((GeeAbstractCollection*) triplets);
 #line 36 "rygel-tracker-query-triplets.vala"
 		while (TRUE) {
-#line 144 "rygel-tracker-query-triplets.c"
+#line 145 "rygel-tracker-query-triplets.c"
 			RygelTrackerQueryTriplet* triplet;
 			RygelTrackerQueryTriplet* _tmp0_;
 #line 36 "rygel-tracker-query-triplets.vala"
 			if (!gee_iterator_next (_triplet_it)) {
 #line 36 "rygel-tracker-query-triplets.vala"
 				break;
-#line 151 "rygel-tracker-query-triplets.c"
+#line 152 "rygel-tracker-query-triplets.c"
 			}
 #line 36 "rygel-tracker-query-triplets.vala"
 			triplet = (RygelTrackerQueryTriplet*) gee_iterator_get (_triplet_it);
 #line 37 "rygel-tracker-query-triplets.vala"
 			gee_abstract_collection_add ((GeeAbstractCollection*) self, _tmp0_ = rygel_tracker_query_triplet_new_clone (triplet));
-#line 157 "rygel-tracker-query-triplets.c"
+#line 158 "rygel-tracker-query-triplets.c"
 			_rygel_tracker_query_triplet_unref0 (_tmp0_);
 			_rygel_tracker_query_triplet_unref0 (triplet);
 		}
@@ -167,13 +168,13 @@ RygelTrackerQueryTriplets* rygel_tracker_query_triplets_construct_clone (GType o
 RygelTrackerQueryTriplets* rygel_tracker_query_triplets_new_clone (RygelTrackerQueryTriplets* triplets) {
 #line 33 "rygel-tracker-query-triplets.vala"
 	return rygel_tracker_query_triplets_construct_clone (RYGEL_TRACKER_TYPE_QUERY_TRIPLETS, triplets);
-#line 171 "rygel-tracker-query-triplets.c"
+#line 172 "rygel-tracker-query-triplets.c"
 }
 
 
 #line 41 "rygel-tracker-query-triplets.vala"
 char* rygel_tracker_query_triplets_serialize (RygelTrackerQueryTriplets* self) {
-#line 177 "rygel-tracker-query-triplets.c"
+#line 178 "rygel-tracker-query-triplets.c"
 	char* result = NULL;
 	char* str;
 	gboolean include_subject;
@@ -183,19 +184,19 @@ char* rygel_tracker_query_triplets_serialize (RygelTrackerQueryTriplets* self) {
 	str = g_strdup ("");
 #line 43 "rygel-tracker-query-triplets.vala"
 	include_subject = TRUE;
-#line 187 "rygel-tracker-query-triplets.c"
+#line 188 "rygel-tracker-query-triplets.c"
 	{
 		gint i;
 #line 45 "rygel-tracker-query-triplets.vala"
 		i = 0;
-#line 192 "rygel-tracker-query-triplets.c"
+#line 193 "rygel-tracker-query-triplets.c"
 		{
 			gboolean _tmp0_;
 #line 45 "rygel-tracker-query-triplets.vala"
 			_tmp0_ = TRUE;
 #line 45 "rygel-tracker-query-triplets.vala"
 			while (TRUE) {
-#line 199 "rygel-tracker-query-triplets.c"
+#line 200 "rygel-tracker-query-triplets.c"
 				char* _tmp3_;
 				char* _tmp2_;
 				RygelTrackerQueryTriplet* _tmp1_;
@@ -203,7 +204,7 @@ char* rygel_tracker_query_triplets_serialize (RygelTrackerQueryTriplets* self) {
 				if (!_tmp0_) {
 #line 45 "rygel-tracker-query-triplets.vala"
 					i++;
-#line 207 "rygel-tracker-query-triplets.c"
+#line 208 "rygel-tracker-query-triplets.c"
 				}
 #line 45 "rygel-tracker-query-triplets.vala"
 				_tmp0_ = FALSE;
@@ -211,35 +212,35 @@ char* rygel_tracker_query_triplets_serialize (RygelTrackerQueryTriplets* self) {
 				if (!(i < gee_collection_get_size ((GeeCollection*) self))) {
 #line 45 "rygel-tracker-query-triplets.vala"
 					break;
-#line 215 "rygel-tracker-query-triplets.c"
+#line 216 "rygel-tracker-query-triplets.c"
 				}
 #line 46 "rygel-tracker-query-triplets.vala"
 				str = (_tmp3_ = g_strconcat (str, _tmp2_ = rygel_tracker_query_triplet_to_string (_tmp1_ = (RygelTrackerQueryTriplet*) gee_abstract_list_get ((GeeAbstractList*) self, i), include_subject), NULL), _g_free0 (str), _tmp3_);
-#line 219 "rygel-tracker-query-triplets.c"
+#line 220 "rygel-tracker-query-triplets.c"
 				_g_free0 (_tmp2_);
 				_rygel_tracker_query_triplet_unref0 (_tmp1_);
 #line 48 "rygel-tracker-query-triplets.vala"
 				if (i < (gee_collection_get_size ((GeeCollection*) self) - 1)) {
-#line 224 "rygel-tracker-query-triplets.c"
+#line 225 "rygel-tracker-query-triplets.c"
 					RygelTrackerQueryTriplet* _tmp5_;
 					RygelTrackerQueryTriplet* _tmp4_;
 #line 49 "rygel-tracker-query-triplets.vala"
 					include_subject = _vala_strcmp0 ((_tmp4_ = (RygelTrackerQueryTriplet*) gee_abstract_list_get ((GeeAbstractList*) self, i))->subject, (_tmp5_ = (RygelTrackerQueryTriplet*) gee_abstract_list_get ((GeeAbstractList*) self, i + 1))->subject) != 0;
-#line 229 "rygel-tracker-query-triplets.c"
+#line 230 "rygel-tracker-query-triplets.c"
 					_rygel_tracker_query_triplet_unref0 (_tmp5_);
 					_rygel_tracker_query_triplet_unref0 (_tmp4_);
 #line 51 "rygel-tracker-query-triplets.vala"
 					if (include_subject) {
-#line 234 "rygel-tracker-query-triplets.c"
+#line 235 "rygel-tracker-query-triplets.c"
 						char* _tmp6_;
 #line 52 "rygel-tracker-query-triplets.vala"
 						str = (_tmp6_ = g_strconcat (str, " . ", NULL), _g_free0 (str), _tmp6_);
-#line 238 "rygel-tracker-query-triplets.c"
+#line 239 "rygel-tracker-query-triplets.c"
 					} else {
 						char* _tmp7_;
 #line 54 "rygel-tracker-query-triplets.vala"
 						str = (_tmp7_ = g_strconcat (str, " ; ", NULL), _g_free0 (str), _tmp7_);
-#line 243 "rygel-tracker-query-triplets.c"
+#line 244 "rygel-tracker-query-triplets.c"
 					}
 				}
 			}
@@ -248,7 +249,7 @@ char* rygel_tracker_query_triplets_serialize (RygelTrackerQueryTriplets* self) {
 	result = str;
 #line 59 "rygel-tracker-query-triplets.vala"
 	return result;
-#line 252 "rygel-tracker-query-triplets.c"
+#line 253 "rygel-tracker-query-triplets.c"
 }
 
 
@@ -262,7 +263,7 @@ void rygel_tracker_query_triplets_add_triplet (RygelTrackerQueryTriplets* self, 
 	if (!gee_abstract_collection_contains ((GeeAbstractCollection*) self, triplet)) {
 #line 66 "rygel-tracker-query-triplets.vala"
 		gee_abstract_collection_add ((GeeAbstractCollection*) self, triplet);
-#line 266 "rygel-tracker-query-triplets.c"
+#line 267 "rygel-tracker-query-triplets.c"
 	}
 }
 

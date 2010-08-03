@@ -20,21 +20,43 @@ AC_STDC_HEADERS
 AC_PROG_LIBTOOL
 AC_FUNC_MMAP
 
-VALA_REQUIRED=0.8.0
-GUPNP_REQUIRED=0.13.3
-GUPNP_AV_REQUIRED=0.5.7
+VALA_REQUIRED=0.9.3
+GUPNP_REQUIRED=0.13.4
+GUPNP_AV_REQUIRED=0.5.8
+GUPNP_DLNA_REQUIRED=0.2.1
 GUPNP_VALA_REQUIRED=0.6.7
 DBUS_GLIB_REQUIRED=0.74
 GSTREAMER_REQUIRED=0.10.23
 GIO_REQUIRED=2.16
-GEE_REQUIRED=0.5.0
+GEE_REQUIRED=0.5.2
 UUID_REQUIRED=1.41.3
 LIBSOUP_REQUIRED=2.26.0
-GTK_REQUIRED=2.90.3
 LIBSQLITE3_REQUIRED=3.5
+
+AC_MSG_CHECKING([which gtk+ version to compile against])
+AC_ARG_WITH([gtk],
+  [AS_HELP_STRING([--with-gtk=2.0|3.0],[which gtk+ version to compile against (default: 2.0)])],
+  [case "$with_gtk" in
+     2.0|3.0) ;;
+     *) AC_MSG_ERROR([invalid gtk version specified]) ;;
+   esac],
+  [with_gtk=2.0])
+AC_MSG_RESULT([$with_gtk])
+
+case "$with_gtk" in
+  2.0) GTK_VAPI_VERSION=2.0
+       GTK_REQUIRED=2.21.5
+       ;;
+  3.0) GTK_VAPI_VERSION=3.0
+       GTK_REQUIRED=2.90.3
+       ;;
+esac
+
+
 
 PKG_CHECK_MODULES(LIBGUPNP, gupnp-1.0 >= $GUPNP_REQUIRED)
 PKG_CHECK_MODULES(LIBGUPNP_AV, gupnp-av-1.0 >= $GUPNP_AV_REQUIRED)
+PKG_CHECK_MODULES(LIBGUPNP_DLNA, gupnp-dlna-1.0 >= $GUPNP_DLNA_REQUIRED)
 PKG_CHECK_MODULES(LIBDBUS_GLIB, dbus-glib-1 >= $DBUS_GLIB_REQUIRED)
 PKG_CHECK_MODULES(LIBGSTREAMER, gstreamer-0.10 >= $GSTREAMER_REQUIRED)
 PKG_CHECK_MODULES(LIBGIO, gio-2.0 >= $GIO_REQUIRED)
@@ -61,7 +83,7 @@ fi
 if test ! -e src/rygel/rygel_vala.stamp -o \
         ! -e src/rygel/librygel_configuration_a_vala.stamp -o \
         ! -e src/ui/rygel_preferences_vala.stamp -o \
-        ! -e src/plugins/gst-renderer/librygel_gst_renderer_la_vala.stamp -o \
+        ! -e src/plugins/playbin/librygel_playbin_la_vala.stamp -o \
         ! -e src/plugins/tracker/librygel_media_tracker_la_vala.stamp -o \
         ! -e src/plugins/test/librygel_test_la_vala.stamp -o \
         ! -e src/plugins/media-export/librygel_media_export_la_vala.stamp -o \
@@ -92,6 +114,10 @@ if test x$enable_vala = xyes ; then
                   true,
                   [AC_MSG_ERROR("Unable to find Vala bindings for gupnp-av-1.0")])
 
+    AC_CHECK_FILE("${VAPIDIR}/gupnp-dlna-1.0.vapi",
+                  true,
+                  [AC_MSG_ERROR("Unable to find Vala bindings for gupnp-dlna-1.0")])
+
     AC_CHECK_FILE("${VAPIDIR}/dbus-glib-1.vapi",
                   true,
                   [AC_MSG_ERROR("Unable to find Vala bindings for dbus-glib-1")])
@@ -99,6 +125,10 @@ if test x$enable_vala = xyes ; then
     AC_CHECK_FILE("${VAPIDIR}/gstreamer-0.10.vapi",
                   true,
                   [AC_MSG_ERROR("Unable to find Vala bindings for gstreamer-0.10")])
+
+    AC_CHECK_FILE("${VAPIDIR}/gstreamer-discoverer-gupnp-dlna-0.10.vapi",
+                  true,
+                  [AC_MSG_ERROR("Unable to find Vala bindings for gstreamer-discoverer-gupnp-dlna-0.10")])
 
     AC_CHECK_FILE("${VAPIDIR}/gio-2.0.vapi",
                   true,
@@ -159,18 +189,18 @@ AC_ARG_WITH( ui,
 HAVE_GTK=no
 if test x$try_ui = xyes ; then
     dnl check for gtk
-    PKG_CHECK_MODULES(GTK, gtk+-3.0 >= $GTK_REQUIRED ,
+    PKG_CHECK_MODULES(GTK, gtk+-$GTK_VAPI_VERSION >= $GTK_REQUIRED ,
       [
         AC_SUBST(GTK_CFLAGS)
         AC_SUBST(GTK_LIBS)
         if test x$enable_vala = xyes ; then
-                AC_CHECK_FILE("${VAPIDIR}/gtk+-3.0.vapi",
+                AC_CHECK_FILE("${VAPIDIR}/gtk+-$GTK_VAPI_VERSION.vapi",
                   [
                         HAVE_GTK=yes
                   ],
                   [
                         HAVE_GTK=no
-                        AC_MSG_ERROR("Unable to find Vala bindings for gtk+-3.0")
+                        AC_MSG_ERROR("Unable to find Vala bindings for gtk+")
                   ])
         else
                 HAVE_GTK=yes
@@ -187,6 +217,7 @@ fi
 
 if test x$HAVE_GTK = xno; then
   BUILD_UI=no
+  with_gtk="n/a"
 else
   BUILD_UI=yes
   AC_DEFINE(HAVE_GTK, , [Build UI applications])
@@ -216,9 +247,9 @@ AC_ARG_ENABLE(external-plugin,
         enable_external_plugin=yes)
 
 # Build GstRenderer plugin
-AC_ARG_ENABLE(gst-renderer-plugin,
-	[  --enable-gst-renderer_plugin          build Gstreamer Renderer plugin],,
-        enable_gst_renderer_plugin=yes)
+AC_ARG_ENABLE(playbin-plugin,
+	[  --enable-playbin_plugin          build Gstreamer Playbin plugin],,
+        enable_playbin_plugin=yes)
 
 # Build Mediathek plugin
 AC_ARG_ENABLE(mediathek-plugin,
@@ -241,7 +272,7 @@ AM_CONDITIONAL([BUILD_TRACKER_PLUGIN],
 AM_CONDITIONAL([BUILD_MEDIATHEK_PLUGIN], [test "x$enable_mediathek_plugin" = "xyes"])
 AM_CONDITIONAL([BUILD_MEDIA_EXPORT_PLUGIN], [test "x$enable_media_export_plugin" = "xyes"])
 AM_CONDITIONAL([BUILD_EXTERNAL_PLUGIN], [test "x$enable_external_plugin" = "xyes"])
-AM_CONDITIONAL([BUILD_GST_RENDERER_PLUGIN], [test "x$enable_gst_renderer_plugin" = "xyes"])
+AM_CONDITIONAL([BUILD_PLAYBIN_PLUGIN], [test "x$enable_playbin_plugin" = "xyes"])
 AM_CONDITIONAL([BUILD_GST_LAUNCH_PLUGIN], [test "x$enable_gst_launch_plugin" = "xyes"])
 
 if test "x$enable_media_export_plugin" = "xyes";
@@ -274,7 +305,7 @@ src/plugins/external/Makefile
 src/plugins/gst-launch/Makefile
 src/plugins/mediathek/Makefile
 src/plugins/tracker/Makefile
-src/plugins/gst-renderer/Makefile
+src/plugins/playbin/Makefile
 src/plugins/test/Makefile
 data/Makefile
 data/xml/Makefile
@@ -299,7 +330,8 @@ echo "
         CFLAGS:                 ${CFLAGS}
         uninstalled:            ${enable_uninstalled}
         maemo support:          ${enable_maemo}
-        preferences ui          ${BUILD_UI}
+        preferences ui:         ${BUILD_UI}
+        GTK+ version:           ${with_gtk}
         SQL debugging:          ${enable_sql_debugging}
     Plugins:
         test:                   ${enable_test_plugin}
@@ -308,5 +340,5 @@ echo "
         media-export            ${enable_media_export_plugin}
         external:               ${enable_external_plugin}
         gst-launch:             ${enable_gst_launch_plugin}
-        gst-renderer:           ${enable_gst_renderer_plugin}
+        playbin:                ${enable_playbin_plugin}
 "

@@ -37,10 +37,10 @@ host_triplet = @host@
 subdir = src/plugins/external
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in \
 	librygel_external_la_vala.stamp rygel-external-container.c \
-	rygel-external-content-dir.c rygel-external-dummy-container.c \
-	rygel-external-icon-factory.c rygel-external-interfaces.c \
-	rygel-external-item-factory.c rygel-external-plugin-factory.c \
-	rygel-external-plugin.c rygel-external-thumbnail-factory.c
+	rygel-external-dummy-container.c rygel-external-icon-factory.c \
+	rygel-external-interfaces.c rygel-external-item-factory.c \
+	rygel-external-plugin-factory.c rygel-external-plugin.c \
+	rygel-external-thumbnail-factory.c
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/intltool.m4 \
 	$(top_srcdir)/m4/libtool.m4 $(top_srcdir)/m4/ltoptions.m4 \
@@ -80,8 +80,8 @@ librygel_external_la_DEPENDENCIES = $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1)
-am_librygel_external_la_OBJECTS = rygel-external-content-dir.lo \
-	rygel-external-container.lo rygel-external-dummy-container.lo \
+am_librygel_external_la_OBJECTS = rygel-external-container.lo \
+	rygel-external-dummy-container.lo \
 	rygel-external-item-factory.lo \
 	rygel-external-thumbnail-factory.lo rygel-external-plugin.lo \
 	rygel-external-interfaces.lo rygel-external-plugin-factory.lo \
@@ -194,6 +194,8 @@ LIBGSTREAMER_LIBS = @LIBGSTREAMER_LIBS@
 LIBGUPNP_AV_CFLAGS = @LIBGUPNP_AV_CFLAGS@
 LIBGUPNP_AV_LIBS = @LIBGUPNP_AV_LIBS@
 LIBGUPNP_CFLAGS = @LIBGUPNP_CFLAGS@
+LIBGUPNP_DLNA_CFLAGS = @LIBGUPNP_DLNA_CFLAGS@
+LIBGUPNP_DLNA_LIBS = @LIBGUPNP_DLNA_LIBS@
 LIBGUPNP_LIBS = @LIBGUPNP_LIBS@
 LIBOBJS = @LIBOBJS@
 LIBS = @LIBS@
@@ -309,8 +311,7 @@ AM_CFLAGS = $(LIBGUPNP_CFLAGS) \
 	    -I$(top_srcdir)/src/rygel -DDATA_DIR='"$(shareddir)"' \
 	    -include config.h
 
-librygel_external_la_SOURCES = rygel-external-content-dir.vala \
-			       rygel-external-container.vala \
+librygel_external_la_SOURCES = rygel-external-container.vala \
 			       rygel-external-dummy-container.vala \
 			       rygel-external-item-factory.vala \
 			       rygel-external-thumbnail-factory.vala \
@@ -409,7 +410,6 @@ distclean-compile:
 	-rm -f *.tab.c
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-external-container.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-external-content-dir.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-external-dummy-container.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-external-icon-factory.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-external-interfaces.Plo@am__quote@
@@ -441,11 +441,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$<' object='$@' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LTCOMPILE) -c -o $@ $<
-$(srcdir)/rygel-external-content-dir.c: $(srcdir)/librygel_external_la_vala.stamp
-	@if test -f $@; then :; else \
-	  rm -f $(srcdir)/librygel_external_la_vala.stamp; \
-	  $(am__cd) $(srcdir) && $(MAKE) $(AM_MAKEFLAGS) librygel_external_la_vala.stamp; \
-	fi
 $(srcdir)/rygel-external-container.c: $(srcdir)/librygel_external_la_vala.stamp
 	@if test -f $@; then :; else \
 	  rm -f $(srcdir)/librygel_external_la_vala.stamp; \
@@ -612,7 +607,6 @@ maintainer-clean-generic:
 	@echo "it deletes files that may require special tools to rebuild."
 	-rm -f librygel_external_la_vala.stamp
 	-rm -f rygel-external-container.c
-	-rm -f rygel-external-content-dir.c
 	-rm -f rygel-external-dummy-container.c
 	-rm -f rygel-external-icon-factory.c
 	-rm -f rygel-external-interfaces.c

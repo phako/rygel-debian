@@ -56,8 +56,8 @@ typedef struct _RygelExternalThumbnailFactoryPrivate RygelExternalThumbnailFacto
 
 typedef struct _FreeDesktopProperties FreeDesktopProperties;
 typedef struct _FreeDesktopPropertiesIface FreeDesktopPropertiesIface;
-#define _dbus_g_connection_unref0(var) ((var == NULL) ? NULL : (var = (dbus_g_connection_unref (var), NULL)))
 #define _g_object_unref0(var) ((var == NULL) ? NULL : (var = (g_object_unref (var), NULL)))
+#define _dbus_g_connection_unref0(var) ((var == NULL) ? NULL : (var = (dbus_g_connection_unref (var), NULL)))
 #define _g_regex_unref0(var) ((var == NULL) ? NULL : (var = (g_regex_unref (var), NULL)))
 #define _g_error_free0(var) ((var == NULL) ? NULL : (var = (g_error_free (var), NULL)))
 #define _g_hash_table_unref0(var) ((var == NULL) ? NULL : (var = (g_hash_table_unref (var), NULL)))
@@ -125,14 +125,14 @@ GParamSpec* rygel_external_param_spec_thumbnail_factory (const gchar* name, cons
 void rygel_external_value_set_thumbnail_factory (GValue* value, gpointer v_object);
 void rygel_external_value_take_thumbnail_factory (GValue* value, gpointer v_object);
 gpointer rygel_external_value_get_thumbnail_factory (const GValue* value);
-GType rygel_external_thumbnail_factory_get_type (void);
+GType rygel_external_thumbnail_factory_get_type (void) G_GNUC_CONST;
 enum  {
 	RYGEL_EXTERNAL_THUMBNAIL_FACTORY_DUMMY_PROPERTY
 };
 static void rygel_external_thumbnail_factory_create_data_free (gpointer _data);
 static void rygel_external_thumbnail_factory_create_ready (GObject* source_object, GAsyncResult* _res_, gpointer _user_data_);
 FreeDesktopProperties* free_desktop_properties_dbus_proxy_new (DBusGConnection* connection, const char* name, const char* path);
-GType free_desktop_properties_get_type (void);
+GType free_desktop_properties_get_type (void) G_GNUC_CONST;
 void free_desktop_properties_get_all (FreeDesktopProperties* self, const char* iface, GAsyncReadyCallback _callback_, gpointer _user_data_);
 GHashTable* free_desktop_properties_get_all_finish (FreeDesktopProperties* self, GAsyncResult* _res_, GError** error);
 #define RYGEL_EXTERNAL_MEDIA_ITEM_PROXY_IFACE "org.gnome.UPnP.MediaItem2"
@@ -202,16 +202,16 @@ static gpointer __g_value_dup0 (gpointer self) {
 }
 
 
-#line 1148 "glib-2.0.vapi"
+#line 1156 "glib-2.0.vapi"
 static char* string_replace (const char* self, const char* old, const char* replacement) {
 #line 208 "rygel-external-thumbnail-factory.c"
 	char* result = NULL;
 	GError * _inner_error_;
-#line 1148 "glib-2.0.vapi"
+#line 1156 "glib-2.0.vapi"
 	g_return_val_if_fail (self != NULL, NULL);
-#line 1148 "glib-2.0.vapi"
+#line 1156 "glib-2.0.vapi"
 	g_return_val_if_fail (old != NULL, NULL);
-#line 1148 "glib-2.0.vapi"
+#line 1156 "glib-2.0.vapi"
 	g_return_val_if_fail (replacement != NULL, NULL);
 #line 217 "rygel-external-thumbnail-factory.c"
 	_inner_error_ = NULL;
@@ -220,7 +220,7 @@ static char* string_replace (const char* self, const char* old, const char* repl
 		GRegex* _tmp1_;
 		GRegex* regex;
 		char* _tmp2_;
-#line 1150 "glib-2.0.vapi"
+#line 1158 "glib-2.0.vapi"
 		regex = (_tmp1_ = g_regex_new (_tmp0_ = g_regex_escape_string (old, -1), 0, 0, &_inner_error_), _g_free0 (_tmp0_), _tmp1_);
 #line 226 "rygel-external-thumbnail-factory.c"
 		if (_inner_error_ != NULL) {
@@ -231,7 +231,7 @@ static char* string_replace (const char* self, const char* old, const char* repl
 			g_clear_error (&_inner_error_);
 			return NULL;
 		}
-#line 1151 "glib-2.0.vapi"
+#line 1159 "glib-2.0.vapi"
 		_tmp2_ = g_regex_replace_literal (regex, self, (gssize) (-1), 0, replacement, 0, &_inner_error_);
 #line 237 "rygel-external-thumbnail-factory.c"
 		if (_inner_error_ != NULL) {
@@ -246,7 +246,7 @@ static char* string_replace (const char* self, const char* old, const char* repl
 		}
 		result = _tmp2_;
 		_g_regex_unref0 (regex);
-#line 1151 "glib-2.0.vapi"
+#line 1159 "glib-2.0.vapi"
 		return result;
 #line 252 "rygel-external-thumbnail-factory.c"
 	}
@@ -257,7 +257,7 @@ static char* string_replace (const char* self, const char* old, const char* repl
 		e = _inner_error_;
 		_inner_error_ = NULL;
 		{
-#line 1153 "glib-2.0.vapi"
+#line 1161 "glib-2.0.vapi"
 			g_assert_not_reached ();
 #line 263 "rygel-external-thumbnail-factory.c"
 			_g_error_free0 (e);
@@ -306,8 +306,8 @@ static gboolean rygel_external_thumbnail_factory_create_co (RygelExternalThumbna
 		if (data->_inner_error_ != NULL) {
 			g_simple_async_result_set_from_error (data->_async_result, data->_inner_error_);
 			g_error_free (data->_inner_error_);
-			_dbus_g_connection_unref0 (data->connection);
 			_g_object_unref0 (data->props);
+			_dbus_g_connection_unref0 (data->connection);
 			{
 				if (data->_state_ == 0) {
 					g_simple_async_result_complete_in_idle (data->_async_result);
@@ -383,10 +383,10 @@ static gboolean rygel_external_thumbnail_factory_create_co (RygelExternalThumbna
 #line 384 "rygel-external-thumbnail-factory.c"
 		}
 		data->result = data->thumbnail;
-		_dbus_g_connection_unref0 (data->connection);
-		_g_object_unref0 (data->props);
-		_g_hash_table_unref0 (data->item_props);
 		_g_free0 (data->value);
+		_g_hash_table_unref0 (data->item_props);
+		_g_object_unref0 (data->props);
+		_dbus_g_connection_unref0 (data->connection);
 		{
 			if (data->_state_ == 0) {
 				g_simple_async_result_complete_in_idle (data->_async_result);
@@ -396,11 +396,11 @@ static gboolean rygel_external_thumbnail_factory_create_co (RygelExternalThumbna
 			g_object_unref (data->_async_result);
 			return FALSE;
 		}
-		_dbus_g_connection_unref0 (data->connection);
-		_g_object_unref0 (data->props);
-		_g_hash_table_unref0 (data->item_props);
-		_rygel_icon_info_unref0 (data->thumbnail);
 		_g_free0 (data->value);
+		_rygel_icon_info_unref0 (data->thumbnail);
+		_g_hash_table_unref0 (data->item_props);
+		_g_object_unref0 (data->props);
+		_dbus_g_connection_unref0 (data->connection);
 	}
 	{
 		if (data->_state_ == 0) {

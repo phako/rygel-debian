@@ -26,6 +26,7 @@
 #include <glib.h>
 #include <glib-object.h>
 #include <rygel.h>
+#include <config.h>
 #include <stdlib.h>
 #include <string.h>
 #include <glib/gi18n-lib.h>
@@ -41,61 +42,64 @@
 typedef struct _RygelTrackerPlugin RygelTrackerPlugin;
 typedef struct _RygelTrackerPluginClass RygelTrackerPluginClass;
 typedef struct _RygelTrackerPluginPrivate RygelTrackerPluginPrivate;
-
-#define RYGEL_TRACKER_TYPE_CONTENT_DIRECTORY (rygel_tracker_content_directory_get_type ())
-#define RYGEL_TRACKER_CONTENT_DIRECTORY(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TRACKER_TYPE_CONTENT_DIRECTORY, RygelTrackerContentDirectory))
-#define RYGEL_TRACKER_CONTENT_DIRECTORY_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TRACKER_TYPE_CONTENT_DIRECTORY, RygelTrackerContentDirectoryClass))
-#define RYGEL_TRACKER_IS_CONTENT_DIRECTORY(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TRACKER_TYPE_CONTENT_DIRECTORY))
-#define RYGEL_TRACKER_IS_CONTENT_DIRECTORY_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_TRACKER_TYPE_CONTENT_DIRECTORY))
-#define RYGEL_TRACKER_CONTENT_DIRECTORY_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_TRACKER_TYPE_CONTENT_DIRECTORY, RygelTrackerContentDirectoryClass))
-
-typedef struct _RygelTrackerContentDirectory RygelTrackerContentDirectory;
-typedef struct _RygelTrackerContentDirectoryClass RygelTrackerContentDirectoryClass;
 #define _rygel_icon_info_unref0(var) ((var == NULL) ? NULL : (var = (rygel_icon_info_unref (var), NULL)))
 #define _g_free0(var) (var = (g_free (var), NULL))
 #define _g_error_free0(var) ((var == NULL) ? NULL : (var = (g_error_free (var), NULL)))
 
+#define RYGEL_TRACKER_TYPE_ROOT_CONTAINER (rygel_tracker_root_container_get_type ())
+#define RYGEL_TRACKER_ROOT_CONTAINER(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TRACKER_TYPE_ROOT_CONTAINER, RygelTrackerRootContainer))
+#define RYGEL_TRACKER_ROOT_CONTAINER_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TRACKER_TYPE_ROOT_CONTAINER, RygelTrackerRootContainerClass))
+#define RYGEL_TRACKER_IS_ROOT_CONTAINER(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TRACKER_TYPE_ROOT_CONTAINER))
+#define RYGEL_TRACKER_IS_ROOT_CONTAINER_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_TRACKER_TYPE_ROOT_CONTAINER))
+#define RYGEL_TRACKER_ROOT_CONTAINER_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_TRACKER_TYPE_ROOT_CONTAINER, RygelTrackerRootContainerClass))
+
+typedef struct _RygelTrackerRootContainer RygelTrackerRootContainer;
+typedef struct _RygelTrackerRootContainerClass RygelTrackerRootContainerClass;
+
 struct _RygelTrackerPlugin {
-	RygelPlugin parent_instance;
+	RygelMediaServerPlugin parent_instance;
 	RygelTrackerPluginPrivate * priv;
 };
 
 struct _RygelTrackerPluginClass {
-	RygelPluginClass parent_class;
+	RygelMediaServerPluginClass parent_class;
 };
 
 
 static gpointer rygel_tracker_plugin_parent_class = NULL;
 
-GType rygel_tracker_plugin_get_type (void);
+GType rygel_tracker_plugin_get_type (void) G_GNUC_CONST;
 enum  {
 	RYGEL_TRACKER_PLUGIN_DUMMY_PROPERTY
 };
 #define RYGEL_TRACKER_PLUGIN_ICON DATA_DIR "/icons/hicolor/48x48/apps/tracker.png"
-GType rygel_tracker_content_directory_get_type (void);
 RygelTrackerPlugin* rygel_tracker_plugin_new (void);
 RygelTrackerPlugin* rygel_tracker_plugin_construct (GType object_type);
+RygelTrackerRootContainer* rygel_tracker_root_container_new (const char* title);
+RygelTrackerRootContainer* rygel_tracker_root_container_construct (GType object_type, const char* title);
+GType rygel_tracker_root_container_get_type (void) G_GNUC_CONST;
+static RygelMediaContainer* rygel_tracker_plugin_real_get_root_container (RygelMediaServerPlugin* base, RygelContentDirectory* content_dir);
 
 
 
 #line 30 "rygel-tracker-plugin.vala"
 RygelTrackerPlugin* rygel_tracker_plugin_construct (GType object_type) {
-#line 84 "rygel-tracker-plugin.c"
+#line 88 "rygel-tracker-plugin.c"
 	GError * _inner_error_;
 	RygelTrackerPlugin * self;
 	RygelIconInfo* icon_info;
 	_inner_error_ = NULL;
 #line 31 "rygel-tracker-plugin.vala"
-	self = (RygelTrackerPlugin*) rygel_plugin_construct_MediaServer (object_type, "Tracker", _ ("@REALNAME@'s media"), RYGEL_TRACKER_TYPE_CONTENT_DIRECTORY, NULL);
-#line 37 "rygel-tracker-plugin.vala"
+	self = (RygelTrackerPlugin*) rygel_media_server_plugin_construct (object_type, "Tracker", _ ("@REALNAME@'s media"), NULL);
+#line 36 "rygel-tracker-plugin.vala"
 	icon_info = rygel_icon_info_new ("image/png");
-#line 93 "rygel-tracker-plugin.c"
+#line 97 "rygel-tracker-plugin.c"
 	{
 		char* _tmp0_;
 		char* _tmp1_;
-#line 40 "rygel-tracker-plugin.vala"
+#line 39 "rygel-tracker-plugin.vala"
 		_tmp0_ = g_filename_to_uri (RYGEL_TRACKER_PLUGIN_ICON, NULL, &_inner_error_);
-#line 99 "rygel-tracker-plugin.c"
+#line 103 "rygel-tracker-plugin.c"
 		if (_inner_error_ != NULL) {
 			if (_inner_error_->domain == G_CONVERT_ERROR) {
 				goto __catch8_g_convert_error;
@@ -105,17 +109,17 @@ RygelTrackerPlugin* rygel_tracker_plugin_construct (GType object_type) {
 			g_clear_error (&_inner_error_);
 			return NULL;
 		}
-#line 40 "rygel-tracker-plugin.vala"
+#line 39 "rygel-tracker-plugin.vala"
 		icon_info->uri = (_tmp1_ = _tmp0_, _g_free0 (icon_info->uri), _tmp1_);
-#line 41 "rygel-tracker-plugin.vala"
+#line 40 "rygel-tracker-plugin.vala"
 		icon_info->width = 48;
-#line 42 "rygel-tracker-plugin.vala"
+#line 41 "rygel-tracker-plugin.vala"
 		icon_info->height = 48;
-#line 43 "rygel-tracker-plugin.vala"
+#line 42 "rygel-tracker-plugin.vala"
 		icon_info->depth = 24;
-#line 45 "rygel-tracker-plugin.vala"
+#line 44 "rygel-tracker-plugin.vala"
 		rygel_plugin_add_icon ((RygelPlugin*) self, icon_info);
-#line 119 "rygel-tracker-plugin.c"
+#line 123 "rygel-tracker-plugin.c"
 	}
 	goto __finally8;
 	__catch8_g_convert_error:
@@ -124,9 +128,9 @@ RygelTrackerPlugin* rygel_tracker_plugin_construct (GType object_type) {
 		err = _inner_error_;
 		_inner_error_ = NULL;
 		{
-#line 47 "rygel-tracker-plugin.vala"
+#line 46 "rygel-tracker-plugin.vala"
 			g_warning (_ ("Error creating URI from %s: %s"), RYGEL_TRACKER_PLUGIN_ICON, err->message);
-#line 130 "rygel-tracker-plugin.c"
+#line 134 "rygel-tracker-plugin.c"
 			_g_error_free0 (err);
 		}
 	}
@@ -146,12 +150,29 @@ RygelTrackerPlugin* rygel_tracker_plugin_construct (GType object_type) {
 RygelTrackerPlugin* rygel_tracker_plugin_new (void) {
 #line 30 "rygel-tracker-plugin.vala"
 	return rygel_tracker_plugin_construct (RYGEL_TRACKER_TYPE_PLUGIN);
-#line 150 "rygel-tracker-plugin.c"
+#line 154 "rygel-tracker-plugin.c"
+}
+
+
+#line 50 "rygel-tracker-plugin.vala"
+static RygelMediaContainer* rygel_tracker_plugin_real_get_root_container (RygelMediaServerPlugin* base, RygelContentDirectory* content_dir) {
+#line 160 "rygel-tracker-plugin.c"
+	RygelTrackerPlugin * self;
+	RygelMediaContainer* result = NULL;
+	self = (RygelTrackerPlugin*) base;
+#line 50 "rygel-tracker-plugin.vala"
+	g_return_val_if_fail (content_dir != NULL, NULL);
+#line 166 "rygel-tracker-plugin.c"
+	result = (RygelMediaContainer*) rygel_tracker_root_container_new (((RygelPlugin*) self)->title);
+#line 52 "rygel-tracker-plugin.vala"
+	return result;
+#line 170 "rygel-tracker-plugin.c"
 }
 
 
 static void rygel_tracker_plugin_class_init (RygelTrackerPluginClass * klass) {
 	rygel_tracker_plugin_parent_class = g_type_class_peek_parent (klass);
+	RYGEL_MEDIA_SERVER_PLUGIN_CLASS (klass)->get_root_container = rygel_tracker_plugin_real_get_root_container;
 }
 
 
@@ -164,7 +185,7 @@ GType rygel_tracker_plugin_get_type (void) {
 	if (g_once_init_enter (&rygel_tracker_plugin_type_id__volatile)) {
 		static const GTypeInfo g_define_type_info = { sizeof (RygelTrackerPluginClass), (GBaseInitFunc) NULL, (GBaseFinalizeFunc) NULL, (GClassInitFunc) rygel_tracker_plugin_class_init, (GClassFinalizeFunc) NULL, NULL, sizeof (RygelTrackerPlugin), 0, (GInstanceInitFunc) rygel_tracker_plugin_instance_init, NULL };
 		GType rygel_tracker_plugin_type_id;
-		rygel_tracker_plugin_type_id = g_type_register_static (RYGEL_TYPE_PLUGIN, "RygelTrackerPlugin", &g_define_type_info, 0);
+		rygel_tracker_plugin_type_id = g_type_register_static (RYGEL_TYPE_MEDIA_SERVER_PLUGIN, "RygelTrackerPlugin", &g_define_type_info, 0);
 		g_once_init_leave (&rygel_tracker_plugin_type_id__volatile, rygel_tracker_plugin_type_id);
 	}
 	return rygel_tracker_plugin_type_id__volatile;

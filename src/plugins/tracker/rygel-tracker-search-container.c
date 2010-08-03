@@ -168,12 +168,12 @@ struct _RygelTrackerSearchContainerGetChildrenData {
 	guint offset;
 	guint max_count;
 	GCancellable* cancellable;
-	GeeList* result;
+	RygelMediaObjects* result;
 	RygelRelationalExpression* expression;
 	char* _tmp0_;
 	char* _tmp1_;
 	guint total_matches;
-	GeeList* _tmp2_;
+	RygelMediaObjects* _tmp2_;
 	GError * _inner_error_;
 };
 
@@ -219,10 +219,10 @@ struct _RygelTrackerSearchContainerSearchData {
 	guint max_count;
 	guint total_matches;
 	GCancellable* cancellable;
-	GeeList* result;
-	GeeArrayList* results;
+	RygelMediaObjects* result;
+	RygelMediaObjects* results;
 	RygelTrackerSelectionQuery* query;
-	GeeList* _tmp0_;
+	RygelMediaObjects* _tmp0_;
 	guint i;
 	gboolean _tmp1_;
 	char* id;
@@ -250,24 +250,24 @@ struct _RygelTrackerSearchContainerGetChildrenCountData {
 
 static gpointer rygel_tracker_search_container_parent_class = NULL;
 
-GType rygel_tracker_search_container_get_type (void);
+GType rygel_tracker_search_container_get_type (void) G_GNUC_CONST;
 gpointer rygel_tracker_query_ref (gpointer instance);
 void rygel_tracker_query_unref (gpointer instance);
 GParamSpec* rygel_tracker_param_spec_query (const gchar* name, const gchar* nick, const gchar* blurb, GType object_type, GParamFlags flags);
 void rygel_tracker_value_set_query (GValue* value, gpointer v_object);
 void rygel_tracker_value_take_query (GValue* value, gpointer v_object);
 gpointer rygel_tracker_value_get_query (const GValue* value);
-GType rygel_tracker_query_get_type (void);
-GType rygel_tracker_selection_query_get_type (void);
+GType rygel_tracker_query_get_type (void) G_GNUC_CONST;
+GType rygel_tracker_selection_query_get_type (void) G_GNUC_CONST;
 gpointer rygel_tracker_item_factory_ref (gpointer instance);
 void rygel_tracker_item_factory_unref (gpointer instance);
 GParamSpec* rygel_tracker_param_spec_item_factory (const gchar* name, const gchar* nick, const gchar* blurb, GType object_type, GParamFlags flags);
 void rygel_tracker_value_set_item_factory (GValue* value, gpointer v_object);
 void rygel_tracker_value_take_item_factory (GValue* value, gpointer v_object);
 gpointer rygel_tracker_value_get_item_factory (const GValue* value);
-GType rygel_tracker_item_factory_get_type (void);
+GType rygel_tracker_item_factory_get_type (void) G_GNUC_CONST;
 RygelTrackerResourcesIface* rygel_tracker_resources_iface_dbus_proxy_new (DBusGConnection* connection, const char* name, const char* path);
-GType rygel_tracker_resources_iface_get_type (void);
+GType rygel_tracker_resources_iface_get_type (void) G_GNUC_CONST;
 #define RYGEL_TRACKER_SEARCH_CONTAINER_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), RYGEL_TRACKER_TYPE_SEARCH_CONTAINER, RygelTrackerSearchContainerPrivate))
 enum  {
 	RYGEL_TRACKER_SEARCH_CONTAINER_DUMMY_PROPERTY
@@ -279,7 +279,7 @@ enum  {
 #define RYGEL_TRACKER_SEARCH_CONTAINER_MODIFIED_VARIABLE "?modified"
 #define RYGEL_TRACKER_SEARCH_CONTAINER_URL_PREDICATE "nie:url"
 #define RYGEL_TRACKER_SEARCH_CONTAINER_URL_VARIABLE "?url"
-GType rygel_tracker_query_triplets_get_type (void);
+GType rygel_tracker_query_triplets_get_type (void) G_GNUC_CONST;
 RygelTrackerQueryTriplets* rygel_tracker_query_triplets_new (void);
 RygelTrackerQueryTriplets* rygel_tracker_query_triplets_construct (GType object_type);
 gpointer rygel_tracker_query_triplet_ref (gpointer instance);
@@ -288,7 +288,7 @@ GParamSpec* rygel_tracker_param_spec_query_triplet (const gchar* name, const gch
 void rygel_tracker_value_set_query_triplet (GValue* value, gpointer v_object);
 void rygel_tracker_value_take_query_triplet (GValue* value, gpointer v_object);
 gpointer rygel_tracker_value_get_query_triplet (const GValue* value);
-GType rygel_tracker_query_triplet_get_type (void);
+GType rygel_tracker_query_triplet_get_type (void) G_GNUC_CONST;
 void rygel_tracker_query_triplets_add_triplet (RygelTrackerQueryTriplets* self, RygelTrackerQueryTriplet* triplet);
 RygelTrackerQueryTriplet* rygel_tracker_query_triplet_new (const char* subject, const char* predicate, const char* obj);
 RygelTrackerQueryTriplet* rygel_tracker_query_triplet_construct (GType object_type, const char* subject, const char* predicate, const char* obj);
@@ -399,29 +399,31 @@ RygelTrackerSearchContainer* rygel_tracker_search_container_construct (GType obj
 	_rygel_tracker_query_triplet_unref0 (_tmp5_);
 	{
 		GeeIterator* _chain_it;
+#line 78 "rygel-tracker-search-container.vala"
 		_chain_it = gee_abstract_collection_iterator ((GeeAbstractCollection*) self->item_factory->key_chains);
 #line 78 "rygel-tracker-search-container.vala"
 		while (TRUE) {
-#line 406 "rygel-tracker-search-container.c"
+#line 407 "rygel-tracker-search-container.c"
 			GeeArrayList* chain;
 			char* variable;
 #line 78 "rygel-tracker-search-container.vala"
 			if (!gee_iterator_next (_chain_it)) {
 #line 78 "rygel-tracker-search-container.vala"
 				break;
-#line 413 "rygel-tracker-search-container.c"
+#line 414 "rygel-tracker-search-container.c"
 			}
 #line 78 "rygel-tracker-search-container.vala"
 			chain = (GeeArrayList*) gee_iterator_get (_chain_it);
 #line 79 "rygel-tracker-search-container.vala"
 			variable = g_strdup (RYGEL_TRACKER_SEARCH_CONTAINER_ITEM_VARIABLE);
-#line 419 "rygel-tracker-search-container.c"
+#line 420 "rygel-tracker-search-container.c"
 			{
 				GeeIterator* _key_it;
+#line 81 "rygel-tracker-search-container.vala"
 				_key_it = gee_abstract_collection_iterator ((GeeAbstractCollection*) chain);
 #line 81 "rygel-tracker-search-container.vala"
 				while (TRUE) {
-#line 425 "rygel-tracker-search-container.c"
+#line 427 "rygel-tracker-search-container.c"
 					char* key;
 					char* _tmp8_;
 					char* _tmp7_;
@@ -430,13 +432,13 @@ RygelTrackerSearchContainer* rygel_tracker_search_container_construct (GType obj
 					if (!gee_iterator_next (_key_it)) {
 #line 81 "rygel-tracker-search-container.vala"
 						break;
-#line 434 "rygel-tracker-search-container.c"
+#line 436 "rygel-tracker-search-container.c"
 					}
 #line 81 "rygel-tracker-search-container.vala"
 					key = (char*) gee_iterator_get (_key_it);
 #line 82 "rygel-tracker-search-container.vala"
 					variable = (_tmp8_ = g_strconcat (_tmp7_ = g_strconcat (_tmp6_ = g_strconcat (key, "(", NULL), variable, NULL), ")", NULL), _g_free0 (variable), _tmp8_);
-#line 440 "rygel-tracker-search-container.c"
+#line 442 "rygel-tracker-search-container.c"
 					_g_free0 (_tmp7_);
 					_g_free0 (_tmp6_);
 					_g_free0 (key);
@@ -445,32 +447,32 @@ RygelTrackerSearchContainer* rygel_tracker_search_container_construct (GType obj
 			}
 #line 85 "rygel-tracker-search-container.vala"
 			gee_abstract_collection_add ((GeeAbstractCollection*) variables, variable);
-#line 449 "rygel-tracker-search-container.c"
-			_g_object_unref0 (chain);
+#line 451 "rygel-tracker-search-container.c"
 			_g_free0 (variable);
+			_g_object_unref0 (chain);
 		}
 		_g_object_unref0 (_chain_it);
 	}
 #line 88 "rygel-tracker-search-container.vala"
 	self->query = (_tmp9_ = rygel_tracker_selection_query_new (variables, our_triplets, filters, RYGEL_TRACKER_SEARCH_CONTAINER_MODIFIED_VARIABLE, 0, -1), _rygel_tracker_query_unref0 (self->query), _tmp9_);
-#line 457 "rygel-tracker-search-container.c"
+#line 459 "rygel-tracker-search-container.c"
 	{
 #line 94 "rygel-tracker-search-container.vala"
 		rygel_tracker_search_container_create_proxies (self, &_inner_error_);
-#line 461 "rygel-tracker-search-container.c"
+#line 463 "rygel-tracker-search-container.c"
 		if (_inner_error_ != NULL) {
 			if (_inner_error_->domain == DBUS_GERROR) {
 				goto __catch4_dbus_gerror;
 			}
-			_g_object_unref0 (variables);
 			_g_object_unref0 (our_triplets);
+			_g_object_unref0 (variables);
 			g_critical ("file %s: line %d: unexpected error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
 			g_clear_error (&_inner_error_);
 			return NULL;
 		}
 #line 96 "rygel-tracker-search-container.vala"
 		rygel_tracker_search_container_get_children_count (self, NULL, NULL);
-#line 474 "rygel-tracker-search-container.c"
+#line 476 "rygel-tracker-search-container.c"
 	}
 	goto __finally4;
 	__catch4_dbus_gerror:
@@ -481,20 +483,20 @@ RygelTrackerSearchContainer* rygel_tracker_search_container_construct (GType obj
 		{
 #line 98 "rygel-tracker-search-container.vala"
 			g_critical (_ ("Failed to connect to session bus: %s"), _error_->message);
-#line 485 "rygel-tracker-search-container.c"
+#line 487 "rygel-tracker-search-container.c"
 			_g_error_free0 (_error_);
 		}
 	}
 	__finally4:
 	if (_inner_error_ != NULL) {
-		_g_object_unref0 (variables);
 		_g_object_unref0 (our_triplets);
+		_g_object_unref0 (variables);
 		g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
 		g_clear_error (&_inner_error_);
 		return NULL;
 	}
-	_g_object_unref0 (variables);
 	_g_object_unref0 (our_triplets);
+	_g_object_unref0 (variables);
 	return self;
 }
 
@@ -503,7 +505,7 @@ RygelTrackerSearchContainer* rygel_tracker_search_container_construct (GType obj
 RygelTrackerSearchContainer* rygel_tracker_search_container_new (const char* id, RygelMediaContainer* parent, const char* title, RygelTrackerItemFactory* item_factory, RygelTrackerQueryTriplets* triplets, GeeArrayList* filters) {
 #line 47 "rygel-tracker-search-container.vala"
 	return rygel_tracker_search_container_construct (RYGEL_TRACKER_TYPE_SEARCH_CONTAINER, id, parent, title, item_factory, triplets, filters);
-#line 507 "rygel-tracker-search-container.c"
+#line 509 "rygel-tracker-search-container.c"
 }
 
 
@@ -532,8 +534,8 @@ static void rygel_tracker_search_container_real_get_children (RygelMediaContaine
 }
 
 
-static GeeList* rygel_tracker_search_container_real_get_children_finish (RygelMediaContainer* base, GAsyncResult* _res_, GError** error) {
-	GeeList* result;
+static RygelMediaObjects* rygel_tracker_search_container_real_get_children_finish (RygelMediaContainer* base, GAsyncResult* _res_, GError** error) {
+	RygelMediaObjects* result;
 	RygelTrackerSearchContainerGetChildrenData* _data_;
 	if (g_simple_async_result_propagate_error (G_SIMPLE_ASYNC_RESULT (_res_), error)) {
 		return NULL;
@@ -565,13 +567,13 @@ static gboolean rygel_tracker_search_container_real_get_children_co (RygelTracke
 	_state_0:
 	{
 		data->expression = rygel_relational_expression_new ();
-#line 108 "rygel-tracker-search-container.vala"
+#line 107 "rygel-tracker-search-container.vala"
 		((RygelSearchExpression*) data->expression)->op = GINT_TO_POINTER (GUPNP_SEARCH_CRITERIA_OP_EQ);
-#line 109 "rygel-tracker-search-container.vala"
+#line 108 "rygel-tracker-search-container.vala"
 		((RygelSearchExpression*) data->expression)->operand1 = (data->_tmp0_ = g_strdup ("@parentID"), _g_free0 (((RygelSearchExpression*) data->expression)->operand1), data->_tmp0_);
-#line 110 "rygel-tracker-search-container.vala"
+#line 109 "rygel-tracker-search-container.vala"
 		((RygelSearchExpression*) data->expression)->operand2 = (data->_tmp1_ = g_strdup (((RygelMediaObject*) data->self)->id), _g_free0 (((RygelSearchExpression*) data->expression)->operand2), data->_tmp1_);
-#line 575 "rygel-tracker-search-container.c"
+#line 577 "rygel-tracker-search-container.c"
 		data->_state_ = 2;
 		rygel_media_container_search ((RygelMediaContainer*) data->self, (RygelSearchExpression*) data->expression, data->offset, data->max_count, data->cancellable, rygel_tracker_search_container_get_children_ready, data);
 		return FALSE;
@@ -648,8 +650,8 @@ static void rygel_tracker_search_container_real_search (RygelMediaContainer* bas
 }
 
 
-static GeeList* rygel_tracker_search_container_real_search_finish (RygelMediaContainer* base, GAsyncResult* _res_, guint* total_matches, GError** error) {
-	GeeList* result;
+static RygelMediaObjects* rygel_tracker_search_container_real_search_finish (RygelMediaContainer* base, GAsyncResult* _res_, guint* total_matches, GError** error) {
+	RygelMediaObjects* result;
 	RygelTrackerSearchContainerSearchData* _data_;
 	if (g_simple_async_result_propagate_error (G_SIMPLE_ASYNC_RESULT (_res_), error)) {
 		return NULL;
@@ -683,11 +685,11 @@ static gboolean rygel_tracker_search_container_real_search_co (RygelTrackerSearc
 	}
 	_state_0:
 	{
-		data->results = gee_array_list_new (RYGEL_TYPE_MEDIA_OBJECT, (GBoxedCopyFunc) g_object_ref, g_object_unref, NULL);
+		data->results = rygel_media_objects_new ();
 		data->query = rygel_tracker_search_container_create_query (data->self, data->expression, (gint) data->offset, (gint) data->max_count);
-#line 132 "rygel-tracker-search-container.vala"
+#line 130 "rygel-tracker-search-container.vala"
 		if (data->query == NULL) {
-#line 691 "rygel-tracker-search-container.c"
+#line 693 "rygel-tracker-search-container.c"
 			data->_state_ = 3;
 			RYGEL_MEDIA_CONTAINER_CLASS (rygel_tracker_search_container_parent_class)->search (RYGEL_MEDIA_CONTAINER (data->self), data->expression, data->offset, data->max_count, data->cancellable, rygel_tracker_search_container_search_ready, data);
 			return FALSE;
@@ -696,8 +698,8 @@ static gboolean rygel_tracker_search_container_real_search_co (RygelTrackerSearc
 			if (data->_inner_error_ != NULL) {
 				g_simple_async_result_set_from_error (data->_async_result, data->_inner_error_);
 				g_error_free (data->_inner_error_);
-				_g_object_unref0 (data->results);
 				_rygel_tracker_query_unref0 (data->query);
+				_g_object_unref0 (data->results);
 				{
 					if (data->_state_ == 0) {
 						g_simple_async_result_complete_in_idle (data->_async_result);
@@ -709,8 +711,8 @@ static gboolean rygel_tracker_search_container_real_search_co (RygelTrackerSearc
 				}
 			}
 			data->result = data->_tmp0_;
-			_g_object_unref0 (data->results);
 			_rygel_tracker_query_unref0 (data->query);
+			_g_object_unref0 (data->results);
 			{
 				if (data->_state_ == 0) {
 					g_simple_async_result_complete_in_idle (data->_async_result);
@@ -725,14 +727,14 @@ static gboolean rygel_tracker_search_container_real_search_co (RygelTrackerSearc
 		rygel_tracker_query_execute ((RygelTrackerQuery*) data->query, data->self->priv->resources, rygel_tracker_search_container_search_ready, data);
 		return FALSE;
 		_state_4:
-#line 140 "rygel-tracker-search-container.vala"
+#line 138 "rygel-tracker-search-container.vala"
 		rygel_tracker_query_execute_finish ((RygelTrackerQuery*) data->query, data->_res_, &data->_inner_error_);
-#line 731 "rygel-tracker-search-container.c"
+#line 733 "rygel-tracker-search-container.c"
 		if (data->_inner_error_ != NULL) {
 			g_simple_async_result_set_from_error (data->_async_result, data->_inner_error_);
 			g_error_free (data->_inner_error_);
-			_g_object_unref0 (data->results);
 			_rygel_tracker_query_unref0 (data->query);
+			_g_object_unref0 (data->results);
 			{
 				if (data->_state_ == 0) {
 					g_simple_async_result_complete_in_idle (data->_async_result);
@@ -747,21 +749,21 @@ static gboolean rygel_tracker_search_container_real_search_co (RygelTrackerSearc
 			data->i = (guint) 0;
 			{
 				data->_tmp1_ = TRUE;
-#line 143 "rygel-tracker-search-container.vala"
+#line 141 "rygel-tracker-search-container.vala"
 				while (TRUE) {
-#line 143 "rygel-tracker-search-container.vala"
+#line 141 "rygel-tracker-search-container.vala"
 					if (!data->_tmp1_) {
-#line 143 "rygel-tracker-search-container.vala"
+#line 141 "rygel-tracker-search-container.vala"
 						data->i++;
-#line 757 "rygel-tracker-search-container.c"
+#line 759 "rygel-tracker-search-container.c"
 					}
-#line 143 "rygel-tracker-search-container.vala"
+#line 141 "rygel-tracker-search-container.vala"
 					data->_tmp1_ = FALSE;
-#line 143 "rygel-tracker-search-container.vala"
+#line 141 "rygel-tracker-search-container.vala"
 					if (!(data->i < data->query->result_length1)) {
-#line 143 "rygel-tracker-search-container.vala"
+#line 141 "rygel-tracker-search-container.vala"
 						break;
-#line 765 "rygel-tracker-search-container.c"
+#line 767 "rygel-tracker-search-container.c"
 					}
 					data->id = rygel_tracker_search_container_create_child_id_for_urn (data->self, data->query->result[(data->i * data->query->result_length2) + 0]);
 					data->uri = g_strdup (data->query->result[(data->i * data->query->result_length2) + 1]);
@@ -770,11 +772,11 @@ static gboolean rygel_tracker_search_container_real_search_co (RygelTrackerSearc
 					if (data->_inner_error_ != NULL) {
 						g_simple_async_result_set_from_error (data->_async_result, data->_inner_error_);
 						g_error_free (data->_inner_error_);
-						_g_free0 (data->id);
-						_g_free0 (data->uri);
 						data->metadata = (_vala_array_free (data->metadata, data->metadata_length1, (GDestroyNotify) g_free), NULL);
-						_g_object_unref0 (data->results);
+						_g_free0 (data->uri);
+						_g_free0 (data->id);
 						_rygel_tracker_query_unref0 (data->query);
+						_g_object_unref0 (data->results);
 						{
 							if (data->_state_ == 0) {
 								g_simple_async_result_complete_in_idle (data->_async_result);
@@ -785,20 +787,20 @@ static gboolean rygel_tracker_search_container_real_search_co (RygelTrackerSearc
 							return FALSE;
 						}
 					}
-#line 149 "rygel-tracker-search-container.vala"
+#line 147 "rygel-tracker-search-container.vala"
 					gee_abstract_collection_add ((GeeAbstractCollection*) data->results, (RygelMediaObject*) data->item);
-#line 791 "rygel-tracker-search-container.c"
-					_g_free0 (data->id);
-					_g_free0 (data->uri);
-					data->metadata = (_vala_array_free (data->metadata, data->metadata_length1, (GDestroyNotify) g_free), NULL);
+#line 793 "rygel-tracker-search-container.c"
 					_g_object_unref0 (data->item);
+					data->metadata = (_vala_array_free (data->metadata, data->metadata_length1, (GDestroyNotify) g_free), NULL);
+					_g_free0 (data->uri);
+					_g_free0 (data->id);
 				}
 			}
 		}
-#line 152 "rygel-tracker-search-container.vala"
+#line 150 "rygel-tracker-search-container.vala"
 		data->total_matches = (guint) gee_collection_get_size ((GeeCollection*) data->results);
-#line 801 "rygel-tracker-search-container.c"
-		data->result = (GeeList*) data->results;
+#line 803 "rygel-tracker-search-container.c"
+		data->result = data->results;
 		_rygel_tracker_query_unref0 (data->query);
 		{
 			if (data->_state_ == 0) {
@@ -809,8 +811,8 @@ static gboolean rygel_tracker_search_container_real_search_co (RygelTrackerSearc
 			g_object_unref (data->_async_result);
 			return FALSE;
 		}
-		_g_object_unref0 (data->results);
 		_rygel_tracker_query_unref0 (data->query);
+		_g_object_unref0 (data->results);
 	}
 	{
 		if (data->_state_ == 0) {
@@ -824,21 +826,21 @@ static gboolean rygel_tracker_search_container_real_search_co (RygelTrackerSearc
 }
 
 
-#line 157 "rygel-tracker-search-container.vala"
+#line 155 "rygel-tracker-search-container.vala"
 char* rygel_tracker_search_container_create_child_id_for_urn (RygelTrackerSearchContainer* self, const char* urn) {
-#line 830 "rygel-tracker-search-container.c"
+#line 832 "rygel-tracker-search-container.c"
 	char* result = NULL;
 	char* _tmp0_;
 	char* _tmp1_;
-#line 157 "rygel-tracker-search-container.vala"
+#line 155 "rygel-tracker-search-container.vala"
 	g_return_val_if_fail (self != NULL, NULL);
-#line 157 "rygel-tracker-search-container.vala"
+#line 155 "rygel-tracker-search-container.vala"
 	g_return_val_if_fail (urn != NULL, NULL);
-#line 838 "rygel-tracker-search-container.c"
+#line 840 "rygel-tracker-search-container.c"
 	result = (_tmp1_ = g_strconcat (_tmp0_ = g_strconcat (((RygelMediaObject*) self)->id, ":", NULL), urn, NULL), _g_free0 (_tmp0_), _tmp1_);
-#line 158 "rygel-tracker-search-container.vala"
+#line 156 "rygel-tracker-search-container.vala"
 	return result;
-#line 842 "rygel-tracker-search-container.c"
+#line 844 "rygel-tracker-search-container.c"
 }
 
 
@@ -887,27 +889,27 @@ static gboolean rygel_tracker_search_container_get_children_count_co (RygelTrack
 	{
 		{
 			data->query = rygel_tracker_selection_query_new_clone (data->self->query);
-#line 165 "rygel-tracker-search-container.vala"
+#line 163 "rygel-tracker-search-container.vala"
 			data->query->variables = (data->_tmp0_ = gee_array_list_new (G_TYPE_STRING, (GBoxedCopyFunc) g_strdup, g_free, NULL), _g_object_unref0 (data->query->variables), data->_tmp0_);
-#line 166 "rygel-tracker-search-container.vala"
+#line 164 "rygel-tracker-search-container.vala"
 			gee_abstract_collection_add ((GeeAbstractCollection*) data->query->variables, "COUNT(" RYGEL_TRACKER_SEARCH_CONTAINER_ITEM_VARIABLE ") AS x");
-#line 895 "rygel-tracker-search-container.c"
+#line 897 "rygel-tracker-search-container.c"
 			data->_state_ = 5;
 			rygel_tracker_query_execute ((RygelTrackerQuery*) data->query, data->self->priv->resources, rygel_tracker_search_container_get_children_count_ready, data);
 			return FALSE;
 			_state_5:
-#line 168 "rygel-tracker-search-container.vala"
+#line 166 "rygel-tracker-search-container.vala"
 			rygel_tracker_query_execute_finish ((RygelTrackerQuery*) data->query, data->_res_, &data->_inner_error_);
-#line 902 "rygel-tracker-search-container.c"
+#line 904 "rygel-tracker-search-container.c"
 			if (data->_inner_error_ != NULL) {
 				_rygel_tracker_query_unref0 (data->query);
 				goto __catch5_g_error;
 			}
-#line 170 "rygel-tracker-search-container.vala"
+#line 168 "rygel-tracker-search-container.vala"
 			((RygelMediaContainer*) data->self)->child_count = atoi (data->query->result[(0 * data->query->result_length2) + 0]);
-#line 171 "rygel-tracker-search-container.vala"
+#line 169 "rygel-tracker-search-container.vala"
 			rygel_media_container_updated ((RygelMediaContainer*) data->self);
-#line 911 "rygel-tracker-search-container.c"
+#line 913 "rygel-tracker-search-container.c"
 			_rygel_tracker_query_unref0 (data->query);
 		}
 		goto __finally5;
@@ -916,9 +918,9 @@ static gboolean rygel_tracker_search_container_get_children_count_co (RygelTrack
 			data->_error_ = data->_inner_error_;
 			data->_inner_error_ = NULL;
 			{
-#line 173 "rygel-tracker-search-container.vala"
+#line 171 "rygel-tracker-search-container.vala"
 				g_critical (_ ("Error getting item count under category '%s': %s"), data->self->item_factory->category, data->_error_->message);
-#line 922 "rygel-tracker-search-container.c"
+#line 924 "rygel-tracker-search-container.c"
 				_g_error_free0 (data->_error_);
 				{
 					if (data->_state_ == 0) {
@@ -951,106 +953,106 @@ static gboolean rygel_tracker_search_container_get_children_count_co (RygelTrack
 }
 
 
-#line 181 "rygel-tracker-search-container.vala"
+#line 179 "rygel-tracker-search-container.vala"
 static RygelTrackerSelectionQuery* rygel_tracker_search_container_create_query (RygelTrackerSearchContainer* self, RygelSearchExpression* expression, gint offset, gint max_count) {
-#line 957 "rygel-tracker-search-container.c"
+#line 959 "rygel-tracker-search-container.c"
 	RygelTrackerSelectionQuery* result = NULL;
 	gboolean _tmp0_ = FALSE;
 	RygelSearchExpression* _tmp1_;
 	RygelRelationalExpression* rel_expression;
 	RygelTrackerSelectionQuery* query;
-#line 181 "rygel-tracker-search-container.vala"
+#line 179 "rygel-tracker-search-container.vala"
 	g_return_val_if_fail (self != NULL, NULL);
-#line 181 "rygel-tracker-search-container.vala"
+#line 179 "rygel-tracker-search-container.vala"
 	g_return_val_if_fail (expression != NULL, NULL);
-#line 184 "rygel-tracker-search-container.vala"
+#line 182 "rygel-tracker-search-container.vala"
 	if (expression == NULL) {
-#line 184 "rygel-tracker-search-container.vala"
+#line 182 "rygel-tracker-search-container.vala"
 		_tmp0_ = TRUE;
-#line 971 "rygel-tracker-search-container.c"
+#line 973 "rygel-tracker-search-container.c"
 	} else {
-#line 184 "rygel-tracker-search-container.vala"
+#line 182 "rygel-tracker-search-container.vala"
 		_tmp0_ = !RYGEL_IS_RELATIONAL_EXPRESSION (expression);
-#line 975 "rygel-tracker-search-container.c"
+#line 977 "rygel-tracker-search-container.c"
 	}
-#line 184 "rygel-tracker-search-container.vala"
+#line 182 "rygel-tracker-search-container.vala"
 	if (_tmp0_) {
-#line 979 "rygel-tracker-search-container.c"
+#line 981 "rygel-tracker-search-container.c"
 		result = NULL;
-#line 185 "rygel-tracker-search-container.vala"
+#line 183 "rygel-tracker-search-container.vala"
 		return result;
-#line 983 "rygel-tracker-search-container.c"
+#line 985 "rygel-tracker-search-container.c"
 	}
-#line 188 "rygel-tracker-search-container.vala"
+#line 186 "rygel-tracker-search-container.vala"
 	rel_expression = _rygel_search_expression_ref0 ((_tmp1_ = expression, RYGEL_IS_RELATIONAL_EXPRESSION (_tmp1_) ? ((RygelRelationalExpression*) _tmp1_) : NULL));
-#line 189 "rygel-tracker-search-container.vala"
+#line 187 "rygel-tracker-search-container.vala"
 	query = rygel_tracker_selection_query_new_clone (self->query);
-#line 191 "rygel-tracker-search-container.vala"
+#line 189 "rygel-tracker-search-container.vala"
 	if (_vala_strcmp0 ((const char*) ((RygelSearchExpression*) rel_expression)->operand1, "@parentID") == 0) {
-#line 192 "rygel-tracker-search-container.vala"
+#line 190 "rygel-tracker-search-container.vala"
 		if (!rygel_relational_expression_compare_string (rel_expression, ((RygelMediaObject*) self)->id)) {
-#line 993 "rygel-tracker-search-container.c"
+#line 995 "rygel-tracker-search-container.c"
 			result = NULL;
-			_rygel_search_expression_unref0 (rel_expression);
 			_rygel_tracker_query_unref0 (query);
-#line 193 "rygel-tracker-search-container.vala"
+			_rygel_search_expression_unref0 (rel_expression);
+#line 191 "rygel-tracker-search-container.vala"
 			return result;
-#line 999 "rygel-tracker-search-container.c"
+#line 1001 "rygel-tracker-search-container.c"
 		}
 	} else {
 		char* filter;
-#line 196 "rygel-tracker-search-container.vala"
+#line 194 "rygel-tracker-search-container.vala"
 		filter = rygel_tracker_search_container_create_filter_for_child (self, rel_expression);
-#line 197 "rygel-tracker-search-container.vala"
+#line 195 "rygel-tracker-search-container.vala"
 		if (filter != NULL) {
-#line 198 "rygel-tracker-search-container.vala"
+#line 196 "rygel-tracker-search-container.vala"
 			gee_abstract_list_insert ((GeeAbstractList*) query->filters, 0, filter);
-#line 1009 "rygel-tracker-search-container.c"
+#line 1011 "rygel-tracker-search-container.c"
 		} else {
 			result = NULL;
 			_g_free0 (filter);
-			_rygel_search_expression_unref0 (rel_expression);
 			_rygel_tracker_query_unref0 (query);
-#line 200 "rygel-tracker-search-container.vala"
+			_rygel_search_expression_unref0 (rel_expression);
+#line 198 "rygel-tracker-search-container.vala"
 			return result;
-#line 1017 "rygel-tracker-search-container.c"
+#line 1019 "rygel-tracker-search-container.c"
 		}
 		_g_free0 (filter);
 	}
-#line 204 "rygel-tracker-search-container.vala"
+#line 202 "rygel-tracker-search-container.vala"
 	query->offset = offset;
-#line 205 "rygel-tracker-search-container.vala"
+#line 203 "rygel-tracker-search-container.vala"
 	query->max_count = max_count;
-#line 1025 "rygel-tracker-search-container.c"
+#line 1027 "rygel-tracker-search-container.c"
 	result = query;
 	_rygel_search_expression_unref0 (rel_expression);
-#line 207 "rygel-tracker-search-container.vala"
+#line 205 "rygel-tracker-search-container.vala"
 	return result;
-#line 1030 "rygel-tracker-search-container.c"
+#line 1032 "rygel-tracker-search-container.c"
 }
 
 
-#line 210 "rygel-tracker-search-container.vala"
+#line 208 "rygel-tracker-search-container.vala"
 static char* rygel_tracker_search_container_create_filter_for_child (RygelTrackerSearchContainer* self, RygelRelationalExpression* expression) {
-#line 1036 "rygel-tracker-search-container.c"
+#line 1038 "rygel-tracker-search-container.c"
 	char* result = NULL;
 	char* filter;
 	char* variable;
 	char* value;
 	gboolean _tmp12_ = FALSE;
-#line 210 "rygel-tracker-search-container.vala"
+#line 208 "rygel-tracker-search-container.vala"
 	g_return_val_if_fail (self != NULL, NULL);
-#line 210 "rygel-tracker-search-container.vala"
+#line 208 "rygel-tracker-search-container.vala"
 	g_return_val_if_fail (expression != NULL, NULL);
-#line 211 "rygel-tracker-search-container.vala"
+#line 209 "rygel-tracker-search-container.vala"
 	filter = NULL;
-#line 212 "rygel-tracker-search-container.vala"
+#line 210 "rygel-tracker-search-container.vala"
 	variable = NULL;
-#line 213 "rygel-tracker-search-container.vala"
+#line 211 "rygel-tracker-search-container.vala"
 	value = NULL;
-#line 215 "rygel-tracker-search-container.vala"
+#line 213 "rygel-tracker-search-container.vala"
 	if (_vala_strcmp0 ((const char*) ((RygelSearchExpression*) expression)->operand1, "@id") == 0) {
-#line 1054 "rygel-tracker-search-container.c"
+#line 1056 "rygel-tracker-search-container.c"
 		char* _tmp0_;
 		char* parent_id;
 		char* _tmp3_;
@@ -1059,122 +1061,122 @@ static char* rygel_tracker_search_container_create_filter_for_child (RygelTracke
 		char* urn;
 		gboolean _tmp4_ = FALSE;
 		gboolean _tmp5_ = FALSE;
-#line 216 "rygel-tracker-search-container.vala"
+#line 214 "rygel-tracker-search-container.vala"
 		variable = (_tmp0_ = g_strdup (RYGEL_TRACKER_SEARCH_CONTAINER_ITEM_VARIABLE), _g_free0 (variable), _tmp0_);
-#line 1065 "rygel-tracker-search-container.c"
+#line 1067 "rygel-tracker-search-container.c"
 		parent_id = NULL;
-#line 220 "rygel-tracker-search-container.vala"
+#line 218 "rygel-tracker-search-container.vala"
 		urn = (_tmp2_ = rygel_tracker_search_container_get_item_info (self, (const char*) ((RygelSearchExpression*) expression)->operand2, &_tmp1_), parent_id = (_tmp3_ = _tmp1_, _g_free0 (parent_id), _tmp3_), _tmp2_);
-#line 221 "rygel-tracker-search-container.vala"
+#line 219 "rygel-tracker-search-container.vala"
 		if (urn == NULL) {
-#line 221 "rygel-tracker-search-container.vala"
+#line 219 "rygel-tracker-search-container.vala"
 			_tmp5_ = TRUE;
-#line 1073 "rygel-tracker-search-container.c"
+#line 1075 "rygel-tracker-search-container.c"
 		} else {
-#line 221 "rygel-tracker-search-container.vala"
+#line 219 "rygel-tracker-search-container.vala"
 			_tmp5_ = parent_id == NULL;
-#line 1077 "rygel-tracker-search-container.c"
+#line 1079 "rygel-tracker-search-container.c"
 		}
-#line 221 "rygel-tracker-search-container.vala"
+#line 219 "rygel-tracker-search-container.vala"
 		if (_tmp5_) {
-#line 221 "rygel-tracker-search-container.vala"
+#line 219 "rygel-tracker-search-container.vala"
 			_tmp4_ = TRUE;
-#line 1083 "rygel-tracker-search-container.c"
+#line 1085 "rygel-tracker-search-container.c"
 		} else {
-#line 221 "rygel-tracker-search-container.vala"
+#line 219 "rygel-tracker-search-container.vala"
 			_tmp4_ = _vala_strcmp0 (parent_id, ((RygelMediaObject*) self)->id) != 0;
-#line 1087 "rygel-tracker-search-container.c"
+#line 1089 "rygel-tracker-search-container.c"
 		}
-#line 221 "rygel-tracker-search-container.vala"
+#line 219 "rygel-tracker-search-container.vala"
 		if (_tmp4_) {
-#line 1091 "rygel-tracker-search-container.c"
+#line 1093 "rygel-tracker-search-container.c"
 			result = NULL;
-			_g_free0 (parent_id);
 			_g_free0 (urn);
-			_g_free0 (filter);
-			_g_free0 (variable);
+			_g_free0 (parent_id);
 			_g_free0 (value);
-#line 222 "rygel-tracker-search-container.vala"
+			_g_free0 (variable);
+			_g_free0 (filter);
+#line 220 "rygel-tracker-search-container.vala"
 			return result;
-#line 1100 "rygel-tracker-search-container.c"
+#line 1102 "rygel-tracker-search-container.c"
 		}
-#line 225 "rygel-tracker-search-container.vala"
+#line 223 "rygel-tracker-search-container.vala"
 		switch (GPOINTER_TO_INT (((RygelSearchExpression*) expression)->op)) {
-#line 1104 "rygel-tracker-search-container.c"
+#line 1106 "rygel-tracker-search-container.c"
 			case GUPNP_SEARCH_CRITERIA_OP_EQ:
 			{
 				char* _tmp7_;
 				char* _tmp6_;
-#line 227 "rygel-tracker-search-container.vala"
+#line 225 "rygel-tracker-search-container.vala"
 				value = (_tmp7_ = g_strconcat (_tmp6_ = g_strconcat ("<", urn, NULL), ">", NULL), _g_free0 (value), _tmp7_);
-#line 1111 "rygel-tracker-search-container.c"
+#line 1113 "rygel-tracker-search-container.c"
 				_g_free0 (_tmp6_);
-#line 228 "rygel-tracker-search-container.vala"
+#line 226 "rygel-tracker-search-container.vala"
 				break;
-#line 1115 "rygel-tracker-search-container.c"
+#line 1117 "rygel-tracker-search-container.c"
 			}
 			case GUPNP_SEARCH_CRITERIA_OP_CONTAINS:
 			{
 				char* _tmp8_;
-#line 230 "rygel-tracker-search-container.vala"
+#line 228 "rygel-tracker-search-container.vala"
 				value = (_tmp8_ = g_strdup ((const char*) ((RygelSearchExpression*) expression)->operand2), _g_free0 (value), _tmp8_);
-#line 231 "rygel-tracker-search-container.vala"
+#line 229 "rygel-tracker-search-container.vala"
 				break;
-#line 1124 "rygel-tracker-search-container.c"
+#line 1126 "rygel-tracker-search-container.c"
 			}
 		}
-		_g_free0 (parent_id);
 		_g_free0 (urn);
+		_g_free0 (parent_id);
 	} else {
-#line 233 "rygel-tracker-search-container.vala"
+#line 231 "rygel-tracker-search-container.vala"
 		if (_vala_strcmp0 ((const char*) ((RygelSearchExpression*) expression)->operand1, "res") == 0) {
-#line 1132 "rygel-tracker-search-container.c"
+#line 1134 "rygel-tracker-search-container.c"
 			char* _tmp9_;
 			char* _tmp11_;
 			char* _tmp10_;
-#line 234 "rygel-tracker-search-container.vala"
+#line 232 "rygel-tracker-search-container.vala"
 			variable = (_tmp9_ = g_strdup (RYGEL_TRACKER_SEARCH_CONTAINER_URL_VARIABLE), _g_free0 (variable), _tmp9_);
-#line 235 "rygel-tracker-search-container.vala"
+#line 233 "rygel-tracker-search-container.vala"
 			value = (_tmp11_ = g_strconcat (_tmp10_ = g_strconcat ("\"", (const char*) ((RygelSearchExpression*) expression)->operand2, NULL), "\"", NULL), _g_free0 (value), _tmp11_);
-#line 1140 "rygel-tracker-search-container.c"
+#line 1142 "rygel-tracker-search-container.c"
 			_g_free0 (_tmp10_);
 		}
 	}
-#line 238 "rygel-tracker-search-container.vala"
+#line 236 "rygel-tracker-search-container.vala"
 	if (variable == NULL) {
-#line 238 "rygel-tracker-search-container.vala"
+#line 236 "rygel-tracker-search-container.vala"
 		_tmp12_ = TRUE;
-#line 1148 "rygel-tracker-search-container.c"
+#line 1150 "rygel-tracker-search-container.c"
 	} else {
-#line 238 "rygel-tracker-search-container.vala"
+#line 236 "rygel-tracker-search-container.vala"
 		_tmp12_ = value == NULL;
-#line 1152 "rygel-tracker-search-container.c"
+#line 1154 "rygel-tracker-search-container.c"
 	}
-#line 238 "rygel-tracker-search-container.vala"
+#line 236 "rygel-tracker-search-container.vala"
 	if (_tmp12_) {
-#line 1156 "rygel-tracker-search-container.c"
+#line 1158 "rygel-tracker-search-container.c"
 		result = NULL;
-		_g_free0 (filter);
-		_g_free0 (variable);
 		_g_free0 (value);
-#line 239 "rygel-tracker-search-container.vala"
+		_g_free0 (variable);
+		_g_free0 (filter);
+#line 237 "rygel-tracker-search-container.vala"
 		return result;
-#line 1163 "rygel-tracker-search-container.c"
+#line 1165 "rygel-tracker-search-container.c"
 	}
-#line 242 "rygel-tracker-search-container.vala"
+#line 240 "rygel-tracker-search-container.vala"
 	switch (GPOINTER_TO_INT (((RygelSearchExpression*) expression)->op)) {
-#line 1167 "rygel-tracker-search-container.c"
+#line 1169 "rygel-tracker-search-container.c"
 		case GUPNP_SEARCH_CRITERIA_OP_EQ:
 		{
 			char* _tmp14_;
 			char* _tmp13_;
-#line 244 "rygel-tracker-search-container.vala"
+#line 242 "rygel-tracker-search-container.vala"
 			filter = (_tmp14_ = g_strconcat (_tmp13_ = g_strconcat (variable, " = ", NULL), value, NULL), _g_free0 (filter), _tmp14_);
-#line 1174 "rygel-tracker-search-container.c"
+#line 1176 "rygel-tracker-search-container.c"
 			_g_free0 (_tmp13_);
-#line 245 "rygel-tracker-search-container.vala"
+#line 243 "rygel-tracker-search-container.vala"
 			break;
-#line 1178 "rygel-tracker-search-container.c"
+#line 1180 "rygel-tracker-search-container.c"
 		}
 		case GUPNP_SEARCH_CRITERIA_OP_CONTAINS:
 		{
@@ -1183,30 +1185,30 @@ static char* rygel_tracker_search_container_create_filter_for_child (RygelTracke
 			char* _tmp17_;
 			char* _tmp16_;
 			char* _tmp15_;
-#line 247 "rygel-tracker-search-container.vala"
+#line 245 "rygel-tracker-search-container.vala"
 			filter = (_tmp19_ = g_strconcat (_tmp18_ = g_strconcat (_tmp16_ = g_strconcat (_tmp15_ = g_strconcat ("regex(", variable, NULL), ", ", NULL), _tmp17_ = g_regex_escape_string (value, -1), NULL), ")", NULL), _g_free0 (filter), _tmp19_);
-#line 1189 "rygel-tracker-search-container.c"
+#line 1191 "rygel-tracker-search-container.c"
 			_g_free0 (_tmp18_);
 			_g_free0 (_tmp17_);
 			_g_free0 (_tmp16_);
 			_g_free0 (_tmp15_);
-#line 250 "rygel-tracker-search-container.vala"
+#line 248 "rygel-tracker-search-container.vala"
 			break;
-#line 1196 "rygel-tracker-search-container.c"
+#line 1198 "rygel-tracker-search-container.c"
 		}
 	}
 	result = filter;
-	_g_free0 (variable);
 	_g_free0 (value);
-#line 253 "rygel-tracker-search-container.vala"
+	_g_free0 (variable);
+#line 251 "rygel-tracker-search-container.vala"
 	return result;
-#line 1204 "rygel-tracker-search-container.c"
+#line 1206 "rygel-tracker-search-container.c"
 }
 
 
-#line 258 "rygel-tracker-search-container.vala"
+#line 256 "rygel-tracker-search-container.vala"
 static char* rygel_tracker_search_container_get_item_info (RygelTrackerSearchContainer* self, const char* item_id, char** parent_id) {
-#line 1210 "rygel-tracker-search-container.c"
+#line 1212 "rygel-tracker-search-container.c"
 	char* result = NULL;
 	char** _tmp1_;
 	gint _tokens_size_;
@@ -1214,61 +1216,61 @@ static char* rygel_tracker_search_container_get_item_info (RygelTrackerSearchCon
 	char** _tmp0_;
 	char** tokens;
 	gboolean _tmp2_ = FALSE;
-#line 258 "rygel-tracker-search-container.vala"
+#line 256 "rygel-tracker-search-container.vala"
 	g_return_val_if_fail (self != NULL, NULL);
-#line 258 "rygel-tracker-search-container.vala"
+#line 256 "rygel-tracker-search-container.vala"
 	g_return_val_if_fail (item_id != NULL, NULL);
-#line 1222 "rygel-tracker-search-container.c"
+#line 1224 "rygel-tracker-search-container.c"
 	if (parent_id != NULL) {
 		*parent_id = NULL;
 	}
 	tokens = (_tmp1_ = _tmp0_ = g_strsplit (item_id, ":", 2), tokens_length1 = _vala_array_length (_tmp0_), _tokens_size_ = tokens_length1, _tmp1_);
-#line 262 "rygel-tracker-search-container.vala"
+#line 260 "rygel-tracker-search-container.vala"
 	if (tokens[0] != NULL) {
-#line 262 "rygel-tracker-search-container.vala"
+#line 260 "rygel-tracker-search-container.vala"
 		_tmp2_ = tokens[1] != NULL;
-#line 1231 "rygel-tracker-search-container.c"
+#line 1233 "rygel-tracker-search-container.c"
 	} else {
-#line 262 "rygel-tracker-search-container.vala"
+#line 260 "rygel-tracker-search-container.vala"
 		_tmp2_ = FALSE;
-#line 1235 "rygel-tracker-search-container.c"
+#line 1237 "rygel-tracker-search-container.c"
 	}
-#line 262 "rygel-tracker-search-container.vala"
+#line 260 "rygel-tracker-search-container.vala"
 	if (_tmp2_) {
-#line 1239 "rygel-tracker-search-container.c"
+#line 1241 "rygel-tracker-search-container.c"
 		char* _tmp3_;
-#line 263 "rygel-tracker-search-container.vala"
+#line 261 "rygel-tracker-search-container.vala"
 		*parent_id = (_tmp3_ = g_strdup (tokens[0]), _g_free0 (*parent_id), _tmp3_);
-#line 1243 "rygel-tracker-search-container.c"
+#line 1245 "rygel-tracker-search-container.c"
 		result = g_strdup (tokens[1]);
 		tokens = (_vala_array_free (tokens, tokens_length1, (GDestroyNotify) g_free), NULL);
-#line 265 "rygel-tracker-search-container.vala"
+#line 263 "rygel-tracker-search-container.vala"
 		return result;
-#line 1248 "rygel-tracker-search-container.c"
+#line 1250 "rygel-tracker-search-container.c"
 	} else {
 		result = NULL;
 		tokens = (_vala_array_free (tokens, tokens_length1, (GDestroyNotify) g_free), NULL);
-#line 267 "rygel-tracker-search-container.vala"
+#line 265 "rygel-tracker-search-container.vala"
 		return result;
-#line 1254 "rygel-tracker-search-container.c"
+#line 1256 "rygel-tracker-search-container.c"
 	}
 	tokens = (_vala_array_free (tokens, tokens_length1, (GDestroyNotify) g_free), NULL);
 }
 
 
-#line 271 "rygel-tracker-search-container.vala"
+#line 269 "rygel-tracker-search-container.vala"
 static void rygel_tracker_search_container_create_proxies (RygelTrackerSearchContainer* self, GError** error) {
-#line 1262 "rygel-tracker-search-container.c"
+#line 1264 "rygel-tracker-search-container.c"
 	GError * _inner_error_;
 	DBusGConnection* connection;
 	RygelTrackerResourcesIface* _tmp0_;
-#line 271 "rygel-tracker-search-container.vala"
+#line 269 "rygel-tracker-search-container.vala"
 	g_return_if_fail (self != NULL);
-#line 1268 "rygel-tracker-search-container.c"
+#line 1270 "rygel-tracker-search-container.c"
 	_inner_error_ = NULL;
-#line 272 "rygel-tracker-search-container.vala"
+#line 270 "rygel-tracker-search-container.vala"
 	connection = dbus_g_bus_get (DBUS_BUS_SESSION, &_inner_error_);
-#line 1272 "rygel-tracker-search-container.c"
+#line 1274 "rygel-tracker-search-container.c"
 	if (_inner_error_ != NULL) {
 		if (_inner_error_->domain == DBUS_GERROR) {
 			g_propagate_error (error, _inner_error_);
@@ -1279,16 +1281,16 @@ static void rygel_tracker_search_container_create_proxies (RygelTrackerSearchCon
 			return;
 		}
 	}
-#line 274 "rygel-tracker-search-container.vala"
+#line 272 "rygel-tracker-search-container.vala"
 	self->priv->resources = (_tmp0_ = rygel_tracker_resources_iface_dbus_proxy_new (connection, RYGEL_TRACKER_SEARCH_CONTAINER_TRACKER_SERVICE, RYGEL_TRACKER_SEARCH_CONTAINER_RESOURCES_PATH), _g_object_unref0 (self->priv->resources), _tmp0_);
-#line 1285 "rygel-tracker-search-container.c"
+#line 1287 "rygel-tracker-search-container.c"
 	_dbus_g_connection_unref0 (connection);
 }
 
 
-#line 288 "rygel-tracker-search-container.vala"
+#line 286 "rygel-tracker-search-container.vala"
 static char** rygel_tracker_search_container_slice_strvv_tail (RygelTrackerSearchContainer* self, char** strvv, int strvv_length1, int strvv_length2, guint row, guint index, int* result_length1) {
-#line 1292 "rygel-tracker-search-container.c"
+#line 1294 "rygel-tracker-search-container.c"
 	char** result = NULL;
 	char** _tmp1_;
 	gint _slice_size_;
@@ -1296,47 +1298,47 @@ static char** rygel_tracker_search_container_slice_strvv_tail (RygelTrackerSearc
 	gint _tmp0_;
 	char** slice;
 	char** _tmp4_;
-#line 288 "rygel-tracker-search-container.vala"
+#line 286 "rygel-tracker-search-container.vala"
 	g_return_val_if_fail (self != NULL, NULL);
-#line 1302 "rygel-tracker-search-container.c"
+#line 1304 "rygel-tracker-search-container.c"
 	slice = (_tmp1_ = g_new0 (char*, (_tmp0_ = strvv_length2 - index) + 1), slice_length1 = _tmp0_, _slice_size_ = slice_length1, _tmp1_);
 	{
 		gint i;
-#line 291 "rygel-tracker-search-container.vala"
+#line 289 "rygel-tracker-search-container.vala"
 		i = 0;
-#line 1308 "rygel-tracker-search-container.c"
+#line 1310 "rygel-tracker-search-container.c"
 		{
 			gboolean _tmp2_;
-#line 291 "rygel-tracker-search-container.vala"
+#line 289 "rygel-tracker-search-container.vala"
 			_tmp2_ = TRUE;
-#line 291 "rygel-tracker-search-container.vala"
+#line 289 "rygel-tracker-search-container.vala"
 			while (TRUE) {
-#line 1315 "rygel-tracker-search-container.c"
+#line 1317 "rygel-tracker-search-container.c"
 				char* _tmp3_;
-#line 291 "rygel-tracker-search-container.vala"
+#line 289 "rygel-tracker-search-container.vala"
 				if (!_tmp2_) {
-#line 291 "rygel-tracker-search-container.vala"
+#line 289 "rygel-tracker-search-container.vala"
 					i++;
-#line 1321 "rygel-tracker-search-container.c"
+#line 1323 "rygel-tracker-search-container.c"
 				}
-#line 291 "rygel-tracker-search-container.vala"
+#line 289 "rygel-tracker-search-container.vala"
 				_tmp2_ = FALSE;
-#line 291 "rygel-tracker-search-container.vala"
+#line 289 "rygel-tracker-search-container.vala"
 				if (!(i < slice_length1)) {
-#line 291 "rygel-tracker-search-container.vala"
+#line 289 "rygel-tracker-search-container.vala"
 					break;
-#line 1329 "rygel-tracker-search-container.c"
+#line 1331 "rygel-tracker-search-container.c"
 				}
-#line 292 "rygel-tracker-search-container.vala"
+#line 290 "rygel-tracker-search-container.vala"
 				slice[i] = (_tmp3_ = g_strdup (strvv[(row * strvv_length2) + (i + index)]), _g_free0 (slice[i]), _tmp3_);
-#line 1333 "rygel-tracker-search-container.c"
+#line 1335 "rygel-tracker-search-container.c"
 			}
 		}
 	}
 	result = (_tmp4_ = slice, *result_length1 = slice_length1, _tmp4_);
-#line 295 "rygel-tracker-search-container.vala"
+#line 293 "rygel-tracker-search-container.vala"
 	return result;
-#line 1340 "rygel-tracker-search-container.c"
+#line 1342 "rygel-tracker-search-container.c"
 	slice = (_vala_array_free (slice, slice_length1, (GDestroyNotify) g_free), NULL);
 }
 

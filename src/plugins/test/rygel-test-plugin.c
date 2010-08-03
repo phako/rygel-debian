@@ -28,38 +28,127 @@
 #include <glib.h>
 #include <glib-object.h>
 #include <rygel.h>
+#include <stdlib.h>
+#include <string.h>
 
 
-#define RYGEL_TEST_TYPE_CONTENT_DIR (rygel_test_content_dir_get_type ())
-#define RYGEL_TEST_CONTENT_DIR(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TEST_TYPE_CONTENT_DIR, RygelTestContentDir))
-#define RYGEL_TEST_CONTENT_DIR_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TEST_TYPE_CONTENT_DIR, RygelTestContentDirClass))
-#define RYGEL_TEST_IS_CONTENT_DIR(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TEST_TYPE_CONTENT_DIR))
-#define RYGEL_TEST_IS_CONTENT_DIR_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_TEST_TYPE_CONTENT_DIR))
-#define RYGEL_TEST_CONTENT_DIR_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_TEST_TYPE_CONTENT_DIR, RygelTestContentDirClass))
+#define RYGEL_TEST_TYPE_PLUGIN (rygel_test_plugin_get_type ())
+#define RYGEL_TEST_PLUGIN(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TEST_TYPE_PLUGIN, RygelTestPlugin))
+#define RYGEL_TEST_PLUGIN_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TEST_TYPE_PLUGIN, RygelTestPluginClass))
+#define RYGEL_TEST_IS_PLUGIN(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TEST_TYPE_PLUGIN))
+#define RYGEL_TEST_IS_PLUGIN_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_TEST_TYPE_PLUGIN))
+#define RYGEL_TEST_PLUGIN_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_TEST_TYPE_PLUGIN, RygelTestPluginClass))
 
-typedef struct _RygelTestContentDir RygelTestContentDir;
-typedef struct _RygelTestContentDirClass RygelTestContentDirClass;
+typedef struct _RygelTestPlugin RygelTestPlugin;
+typedef struct _RygelTestPluginClass RygelTestPluginClass;
 #define _g_object_unref0(var) ((var == NULL) ? NULL : (var = (g_object_unref (var), NULL)))
+typedef struct _RygelTestPluginPrivate RygelTestPluginPrivate;
+
+#define RYGEL_TEST_TYPE_ROOT_CONTAINER (rygel_test_root_container_get_type ())
+#define RYGEL_TEST_ROOT_CONTAINER(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TEST_TYPE_ROOT_CONTAINER, RygelTestRootContainer))
+#define RYGEL_TEST_ROOT_CONTAINER_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TEST_TYPE_ROOT_CONTAINER, RygelTestRootContainerClass))
+#define RYGEL_TEST_IS_ROOT_CONTAINER(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TEST_TYPE_ROOT_CONTAINER))
+#define RYGEL_TEST_IS_ROOT_CONTAINER_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_TEST_TYPE_ROOT_CONTAINER))
+#define RYGEL_TEST_ROOT_CONTAINER_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_TEST_TYPE_ROOT_CONTAINER, RygelTestRootContainerClass))
+
+typedef struct _RygelTestRootContainer RygelTestRootContainer;
+typedef struct _RygelTestRootContainerClass RygelTestRootContainerClass;
+
+struct _RygelTestPlugin {
+	RygelMediaServerPlugin parent_instance;
+	RygelTestPluginPrivate * priv;
+};
+
+struct _RygelTestPluginClass {
+	RygelMediaServerPluginClass parent_class;
+};
 
 
+static gpointer rygel_test_plugin_parent_class = NULL;
 
-GType rygel_test_content_dir_get_type (void);
+RygelTestPlugin* rygel_test_plugin_new (void);
+RygelTestPlugin* rygel_test_plugin_construct (GType object_type);
+GType rygel_test_plugin_get_type (void) G_GNUC_CONST;
 void module_init (RygelPluginLoader* loader);
+enum  {
+	RYGEL_TEST_PLUGIN_DUMMY_PROPERTY
+};
+RygelTestRootContainer* rygel_test_root_container_new (const char* title);
+RygelTestRootContainer* rygel_test_root_container_construct (GType object_type, const char* title);
+GType rygel_test_root_container_get_type (void) G_GNUC_CONST;
+static RygelMediaContainer* rygel_test_plugin_real_get_root_container (RygelMediaServerPlugin* base, RygelContentDirectory* content_dir);
 
 
 
 #line 28 "rygel-test-plugin.vala"
 void module_init (RygelPluginLoader* loader) {
-#line 54 "rygel-test-plugin.c"
-	RygelPlugin* plugin;
+#line 86 "rygel-test-plugin.c"
+	RygelTestPlugin* plugin;
 #line 28 "rygel-test-plugin.vala"
 	g_return_if_fail (loader != NULL);
 #line 29 "rygel-test-plugin.vala"
-	plugin = rygel_plugin_new_MediaServer ("Test", "Test Streams", RYGEL_TEST_TYPE_CONTENT_DIR, NULL);
-#line 32 "rygel-test-plugin.vala"
-	rygel_plugin_loader_add_plugin (loader, plugin);
-#line 62 "rygel-test-plugin.c"
+	plugin = rygel_test_plugin_new ();
+#line 31 "rygel-test-plugin.vala"
+	rygel_plugin_loader_add_plugin (loader, (RygelPlugin*) plugin);
+#line 94 "rygel-test-plugin.c"
 	_g_object_unref0 (plugin);
+}
+
+
+#line 35 "rygel-test-plugin.vala"
+RygelTestPlugin* rygel_test_plugin_construct (GType object_type) {
+#line 101 "rygel-test-plugin.c"
+	RygelTestPlugin * self;
+#line 36 "rygel-test-plugin.vala"
+	self = (RygelTestPlugin*) rygel_media_server_plugin_construct (object_type, "Test", "Test Streams", NULL);
+#line 105 "rygel-test-plugin.c"
+	return self;
+}
+
+
+#line 35 "rygel-test-plugin.vala"
+RygelTestPlugin* rygel_test_plugin_new (void) {
+#line 35 "rygel-test-plugin.vala"
+	return rygel_test_plugin_construct (RYGEL_TEST_TYPE_PLUGIN);
+#line 114 "rygel-test-plugin.c"
+}
+
+
+#line 39 "rygel-test-plugin.vala"
+static RygelMediaContainer* rygel_test_plugin_real_get_root_container (RygelMediaServerPlugin* base, RygelContentDirectory* content_dir) {
+#line 120 "rygel-test-plugin.c"
+	RygelTestPlugin * self;
+	RygelMediaContainer* result = NULL;
+	self = (RygelTestPlugin*) base;
+#line 39 "rygel-test-plugin.vala"
+	g_return_val_if_fail (content_dir != NULL, NULL);
+#line 126 "rygel-test-plugin.c"
+	result = (RygelMediaContainer*) rygel_test_root_container_new (((RygelPlugin*) self)->title);
+#line 41 "rygel-test-plugin.vala"
+	return result;
+#line 130 "rygel-test-plugin.c"
+}
+
+
+static void rygel_test_plugin_class_init (RygelTestPluginClass * klass) {
+	rygel_test_plugin_parent_class = g_type_class_peek_parent (klass);
+	RYGEL_MEDIA_SERVER_PLUGIN_CLASS (klass)->get_root_container = rygel_test_plugin_real_get_root_container;
+}
+
+
+static void rygel_test_plugin_instance_init (RygelTestPlugin * self) {
+}
+
+
+GType rygel_test_plugin_get_type (void) {
+	static volatile gsize rygel_test_plugin_type_id__volatile = 0;
+	if (g_once_init_enter (&rygel_test_plugin_type_id__volatile)) {
+		static const GTypeInfo g_define_type_info = { sizeof (RygelTestPluginClass), (GBaseInitFunc) NULL, (GBaseFinalizeFunc) NULL, (GClassInitFunc) rygel_test_plugin_class_init, (GClassFinalizeFunc) NULL, NULL, sizeof (RygelTestPlugin), 0, (GInstanceInitFunc) rygel_test_plugin_instance_init, NULL };
+		GType rygel_test_plugin_type_id;
+		rygel_test_plugin_type_id = g_type_register_static (RYGEL_TYPE_MEDIA_SERVER_PLUGIN, "RygelTestPlugin", &g_define_type_info, 0);
+		g_once_init_leave (&rygel_test_plugin_type_id__volatile, rygel_test_plugin_type_id);
+	}
+	return rygel_test_plugin_type_id__volatile;
 }
 
 

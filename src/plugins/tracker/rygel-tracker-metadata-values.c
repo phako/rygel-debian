@@ -282,17 +282,17 @@ struct _RygelTrackerMetadataValuesFetchMetadataValuesData {
 
 static gpointer rygel_tracker_metadata_values_parent_class = NULL;
 
-GType rygel_tracker_metadata_values_get_type (void);
+GType rygel_tracker_metadata_values_get_type (void) G_GNUC_CONST;
 gpointer rygel_tracker_item_factory_ref (gpointer instance);
 void rygel_tracker_item_factory_unref (gpointer instance);
 GParamSpec* rygel_tracker_param_spec_item_factory (const gchar* name, const gchar* nick, const gchar* blurb, GType object_type, GParamFlags flags);
 void rygel_tracker_value_set_item_factory (GValue* value, gpointer v_object);
 void rygel_tracker_value_take_item_factory (GValue* value, gpointer v_object);
 gpointer rygel_tracker_value_get_item_factory (const GValue* value);
-GType rygel_tracker_item_factory_get_type (void);
+GType rygel_tracker_item_factory_get_type (void) G_GNUC_CONST;
 RygelTrackerResourcesIface* rygel_tracker_resources_iface_dbus_proxy_new (DBusGConnection* connection, const char* name, const char* path);
-GType rygel_tracker_resources_iface_get_type (void);
-GType rygel_tracker_resources_class_iface_get_type (void);
+GType rygel_tracker_resources_iface_get_type (void) G_GNUC_CONST;
+GType rygel_tracker_resources_class_iface_get_type (void) G_GNUC_CONST;
 RygelTrackerResourcesClassIface* rygel_tracker_resources_class_iface_dbus_proxy_new (DBusGConnection* connection, const char* name, const char* path);
 #define RYGEL_TRACKER_METADATA_VALUES_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), RYGEL_TRACKER_TYPE_METADATA_VALUES, RygelTrackerMetadataValuesPrivate))
 enum  {
@@ -312,7 +312,7 @@ static void rygel_tracker_metadata_values_fetch_metadata_values_data_free (gpoin
 static void rygel_tracker_metadata_values_fetch_metadata_values_ready (GObject* source_object, GAsyncResult* _res_, gpointer _user_data_);
 RygelTrackerQueryTriplets* rygel_tracker_query_triplets_new (void);
 RygelTrackerQueryTriplets* rygel_tracker_query_triplets_construct (GType object_type);
-GType rygel_tracker_query_triplets_get_type (void);
+GType rygel_tracker_query_triplets_get_type (void) G_GNUC_CONST;
 RygelTrackerQueryTriplet* rygel_tracker_query_triplet_new (const char* subject, const char* predicate, const char* obj);
 RygelTrackerQueryTriplet* rygel_tracker_query_triplet_construct (GType object_type, const char* subject, const char* predicate, const char* obj);
 gpointer rygel_tracker_query_triplet_ref (gpointer instance);
@@ -321,8 +321,8 @@ GParamSpec* rygel_tracker_param_spec_query_triplet (const gchar* name, const gch
 void rygel_tracker_value_set_query_triplet (GValue* value, gpointer v_object);
 void rygel_tracker_value_take_query_triplet (GValue* value, gpointer v_object);
 gpointer rygel_tracker_value_get_query_triplet (const GValue* value);
-GType rygel_tracker_query_triplet_get_type (void);
-GType rygel_tracker_search_container_get_type (void);
+GType rygel_tracker_query_triplet_get_type (void) G_GNUC_CONST;
+GType rygel_tracker_search_container_get_type (void) G_GNUC_CONST;
 RygelTrackerSelectionQuery* rygel_tracker_selection_query_new (GeeArrayList* variables, RygelTrackerQueryTriplets* triplets, GeeArrayList* filters, const char* order_by, gint offset, gint max_count);
 RygelTrackerSelectionQuery* rygel_tracker_selection_query_construct (GType object_type, GeeArrayList* variables, RygelTrackerQueryTriplets* triplets, GeeArrayList* filters, const char* order_by, gint offset, gint max_count);
 gpointer rygel_tracker_query_ref (gpointer instance);
@@ -331,8 +331,8 @@ GParamSpec* rygel_tracker_param_spec_query (const gchar* name, const gchar* nick
 void rygel_tracker_value_set_query (GValue* value, gpointer v_object);
 void rygel_tracker_value_take_query (GValue* value, gpointer v_object);
 gpointer rygel_tracker_value_get_query (const GValue* value);
-GType rygel_tracker_query_get_type (void);
-GType rygel_tracker_selection_query_get_type (void);
+GType rygel_tracker_query_get_type (void) G_GNUC_CONST;
+GType rygel_tracker_selection_query_get_type (void) G_GNUC_CONST;
 void rygel_tracker_query_execute (RygelTrackerQuery* self, RygelTrackerResourcesIface* resources, GAsyncReadyCallback _callback_, gpointer _user_data_);
 void rygel_tracker_query_execute_finish (RygelTrackerQuery* self, GAsyncResult* _res_, GError** error);
 static gboolean rygel_tracker_metadata_values_is_child_id_unique (RygelTrackerMetadataValues* self, const char* child_id);
@@ -490,16 +490,16 @@ static void rygel_tracker_metadata_values_fetch_metadata_values_ready (GObject* 
 }
 
 
-#line 1148 "glib-2.0.vapi"
+#line 1156 "glib-2.0.vapi"
 static char* string_replace (const char* self, const char* old, const char* replacement) {
 #line 496 "rygel-tracker-metadata-values.c"
 	char* result = NULL;
 	GError * _inner_error_;
-#line 1148 "glib-2.0.vapi"
+#line 1156 "glib-2.0.vapi"
 	g_return_val_if_fail (self != NULL, NULL);
-#line 1148 "glib-2.0.vapi"
+#line 1156 "glib-2.0.vapi"
 	g_return_val_if_fail (old != NULL, NULL);
-#line 1148 "glib-2.0.vapi"
+#line 1156 "glib-2.0.vapi"
 	g_return_val_if_fail (replacement != NULL, NULL);
 #line 505 "rygel-tracker-metadata-values.c"
 	_inner_error_ = NULL;
@@ -508,7 +508,7 @@ static char* string_replace (const char* self, const char* old, const char* repl
 		GRegex* _tmp1_;
 		GRegex* regex;
 		char* _tmp2_;
-#line 1150 "glib-2.0.vapi"
+#line 1158 "glib-2.0.vapi"
 		regex = (_tmp1_ = g_regex_new (_tmp0_ = g_regex_escape_string (old, -1), 0, 0, &_inner_error_), _g_free0 (_tmp0_), _tmp1_);
 #line 514 "rygel-tracker-metadata-values.c"
 		if (_inner_error_ != NULL) {
@@ -519,7 +519,7 @@ static char* string_replace (const char* self, const char* old, const char* repl
 			g_clear_error (&_inner_error_);
 			return NULL;
 		}
-#line 1151 "glib-2.0.vapi"
+#line 1159 "glib-2.0.vapi"
 		_tmp2_ = g_regex_replace_literal (regex, self, (gssize) (-1), 0, replacement, 0, &_inner_error_);
 #line 525 "rygel-tracker-metadata-values.c"
 		if (_inner_error_ != NULL) {
@@ -534,7 +534,7 @@ static char* string_replace (const char* self, const char* old, const char* repl
 		}
 		result = _tmp2_;
 		_g_regex_unref0 (regex);
-#line 1151 "glib-2.0.vapi"
+#line 1159 "glib-2.0.vapi"
 		return result;
 #line 540 "rygel-tracker-metadata-values.c"
 	}
@@ -545,7 +545,7 @@ static char* string_replace (const char* self, const char* old, const char* repl
 		e = _inner_error_;
 		_inner_error_ = NULL;
 		{
-#line 1153 "glib-2.0.vapi"
+#line 1161 "glib-2.0.vapi"
 			g_assert_not_reached ();
 #line 551 "rygel-tracker-metadata-values.c"
 			_g_error_free0 (e);
@@ -642,11 +642,11 @@ static gboolean rygel_tracker_metadata_values_fetch_metadata_values_co (RygelTra
 				if (data->_inner_error_->domain == DBUS_GERROR) {
 					goto __catch3_dbus_gerror;
 				}
-				_g_object_unref0 (data->triplets);
-				data->variables = (_vala_array_free (data->variables, data->variables_length1, (GDestroyNotify) g_free), NULL);
-				_g_object_unref0 (data->selected);
-				_g_free0 (data->last_variable);
 				_rygel_tracker_query_unref0 (data->query);
+				_g_free0 (data->last_variable);
+				_g_object_unref0 (data->selected);
+				data->variables = (_vala_array_free (data->variables, data->variables_length1, (GDestroyNotify) g_free), NULL);
+				_g_object_unref0 (data->triplets);
 				g_critical ("file %s: line %d: unexpected error: %s (%s, %d)", __FILE__, __LINE__, data->_inner_error_->message, g_quark_to_string (data->_inner_error_->domain), data->_inner_error_->code);
 				g_clear_error (&data->_inner_error_);
 				return FALSE;
@@ -663,11 +663,11 @@ static gboolean rygel_tracker_metadata_values_fetch_metadata_values_co (RygelTra
 #line 664 "rygel-tracker-metadata-values.c"
 				_g_free0 (data->_tmp9_);
 				_g_error_free0 (data->_error_);
-				_g_object_unref0 (data->triplets);
-				data->variables = (_vala_array_free (data->variables, data->variables_length1, (GDestroyNotify) g_free), NULL);
-				_g_object_unref0 (data->selected);
-				_g_free0 (data->last_variable);
 				_rygel_tracker_query_unref0 (data->query);
+				_g_free0 (data->last_variable);
+				_g_object_unref0 (data->selected);
+				data->variables = (_vala_array_free (data->variables, data->variables_length1, (GDestroyNotify) g_free), NULL);
+				_g_object_unref0 (data->triplets);
 				{
 					if (data->_state_ == 0) {
 						g_simple_async_result_complete_in_idle (data->_async_result);
@@ -682,11 +682,11 @@ static gboolean rygel_tracker_metadata_values_fetch_metadata_values_co (RygelTra
 		}
 		__finally3:
 		if (data->_inner_error_ != NULL) {
-			_g_object_unref0 (data->triplets);
-			data->variables = (_vala_array_free (data->variables, data->variables_length1, (GDestroyNotify) g_free), NULL);
-			_g_object_unref0 (data->selected);
-			_g_free0 (data->last_variable);
 			_rygel_tracker_query_unref0 (data->query);
+			_g_free0 (data->last_variable);
+			_g_object_unref0 (data->selected);
+			data->variables = (_vala_array_free (data->variables, data->variables_length1, (GDestroyNotify) g_free), NULL);
+			_g_object_unref0 (data->triplets);
 			g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, data->_inner_error_->message, g_quark_to_string (data->_inner_error_->domain), data->_inner_error_->code);
 			g_clear_error (&data->_inner_error_);
 			return FALSE;
@@ -725,8 +725,8 @@ static gboolean rygel_tracker_metadata_values_fetch_metadata_values_co (RygelTra
 #line 141 "rygel-tracker-metadata-values.vala"
 				if (!rygel_tracker_metadata_values_is_child_id_unique (data->self, data->id)) {
 #line 728 "rygel-tracker-metadata-values.c"
-					_g_free0 (data->value);
 					_g_free0 (data->id);
+					_g_free0 (data->value);
 #line 142 "rygel-tracker-metadata-values.vala"
 					continue;
 #line 733 "rygel-tracker-metadata-values.c"
@@ -742,23 +742,23 @@ static gboolean rygel_tracker_metadata_values_fetch_metadata_values_co (RygelTra
 #line 163 "rygel-tracker-metadata-values.vala"
 				rygel_simple_container_add_child ((RygelSimpleContainer*) data->self, (RygelMediaObject*) data->container);
 #line 745 "rygel-tracker-metadata-values.c"
-				_g_free0 (data->value);
-				_g_free0 (data->id);
-				_g_free0 (data->title);
-				_g_object_unref0 (data->child_triplets);
-				_g_object_unref0 (data->filters);
-				_g_free0 (data->filter);
 				_g_object_unref0 (data->container);
+				_g_free0 (data->filter);
+				_g_object_unref0 (data->filters);
+				_g_object_unref0 (data->child_triplets);
+				_g_free0 (data->title);
+				_g_free0 (data->id);
+				_g_free0 (data->value);
 			}
 		}
 #line 166 "rygel-tracker-metadata-values.vala"
 		rygel_media_container_updated ((RygelMediaContainer*) data->self);
 #line 757 "rygel-tracker-metadata-values.c"
-		_g_object_unref0 (data->triplets);
-		data->variables = (_vala_array_free (data->variables, data->variables_length1, (GDestroyNotify) g_free), NULL);
-		_g_object_unref0 (data->selected);
-		_g_free0 (data->last_variable);
 		_rygel_tracker_query_unref0 (data->query);
+		_g_free0 (data->last_variable);
+		_g_object_unref0 (data->selected);
+		data->variables = (_vala_array_free (data->variables, data->variables_length1, (GDestroyNotify) g_free), NULL);
+		_g_object_unref0 (data->triplets);
 	}
 	{
 		if (data->_state_ == 0) {
@@ -911,16 +911,17 @@ static gboolean rygel_tracker_metadata_values_is_child_id_unique (RygelTrackerMe
 #line 912 "rygel-tracker-metadata-values.c"
 	{
 		GeeIterator* _child_it;
+#line 204 "rygel-tracker-metadata-values.vala"
 		_child_it = gee_abstract_collection_iterator ((GeeAbstractCollection*) ((RygelSimpleContainer*) self)->children);
 #line 204 "rygel-tracker-metadata-values.vala"
 		while (TRUE) {
-#line 918 "rygel-tracker-metadata-values.c"
+#line 919 "rygel-tracker-metadata-values.c"
 			RygelMediaObject* child;
 #line 204 "rygel-tracker-metadata-values.vala"
 			if (!gee_iterator_next (_child_it)) {
 #line 204 "rygel-tracker-metadata-values.vala"
 				break;
-#line 924 "rygel-tracker-metadata-values.c"
+#line 925 "rygel-tracker-metadata-values.c"
 			}
 #line 204 "rygel-tracker-metadata-values.vala"
 			child = (RygelMediaObject*) gee_iterator_get (_child_it);
@@ -928,11 +929,11 @@ static gboolean rygel_tracker_metadata_values_is_child_id_unique (RygelTrackerMe
 			if (_vala_strcmp0 (child->id, child_id) == 0) {
 #line 206 "rygel-tracker-metadata-values.vala"
 				unique = FALSE;
-#line 932 "rygel-tracker-metadata-values.c"
+#line 933 "rygel-tracker-metadata-values.c"
 				_g_object_unref0 (child);
 #line 208 "rygel-tracker-metadata-values.vala"
 				break;
-#line 936 "rygel-tracker-metadata-values.c"
+#line 937 "rygel-tracker-metadata-values.c"
 			}
 			_g_object_unref0 (child);
 		}
@@ -941,7 +942,7 @@ static gboolean rygel_tracker_metadata_values_is_child_id_unique (RygelTrackerMe
 	result = unique;
 #line 212 "rygel-tracker-metadata-values.vala"
 	return result;
-#line 945 "rygel-tracker-metadata-values.c"
+#line 946 "rygel-tracker-metadata-values.c"
 }
 
 

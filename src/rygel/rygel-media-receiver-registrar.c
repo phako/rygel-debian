@@ -53,7 +53,7 @@ struct _RygelMediaReceiverRegistrarClass {
 
 static gpointer rygel_media_receiver_registrar_parent_class = NULL;
 
-GType rygel_media_receiver_registrar_get_type (void);
+GType rygel_media_receiver_registrar_get_type (void) G_GNUC_CONST;
 enum  {
 	RYGEL_MEDIA_RECEIVER_REGISTRAR_DUMMY_PROPERTY
 };

@@ -73,7 +73,7 @@ struct _RygelMediathekAsxPlaylistPrivate {
 static gpointer rygel_mediathek_asx_playlist_parent_class = NULL;
 
 GQuark rygel_mediathek_asx_playlist_error_quark (void);
-GType rygel_mediathek_asx_playlist_get_type (void);
+GType rygel_mediathek_asx_playlist_get_type (void) G_GNUC_CONST;
 #define RYGEL_MEDIATHEK_ASX_PLAYLIST_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), RYGEL_MEDIATHEK_TYPE_ASX_PLAYLIST, RygelMediathekAsxPlaylistPrivate))
 enum  {
 	RYGEL_MEDIATHEK_ASX_PLAYLIST_DUMMY_PROPERTY
@@ -121,7 +121,7 @@ static glong string_get_length (const char* self) {
 	glong result;
 	g_return_val_if_fail (self != NULL, 0L);
 	result = g_utf8_strlen (self, -1);
-#line 1158 "glib-2.0.vapi"
+#line 1166 "glib-2.0.vapi"
 	return result;
 #line 127 "rygel-mediathek-asx-playlist.c"
 }
@@ -158,8 +158,8 @@ void rygel_mediathek_asx_playlist_parse (RygelMediathekAsxPlaylist* self, GError
 				if (_inner_error_->domain == G_REGEX_ERROR) {
 					goto __catch0_g_regex_error;
 				}
-				_g_object_unref0 (session);
 				_g_object_unref0 (message);
+				_g_object_unref0 (session);
 				g_critical ("file %s: line %d: unexpected error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
 				g_clear_error (&_inner_error_);
 				return;
@@ -173,8 +173,8 @@ void rygel_mediathek_asx_playlist_parse (RygelMediathekAsxPlaylist* self, GError
 					goto __catch0_g_regex_error;
 				}
 				_g_regex_unref0 (normalizer);
-				_g_object_unref0 (session);
 				_g_object_unref0 (message);
+				_g_object_unref0 (session);
 				g_critical ("file %s: line %d: unexpected error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
 				g_clear_error (&_inner_error_);
 				return;
@@ -233,16 +233,16 @@ void rygel_mediathek_asx_playlist_parse (RygelMediathekAsxPlaylist* self, GError
 			} else {
 				_inner_error_ = g_error_new_literal (RYGEL_MEDIATHEK_ASX_PLAYLIST_ERROR, RYGEL_MEDIATHEK_ASX_PLAYLIST_ERROR_XML_ERROR, "Could not fetch XML");
 				{
-					_g_regex_unref0 (normalizer);
 					_g_free0 (normalized_content);
+					_g_regex_unref0 (normalizer);
 					if (_inner_error_->domain == G_REGEX_ERROR) {
 						goto __catch0_g_regex_error;
 					}
 					goto __finally0;
 				}
 			}
-			_g_regex_unref0 (normalizer);
 			_g_free0 (normalized_content);
+			_g_regex_unref0 (normalizer);
 		}
 		goto __finally0;
 		__catch0_g_regex_error:
@@ -258,12 +258,12 @@ void rygel_mediathek_asx_playlist_parse (RygelMediathekAsxPlaylist* self, GError
 		if (_inner_error_ != NULL) {
 			if (_inner_error_->domain == RYGEL_MEDIATHEK_ASX_PLAYLIST_ERROR) {
 				g_propagate_error (error, _inner_error_);
-				_g_object_unref0 (session);
 				_g_object_unref0 (message);
+				_g_object_unref0 (session);
 				return;
 			} else {
-				_g_object_unref0 (session);
 				_g_object_unref0 (message);
+				_g_object_unref0 (session);
 				g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
 				g_clear_error (&_inner_error_);
 				return;
@@ -276,20 +276,20 @@ void rygel_mediathek_asx_playlist_parse (RygelMediathekAsxPlaylist* self, GError
 		{
 			if (_inner_error_->domain == RYGEL_MEDIATHEK_ASX_PLAYLIST_ERROR) {
 				g_propagate_error (error, _inner_error_);
-				_g_object_unref0 (session);
 				_g_object_unref0 (message);
+				_g_object_unref0 (session);
 				return;
 			} else {
-				_g_object_unref0 (session);
 				_g_object_unref0 (message);
+				_g_object_unref0 (session);
 				g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
 				g_clear_error (&_inner_error_);
 				return;
 			}
 		}
 	}
-	_g_object_unref0 (session);
 	_g_object_unref0 (message);
+	_g_object_unref0 (session);
 }
 
 

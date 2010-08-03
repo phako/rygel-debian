@@ -75,14 +75,14 @@ struct _RygelMediaExportDBObjectFactoryClass {
 
 static gpointer rygel_media_export_db_object_factory_parent_class = NULL;
 
-GType rygel_media_export_db_object_factory_get_type (void);
-GType rygel_media_export_media_cache_get_type (void);
+GType rygel_media_export_db_object_factory_get_type (void) G_GNUC_CONST;
+GType rygel_media_export_media_cache_get_type (void) G_GNUC_CONST;
 enum  {
 	RYGEL_MEDIA_EXPORT_DB_OBJECT_FACTORY_DUMMY_PROPERTY
 };
 RygelMediaExportDBContainer* rygel_media_export_db_container_new (RygelMediaExportMediaCache* media_db, const char* id, const char* title);
 RygelMediaExportDBContainer* rygel_media_export_db_container_construct (GType object_type, RygelMediaExportMediaCache* media_db, const char* id, const char* title);
-GType rygel_media_export_db_container_get_type (void);
+GType rygel_media_export_db_container_get_type (void) G_GNUC_CONST;
 RygelMediaContainer* rygel_media_export_db_object_factory_get_container (RygelMediaExportDBObjectFactory* self, RygelMediaExportMediaCache* media_db, const char* id, const char* title, guint child_count);
 static RygelMediaContainer* rygel_media_export_db_object_factory_real_get_container (RygelMediaExportDBObjectFactory* self, RygelMediaExportMediaCache* media_db, const char* id, const char* title, guint child_count);
 RygelMediaItem* rygel_media_export_db_object_factory_get_item (RygelMediaExportDBObjectFactory* self, RygelMediaExportMediaCache* media_db, RygelMediaContainer* parent, const char* id, const char* title, const char* upnp_class);

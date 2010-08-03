@@ -25,7 +25,6 @@
 #include <glib-object.h>
 #include <rygel.h>
 #include <gio/gio.h>
-#include <gee.h>
 
 
 #define RYGEL_TYPE_NULL_CONTAINER (rygel_null_container_get_type ())
@@ -58,13 +57,13 @@ struct _RygelNullContainerGetChildrenData {
 	guint offset;
 	guint max_count;
 	GCancellable* cancellable;
-	GeeList* result;
+	RygelMediaObjects* result;
 };
 
 
 static gpointer rygel_null_container_parent_class = NULL;
 
-GType rygel_null_container_get_type (void);
+GType rygel_null_container_get_type (void) G_GNUC_CONST;
 enum  {
 	RYGEL_NULL_CONTAINER_DUMMY_PROPERTY
 };
@@ -79,11 +78,11 @@ static gboolean rygel_null_container_real_get_children_co (RygelNullContainerGet
 
 #line 29 "rygel-media-export-null-container.vala"
 RygelNullContainer* rygel_null_container_construct (GType object_type) {
-#line 83 "rygel-media-export-null-container.c"
+#line 82 "rygel-media-export-null-container.c"
 	RygelNullContainer * self;
 #line 30 "rygel-media-export-null-container.vala"
 	self = (RygelNullContainer*) rygel_media_container_construct_root (object_type, "MediaExport", 0);
-#line 87 "rygel-media-export-null-container.c"
+#line 86 "rygel-media-export-null-container.c"
 	return self;
 }
 
@@ -92,7 +91,7 @@ RygelNullContainer* rygel_null_container_construct (GType object_type) {
 RygelNullContainer* rygel_null_container_new (void) {
 #line 29 "rygel-media-export-null-container.vala"
 	return rygel_null_container_construct (RYGEL_TYPE_NULL_CONTAINER);
-#line 96 "rygel-media-export-null-container.c"
+#line 95 "rygel-media-export-null-container.c"
 }
 
 
@@ -126,8 +125,8 @@ static void rygel_null_container_real_get_children (RygelMediaContainer* base, g
 }
 
 
-static GeeList* rygel_null_container_real_get_children_finish (RygelMediaContainer* base, GAsyncResult* _res_, GError** error) {
-	GeeList* result;
+static RygelMediaObjects* rygel_null_container_real_get_children_finish (RygelMediaContainer* base, GAsyncResult* _res_, GError** error) {
+	RygelMediaObjects* result;
 	RygelNullContainerGetChildrenData* _data_;
 	if (g_simple_async_result_propagate_error (G_SIMPLE_ASYNC_RESULT (_res_), error)) {
 		return NULL;
@@ -156,7 +155,7 @@ static gboolean rygel_null_container_real_get_children_co (RygelNullContainerGet
 	}
 	_state_0:
 	{
-		data->result = (GeeList*) gee_array_list_new (RYGEL_TYPE_MEDIA_OBJECT, (GBoxedCopyFunc) g_object_ref, g_object_unref, NULL);
+		data->result = rygel_media_objects_new ();
 		{
 			if (data->_state_ == 0) {
 				g_simple_async_result_complete_in_idle (data->_async_result);

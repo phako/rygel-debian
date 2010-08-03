@@ -96,8 +96,8 @@ struct _RygelHTTPServerClass {
 
 static gpointer rygel_http_item_uri_parent_class = NULL;
 
-GType rygel_http_item_uri_get_type (void);
-GType rygel_http_server_get_type (void);
+GType rygel_http_item_uri_get_type (void) G_GNUC_CONST;
+GType rygel_http_server_get_type (void) G_GNUC_CONST;
 enum  {
 	RYGEL_HTTP_ITEM_URI_DUMMY_PROPERTY
 };
@@ -157,16 +157,16 @@ RygelHTTPItemURI* rygel_http_item_uri_new (const char* item_id, RygelHTTPServer*
 }
 
 
-#line 1148 "glib-2.0.vapi"
+#line 1156 "glib-2.0.vapi"
 static char* string_replace (const char* self, const char* old, const char* replacement) {
 #line 163 "rygel-http-item-uri.c"
 	char* result = NULL;
 	GError * _inner_error_;
-#line 1148 "glib-2.0.vapi"
+#line 1156 "glib-2.0.vapi"
 	g_return_val_if_fail (self != NULL, NULL);
-#line 1148 "glib-2.0.vapi"
+#line 1156 "glib-2.0.vapi"
 	g_return_val_if_fail (old != NULL, NULL);
-#line 1148 "glib-2.0.vapi"
+#line 1156 "glib-2.0.vapi"
 	g_return_val_if_fail (replacement != NULL, NULL);
 #line 172 "rygel-http-item-uri.c"
 	_inner_error_ = NULL;
@@ -175,7 +175,7 @@ static char* string_replace (const char* self, const char* old, const char* repl
 		GRegex* _tmp1_;
 		GRegex* regex;
 		char* _tmp2_;
-#line 1150 "glib-2.0.vapi"
+#line 1158 "glib-2.0.vapi"
 		regex = (_tmp1_ = g_regex_new (_tmp0_ = g_regex_escape_string (old, -1), 0, 0, &_inner_error_), _g_free0 (_tmp0_), _tmp1_);
 #line 181 "rygel-http-item-uri.c"
 		if (_inner_error_ != NULL) {
@@ -186,7 +186,7 @@ static char* string_replace (const char* self, const char* old, const char* repl
 			g_clear_error (&_inner_error_);
 			return NULL;
 		}
-#line 1151 "glib-2.0.vapi"
+#line 1159 "glib-2.0.vapi"
 		_tmp2_ = g_regex_replace_literal (regex, self, (gssize) (-1), 0, replacement, 0, &_inner_error_);
 #line 192 "rygel-http-item-uri.c"
 		if (_inner_error_ != NULL) {
@@ -201,7 +201,7 @@ static char* string_replace (const char* self, const char* old, const char* repl
 		}
 		result = _tmp2_;
 		_g_regex_unref0 (regex);
-#line 1151 "glib-2.0.vapi"
+#line 1159 "glib-2.0.vapi"
 		return result;
 #line 207 "rygel-http-item-uri.c"
 	}
@@ -212,7 +212,7 @@ static char* string_replace (const char* self, const char* old, const char* repl
 		e = _inner_error_;
 		_inner_error_ = NULL;
 		{
-#line 1153 "glib-2.0.vapi"
+#line 1161 "glib-2.0.vapi"
 			g_assert_not_reached ();
 #line 218 "rygel-http-item-uri.c"
 			_g_error_free0 (e);
@@ -278,13 +278,13 @@ RygelHTTPItemURI* rygel_http_item_uri_construct_from_string (GType object_type, 
 		{
 			if (_inner_error_->domain == RYGEL_HTTP_REQUEST_ERROR) {
 				g_propagate_error (error, _inner_error_);
-				_g_free0 (request_uri);
 				parts = (_vala_array_free (parts, parts_length1, (GDestroyNotify) g_free), NULL);
-				g_object_unref (self);
+				_g_free0 (request_uri);
+				_g_object_unref0 (self);
 				return NULL;
 			} else {
-				_g_free0 (request_uri);
 				parts = (_vala_array_free (parts, parts_length1, (GDestroyNotify) g_free), NULL);
+				_g_free0 (request_uri);
 				g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
 				g_clear_error (&_inner_error_);
 				return NULL;
@@ -346,8 +346,8 @@ RygelHTTPItemURI* rygel_http_item_uri_construct_from_string (GType object_type, 
 #line 68 "rygel-http-item-uri.vala"
 						self->item_id = (_tmp10_ = g_strdup (builder->str), _g_free0 (self->item_id), _tmp10_);
 #line 349 "rygel-http-item-uri.c"
-						data = (g_free (data), NULL);
 						_g_string_free0 (builder);
+						data = (g_free (data), NULL);
 #line 70 "rygel-http-item-uri.vala"
 						break;
 #line 354 "rygel-http-item-uri.c"
@@ -402,21 +402,21 @@ RygelHTTPItemURI* rygel_http_item_uri_construct_from_string (GType object_type, 
 		{
 			if (_inner_error_->domain == RYGEL_HTTP_REQUEST_ERROR) {
 				g_propagate_error (error, _inner_error_);
-				_g_free0 (request_uri);
 				parts = (_vala_array_free (parts, parts_length1, (GDestroyNotify) g_free), NULL);
-				g_object_unref (self);
+				_g_free0 (request_uri);
+				_g_object_unref0 (self);
 				return NULL;
 			} else {
-				_g_free0 (request_uri);
 				parts = (_vala_array_free (parts, parts_length1, (GDestroyNotify) g_free), NULL);
+				_g_free0 (request_uri);
 				g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
 				g_clear_error (&_inner_error_);
 				return NULL;
 			}
 		}
 	}
-	_g_free0 (request_uri);
 	parts = (_vala_array_free (parts, parts_length1, (GDestroyNotify) g_free), NULL);
+	_g_free0 (request_uri);
 	return self;
 }
 
@@ -429,7 +429,7 @@ RygelHTTPItemURI* rygel_http_item_uri_new_from_string (const char* uri, RygelHTT
 }
 
 
-#line 1161 "glib-2.0.vapi"
+#line 1169 "glib-2.0.vapi"
 static gchar* string_to_utf8 (const char* self, int* result_length1) {
 #line 435 "rygel-http-item-uri.c"
 	gchar* result = NULL;
@@ -439,17 +439,17 @@ static gchar* string_to_utf8 (const char* self, int* result_length1) {
 	gint _tmp0_;
 	gchar* _result_;
 	gchar* _tmp2_;
-#line 1161 "glib-2.0.vapi"
+#line 1169 "glib-2.0.vapi"
 	g_return_val_if_fail (self != NULL, NULL);
 #line 445 "rygel-http-item-uri.c"
 	_result_ = (_tmp1_ = g_new0 (gchar, _tmp0_ = strlen (self) + 1), _result__length1 = _tmp0_, __result__size_ = _result__length1, _tmp1_);
-#line 1163 "glib-2.0.vapi"
+#line 1171 "glib-2.0.vapi"
 	_result__length1--;
-#line 1164 "glib-2.0.vapi"
+#line 1172 "glib-2.0.vapi"
 	memcpy (_result_, self, strlen (self));
 #line 451 "rygel-http-item-uri.c"
 	result = (_tmp2_ = _result_, *result_length1 = _result__length1, _tmp2_);
-#line 1165 "glib-2.0.vapi"
+#line 1173 "glib-2.0.vapi"
 	return result;
 #line 455 "rygel-http-item-uri.c"
 	_result_ = (g_free (_result_), NULL);
@@ -517,9 +517,9 @@ char* rygel_http_item_uri_to_string (RygelHTTPItemURI* self) {
 		}
 	}
 	result = rygel_http_item_uri_create_uri_for_path (self, path);
-	data = (g_free (data), NULL);
-	_g_free0 (escaped);
 	_g_free0 (path);
+	_g_free0 (escaped);
+	data = (g_free (data), NULL);
 #line 112 "rygel-http-item-uri.vala"
 	return result;
 #line 526 "rygel-http-item-uri.c"

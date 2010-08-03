@@ -59,7 +59,7 @@ struct _RygelPreferencesSectionClass {
 
 static gpointer rygel_preferences_section_parent_class = NULL;
 
-GType rygel_preferences_section_get_type (void);
+GType rygel_preferences_section_get_type (void) G_GNUC_CONST;
 enum  {
 	RYGEL_PREFERENCES_SECTION_DUMMY_PROPERTY
 };

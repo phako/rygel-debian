@@ -81,8 +81,8 @@ static char* rygel_dbus_service_RYGEL_PATH;
 static char* rygel_dbus_service_RYGEL_PATH = NULL;
 static gpointer rygel_dbus_service_parent_class = NULL;
 
-GType rygel_dbus_service_get_type (void);
-GType rygel_main_get_type (void);
+GType rygel_dbus_service_get_type (void) G_GNUC_CONST;
+GType rygel_main_get_type (void) G_GNUC_CONST;
 #define RYGEL_DBUS_SERVICE_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), RYGEL_TYPE_DBUS_SERVICE, RygelDBusServicePrivate))
 enum  {
 	RYGEL_DBUS_SERVICE_DUMMY_PROPERTY
@@ -163,7 +163,7 @@ RygelDBusService* rygel_dbus_service_construct (GType object_type, RygelMain* ma
 	if (_inner_error_ != NULL) {
 		if (_inner_error_->domain == DBUS_GERROR) {
 			g_propagate_error (error, _inner_error_);
-			g_object_unref (self);
+			_g_object_unref0 (self);
 			return NULL;
 		} else {
 			g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
@@ -179,13 +179,13 @@ RygelDBusService* rygel_dbus_service_construct (GType object_type, RygelMain* ma
 	if (_inner_error_ != NULL) {
 		if (_inner_error_->domain == DBUS_GERROR) {
 			g_propagate_error (error, _inner_error_);
-			_dbus_g_connection_unref0 (conn);
 			_g_object_unref0 (bus);
-			g_object_unref (self);
+			_dbus_g_connection_unref0 (conn);
+			_g_object_unref0 (self);
 			return NULL;
 		} else {
-			_dbus_g_connection_unref0 (conn);
 			_g_object_unref0 (bus);
+			_dbus_g_connection_unref0 (conn);
 			g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
 			g_clear_error (&_inner_error_);
 			return NULL;
@@ -202,8 +202,8 @@ RygelDBusService* rygel_dbus_service_construct (GType object_type, RygelMain* ma
 		_vala_dbus_register_object (dbus_g_connection_get_connection (conn), rygel_dbus_service_RYGEL_PATH, (GObject*) self);
 #line 203 "rygel-dbus-service.c"
 	}
-	_dbus_g_connection_unref0 (conn);
 	_g_object_unref0 (bus);
+	_dbus_g_connection_unref0 (conn);
 	return self;
 }
 

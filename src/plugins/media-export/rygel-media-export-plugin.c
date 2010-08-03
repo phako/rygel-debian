@@ -27,108 +27,111 @@
 #include <glib/gi18n-lib.h>
 
 
-#define RYGEL_MEDIA_EXPORT_TYPE_CONTENT_DIR (rygel_media_export_content_dir_get_type ())
-#define RYGEL_MEDIA_EXPORT_CONTENT_DIR(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_MEDIA_EXPORT_TYPE_CONTENT_DIR, RygelMediaExportContentDir))
-#define RYGEL_MEDIA_EXPORT_CONTENT_DIR_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_MEDIA_EXPORT_TYPE_CONTENT_DIR, RygelMediaExportContentDirClass))
-#define RYGEL_MEDIA_EXPORT_IS_CONTENT_DIR(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_MEDIA_EXPORT_TYPE_CONTENT_DIR))
-#define RYGEL_MEDIA_EXPORT_IS_CONTENT_DIR_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_MEDIA_EXPORT_TYPE_CONTENT_DIR))
-#define RYGEL_MEDIA_EXPORT_CONTENT_DIR_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_MEDIA_EXPORT_TYPE_CONTENT_DIR, RygelMediaExportContentDirClass))
+#define RYGEL_MEDIA_EXPORT_TYPE_PLUGIN (rygel_media_export_plugin_get_type ())
+#define RYGEL_MEDIA_EXPORT_PLUGIN(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_MEDIA_EXPORT_TYPE_PLUGIN, RygelMediaExportPlugin))
+#define RYGEL_MEDIA_EXPORT_PLUGIN_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_MEDIA_EXPORT_TYPE_PLUGIN, RygelMediaExportPluginClass))
+#define RYGEL_MEDIA_EXPORT_IS_PLUGIN(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_MEDIA_EXPORT_TYPE_PLUGIN))
+#define RYGEL_MEDIA_EXPORT_IS_PLUGIN_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_MEDIA_EXPORT_TYPE_PLUGIN))
+#define RYGEL_MEDIA_EXPORT_PLUGIN_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_MEDIA_EXPORT_TYPE_PLUGIN, RygelMediaExportPluginClass))
 
-typedef struct _RygelMediaExportContentDir RygelMediaExportContentDir;
-typedef struct _RygelMediaExportContentDirClass RygelMediaExportContentDirClass;
+typedef struct _RygelMediaExportPlugin RygelMediaExportPlugin;
+typedef struct _RygelMediaExportPluginClass RygelMediaExportPluginClass;
 #define _g_object_unref0(var) ((var == NULL) ? NULL : (var = (g_object_unref (var), NULL)))
-typedef struct _RygelMediaExportContentDirPrivate RygelMediaExportContentDirPrivate;
+typedef struct _RygelMediaExportPluginPrivate RygelMediaExportPluginPrivate;
 
-struct _RygelMediaExportContentDir {
-	RygelContentDirectory parent_instance;
-	RygelMediaExportContentDirPrivate * priv;
+struct _RygelMediaExportPlugin {
+	RygelMediaServerPlugin parent_instance;
+	RygelMediaExportPluginPrivate * priv;
 };
 
-struct _RygelMediaExportContentDirClass {
-	RygelContentDirectoryClass parent_class;
+struct _RygelMediaExportPluginClass {
+	RygelMediaServerPluginClass parent_class;
 };
 
 
-static gpointer rygel_media_export_content_dir_parent_class = NULL;
+static gpointer rygel_media_export_plugin_parent_class = NULL;
 
-GType rygel_media_export_content_dir_get_type (void);
+RygelMediaExportPlugin* rygel_media_export_plugin_new (void);
+RygelMediaExportPlugin* rygel_media_export_plugin_construct (GType object_type);
+GType rygel_media_export_plugin_get_type (void) G_GNUC_CONST;
 void module_init (RygelPluginLoader* loader);
 enum  {
-	RYGEL_MEDIA_EXPORT_CONTENT_DIR_DUMMY_PROPERTY
+	RYGEL_MEDIA_EXPORT_PLUGIN_DUMMY_PROPERTY
 };
 RygelMediaContainer* rygel_media_export_root_container_get_instance (void);
-static RygelMediaContainer* rygel_media_export_content_dir_real_create_root_container (RygelContentDirectory* base);
-RygelMediaExportContentDir* rygel_media_export_content_dir_new (void);
-RygelMediaExportContentDir* rygel_media_export_content_dir_construct (GType object_type);
+static RygelMediaContainer* rygel_media_export_plugin_real_get_root_container (RygelMediaServerPlugin* base, RygelContentDirectory* content_dir);
 
 
 
 #line 30 "rygel-media-export-plugin.vala"
 void module_init (RygelPluginLoader* loader) {
 #line 69 "rygel-media-export-plugin.c"
-	RygelPlugin* plugin;
+	RygelMediaExportPlugin* plugin;
 #line 30 "rygel-media-export-plugin.vala"
 	g_return_if_fail (loader != NULL);
 #line 31 "rygel-media-export-plugin.vala"
-	plugin = rygel_plugin_new_MediaServer ("MediaExport", _ ("@REALNAME@'s media"), RYGEL_MEDIA_EXPORT_TYPE_CONTENT_DIR, NULL);
-#line 34 "rygel-media-export-plugin.vala"
-	rygel_plugin_loader_add_plugin (loader, plugin);
+	plugin = rygel_media_export_plugin_new ();
+#line 33 "rygel-media-export-plugin.vala"
+	rygel_plugin_loader_add_plugin (loader, (RygelPlugin*) plugin);
 #line 77 "rygel-media-export-plugin.c"
 	_g_object_unref0 (plugin);
 }
 
 
-#line 38 "rygel-media-export-plugin.vala"
-static RygelMediaContainer* rygel_media_export_content_dir_real_create_root_container (RygelContentDirectory* base) {
+#line 37 "rygel-media-export-plugin.vala"
+RygelMediaExportPlugin* rygel_media_export_plugin_construct (GType object_type) {
 #line 84 "rygel-media-export-plugin.c"
-	RygelMediaExportContentDir * self;
-	RygelMediaContainer* result = NULL;
-	self = (RygelMediaExportContentDir*) base;
-	result = rygel_media_export_root_container_get_instance ();
-#line 39 "rygel-media-export-plugin.vala"
-	return result;
-#line 91 "rygel-media-export-plugin.c"
-}
-
-
-#line 37 "rygel-media-export-plugin.vala"
-RygelMediaExportContentDir* rygel_media_export_content_dir_construct (GType object_type) {
-#line 97 "rygel-media-export-plugin.c"
-	RygelMediaExportContentDir * self;
-#line 37 "rygel-media-export-plugin.vala"
-	self = (RygelMediaExportContentDir*) rygel_content_directory_construct (object_type);
-#line 101 "rygel-media-export-plugin.c"
+	RygelMediaExportPlugin * self;
+#line 38 "rygel-media-export-plugin.vala"
+	self = (RygelMediaExportPlugin*) rygel_media_server_plugin_construct (object_type, "MediaExport", _ ("@REALNAME@'s media"), NULL);
+#line 88 "rygel-media-export-plugin.c"
 	return self;
 }
 
 
 #line 37 "rygel-media-export-plugin.vala"
-RygelMediaExportContentDir* rygel_media_export_content_dir_new (void) {
+RygelMediaExportPlugin* rygel_media_export_plugin_new (void) {
 #line 37 "rygel-media-export-plugin.vala"
-	return rygel_media_export_content_dir_construct (RYGEL_MEDIA_EXPORT_TYPE_CONTENT_DIR);
-#line 110 "rygel-media-export-plugin.c"
+	return rygel_media_export_plugin_construct (RYGEL_MEDIA_EXPORT_TYPE_PLUGIN);
+#line 97 "rygel-media-export-plugin.c"
 }
 
 
-static void rygel_media_export_content_dir_class_init (RygelMediaExportContentDirClass * klass) {
-	rygel_media_export_content_dir_parent_class = g_type_class_peek_parent (klass);
-	RYGEL_CONTENT_DIRECTORY_CLASS (klass)->create_root_container = rygel_media_export_content_dir_real_create_root_container;
+#line 41 "rygel-media-export-plugin.vala"
+static RygelMediaContainer* rygel_media_export_plugin_real_get_root_container (RygelMediaServerPlugin* base, RygelContentDirectory* content_dir) {
+#line 103 "rygel-media-export-plugin.c"
+	RygelMediaExportPlugin * self;
+	RygelMediaContainer* result = NULL;
+	self = (RygelMediaExportPlugin*) base;
+#line 41 "rygel-media-export-plugin.vala"
+	g_return_val_if_fail (content_dir != NULL, NULL);
+#line 109 "rygel-media-export-plugin.c"
+	result = rygel_media_export_root_container_get_instance ();
+#line 43 "rygel-media-export-plugin.vala"
+	return result;
+#line 113 "rygel-media-export-plugin.c"
 }
 
 
-static void rygel_media_export_content_dir_instance_init (RygelMediaExportContentDir * self) {
+static void rygel_media_export_plugin_class_init (RygelMediaExportPluginClass * klass) {
+	rygel_media_export_plugin_parent_class = g_type_class_peek_parent (klass);
+	RYGEL_MEDIA_SERVER_PLUGIN_CLASS (klass)->get_root_container = rygel_media_export_plugin_real_get_root_container;
 }
 
 
-GType rygel_media_export_content_dir_get_type (void) {
-	static volatile gsize rygel_media_export_content_dir_type_id__volatile = 0;
-	if (g_once_init_enter (&rygel_media_export_content_dir_type_id__volatile)) {
-		static const GTypeInfo g_define_type_info = { sizeof (RygelMediaExportContentDirClass), (GBaseInitFunc) NULL, (GBaseFinalizeFunc) NULL, (GClassInitFunc) rygel_media_export_content_dir_class_init, (GClassFinalizeFunc) NULL, NULL, sizeof (RygelMediaExportContentDir), 0, (GInstanceInitFunc) rygel_media_export_content_dir_instance_init, NULL };
-		GType rygel_media_export_content_dir_type_id;
-		rygel_media_export_content_dir_type_id = g_type_register_static (RYGEL_TYPE_CONTENT_DIRECTORY, "RygelMediaExportContentDir", &g_define_type_info, 0);
-		g_once_init_leave (&rygel_media_export_content_dir_type_id__volatile, rygel_media_export_content_dir_type_id);
+static void rygel_media_export_plugin_instance_init (RygelMediaExportPlugin * self) {
+}
+
+
+GType rygel_media_export_plugin_get_type (void) {
+	static volatile gsize rygel_media_export_plugin_type_id__volatile = 0;
+	if (g_once_init_enter (&rygel_media_export_plugin_type_id__volatile)) {
+		static const GTypeInfo g_define_type_info = { sizeof (RygelMediaExportPluginClass), (GBaseInitFunc) NULL, (GBaseFinalizeFunc) NULL, (GClassInitFunc) rygel_media_export_plugin_class_init, (GClassFinalizeFunc) NULL, NULL, sizeof (RygelMediaExportPlugin), 0, (GInstanceInitFunc) rygel_media_export_plugin_instance_init, NULL };
+		GType rygel_media_export_plugin_type_id;
+		rygel_media_export_plugin_type_id = g_type_register_static (RYGEL_TYPE_MEDIA_SERVER_PLUGIN, "RygelMediaExportPlugin", &g_define_type_info, 0);
+		g_once_init_leave (&rygel_media_export_plugin_type_id__volatile, rygel_media_export_plugin_type_id);
 	}
-	return rygel_media_export_content_dir_type_id__volatile;
+	return rygel_media_export_plugin_type_id__volatile;
 }
 
 

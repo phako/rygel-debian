@@ -184,6 +184,7 @@ struct _RygelMediaObject {
 
 struct _RygelMediaObjectClass {
 	GObjectClass parent_class;
+	gint (*compare_by_property) (RygelMediaObject* self, RygelMediaObject* media_object, const char* property);
 };
 
 struct _RygelMediaItem {
@@ -220,12 +221,12 @@ struct _RygelMediaItemClass {
 
 static gpointer rygel_mp2_ts_transcoder_parent_class = NULL;
 
-GType rygel_mp2_ts_profile_get_type (void);
-GType rygel_transcoder_get_type (void);
-GType rygel_media_object_get_type (void);
-GType rygel_media_item_get_type (void);
-GType rygel_transcode_manager_get_type (void);
-GType rygel_mp2_ts_transcoder_get_type (void);
+GType rygel_mp2_ts_profile_get_type (void) G_GNUC_CONST;
+GType rygel_transcoder_get_type (void) G_GNUC_CONST;
+GType rygel_media_object_get_type (void) G_GNUC_CONST;
+GType rygel_media_item_get_type (void) G_GNUC_CONST;
+GType rygel_transcode_manager_get_type (void) G_GNUC_CONST;
+GType rygel_mp2_ts_transcoder_get_type (void) G_GNUC_CONST;
 #define RYGEL_MP2_TS_TRANSCODER_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), RYGEL_TYPE_MP2_TS_TRANSCODER, RygelMP2TSTranscoderPrivate))
 enum  {
 	RYGEL_MP2_TS_TRANSCODER_DUMMY_PROPERTY
@@ -242,12 +243,12 @@ RygelMP2TSTranscoder* rygel_mp2_ts_transcoder_new (RygelMP2TSProfile profile);
 RygelMP2TSTranscoder* rygel_mp2_ts_transcoder_construct (GType object_type, RygelMP2TSProfile profile);
 RygelMP2TSTranscoderBin* rygel_mp2_ts_transcoder_bin_new (RygelMediaItem* item, GstElement* src, RygelMP2TSTranscoder* transcoder, GError** error);
 RygelMP2TSTranscoderBin* rygel_mp2_ts_transcoder_bin_construct (GType object_type, RygelMediaItem* item, GstElement* src, RygelMP2TSTranscoder* transcoder, GError** error);
-GType rygel_mp2_ts_transcoder_bin_get_type (void);
+GType rygel_mp2_ts_transcoder_bin_get_type (void) G_GNUC_CONST;
 static GstElement* rygel_mp2_ts_transcoder_real_create_source (RygelTranscoder* base, RygelMediaItem* item, GstElement* src, GError** error);
 GUPnPDIDLLiteResource* rygel_transcoder_add_resource (RygelTranscoder* self, GUPnPDIDLLiteItem* didl_item, RygelMediaItem* item, RygelTranscodeManager* manager, GError** error);
 #define RYGEL_MP3_TRANSCODER_BITRATE 256
 static GUPnPDIDLLiteResource* rygel_mp2_ts_transcoder_real_add_resource (RygelTranscoder* base, GUPnPDIDLLiteItem* didl_item, RygelMediaItem* item, RygelTranscodeManager* manager, GError** error);
-GType rygel_media_container_get_type (void);
+GType rygel_media_container_get_type (void) G_GNUC_CONST;
 #define RYGEL_MEDIA_ITEM_IMAGE_CLASS "object.item.imageItem"
 gpointer rygel_icon_info_ref (gpointer instance);
 void rygel_icon_info_unref (gpointer instance);
@@ -255,15 +256,15 @@ GParamSpec* rygel_param_spec_icon_info (const gchar* name, const gchar* nick, co
 void rygel_value_set_icon_info (GValue* value, gpointer v_object);
 void rygel_value_take_icon_info (GValue* value, gpointer v_object);
 gpointer rygel_value_get_icon_info (const GValue* value);
-GType rygel_icon_info_get_type (void);
-GType rygel_thumbnail_get_type (void);
+GType rygel_icon_info_get_type (void) G_GNUC_CONST;
+GType rygel_thumbnail_get_type (void) G_GNUC_CONST;
 gpointer rygel_subtitle_ref (gpointer instance);
 void rygel_subtitle_unref (gpointer instance);
 GParamSpec* rygel_param_spec_subtitle (const gchar* name, const gchar* nick, const gchar* blurb, GType object_type, GParamFlags flags);
 void rygel_value_set_subtitle (GValue* value, gpointer v_object);
 void rygel_value_take_subtitle (GValue* value, gpointer v_object);
 gpointer rygel_value_get_subtitle (const GValue* value);
-GType rygel_subtitle_get_type (void);
+GType rygel_subtitle_get_type (void) G_GNUC_CONST;
 static guint rygel_mp2_ts_transcoder_real_get_distance (RygelTranscoder* base, RygelMediaItem* item);
 GstElement* rygel_gst_utils_create_element (const char* factoryname, const char* name, GError** error);
 static inline void _dynamic_set_bitrate3 (GstElement* obj, gint value);
@@ -290,13 +291,13 @@ GType rygel_mp2_ts_profile_get_type (void) {
 
 #line 53 "rygel-mp2ts-transcoder.vala"
 RygelMP2TSTranscoder* rygel_mp2_ts_transcoder_construct (GType object_type, RygelMP2TSProfile profile) {
-#line 294 "rygel-mp2ts-transcoder.c"
+#line 295 "rygel-mp2ts-transcoder.c"
 	RygelMP2TSTranscoder * self;
 #line 54 "rygel-mp2ts-transcoder.vala"
 	self = (RygelMP2TSTranscoder*) rygel_transcoder_construct (object_type, "video/mpeg", RYGEL_MP2_TS_TRANSCODER_PROFILES[profile], RYGEL_MEDIA_ITEM_VIDEO_CLASS);
 #line 56 "rygel-mp2ts-transcoder.vala"
 	self->priv->profile = profile;
-#line 300 "rygel-mp2ts-transcoder.c"
+#line 301 "rygel-mp2ts-transcoder.c"
 	return self;
 }
 
@@ -305,13 +306,13 @@ RygelMP2TSTranscoder* rygel_mp2_ts_transcoder_construct (GType object_type, Ryge
 RygelMP2TSTranscoder* rygel_mp2_ts_transcoder_new (RygelMP2TSProfile profile) {
 #line 53 "rygel-mp2ts-transcoder.vala"
 	return rygel_mp2_ts_transcoder_construct (RYGEL_TYPE_MP2_TS_TRANSCODER, profile);
-#line 309 "rygel-mp2ts-transcoder.c"
+#line 310 "rygel-mp2ts-transcoder.c"
 }
 
 
 #line 59 "rygel-mp2ts-transcoder.vala"
 static GstElement* rygel_mp2_ts_transcoder_real_create_source (RygelTranscoder* base, RygelMediaItem* item, GstElement* src, GError** error) {
-#line 315 "rygel-mp2ts-transcoder.c"
+#line 316 "rygel-mp2ts-transcoder.c"
 	RygelMP2TSTranscoder * self;
 	GstElement* result = NULL;
 	GError * _inner_error_;
@@ -321,11 +322,11 @@ static GstElement* rygel_mp2_ts_transcoder_real_create_source (RygelTranscoder* 
 	g_return_val_if_fail (item != NULL, NULL);
 #line 59 "rygel-mp2ts-transcoder.vala"
 	g_return_val_if_fail (src != NULL, NULL);
-#line 325 "rygel-mp2ts-transcoder.c"
+#line 326 "rygel-mp2ts-transcoder.c"
 	_inner_error_ = NULL;
 #line 62 "rygel-mp2ts-transcoder.vala"
 	_tmp0_ = rygel_mp2_ts_transcoder_bin_new (item, src, self, &_inner_error_);
-#line 329 "rygel-mp2ts-transcoder.c"
+#line 330 "rygel-mp2ts-transcoder.c"
 	if (_inner_error_ != NULL) {
 		g_propagate_error (error, _inner_error_);
 		return NULL;
@@ -333,13 +334,13 @@ static GstElement* rygel_mp2_ts_transcoder_real_create_source (RygelTranscoder* 
 	result = (GstElement*) _tmp0_;
 #line 62 "rygel-mp2ts-transcoder.vala"
 	return result;
-#line 337 "rygel-mp2ts-transcoder.c"
+#line 338 "rygel-mp2ts-transcoder.c"
 }
 
 
 #line 65 "rygel-mp2ts-transcoder.vala"
 static GUPnPDIDLLiteResource* rygel_mp2_ts_transcoder_real_add_resource (RygelTranscoder* base, GUPnPDIDLLiteItem* didl_item, RygelMediaItem* item, RygelTranscodeManager* manager, GError** error) {
-#line 343 "rygel-mp2ts-transcoder.c"
+#line 344 "rygel-mp2ts-transcoder.c"
 	RygelMP2TSTranscoder * self;
 	GUPnPDIDLLiteResource* result = NULL;
 	GError * _inner_error_;
@@ -351,23 +352,23 @@ static GUPnPDIDLLiteResource* rygel_mp2_ts_transcoder_real_add_resource (RygelTr
 	g_return_val_if_fail (item != NULL, NULL);
 #line 65 "rygel-mp2ts-transcoder.vala"
 	g_return_val_if_fail (manager != NULL, NULL);
-#line 355 "rygel-mp2ts-transcoder.c"
+#line 356 "rygel-mp2ts-transcoder.c"
 	_inner_error_ = NULL;
 #line 69 "rygel-mp2ts-transcoder.vala"
 	resource = RYGEL_TRANSCODER_CLASS (rygel_mp2_ts_transcoder_parent_class)->add_resource (RYGEL_TRANSCODER (self), didl_item, item, manager, &_inner_error_);
-#line 359 "rygel-mp2ts-transcoder.c"
+#line 360 "rygel-mp2ts-transcoder.c"
 	if (_inner_error_ != NULL) {
 		g_propagate_error (error, _inner_error_);
 		return NULL;
 	}
 #line 70 "rygel-mp2ts-transcoder.vala"
 	if (resource == NULL) {
-#line 366 "rygel-mp2ts-transcoder.c"
+#line 367 "rygel-mp2ts-transcoder.c"
 		result = NULL;
 		_g_object_unref0 (resource);
 #line 71 "rygel-mp2ts-transcoder.vala"
 		return result;
-#line 371 "rygel-mp2ts-transcoder.c"
+#line 372 "rygel-mp2ts-transcoder.c"
 	}
 #line 73 "rygel-mp2ts-transcoder.vala"
 	gupnp_didl_lite_resource_set_width (resource, RYGEL_MP2_TS_TRANSCODER_WIDTH[self->priv->profile]);
@@ -375,17 +376,17 @@ static GUPnPDIDLLiteResource* rygel_mp2_ts_transcoder_real_add_resource (RygelTr
 	gupnp_didl_lite_resource_set_height (resource, RYGEL_MP2_TS_TRANSCODER_HEIGHT[self->priv->profile]);
 #line 75 "rygel-mp2ts-transcoder.vala"
 	gupnp_didl_lite_resource_set_bitrate (resource, ((RYGEL_MP2_TS_TRANSCODER_VIDEO_BITRATE + RYGEL_MP3_TRANSCODER_BITRATE) * 1000) / 8);
-#line 379 "rygel-mp2ts-transcoder.c"
+#line 380 "rygel-mp2ts-transcoder.c"
 	result = resource;
 #line 77 "rygel-mp2ts-transcoder.vala"
 	return result;
-#line 383 "rygel-mp2ts-transcoder.c"
+#line 384 "rygel-mp2ts-transcoder.c"
 }
 
 
 #line 80 "rygel-mp2ts-transcoder.vala"
 static guint rygel_mp2_ts_transcoder_real_get_distance (RygelTranscoder* base, RygelMediaItem* item) {
-#line 389 "rygel-mp2ts-transcoder.c"
+#line 390 "rygel-mp2ts-transcoder.c"
 	RygelMP2TSTranscoder * self;
 	guint result = 0U;
 	guint distance = 0U;
@@ -394,11 +395,11 @@ static guint rygel_mp2_ts_transcoder_real_get_distance (RygelTranscoder* base, R
 	g_return_val_if_fail (item != NULL, 0U);
 #line 81 "rygel-mp2ts-transcoder.vala"
 	if (g_str_has_prefix (((RygelMediaObject*) item)->upnp_class, RYGEL_MEDIA_ITEM_IMAGE_CLASS)) {
-#line 398 "rygel-mp2ts-transcoder.c"
+#line 399 "rygel-mp2ts-transcoder.c"
 		result = G_MAXUINT;
 #line 82 "rygel-mp2ts-transcoder.vala"
 		return result;
-#line 402 "rygel-mp2ts-transcoder.c"
+#line 403 "rygel-mp2ts-transcoder.c"
 	}
 #line 87 "rygel-mp2ts-transcoder.vala"
 	if (g_str_has_prefix (((RygelMediaObject*) item)->upnp_class, RYGEL_MEDIA_ITEM_VIDEO_CLASS)) {
@@ -408,29 +409,29 @@ static guint rygel_mp2_ts_transcoder_real_get_distance (RygelTranscoder* base, R
 		if (item->bitrate > 0) {
 #line 91 "rygel-mp2ts-transcoder.vala"
 			distance = distance + ((guint) abs (item->bitrate - RYGEL_MP2_TS_TRANSCODER_BITRATE));
-#line 412 "rygel-mp2ts-transcoder.c"
+#line 413 "rygel-mp2ts-transcoder.c"
 		}
 #line 94 "rygel-mp2ts-transcoder.vala"
 		if (item->width > 0) {
 #line 95 "rygel-mp2ts-transcoder.vala"
 			distance = distance + ((guint) abs (item->width - RYGEL_MP2_TS_TRANSCODER_WIDTH[self->priv->profile]));
-#line 418 "rygel-mp2ts-transcoder.c"
+#line 419 "rygel-mp2ts-transcoder.c"
 		}
 #line 98 "rygel-mp2ts-transcoder.vala"
 		if (item->height > 0) {
 #line 99 "rygel-mp2ts-transcoder.vala"
 			distance = distance + ((guint) abs (item->height - RYGEL_MP2_TS_TRANSCODER_HEIGHT[self->priv->profile]));
-#line 424 "rygel-mp2ts-transcoder.c"
+#line 425 "rygel-mp2ts-transcoder.c"
 		}
 	} else {
 #line 102 "rygel-mp2ts-transcoder.vala"
 		distance = G_MAXUINT / 2;
-#line 429 "rygel-mp2ts-transcoder.c"
+#line 430 "rygel-mp2ts-transcoder.c"
 	}
 	result = distance;
 #line 105 "rygel-mp2ts-transcoder.vala"
 	return result;
-#line 434 "rygel-mp2ts-transcoder.c"
+#line 435 "rygel-mp2ts-transcoder.c"
 }
 
 
@@ -446,7 +447,7 @@ static gpointer _gst_object_ref0 (gpointer self) {
 
 #line 108 "rygel-mp2ts-transcoder.vala"
 GstElement* rygel_mp2_ts_transcoder_create_encoder (RygelMP2TSTranscoder* self, RygelMediaItem* item, const char* src_pad_name, const char* sink_pad_name, GError** error) {
-#line 450 "rygel-mp2ts-transcoder.c"
+#line 451 "rygel-mp2ts-transcoder.c"
 	GstElement* result = NULL;
 	GError * _inner_error_;
 	GstElement* videorate;
@@ -466,18 +467,18 @@ GstElement* rygel_mp2_ts_transcoder_create_encoder (RygelMP2TSTranscoder* self, 
 	g_return_val_if_fail (self != NULL, NULL);
 #line 108 "rygel-mp2ts-transcoder.vala"
 	g_return_val_if_fail (item != NULL, NULL);
-#line 470 "rygel-mp2ts-transcoder.c"
+#line 471 "rygel-mp2ts-transcoder.c"
 	_inner_error_ = NULL;
 #line 112 "rygel-mp2ts-transcoder.vala"
 	videorate = rygel_gst_utils_create_element (RYGEL_MP2_TS_TRANSCODER_VIDEO_RATE, RYGEL_MP2_TS_TRANSCODER_VIDEO_RATE, &_inner_error_);
-#line 474 "rygel-mp2ts-transcoder.c"
+#line 475 "rygel-mp2ts-transcoder.c"
 	if (_inner_error_ != NULL) {
 		g_propagate_error (error, _inner_error_);
 		return NULL;
 	}
 #line 113 "rygel-mp2ts-transcoder.vala"
 	videoscale = rygel_gst_utils_create_element (RYGEL_MP2_TS_TRANSCODER_VIDEO_SCALE, RYGEL_MP2_TS_TRANSCODER_VIDEO_SCALE, &_inner_error_);
-#line 481 "rygel-mp2ts-transcoder.c"
+#line 482 "rygel-mp2ts-transcoder.c"
 	if (_inner_error_ != NULL) {
 		g_propagate_error (error, _inner_error_);
 		_gst_object_unref0 (videorate);
@@ -485,21 +486,21 @@ GstElement* rygel_mp2_ts_transcoder_create_encoder (RygelMP2TSTranscoder* self, 
 	}
 #line 114 "rygel-mp2ts-transcoder.vala"
 	convert = rygel_gst_utils_create_element (RYGEL_MP2_TS_TRANSCODER_COLORSPACE_CONVERT, RYGEL_MP2_TS_TRANSCODER_COLORSPACE_CONVERT, &_inner_error_);
-#line 489 "rygel-mp2ts-transcoder.c"
+#line 490 "rygel-mp2ts-transcoder.c"
 	if (_inner_error_ != NULL) {
 		g_propagate_error (error, _inner_error_);
-		_gst_object_unref0 (videorate);
 		_gst_object_unref0 (videoscale);
+		_gst_object_unref0 (videorate);
 		return NULL;
 	}
 #line 116 "rygel-mp2ts-transcoder.vala"
 	encoder = rygel_gst_utils_create_element (RYGEL_MP2_TS_TRANSCODER_VIDEO_ENCODER, RYGEL_MP2_TS_TRANSCODER_VIDEO_ENCODER, &_inner_error_);
-#line 498 "rygel-mp2ts-transcoder.c"
+#line 499 "rygel-mp2ts-transcoder.c"
 	if (_inner_error_ != NULL) {
 		g_propagate_error (error, _inner_error_);
-		_gst_object_unref0 (videorate);
-		_gst_object_unref0 (videoscale);
 		_gst_object_unref0 (convert);
+		_gst_object_unref0 (videoscale);
+		_gst_object_unref0 (videorate);
 		return NULL;
 	}
 #line 119 "rygel-mp2ts-transcoder.vala"
@@ -514,11 +515,11 @@ GstElement* rygel_mp2_ts_transcoder_create_encoder (RygelMP2TSTranscoder* self, 
 	if (item->pixel_width > 0) {
 #line 129 "rygel-mp2ts-transcoder.vala"
 		_tmp0_ = item->pixel_height > 0;
-#line 518 "rygel-mp2ts-transcoder.c"
+#line 519 "rygel-mp2ts-transcoder.c"
 	} else {
 #line 129 "rygel-mp2ts-transcoder.vala"
 		_tmp0_ = FALSE;
-#line 522 "rygel-mp2ts-transcoder.c"
+#line 523 "rygel-mp2ts-transcoder.c"
 	}
 #line 129 "rygel-mp2ts-transcoder.vala"
 	if (_tmp0_) {
@@ -526,13 +527,13 @@ GstElement* rygel_mp2_ts_transcoder_create_encoder (RygelMP2TSTranscoder* self, 
 		pixel_w = (item->width * RYGEL_MP2_TS_TRANSCODER_HEIGHT[self->priv->profile]) * item->pixel_width;
 #line 131 "rygel-mp2ts-transcoder.vala"
 		pixel_h = (item->height * RYGEL_MP2_TS_TRANSCODER_WIDTH[self->priv->profile]) * item->pixel_height;
-#line 530 "rygel-mp2ts-transcoder.c"
+#line 531 "rygel-mp2ts-transcoder.c"
 	} else {
 #line 134 "rygel-mp2ts-transcoder.vala"
 		pixel_w = 1;
 #line 135 "rygel-mp2ts-transcoder.vala"
 		pixel_h = 1;
-#line 536 "rygel-mp2ts-transcoder.c"
+#line 537 "rygel-mp2ts-transcoder.c"
 	}
 #line 138 "rygel-mp2ts-transcoder.vala"
 	caps = gst_caps_new_simple ("video/x-raw-yuv", "width", G_TYPE_INT, RYGEL_MP2_TS_TRANSCODER_WIDTH[self->priv->profile], "height", G_TYPE_INT, RYGEL_MP2_TS_TRANSCODER_HEIGHT[self->priv->profile], "framerate", GST_TYPE_FRACTION, RYGEL_MP2_TS_TRANSCODER_FRAME_RATE[self->priv->profile], 1, "pixel-aspect-ratio", GST_TYPE_FRACTION, pixel_w, pixel_h, NULL);
@@ -550,18 +551,18 @@ GstElement* rygel_mp2_ts_transcoder_create_encoder (RygelMP2TSTranscoder* self, 
 	ghost = (_tmp2_ = (GstGhostPad*) gst_ghost_pad_new (src_pad_name, pad), _gst_object_unref0 (ghost), _tmp2_);
 #line 161 "rygel-mp2ts-transcoder.vala"
 	gst_element_add_pad ((GstElement*) bin, _gst_object_ref0 ((GstPad*) ghost));
-#line 554 "rygel-mp2ts-transcoder.c"
+#line 555 "rygel-mp2ts-transcoder.c"
 	result = (GstElement*) bin;
-	_gst_object_unref0 (videorate);
-	_gst_object_unref0 (videoscale);
-	_gst_object_unref0 (convert);
-	_gst_object_unref0 (encoder);
-	_gst_caps_unref0 (caps);
-	_gst_object_unref0 (pad);
 	_gst_object_unref0 (ghost);
+	_gst_object_unref0 (pad);
+	_gst_caps_unref0 (caps);
+	_gst_object_unref0 (encoder);
+	_gst_object_unref0 (convert);
+	_gst_object_unref0 (videoscale);
+	_gst_object_unref0 (videorate);
 #line 163 "rygel-mp2ts-transcoder.vala"
 	return result;
-#line 565 "rygel-mp2ts-transcoder.c"
+#line 566 "rygel-mp2ts-transcoder.c"
 }
 
 

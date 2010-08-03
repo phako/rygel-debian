@@ -68,11 +68,11 @@ static struct sigaction rygel_signal_handler_action;
 static struct sigaction rygel_signal_handler_action = {0};
 static gpointer rygel_signal_handler_parent_class = NULL;
 
-GType rygel_signal_handler_get_type (void);
+GType rygel_signal_handler_get_type (void) G_GNUC_CONST;
 enum  {
 	RYGEL_SIGNAL_HANDLER_DUMMY_PROPERTY
 };
-GType rygel_main_get_type (void);
+GType rygel_main_get_type (void) G_GNUC_CONST;
 static void rygel_signal_handler_signal_handler (gint signum);
 static void _rygel_signal_handler_signal_handler_sighandler_t (gint signal);
 void rygel_signal_handler_setup (RygelMain* _main);

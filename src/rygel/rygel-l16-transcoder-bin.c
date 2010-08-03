@@ -106,7 +106,7 @@ typedef enum  {
 
 static gpointer rygel_l16_transcoder_bin_parent_class = NULL;
 
-GType rygel_l16_transcoder_bin_get_type (void);
+GType rygel_l16_transcoder_bin_get_type (void) G_GNUC_CONST;
 #define RYGEL_L16_TRANSCODER_BIN_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), RYGEL_TYPE_L16_TRANSCODER_BIN, RygelL16TranscoderBinPrivate))
 enum  {
 	RYGEL_L16_TRANSCODER_BIN_DUMMY_PROPERTY
@@ -115,10 +115,10 @@ enum  {
 #define RYGEL_L16_TRANSCODER_BIN_AUDIO_SRC_PAD "audio-src-pad"
 #define RYGEL_L16_TRANSCODER_BIN_AUDIO_SINK_PAD "audio-sink-pad"
 GstElement* rygel_gst_utils_create_element (const char* factoryname, const char* name, GError** error);
-GType rygel_transcoder_get_type (void);
-GType rygel_l16_transcoder_get_type (void);
-GType rygel_media_object_get_type (void);
-GType rygel_media_item_get_type (void);
+GType rygel_transcoder_get_type (void) G_GNUC_CONST;
+GType rygel_l16_transcoder_get_type (void) G_GNUC_CONST;
+GType rygel_media_object_get_type (void) G_GNUC_CONST;
+GType rygel_media_item_get_type (void) G_GNUC_CONST;
 GstElement* rygel_l16_transcoder_create_encoder (RygelL16Transcoder* self, RygelMediaItem* item, const char* src_pad_name, const char* sink_pad_name, GError** error);
 static void rygel_l16_transcoder_bin_decodebin_pad_added (RygelL16TranscoderBin* self, GstElement* decodebin, GstPad* new_pad);
 static void _rygel_l16_transcoder_bin_decodebin_pad_added_gst_element_pad_added (GstElement* _sender, GstPad* pad, gpointer self);
@@ -166,7 +166,7 @@ RygelL16TranscoderBin* rygel_l16_transcoder_bin_construct (GType object_type, Ry
 #line 167 "rygel-l16-transcoder-bin.c"
 	if (_inner_error_ != NULL) {
 		g_propagate_error (error, _inner_error_);
-		gst_object_unref (self);
+		_gst_object_unref0 (self);
 		return NULL;
 	}
 #line 43 "rygel-l16-transcoder-bin.vala"
@@ -175,7 +175,7 @@ RygelL16TranscoderBin* rygel_l16_transcoder_bin_construct (GType object_type, Ry
 	if (_inner_error_ != NULL) {
 		g_propagate_error (error, _inner_error_);
 		_gst_object_unref0 (decodebin);
-		gst_object_unref (self);
+		_gst_object_unref0 (self);
 		return NULL;
 	}
 #line 43 "rygel-l16-transcoder-bin.vala"

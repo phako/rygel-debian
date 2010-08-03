@@ -73,7 +73,7 @@ struct _RygelMediaExportRecursiveFileMonitorMonitorData {
 
 static gpointer rygel_media_export_recursive_file_monitor_parent_class = NULL;
 
-GType rygel_media_export_recursive_file_monitor_get_type (void);
+GType rygel_media_export_recursive_file_monitor_get_type (void) G_GNUC_CONST;
 #define RYGEL_MEDIA_EXPORT_RECURSIVE_FILE_MONITOR_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), RYGEL_MEDIA_EXPORT_TYPE_RECURSIVE_FILE_MONITOR, RygelMediaExportRecursiveFileMonitorPrivate))
 enum  {
 	RYGEL_MEDIA_EXPORT_RECURSIVE_FILE_MONITOR_DUMMY_PROPERTY
@@ -240,7 +240,7 @@ static gboolean rygel_media_export_recursive_file_monitor_monitor_co (RygelMedia
 			_state_6:
 			data->info = g_file_query_info_finish (data->file, data->_res_, &data->_inner_error_);
 			if (data->_inner_error_ != NULL) {
-				goto __catch32_g_error;
+				goto __catch37_g_error;
 			}
 #line 67 "rygel-media-export-recursive-file-monitor.vala"
 			if (g_file_info_get_file_type (data->info) == G_FILE_TYPE_DIRECTORY) {
@@ -248,7 +248,7 @@ static gboolean rygel_media_export_recursive_file_monitor_monitor_co (RygelMedia
 				data->file_monitor = g_file_monitor_directory (data->file, G_FILE_MONITOR_NONE, data->self->priv->cancellable, &data->_inner_error_);
 				if (data->_inner_error_ != NULL) {
 					_g_object_unref0 (data->info);
-					goto __catch32_g_error;
+					goto __catch37_g_error;
 				}
 #line 71 "rygel-media-export-recursive-file-monitor.vala"
 				gee_abstract_map_set ((GeeAbstractMap*) data->self->priv->monitors, data->file, data->file_monitor);
@@ -259,8 +259,8 @@ static gboolean rygel_media_export_recursive_file_monitor_monitor_co (RygelMedia
 			}
 			_g_object_unref0 (data->info);
 		}
-		goto __finally32;
-		__catch32_g_error:
+		goto __finally37;
+		__catch37_g_error:
 		{
 			data->err = data->_inner_error_;
 			data->_inner_error_ = NULL;
@@ -272,7 +272,7 @@ static gboolean rygel_media_export_recursive_file_monitor_monitor_co (RygelMedia
 				_g_error_free0 (data->err);
 			}
 		}
-		__finally32:
+		__finally37:
 		if (data->_inner_error_ != NULL) {
 			g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, data->_inner_error_->message, g_quark_to_string (data->_inner_error_->domain), data->_inner_error_->code);
 			g_clear_error (&data->_inner_error_);
@@ -305,22 +305,23 @@ void rygel_media_export_recursive_file_monitor_cancel (RygelMediaExportRecursive
 			GeeCollection* _tmp0_;
 			GeeIterator* _tmp1_;
 			GeeIterator* _monitor_it;
+#line 83 "rygel-media-export-recursive-file-monitor.vala"
 			_monitor_it = (_tmp1_ = gee_iterable_iterator ((GeeIterable*) (_tmp0_ = gee_map_get_values ((GeeMap*) self->priv->monitors))), _g_object_unref0 (_tmp0_), _tmp1_);
 #line 83 "rygel-media-export-recursive-file-monitor.vala"
 			while (TRUE) {
-#line 312 "rygel-media-export-recursive-file-monitor.c"
+#line 313 "rygel-media-export-recursive-file-monitor.c"
 				GFileMonitor* monitor;
 #line 83 "rygel-media-export-recursive-file-monitor.vala"
 				if (!gee_iterator_next (_monitor_it)) {
 #line 83 "rygel-media-export-recursive-file-monitor.vala"
 					break;
-#line 318 "rygel-media-export-recursive-file-monitor.c"
+#line 319 "rygel-media-export-recursive-file-monitor.c"
 				}
 #line 83 "rygel-media-export-recursive-file-monitor.vala"
 				monitor = (GFileMonitor*) gee_iterator_get (_monitor_it);
 #line 84 "rygel-media-export-recursive-file-monitor.vala"
 				g_file_monitor_cancel (monitor);
-#line 324 "rygel-media-export-recursive-file-monitor.c"
+#line 325 "rygel-media-export-recursive-file-monitor.c"
 				_g_object_unref0 (monitor);
 			}
 			_g_object_unref0 (_monitor_it);

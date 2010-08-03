@@ -122,13 +122,13 @@ GParamSpec* rygel_tracker_param_spec_item_factory (const gchar* name, const gcha
 void rygel_tracker_value_set_item_factory (GValue* value, gpointer v_object);
 void rygel_tracker_value_take_item_factory (GValue* value, gpointer v_object);
 gpointer rygel_tracker_value_get_item_factory (const GValue* value);
-GType rygel_tracker_item_factory_get_type (void);
-GType rygel_tracker_search_container_get_type (void);
-GType rygel_tracker_music_item_factory_get_type (void);
+GType rygel_tracker_item_factory_get_type (void) G_GNUC_CONST;
+GType rygel_tracker_search_container_get_type (void) G_GNUC_CONST;
+GType rygel_tracker_music_item_factory_get_type (void) G_GNUC_CONST;
 enum  {
 	RYGEL_TRACKER_MUSIC_ITEM_FACTORY_DUMMY_PROPERTY
 };
-GType rygel_tracker_item_factory_metadata_get_type (void);
+GType rygel_tracker_item_factory_metadata_get_type (void) G_GNUC_CONST;
 static GType rygel_tracker_music_item_factory_music_metadata_get_type (void) G_GNUC_UNUSED;
 #define RYGEL_TRACKER_MUSIC_ITEM_FACTORY_CATEGORY "nmm:MusicPiece"
 #define RYGEL_RESOURCES_CLASS_PATH "/org/freedesktop/Tracker1/" "Resources/Classes/"
@@ -283,11 +283,13 @@ static RygelMediaItem* rygel_tracker_music_item_factory_real_create (RygelTracke
 	item->author = (_tmp0_ = g_strdup (metadata[RYGEL_TRACKER_MUSIC_ITEM_FACTORY_MUSIC_METADATA_AUDIO_ARTIST]), _g_free0 (item->author), _tmp0_);
 #line 75 "rygel-tracker-music-item-factory.vala"
 	item->album = (_tmp1_ = g_strdup (metadata[RYGEL_TRACKER_MUSIC_ITEM_FACTORY_MUSIC_METADATA_AUDIO_ALBUM]), _g_free0 (item->album), _tmp1_);
-#line 287 "rygel-tracker-music-item-factory.c"
-	result = item;
 #line 77 "rygel-tracker-music-item-factory.vala"
+	rygel_media_item_lookup_album_art (item);
+#line 289 "rygel-tracker-music-item-factory.c"
+	result = item;
+#line 79 "rygel-tracker-music-item-factory.vala"
 	return result;
-#line 291 "rygel-tracker-music-item-factory.c"
+#line 293 "rygel-tracker-music-item-factory.c"
 }
 
 

@@ -149,6 +149,7 @@ struct _RygelMediaObject {
 
 struct _RygelMediaObjectClass {
 	GObjectClass parent_class;
+	gint (*compare_by_property) (RygelMediaObject* self, RygelMediaObject* media_object, const char* property);
 };
 
 struct _RygelMediaItem {
@@ -185,10 +186,10 @@ struct _RygelMediaItemClass {
 
 static gpointer rygel_transcoder_parent_class = NULL;
 
-GType rygel_transcoder_get_type (void);
-GType rygel_media_object_get_type (void);
-GType rygel_media_item_get_type (void);
-GType rygel_transcode_manager_get_type (void);
+GType rygel_transcoder_get_type (void) G_GNUC_CONST;
+GType rygel_media_object_get_type (void) G_GNUC_CONST;
+GType rygel_media_item_get_type (void) G_GNUC_CONST;
+GType rygel_transcode_manager_get_type (void) G_GNUC_CONST;
 #define RYGEL_TRANSCODER_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), RYGEL_TYPE_TRANSCODER, RygelTranscoderPrivate))
 enum  {
 	RYGEL_TRANSCODER_DUMMY_PROPERTY,
@@ -203,22 +204,22 @@ RygelTranscoder* rygel_transcoder_construct (GType object_type, const char* mime
 GstElement* rygel_transcoder_create_source (RygelTranscoder* self, RygelMediaItem* item, GstElement* src, GError** error);
 static GstElement* rygel_transcoder_real_create_source (RygelTranscoder* self, RygelMediaItem* item, GstElement* src, GError** error);
 gboolean rygel_transcoder_mime_type_is_a (RygelTranscoder* self, const char* mime_type1, const char* mime_type2);
-GType rygel_media_container_get_type (void);
+GType rygel_media_container_get_type (void) G_GNUC_CONST;
 gpointer rygel_icon_info_ref (gpointer instance);
 void rygel_icon_info_unref (gpointer instance);
 GParamSpec* rygel_param_spec_icon_info (const gchar* name, const gchar* nick, const gchar* blurb, GType object_type, GParamFlags flags);
 void rygel_value_set_icon_info (GValue* value, gpointer v_object);
 void rygel_value_take_icon_info (GValue* value, gpointer v_object);
 gpointer rygel_value_get_icon_info (const GValue* value);
-GType rygel_icon_info_get_type (void);
-GType rygel_thumbnail_get_type (void);
+GType rygel_icon_info_get_type (void) G_GNUC_CONST;
+GType rygel_thumbnail_get_type (void) G_GNUC_CONST;
 gpointer rygel_subtitle_ref (gpointer instance);
 void rygel_subtitle_unref (gpointer instance);
 GParamSpec* rygel_param_spec_subtitle (const gchar* name, const gchar* nick, const gchar* blurb, GType object_type, GParamFlags flags);
 void rygel_value_set_subtitle (GValue* value, gpointer v_object);
 void rygel_value_take_subtitle (GValue* value, gpointer v_object);
 gpointer rygel_value_get_subtitle (const GValue* value);
-GType rygel_subtitle_get_type (void);
+GType rygel_subtitle_get_type (void) G_GNUC_CONST;
 const char* rygel_transcoder_get_mime_type (RygelTranscoder* self);
 char* rygel_transcode_manager_get_protocol (RygelTranscodeManager* self);
 char* rygel_transcode_manager_create_uri_for_item (RygelTranscodeManager* self, RygelMediaItem* item, gint thumbnail_index, gint subtitle_index, const char* transcode_target);
@@ -239,7 +240,7 @@ static int _vala_strcmp0 (const char * str1, const char * str2);
 
 #line 40 "rygel-transcoder.vala"
 RygelTranscoder* rygel_transcoder_construct (GType object_type, const char* mime_type, const char* dlna_profile, const char* upnp_class) {
-#line 243 "rygel-transcoder.c"
+#line 244 "rygel-transcoder.c"
 	RygelTranscoder * self;
 #line 40 "rygel-transcoder.vala"
 	g_return_val_if_fail (mime_type != NULL, NULL);
@@ -255,14 +256,14 @@ RygelTranscoder* rygel_transcoder_construct (GType object_type, const char* mime
 	rygel_transcoder_set_dlna_profile (self, dlna_profile);
 #line 45 "rygel-transcoder.vala"
 	rygel_transcoder_set_upnp_class (self, upnp_class);
-#line 259 "rygel-transcoder.c"
+#line 260 "rygel-transcoder.c"
 	return self;
 }
 
 
 #line 56 "rygel-transcoder.vala"
 static GstElement* rygel_transcoder_real_create_source (RygelTranscoder* self, RygelMediaItem* item, GstElement* src, GError** error) {
-#line 266 "rygel-transcoder.c"
+#line 267 "rygel-transcoder.c"
 	g_return_val_if_fail (self != NULL, NULL);
 	g_critical ("Type `%s' does not implement abstract method `rygel_transcoder_create_source'", g_type_name (G_TYPE_FROM_INSTANCE (self)));
 	return NULL;
@@ -273,7 +274,7 @@ static GstElement* rygel_transcoder_real_create_source (RygelTranscoder* self, R
 GstElement* rygel_transcoder_create_source (RygelTranscoder* self, RygelMediaItem* item, GstElement* src, GError** error) {
 #line 56 "rygel-transcoder.vala"
 	return RYGEL_TRANSCODER_GET_CLASS (self)->create_source (self, item, src, error);
-#line 277 "rygel-transcoder.c"
+#line 278 "rygel-transcoder.c"
 }
 
 
@@ -284,7 +285,7 @@ static gpointer _g_object_ref0 (gpointer self) {
 
 #line 59 "rygel-transcoder.vala"
 static GUPnPDIDLLiteResource* rygel_transcoder_real_add_resource (RygelTranscoder* self, GUPnPDIDLLiteItem* didl_item, RygelMediaItem* item, RygelTranscodeManager* manager, GError** error) {
-#line 288 "rygel-transcoder.c"
+#line 289 "rygel-transcoder.c"
 	GUPnPDIDLLiteResource* result = NULL;
 	GError * _inner_error_;
 	char* protocol;
@@ -299,15 +300,15 @@ static GUPnPDIDLLiteResource* rygel_transcoder_real_add_resource (RygelTranscode
 	g_return_val_if_fail (item != NULL, NULL);
 #line 59 "rygel-transcoder.vala"
 	g_return_val_if_fail (manager != NULL, NULL);
-#line 303 "rygel-transcoder.c"
+#line 304 "rygel-transcoder.c"
 	_inner_error_ = NULL;
 #line 63 "rygel-transcoder.vala"
 	if (rygel_transcoder_mime_type_is_a (self, item->mime_type, self->priv->_mime_type)) {
-#line 307 "rygel-transcoder.c"
+#line 308 "rygel-transcoder.c"
 		result = NULL;
 #line 64 "rygel-transcoder.vala"
 		return result;
-#line 311 "rygel-transcoder.c"
+#line 312 "rygel-transcoder.c"
 	}
 #line 67 "rygel-transcoder.vala"
 	protocol = rygel_transcode_manager_get_protocol (manager);
@@ -315,11 +316,11 @@ static GUPnPDIDLLiteResource* rygel_transcoder_real_add_resource (RygelTranscode
 	uri = rygel_transcode_manager_create_uri_for_item (manager, item, -1, -1, self->priv->_dlna_profile);
 #line 72 "rygel-transcoder.vala"
 	res = rygel_media_item_add_resource (item, didl_item, uri, protocol, NULL, &_inner_error_);
-#line 319 "rygel-transcoder.c"
+#line 320 "rygel-transcoder.c"
 	if (_inner_error_ != NULL) {
 		g_propagate_error (error, _inner_error_);
-		_g_free0 (protocol);
 		_g_free0 (uri);
+		_g_free0 (protocol);
 		return NULL;
 	}
 #line 73 "rygel-transcoder.vala"
@@ -336,14 +337,14 @@ static GUPnPDIDLLiteResource* rygel_transcoder_real_add_resource (RygelTranscode
 	gupnp_protocol_info_set_dlna_flags (protocol_info, (GUPNP_DLNA_FLAGS_STREAMING_TRANSFER_MODE | GUPNP_DLNA_FLAGS_SENDER_PACED) | GUPNP_DLNA_FLAGS_DLNA_V15);
 #line 82 "rygel-transcoder.vala"
 	gupnp_protocol_info_set_dlna_operation (protocol_info, GUPNP_DLNA_OPERATION_TIMESEEK);
-#line 340 "rygel-transcoder.c"
+#line 341 "rygel-transcoder.c"
 	result = res;
-	_g_free0 (protocol);
-	_g_free0 (uri);
 	_g_object_unref0 (protocol_info);
+	_g_free0 (uri);
+	_g_free0 (protocol);
 #line 84 "rygel-transcoder.vala"
 	return result;
-#line 347 "rygel-transcoder.c"
+#line 348 "rygel-transcoder.c"
 }
 
 
@@ -351,29 +352,29 @@ static GUPnPDIDLLiteResource* rygel_transcoder_real_add_resource (RygelTranscode
 GUPnPDIDLLiteResource* rygel_transcoder_add_resource (RygelTranscoder* self, GUPnPDIDLLiteItem* didl_item, RygelMediaItem* item, RygelTranscodeManager* manager, GError** error) {
 #line 59 "rygel-transcoder.vala"
 	return RYGEL_TRANSCODER_GET_CLASS (self)->add_resource (self, didl_item, item, manager, error);
-#line 355 "rygel-transcoder.c"
+#line 356 "rygel-transcoder.c"
 }
 
 
 #line 87 "rygel-transcoder.vala"
 gboolean rygel_transcoder_can_handle (RygelTranscoder* self, const char* target) {
-#line 361 "rygel-transcoder.c"
+#line 362 "rygel-transcoder.c"
 	gboolean result = FALSE;
 #line 87 "rygel-transcoder.vala"
 	g_return_val_if_fail (self != NULL, FALSE);
 #line 87 "rygel-transcoder.vala"
 	g_return_val_if_fail (target != NULL, FALSE);
-#line 367 "rygel-transcoder.c"
+#line 368 "rygel-transcoder.c"
 	result = _vala_strcmp0 (target, self->priv->_dlna_profile) == 0;
 #line 88 "rygel-transcoder.vala"
 	return result;
-#line 371 "rygel-transcoder.c"
+#line 372 "rygel-transcoder.c"
 }
 
 
 #line 101 "rygel-transcoder.vala"
 static guint rygel_transcoder_real_get_distance (RygelTranscoder* self, RygelMediaItem* item) {
-#line 377 "rygel-transcoder.c"
+#line 378 "rygel-transcoder.c"
 	g_return_val_if_fail (self != NULL, 0U);
 	g_critical ("Type `%s' does not implement abstract method `rygel_transcoder_get_distance'", g_type_name (G_TYPE_FROM_INSTANCE (self)));
 	return 0U;
@@ -384,13 +385,13 @@ static guint rygel_transcoder_real_get_distance (RygelTranscoder* self, RygelMed
 guint rygel_transcoder_get_distance (RygelTranscoder* self, RygelMediaItem* item) {
 #line 101 "rygel-transcoder.vala"
 	return RYGEL_TRANSCODER_GET_CLASS (self)->get_distance (self, item);
-#line 388 "rygel-transcoder.c"
+#line 389 "rygel-transcoder.c"
 }
 
 
 #line 103 "rygel-transcoder.vala"
 gboolean rygel_transcoder_mime_type_is_a (RygelTranscoder* self, const char* mime_type1, const char* mime_type2) {
-#line 394 "rygel-transcoder.c"
+#line 395 "rygel-transcoder.c"
 	gboolean result = FALSE;
 	char* content_type1;
 	char* content_type2;
@@ -401,16 +402,16 @@ gboolean rygel_transcoder_mime_type_is_a (RygelTranscoder* self, const char* mim
 #line 103 "rygel-transcoder.vala"
 	g_return_val_if_fail (mime_type2 != NULL, FALSE);
 #line 104 "rygel-transcoder.vala"
-	content_type1 = g_strdup (g_content_type_from_mime_type (mime_type1));
+	content_type1 = g_content_type_from_mime_type (mime_type1);
 #line 105 "rygel-transcoder.vala"
-	content_type2 = g_strdup (g_content_type_from_mime_type (mime_type2));
-#line 408 "rygel-transcoder.c"
+	content_type2 = g_content_type_from_mime_type (mime_type2);
+#line 409 "rygel-transcoder.c"
 	result = g_content_type_is_a (content_type1, content_type2);
-	_g_free0 (content_type1);
 	_g_free0 (content_type2);
+	_g_free0 (content_type1);
 #line 107 "rygel-transcoder.vala"
 	return result;
-#line 414 "rygel-transcoder.c"
+#line 415 "rygel-transcoder.c"
 }
 
 
@@ -420,7 +421,7 @@ const char* rygel_transcoder_get_mime_type (RygelTranscoder* self) {
 	result = self->priv->_mime_type;
 #line 33 "rygel-transcoder.vala"
 	return result;
-#line 424 "rygel-transcoder.c"
+#line 425 "rygel-transcoder.c"
 }
 
 
@@ -438,7 +439,7 @@ const char* rygel_transcoder_get_dlna_profile (RygelTranscoder* self) {
 	result = self->priv->_dlna_profile;
 #line 34 "rygel-transcoder.vala"
 	return result;
-#line 442 "rygel-transcoder.c"
+#line 443 "rygel-transcoder.c"
 }
 
 
@@ -456,7 +457,7 @@ const char* rygel_transcoder_get_upnp_class (RygelTranscoder* self) {
 	result = self->priv->_upnp_class;
 #line 38 "rygel-transcoder.vala"
 	return result;
-#line 460 "rygel-transcoder.c"
+#line 461 "rygel-transcoder.c"
 }
 
 

@@ -31,6 +31,7 @@ public class Rygel.MediaExport.Harvester : GLib.Object {
     private RecursiveFileMonitor monitor;
     private Regex file_filter;
     public Cancellable cancellable;
+    private string flag;
     private const string HARVESTER_ATTRIBUTES =
                                         FILE_ATTRIBUTE_STANDARD_NAME + "," +
                                         FILE_ATTRIBUTE_STANDARD_TYPE + "," +
@@ -41,7 +42,8 @@ public class Rygel.MediaExport.Harvester : GLib.Object {
     public Harvester (MediaContainer       parent,
                       MediaCache           media_db,
                       MetadataExtractor    extractor,
-                      RecursiveFileMonitor monitor) {
+                      RecursiveFileMonitor monitor,
+                      string?              flag = null) {
         this.parent = parent;
         this.extractor = extractor;
         this.media_db = media_db;
@@ -52,6 +54,7 @@ public class Rygel.MediaExport.Harvester : GLib.Object {
         this.origin = null;
         this.monitor = monitor;
         this.cancellable = new Cancellable ();
+        this.flag = flag;
         var config = MetaConfig.get_default ();
 
         try {
@@ -165,7 +168,7 @@ public class Rygel.MediaExport.Harvester : GLib.Object {
 
             GLib.List<FileInfo> list = null;
             do {
-                list = yield enumerator.next_files_async (10,
+                list = yield enumerator.next_files_async (256,
                                                           Priority.DEFAULT,
                                                           this.cancellable);
             } while (process_children (list));
@@ -214,6 +217,12 @@ public class Rygel.MediaExport.Harvester : GLib.Object {
             enumerate_directory (directory);
         } else {
             // nothing to do
+            if (this.flag != null) {
+                try {
+                    this.media_db.flag_object (Item.get_id (this.origin),
+                                               this.flag);
+                } catch (Error error) {};
+            }
             harvested (this.origin);
         }
 
@@ -284,7 +293,11 @@ public class Rygel.MediaExport.Harvester : GLib.Object {
         }
     }
 
-    private void on_extracted_cb (File file, Gst.TagList tag_list) {
+    private void on_extracted_cb (File                   file,
+                                  GUPnP.DLNAInformation? dlna,
+                                  string                 mime,
+                                  uint64                 size,
+                                  uint64                 mtime) {
         if (this.cancellable.is_cancelled ()) {
             harvested (this.origin);
         }
@@ -296,10 +309,22 @@ public class Rygel.MediaExport.Harvester : GLib.Object {
            return;
         }
         if (file == entry) {
-            var item = MediaExportItem.create_from_taglist (
-                                               this.containers.peek_head (),
-                                               file,
-                                               tag_list);
+            MediaItem item;
+            if (dlna == null) {
+                item = new Item.simple (this.containers.peek_head (),
+                                        file,
+                                        mime,
+                                        size,
+                                        mtime);
+            } else {
+                item = Item.create_from_info (this.containers.peek_head (),
+                                              file,
+                                              dlna,
+                                              mime,
+                                              size,
+                                              mtime);
+            }
+
             if (item != null) {
                 item.parent_ref = this.containers.peek_head ();
                 try {

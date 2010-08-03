@@ -70,7 +70,7 @@ GParamSpec* rygel_param_spec_xml_utils (const gchar* name, const gchar* nick, co
 void rygel_value_set_xml_utils (GValue* value, gpointer v_object);
 void rygel_value_take_xml_utils (GValue* value, gpointer v_object);
 gpointer rygel_value_get_xml_utils (const GValue* value);
-GType rygel_xml_utils_get_type (void);
+GType rygel_xml_utils_get_type (void) G_GNUC_CONST;
 enum  {
 	RYGEL_XML_UTILS_DUMMY_PROPERTY
 };

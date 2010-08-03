@@ -101,10 +101,10 @@ GParamSpec* rygel_tracker_param_spec_query (const gchar* name, const gchar* nick
 void rygel_tracker_value_set_query (GValue* value, gpointer v_object);
 void rygel_tracker_value_take_query (GValue* value, gpointer v_object);
 gpointer rygel_tracker_value_get_query (const GValue* value);
-GType rygel_tracker_query_get_type (void);
+GType rygel_tracker_query_get_type (void) G_GNUC_CONST;
 RygelTrackerResourcesIface* rygel_tracker_resources_iface_dbus_proxy_new (DBusGConnection* connection, const char* name, const char* path);
-GType rygel_tracker_resources_iface_get_type (void);
-GType rygel_tracker_query_triplets_get_type (void);
+GType rygel_tracker_resources_iface_get_type (void) G_GNUC_CONST;
+GType rygel_tracker_query_triplets_get_type (void) G_GNUC_CONST;
 enum  {
 	RYGEL_TRACKER_QUERY_DUMMY_PROPERTY
 };

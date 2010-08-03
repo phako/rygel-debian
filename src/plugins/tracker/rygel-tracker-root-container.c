@@ -97,21 +97,21 @@ struct _RygelTrackerRootContainerClass {
 
 static gpointer rygel_tracker_root_container_parent_class = NULL;
 
-GType rygel_tracker_root_container_get_type (void);
+GType rygel_tracker_root_container_get_type (void) G_GNUC_CONST;
 enum  {
 	RYGEL_TRACKER_ROOT_CONTAINER_DUMMY_PROPERTY
 };
 static gboolean rygel_tracker_root_container_get_bool_config_without_error (RygelTrackerRootContainer* self, const char* key);
 RygelTrackerMusic* rygel_tracker_music_new (const char* id, RygelMediaContainer* parent, const char* title);
 RygelTrackerMusic* rygel_tracker_music_construct (GType object_type, const char* id, RygelMediaContainer* parent, const char* title);
-GType rygel_tracker_category_container_get_type (void);
-GType rygel_tracker_music_get_type (void);
+GType rygel_tracker_category_container_get_type (void) G_GNUC_CONST;
+GType rygel_tracker_music_get_type (void) G_GNUC_CONST;
 RygelTrackerVideos* rygel_tracker_videos_new (const char* id, RygelMediaContainer* parent, const char* title);
 RygelTrackerVideos* rygel_tracker_videos_construct (GType object_type, const char* id, RygelMediaContainer* parent, const char* title);
-GType rygel_tracker_videos_get_type (void);
+GType rygel_tracker_videos_get_type (void) G_GNUC_CONST;
 RygelTrackerPictures* rygel_tracker_pictures_new (const char* id, RygelMediaContainer* parent, const char* title);
 RygelTrackerPictures* rygel_tracker_pictures_construct (GType object_type, const char* id, RygelMediaContainer* parent, const char* title);
-GType rygel_tracker_pictures_get_type (void);
+GType rygel_tracker_pictures_get_type (void) G_GNUC_CONST;
 RygelTrackerRootContainer* rygel_tracker_root_container_new (const char* title);
 RygelTrackerRootContainer* rygel_tracker_root_container_construct (GType object_type, const char* title);
 

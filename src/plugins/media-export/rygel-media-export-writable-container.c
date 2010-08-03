@@ -104,9 +104,9 @@ struct _RygelMediaExportWritableContainerAddItemData {
 
 static gpointer rygel_media_export_writable_container_parent_class = NULL;
 
-GType rygel_media_export_db_container_get_type (void);
-GType rygel_media_export_media_cache_get_type (void);
-GType rygel_media_export_writable_container_get_type (void);
+GType rygel_media_export_db_container_get_type (void) G_GNUC_CONST;
+GType rygel_media_export_media_cache_get_type (void) G_GNUC_CONST;
+GType rygel_media_export_writable_container_get_type (void) G_GNUC_CONST;
 enum  {
 	RYGEL_MEDIA_EXPORT_WRITABLE_CONTAINER_DUMMY_PROPERTY
 };

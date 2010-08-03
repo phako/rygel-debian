@@ -155,11 +155,11 @@ struct _RygelHTTPServerClass {
 
 static gpointer rygel_live_response_test_parent_class = NULL;
 
-GType rygel_http_response_test_get_type (void);
-GType rygel_http_response_get_type (void);
-GType rygel_http_server_get_type (void);
-GType rygel_http_client_get_type (void);
-GType rygel_live_response_test_get_type (void);
+GType rygel_http_response_test_get_type (void) G_GNUC_CONST;
+GType rygel_http_response_get_type (void) G_GNUC_CONST;
+GType rygel_http_server_get_type (void) G_GNUC_CONST;
+GType rygel_http_client_get_type (void) G_GNUC_CONST;
+GType rygel_live_response_test_get_type (void) G_GNUC_CONST;
 #define RYGEL_LIVE_RESPONSE_TEST_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), RYGEL_TYPE_LIVE_RESPONSE_TEST, RygelLiveResponseTestPrivate))
 enum  {
 	RYGEL_LIVE_RESPONSE_TEST_DUMMY_PROPERTY
@@ -178,10 +178,10 @@ RygelHTTPResponseTest* rygel_http_response_test_construct_complete (GType object
 static inline void _dynamic_set_blocksize0 (GstElement* obj, glong value);
 static inline void _dynamic_set_num_buffers1 (GstElement* obj, glong value);
 RygelHTTPResponseTest* rygel_http_response_test_construct_abort (GType object_type, GError** error);
-GType rygel_http_seek_get_type (void);
+GType rygel_http_seek_get_type (void) G_GNUC_CONST;
 RygelLiveResponse* rygel_live_response_new (SoupServer* server, SoupMessage* msg, const char* name, GstElement* src, RygelHTTPSeek* time_range, GCancellable* cancellable, GError** error);
 RygelLiveResponse* rygel_live_response_construct (GType object_type, SoupServer* server, SoupMessage* msg, const char* name, GstElement* src, RygelHTTPSeek* time_range, GCancellable* cancellable, GError** error);
-GType rygel_live_response_get_type (void);
+GType rygel_live_response_get_type (void) G_GNUC_CONST;
 static RygelHTTPResponse* rygel_live_response_test_real_create_response (RygelHTTPResponseTest* base, SoupMessage* msg, GError** error);
 RygelLiveResponseTest* rygel_live_response_test_new (void);
 RygelLiveResponseTest* rygel_live_response_test_construct (GType object_type);
@@ -320,11 +320,11 @@ static RygelLiveResponseTest* rygel_live_response_test_construct_complete (GType
 	RygelLiveResponseTest * self;
 	_inner_error_ = NULL;
 #line 58 "rygel-live-response-test.vala"
-	self = (RygelLiveResponseTest*) rygel_http_response_test_construct_complete (object_type, error);
+	self = (RygelLiveResponseTest*) rygel_http_response_test_construct_complete (object_type, &_inner_error_);
 #line 325 "rygel-live-response-test.c"
 	if (_inner_error_ != NULL) {
 		g_propagate_error (error, _inner_error_);
-		g_object_unref (self);
+		_g_object_unref0 (self);
 		return NULL;
 	}
 #line 60 "rygel-live-response-test.vala"
@@ -351,11 +351,11 @@ static RygelLiveResponseTest* rygel_live_response_test_construct_abort (GType ob
 	RygelLiveResponseTest * self;
 	_inner_error_ = NULL;
 #line 65 "rygel-live-response-test.vala"
-	self = (RygelLiveResponseTest*) rygel_http_response_test_construct_abort (object_type, error);
+	self = (RygelLiveResponseTest*) rygel_http_response_test_construct_abort (object_type, &_inner_error_);
 #line 356 "rygel-live-response-test.c"
 	if (_inner_error_ != NULL) {
 		g_propagate_error (error, _inner_error_);
-		g_object_unref (self);
+		_g_object_unref0 (self);
 		return NULL;
 	}
 	return self;

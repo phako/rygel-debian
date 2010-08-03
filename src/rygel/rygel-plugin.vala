@@ -29,15 +29,12 @@ using GUPnP;
  * class or a subclass.
  */
 public class Rygel.Plugin : GUPnP.ResourceFactory {
-    private static const string MEDIA_SERVER_DESC_PATH =
-                                BuildConfig.DATA_DIR + "/xml/MediaServer2.xml";
-
     private static const string ICON_BIG = "file://" +
-                                           BuildConfig.ICON_DIR +
-                                           "/256x256/apps/rygel.png";
+                                           BuildConfig.BIG_ICON_DIR +
+                                           "/rygel.png";
     private static const string ICON_SMALL = "file://" +
-                                             BuildConfig.ICON_DIR +
-                                             "/32x32/apps/rygel.png";
+                                             BuildConfig.SMALL_ICON_DIR +
+                                             "/rygel.png";
     private static const string ICON_MIME = "image/png";
     private static const int ICON_DEPTH = 32;
     private static const int ICON_BIG_WIDTH = 256;
@@ -91,34 +88,6 @@ public class Rygel.Plugin : GUPnP.ResourceFactory {
         icon.height = ICON_SMALL_HEIGHT;
         icon.depth = ICON_DEPTH;
         this.default_icons.add (icon);
-    }
-
-    public Plugin.MediaServer (string  name,
-                               string? title,
-                               Type    content_dir_type,
-                               string? description = null) {
-        this (MEDIA_SERVER_DESC_PATH, name, title, description);
-
-        // MediaServer implementations must implement ContentDirectory service
-        var resource_info = new ResourceInfo (ContentDirectory.UPNP_ID,
-                                              ContentDirectory.UPNP_TYPE,
-                                              ContentDirectory.DESCRIPTION_PATH,
-                                              content_dir_type);
-        this.add_resource (resource_info);
-
-        // Register Rygel.ConnectionManager
-        resource_info = new ResourceInfo (ConnectionManager.UPNP_ID,
-                                          ConnectionManager.UPNP_TYPE,
-                                          ConnectionManager.DESCRIPTION_PATH,
-                                          typeof (SourceConnectionManager));
-
-        this.add_resource (resource_info);
-        resource_info = new ResourceInfo (
-                                        MediaReceiverRegistrar.UPNP_ID,
-                                        MediaReceiverRegistrar.UPNP_TYPE,
-                                        MediaReceiverRegistrar.DESCRIPTION_PATH,
-                                        typeof (MediaReceiverRegistrar));
-        this.add_resource (resource_info);
     }
 
     public void add_resource (ResourceInfo resource_info) {

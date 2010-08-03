@@ -38,9 +38,13 @@ check_PROGRAMS = rygel-http-item-uri-test$(EXEEXT) \
 	rygel-seekable-response-test$(EXEEXT) \
 	rygel-http-byte-seek-test$(EXEEXT) \
 	rygel-http-time-seek-test$(EXEEXT) \
-	rygel-http-get-test$(EXEEXT) rygel-http-post-test$(EXEEXT)
+	rygel-http-get-test$(EXEEXT) \
+	rygel-album-art-spec-test$(EXEEXT) \
+	rygel-http-post-test$(EXEEXT)
 subdir = tests
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in \
+	../src/rygel/rygel-album-art.c ../src/rygel/rygel-icon-info.c \
+	../src/rygel/rygel-thumbnail.c rygel-album-art-spec-test.c \
 	rygel-gst-utils.c rygel-http-byte-seek-test.c \
 	rygel-http-byte-seek.c rygel-http-byte-seek_http-get.c \
 	rygel-http-get-test.c rygel-http-get.c \
@@ -56,10 +60,12 @@ DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in \
 	rygel-http-seek_time-seek.c rygel-http-time-seek-test.c \
 	rygel-http-time-seek.c rygel-http-time-seek_http-get.c \
 	rygel-live-response-test.c rygel-live-response.c \
-	rygel-seekable-response-test.c rygel-seekable-response.c \
-	rygel-state-machine_http-get.c rygel-state-machine_http-post.c \
+	rygel-media-art-store.c rygel-seekable-response-test.c \
+	rygel-seekable-response.c rygel-state-machine_http-get.c \
+	rygel-state-machine_http-post.c \
 	rygel-state-machine_live-response.c \
 	rygel-state-machine_seekable-response.c \
+	rygel_album_art_spec_test_vala.stamp \
 	rygel_http_byte_seek_test_vala.stamp \
 	rygel_http_get_test_vala.stamp \
 	rygel_http_item_uri_test_vala.stamp \
@@ -78,20 +84,31 @@ mkinstalldirs = $(SHELL) $(top_srcdir)/build-aux/mkinstalldirs
 CONFIG_HEADER = $(top_builddir)/config.h
 CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
-am_rygel_http_byte_seek_test_OBJECTS =  \
-	rygel-http-byte-seek-test.$(OBJEXT) \
-	rygel-http-byte-seek.$(OBJEXT) rygel-http-seek.$(OBJEXT)
-rygel_http_byte_seek_test_OBJECTS =  \
-	$(am_rygel_http_byte_seek_test_OBJECTS)
-rygel_http_byte_seek_test_LDADD = $(LDADD)
+am_rygel_album_art_spec_test_OBJECTS =  \
+	rygel-album-art-spec-test.$(OBJEXT) \
+	rygel-media-art-store.$(OBJEXT) rygel-thumbnail.$(OBJEXT) \
+	rygel-icon-info.$(OBJEXT) rygel-album-art.$(OBJEXT)
+rygel_album_art_spec_test_OBJECTS =  \
+	$(am_rygel_album_art_spec_test_OBJECTS)
+rygel_album_art_spec_test_LDADD = $(LDADD)
 am__DEPENDENCIES_1 =
-rygel_http_byte_seek_test_DEPENDENCIES = $(am__DEPENDENCIES_1) \
+rygel_album_art_spec_test_DEPENDENCIES = $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 AM_V_lt = $(am__v_lt_$(V))
 am__v_lt_ = $(am__v_lt_$(AM_DEFAULT_VERBOSITY))
 am__v_lt_0 = --silent
+am_rygel_http_byte_seek_test_OBJECTS =  \
+	rygel-http-byte-seek-test.$(OBJEXT) \
+	rygel-http-byte-seek.$(OBJEXT) rygel-http-seek.$(OBJEXT)
+rygel_http_byte_seek_test_OBJECTS =  \
+	$(am_rygel_http_byte_seek_test_OBJECTS)
+rygel_http_byte_seek_test_LDADD = $(LDADD)
+rygel_http_byte_seek_test_DEPENDENCIES = $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 am_rygel_http_get_test_OBJECTS = rygel-http-get-test.$(OBJEXT) \
 	rygel-http-get.$(OBJEXT) rygel-http-request_http-get.$(OBJEXT) \
 	rygel-http-item-uri_http-get.$(OBJEXT) \
@@ -198,14 +215,16 @@ am__v_VALAC_0 = @echo "  VALAC " $@;
 AM_V_GEN = $(am__v_GEN_$(V))
 am__v_GEN_ = $(am__v_GEN_$(AM_DEFAULT_VERBOSITY))
 am__v_GEN_0 = @echo "  GEN   " $@;
-SOURCES = $(rygel_http_byte_seek_test_SOURCES) \
+SOURCES = $(rygel_album_art_spec_test_SOURCES) \
+	$(rygel_http_byte_seek_test_SOURCES) \
 	$(rygel_http_get_test_SOURCES) \
 	$(rygel_http_item_uri_test_SOURCES) \
 	$(rygel_http_post_test_SOURCES) \
 	$(rygel_http_time_seek_test_SOURCES) \
 	$(rygel_live_response_test_SOURCES) \
 	$(rygel_seekable_response_test_SOURCES)
-DIST_SOURCES = $(rygel_http_byte_seek_test_SOURCES) \
+DIST_SOURCES = $(rygel_album_art_spec_test_SOURCES) \
+	$(rygel_http_byte_seek_test_SOURCES) \
 	$(rygel_http_get_test_SOURCES) \
 	$(rygel_http_item_uri_test_SOURCES) \
 	$(rygel_http_post_test_SOURCES) \
@@ -279,6 +298,8 @@ LIBGSTREAMER_LIBS = @LIBGSTREAMER_LIBS@
 LIBGUPNP_AV_CFLAGS = @LIBGUPNP_AV_CFLAGS@
 LIBGUPNP_AV_LIBS = @LIBGUPNP_AV_LIBS@
 LIBGUPNP_CFLAGS = @LIBGUPNP_CFLAGS@
+LIBGUPNP_DLNA_CFLAGS = @LIBGUPNP_DLNA_CFLAGS@
+LIBGUPNP_DLNA_LIBS = @LIBGUPNP_DLNA_LIBS@
 LIBGUPNP_LIBS = @LIBGUPNP_LIBS@
 LIBOBJS = @LIBOBJS@
 LIBS = @LIBS@
@@ -449,6 +470,12 @@ rygel_http_post_test_SOURCES = rygel-http-post-test.vala \
 			       rygel-http-item-uri_http-post.vala \
 			       rygel-state-machine_http-post.vala
 
+rygel_album_art_spec_test_SOURCES = rygel-album-art-spec-test.vala \
+			       rygel-media-art-store.vala \
+				   ../src/rygel/rygel-thumbnail.vala \
+				   ../src/rygel/rygel-icon-info.vala \
+				   ../src/rygel/rygel-album-art.vala
+
 all: all-am
 
 .SUFFIXES:
@@ -492,6 +519,9 @@ clean-checkPROGRAMS:
 	list=`for p in $$list; do echo "$$p"; done | sed 's/$(EXEEXT)$$//'`; \
 	echo " rm -f" $$list; \
 	rm -f $$list
+rygel-album-art-spec-test$(EXEEXT): $(rygel_album_art_spec_test_OBJECTS) $(rygel_album_art_spec_test_DEPENDENCIES) 
+	@rm -f rygel-album-art-spec-test$(EXEEXT)
+	$(AM_V_CCLD)$(LINK) $(rygel_album_art_spec_test_OBJECTS) $(rygel_album_art_spec_test_LDADD) $(LIBS)
 rygel-http-byte-seek-test$(EXEEXT): $(rygel_http_byte_seek_test_OBJECTS) $(rygel_http_byte_seek_test_DEPENDENCIES) 
 	@rm -f rygel-http-byte-seek-test$(EXEEXT)
 	$(AM_V_CCLD)$(LINK) $(rygel_http_byte_seek_test_OBJECTS) $(rygel_http_byte_seek_test_LDADD) $(LIBS)
@@ -520,6 +550,8 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-album-art-spec-test.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-album-art.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-gst-utils.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-http-byte-seek-test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-http-byte-seek.Po@am__quote@
@@ -545,14 +577,17 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-http-time-seek-test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-http-time-seek.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-http-time-seek_http-get.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-icon-info.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-live-response-test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-live-response.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-media-art-store.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-seekable-response-test.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-seekable-response.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-state-machine_http-get.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-state-machine_http-post.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-state-machine_live-response.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-state-machine_seekable-response.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-thumbnail.Po@am__quote@
 
 .c.o:
 @am__fastdepCC_TRUE@	$(AM_V_CC)$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
@@ -577,6 +612,54 @@ distclean-compile:
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$<' object='$@' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LTCOMPILE) -c -o $@ $<
+
+rygel-thumbnail.o: ../src/rygel/rygel-thumbnail.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT rygel-thumbnail.o -MD -MP -MF $(DEPDIR)/rygel-thumbnail.Tpo -c -o rygel-thumbnail.o `test -f '../src/rygel/rygel-thumbnail.c' || echo '$(srcdir)/'`../src/rygel/rygel-thumbnail.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/rygel-thumbnail.Tpo $(DEPDIR)/rygel-thumbnail.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='../src/rygel/rygel-thumbnail.c' object='rygel-thumbnail.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o rygel-thumbnail.o `test -f '../src/rygel/rygel-thumbnail.c' || echo '$(srcdir)/'`../src/rygel/rygel-thumbnail.c
+
+rygel-thumbnail.obj: ../src/rygel/rygel-thumbnail.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT rygel-thumbnail.obj -MD -MP -MF $(DEPDIR)/rygel-thumbnail.Tpo -c -o rygel-thumbnail.obj `if test -f '../src/rygel/rygel-thumbnail.c'; then $(CYGPATH_W) '../src/rygel/rygel-thumbnail.c'; else $(CYGPATH_W) '$(srcdir)/../src/rygel/rygel-thumbnail.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/rygel-thumbnail.Tpo $(DEPDIR)/rygel-thumbnail.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='../src/rygel/rygel-thumbnail.c' object='rygel-thumbnail.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o rygel-thumbnail.obj `if test -f '../src/rygel/rygel-thumbnail.c'; then $(CYGPATH_W) '../src/rygel/rygel-thumbnail.c'; else $(CYGPATH_W) '$(srcdir)/../src/rygel/rygel-thumbnail.c'; fi`
+
+rygel-icon-info.o: ../src/rygel/rygel-icon-info.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT rygel-icon-info.o -MD -MP -MF $(DEPDIR)/rygel-icon-info.Tpo -c -o rygel-icon-info.o `test -f '../src/rygel/rygel-icon-info.c' || echo '$(srcdir)/'`../src/rygel/rygel-icon-info.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/rygel-icon-info.Tpo $(DEPDIR)/rygel-icon-info.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='../src/rygel/rygel-icon-info.c' object='rygel-icon-info.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o rygel-icon-info.o `test -f '../src/rygel/rygel-icon-info.c' || echo '$(srcdir)/'`../src/rygel/rygel-icon-info.c
+
+rygel-icon-info.obj: ../src/rygel/rygel-icon-info.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT rygel-icon-info.obj -MD -MP -MF $(DEPDIR)/rygel-icon-info.Tpo -c -o rygel-icon-info.obj `if test -f '../src/rygel/rygel-icon-info.c'; then $(CYGPATH_W) '../src/rygel/rygel-icon-info.c'; else $(CYGPATH_W) '$(srcdir)/../src/rygel/rygel-icon-info.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/rygel-icon-info.Tpo $(DEPDIR)/rygel-icon-info.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='../src/rygel/rygel-icon-info.c' object='rygel-icon-info.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o rygel-icon-info.obj `if test -f '../src/rygel/rygel-icon-info.c'; then $(CYGPATH_W) '../src/rygel/rygel-icon-info.c'; else $(CYGPATH_W) '$(srcdir)/../src/rygel/rygel-icon-info.c'; fi`
+
+rygel-album-art.o: ../src/rygel/rygel-album-art.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT rygel-album-art.o -MD -MP -MF $(DEPDIR)/rygel-album-art.Tpo -c -o rygel-album-art.o `test -f '../src/rygel/rygel-album-art.c' || echo '$(srcdir)/'`../src/rygel/rygel-album-art.c
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/rygel-album-art.Tpo $(DEPDIR)/rygel-album-art.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='../src/rygel/rygel-album-art.c' object='rygel-album-art.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o rygel-album-art.o `test -f '../src/rygel/rygel-album-art.c' || echo '$(srcdir)/'`../src/rygel/rygel-album-art.c
+
+rygel-album-art.obj: ../src/rygel/rygel-album-art.c
+@am__fastdepCC_TRUE@	$(AM_V_CC)$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT rygel-album-art.obj -MD -MP -MF $(DEPDIR)/rygel-album-art.Tpo -c -o rygel-album-art.obj `if test -f '../src/rygel/rygel-album-art.c'; then $(CYGPATH_W) '../src/rygel/rygel-album-art.c'; else $(CYGPATH_W) '$(srcdir)/../src/rygel/rygel-album-art.c'; fi`
+@am__fastdepCC_TRUE@	$(AM_V_at)$(am__mv) $(DEPDIR)/rygel-album-art.Tpo $(DEPDIR)/rygel-album-art.Po
+@am__fastdepCC_FALSE@	$(AM_V_CC) @AM_BACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='../src/rygel/rygel-album-art.c' object='rygel-album-art.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o rygel-album-art.obj `if test -f '../src/rygel/rygel-album-art.c'; then $(CYGPATH_W) '../src/rygel/rygel-album-art.c'; else $(CYGPATH_W) '$(srcdir)/../src/rygel/rygel-album-art.c'; fi`
 $(srcdir)/rygel-http-time-seek-test.c: $(srcdir)/rygel_http_time_seek_test_vala.stamp
 	@if test -f $@; then :; else \
 	  rm -f $(srcdir)/rygel_http_time_seek_test_vala.stamp; \
@@ -622,62 +705,6 @@ $(srcdir)/rygel-state-machine_seekable-response.c: $(srcdir)/rygel_seekable_resp
 	fi
 rygel_seekable_response_test_vala.stamp: $(rygel_seekable_response_test_SOURCES)
 	$(AM_V_VALAC)$(VALAC) $(AM_VALAFLAGS) $(VALAFLAGS) -C $(rygel_seekable_response_test_SOURCES)
-	$(AM_V_at)touch $@
-$(srcdir)/rygel-http-get-test.c: $(srcdir)/rygel_http_get_test_vala.stamp
-	@if test -f $@; then :; else \
-	  rm -f $(srcdir)/rygel_http_get_test_vala.stamp; \
-	  $(am__cd) $(srcdir) && $(MAKE) $(AM_MAKEFLAGS) rygel_http_get_test_vala.stamp; \
-	fi
-$(srcdir)/rygel-http-get.c: $(srcdir)/rygel_http_get_test_vala.stamp
-	@if test -f $@; then :; else \
-	  rm -f $(srcdir)/rygel_http_get_test_vala.stamp; \
-	  $(am__cd) $(srcdir) && $(MAKE) $(AM_MAKEFLAGS) rygel_http_get_test_vala.stamp; \
-	fi
-$(srcdir)/rygel-http-request_http-get.c: $(srcdir)/rygel_http_get_test_vala.stamp
-	@if test -f $@; then :; else \
-	  rm -f $(srcdir)/rygel_http_get_test_vala.stamp; \
-	  $(am__cd) $(srcdir) && $(MAKE) $(AM_MAKEFLAGS) rygel_http_get_test_vala.stamp; \
-	fi
-$(srcdir)/rygel-http-item-uri_http-get.c: $(srcdir)/rygel_http_get_test_vala.stamp
-	@if test -f $@; then :; else \
-	  rm -f $(srcdir)/rygel_http_get_test_vala.stamp; \
-	  $(am__cd) $(srcdir) && $(MAKE) $(AM_MAKEFLAGS) rygel_http_get_test_vala.stamp; \
-	fi
-$(srcdir)/rygel-state-machine_http-get.c: $(srcdir)/rygel_http_get_test_vala.stamp
-	@if test -f $@; then :; else \
-	  rm -f $(srcdir)/rygel_http_get_test_vala.stamp; \
-	  $(am__cd) $(srcdir) && $(MAKE) $(AM_MAKEFLAGS) rygel_http_get_test_vala.stamp; \
-	fi
-$(srcdir)/rygel-http-time-seek_http-get.c: $(srcdir)/rygel_http_get_test_vala.stamp
-	@if test -f $@; then :; else \
-	  rm -f $(srcdir)/rygel_http_get_test_vala.stamp; \
-	  $(am__cd) $(srcdir) && $(MAKE) $(AM_MAKEFLAGS) rygel_http_get_test_vala.stamp; \
-	fi
-$(srcdir)/rygel-http-byte-seek_http-get.c: $(srcdir)/rygel_http_get_test_vala.stamp
-	@if test -f $@; then :; else \
-	  rm -f $(srcdir)/rygel_http_get_test_vala.stamp; \
-	  $(am__cd) $(srcdir) && $(MAKE) $(AM_MAKEFLAGS) rygel_http_get_test_vala.stamp; \
-	fi
-$(srcdir)/rygel-http-seek_http-get.c: $(srcdir)/rygel_http_get_test_vala.stamp
-	@if test -f $@; then :; else \
-	  rm -f $(srcdir)/rygel_http_get_test_vala.stamp; \
-	  $(am__cd) $(srcdir) && $(MAKE) $(AM_MAKEFLAGS) rygel_http_get_test_vala.stamp; \
-	fi
-rygel_http_get_test_vala.stamp: $(rygel_http_get_test_SOURCES)
-	$(AM_V_VALAC)$(VALAC) $(AM_VALAFLAGS) $(VALAFLAGS) -C $(rygel_http_get_test_SOURCES)
-	$(AM_V_at)touch $@
-$(srcdir)/rygel-http-item-uri-test.c: $(srcdir)/rygel_http_item_uri_test_vala.stamp
-	@if test -f $@; then :; else \
-	  rm -f $(srcdir)/rygel_http_item_uri_test_vala.stamp; \
-	  $(am__cd) $(srcdir) && $(MAKE) $(AM_MAKEFLAGS) rygel_http_item_uri_test_vala.stamp; \
-	fi
-$(srcdir)/rygel-http-item-uri.c: $(srcdir)/rygel_http_item_uri_test_vala.stamp
-	@if test -f $@; then :; else \
-	  rm -f $(srcdir)/rygel_http_item_uri_test_vala.stamp; \
-	  $(am__cd) $(srcdir) && $(MAKE) $(AM_MAKEFLAGS) rygel_http_item_uri_test_vala.stamp; \
-	fi
-rygel_http_item_uri_test_vala.stamp: $(rygel_http_item_uri_test_SOURCES)
-	$(AM_V_VALAC)$(VALAC) $(AM_VALAFLAGS) $(VALAFLAGS) -C $(rygel_http_item_uri_test_SOURCES)
 	$(AM_V_at)touch $@
 $(srcdir)/rygel-live-response-test.c: $(srcdir)/rygel_live_response_test_vala.stamp
 	@if test -f $@; then :; else \
@@ -744,6 +771,90 @@ $(srcdir)/rygel-state-machine_http-post.c: $(srcdir)/rygel_http_post_test_vala.s
 	fi
 rygel_http_post_test_vala.stamp: $(rygel_http_post_test_SOURCES)
 	$(AM_V_VALAC)$(VALAC) $(AM_VALAFLAGS) $(VALAFLAGS) -C $(rygel_http_post_test_SOURCES)
+	$(AM_V_at)touch $@
+$(srcdir)/rygel-http-get-test.c: $(srcdir)/rygel_http_get_test_vala.stamp
+	@if test -f $@; then :; else \
+	  rm -f $(srcdir)/rygel_http_get_test_vala.stamp; \
+	  $(am__cd) $(srcdir) && $(MAKE) $(AM_MAKEFLAGS) rygel_http_get_test_vala.stamp; \
+	fi
+$(srcdir)/rygel-http-get.c: $(srcdir)/rygel_http_get_test_vala.stamp
+	@if test -f $@; then :; else \
+	  rm -f $(srcdir)/rygel_http_get_test_vala.stamp; \
+	  $(am__cd) $(srcdir) && $(MAKE) $(AM_MAKEFLAGS) rygel_http_get_test_vala.stamp; \
+	fi
+$(srcdir)/rygel-http-request_http-get.c: $(srcdir)/rygel_http_get_test_vala.stamp
+	@if test -f $@; then :; else \
+	  rm -f $(srcdir)/rygel_http_get_test_vala.stamp; \
+	  $(am__cd) $(srcdir) && $(MAKE) $(AM_MAKEFLAGS) rygel_http_get_test_vala.stamp; \
+	fi
+$(srcdir)/rygel-http-item-uri_http-get.c: $(srcdir)/rygel_http_get_test_vala.stamp
+	@if test -f $@; then :; else \
+	  rm -f $(srcdir)/rygel_http_get_test_vala.stamp; \
+	  $(am__cd) $(srcdir) && $(MAKE) $(AM_MAKEFLAGS) rygel_http_get_test_vala.stamp; \
+	fi
+$(srcdir)/rygel-state-machine_http-get.c: $(srcdir)/rygel_http_get_test_vala.stamp
+	@if test -f $@; then :; else \
+	  rm -f $(srcdir)/rygel_http_get_test_vala.stamp; \
+	  $(am__cd) $(srcdir) && $(MAKE) $(AM_MAKEFLAGS) rygel_http_get_test_vala.stamp; \
+	fi
+$(srcdir)/rygel-http-time-seek_http-get.c: $(srcdir)/rygel_http_get_test_vala.stamp
+	@if test -f $@; then :; else \
+	  rm -f $(srcdir)/rygel_http_get_test_vala.stamp; \
+	  $(am__cd) $(srcdir) && $(MAKE) $(AM_MAKEFLAGS) rygel_http_get_test_vala.stamp; \
+	fi
+$(srcdir)/rygel-http-byte-seek_http-get.c: $(srcdir)/rygel_http_get_test_vala.stamp
+	@if test -f $@; then :; else \
+	  rm -f $(srcdir)/rygel_http_get_test_vala.stamp; \
+	  $(am__cd) $(srcdir) && $(MAKE) $(AM_MAKEFLAGS) rygel_http_get_test_vala.stamp; \
+	fi
+$(srcdir)/rygel-http-seek_http-get.c: $(srcdir)/rygel_http_get_test_vala.stamp
+	@if test -f $@; then :; else \
+	  rm -f $(srcdir)/rygel_http_get_test_vala.stamp; \
+	  $(am__cd) $(srcdir) && $(MAKE) $(AM_MAKEFLAGS) rygel_http_get_test_vala.stamp; \
+	fi
+rygel_http_get_test_vala.stamp: $(rygel_http_get_test_SOURCES)
+	$(AM_V_VALAC)$(VALAC) $(AM_VALAFLAGS) $(VALAFLAGS) -C $(rygel_http_get_test_SOURCES)
+	$(AM_V_at)touch $@
+$(srcdir)/rygel-http-item-uri-test.c: $(srcdir)/rygel_http_item_uri_test_vala.stamp
+	@if test -f $@; then :; else \
+	  rm -f $(srcdir)/rygel_http_item_uri_test_vala.stamp; \
+	  $(am__cd) $(srcdir) && $(MAKE) $(AM_MAKEFLAGS) rygel_http_item_uri_test_vala.stamp; \
+	fi
+$(srcdir)/rygel-http-item-uri.c: $(srcdir)/rygel_http_item_uri_test_vala.stamp
+	@if test -f $@; then :; else \
+	  rm -f $(srcdir)/rygel_http_item_uri_test_vala.stamp; \
+	  $(am__cd) $(srcdir) && $(MAKE) $(AM_MAKEFLAGS) rygel_http_item_uri_test_vala.stamp; \
+	fi
+rygel_http_item_uri_test_vala.stamp: $(rygel_http_item_uri_test_SOURCES)
+	$(AM_V_VALAC)$(VALAC) $(AM_VALAFLAGS) $(VALAFLAGS) -C $(rygel_http_item_uri_test_SOURCES)
+	$(AM_V_at)touch $@
+$(srcdir)/rygel-album-art-spec-test.c: $(srcdir)/rygel_album_art_spec_test_vala.stamp
+	@if test -f $@; then :; else \
+	  rm -f $(srcdir)/rygel_album_art_spec_test_vala.stamp; \
+	  $(am__cd) $(srcdir) && $(MAKE) $(AM_MAKEFLAGS) rygel_album_art_spec_test_vala.stamp; \
+	fi
+$(srcdir)/rygel-media-art-store.c: $(srcdir)/rygel_album_art_spec_test_vala.stamp
+	@if test -f $@; then :; else \
+	  rm -f $(srcdir)/rygel_album_art_spec_test_vala.stamp; \
+	  $(am__cd) $(srcdir) && $(MAKE) $(AM_MAKEFLAGS) rygel_album_art_spec_test_vala.stamp; \
+	fi
+$(srcdir)/../src/rygel/rygel-thumbnail.c: $(srcdir)/rygel_album_art_spec_test_vala.stamp
+	@if test -f $@; then :; else \
+	  rm -f $(srcdir)/rygel_album_art_spec_test_vala.stamp; \
+	  $(am__cd) $(srcdir) && $(MAKE) $(AM_MAKEFLAGS) rygel_album_art_spec_test_vala.stamp; \
+	fi
+$(srcdir)/../src/rygel/rygel-icon-info.c: $(srcdir)/rygel_album_art_spec_test_vala.stamp
+	@if test -f $@; then :; else \
+	  rm -f $(srcdir)/rygel_album_art_spec_test_vala.stamp; \
+	  $(am__cd) $(srcdir) && $(MAKE) $(AM_MAKEFLAGS) rygel_album_art_spec_test_vala.stamp; \
+	fi
+$(srcdir)/../src/rygel/rygel-album-art.c: $(srcdir)/rygel_album_art_spec_test_vala.stamp
+	@if test -f $@; then :; else \
+	  rm -f $(srcdir)/rygel_album_art_spec_test_vala.stamp; \
+	  $(am__cd) $(srcdir) && $(MAKE) $(AM_MAKEFLAGS) rygel_album_art_spec_test_vala.stamp; \
+	fi
+rygel_album_art_spec_test_vala.stamp: $(rygel_album_art_spec_test_SOURCES)
+	$(AM_V_VALAC)$(VALAC) $(AM_VALAFLAGS) $(VALAFLAGS) -C $(rygel_album_art_spec_test_SOURCES)
 	$(AM_V_at)touch $@
 $(srcdir)/rygel-http-byte-seek-test.c: $(srcdir)/rygel_http_byte_seek_test_vala.stamp
 	@if test -f $@; then :; else \
@@ -975,6 +1086,10 @@ distclean-generic:
 maintainer-clean-generic:
 	@echo "This command is intended for maintainers to use"
 	@echo "it deletes files that may require special tools to rebuild."
+	-rm -f ../src/rygel/rygel-album-art.c
+	-rm -f ../src/rygel/rygel-icon-info.c
+	-rm -f ../src/rygel/rygel-thumbnail.c
+	-rm -f rygel-album-art-spec-test.c
 	-rm -f rygel-gst-utils.c
 	-rm -f rygel-http-byte-seek-test.c
 	-rm -f rygel-http-byte-seek.c
@@ -1002,12 +1117,14 @@ maintainer-clean-generic:
 	-rm -f rygel-http-time-seek_http-get.c
 	-rm -f rygel-live-response-test.c
 	-rm -f rygel-live-response.c
+	-rm -f rygel-media-art-store.c
 	-rm -f rygel-seekable-response-test.c
 	-rm -f rygel-seekable-response.c
 	-rm -f rygel-state-machine_http-get.c
 	-rm -f rygel-state-machine_http-post.c
 	-rm -f rygel-state-machine_live-response.c
 	-rm -f rygel-state-machine_seekable-response.c
+	-rm -f rygel_album_art_spec_test_vala.stamp
 	-rm -f rygel_http_byte_seek_test_vala.stamp
 	-rm -f rygel_http_get_test_vala.stamp
 	-rm -f rygel_http_item_uri_test_vala.stamp

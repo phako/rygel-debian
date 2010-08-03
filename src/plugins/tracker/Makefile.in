@@ -39,7 +39,6 @@ DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in \
 	librygel_media_tracker_la_vala.stamp \
 	rygel-tracker-category-all-container.c \
 	rygel-tracker-category-container.c \
-	rygel-tracker-content-directory.c \
 	rygel-tracker-insertion-query.c rygel-tracker-interfaces.c \
 	rygel-tracker-item-creation.c rygel-tracker-item-factory.c \
 	rygel-tracker-metadata-values.c \
@@ -92,7 +91,6 @@ librygel_media_tracker_la_DEPENDENCIES = $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1)
 am_librygel_media_tracker_la_OBJECTS =  \
-	rygel-tracker-content-directory.lo \
 	rygel-tracker-root-container.lo \
 	rygel-tracker-category-container.lo rygel-tracker-music.lo \
 	rygel-tracker-videos.lo rygel-tracker-pictures.lo \
@@ -216,6 +214,8 @@ LIBGSTREAMER_LIBS = @LIBGSTREAMER_LIBS@
 LIBGUPNP_AV_CFLAGS = @LIBGUPNP_AV_CFLAGS@
 LIBGUPNP_AV_LIBS = @LIBGUPNP_AV_LIBS@
 LIBGUPNP_CFLAGS = @LIBGUPNP_CFLAGS@
+LIBGUPNP_DLNA_CFLAGS = @LIBGUPNP_DLNA_CFLAGS@
+LIBGUPNP_DLNA_LIBS = @LIBGUPNP_DLNA_LIBS@
 LIBGUPNP_LIBS = @LIBGUPNP_LIBS@
 LIBOBJS = @LIBOBJS@
 LIBS = @LIBS@
@@ -329,9 +329,7 @@ AM_CFLAGS = $(LIBGUPNP_CFLAGS) \
 	    -I$(top_srcdir)/src/rygel -DDATA_DIR='"$(datadir)"' \
 	    -include config.h
 
-librygel_media_tracker_la_SOURCES = \
-				    rygel-tracker-content-directory.vala \
-				    rygel-tracker-root-container.vala \
+librygel_media_tracker_la_SOURCES = rygel-tracker-root-container.vala \
 				    rygel-tracker-category-container.vala \
 				    rygel-tracker-music.vala \
 				    rygel-tracker-videos.vala \
@@ -446,7 +444,6 @@ distclean-compile:
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-tracker-category-all-container.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-tracker-category-container.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-tracker-content-directory.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-tracker-insertion-query.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-tracker-interfaces.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-tracker-item-creation.Plo@am__quote@
@@ -492,11 +489,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$<' object='$@' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LTCOMPILE) -c -o $@ $<
-$(srcdir)/rygel-tracker-content-directory.c: $(srcdir)/librygel_media_tracker_la_vala.stamp
-	@if test -f $@; then :; else \
-	  rm -f $(srcdir)/librygel_media_tracker_la_vala.stamp; \
-	  $(am__cd) $(srcdir) && $(MAKE) $(AM_MAKEFLAGS) librygel_media_tracker_la_vala.stamp; \
-	fi
 $(srcdir)/rygel-tracker-root-container.c: $(srcdir)/librygel_media_tracker_la_vala.stamp
 	@if test -f $@; then :; else \
 	  rm -f $(srcdir)/librygel_media_tracker_la_vala.stamp; \
@@ -739,7 +731,6 @@ maintainer-clean-generic:
 	-rm -f librygel_media_tracker_la_vala.stamp
 	-rm -f rygel-tracker-category-all-container.c
 	-rm -f rygel-tracker-category-container.c
-	-rm -f rygel-tracker-content-directory.c
 	-rm -f rygel-tracker-insertion-query.c
 	-rm -f rygel-tracker-interfaces.c
 	-rm -f rygel-tracker-item-creation.c

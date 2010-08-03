@@ -47,6 +47,7 @@ public class Rygel.External.Container : Rygel.MediaContainer {
                       uint       child_count,
                       bool       searchable,
                       string     service_name,
+                      string     path,
                       string     host_ip,
                       Container? parent = null) {
         base (id, parent, title, (int) child_count);
@@ -64,17 +65,16 @@ public class Rygel.External.Container : Rygel.MediaContainer {
 
         // Create proxy to MediaContainer iface
         this.actual_container = this.connection.get_object (this.service_name,
-                                                            id)
+                                                            path)
                                 as MediaContainerProxy;
 
         this.update_container.begin (true);
     }
 
-    public override async Gee.List<MediaObject>? get_children (
-                                        uint         offset,
-                                        uint         max_count,
-                                        Cancellable? cancellable)
-                                        throws GLib.Error {
+    public override async MediaObjects? get_children (uint         offset,
+                                                      uint         max_count,
+                                                      Cancellable? cancellable)
+                                                      throws GLib.Error {
         string[] filter = {};
 
         foreach (var object_prop in MediaObjectProxy.PROPERTIES) {
@@ -93,13 +93,12 @@ public class Rygel.External.Container : Rygel.MediaContainer {
         return yield this.create_media_objects (children_props, this);
     }
 
-    public override async Gee.List<MediaObject>? search (
-                                        SearchExpression expression,
-                                        uint             offset,
-                                        uint             max_count,
-                                        out uint         total_matches,
-                                        Cancellable?     cancellable)
-                                        throws GLib.Error {
+    public override async MediaObjects? search (SearchExpression expression,
+                                                uint             offset,
+                                                uint             max_count,
+                                                out uint         total_matches,
+                                                Cancellable?     cancellable)
+                                                throws GLib.Error {
         if (!this.searchable) {
             // Backend doesn't implement search :(
             return yield base.search (expression,
@@ -182,11 +181,11 @@ public class Rygel.External.Container : Rygel.MediaContainer {
         return media_object;
     }
 
-    private async Gee.List<MediaObject> create_media_objects (
+    private async MediaObjects create_media_objects (
                                         HashTable<string,Value?>[] all_props,
                                         MediaContainer?            parent
                                         = null) throws GLib.Error {
-        var media_objects = new ArrayList <MediaObject> ();
+        var media_objects = new MediaObjects ();
 
         foreach (var props in all_props) {
             var id = props.lookup ("Path").get_string ();
@@ -256,16 +255,17 @@ public class Rygel.External.Container : Rygel.MediaContainer {
         this.containers.clear ();
 
         foreach (var props in children_props) {
-            var id = props.lookup ("Path").get_string ();
+            var path = props.lookup ("Path").get_string ();
             var title = props.lookup ("DisplayName").get_string ();
             var child_count = props.lookup ("ChildCount").get_uint ();
             var searchable = props.lookup ("Searchable").get_boolean ();
 
-            var container = new Container (id,
+            var container = new Container (path,
                                            title,
                                            child_count,
                                            searchable,
                                            this.service_name,
+                                           path,
                                            this.host_ip,
                                            this);
             this.containers.add (container);

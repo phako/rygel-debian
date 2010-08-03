@@ -56,7 +56,7 @@ struct _RygelTestItemClass {
 
 static gpointer rygel_test_item_parent_class = NULL;
 
-GType rygel_test_item_get_type (void);
+GType rygel_test_item_get_type (void) G_GNUC_CONST;
 enum  {
 	RYGEL_TEST_ITEM_DUMMY_PROPERTY
 };

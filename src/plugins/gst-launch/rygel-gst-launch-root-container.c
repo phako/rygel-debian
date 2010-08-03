@@ -71,7 +71,7 @@ struct _RygelGstLaunchRootContainerPrivate {
 
 static gpointer rygel_gst_launch_root_container_parent_class = NULL;
 
-GType rygel_gst_launch_root_container_get_type (void);
+GType rygel_gst_launch_root_container_get_type (void) G_GNUC_CONST;
 #define RYGEL_GST_LAUNCH_ROOT_CONTAINER_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), RYGEL_GST_LAUNCH_TYPE_ROOT_CONTAINER, RygelGstLaunchRootContainerPrivate))
 enum  {
 	RYGEL_GST_LAUNCH_ROOT_CONTAINER_DUMMY_PROPERTY
@@ -83,7 +83,7 @@ RygelGstLaunchRootContainer* rygel_gst_launch_root_container_new (const char* ti
 RygelGstLaunchRootContainer* rygel_gst_launch_root_container_construct (GType object_type, const char* title);
 RygelGstLaunchItem* rygel_gst_launch_item_new (const char* id, RygelMediaContainer* parent, const char* title, const char* mime_type, const char* launch_line);
 RygelGstLaunchItem* rygel_gst_launch_item_construct (GType object_type, const char* id, RygelMediaContainer* parent, const char* title, const char* mime_type, const char* launch_line);
-GType rygel_gst_launch_item_get_type (void);
+GType rygel_gst_launch_item_get_type (void) G_GNUC_CONST;
 static void rygel_gst_launch_root_container_finalize (GObject* obj);
 
 
@@ -113,22 +113,23 @@ RygelGstLaunchRootContainer* rygel_gst_launch_root_container_construct (GType ob
 		}
 		{
 			GeeIterator* _name_it;
+#line 44 "rygel-gst-launch-root-container.vala"
 			_name_it = gee_abstract_collection_iterator ((GeeAbstractCollection*) item_names);
 #line 44 "rygel-gst-launch-root-container.vala"
 			while (TRUE) {
-#line 120 "rygel-gst-launch-root-container.c"
+#line 121 "rygel-gst-launch-root-container.c"
 				char* name;
 #line 44 "rygel-gst-launch-root-container.vala"
 				if (!gee_iterator_next (_name_it)) {
 #line 44 "rygel-gst-launch-root-container.vala"
 					break;
-#line 126 "rygel-gst-launch-root-container.c"
+#line 127 "rygel-gst-launch-root-container.c"
 				}
 #line 44 "rygel-gst-launch-root-container.vala"
 				name = (char*) gee_iterator_get (_name_it);
 #line 45 "rygel-gst-launch-root-container.vala"
 				rygel_gst_launch_root_container_add_launch_item (self, name);
-#line 132 "rygel-gst-launch-root-container.c"
+#line 133 "rygel-gst-launch-root-container.c"
 				_g_free0 (name);
 			}
 			_g_object_unref0 (_name_it);
@@ -144,7 +145,7 @@ RygelGstLaunchRootContainer* rygel_gst_launch_root_container_construct (GType ob
 		{
 #line 48 "rygel-gst-launch-root-container.vala"
 			g_debug ("rygel-gst-launch-root-container.vala:48: GstLaunch init failed: %s", err->message);
-#line 148 "rygel-gst-launch-root-container.c"
+#line 149 "rygel-gst-launch-root-container.c"
 			_g_error_free0 (err);
 		}
 	}
@@ -162,19 +163,19 @@ RygelGstLaunchRootContainer* rygel_gst_launch_root_container_construct (GType ob
 RygelGstLaunchRootContainer* rygel_gst_launch_root_container_new (const char* title) {
 #line 37 "rygel-gst-launch-root-container.vala"
 	return rygel_gst_launch_root_container_construct (RYGEL_GST_LAUNCH_TYPE_ROOT_CONTAINER, title);
-#line 166 "rygel-gst-launch-root-container.c"
+#line 167 "rygel-gst-launch-root-container.c"
 }
 
 
 #line 52 "rygel-gst-launch-root-container.vala"
 static void rygel_gst_launch_root_container_add_launch_item (RygelGstLaunchRootContainer* self, const char* name) {
-#line 172 "rygel-gst-launch-root-container.c"
+#line 173 "rygel-gst-launch-root-container.c"
 	GError * _inner_error_;
 #line 52 "rygel-gst-launch-root-container.vala"
 	g_return_if_fail (self != NULL);
 #line 52 "rygel-gst-launch-root-container.vala"
 	g_return_if_fail (name != NULL);
-#line 178 "rygel-gst-launch-root-container.c"
+#line 179 "rygel-gst-launch-root-container.c"
 	_inner_error_ = NULL;
 	{
 		char* _tmp0_;
@@ -189,32 +190,32 @@ static void rygel_gst_launch_root_container_add_launch_item (RygelGstLaunchRootC
 		RygelGstLaunchItem* _tmp6_;
 #line 54 "rygel-gst-launch-root-container.vala"
 		title = (_tmp1_ = rygel_configuration_get_string ((RygelConfiguration*) self->priv->config, RYGEL_GST_LAUNCH_ROOT_CONTAINER_CONFIG_GROUP, _tmp0_ = g_strdup_printf ("%s_title", name), &_inner_error_), _g_free0 (_tmp0_), _tmp1_);
-#line 193 "rygel-gst-launch-root-container.c"
+#line 194 "rygel-gst-launch-root-container.c"
 		if (_inner_error_ != NULL) {
 			goto __catch1_g_error;
 		}
 #line 56 "rygel-gst-launch-root-container.vala"
 		mime_type = (_tmp3_ = rygel_configuration_get_string ((RygelConfiguration*) self->priv->config, RYGEL_GST_LAUNCH_ROOT_CONTAINER_CONFIG_GROUP, _tmp2_ = g_strdup_printf ("%s_mime", name), &_inner_error_), _g_free0 (_tmp2_), _tmp3_);
-#line 199 "rygel-gst-launch-root-container.c"
+#line 200 "rygel-gst-launch-root-container.c"
 		if (_inner_error_ != NULL) {
 			_g_free0 (title);
 			goto __catch1_g_error;
 		}
 #line 58 "rygel-gst-launch-root-container.vala"
 		launch_line = (_tmp5_ = rygel_configuration_get_string ((RygelConfiguration*) self->priv->config, RYGEL_GST_LAUNCH_ROOT_CONTAINER_CONFIG_GROUP, _tmp4_ = g_strdup_printf ("%s_launch", name), &_inner_error_), _g_free0 (_tmp4_), _tmp5_);
-#line 206 "rygel-gst-launch-root-container.c"
+#line 207 "rygel-gst-launch-root-container.c"
 		if (_inner_error_ != NULL) {
-			_g_free0 (title);
 			_g_free0 (mime_type);
+			_g_free0 (title);
 			goto __catch1_g_error;
 		}
 #line 61 "rygel-gst-launch-root-container.vala"
 		rygel_simple_container_add_child ((RygelSimpleContainer*) self, (RygelMediaObject*) (_tmp6_ = rygel_gst_launch_item_new (name, (RygelMediaContainer*) self, title, mime_type, launch_line)));
-#line 214 "rygel-gst-launch-root-container.c"
+#line 215 "rygel-gst-launch-root-container.c"
 		_g_object_unref0 (_tmp6_);
-		_g_free0 (title);
-		_g_free0 (mime_type);
 		_g_free0 (launch_line);
+		_g_free0 (mime_type);
+		_g_free0 (title);
 	}
 	goto __finally1;
 	__catch1_g_error:
@@ -226,7 +227,7 @@ static void rygel_gst_launch_root_container_add_launch_item (RygelGstLaunchRootC
 #line 67 "rygel-gst-launch-root-container.vala"
 			g_debug ("rygel-gst-launch-root-container.vala:67: GstLaunch failed item '%s': %" \
 "s", name, err->message);
-#line 229 "rygel-gst-launch-root-container.c"
+#line 230 "rygel-gst-launch-root-container.c"
 			_g_error_free0 (err);
 		}
 	}

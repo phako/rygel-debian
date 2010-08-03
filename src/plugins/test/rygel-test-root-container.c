@@ -86,17 +86,17 @@ struct _RygelTestRootContainerClass {
 
 static gpointer rygel_test_root_container_parent_class = NULL;
 
-GType rygel_test_root_container_get_type (void);
+GType rygel_test_root_container_get_type (void) G_GNUC_CONST;
 enum  {
 	RYGEL_TEST_ROOT_CONTAINER_DUMMY_PROPERTY
 };
 RygelTestAudioItem* rygel_test_audio_item_new (const char* id, RygelMediaContainer* parent, const char* title);
 RygelTestAudioItem* rygel_test_audio_item_construct (GType object_type, const char* id, RygelMediaContainer* parent, const char* title);
-GType rygel_test_item_get_type (void);
-GType rygel_test_audio_item_get_type (void);
+GType rygel_test_item_get_type (void) G_GNUC_CONST;
+GType rygel_test_audio_item_get_type (void) G_GNUC_CONST;
 RygelTestVideoItem* rygel_test_video_item_new (const char* id, RygelMediaContainer* parent, const char* title);
 RygelTestVideoItem* rygel_test_video_item_construct (GType object_type, const char* id, RygelMediaContainer* parent, const char* title);
-GType rygel_test_video_item_get_type (void);
+GType rygel_test_video_item_get_type (void) G_GNUC_CONST;
 RygelTestRootContainer* rygel_test_root_container_new (const char* title);
 RygelTestRootContainer* rygel_test_root_container_construct (GType object_type, const char* title);
 

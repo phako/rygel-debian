@@ -64,6 +64,36 @@ typedef struct _RygelXBoxHacksPrivate RygelXBoxHacksPrivate;
 typedef struct _RygelRootDevice RygelRootDevice;
 typedef struct _RygelRootDeviceClass RygelRootDeviceClass;
 
+#define RYGEL_TYPE_MEDIA_QUERY_ACTION (rygel_media_query_action_get_type ())
+#define RYGEL_MEDIA_QUERY_ACTION(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_MEDIA_QUERY_ACTION, RygelMediaQueryAction))
+#define RYGEL_MEDIA_QUERY_ACTION_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TYPE_MEDIA_QUERY_ACTION, RygelMediaQueryActionClass))
+#define RYGEL_IS_MEDIA_QUERY_ACTION(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TYPE_MEDIA_QUERY_ACTION))
+#define RYGEL_IS_MEDIA_QUERY_ACTION_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_TYPE_MEDIA_QUERY_ACTION))
+#define RYGEL_MEDIA_QUERY_ACTION_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_TYPE_MEDIA_QUERY_ACTION, RygelMediaQueryActionClass))
+
+typedef struct _RygelMediaQueryAction RygelMediaQueryAction;
+typedef struct _RygelMediaQueryActionClass RygelMediaQueryActionClass;
+
+#define RYGEL_TYPE_SEARCH (rygel_search_get_type ())
+#define RYGEL_SEARCH(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_SEARCH, RygelSearch))
+#define RYGEL_SEARCH_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TYPE_SEARCH, RygelSearchClass))
+#define RYGEL_IS_SEARCH(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TYPE_SEARCH))
+#define RYGEL_IS_SEARCH_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_TYPE_SEARCH))
+#define RYGEL_SEARCH_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_TYPE_SEARCH, RygelSearchClass))
+
+typedef struct _RygelSearch RygelSearch;
+typedef struct _RygelSearchClass RygelSearchClass;
+
+#define RYGEL_TYPE_BROWSE (rygel_browse_get_type ())
+#define RYGEL_BROWSE(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_BROWSE, RygelBrowse))
+#define RYGEL_BROWSE_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TYPE_BROWSE, RygelBrowseClass))
+#define RYGEL_IS_BROWSE(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TYPE_BROWSE))
+#define RYGEL_IS_BROWSE_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_TYPE_BROWSE))
+#define RYGEL_BROWSE_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_TYPE_BROWSE, RygelBrowseClass))
+
+typedef struct _RygelBrowse RygelBrowse;
+typedef struct _RygelBrowseClass RygelBrowseClass;
+
 #define RYGEL_TYPE_MEDIA_OBJECT (rygel_media_object_get_type ())
 #define RYGEL_MEDIA_OBJECT(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_MEDIA_OBJECT, RygelMediaObject))
 #define RYGEL_MEDIA_OBJECT_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TYPE_MEDIA_OBJECT, RygelMediaObjectClass))
@@ -152,6 +182,7 @@ struct _RygelMediaObject {
 
 struct _RygelMediaObjectClass {
 	GObjectClass parent_class;
+	gint (*compare_by_property) (RygelMediaObject* self, RygelMediaObject* media_object, const char* property);
 };
 
 struct _RygelMediaItem {
@@ -199,7 +230,7 @@ static char* rygel_xbox_hacks_MODEL_NAME = NULL;
 static gpointer rygel_xbox_hacks_parent_class = NULL;
 
 GQuark rygel_xbox_hacks_error_quark (void);
-GType rygel_xbox_hacks_get_type (void);
+GType rygel_xbox_hacks_get_type (void) G_GNUC_CONST;
 enum  {
 	RYGEL_XBOX_HACKS_DUMMY_PROPERTY
 };
@@ -207,27 +238,30 @@ RygelXBoxHacks* rygel_xbox_hacks_new_for_action (GUPnPServiceAction* action, GEr
 RygelXBoxHacks* rygel_xbox_hacks_construct_for_action (GType object_type, GUPnPServiceAction* action, GError** error);
 static void rygel_xbox_hacks_modify_dms_desc (RygelXBoxHacks* self, xmlDoc* doc);
 static void rygel_xbox_hacks_save_modified_desc (RygelXBoxHacks* self, GUPnPXMLDoc* doc, const char* desc_path, GError** error);
-GType rygel_root_device_get_type (void);
+GType rygel_root_device_get_type (void) G_GNUC_CONST;
 void rygel_xbox_hacks_apply_on_device (RygelXBoxHacks* self, RygelRootDevice* device, const char* template_path, GError** error);
-void rygel_xbox_hacks_translate_container_id (RygelXBoxHacks* self, char** container_id);
-GType rygel_media_object_get_type (void);
-GType rygel_media_container_get_type (void);
-GType rygel_media_item_get_type (void);
+GType rygel_media_query_action_get_type (void) G_GNUC_CONST;
+GType rygel_search_get_type (void) G_GNUC_CONST;
+GType rygel_browse_get_type (void) G_GNUC_CONST;
+void rygel_xbox_hacks_translate_container_id (RygelXBoxHacks* self, RygelMediaQueryAction* action, char** container_id);
+GType rygel_media_object_get_type (void) G_GNUC_CONST;
+GType rygel_media_container_get_type (void) G_GNUC_CONST;
+GType rygel_media_item_get_type (void) G_GNUC_CONST;
 gpointer rygel_icon_info_ref (gpointer instance);
 void rygel_icon_info_unref (gpointer instance);
 GParamSpec* rygel_param_spec_icon_info (const gchar* name, const gchar* nick, const gchar* blurb, GType object_type, GParamFlags flags);
 void rygel_value_set_icon_info (GValue* value, gpointer v_object);
 void rygel_value_take_icon_info (GValue* value, gpointer v_object);
 gpointer rygel_value_get_icon_info (const GValue* value);
-GType rygel_icon_info_get_type (void);
-GType rygel_thumbnail_get_type (void);
+GType rygel_icon_info_get_type (void) G_GNUC_CONST;
+GType rygel_thumbnail_get_type (void) G_GNUC_CONST;
 gpointer rygel_subtitle_ref (gpointer instance);
 void rygel_subtitle_unref (gpointer instance);
 GParamSpec* rygel_param_spec_subtitle (const gchar* name, const gchar* nick, const gchar* blurb, GType object_type, GParamFlags flags);
 void rygel_value_set_subtitle (GValue* value, gpointer v_object);
 void rygel_value_take_subtitle (GValue* value, gpointer v_object);
 gpointer rygel_value_get_subtitle (const GValue* value);
-GType rygel_subtitle_get_type (void);
+GType rygel_subtitle_get_type (void) G_GNUC_CONST;
 void rygel_xbox_hacks_apply (RygelXBoxHacks* self, RygelMediaItem* item);
 xmlNode* rygel_xml_utils_get_element (xmlNode* node, ...);
 static xmlNode* rygel_xbox_hacks_find_cds_type_node (RygelXBoxHacks* self, xmlNode* doc_node);
@@ -245,25 +279,25 @@ GQuark rygel_xbox_hacks_error_quark (void) {
 }
 
 
-#line 1144 "glib-2.0.vapi"
+#line 1152 "glib-2.0.vapi"
 static gboolean string_contains (const char* self, const char* needle) {
-#line 251 "rygel-xbox-hacks.c"
+#line 285 "rygel-xbox-hacks.c"
 	gboolean result = FALSE;
-#line 1144 "glib-2.0.vapi"
+#line 1152 "glib-2.0.vapi"
 	g_return_val_if_fail (self != NULL, FALSE);
-#line 1144 "glib-2.0.vapi"
+#line 1152 "glib-2.0.vapi"
 	g_return_val_if_fail (needle != NULL, FALSE);
-#line 257 "rygel-xbox-hacks.c"
+#line 291 "rygel-xbox-hacks.c"
 	result = strstr (self, needle) != NULL;
-#line 1145 "glib-2.0.vapi"
+#line 1153 "glib-2.0.vapi"
 	return result;
-#line 261 "rygel-xbox-hacks.c"
+#line 295 "rygel-xbox-hacks.c"
 }
 
 
 #line 39 "rygel-xbox-hacks.vala"
 RygelXBoxHacks* rygel_xbox_hacks_construct_for_action (GType object_type, GUPnPServiceAction* action, GError** error) {
-#line 267 "rygel-xbox-hacks.c"
+#line 301 "rygel-xbox-hacks.c"
 	GError * _inner_error_;
 	RygelXBoxHacks * self;
 	SoupMessage* _tmp0_;
@@ -271,7 +305,7 @@ RygelXBoxHacks* rygel_xbox_hacks_construct_for_action (GType object_type, GUPnPS
 	char* agent;
 #line 39 "rygel-xbox-hacks.vala"
 	g_return_val_if_fail (action != NULL, NULL);
-#line 275 "rygel-xbox-hacks.c"
+#line 309 "rygel-xbox-hacks.c"
 	_inner_error_ = NULL;
 #line 39 "rygel-xbox-hacks.vala"
 	self = (RygelXBoxHacks*) g_object_new (object_type, NULL);
@@ -279,13 +313,13 @@ RygelXBoxHacks* rygel_xbox_hacks_construct_for_action (GType object_type, GUPnPS
 	agent = (_tmp1_ = g_strdup (soup_message_headers_get ((_tmp0_ = gupnp_service_action_get_message (action))->request_headers, "User-Agent")), _g_object_unref0 (_tmp0_), _tmp1_);
 #line 41 "rygel-xbox-hacks.vala"
 	if (!string_contains (agent, "Xbox")) {
-#line 283 "rygel-xbox-hacks.c"
+#line 317 "rygel-xbox-hacks.c"
 		_inner_error_ = g_error_new_literal (RYGEL_XBOX_HACKS_ERROR, RYGEL_XBOX_HACKS_ERROR_NA, _ ("Not Applicable"));
 		{
 			if (_inner_error_->domain == RYGEL_XBOX_HACKS_ERROR) {
 				g_propagate_error (error, _inner_error_);
 				_g_free0 (agent);
-				g_object_unref (self);
+				_g_object_unref0 (self);
 				return NULL;
 			} else {
 				_g_free0 (agent);
@@ -304,46 +338,46 @@ RygelXBoxHacks* rygel_xbox_hacks_construct_for_action (GType object_type, GUPnPS
 RygelXBoxHacks* rygel_xbox_hacks_new_for_action (GUPnPServiceAction* action, GError** error) {
 #line 39 "rygel-xbox-hacks.vala"
 	return rygel_xbox_hacks_construct_for_action (RYGEL_TYPE_XBOX_HACKS, action, error);
-#line 308 "rygel-xbox-hacks.c"
+#line 342 "rygel-xbox-hacks.c"
 }
 
 
-#line 1148 "glib-2.0.vapi"
+#line 1156 "glib-2.0.vapi"
 static char* string_replace (const char* self, const char* old, const char* replacement) {
-#line 314 "rygel-xbox-hacks.c"
+#line 348 "rygel-xbox-hacks.c"
 	char* result = NULL;
 	GError * _inner_error_;
-#line 1148 "glib-2.0.vapi"
+#line 1156 "glib-2.0.vapi"
 	g_return_val_if_fail (self != NULL, NULL);
-#line 1148 "glib-2.0.vapi"
+#line 1156 "glib-2.0.vapi"
 	g_return_val_if_fail (old != NULL, NULL);
-#line 1148 "glib-2.0.vapi"
+#line 1156 "glib-2.0.vapi"
 	g_return_val_if_fail (replacement != NULL, NULL);
-#line 323 "rygel-xbox-hacks.c"
+#line 357 "rygel-xbox-hacks.c"
 	_inner_error_ = NULL;
 	{
 		char* _tmp0_;
 		GRegex* _tmp1_;
 		GRegex* regex;
 		char* _tmp2_;
-#line 1150 "glib-2.0.vapi"
+#line 1158 "glib-2.0.vapi"
 		regex = (_tmp1_ = g_regex_new (_tmp0_ = g_regex_escape_string (old, -1), 0, 0, &_inner_error_), _g_free0 (_tmp0_), _tmp1_);
-#line 332 "rygel-xbox-hacks.c"
+#line 366 "rygel-xbox-hacks.c"
 		if (_inner_error_ != NULL) {
 			if (_inner_error_->domain == G_REGEX_ERROR) {
-				goto __catch51_g_regex_error;
+				goto __catch49_g_regex_error;
 			}
 			g_critical ("file %s: line %d: unexpected error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
 			g_clear_error (&_inner_error_);
 			return NULL;
 		}
-#line 1151 "glib-2.0.vapi"
+#line 1159 "glib-2.0.vapi"
 		_tmp2_ = g_regex_replace_literal (regex, self, (gssize) (-1), 0, replacement, 0, &_inner_error_);
-#line 343 "rygel-xbox-hacks.c"
+#line 377 "rygel-xbox-hacks.c"
 		if (_inner_error_ != NULL) {
 			_g_regex_unref0 (regex);
 			if (_inner_error_->domain == G_REGEX_ERROR) {
-				goto __catch51_g_regex_error;
+				goto __catch49_g_regex_error;
 			}
 			_g_regex_unref0 (regex);
 			g_critical ("file %s: line %d: unexpected error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
@@ -352,24 +386,24 @@ static char* string_replace (const char* self, const char* old, const char* repl
 		}
 		result = _tmp2_;
 		_g_regex_unref0 (regex);
-#line 1151 "glib-2.0.vapi"
+#line 1159 "glib-2.0.vapi"
 		return result;
-#line 358 "rygel-xbox-hacks.c"
+#line 392 "rygel-xbox-hacks.c"
 	}
-	goto __finally51;
-	__catch51_g_regex_error:
+	goto __finally49;
+	__catch49_g_regex_error:
 	{
 		GError * e;
 		e = _inner_error_;
 		_inner_error_ = NULL;
 		{
-#line 1153 "glib-2.0.vapi"
+#line 1161 "glib-2.0.vapi"
 			g_assert_not_reached ();
-#line 369 "rygel-xbox-hacks.c"
+#line 403 "rygel-xbox-hacks.c"
 			_g_error_free0 (e);
 		}
 	}
-	__finally51:
+	__finally49:
 	if (_inner_error_ != NULL) {
 		g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
 		g_clear_error (&_inner_error_);
@@ -380,7 +414,7 @@ static char* string_replace (const char* self, const char* old, const char* repl
 
 #line 46 "rygel-xbox-hacks.vala"
 void rygel_xbox_hacks_apply_on_device (RygelXBoxHacks* self, RygelRootDevice* device, const char* template_path, GError** error) {
-#line 384 "rygel-xbox-hacks.c"
+#line 418 "rygel-xbox-hacks.c"
 	GError * _inner_error_;
 	GUPnPXMLDoc* doc;
 	char* desc_path;
@@ -392,17 +426,17 @@ void rygel_xbox_hacks_apply_on_device (RygelXBoxHacks* self, RygelRootDevice* de
 	g_return_if_fail (device != NULL);
 #line 46 "rygel-xbox-hacks.vala"
 	g_return_if_fail (template_path != NULL);
-#line 396 "rygel-xbox-hacks.c"
+#line 430 "rygel-xbox-hacks.c"
 	_inner_error_ = NULL;
 #line 48 "rygel-xbox-hacks.vala"
 	if (!g_str_has_prefix (gupnp_device_info_get_device_type ((GUPnPDeviceInfo*) device), rygel_xbox_hacks_DMS)) {
 #line 49 "rygel-xbox-hacks.vala"
 		return;
-#line 402 "rygel-xbox-hacks.c"
+#line 436 "rygel-xbox-hacks.c"
 	}
 #line 52 "rygel-xbox-hacks.vala"
 	doc = gupnp_xml_doc_new_from_path (template_path, &_inner_error_);
-#line 406 "rygel-xbox-hacks.c"
+#line 440 "rygel-xbox-hacks.c"
 	if (_inner_error_ != NULL) {
 		g_propagate_error (error, _inner_error_);
 		return;
@@ -413,305 +447,363 @@ void rygel_xbox_hacks_apply_on_device (RygelXBoxHacks* self, RygelRootDevice* de
 	desc_path = string_replace (template_path, ".xml", "-xbox.xml");
 #line 56 "rygel-xbox-hacks.vala"
 	rygel_xbox_hacks_save_modified_desc (self, doc, desc_path, &_inner_error_);
-#line 417 "rygel-xbox-hacks.c"
+#line 451 "rygel-xbox-hacks.c"
 	if (_inner_error_ != NULL) {
 		g_propagate_error (error, _inner_error_);
-		_g_object_unref0 (doc);
 		_g_free0 (desc_path);
+		_g_object_unref0 (doc);
 		return;
 	}
 #line 58 "rygel-xbox-hacks.vala"
 	regex = g_regex_new (rygel_xbox_hacks_AGENT, G_REGEX_CASELESS, 0, &_inner_error_);
-#line 426 "rygel-xbox-hacks.c"
+#line 460 "rygel-xbox-hacks.c"
 	if (_inner_error_ != NULL) {
 		g_propagate_error (error, _inner_error_);
-		_g_object_unref0 (doc);
 		_g_free0 (desc_path);
+		_g_object_unref0 (doc);
 		return;
 	}
 #line 59 "rygel-xbox-hacks.vala"
 	server_path = g_strconcat ("/", gupnp_root_device_get_relative_location ((GUPnPRootDevice*) device), NULL);
 #line 60 "rygel-xbox-hacks.vala"
 	gupnp_context_host_path_for_agent (gupnp_device_info_get_context ((GUPnPDeviceInfo*) device), desc_path, server_path, regex);
-#line 437 "rygel-xbox-hacks.c"
-	_g_object_unref0 (doc);
-	_g_free0 (desc_path);
-	_g_regex_unref0 (regex);
+#line 471 "rygel-xbox-hacks.c"
 	_g_free0 (server_path);
+	_g_regex_unref0 (regex);
+	_g_free0 (desc_path);
+	_g_object_unref0 (doc);
 }
 
 
 #line 63 "rygel-xbox-hacks.vala"
-void rygel_xbox_hacks_translate_container_id (RygelXBoxHacks* self, char** container_id) {
-#line 447 "rygel-xbox-hacks.c"
+void rygel_xbox_hacks_translate_container_id (RygelXBoxHacks* self, RygelMediaQueryAction* action, char** container_id) {
+#line 481 "rygel-xbox-hacks.c"
 	gboolean _tmp0_ = FALSE;
 	gboolean _tmp1_ = FALSE;
-	gboolean _tmp2_ = FALSE;
-	gboolean _tmp3_ = FALSE;
 #line 63 "rygel-xbox-hacks.vala"
 	g_return_if_fail (self != NULL);
 #line 63 "rygel-xbox-hacks.vala"
+	g_return_if_fail (action != NULL);
+#line 63 "rygel-xbox-hacks.vala"
 	g_return_if_fail (container_id != NULL);
-#line 64 "rygel-xbox-hacks.vala"
-	if (_vala_strcmp0 (*container_id, "1") == 0) {
-#line 64 "rygel-xbox-hacks.vala"
-		_tmp3_ = TRUE;
-#line 460 "rygel-xbox-hacks.c"
+#line 65 "rygel-xbox-hacks.vala"
+	if (RYGEL_IS_SEARCH (action)) {
+#line 492 "rygel-xbox-hacks.c"
+		gboolean _tmp2_ = FALSE;
+		gboolean _tmp3_ = FALSE;
+		gboolean _tmp4_ = FALSE;
+		gboolean _tmp5_ = FALSE;
+#line 66 "rygel-xbox-hacks.vala"
+		if (_vala_strcmp0 (*container_id, "1") == 0) {
+#line 66 "rygel-xbox-hacks.vala"
+			_tmp5_ = TRUE;
+#line 501 "rygel-xbox-hacks.c"
+		} else {
+#line 67 "rygel-xbox-hacks.vala"
+			_tmp5_ = _vala_strcmp0 (*container_id, "4") == 0;
+#line 505 "rygel-xbox-hacks.c"
+		}
+#line 66 "rygel-xbox-hacks.vala"
+		if (_tmp5_) {
+#line 66 "rygel-xbox-hacks.vala"
+			_tmp4_ = TRUE;
+#line 511 "rygel-xbox-hacks.c"
+		} else {
+#line 68 "rygel-xbox-hacks.vala"
+			_tmp4_ = _vala_strcmp0 (*container_id, "5") == 0;
+#line 515 "rygel-xbox-hacks.c"
+		}
+#line 66 "rygel-xbox-hacks.vala"
+		if (_tmp4_) {
+#line 66 "rygel-xbox-hacks.vala"
+			_tmp3_ = TRUE;
+#line 521 "rygel-xbox-hacks.c"
+		} else {
+#line 69 "rygel-xbox-hacks.vala"
+			_tmp3_ = _vala_strcmp0 (*container_id, "6") == 0;
+#line 525 "rygel-xbox-hacks.c"
+		}
+#line 66 "rygel-xbox-hacks.vala"
+		if (_tmp3_) {
+#line 66 "rygel-xbox-hacks.vala"
+			_tmp2_ = TRUE;
+#line 531 "rygel-xbox-hacks.c"
+		} else {
+#line 70 "rygel-xbox-hacks.vala"
+			_tmp2_ = _vala_strcmp0 (*container_id, "7") == 0;
+#line 535 "rygel-xbox-hacks.c"
+		}
+#line 66 "rygel-xbox-hacks.vala"
+		_tmp1_ = _tmp2_;
+#line 539 "rygel-xbox-hacks.c"
 	} else {
 #line 65 "rygel-xbox-hacks.vala"
-		_tmp3_ = _vala_strcmp0 (*container_id, "4") == 0;
-#line 464 "rygel-xbox-hacks.c"
+		_tmp1_ = FALSE;
+#line 543 "rygel-xbox-hacks.c"
 	}
-#line 64 "rygel-xbox-hacks.vala"
-	if (_tmp3_) {
-#line 64 "rygel-xbox-hacks.vala"
-		_tmp2_ = TRUE;
-#line 470 "rygel-xbox-hacks.c"
-	} else {
-#line 66 "rygel-xbox-hacks.vala"
-		_tmp2_ = _vala_strcmp0 (*container_id, "5") == 0;
-#line 474 "rygel-xbox-hacks.c"
-	}
-#line 64 "rygel-xbox-hacks.vala"
-	if (_tmp2_) {
-#line 64 "rygel-xbox-hacks.vala"
-		_tmp1_ = TRUE;
-#line 480 "rygel-xbox-hacks.c"
-	} else {
-#line 67 "rygel-xbox-hacks.vala"
-		_tmp1_ = _vala_strcmp0 (*container_id, "6") == 0;
-#line 484 "rygel-xbox-hacks.c"
-	}
-#line 64 "rygel-xbox-hacks.vala"
+#line 65 "rygel-xbox-hacks.vala"
 	if (_tmp1_) {
-#line 64 "rygel-xbox-hacks.vala"
+#line 65 "rygel-xbox-hacks.vala"
 		_tmp0_ = TRUE;
-#line 490 "rygel-xbox-hacks.c"
+#line 549 "rygel-xbox-hacks.c"
 	} else {
-#line 68 "rygel-xbox-hacks.vala"
-		_tmp0_ = _vala_strcmp0 (*container_id, "7") == 0;
-#line 494 "rygel-xbox-hacks.c"
+		gboolean _tmp6_ = FALSE;
+		gboolean _tmp7_ = FALSE;
+		gboolean _tmp8_ = FALSE;
+#line 71 "rygel-xbox-hacks.vala"
+		if (RYGEL_IS_BROWSE (action)) {
+#line 72 "rygel-xbox-hacks.vala"
+			_tmp8_ = _vala_strcmp0 (*container_id, "15") == 0;
+#line 558 "rygel-xbox-hacks.c"
+		} else {
+#line 71 "rygel-xbox-hacks.vala"
+			_tmp8_ = FALSE;
+#line 562 "rygel-xbox-hacks.c"
+		}
+#line 71 "rygel-xbox-hacks.vala"
+		if (_tmp8_) {
+#line 71 "rygel-xbox-hacks.vala"
+			_tmp7_ = TRUE;
+#line 568 "rygel-xbox-hacks.c"
+		} else {
+#line 73 "rygel-xbox-hacks.vala"
+			_tmp7_ = _vala_strcmp0 (*container_id, "14") == 0;
+#line 572 "rygel-xbox-hacks.c"
+		}
+#line 71 "rygel-xbox-hacks.vala"
+		if (_tmp7_) {
+#line 71 "rygel-xbox-hacks.vala"
+			_tmp6_ = TRUE;
+#line 578 "rygel-xbox-hacks.c"
+		} else {
+#line 74 "rygel-xbox-hacks.vala"
+			_tmp6_ = _vala_strcmp0 (*container_id, "16") == 0;
+#line 582 "rygel-xbox-hacks.c"
+		}
+#line 71 "rygel-xbox-hacks.vala"
+		_tmp0_ = _tmp6_;
+#line 586 "rygel-xbox-hacks.c"
 	}
-#line 64 "rygel-xbox-hacks.vala"
+#line 65 "rygel-xbox-hacks.vala"
 	if (_tmp0_) {
-#line 498 "rygel-xbox-hacks.c"
-		char* _tmp4_;
-#line 69 "rygel-xbox-hacks.vala"
-		*container_id = (_tmp4_ = g_strdup ("0"), _g_free0 (*container_id), _tmp4_);
-#line 502 "rygel-xbox-hacks.c"
+#line 590 "rygel-xbox-hacks.c"
+		char* _tmp9_;
+#line 75 "rygel-xbox-hacks.vala"
+		*container_id = (_tmp9_ = g_strdup ("0"), _g_free0 (*container_id), _tmp9_);
+#line 594 "rygel-xbox-hacks.c"
 	}
 }
 
 
-#line 73 "rygel-xbox-hacks.vala"
+#line 79 "rygel-xbox-hacks.vala"
 void rygel_xbox_hacks_apply (RygelXBoxHacks* self, RygelMediaItem* item) {
-#line 73 "rygel-xbox-hacks.vala"
+#line 79 "rygel-xbox-hacks.vala"
 	g_return_if_fail (self != NULL);
-#line 73 "rygel-xbox-hacks.vala"
+#line 79 "rygel-xbox-hacks.vala"
 	g_return_if_fail (item != NULL);
-#line 74 "rygel-xbox-hacks.vala"
+#line 80 "rygel-xbox-hacks.vala"
 	if (_vala_strcmp0 (item->mime_type, "video/x-msvideo") == 0) {
-#line 515 "rygel-xbox-hacks.c"
+#line 607 "rygel-xbox-hacks.c"
 		char* _tmp0_;
-#line 75 "rygel-xbox-hacks.vala"
+#line 81 "rygel-xbox-hacks.vala"
 		item->mime_type = (_tmp0_ = g_strdup ("video/avi"), _g_free0 (item->mime_type), _tmp0_);
-#line 519 "rygel-xbox-hacks.c"
+#line 611 "rygel-xbox-hacks.c"
 	} else {
-#line 76 "rygel-xbox-hacks.vala"
+#line 82 "rygel-xbox-hacks.vala"
 		if (_vala_strcmp0 (item->mime_type, "video/mpeg") == 0) {
-#line 523 "rygel-xbox-hacks.c"
+#line 615 "rygel-xbox-hacks.c"
 			char* _tmp1_;
-#line 78 "rygel-xbox-hacks.vala"
+#line 84 "rygel-xbox-hacks.vala"
 			item->mime_type = (_tmp1_ = g_strdup ("invalid/content"), _g_free0 (item->mime_type), _tmp1_);
-#line 527 "rygel-xbox-hacks.c"
+#line 619 "rygel-xbox-hacks.c"
 		}
 	}
 }
 
 
-#line 82 "rygel-xbox-hacks.vala"
-static void rygel_xbox_hacks_modify_dms_desc (RygelXBoxHacks* self, xmlDoc* doc) {
-#line 535 "rygel-xbox-hacks.c"
-	xmlNode* element;
-#line 82 "rygel-xbox-hacks.vala"
-	g_return_if_fail (self != NULL);
-#line 82 "rygel-xbox-hacks.vala"
-	g_return_if_fail (doc != NULL);
-#line 83 "rygel-xbox-hacks.vala"
-	element = rygel_xml_utils_get_element ((xmlNode*) doc, "root", "device", "deviceType", NULL);
-#line 87 "rygel-xbox-hacks.vala"
-	g_assert (element != NULL);
 #line 88 "rygel-xbox-hacks.vala"
-	xmlNodeSetContent (element, rygel_xbox_hacks_DMS_V1);
-#line 90 "rygel-xbox-hacks.vala"
-	element = rygel_xml_utils_get_element ((xmlNode*) doc, "root", "device", "modelName", NULL);
+static void rygel_xbox_hacks_modify_dms_desc (RygelXBoxHacks* self, xmlDoc* doc) {
+#line 627 "rygel-xbox-hacks.c"
+	xmlNode* element;
+#line 88 "rygel-xbox-hacks.vala"
+	g_return_if_fail (self != NULL);
+#line 88 "rygel-xbox-hacks.vala"
+	g_return_if_fail (doc != NULL);
+#line 89 "rygel-xbox-hacks.vala"
+	element = rygel_xml_utils_get_element ((xmlNode*) doc, "root", "device", "deviceType", NULL);
+#line 93 "rygel-xbox-hacks.vala"
+	g_assert (element != NULL);
 #line 94 "rygel-xbox-hacks.vala"
+	xmlNodeSetContent (element, rygel_xbox_hacks_DMS_V1);
+#line 96 "rygel-xbox-hacks.vala"
+	element = rygel_xml_utils_get_element ((xmlNode*) doc, "root", "device", "modelName", NULL);
+#line 100 "rygel-xbox-hacks.vala"
 	g_assert (element != NULL);
-#line 95 "rygel-xbox-hacks.vala"
-	xmlNodeSetContent (element, rygel_xbox_hacks_MODEL_NAME);
-#line 97 "rygel-xbox-hacks.vala"
-	element = rygel_xml_utils_get_element ((xmlNode*) doc, "root", "device", "friendlyName", NULL);
 #line 101 "rygel-xbox-hacks.vala"
+	xmlNodeSetContent (element, rygel_xbox_hacks_MODEL_NAME);
+#line 103 "rygel-xbox-hacks.vala"
+	element = rygel_xml_utils_get_element ((xmlNode*) doc, "root", "device", "friendlyName", NULL);
+#line 107 "rygel-xbox-hacks.vala"
 	g_assert (element != NULL);
-#line 102 "rygel-xbox-hacks.vala"
+#line 108 "rygel-xbox-hacks.vala"
 	xmlNodeAddContent (element, rygel_xbox_hacks_FRIENDLY_NAME_POSTFIX);
-#line 104 "rygel-xbox-hacks.vala"
+#line 110 "rygel-xbox-hacks.vala"
 	element = rygel_xbox_hacks_find_cds_type_node (self, doc);
-#line 105 "rygel-xbox-hacks.vala"
+#line 111 "rygel-xbox-hacks.vala"
 	g_assert (element != NULL);
-#line 106 "rygel-xbox-hacks.vala"
+#line 112 "rygel-xbox-hacks.vala"
 	xmlNodeSetContent (element, RYGEL_CONTENT_DIRECTORY_UPNP_TYPE_V1);
-#line 565 "rygel-xbox-hacks.c"
+#line 657 "rygel-xbox-hacks.c"
 }
 
 
-#line 109 "rygel-xbox-hacks.vala"
+#line 115 "rygel-xbox-hacks.vala"
 static xmlNode* rygel_xbox_hacks_find_cds_type_node (RygelXBoxHacks* self, xmlNode* doc_node) {
-#line 571 "rygel-xbox-hacks.c"
+#line 663 "rygel-xbox-hacks.c"
 	xmlNode* result = NULL;
 	xmlNode* element;
 	xmlNode* cds_type_node;
-#line 109 "rygel-xbox-hacks.vala"
+#line 115 "rygel-xbox-hacks.vala"
 	g_return_val_if_fail (self != NULL, NULL);
-#line 110 "rygel-xbox-hacks.vala"
-	element = rygel_xml_utils_get_element (doc_node, "root", "device", "serviceList", NULL);
-#line 114 "rygel-xbox-hacks.vala"
-	g_assert ((element != NULL) && (element->children != NULL));
 #line 116 "rygel-xbox-hacks.vala"
+	element = rygel_xml_utils_get_element (doc_node, "root", "device", "serviceList", NULL);
+#line 120 "rygel-xbox-hacks.vala"
+	g_assert ((element != NULL) && (element->children != NULL));
+#line 122 "rygel-xbox-hacks.vala"
 	cds_type_node = NULL;
-#line 583 "rygel-xbox-hacks.c"
+#line 675 "rygel-xbox-hacks.c"
 	{
 		xmlNode* service_node;
-#line 118 "rygel-xbox-hacks.vala"
+#line 124 "rygel-xbox-hacks.vala"
 		service_node = element->children;
-#line 588 "rygel-xbox-hacks.c"
+#line 680 "rygel-xbox-hacks.c"
 		{
 			gboolean _tmp0_;
-#line 118 "rygel-xbox-hacks.vala"
+#line 124 "rygel-xbox-hacks.vala"
 			_tmp0_ = TRUE;
-#line 118 "rygel-xbox-hacks.vala"
+#line 124 "rygel-xbox-hacks.vala"
 			while (TRUE) {
-#line 118 "rygel-xbox-hacks.vala"
+#line 124 "rygel-xbox-hacks.vala"
 				if (!_tmp0_) {
-#line 120 "rygel-xbox-hacks.vala"
+#line 126 "rygel-xbox-hacks.vala"
 					service_node = service_node->next;
-#line 599 "rygel-xbox-hacks.c"
+#line 691 "rygel-xbox-hacks.c"
 				}
-#line 118 "rygel-xbox-hacks.vala"
+#line 124 "rygel-xbox-hacks.vala"
 				_tmp0_ = FALSE;
-#line 119 "rygel-xbox-hacks.vala"
+#line 125 "rygel-xbox-hacks.vala"
 				if (!(service_node != NULL)) {
-#line 119 "rygel-xbox-hacks.vala"
+#line 125 "rygel-xbox-hacks.vala"
 					break;
-#line 607 "rygel-xbox-hacks.c"
+#line 699 "rygel-xbox-hacks.c"
 				}
 				{
 					xmlNode* type_node;
-#line 121 "rygel-xbox-hacks.vala"
+#line 127 "rygel-xbox-hacks.vala"
 					type_node = service_node->children;
-#line 613 "rygel-xbox-hacks.c"
+#line 705 "rygel-xbox-hacks.c"
 					{
 						gboolean _tmp1_;
-#line 121 "rygel-xbox-hacks.vala"
+#line 127 "rygel-xbox-hacks.vala"
 						_tmp1_ = TRUE;
-#line 121 "rygel-xbox-hacks.vala"
+#line 127 "rygel-xbox-hacks.vala"
 						while (TRUE) {
-#line 620 "rygel-xbox-hacks.c"
+#line 712 "rygel-xbox-hacks.c"
 							gboolean _tmp2_ = FALSE;
-#line 121 "rygel-xbox-hacks.vala"
+#line 127 "rygel-xbox-hacks.vala"
 							if (!_tmp1_) {
-#line 123 "rygel-xbox-hacks.vala"
+#line 129 "rygel-xbox-hacks.vala"
 								type_node = type_node->next;
-#line 626 "rygel-xbox-hacks.c"
+#line 718 "rygel-xbox-hacks.c"
 							}
-#line 121 "rygel-xbox-hacks.vala"
+#line 127 "rygel-xbox-hacks.vala"
 							_tmp1_ = FALSE;
-#line 122 "rygel-xbox-hacks.vala"
+#line 128 "rygel-xbox-hacks.vala"
 							if (!(type_node != NULL)) {
-#line 122 "rygel-xbox-hacks.vala"
+#line 128 "rygel-xbox-hacks.vala"
 								break;
-#line 634 "rygel-xbox-hacks.c"
+#line 726 "rygel-xbox-hacks.c"
 							}
-#line 124 "rygel-xbox-hacks.vala"
+#line 130 "rygel-xbox-hacks.vala"
 							if (_vala_strcmp0 (type_node->name, "serviceType") == 0) {
-#line 638 "rygel-xbox-hacks.c"
+#line 730 "rygel-xbox-hacks.c"
 								char* _tmp3_;
-#line 125 "rygel-xbox-hacks.vala"
+#line 131 "rygel-xbox-hacks.vala"
 								_tmp2_ = _vala_strcmp0 (_tmp3_ = xmlNodeGetContent (type_node), RYGEL_CONTENT_DIRECTORY_UPNP_TYPE) == 0;
-#line 642 "rygel-xbox-hacks.c"
+#line 734 "rygel-xbox-hacks.c"
 								_g_free0 (_tmp3_);
 							} else {
-#line 124 "rygel-xbox-hacks.vala"
+#line 130 "rygel-xbox-hacks.vala"
 								_tmp2_ = FALSE;
-#line 647 "rygel-xbox-hacks.c"
+#line 739 "rygel-xbox-hacks.c"
 							}
-#line 124 "rygel-xbox-hacks.vala"
+#line 130 "rygel-xbox-hacks.vala"
 							if (_tmp2_) {
-#line 126 "rygel-xbox-hacks.vala"
+#line 132 "rygel-xbox-hacks.vala"
 								cds_type_node = type_node;
-#line 653 "rygel-xbox-hacks.c"
+#line 745 "rygel-xbox-hacks.c"
 							}
 						}
 					}
 				}
-#line 130 "rygel-xbox-hacks.vala"
+#line 136 "rygel-xbox-hacks.vala"
 				if (cds_type_node != NULL) {
-#line 131 "rygel-xbox-hacks.vala"
+#line 137 "rygel-xbox-hacks.vala"
 					break;
-#line 662 "rygel-xbox-hacks.c"
+#line 754 "rygel-xbox-hacks.c"
 				}
 			}
 		}
 	}
 	result = cds_type_node;
-#line 135 "rygel-xbox-hacks.vala"
+#line 141 "rygel-xbox-hacks.vala"
 	return result;
-#line 670 "rygel-xbox-hacks.c"
+#line 762 "rygel-xbox-hacks.c"
 }
 
 
-#line 138 "rygel-xbox-hacks.vala"
+#line 144 "rygel-xbox-hacks.vala"
 static void rygel_xbox_hacks_save_modified_desc (RygelXBoxHacks* self, GUPnPXMLDoc* doc, const char* desc_path, GError** error) {
-#line 676 "rygel-xbox-hacks.c"
+#line 768 "rygel-xbox-hacks.c"
 	GError * _inner_error_;
 	FILE* f;
 	gint res;
 	gboolean _tmp0_ = FALSE;
-#line 138 "rygel-xbox-hacks.vala"
-	g_return_if_fail (self != NULL);
-#line 138 "rygel-xbox-hacks.vala"
-	g_return_if_fail (doc != NULL);
-#line 138 "rygel-xbox-hacks.vala"
-	g_return_if_fail (desc_path != NULL);
-#line 687 "rygel-xbox-hacks.c"
-	_inner_error_ = NULL;
-#line 140 "rygel-xbox-hacks.vala"
-	f = fopen (desc_path, "w+");
-#line 141 "rygel-xbox-hacks.vala"
-	res = -1;
-#line 143 "rygel-xbox-hacks.vala"
-	if (f != NULL) {
 #line 144 "rygel-xbox-hacks.vala"
-		res = xmlDocDump (f, doc->doc);
-#line 697 "rygel-xbox-hacks.c"
-	}
+	g_return_if_fail (self != NULL);
+#line 144 "rygel-xbox-hacks.vala"
+	g_return_if_fail (doc != NULL);
+#line 144 "rygel-xbox-hacks.vala"
+	g_return_if_fail (desc_path != NULL);
+#line 779 "rygel-xbox-hacks.c"
+	_inner_error_ = NULL;
 #line 146 "rygel-xbox-hacks.vala"
-	if (f == NULL) {
-#line 146 "rygel-xbox-hacks.vala"
-		_tmp0_ = TRUE;
-#line 703 "rygel-xbox-hacks.c"
-	} else {
-#line 146 "rygel-xbox-hacks.vala"
-		_tmp0_ = res == (-1);
-#line 707 "rygel-xbox-hacks.c"
-	}
-#line 146 "rygel-xbox-hacks.vala"
-	if (_tmp0_) {
-#line 711 "rygel-xbox-hacks.c"
-		char* message;
+	f = fopen (desc_path, "w+");
 #line 147 "rygel-xbox-hacks.vala"
+	res = -1;
+#line 149 "rygel-xbox-hacks.vala"
+	if (f != NULL) {
+#line 150 "rygel-xbox-hacks.vala"
+		res = xmlDocDump (f, doc->doc);
+#line 789 "rygel-xbox-hacks.c"
+	}
+#line 152 "rygel-xbox-hacks.vala"
+	if (f == NULL) {
+#line 152 "rygel-xbox-hacks.vala"
+		_tmp0_ = TRUE;
+#line 795 "rygel-xbox-hacks.c"
+	} else {
+#line 152 "rygel-xbox-hacks.vala"
+		_tmp0_ = res == (-1);
+#line 799 "rygel-xbox-hacks.c"
+	}
+#line 152 "rygel-xbox-hacks.vala"
+	if (_tmp0_) {
+#line 803 "rygel-xbox-hacks.c"
+		char* message;
+#line 153 "rygel-xbox-hacks.vala"
 		message = g_strdup (_ ("Failed to write modified description to %s."));
-#line 715 "rygel-xbox-hacks.c"
+#line 807 "rygel-xbox-hacks.c"
 		_inner_error_ = g_error_new (G_IO_ERROR, G_IO_ERROR_FAILED, message, desc_path);
 		{
 			g_propagate_error (error, _inner_error_);
@@ -727,11 +819,11 @@ static void rygel_xbox_hacks_save_modified_desc (RygelXBoxHacks* self, GUPnPXMLD
 
 #line 31 "rygel-xbox-hacks.vala"
 RygelXBoxHacks* rygel_xbox_hacks_construct (GType object_type) {
-#line 731 "rygel-xbox-hacks.c"
+#line 823 "rygel-xbox-hacks.c"
 	RygelXBoxHacks * self;
 #line 31 "rygel-xbox-hacks.vala"
 	self = (RygelXBoxHacks*) g_object_new (object_type, NULL);
-#line 735 "rygel-xbox-hacks.c"
+#line 827 "rygel-xbox-hacks.c"
 	return self;
 }
 
@@ -740,7 +832,7 @@ RygelXBoxHacks* rygel_xbox_hacks_construct (GType object_type) {
 RygelXBoxHacks* rygel_xbox_hacks_new (void) {
 #line 31 "rygel-xbox-hacks.vala"
 	return rygel_xbox_hacks_construct (RYGEL_TYPE_XBOX_HACKS);
-#line 744 "rygel-xbox-hacks.c"
+#line 836 "rygel-xbox-hacks.c"
 }
 
 

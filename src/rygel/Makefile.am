@@ -2,12 +2,14 @@ if UNINSTALLED
 shareddir = $(abs_top_builddir)/data
 desktopdir = $(shareddir)
 plugindir = $(abs_top_builddir)/src/plugins
-icondir = $(shareddir)/icons
+smallicondir = $(shareddir)/icons/32x32
+bigicondir = $(shareddir)/icons/256x256
 else
 shareddir = $(datadir)/rygel
 desktopdir = $(datadir)/applications
 plugindir = $(libdir)/rygel-1.0
-icondir = $(datadir)/icons/hicolor
+smallicondir = $(datadir)/icons/hicolor/32x32/apps
+bigicondir = $(datadir)/icons/hicolor/256x256/apps
 endif
 
 AM_CFLAGS = $(LIBGUPNP_CFLAGS) \
@@ -21,7 +23,8 @@ AM_CFLAGS = $(LIBGUPNP_CFLAGS) \
 	    -I$(top_srcdir) \
 	    -DDATA_DIR='"$(shareddir)"' -DSYS_CONFIG_DIR='"$(sysconfdir)"'\
 	    -DPLUGIN_DIR='"$(plugindir)"' -DDESKTOP_DIR='"$(desktopdir)"'\
-	    -DICON_DIR='"$(icondir)"' -include config.h
+	    -DSMALL_ICON_DIR='"$(smallicondir)"' \
+	    -DBIG_ICON_DIR='"$(bigicondir)"' -include config.h
 
 librygelincdir = $(includedir)/rygel-1.0
 
@@ -49,6 +52,9 @@ VAPI_SOURCE_FILES = rygel-configuration.vala \
 		    rygel-content-directory.vala \
 		    rygel-connection-manager.vala \
 		    rygel-source-connection-manager.vala \
+		    rygel-sink-connection-manager.vala \
+		    rygel-av-transport.vala \
+		    rygel-rendering-control.vala \
 		    rygel-transcode-manager.vala \
 		    rygel-http-server.vala \
 		    rygel-state-machine.vala \
@@ -67,18 +73,24 @@ VAPI_SOURCE_FILES = rygel-configuration.vala \
 		    rygel-resource-info.vala \
 		    rygel-icon-info.vala \
 		    rygel-plugin.vala \
+		    rygel-media-server-plugin.vala \
+		    rygel-media-renderer-plugin.vala \
 		    rygel-plugin-loader.vala \
 		    rygel-media-object.vala \
+		    rygel-media-objects.vala \
 		    rygel-media-container.vala \
 		    rygel-simple-container.vala \
 		    rygel-media-item.vala \
 		    rygel-thumbnail.vala \
 		    rygel-thumbnailer.vala \
+		    rygel-album-art.vala \
+		    rygel-media-art-store.vala \
 		    rygel-subtitle.vala \
 		    rygel-subtitle-manager.vala \
+		    rygel-media-query-action.vala \
 		    rygel-browse.vala \
 		    rygel-search.vala \
-			rygel-xbox-hacks.vala \
+		    rygel-xbox-hacks.vala \
 		    rygel-import-resource.vala \
 		    rygel-item-creator.vala \
 		    rygel-search-expression.vala \
@@ -99,13 +111,17 @@ VAPI_SOURCE_FILES = rygel-configuration.vala \
 		    rygel-wmv-transcoder-bin.vala \
 		    rygel-gst-utils.vala \
 		    rygel-media-receiver-registrar.vala \
-		    rygel-log-handler.vala
+		    rygel-log-handler.vala \
+		    rygel-media-player.vala \
+		    rygel-changelog.vala \
+		    rygel-volume.vala
 
 rygel_VALAFLAGS = \
 	-H rygel.h -C --library=rygel-1.0 --vapidir=$(srcdir) --thread \
 	--pkg rygel-build-config --pkg rygel-misc --pkg gupnp-1.0 \
 	--pkg gupnp-av-1.0 --pkg dbus-glib-1 --pkg gstreamer-0.10 \
 	--pkg gio-2.0 --pkg gee-1.0 --pkg posix -g
+# Note:  `-- the -g needs to be at the end of VALAFLAGS to not break make dist
 
 rygel_LDADD = librygel-configuration.a \
 	      $(LIBGUPNP_LIBS) \

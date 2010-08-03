@@ -96,8 +96,8 @@ struct _RygelGeneralPrefSectionPrivate {
 
 static gpointer rygel_general_pref_section_parent_class = NULL;
 
-GType rygel_preferences_section_get_type (void);
-GType rygel_general_pref_section_get_type (void);
+GType rygel_preferences_section_get_type (void) G_GNUC_CONST;
+GType rygel_general_pref_section_get_type (void) G_GNUC_CONST;
 #define RYGEL_GENERAL_PREF_SECTION_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), RYGEL_TYPE_GENERAL_PREF_SECTION, RygelGeneralPrefSectionPrivate))
 enum  {
 	RYGEL_GENERAL_PREF_SECTION_DUMMY_PROPERTY
@@ -235,7 +235,7 @@ RygelGeneralPrefSection* rygel_general_pref_section_construct (GType object_type
 	__finally1:
 	if (_inner_error_ != NULL) {
 		g_propagate_error (error, _inner_error_);
-		g_object_unref (self);
+		_g_object_unref0 (self);
 		return NULL;
 	}
 	{
@@ -263,7 +263,7 @@ RygelGeneralPrefSection* rygel_general_pref_section_construct (GType object_type
 	__finally2:
 	if (_inner_error_ != NULL) {
 		g_propagate_error (error, _inner_error_);
-		g_object_unref (self);
+		_g_object_unref0 (self);
 		return NULL;
 	}
 	{
@@ -291,7 +291,7 @@ RygelGeneralPrefSection* rygel_general_pref_section_construct (GType object_type
 	__finally3:
 	if (_inner_error_ != NULL) {
 		g_propagate_error (error, _inner_error_);
-		g_object_unref (self);
+		_g_object_unref0 (self);
 		return NULL;
 	}
 	{
@@ -319,7 +319,7 @@ RygelGeneralPrefSection* rygel_general_pref_section_construct (GType object_type
 	__finally4:
 	if (_inner_error_ != NULL) {
 		g_propagate_error (error, _inner_error_);
-		g_object_unref (self);
+		_g_object_unref0 (self);
 		return NULL;
 	}
 	{
@@ -347,7 +347,7 @@ RygelGeneralPrefSection* rygel_general_pref_section_construct (GType object_type
 	__finally5:
 	if (_inner_error_ != NULL) {
 		g_propagate_error (error, _inner_error_);
-		g_object_unref (self);
+		_g_object_unref0 (self);
 		return NULL;
 	}
 	{
@@ -375,7 +375,7 @@ RygelGeneralPrefSection* rygel_general_pref_section_construct (GType object_type
 	__finally6:
 	if (_inner_error_ != NULL) {
 		g_propagate_error (error, _inner_error_);
-		g_object_unref (self);
+		_g_object_unref0 (self);
 		return NULL;
 	}
 	{
@@ -403,7 +403,7 @@ RygelGeneralPrefSection* rygel_general_pref_section_construct (GType object_type
 	__finally7:
 	if (_inner_error_ != NULL) {
 		g_propagate_error (error, _inner_error_);
-		g_object_unref (self);
+		_g_object_unref0 (self);
 		return NULL;
 	}
 #line 96 "rygel-general-pref-section.vala"

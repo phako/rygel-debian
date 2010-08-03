@@ -188,10 +188,10 @@ struct _RygelSeekableResponseCloseStreamData {
 
 static gpointer rygel_seekable_response_parent_class = NULL;
 
-GType rygel_state_machine_get_type (void);
-GType rygel_http_response_get_type (void);
-GType rygel_seekable_response_get_type (void);
-GType rygel_http_seek_get_type (void);
+GType rygel_state_machine_get_type (void) G_GNUC_CONST;
+GType rygel_http_response_get_type (void) G_GNUC_CONST;
+GType rygel_seekable_response_get_type (void) G_GNUC_CONST;
+GType rygel_http_seek_get_type (void) G_GNUC_CONST;
 #define RYGEL_SEEKABLE_RESPONSE_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), RYGEL_TYPE_SEEKABLE_RESPONSE, RygelSeekableResponsePrivate))
 enum  {
 	RYGEL_SEEKABLE_RESPONSE_DUMMY_PROPERTY

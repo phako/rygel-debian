@@ -148,11 +148,11 @@ GParamSpec* rygel_tracker_param_spec_query (const gchar* name, const gchar* nick
 void rygel_tracker_value_set_query (GValue* value, gpointer v_object);
 void rygel_tracker_value_take_query (GValue* value, gpointer v_object);
 gpointer rygel_tracker_value_get_query (const GValue* value);
-GType rygel_tracker_query_get_type (void);
+GType rygel_tracker_query_get_type (void) G_GNUC_CONST;
 RygelTrackerResourcesIface* rygel_tracker_resources_iface_dbus_proxy_new (DBusGConnection* connection, const char* name, const char* path);
-GType rygel_tracker_resources_iface_get_type (void);
-GType rygel_tracker_query_triplets_get_type (void);
-GType rygel_tracker_insertion_query_get_type (void);
+GType rygel_tracker_resources_iface_get_type (void) G_GNUC_CONST;
+GType rygel_tracker_query_triplets_get_type (void) G_GNUC_CONST;
+GType rygel_tracker_insertion_query_get_type (void) G_GNUC_CONST;
 enum  {
 	RYGEL_TRACKER_INSERTION_QUERY_DUMMY_PROPERTY
 };
@@ -168,7 +168,7 @@ GParamSpec* rygel_tracker_param_spec_query_triplet (const gchar* name, const gch
 void rygel_tracker_value_set_query_triplet (GValue* value, gpointer v_object);
 void rygel_tracker_value_take_query_triplet (GValue* value, gpointer v_object);
 gpointer rygel_tracker_value_get_query_triplet (const GValue* value);
-GType rygel_tracker_query_triplet_get_type (void);
+GType rygel_tracker_query_triplet_get_type (void) G_GNUC_CONST;
 RygelTrackerQuery* rygel_tracker_query_construct (GType object_type, RygelTrackerQueryTriplets* triplets);
 RygelTrackerInsertionQuery* rygel_tracker_insertion_query_new (RygelMediaItem* item, const char* category);
 RygelTrackerInsertionQuery* rygel_tracker_insertion_query_construct (GType object_type, RygelMediaItem* item, const char* category);
@@ -349,8 +349,8 @@ static gboolean rygel_tracker_insertion_query_real_execute_co (RygelTrackerInser
 #line 62 "rygel-tracker-insertion-query.vala"
 		data->self->id = (data->_tmp3_ = g_strdup ((const char*) g_hash_table_lookup (data->_result_[(0 * data->_result__length2) + 0], RYGEL_TRACKER_INSERTION_QUERY_TEMP_ID)), _g_free0 (data->self->id), data->_tmp3_);
 #line 352 "rygel-tracker-insertion-query.c"
-		_g_free0 (data->str);
 		data->_result_ = (_vala_array_free (data->_result_, data->_result__length1 * data->_result__length2, (GDestroyNotify) g_hash_table_unref), NULL);
+		_g_free0 (data->str);
 	}
 	{
 		if (data->_state_ == 0) {

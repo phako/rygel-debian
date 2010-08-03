@@ -32,7 +32,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include <gio/gio.h>
-#include <gee.h>
 
 
 #define RYGEL_EXTERNAL_TYPE_DUMMY_CONTAINER (rygel_external_dummy_container_get_type ())
@@ -65,13 +64,13 @@ struct _RygelExternalDummyContainerGetChildrenData {
 	guint offset;
 	guint max_count;
 	GCancellable* cancellable;
-	GeeList* result;
+	RygelMediaObjects* result;
 };
 
 
 static gpointer rygel_external_dummy_container_parent_class = NULL;
 
-GType rygel_external_dummy_container_get_type (void);
+GType rygel_external_dummy_container_get_type (void) G_GNUC_CONST;
 enum  {
 	RYGEL_EXTERNAL_DUMMY_CONTAINER_DUMMY_PROPERTY
 };
@@ -86,7 +85,7 @@ static gboolean rygel_external_dummy_container_real_get_children_co (RygelExtern
 
 #line 34 "rygel-external-dummy-container.vala"
 RygelExternalDummyContainer* rygel_external_dummy_container_construct (GType object_type, const char* id, const char* title, guint child_coult, RygelMediaContainer* parent) {
-#line 90 "rygel-external-dummy-container.c"
+#line 89 "rygel-external-dummy-container.c"
 	RygelExternalDummyContainer * self;
 #line 34 "rygel-external-dummy-container.vala"
 	g_return_val_if_fail (id != NULL, NULL);
@@ -94,7 +93,7 @@ RygelExternalDummyContainer* rygel_external_dummy_container_construct (GType obj
 	g_return_val_if_fail (title != NULL, NULL);
 #line 38 "rygel-external-dummy-container.vala"
 	self = (RygelExternalDummyContainer*) rygel_media_container_construct (object_type, id, parent, title, ((RygelMediaContainer*) self)->child_count);
-#line 98 "rygel-external-dummy-container.c"
+#line 97 "rygel-external-dummy-container.c"
 	return self;
 }
 
@@ -103,7 +102,7 @@ RygelExternalDummyContainer* rygel_external_dummy_container_construct (GType obj
 RygelExternalDummyContainer* rygel_external_dummy_container_new (const char* id, const char* title, guint child_coult, RygelMediaContainer* parent) {
 #line 34 "rygel-external-dummy-container.vala"
 	return rygel_external_dummy_container_construct (RYGEL_EXTERNAL_TYPE_DUMMY_CONTAINER, id, title, child_coult, parent);
-#line 107 "rygel-external-dummy-container.c"
+#line 106 "rygel-external-dummy-container.c"
 }
 
 
@@ -137,8 +136,8 @@ static void rygel_external_dummy_container_real_get_children (RygelMediaContaine
 }
 
 
-static GeeList* rygel_external_dummy_container_real_get_children_finish (RygelMediaContainer* base, GAsyncResult* _res_, GError** error) {
-	GeeList* result;
+static RygelMediaObjects* rygel_external_dummy_container_real_get_children_finish (RygelMediaContainer* base, GAsyncResult* _res_, GError** error) {
+	RygelMediaObjects* result;
 	RygelExternalDummyContainerGetChildrenData* _data_;
 	if (g_simple_async_result_propagate_error (G_SIMPLE_ASYNC_RESULT (_res_), error)) {
 		return NULL;
@@ -167,7 +166,7 @@ static gboolean rygel_external_dummy_container_real_get_children_co (RygelExtern
 	}
 	_state_0:
 	{
-		data->result = (GeeList*) gee_array_list_new (RYGEL_TYPE_MEDIA_OBJECT, (GBoxedCopyFunc) g_object_ref, g_object_unref, NULL);
+		data->result = rygel_media_objects_new ();
 		{
 			if (data->_state_ == 0) {
 				g_simple_async_result_complete_in_idle (data->_async_result);

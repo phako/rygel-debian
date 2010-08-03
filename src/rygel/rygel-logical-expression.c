@@ -97,16 +97,16 @@ struct _RygelLogicalExpressionClass {
 
 static gpointer rygel_logical_expression_parent_class = NULL;
 
-GType rygel_logical_operator_get_type (void);
+GType rygel_logical_operator_get_type (void) G_GNUC_CONST;
 gpointer rygel_search_expression_ref (gpointer instance);
 void rygel_search_expression_unref (gpointer instance);
 GParamSpec* rygel_param_spec_search_expression (const gchar* name, const gchar* nick, const gchar* blurb, GType object_type, GParamFlags flags);
 void rygel_value_set_search_expression (GValue* value, gpointer v_object);
 void rygel_value_take_search_expression (GValue* value, gpointer v_object);
 gpointer rygel_value_get_search_expression (const GValue* value);
-GType rygel_search_expression_get_type (void);
-GType rygel_media_object_get_type (void);
-GType rygel_logical_expression_get_type (void);
+GType rygel_search_expression_get_type (void) G_GNUC_CONST;
+GType rygel_media_object_get_type (void) G_GNUC_CONST;
+GType rygel_logical_expression_get_type (void) G_GNUC_CONST;
 enum  {
 	RYGEL_LOGICAL_EXPRESSION_DUMMY_PROPERTY
 };
@@ -235,10 +235,10 @@ static char* rygel_logical_expression_real_to_string (RygelSearchExpression* bas
 	operand2 = g_strdup (_tmp3_);
 #line 237 "rygel-logical-expression.c"
 	result = g_strdup_printf ("(%s %d %s)", operand1, (gint) GPOINTER_TO_INT (((RygelSearchExpression*) self)->op), operand2);
-	_g_free0 (_tmp0_);
-	_g_free0 (operand1);
-	_g_free0 (_tmp3_);
 	_g_free0 (operand2);
+	_g_free0 (_tmp3_);
+	_g_free0 (operand1);
+	_g_free0 (_tmp0_);
 #line 54 "rygel-logical-expression.vala"
 	return result;
 #line 245 "rygel-logical-expression.c"

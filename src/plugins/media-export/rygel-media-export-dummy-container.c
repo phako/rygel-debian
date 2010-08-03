@@ -77,8 +77,8 @@ struct _RygelMediaExportDummyContainerClass {
 
 static gpointer rygel_media_export_dummy_container_parent_class = NULL;
 
-GType rygel_null_container_get_type (void);
-GType rygel_media_export_dummy_container_get_type (void);
+GType rygel_null_container_get_type (void) G_GNUC_CONST;
+GType rygel_media_export_dummy_container_get_type (void) G_GNUC_CONST;
 enum  {
 	RYGEL_MEDIA_EXPORT_DUMMY_CONTAINER_DUMMY_PROPERTY
 };

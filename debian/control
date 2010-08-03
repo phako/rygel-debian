@@ -5,16 +5,17 @@ Maintainer: Debian Rygel Maintainers <ah-rygel@debian.org>
 Uploaders: Marc-André Lureau <marcandre.lureau@gmail.com>, Andreas Henriksson <andreas@fatal.se>
 Build-Depends: quilt, debhelper (>= 7), autotools-dev,
     intltool,
-    libgupnp-1.0-dev (>= 0.13.3),
-    libgupnp-av-1.0-dev (>= 0.5.7),
+    libgupnp-1.0-dev (>= 0.13.4),
+    libgupnp-av-1.0-dev (>= 0.5.8),
+    libgupnp-dlna-1.0-dev (>= 0.2.1),
     libdbus-glib-1-dev (>= 0.74),
     libgstreamer0.10-dev (>= 0.10.23),
     libglib2.0-dev (>= 2.16.6),
-    libgee-dev (>= 0.5.0),
+    libgee-dev (>= 0.5.2),
     uuid-dev (>= 1.2-1.41.3),
     libsoup2.4-dev (>= 2.26.0),
     libsqlite3-dev (>= 3.5),
-    libgtk2.0-dev (>= 2.16)
+    libgtk2.0-dev (>= 2.21.5)
 Standards-Version: 3.8.4
 Homepage: http://live.gnome.org/Rygel
 Vcs-Git: git://git.debian.org/git/collab-maint/rygel.git

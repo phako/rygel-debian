@@ -6,6 +6,13 @@ rygel (0.7.3-1) UNRELEASED; urgency=low
     - bump gupnp to >= 0.13.4, gupnp-av to >= 0.5.8,
       libgee to >= 0.5.2 and gtk+ to >= 2.21.5
     (gupnp-dlna and the version of Gtk+ is only available for experimental)
+  * gst-renderer plugin has been renamed to playbin.
+    - install the playbin plugin in rygel-gst-renderer package
+      for now until we transition the package name as well.
+    - also mention the new name in rygel-gst-renderer description.
+  * add 1000-configure-only-require-gtk-220.patch and lower gtk+
+    build-dependency.
+    - Gtk+ 2.21.5 isn't really required, patch down to >= 2.20.
 
   (This round also included the following changes, which was
    then dropped again because of getting a fix upstream:
@@ -15,7 +22,7 @@ rygel (0.7.3-1) UNRELEASED; urgency=low
   * drop "revert gtk3/autoreconf" patches.
   )
 
- -- Andreas Henriksson <andreas@fatal.se>  Tue, 03 Aug 2010 11:33:06 +0200
+ -- Andreas Henriksson <andreas@fatal.se>  Tue, 03 Aug 2010 22:09:42 +0200
 
 rygel (0.7.2-1) experimental; urgency=low
 

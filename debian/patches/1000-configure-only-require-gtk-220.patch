@@ -1,0 +1,26 @@
+diff --git a/configure b/configure
+index 552ef7b..645fc20 100755
+--- a/configure
++++ b/configure
+@@ -11667,7 +11667,7 @@ $as_echo "$with_gtk" >&6; }
+ 
+ case "$with_gtk" in
+   2.0) GTK_VAPI_VERSION=2.0
+-       GTK_REQUIRED=2.21.5
++       GTK_REQUIRED=2.20
+        ;;
+   3.0) GTK_VAPI_VERSION=3.0
+        GTK_REQUIRED=2.90.3
+diff --git a/configure.ac b/configure.ac
+index db8f271..a5907e3 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -45,7 +45,7 @@ AC_MSG_RESULT([$with_gtk])
+ 
+ case "$with_gtk" in
+   2.0) GTK_VAPI_VERSION=2.0
+-       GTK_REQUIRED=2.21.5
++       GTK_REQUIRED=2.20
+        ;;
+   3.0) GTK_VAPI_VERSION=3.0
+        GTK_REQUIRED=2.90.3

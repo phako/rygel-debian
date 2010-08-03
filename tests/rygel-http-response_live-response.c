@@ -83,8 +83,8 @@ struct _RygelHTTPResponsePrivate {
 static gpointer rygel_http_response_parent_class = NULL;
 static RygelStateMachineIface* rygel_http_response_rygel_state_machine_parent_iface = NULL;
 
-GType rygel_state_machine_get_type (void);
-GType rygel_http_response_get_type (void);
+GType rygel_state_machine_get_type (void) G_GNUC_CONST;
+GType rygel_http_response_get_type (void) G_GNUC_CONST;
 #define RYGEL_HTTP_RESPONSE_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), RYGEL_TYPE_HTTP_RESPONSE, RygelHTTPResponsePrivate))
 enum  {
 	RYGEL_HTTP_RESPONSE_DUMMY_PROPERTY,

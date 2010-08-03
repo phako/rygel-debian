@@ -126,7 +126,7 @@ typedef enum  {
 
 static gpointer rygel_mp2_ts_transcoder_bin_parent_class = NULL;
 
-GType rygel_mp2_ts_transcoder_bin_get_type (void);
+GType rygel_mp2_ts_transcoder_bin_get_type (void) G_GNUC_CONST;
 #define RYGEL_MP2_TS_TRANSCODER_BIN_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), RYGEL_TYPE_MP2_TS_TRANSCODER_BIN, RygelMP2TSTranscoderBinPrivate))
 enum  {
 	RYGEL_MP2_TS_TRANSCODER_BIN_DUMMY_PROPERTY
@@ -136,15 +136,15 @@ enum  {
 #define RYGEL_MP2_TS_TRANSCODER_BIN_AUDIO_ENC_SINK "audio-enc-sink-pad"
 #define RYGEL_MP2_TS_TRANSCODER_BIN_VIDEO_ENC_SINK "sink"
 GstElement* rygel_gst_utils_create_element (const char* factoryname, const char* name, GError** error);
-GType rygel_mp3_layer_get_type (void);
+GType rygel_mp3_layer_get_type (void) G_GNUC_CONST;
 RygelMP3Transcoder* rygel_mp3_transcoder_new (RygelMP3Layer layer);
 RygelMP3Transcoder* rygel_mp3_transcoder_construct (GType object_type, RygelMP3Layer layer);
-GType rygel_transcoder_get_type (void);
-GType rygel_mp3_transcoder_get_type (void);
-GType rygel_media_object_get_type (void);
-GType rygel_media_item_get_type (void);
+GType rygel_transcoder_get_type (void) G_GNUC_CONST;
+GType rygel_mp3_transcoder_get_type (void) G_GNUC_CONST;
+GType rygel_media_object_get_type (void) G_GNUC_CONST;
+GType rygel_media_item_get_type (void) G_GNUC_CONST;
 GstElement* rygel_mp3_transcoder_create_encoder (RygelMP3Transcoder* self, RygelMediaItem* item, const char* src_pad_name, const char* sink_pad_name, GError** error);
-GType rygel_mp2_ts_transcoder_get_type (void);
+GType rygel_mp2_ts_transcoder_get_type (void) G_GNUC_CONST;
 GstElement* rygel_mp2_ts_transcoder_create_encoder (RygelMP2TSTranscoder* self, RygelMediaItem* item, const char* src_pad_name, const char* sink_pad_name, GError** error);
 static void rygel_mp2_ts_transcoder_bin_decodebin_pad_added (RygelMP2TSTranscoderBin* self, GstElement* decodebin, GstPad* new_pad);
 static void _rygel_mp2_ts_transcoder_bin_decodebin_pad_added_gst_element_pad_added (GstElement* _sender, GstPad* pad, gpointer self);
@@ -198,7 +198,7 @@ RygelMP2TSTranscoderBin* rygel_mp2_ts_transcoder_bin_construct (GType object_typ
 #line 199 "rygel-mp2ts-transcoder-bin.c"
 	if (_inner_error_ != NULL) {
 		g_propagate_error (error, _inner_error_);
-		gst_object_unref (self);
+		_gst_object_unref0 (self);
 		return NULL;
 	}
 #line 47 "rygel-mp2ts-transcoder-bin.vala"
@@ -208,9 +208,9 @@ RygelMP2TSTranscoderBin* rygel_mp2_ts_transcoder_bin_construct (GType object_typ
 #line 209 "rygel-mp2ts-transcoder-bin.c"
 	if (_inner_error_ != NULL) {
 		g_propagate_error (error, _inner_error_);
-		_gst_object_unref0 (decodebin);
 		_g_object_unref0 (mp3_transcoder);
-		gst_object_unref (self);
+		_gst_object_unref0 (decodebin);
+		_gst_object_unref0 (self);
 		return NULL;
 	}
 #line 48 "rygel-mp2ts-transcoder-bin.vala"
@@ -220,9 +220,9 @@ RygelMP2TSTranscoderBin* rygel_mp2_ts_transcoder_bin_construct (GType object_typ
 #line 221 "rygel-mp2ts-transcoder-bin.c"
 	if (_inner_error_ != NULL) {
 		g_propagate_error (error, _inner_error_);
-		_gst_object_unref0 (decodebin);
 		_g_object_unref0 (mp3_transcoder);
-		gst_object_unref (self);
+		_gst_object_unref0 (decodebin);
+		_gst_object_unref0 (self);
 		return NULL;
 	}
 #line 51 "rygel-mp2ts-transcoder-bin.vala"
@@ -232,9 +232,9 @@ RygelMP2TSTranscoderBin* rygel_mp2_ts_transcoder_bin_construct (GType object_typ
 #line 233 "rygel-mp2ts-transcoder-bin.c"
 	if (_inner_error_ != NULL) {
 		g_propagate_error (error, _inner_error_);
-		_gst_object_unref0 (decodebin);
 		_g_object_unref0 (mp3_transcoder);
-		gst_object_unref (self);
+		_gst_object_unref0 (decodebin);
+		_gst_object_unref0 (self);
 		return NULL;
 	}
 #line 52 "rygel-mp2ts-transcoder-bin.vala"
@@ -346,10 +346,10 @@ static void rygel_mp2_ts_transcoder_bin_decodebin_pad_added (RygelMP2TSTranscode
 			enc_pad = (_tmp3_ = _gst_object_ref0 (video_enc_pad), _gst_object_unref0 (enc_pad), _tmp3_);
 #line 348 "rygel-mp2ts-transcoder-bin.c"
 		} else {
-			_gst_object_unref0 (encoder);
-			_gst_object_unref0 (enc_pad);
-			_gst_object_unref0 (audio_enc_pad);
 			_gst_object_unref0 (video_enc_pad);
+			_gst_object_unref0 (audio_enc_pad);
+			_gst_object_unref0 (enc_pad);
+			_gst_object_unref0 (encoder);
 #line 103 "rygel-mp2ts-transcoder-bin.vala"
 			return;
 #line 356 "rygel-mp2ts-transcoder-bin.c"
@@ -368,10 +368,10 @@ static void rygel_mp2_ts_transcoder_bin_decodebin_pad_added (RygelMP2TSTranscode
 #line 369 "rygel-mp2ts-transcoder-bin.c"
 		_g_error_free0 (_error_);
 	}
-	_gst_object_unref0 (encoder);
-	_gst_object_unref0 (enc_pad);
-	_gst_object_unref0 (audio_enc_pad);
 	_gst_object_unref0 (video_enc_pad);
+	_gst_object_unref0 (audio_enc_pad);
+	_gst_object_unref0 (enc_pad);
+	_gst_object_unref0 (encoder);
 }
 
 

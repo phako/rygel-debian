@@ -211,16 +211,16 @@ GParamSpec* rygel_external_param_spec_item_factory (const gchar* name, const gch
 void rygel_external_value_set_item_factory (GValue* value, gpointer v_object);
 void rygel_external_value_take_item_factory (GValue* value, gpointer v_object);
 gpointer rygel_external_value_get_item_factory (const GValue* value);
-GType rygel_external_item_factory_get_type (void);
+GType rygel_external_item_factory_get_type (void) G_GNUC_CONST;
 enum  {
 	RYGEL_EXTERNAL_ITEM_FACTORY_DUMMY_PROPERTY
 };
 static void rygel_external_item_factory_create_data_free (gpointer _data);
 static void rygel_external_item_factory_create_ready (GObject* source_object, GAsyncResult* _res_, gpointer _user_data_);
 static GValue* _g_value_dup (GValue* self);
-GType rygel_external_media_object_proxy_get_type (void);
+GType rygel_external_media_object_proxy_get_type (void) G_GNUC_CONST;
 RygelExternalMediaObjectProxy* rygel_external_media_object_proxy_dbus_proxy_new (DBusGConnection* connection, const char* name, const char* path);
-GType rygel_external_media_item_proxy_get_type (void);
+GType rygel_external_media_item_proxy_get_type (void) G_GNUC_CONST;
 RygelExternalMediaItemProxy* rygel_external_media_item_proxy_dbus_proxy_new (DBusGConnection* connection, const char* name, const char* path);
 char** rygel_external_media_item_proxy_get_urls (RygelExternalMediaItemProxy* self, int* result_length1);
 RygelExternalThumbnailFactory* rygel_external_thumbnail_factory_new (void);
@@ -231,7 +231,7 @@ GParamSpec* rygel_external_param_spec_thumbnail_factory (const gchar* name, cons
 void rygel_external_value_set_thumbnail_factory (GValue* value, gpointer v_object);
 void rygel_external_value_take_thumbnail_factory (GValue* value, gpointer v_object);
 gpointer rygel_external_value_get_thumbnail_factory (const GValue* value);
-GType rygel_external_thumbnail_factory_get_type (void);
+GType rygel_external_thumbnail_factory_get_type (void) G_GNUC_CONST;
 void rygel_external_thumbnail_factory_create (RygelExternalThumbnailFactory* self, const char* service_name, const char* object_path, const char* host_ip, GAsyncReadyCallback _callback_, gpointer _user_data_);
 RygelThumbnail* rygel_external_thumbnail_factory_create_finish (RygelExternalThumbnailFactory* self, GAsyncResult* _res_, GError** error);
 void rygel_external_item_factory_create (RygelExternalItemFactory* self, const char* id, const char* type, const char* title, GHashTable* props, const char* service_name, const char* host_ip, RygelMediaContainer* parent, GAsyncReadyCallback _callback_, gpointer _user_data_);
@@ -319,16 +319,16 @@ static gpointer __g_value_dup0 (gpointer self) {
 }
 
 
-#line 1148 "glib-2.0.vapi"
+#line 1156 "glib-2.0.vapi"
 static char* string_replace (const char* self, const char* old, const char* replacement) {
 #line 325 "rygel-external-item-factory.c"
 	char* result = NULL;
 	GError * _inner_error_;
-#line 1148 "glib-2.0.vapi"
+#line 1156 "glib-2.0.vapi"
 	g_return_val_if_fail (self != NULL, NULL);
-#line 1148 "glib-2.0.vapi"
+#line 1156 "glib-2.0.vapi"
 	g_return_val_if_fail (old != NULL, NULL);
-#line 1148 "glib-2.0.vapi"
+#line 1156 "glib-2.0.vapi"
 	g_return_val_if_fail (replacement != NULL, NULL);
 #line 334 "rygel-external-item-factory.c"
 	_inner_error_ = NULL;
@@ -337,7 +337,7 @@ static char* string_replace (const char* self, const char* old, const char* repl
 		GRegex* _tmp1_;
 		GRegex* regex;
 		char* _tmp2_;
-#line 1150 "glib-2.0.vapi"
+#line 1158 "glib-2.0.vapi"
 		regex = (_tmp1_ = g_regex_new (_tmp0_ = g_regex_escape_string (old, -1), 0, 0, &_inner_error_), _g_free0 (_tmp0_), _tmp1_);
 #line 343 "rygel-external-item-factory.c"
 		if (_inner_error_ != NULL) {
@@ -348,7 +348,7 @@ static char* string_replace (const char* self, const char* old, const char* repl
 			g_clear_error (&_inner_error_);
 			return NULL;
 		}
-#line 1151 "glib-2.0.vapi"
+#line 1159 "glib-2.0.vapi"
 		_tmp2_ = g_regex_replace_literal (regex, self, (gssize) (-1), 0, replacement, 0, &_inner_error_);
 #line 354 "rygel-external-item-factory.c"
 		if (_inner_error_ != NULL) {
@@ -363,7 +363,7 @@ static char* string_replace (const char* self, const char* old, const char* repl
 		}
 		result = _tmp2_;
 		_g_regex_unref0 (regex);
-#line 1151 "glib-2.0.vapi"
+#line 1159 "glib-2.0.vapi"
 		return result;
 #line 369 "rygel-external-item-factory.c"
 	}
@@ -374,7 +374,7 @@ static char* string_replace (const char* self, const char* old, const char* repl
 		e = _inner_error_;
 		_inner_error_ = NULL;
 		{
-#line 1153 "glib-2.0.vapi"
+#line 1161 "glib-2.0.vapi"
 			g_assert_not_reached ();
 #line 380 "rygel-external-item-factory.c"
 			_g_error_free0 (e);
@@ -433,9 +433,9 @@ static gboolean rygel_external_item_factory_create_co (RygelExternalItemFactoryC
 		if (data->_inner_error_ != NULL) {
 			g_simple_async_result_set_from_error (data->_async_result, data->_inner_error_);
 			g_error_free (data->_inner_error_);
-			_g_free0 (data->upnp_class);
-			_g_object_unref0 (data->item);
 			_g_free0 (data->value);
+			_g_object_unref0 (data->item);
+			_g_free0 (data->upnp_class);
 			{
 				if (data->_state_ == 0) {
 					g_simple_async_result_complete_in_idle (data->_async_result);
@@ -603,12 +603,12 @@ static gboolean rygel_external_item_factory_create_co (RygelExternalItemFactoryC
 				g_simple_async_result_set_from_error (data->_async_result, data->_inner_error_);
 				g_error_free (data->_inner_error_);
 				_rygel_external_thumbnail_factory_unref0 (data->factory);
-				_g_free0 (data->upnp_class);
-				_g_object_unref0 (data->item);
-				_g_free0 (data->value);
-				_dbus_g_connection_unref0 (data->connection);
-				_g_object_unref0 (data->item_iface);
 				data->uris = (_vala_array_free (data->uris, data->uris_length1, (GDestroyNotify) g_free), NULL);
+				_g_object_unref0 (data->item_iface);
+				_dbus_g_connection_unref0 (data->connection);
+				_g_free0 (data->value);
+				_g_object_unref0 (data->item);
+				_g_free0 (data->upnp_class);
 				{
 					if (data->_state_ == 0) {
 						g_simple_async_result_complete_in_idle (data->_async_result);
@@ -622,15 +622,15 @@ static gboolean rygel_external_item_factory_create_co (RygelExternalItemFactoryC
 #line 159 "rygel-external-item-factory.vala"
 			gee_abstract_collection_add ((GeeAbstractCollection*) data->item->thumbnails, data->thumbnail);
 #line 625 "rygel-external-item-factory.c"
-			_rygel_external_thumbnail_factory_unref0 (data->factory);
 			_rygel_icon_info_unref0 (data->thumbnail);
+			_rygel_external_thumbnail_factory_unref0 (data->factory);
 		}
 		data->result = data->item;
-		_g_free0 (data->upnp_class);
-		_g_free0 (data->value);
-		_dbus_g_connection_unref0 (data->connection);
-		_g_object_unref0 (data->item_iface);
 		data->uris = (_vala_array_free (data->uris, data->uris_length1, (GDestroyNotify) g_free), NULL);
+		_g_object_unref0 (data->item_iface);
+		_dbus_g_connection_unref0 (data->connection);
+		_g_free0 (data->value);
+		_g_free0 (data->upnp_class);
 		{
 			if (data->_state_ == 0) {
 				g_simple_async_result_complete_in_idle (data->_async_result);
@@ -640,12 +640,12 @@ static gboolean rygel_external_item_factory_create_co (RygelExternalItemFactoryC
 			g_object_unref (data->_async_result);
 			return FALSE;
 		}
-		_g_free0 (data->upnp_class);
-		_g_object_unref0 (data->item);
-		_g_free0 (data->value);
-		_dbus_g_connection_unref0 (data->connection);
-		_g_object_unref0 (data->item_iface);
 		data->uris = (_vala_array_free (data->uris, data->uris_length1, (GDestroyNotify) g_free), NULL);
+		_g_object_unref0 (data->item_iface);
+		_dbus_g_connection_unref0 (data->connection);
+		_g_free0 (data->value);
+		_g_object_unref0 (data->item);
+		_g_free0 (data->upnp_class);
 	}
 	{
 		if (data->_state_ == 0) {

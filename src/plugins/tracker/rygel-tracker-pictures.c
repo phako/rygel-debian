@@ -127,30 +127,30 @@ struct _RygelTrackerPicturesClass {
 
 static gpointer rygel_tracker_pictures_parent_class = NULL;
 
-GType rygel_tracker_category_container_get_type (void);
+GType rygel_tracker_category_container_get_type (void) G_GNUC_CONST;
 gpointer rygel_tracker_item_factory_ref (gpointer instance);
 void rygel_tracker_item_factory_unref (gpointer instance);
 GParamSpec* rygel_tracker_param_spec_item_factory (const gchar* name, const gchar* nick, const gchar* blurb, GType object_type, GParamFlags flags);
 void rygel_tracker_value_set_item_factory (GValue* value, gpointer v_object);
 void rygel_tracker_value_take_item_factory (GValue* value, gpointer v_object);
 gpointer rygel_tracker_value_get_item_factory (const GValue* value);
-GType rygel_tracker_item_factory_get_type (void);
-GType rygel_tracker_pictures_get_type (void);
+GType rygel_tracker_item_factory_get_type (void) G_GNUC_CONST;
+GType rygel_tracker_pictures_get_type (void) G_GNUC_CONST;
 enum  {
 	RYGEL_TRACKER_PICTURES_DUMMY_PROPERTY
 };
 RygelTrackerPictureItemFactory* rygel_tracker_picture_item_factory_new (void);
 RygelTrackerPictureItemFactory* rygel_tracker_picture_item_factory_construct (GType object_type);
-GType rygel_tracker_picture_item_factory_get_type (void);
+GType rygel_tracker_picture_item_factory_get_type (void) G_GNUC_CONST;
 RygelTrackerCategoryContainer* rygel_tracker_category_container_new (const char* id, RygelMediaContainer* parent, const char* title, RygelTrackerItemFactory* item_factory);
 RygelTrackerCategoryContainer* rygel_tracker_category_container_construct (GType object_type, const char* id, RygelMediaContainer* parent, const char* title, RygelTrackerItemFactory* item_factory);
 RygelTrackerTags* rygel_tracker_tags_new (RygelMediaContainer* parent, RygelTrackerItemFactory* item_factory);
 RygelTrackerTags* rygel_tracker_tags_construct (GType object_type, RygelMediaContainer* parent, RygelTrackerItemFactory* item_factory);
-GType rygel_tracker_metadata_values_get_type (void);
-GType rygel_tracker_tags_get_type (void);
+GType rygel_tracker_metadata_values_get_type (void) G_GNUC_CONST;
+GType rygel_tracker_tags_get_type (void) G_GNUC_CONST;
 RygelTrackerYears* rygel_tracker_years_new (RygelMediaContainer* parent, RygelTrackerItemFactory* item_factory);
 RygelTrackerYears* rygel_tracker_years_construct (GType object_type, RygelMediaContainer* parent, RygelTrackerItemFactory* item_factory);
-GType rygel_tracker_years_get_type (void);
+GType rygel_tracker_years_get_type (void) G_GNUC_CONST;
 RygelTrackerPictures* rygel_tracker_pictures_new (const char* id, RygelMediaContainer* parent, const char* title);
 RygelTrackerPictures* rygel_tracker_pictures_construct (GType object_type, const char* id, RygelMediaContainer* parent, const char* title);
 

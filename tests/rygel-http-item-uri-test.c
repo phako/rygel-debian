@@ -111,7 +111,7 @@ static gpointer rygel_http_item_uri_test_parent_class = NULL;
 
 GQuark rygel_http_request_error_quark (void);
 GQuark rygel_test_error_quark (void);
-GType rygel_http_server_get_type (void);
+GType rygel_http_server_get_type (void) G_GNUC_CONST;
 #define RYGEL_HTTP_SERVER_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), RYGEL_TYPE_HTTP_SERVER, RygelHTTPServerPrivate))
 enum  {
 	RYGEL_HTTP_SERVER_DUMMY_PROPERTY,
@@ -125,7 +125,7 @@ const char* rygel_http_server_get_path_root (RygelHTTPServer* self);
 static void rygel_http_server_finalize (GObject* obj);
 static void rygel_http_server_get_property (GObject * object, guint property_id, GValue * value, GParamSpec * pspec);
 static void rygel_http_server_set_property (GObject * object, guint property_id, const GValue * value, GParamSpec * pspec);
-GType rygel_http_item_uri_test_get_type (void);
+GType rygel_http_item_uri_test_get_type (void) G_GNUC_CONST;
 #define RYGEL_HTTP_ITEM_URI_TEST_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), RYGEL_TYPE_HTTP_ITEM_URI_TEST, RygelHTTPItemURITestPrivate))
 enum  {
 	RYGEL_HTTP_ITEM_URI_TEST_DUMMY_PROPERTY
@@ -138,7 +138,7 @@ static RygelHTTPItemURITest* rygel_http_item_uri_test_new (GError** error);
 static RygelHTTPItemURITest* rygel_http_item_uri_test_construct (GType object_type, GError** error);
 void rygel_http_item_uri_test_run (RygelHTTPItemURITest* self, GError** error);
 gint rygel_http_item_uri_test_main (char** args, int args_length1);
-GType rygel_http_item_uri_get_type (void);
+GType rygel_http_item_uri_get_type (void) G_GNUC_CONST;
 static RygelHTTPItemURI* rygel_http_item_uri_test_test_construction (RygelHTTPItemURITest* self);
 static RygelHTTPItemURI* rygel_http_item_uri_test_test_construction_with_thumbnail (RygelHTTPItemURITest* self);
 static RygelHTTPItemURI* rygel_http_item_uri_test_test_construction_with_subtitle (RygelHTTPItemURITest* self);
@@ -210,7 +210,7 @@ RygelHTTPServer* rygel_http_server_construct (GType object_type, GError** error)
 	if (_inner_error_ != NULL) {
 		if (_inner_error_->domain == RYGEL_TEST_ERROR) {
 			g_propagate_error (error, _inner_error_);
-			g_object_unref (self);
+			_g_object_unref0 (self);
 			return NULL;
 		} else {
 			g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
@@ -445,13 +445,13 @@ void rygel_http_item_uri_test_run (RygelHTTPItemURITest* self, GError** error) {
 				_g_object_unref0 (_tmp2_);
 				if (_inner_error_ != NULL) {
 					g_propagate_error (error, _inner_error_);
-					_g_object_unref0 (uri);
 					_g_free0 (str);
+					_g_object_unref0 (uri);
 					uris = (_vala_array_free (uris, uris_length1, (GDestroyNotify) g_object_unref), NULL);
 					return;
 				}
-				_g_object_unref0 (uri);
 				_g_free0 (str);
+				_g_object_unref0 (uri);
 			}
 		}
 	}
@@ -475,7 +475,7 @@ static RygelHTTPItemURITest* rygel_http_item_uri_test_construct (GType object_ty
 	if (_inner_error_ != NULL) {
 		if (_inner_error_->domain == RYGEL_TEST_ERROR) {
 			g_propagate_error (error, _inner_error_);
-			g_object_unref (self);
+			_g_object_unref0 (self);
 			return NULL;
 		} else {
 			g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);

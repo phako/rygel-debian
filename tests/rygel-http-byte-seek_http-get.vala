@@ -74,10 +74,7 @@ internal class Rygel.HTTPByteSeek : Rygel.HTTPSeek {
             }
         }
 
-        base (request.msg,
-              start,
-              stop,
-              total_length);
+        base (request.msg, start, stop, total_length);
     }
 
     public static bool needed (HTTPGet request) {
@@ -96,9 +93,9 @@ internal class Rygel.HTTPByteSeek : Rygel.HTTPSeek {
 
         range += this.start.to_string () + "-" +
                  this.stop.to_string () + "/" +
-                 this.length.to_string ();
+                 this.total_length.to_string ();
         headers.append ("Content-Range", range);
 
-        headers.set_content_length (this.stop + 1 - this.start);
+        headers.set_content_length (this.length);
     }
 }

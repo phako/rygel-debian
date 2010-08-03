@@ -171,6 +171,7 @@ struct _RygelMediaObject {
 
 struct _RygelMediaObjectClass {
 	GObjectClass parent_class;
+	gint (*compare_by_property) (RygelMediaObject* self, RygelMediaObject* media_object, const char* property);
 };
 
 struct _RygelMediaItem {
@@ -207,11 +208,11 @@ struct _RygelMediaItemClass {
 
 static gpointer rygel_wmv_transcoder_parent_class = NULL;
 
-GType rygel_transcoder_get_type (void);
-GType rygel_media_object_get_type (void);
-GType rygel_media_item_get_type (void);
-GType rygel_transcode_manager_get_type (void);
-GType rygel_wmv_transcoder_get_type (void);
+GType rygel_transcoder_get_type (void) G_GNUC_CONST;
+GType rygel_media_object_get_type (void) G_GNUC_CONST;
+GType rygel_media_item_get_type (void) G_GNUC_CONST;
+GType rygel_transcode_manager_get_type (void) G_GNUC_CONST;
+GType rygel_wmv_transcoder_get_type (void) G_GNUC_CONST;
 enum  {
 	RYGEL_WMV_TRANSCODER_DUMMY_PROPERTY
 };
@@ -227,25 +228,25 @@ RygelWMVTranscoder* rygel_wmv_transcoder_new (void);
 RygelWMVTranscoder* rygel_wmv_transcoder_construct (GType object_type);
 RygelWMVTranscoderBin* rygel_wmv_transcoder_bin_new (RygelMediaItem* item, GstElement* src, RygelWMVTranscoder* transcoder, GError** error);
 RygelWMVTranscoderBin* rygel_wmv_transcoder_bin_construct (GType object_type, RygelMediaItem* item, GstElement* src, RygelWMVTranscoder* transcoder, GError** error);
-GType rygel_wmv_transcoder_bin_get_type (void);
+GType rygel_wmv_transcoder_bin_get_type (void) G_GNUC_CONST;
 static GstElement* rygel_wmv_transcoder_real_create_source (RygelTranscoder* base, RygelMediaItem* item, GstElement* src, GError** error);
 GUPnPDIDLLiteResource* rygel_transcoder_add_resource (RygelTranscoder* self, GUPnPDIDLLiteItem* didl_item, RygelMediaItem* item, RygelTranscodeManager* manager, GError** error);
-GType rygel_media_container_get_type (void);
+GType rygel_media_container_get_type (void) G_GNUC_CONST;
 gpointer rygel_icon_info_ref (gpointer instance);
 void rygel_icon_info_unref (gpointer instance);
 GParamSpec* rygel_param_spec_icon_info (const gchar* name, const gchar* nick, const gchar* blurb, GType object_type, GParamFlags flags);
 void rygel_value_set_icon_info (GValue* value, gpointer v_object);
 void rygel_value_take_icon_info (GValue* value, gpointer v_object);
 gpointer rygel_value_get_icon_info (const GValue* value);
-GType rygel_icon_info_get_type (void);
-GType rygel_thumbnail_get_type (void);
+GType rygel_icon_info_get_type (void) G_GNUC_CONST;
+GType rygel_thumbnail_get_type (void) G_GNUC_CONST;
 gpointer rygel_subtitle_ref (gpointer instance);
 void rygel_subtitle_unref (gpointer instance);
 GParamSpec* rygel_param_spec_subtitle (const gchar* name, const gchar* nick, const gchar* blurb, GType object_type, GParamFlags flags);
 void rygel_value_set_subtitle (GValue* value, gpointer v_object);
 void rygel_value_take_subtitle (GValue* value, gpointer v_object);
 gpointer rygel_value_get_subtitle (const GValue* value);
-GType rygel_subtitle_get_type (void);
+GType rygel_subtitle_get_type (void) G_GNUC_CONST;
 #define RYGEL_WMA_TRANSCODER_BITRATE 64
 static GUPnPDIDLLiteResource* rygel_wmv_transcoder_real_add_resource (RygelTranscoder* base, GUPnPDIDLLiteItem* didl_item, RygelMediaItem* item, RygelTranscodeManager* manager, GError** error);
 #define RYGEL_MEDIA_ITEM_IMAGE_CLASS "object.item.imageItem"
@@ -258,11 +259,11 @@ GstElement* rygel_wmv_transcoder_create_encoder (RygelWMVTranscoder* self, Rygel
 
 #line 34 "rygel-wmv-transcoder.vala"
 RygelWMVTranscoder* rygel_wmv_transcoder_construct (GType object_type) {
-#line 262 "rygel-wmv-transcoder.c"
+#line 263 "rygel-wmv-transcoder.c"
 	RygelWMVTranscoder * self;
 #line 35 "rygel-wmv-transcoder.vala"
 	self = (RygelWMVTranscoder*) rygel_transcoder_construct (object_type, "video/x-ms-wmv", "WMV", RYGEL_MEDIA_ITEM_VIDEO_CLASS);
-#line 266 "rygel-wmv-transcoder.c"
+#line 267 "rygel-wmv-transcoder.c"
 	return self;
 }
 
@@ -271,13 +272,13 @@ RygelWMVTranscoder* rygel_wmv_transcoder_construct (GType object_type) {
 RygelWMVTranscoder* rygel_wmv_transcoder_new (void) {
 #line 34 "rygel-wmv-transcoder.vala"
 	return rygel_wmv_transcoder_construct (RYGEL_TYPE_WMV_TRANSCODER);
-#line 275 "rygel-wmv-transcoder.c"
+#line 276 "rygel-wmv-transcoder.c"
 }
 
 
 #line 38 "rygel-wmv-transcoder.vala"
 static GstElement* rygel_wmv_transcoder_real_create_source (RygelTranscoder* base, RygelMediaItem* item, GstElement* src, GError** error) {
-#line 281 "rygel-wmv-transcoder.c"
+#line 282 "rygel-wmv-transcoder.c"
 	RygelWMVTranscoder * self;
 	GstElement* result = NULL;
 	GError * _inner_error_;
@@ -287,11 +288,11 @@ static GstElement* rygel_wmv_transcoder_real_create_source (RygelTranscoder* bas
 	g_return_val_if_fail (item != NULL, NULL);
 #line 38 "rygel-wmv-transcoder.vala"
 	g_return_val_if_fail (src != NULL, NULL);
-#line 291 "rygel-wmv-transcoder.c"
+#line 292 "rygel-wmv-transcoder.c"
 	_inner_error_ = NULL;
 #line 41 "rygel-wmv-transcoder.vala"
 	_tmp0_ = rygel_wmv_transcoder_bin_new (item, src, self, &_inner_error_);
-#line 295 "rygel-wmv-transcoder.c"
+#line 296 "rygel-wmv-transcoder.c"
 	if (_inner_error_ != NULL) {
 		g_propagate_error (error, _inner_error_);
 		return NULL;
@@ -299,13 +300,13 @@ static GstElement* rygel_wmv_transcoder_real_create_source (RygelTranscoder* bas
 	result = (GstElement*) _tmp0_;
 #line 41 "rygel-wmv-transcoder.vala"
 	return result;
-#line 303 "rygel-wmv-transcoder.c"
+#line 304 "rygel-wmv-transcoder.c"
 }
 
 
 #line 44 "rygel-wmv-transcoder.vala"
 static GUPnPDIDLLiteResource* rygel_wmv_transcoder_real_add_resource (RygelTranscoder* base, GUPnPDIDLLiteItem* didl_item, RygelMediaItem* item, RygelTranscodeManager* manager, GError** error) {
-#line 309 "rygel-wmv-transcoder.c"
+#line 310 "rygel-wmv-transcoder.c"
 	RygelWMVTranscoder * self;
 	GUPnPDIDLLiteResource* result = NULL;
 	GError * _inner_error_;
@@ -317,23 +318,23 @@ static GUPnPDIDLLiteResource* rygel_wmv_transcoder_real_add_resource (RygelTrans
 	g_return_val_if_fail (item != NULL, NULL);
 #line 44 "rygel-wmv-transcoder.vala"
 	g_return_val_if_fail (manager != NULL, NULL);
-#line 321 "rygel-wmv-transcoder.c"
+#line 322 "rygel-wmv-transcoder.c"
 	_inner_error_ = NULL;
 #line 48 "rygel-wmv-transcoder.vala"
 	resource = RYGEL_TRANSCODER_CLASS (rygel_wmv_transcoder_parent_class)->add_resource (RYGEL_TRANSCODER (self), didl_item, item, manager, &_inner_error_);
-#line 325 "rygel-wmv-transcoder.c"
+#line 326 "rygel-wmv-transcoder.c"
 	if (_inner_error_ != NULL) {
 		g_propagate_error (error, _inner_error_);
 		return NULL;
 	}
 #line 49 "rygel-wmv-transcoder.vala"
 	if (resource == NULL) {
-#line 332 "rygel-wmv-transcoder.c"
+#line 333 "rygel-wmv-transcoder.c"
 		result = NULL;
 		_g_object_unref0 (resource);
 #line 50 "rygel-wmv-transcoder.vala"
 		return result;
-#line 337 "rygel-wmv-transcoder.c"
+#line 338 "rygel-wmv-transcoder.c"
 	}
 #line 52 "rygel-wmv-transcoder.vala"
 	gupnp_didl_lite_resource_set_width (resource, item->width);
@@ -341,17 +342,17 @@ static GUPnPDIDLLiteResource* rygel_wmv_transcoder_real_add_resource (RygelTrans
 	gupnp_didl_lite_resource_set_height (resource, item->height);
 #line 54 "rygel-wmv-transcoder.vala"
 	gupnp_didl_lite_resource_set_bitrate (resource, ((RYGEL_WMV_TRANSCODER_VIDEO_BITRATE + RYGEL_WMA_TRANSCODER_BITRATE) * 1000) / 8);
-#line 345 "rygel-wmv-transcoder.c"
+#line 346 "rygel-wmv-transcoder.c"
 	result = resource;
 #line 56 "rygel-wmv-transcoder.vala"
 	return result;
-#line 349 "rygel-wmv-transcoder.c"
+#line 350 "rygel-wmv-transcoder.c"
 }
 
 
 #line 59 "rygel-wmv-transcoder.vala"
 static guint rygel_wmv_transcoder_real_get_distance (RygelTranscoder* base, RygelMediaItem* item) {
-#line 355 "rygel-wmv-transcoder.c"
+#line 356 "rygel-wmv-transcoder.c"
 	RygelWMVTranscoder * self;
 	guint result = 0U;
 	guint distance = 0U;
@@ -360,11 +361,11 @@ static guint rygel_wmv_transcoder_real_get_distance (RygelTranscoder* base, Ryge
 	g_return_val_if_fail (item != NULL, 0U);
 #line 60 "rygel-wmv-transcoder.vala"
 	if (g_str_has_prefix (((RygelMediaObject*) item)->upnp_class, RYGEL_MEDIA_ITEM_IMAGE_CLASS)) {
-#line 364 "rygel-wmv-transcoder.c"
+#line 365 "rygel-wmv-transcoder.c"
 		result = G_MAXUINT;
 #line 61 "rygel-wmv-transcoder.vala"
 		return result;
-#line 368 "rygel-wmv-transcoder.c"
+#line 369 "rygel-wmv-transcoder.c"
 	}
 #line 66 "rygel-wmv-transcoder.vala"
 	if (g_str_has_prefix (((RygelMediaObject*) item)->upnp_class, RYGEL_MEDIA_ITEM_VIDEO_CLASS)) {
@@ -374,17 +375,17 @@ static guint rygel_wmv_transcoder_real_get_distance (RygelTranscoder* base, Ryge
 		if (item->bitrate > 0) {
 #line 70 "rygel-wmv-transcoder.vala"
 			distance = distance + ((guint) abs (item->bitrate - RYGEL_WMV_TRANSCODER_BITRATE));
-#line 378 "rygel-wmv-transcoder.c"
+#line 379 "rygel-wmv-transcoder.c"
 		}
 	} else {
 #line 73 "rygel-wmv-transcoder.vala"
 		distance = G_MAXUINT / 2;
-#line 383 "rygel-wmv-transcoder.c"
+#line 384 "rygel-wmv-transcoder.c"
 	}
 	result = distance;
 #line 76 "rygel-wmv-transcoder.vala"
 	return result;
-#line 388 "rygel-wmv-transcoder.c"
+#line 389 "rygel-wmv-transcoder.c"
 }
 
 
@@ -400,7 +401,7 @@ static gpointer _gst_object_ref0 (gpointer self) {
 
 #line 79 "rygel-wmv-transcoder.vala"
 GstElement* rygel_wmv_transcoder_create_encoder (RygelWMVTranscoder* self, RygelMediaItem* item, const char* src_pad_name, const char* sink_pad_name, GError** error) {
-#line 404 "rygel-wmv-transcoder.c"
+#line 405 "rygel-wmv-transcoder.c"
 	GstElement* result = NULL;
 	GError * _inner_error_;
 	GstElement* convert;
@@ -414,18 +415,18 @@ GstElement* rygel_wmv_transcoder_create_encoder (RygelWMVTranscoder* self, Rygel
 	g_return_val_if_fail (self != NULL, NULL);
 #line 79 "rygel-wmv-transcoder.vala"
 	g_return_val_if_fail (item != NULL, NULL);
-#line 418 "rygel-wmv-transcoder.c"
+#line 419 "rygel-wmv-transcoder.c"
 	_inner_error_ = NULL;
 #line 83 "rygel-wmv-transcoder.vala"
 	convert = rygel_gst_utils_create_element (RYGEL_WMV_TRANSCODER_COLORSPACE_CONVERT, RYGEL_WMV_TRANSCODER_COLORSPACE_CONVERT, &_inner_error_);
-#line 422 "rygel-wmv-transcoder.c"
+#line 423 "rygel-wmv-transcoder.c"
 	if (_inner_error_ != NULL) {
 		g_propagate_error (error, _inner_error_);
 		return NULL;
 	}
 #line 85 "rygel-wmv-transcoder.vala"
 	encoder = rygel_gst_utils_create_element (RYGEL_WMV_TRANSCODER_VIDEO_ENCODER, RYGEL_WMV_TRANSCODER_VIDEO_ENCODER, &_inner_error_);
-#line 429 "rygel-wmv-transcoder.c"
+#line 430 "rygel-wmv-transcoder.c"
 	if (_inner_error_ != NULL) {
 		g_propagate_error (error, _inner_error_);
 		_gst_object_unref0 (convert);
@@ -451,15 +452,15 @@ GstElement* rygel_wmv_transcoder_create_encoder (RygelWMVTranscoder* self, Rygel
 	ghost = (_tmp1_ = (GstGhostPad*) gst_ghost_pad_new (src_pad_name, pad), _gst_object_unref0 (ghost), _tmp1_);
 #line 100 "rygel-wmv-transcoder.vala"
 	gst_element_add_pad ((GstElement*) bin, _gst_object_ref0 ((GstPad*) ghost));
-#line 455 "rygel-wmv-transcoder.c"
+#line 456 "rygel-wmv-transcoder.c"
 	result = (GstElement*) bin;
-	_gst_object_unref0 (convert);
-	_gst_object_unref0 (encoder);
-	_gst_object_unref0 (pad);
 	_gst_object_unref0 (ghost);
+	_gst_object_unref0 (pad);
+	_gst_object_unref0 (encoder);
+	_gst_object_unref0 (convert);
 #line 102 "rygel-wmv-transcoder.vala"
 	return result;
-#line 463 "rygel-wmv-transcoder.c"
+#line 464 "rygel-wmv-transcoder.c"
 }
 
 

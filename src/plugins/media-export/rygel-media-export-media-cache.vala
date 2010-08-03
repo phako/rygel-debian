@@ -45,16 +45,18 @@ public enum Rygel.MediaDBObjectType {
 public class Rygel.MediaExport.MediaCache : Object {
     private Database db;
     private DBObjectFactory factory;
-    internal const string schema_version = "6";
+    internal const string schema_version = "8";
     internal const string CREATE_META_DATA_TABLE_STRING =
     "CREATE TABLE meta_data (size INTEGER NOT NULL, " +
                             "mime_type TEXT NOT NULL, " +
+                            "dlna_profile TEXT, " +
                             "duration INTEGER, " +
                             "width INTEGER, " +
                             "height INTEGER, " +
                             "class TEXT NOT NULL, " +
                             "author TEXT, " +
                             "album TEXT, " +
+                            "genre TEXT, " +
                             "date TEXT, " +
                             "bitrate INTEGER, " +
                             "sample_freq INTEGER, " +
@@ -75,7 +77,8 @@ public class Rygel.MediaExport.MediaCache : Object {
                           "type_fk INTEGER, " +
                           "title TEXT NOT NULL, " +
                           "timestamp INTEGER NOT NULL, " +
-                          "uri TEXT);" +
+                          "uri TEXT, " +
+                          "flags TEXT);" +
     "INSERT INTO schema_info (version) VALUES ('" +
     MediaCache.schema_version + "'); ";
 
@@ -117,8 +120,8 @@ public class Rygel.MediaExport.MediaCache : Object {
         "(size, mime_type, width, height, class, " +
          "author, album, date, bitrate, " +
          "sample_freq, bits_per_sample, channels, " +
-         "track, color_depth, duration, object_fk) VALUES " +
-         "(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+         "track, color_depth, duration, object_fk, dlna_profile) VALUES " +
+         "(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
 
     private const string INSERT_OBJECT_STRING =
     "INSERT OR REPLACE INTO Object (upnp_id, title, type_fk, parent, timestamp, uri) " +
@@ -129,10 +132,11 @@ public class Rygel.MediaExport.MediaCache : Object {
         "(SELECT descendant FROM closure WHERE ancestor = ?)";
 
     private const string GET_OBJECT_WITH_PATH =
-    "SELECT DISTINCT o.type_fk, o.title, m.size, m.mime_type, m.width, m.height, " +
-            "m.class, m.author, m.album, m.date, m.bitrate, m.sample_freq, " +
-            "m.bits_per_sample, m.channels, m.track, m.color_depth, " +
-            "m.duration, o.parent, o.upnp_id, o.timestamp, o.uri " +
+    "SELECT DISTINCT o.type_fk, o.title, m.size, m.mime_type, m.width, " +
+            "m.height, m.class, m.author, m.album, m.date, m.bitrate, " +
+            "m.sample_freq, m.bits_per_sample, m.channels, m.track, " +
+            "m.color_depth, m.duration, o.parent, o.upnp_id, o.timestamp, " +
+            "o.uri, m.dlna_profile " +
     "FROM Object o " +
         "JOIN Closure c ON (o.upnp_id = c.ancestor) " +
         "LEFT OUTER JOIN meta_data m ON (o.upnp_id = m.object_fk) " +
@@ -153,7 +157,7 @@ public class Rygel.MediaExport.MediaCache : Object {
             "m.width, m.height, m.class, m.author, m.album, " +
             "m.date, m.bitrate, m.sample_freq, m.bits_per_sample, " +
             "m.channels, m.track, m.color_depth, m.duration, " +
-            "o.upnp_id, o.parent, o.timestamp, o.uri " +
+            "o.upnp_id, o.parent, o.timestamp, o.uri, m.dlna_profile " +
     "FROM Object o LEFT OUTER JOIN meta_data m " +
         "ON o.upnp_id = m.object_fk " +
     "WHERE o.parent = ? " +
@@ -169,7 +173,7 @@ public class Rygel.MediaExport.MediaCache : Object {
             "m.width, m.height, m.class, m.author, m.album, " +
             "m.date, m.bitrate, m.sample_freq, m.bits_per_sample, " +
             "m.channels, m.track, m.color_depth, m.duration, " +
-            "o.upnp_id, o.parent, o.timestamp, o.uri " +
+            "o.upnp_id, o.parent, o.timestamp, o.uri, m.dlna_profile " +
     "FROM Object o " +
         "JOIN Closure c ON o.upnp_id = c.descendant AND c.ancestor = ? " +
         "LEFT OUTER JOIN meta_data m " +
@@ -321,11 +325,10 @@ public class Rygel.MediaExport.MediaCache : Object {
         return exists;
     }
 
-    public Gee.ArrayList<MediaObject> get_children (string container_id,
-                                                    long   offset,
-                                                    long   max_count)
-                                                    throws Error {
-        ArrayList<MediaObject> children = new ArrayList<MediaObject> ();
+    public MediaObjects get_children (string container_id,
+                                      long   offset,
+                                      long   max_count) throws Error {
+        MediaObjects children = new MediaObjects ();
         var parent = get_object (container_id) as MediaContainer;
 
         GLib.Value[] values = { container_id,
@@ -354,7 +357,7 @@ public class Rygel.MediaExport.MediaCache : Object {
         }
     }
 
-    public Gee.List<MediaObject> get_objects_by_search_expression (
+    public MediaObjects get_objects_by_search_expression (
                                         SearchExpression? expression,
                                         string            container_id,
                                         uint              offset,
@@ -365,7 +368,7 @@ public class Rygel.MediaExport.MediaCache : Object {
         var filter = this.search_expression_to_sql (expression, args);
 
         if (filter == null) {
-            return new Gee.ArrayList<MediaObject> ();
+            return new MediaObjects ();
         }
 
         debug ("Original search: %s", expression.to_string ());
@@ -445,14 +448,13 @@ public class Rygel.MediaExport.MediaCache : Object {
     }
 
 
-    public Gee.ArrayList<MediaObject> get_objects_by_filter (
-                                        string          filter,
-                                        GLib.ValueArray args,
-                                        string          container_id,
-                                        long            offset,
-                                        long            max_count)
-                                        throws Error {
-        ArrayList<MediaObject> children = new ArrayList<MediaObject> ();
+    public MediaObjects get_objects_by_filter (string          filter,
+                                               GLib.ValueArray args,
+                                               string          container_id,
+                                               long            offset,
+                                               long            max_count)
+                                               throws Error {
+        var children = new MediaObjects ();
         GLib.Value v = offset;
         args.append (v);
         v = max_count;
@@ -582,7 +584,8 @@ public class Rygel.MediaExport.MediaCache : Object {
                                 item.track_number,
                                 item.color_depth,
                                 item.duration,
-                                item.id };
+                                item.id,
+                                item.dlna_profile};
         this.db.exec (SAVE_META_DATA_STRING, values);
     }
 
@@ -658,12 +661,18 @@ public class Rygel.MediaExport.MediaCache : Object {
                 break;
             case 1:
                 // this is an item
+                var upnp_class = statement.column_text (6);
                 object = factory.get_item (this,
                                            parent,
                                            object_id,
                                            statement.column_text (1),
-                                           statement.column_text (6));
+                                           upnp_class);
                 fill_item (statement, object as MediaItem);
+
+                if (upnp_class.has_prefix (MediaItem.AUDIO_CLASS)) {
+                    (object as MediaItem).lookup_album_art ();
+                }
+
                 var uri = statement.column_text (20);
                 if (uri != null) {
                     (object as MediaItem).add_uri (uri, null);
@@ -698,6 +707,7 @@ public class Rygel.MediaExport.MediaCache : Object {
         item.width = statement.column_int (4);
         item.height = statement.column_int (5);
         item.color_depth = statement.column_int (15);
+        item.dlna_profile = statement.column_text (21);
     }
 
     public ArrayList<string> get_child_ids (string container_id)
@@ -901,5 +911,24 @@ public class Rygel.MediaExport.MediaCache : Object {
                                                     args,
                                                     offset,
                                                     max_count);
+    }
+
+    public void flag_object (string id, string flag) throws Error {
+        GLib.Value[] args = { flag, id };
+        this.db.exec ("UPDATE Object SET flags = ? WHERE upnp_id = ?", args);
+    }
+
+    public Gee.List<string> get_flagged_uris (string flag) throws Error {
+        var uris = new ArrayList<string> ();
+        GLib.Value[] args = { flag };
+        this.db.exec ("SELECT uri FROM object WHERE flags = ?",
+                      args,
+                      (statement) => {
+                          uris.add (statement.column_text (0));
+
+                          return true;
+                      });
+
+        return uris;
     }
 }

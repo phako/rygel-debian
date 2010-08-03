@@ -108,9 +108,9 @@ struct _RygelTrackerPrefSectionPrivate {
 
 static gpointer rygel_tracker_pref_section_parent_class = NULL;
 
-GType rygel_preferences_section_get_type (void);
-GType rygel_plugin_pref_section_get_type (void);
-GType rygel_tracker_pref_section_get_type (void);
+GType rygel_preferences_section_get_type (void) G_GNUC_CONST;
+GType rygel_plugin_pref_section_get_type (void) G_GNUC_CONST;
+GType rygel_tracker_pref_section_get_type (void) G_GNUC_CONST;
 #define RYGEL_TRACKER_PREF_SECTION_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), RYGEL_TYPE_TRACKER_PREF_SECTION, RygelTrackerPrefSectionPrivate))
 enum  {
 	RYGEL_TRACKER_PREF_SECTION_DUMMY_PROPERTY

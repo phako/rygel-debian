@@ -60,7 +60,7 @@ struct _RygelGstLaunchItemPrivate {
 
 static gpointer rygel_gst_launch_item_parent_class = NULL;
 
-GType rygel_gst_launch_item_get_type (void);
+GType rygel_gst_launch_item_get_type (void) G_GNUC_CONST;
 #define RYGEL_GST_LAUNCH_ITEM_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), RYGEL_GST_LAUNCH_TYPE_ITEM, RygelGstLaunchItemPrivate))
 enum  {
 	RYGEL_GST_LAUNCH_ITEM_DUMMY_PROPERTY

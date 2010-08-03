@@ -251,7 +251,7 @@ struct _FreeDesktopPropertiesDBusProxyGetAllData {
 
 
 
-GType rygel_external_media_object_proxy_get_type (void);
+GType rygel_external_media_object_proxy_get_type (void) G_GNUC_CONST;
 RygelExternalMediaObjectProxy* rygel_external_media_object_proxy_dbus_proxy_new (DBusGConnection* connection, const char* name, const char* path);
 #define RYGEL_EXTERNAL_MEDIA_OBJECT_PROXY_IFACE "org.gnome.UPnP.MediaObject2"
 char* rygel_external_media_object_proxy_get_parent (RygelExternalMediaObjectProxy* self);
@@ -269,7 +269,7 @@ static DBusHandlerResult _dbus_rygel_external_media_object_proxy_introspect (Ryg
 static DBusHandlerResult _dbus_rygel_external_media_object_proxy_property_get (RygelExternalMediaObjectProxy* self, DBusConnection* connection, DBusMessage* message);
 static DBusHandlerResult _dbus_rygel_external_media_object_proxy_property_set (RygelExternalMediaObjectProxy* self, DBusConnection* connection, DBusMessage* message);
 static DBusHandlerResult _dbus_rygel_external_media_object_proxy_property_get_all (RygelExternalMediaObjectProxy* self, DBusConnection* connection, DBusMessage* message);
-GType rygel_external_media_object_proxy_dbus_proxy_get_type (void);
+GType rygel_external_media_object_proxy_dbus_proxy_get_type (void) G_GNUC_CONST;
 DBusHandlerResult rygel_external_media_object_proxy_dbus_proxy_filter (DBusConnection* connection, DBusMessage* message, void* user_data);
 enum  {
 	RYGEL_EXTERNAL_MEDIA_OBJECT_PROXY_DBUS_PROXY_DUMMY_PROPERTY,
@@ -287,7 +287,7 @@ static void rygel_external_media_object_proxy_dbus_proxy_rygel_external_media_ob
 static void rygel_external_media_object_proxy_dbus_proxy_get_property (GObject * object, guint property_id, GValue * value, GParamSpec * pspec);
 static void rygel_external_media_object_proxy_dbus_proxy_set_property (GObject * object, guint property_id, const GValue * value, GParamSpec * pspec);
 RygelExternalMediaContainerProxy* rygel_external_media_container_proxy_dbus_proxy_new (DBusGConnection* connection, const char* name, const char* path);
-GType rygel_external_media_container_proxy_get_type (void);
+GType rygel_external_media_container_proxy_get_type (void) G_GNUC_CONST;
 void rygel_external_media_container_proxy_list_children (RygelExternalMediaContainerProxy* self, guint offset, guint max_count, char** filter, int filter_length1, GAsyncReadyCallback _callback_, gpointer _user_data_);
 GHashTable** rygel_external_media_container_proxy_list_children_finish (RygelExternalMediaContainerProxy* self, GAsyncResult* _res_, int* result_length1, GError** error);
 void rygel_external_media_container_proxy_list_containers (RygelExternalMediaContainerProxy* self, guint offset, guint max_count, char** filter, int filter_length1, GAsyncReadyCallback _callback_, gpointer _user_data_);
@@ -323,7 +323,7 @@ static void _dbus_rygel_external_media_container_proxy_list_items_ready (GObject
 static DBusHandlerResult _dbus_rygel_external_media_container_proxy_search_objects (RygelExternalMediaContainerProxy* self, DBusConnection* connection, DBusMessage* message);
 static void _dbus_rygel_external_media_container_proxy_search_objects_ready (GObject * source_object, GAsyncResult * _res_, gpointer * _user_data_);
 static void _dbus_rygel_external_media_container_proxy_updated (GObject* _sender, DBusConnection* _connection);
-GType rygel_external_media_container_proxy_dbus_proxy_get_type (void);
+GType rygel_external_media_container_proxy_dbus_proxy_get_type (void) G_GNUC_CONST;
 static void _dbus_handle_rygel_external_media_container_proxy_updated (RygelExternalMediaContainerProxy* self, DBusConnection* connection, DBusMessage* message);
 DBusHandlerResult rygel_external_media_container_proxy_dbus_proxy_filter (DBusConnection* connection, DBusMessage* message, void* user_data);
 enum  {
@@ -369,7 +369,7 @@ static void rygel_external_media_container_proxy_dbus_proxy_set_icon (RygelExter
 static void rygel_external_media_container_proxy_dbus_proxy_rygel_external_media_container_proxy__interface_init (RygelExternalMediaContainerProxyIface* iface);
 static void rygel_external_media_container_proxy_dbus_proxy_get_property (GObject * object, guint property_id, GValue * value, GParamSpec * pspec);
 static void rygel_external_media_container_proxy_dbus_proxy_set_property (GObject * object, guint property_id, const GValue * value, GParamSpec * pspec);
-GType rygel_external_media_item_proxy_get_type (void);
+GType rygel_external_media_item_proxy_get_type (void) G_GNUC_CONST;
 RygelExternalMediaItemProxy* rygel_external_media_item_proxy_dbus_proxy_new (DBusGConnection* connection, const char* name, const char* path);
 #define RYGEL_EXTERNAL_MEDIA_ITEM_PROXY_IFACE "org.gnome.UPnP.MediaItem2"
 char** rygel_external_media_item_proxy_get_urls (RygelExternalMediaItemProxy* self, int* result_length1);
@@ -413,7 +413,7 @@ static DBusHandlerResult _dbus_rygel_external_media_item_proxy_introspect (Rygel
 static DBusHandlerResult _dbus_rygel_external_media_item_proxy_property_get (RygelExternalMediaItemProxy* self, DBusConnection* connection, DBusMessage* message);
 static DBusHandlerResult _dbus_rygel_external_media_item_proxy_property_set (RygelExternalMediaItemProxy* self, DBusConnection* connection, DBusMessage* message);
 static DBusHandlerResult _dbus_rygel_external_media_item_proxy_property_get_all (RygelExternalMediaItemProxy* self, DBusConnection* connection, DBusMessage* message);
-GType rygel_external_media_item_proxy_dbus_proxy_get_type (void);
+GType rygel_external_media_item_proxy_dbus_proxy_get_type (void) G_GNUC_CONST;
 DBusHandlerResult rygel_external_media_item_proxy_dbus_proxy_filter (DBusConnection* connection, DBusMessage* message, void* user_data);
 enum  {
 	RYGEL_EXTERNAL_MEDIA_ITEM_PROXY_DBUS_PROXY_DUMMY_PROPERTY,
@@ -483,7 +483,7 @@ static void rygel_external_media_item_proxy_dbus_proxy_rygel_external_media_item
 static void rygel_external_media_item_proxy_dbus_proxy_get_property (GObject * object, guint property_id, GValue * value, GParamSpec * pspec);
 static void rygel_external_media_item_proxy_dbus_proxy_set_property (GObject * object, guint property_id, const GValue * value, GParamSpec * pspec);
 FreeDesktopDBusObject* free_desktop_dbus_object_dbus_proxy_new (DBusGConnection* connection, const char* name, const char* path);
-GType free_desktop_dbus_object_get_type (void);
+GType free_desktop_dbus_object_get_type (void) G_GNUC_CONST;
 void free_desktop_dbus_object_list_names (FreeDesktopDBusObject* self, GAsyncReadyCallback _callback_, gpointer _user_data_);
 char** free_desktop_dbus_object_list_names_finish (FreeDesktopDBusObject* self, GAsyncResult* _res_, int* result_length1, GError** error);
 void free_desktop_dbus_object_list_activatable_names (FreeDesktopDBusObject* self, GAsyncReadyCallback _callback_, gpointer _user_data_);
@@ -498,7 +498,7 @@ static void _dbus_free_desktop_dbus_object_list_names_ready (GObject * source_ob
 static DBusHandlerResult _dbus_free_desktop_dbus_object_list_activatable_names (FreeDesktopDBusObject* self, DBusConnection* connection, DBusMessage* message);
 static void _dbus_free_desktop_dbus_object_list_activatable_names_ready (GObject * source_object, GAsyncResult * _res_, gpointer * _user_data_);
 static void _dbus_free_desktop_dbus_object_name_owner_changed (GObject* _sender, const char* name, const char* old_owner, const char* new_owner, DBusConnection* _connection);
-GType free_desktop_dbus_object_dbus_proxy_get_type (void);
+GType free_desktop_dbus_object_dbus_proxy_get_type (void) G_GNUC_CONST;
 static void _dbus_handle_free_desktop_dbus_object_name_owner_changed (FreeDesktopDBusObject* self, DBusConnection* connection, DBusMessage* message);
 DBusHandlerResult free_desktop_dbus_object_dbus_proxy_filter (DBusConnection* connection, DBusMessage* message, void* user_data);
 enum  {
@@ -514,7 +514,7 @@ static void free_desktop_dbus_object_dbus_proxy_free_desktop_dbus_object__interf
 static void free_desktop_dbus_object_dbus_proxy_get_property (GObject * object, guint property_id, GValue * value, GParamSpec * pspec);
 static void free_desktop_dbus_object_dbus_proxy_set_property (GObject * object, guint property_id, const GValue * value, GParamSpec * pspec);
 FreeDesktopProperties* free_desktop_properties_dbus_proxy_new (DBusGConnection* connection, const char* name, const char* path);
-GType free_desktop_properties_get_type (void);
+GType free_desktop_properties_get_type (void) G_GNUC_CONST;
 void free_desktop_properties_get_all (FreeDesktopProperties* self, const char* iface, GAsyncReadyCallback _callback_, gpointer _user_data_);
 GHashTable* free_desktop_properties_get_all_finish (FreeDesktopProperties* self, GAsyncResult* _res_, GError** error);
 void free_desktop_properties_dbus_register_object (DBusConnection* connection, const char* path, void* object);
@@ -524,7 +524,7 @@ static DBusHandlerResult _dbus_free_desktop_properties_introspect (FreeDesktopPr
 static DBusHandlerResult _dbus_free_desktop_properties_property_get_all (FreeDesktopProperties* self, DBusConnection* connection, DBusMessage* message);
 static DBusHandlerResult _dbus_free_desktop_properties_get_all (FreeDesktopProperties* self, DBusConnection* connection, DBusMessage* message);
 static void _dbus_free_desktop_properties_get_all_ready (GObject * source_object, GAsyncResult * _res_, gpointer * _user_data_);
-GType free_desktop_properties_dbus_proxy_get_type (void);
+GType free_desktop_properties_dbus_proxy_get_type (void) G_GNUC_CONST;
 DBusHandlerResult free_desktop_properties_dbus_proxy_filter (DBusConnection* connection, DBusMessage* message, void* user_data);
 enum  {
 	FREE_DESKTOP_PROPERTIES_DBUS_PROXY_DUMMY_PROPERTY

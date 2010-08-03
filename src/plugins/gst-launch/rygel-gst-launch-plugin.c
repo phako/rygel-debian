@@ -26,38 +26,127 @@
 #include <glib.h>
 #include <glib-object.h>
 #include <rygel.h>
+#include <stdlib.h>
+#include <string.h>
 
 
-#define RYGEL_GST_LAUNCH_TYPE_CONTENT_DIR (rygel_gst_launch_content_dir_get_type ())
-#define RYGEL_GST_LAUNCH_CONTENT_DIR(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_GST_LAUNCH_TYPE_CONTENT_DIR, RygelGstLaunchContentDir))
-#define RYGEL_GST_LAUNCH_CONTENT_DIR_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_GST_LAUNCH_TYPE_CONTENT_DIR, RygelGstLaunchContentDirClass))
-#define RYGEL_GST_LAUNCH_IS_CONTENT_DIR(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_GST_LAUNCH_TYPE_CONTENT_DIR))
-#define RYGEL_GST_LAUNCH_IS_CONTENT_DIR_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_GST_LAUNCH_TYPE_CONTENT_DIR))
-#define RYGEL_GST_LAUNCH_CONTENT_DIR_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_GST_LAUNCH_TYPE_CONTENT_DIR, RygelGstLaunchContentDirClass))
+#define RYGEL_GST_LAUNCH_TYPE_PLUGIN (rygel_gst_launch_plugin_get_type ())
+#define RYGEL_GST_LAUNCH_PLUGIN(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_GST_LAUNCH_TYPE_PLUGIN, RygelGstLaunchPlugin))
+#define RYGEL_GST_LAUNCH_PLUGIN_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_GST_LAUNCH_TYPE_PLUGIN, RygelGstLaunchPluginClass))
+#define RYGEL_GST_LAUNCH_IS_PLUGIN(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_GST_LAUNCH_TYPE_PLUGIN))
+#define RYGEL_GST_LAUNCH_IS_PLUGIN_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_GST_LAUNCH_TYPE_PLUGIN))
+#define RYGEL_GST_LAUNCH_PLUGIN_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_GST_LAUNCH_TYPE_PLUGIN, RygelGstLaunchPluginClass))
 
-typedef struct _RygelGstLaunchContentDir RygelGstLaunchContentDir;
-typedef struct _RygelGstLaunchContentDirClass RygelGstLaunchContentDirClass;
+typedef struct _RygelGstLaunchPlugin RygelGstLaunchPlugin;
+typedef struct _RygelGstLaunchPluginClass RygelGstLaunchPluginClass;
 #define _g_object_unref0(var) ((var == NULL) ? NULL : (var = (g_object_unref (var), NULL)))
+typedef struct _RygelGstLaunchPluginPrivate RygelGstLaunchPluginPrivate;
+
+#define RYGEL_GST_LAUNCH_TYPE_ROOT_CONTAINER (rygel_gst_launch_root_container_get_type ())
+#define RYGEL_GST_LAUNCH_ROOT_CONTAINER(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_GST_LAUNCH_TYPE_ROOT_CONTAINER, RygelGstLaunchRootContainer))
+#define RYGEL_GST_LAUNCH_ROOT_CONTAINER_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_GST_LAUNCH_TYPE_ROOT_CONTAINER, RygelGstLaunchRootContainerClass))
+#define RYGEL_GST_LAUNCH_IS_ROOT_CONTAINER(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_GST_LAUNCH_TYPE_ROOT_CONTAINER))
+#define RYGEL_GST_LAUNCH_IS_ROOT_CONTAINER_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_GST_LAUNCH_TYPE_ROOT_CONTAINER))
+#define RYGEL_GST_LAUNCH_ROOT_CONTAINER_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_GST_LAUNCH_TYPE_ROOT_CONTAINER, RygelGstLaunchRootContainerClass))
+
+typedef struct _RygelGstLaunchRootContainer RygelGstLaunchRootContainer;
+typedef struct _RygelGstLaunchRootContainerClass RygelGstLaunchRootContainerClass;
+
+struct _RygelGstLaunchPlugin {
+	RygelMediaServerPlugin parent_instance;
+	RygelGstLaunchPluginPrivate * priv;
+};
+
+struct _RygelGstLaunchPluginClass {
+	RygelMediaServerPluginClass parent_class;
+};
 
 
+static gpointer rygel_gst_launch_plugin_parent_class = NULL;
 
-GType rygel_gst_launch_content_dir_get_type (void);
+RygelGstLaunchPlugin* rygel_gst_launch_plugin_new (void);
+RygelGstLaunchPlugin* rygel_gst_launch_plugin_construct (GType object_type);
+GType rygel_gst_launch_plugin_get_type (void) G_GNUC_CONST;
 void module_init (RygelPluginLoader* loader);
+enum  {
+	RYGEL_GST_LAUNCH_PLUGIN_DUMMY_PROPERTY
+};
+RygelGstLaunchRootContainer* rygel_gst_launch_root_container_new (const char* title);
+RygelGstLaunchRootContainer* rygel_gst_launch_root_container_construct (GType object_type, const char* title);
+GType rygel_gst_launch_root_container_get_type (void) G_GNUC_CONST;
+static RygelMediaContainer* rygel_gst_launch_plugin_real_get_root_container (RygelMediaServerPlugin* base, RygelContentDirectory* content_dir);
 
 
 
 #line 26 "rygel-gst-launch-plugin.vala"
 void module_init (RygelPluginLoader* loader) {
-#line 52 "rygel-gst-launch-plugin.c"
-	RygelPlugin* plugin;
+#line 84 "rygel-gst-launch-plugin.c"
+	RygelGstLaunchPlugin* plugin;
 #line 26 "rygel-gst-launch-plugin.vala"
 	g_return_if_fail (loader != NULL);
 #line 27 "rygel-gst-launch-plugin.vala"
-	plugin = rygel_plugin_new_MediaServer ("GstLaunch", "Gst Launch", RYGEL_GST_LAUNCH_TYPE_CONTENT_DIR, NULL);
-#line 30 "rygel-gst-launch-plugin.vala"
-	rygel_plugin_loader_add_plugin (loader, plugin);
-#line 60 "rygel-gst-launch-plugin.c"
+	plugin = rygel_gst_launch_plugin_new ();
+#line 29 "rygel-gst-launch-plugin.vala"
+	rygel_plugin_loader_add_plugin (loader, (RygelPlugin*) plugin);
+#line 92 "rygel-gst-launch-plugin.c"
 	_g_object_unref0 (plugin);
+}
+
+
+#line 33 "rygel-gst-launch-plugin.vala"
+RygelGstLaunchPlugin* rygel_gst_launch_plugin_construct (GType object_type) {
+#line 99 "rygel-gst-launch-plugin.c"
+	RygelGstLaunchPlugin * self;
+#line 34 "rygel-gst-launch-plugin.vala"
+	self = (RygelGstLaunchPlugin*) rygel_media_server_plugin_construct (object_type, "GstLaunch", "Gst Launch", NULL);
+#line 103 "rygel-gst-launch-plugin.c"
+	return self;
+}
+
+
+#line 33 "rygel-gst-launch-plugin.vala"
+RygelGstLaunchPlugin* rygel_gst_launch_plugin_new (void) {
+#line 33 "rygel-gst-launch-plugin.vala"
+	return rygel_gst_launch_plugin_construct (RYGEL_GST_LAUNCH_TYPE_PLUGIN);
+#line 112 "rygel-gst-launch-plugin.c"
+}
+
+
+#line 37 "rygel-gst-launch-plugin.vala"
+static RygelMediaContainer* rygel_gst_launch_plugin_real_get_root_container (RygelMediaServerPlugin* base, RygelContentDirectory* content_dir) {
+#line 118 "rygel-gst-launch-plugin.c"
+	RygelGstLaunchPlugin * self;
+	RygelMediaContainer* result = NULL;
+	self = (RygelGstLaunchPlugin*) base;
+#line 37 "rygel-gst-launch-plugin.vala"
+	g_return_val_if_fail (content_dir != NULL, NULL);
+#line 124 "rygel-gst-launch-plugin.c"
+	result = (RygelMediaContainer*) rygel_gst_launch_root_container_new (((RygelPlugin*) self)->title);
+#line 39 "rygel-gst-launch-plugin.vala"
+	return result;
+#line 128 "rygel-gst-launch-plugin.c"
+}
+
+
+static void rygel_gst_launch_plugin_class_init (RygelGstLaunchPluginClass * klass) {
+	rygel_gst_launch_plugin_parent_class = g_type_class_peek_parent (klass);
+	RYGEL_MEDIA_SERVER_PLUGIN_CLASS (klass)->get_root_container = rygel_gst_launch_plugin_real_get_root_container;
+}
+
+
+static void rygel_gst_launch_plugin_instance_init (RygelGstLaunchPlugin * self) {
+}
+
+
+GType rygel_gst_launch_plugin_get_type (void) {
+	static volatile gsize rygel_gst_launch_plugin_type_id__volatile = 0;
+	if (g_once_init_enter (&rygel_gst_launch_plugin_type_id__volatile)) {
+		static const GTypeInfo g_define_type_info = { sizeof (RygelGstLaunchPluginClass), (GBaseInitFunc) NULL, (GBaseFinalizeFunc) NULL, (GClassInitFunc) rygel_gst_launch_plugin_class_init, (GClassFinalizeFunc) NULL, NULL, sizeof (RygelGstLaunchPlugin), 0, (GInstanceInitFunc) rygel_gst_launch_plugin_instance_init, NULL };
+		GType rygel_gst_launch_plugin_type_id;
+		rygel_gst_launch_plugin_type_id = g_type_register_static (RYGEL_TYPE_MEDIA_SERVER_PLUGIN, "RygelGstLaunchPlugin", &g_define_type_info, 0);
+		g_once_init_leave (&rygel_gst_launch_plugin_type_id__volatile, rygel_gst_launch_plugin_type_id);
+	}
+	return rygel_gst_launch_plugin_type_id__volatile;
 }
 
 

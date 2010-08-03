@@ -130,9 +130,9 @@ static RygelEnvironmentConfig* rygel_environment_config_config = NULL;
 static gpointer rygel_environment_config_parent_class = NULL;
 static RygelConfigurationIface* rygel_environment_config_rygel_configuration_parent_iface = NULL;
 
-GType rygel_log_level_get_type (void);
-GType rygel_configuration_get_type (void);
-GType rygel_environment_config_get_type (void);
+GType rygel_log_level_get_type (void) G_GNUC_CONST;
+GType rygel_configuration_get_type (void) G_GNUC_CONST;
+GType rygel_environment_config_get_type (void) G_GNUC_CONST;
 enum  {
 	RYGEL_ENVIRONMENT_CONFIG_DUMMY_PROPERTY
 };
@@ -746,22 +746,22 @@ static gint rygel_environment_config_get_int_variable (RygelEnvironmentConfig* s
 }
 
 
-#line 1048 "glib-2.0.vapi"
+#line 1056 "glib-2.0.vapi"
 static gboolean string_to_bool (const char* self) {
 #line 752 "rygel-environment-config.c"
 	gboolean result = FALSE;
-#line 1048 "glib-2.0.vapi"
+#line 1056 "glib-2.0.vapi"
 	g_return_val_if_fail (self != NULL, FALSE);
-#line 1049 "glib-2.0.vapi"
+#line 1057 "glib-2.0.vapi"
 	if (_vala_strcmp0 (self, "true") == 0) {
 #line 758 "rygel-environment-config.c"
 		result = TRUE;
-#line 1050 "glib-2.0.vapi"
+#line 1058 "glib-2.0.vapi"
 		return result;
 #line 762 "rygel-environment-config.c"
 	} else {
 		result = FALSE;
-#line 1052 "glib-2.0.vapi"
+#line 1060 "glib-2.0.vapi"
 		return result;
 #line 767 "rygel-environment-config.c"
 	}

@@ -109,12 +109,12 @@ GParamSpec* rygel_tracker_param_spec_plugin_factory (const gchar* name, const gc
 void rygel_tracker_value_set_plugin_factory (GValue* value, gpointer v_object);
 void rygel_tracker_value_take_plugin_factory (GValue* value, gpointer v_object);
 gpointer rygel_tracker_value_get_plugin_factory (const GValue* value);
-GType rygel_tracker_plugin_factory_get_type (void);
+GType rygel_tracker_plugin_factory_get_type (void) G_GNUC_CONST;
 RygelTrackerPluginFactory* rygel_tracker_plugin_factory_new (RygelPluginLoader* loader, GError** error);
 RygelTrackerPluginFactory* rygel_tracker_plugin_factory_construct (GType object_type, RygelPluginLoader* loader, GError** error);
 void module_init (RygelPluginLoader* loader);
 RygelTrackerStatsIface* rygel_tracker_stats_iface_dbus_proxy_new (DBusGConnection* connection, const char* name, const char* path);
-GType rygel_tracker_stats_iface_get_type (void);
+GType rygel_tracker_stats_iface_get_type (void) G_GNUC_CONST;
 #define RYGEL_TRACKER_PLUGIN_FACTORY_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), RYGEL_TRACKER_TYPE_PLUGIN_FACTORY, RygelTrackerPluginFactoryPrivate))
 enum  {
 	RYGEL_TRACKER_PLUGIN_FACTORY_DUMMY_PROPERTY
@@ -125,7 +125,7 @@ void rygel_tracker_stats_iface_get_statistics (RygelTrackerStatsIface* self, GAs
 char** rygel_tracker_stats_iface_get_statistics_finish (RygelTrackerStatsIface* self, GAsyncResult* _res_, int* result_length1, int* result_length2, GError** error);
 RygelTrackerPlugin* rygel_tracker_plugin_new (void);
 RygelTrackerPlugin* rygel_tracker_plugin_construct (GType object_type);
-GType rygel_tracker_plugin_get_type (void);
+GType rygel_tracker_plugin_get_type (void) G_GNUC_CONST;
 static void rygel_tracker_plugin_factory_finalize (RygelTrackerPluginFactory* obj);
 
 
@@ -205,7 +205,7 @@ RygelTrackerPluginFactory* rygel_tracker_plugin_factory_construct (GType object_
 	if (_inner_error_ != NULL) {
 		if (_inner_error_->domain == DBUS_GERROR) {
 			g_propagate_error (error, _inner_error_);
-			rygel_tracker_plugin_factory_unref (self);
+			_rygel_tracker_plugin_factory_unref0 (self);
 			return NULL;
 		} else {
 			g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);

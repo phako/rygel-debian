@@ -216,38 +216,38 @@ typedef enum  {
 
 static gpointer rygel_transcode_manager_parent_class = NULL;
 
-GType rygel_transcode_manager_get_type (void);
-GType rygel_media_object_get_type (void);
-GType rygel_media_item_get_type (void);
-GType rygel_transcoder_get_type (void);
+GType rygel_transcode_manager_get_type (void) G_GNUC_CONST;
+GType rygel_media_object_get_type (void) G_GNUC_CONST;
+GType rygel_media_item_get_type (void) G_GNUC_CONST;
+GType rygel_transcoder_get_type (void) G_GNUC_CONST;
 #define RYGEL_TRANSCODE_MANAGER_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), RYGEL_TYPE_TRANSCODE_MANAGER, RygelTranscodeManagerPrivate))
 enum  {
 	RYGEL_TRANSCODE_MANAGER_DUMMY_PROPERTY
 };
-GType rygel_meta_config_get_type (void);
+GType rygel_meta_config_get_type (void) G_GNUC_CONST;
 RygelMetaConfig* rygel_meta_config_get_default (void);
-GType rygel_log_level_get_type (void);
-GType rygel_configuration_get_type (void);
+GType rygel_log_level_get_type (void) G_GNUC_CONST;
+GType rygel_configuration_get_type (void) G_GNUC_CONST;
 gboolean rygel_configuration_get_transcoding (RygelConfiguration* self, GError** error);
 gboolean rygel_configuration_get_lpcm_transcoder (RygelConfiguration* self, GError** error);
-GType endianness_get_type (void);
+GType endianness_get_type (void) G_GNUC_CONST;
 RygelL16Transcoder* rygel_l16_transcoder_new (Endianness endianness);
 RygelL16Transcoder* rygel_l16_transcoder_construct (GType object_type, Endianness endianness);
-GType rygel_l16_transcoder_get_type (void);
+GType rygel_l16_transcoder_get_type (void) G_GNUC_CONST;
 gboolean rygel_configuration_get_mp3_transcoder (RygelConfiguration* self, GError** error);
-GType rygel_mp3_layer_get_type (void);
+GType rygel_mp3_layer_get_type (void) G_GNUC_CONST;
 RygelMP3Transcoder* rygel_mp3_transcoder_new (RygelMP3Layer layer);
 RygelMP3Transcoder* rygel_mp3_transcoder_construct (GType object_type, RygelMP3Layer layer);
-GType rygel_mp3_transcoder_get_type (void);
+GType rygel_mp3_transcoder_get_type (void) G_GNUC_CONST;
 gboolean rygel_configuration_get_mp2ts_transcoder (RygelConfiguration* self, GError** error);
-GType rygel_mp2_ts_profile_get_type (void);
+GType rygel_mp2_ts_profile_get_type (void) G_GNUC_CONST;
 RygelMP2TSTranscoder* rygel_mp2_ts_transcoder_new (RygelMP2TSProfile profile);
 RygelMP2TSTranscoder* rygel_mp2_ts_transcoder_construct (GType object_type, RygelMP2TSProfile profile);
-GType rygel_mp2_ts_transcoder_get_type (void);
+GType rygel_mp2_ts_transcoder_get_type (void) G_GNUC_CONST;
 gboolean rygel_configuration_get_wmv_transcoder (RygelConfiguration* self, GError** error);
 RygelWMVTranscoder* rygel_wmv_transcoder_new (void);
 RygelWMVTranscoder* rygel_wmv_transcoder_construct (GType object_type);
-GType rygel_wmv_transcoder_get_type (void);
+GType rygel_wmv_transcoder_get_type (void) G_GNUC_CONST;
 RygelTranscodeManager* rygel_transcode_manager_construct (GType object_type, GError** error);
 char* rygel_transcode_manager_create_uri_for_item (RygelTranscodeManager* self, RygelMediaItem* item, gint thumbnail_index, gint subtitle_index, const char* transcode_target);
 static char* rygel_transcode_manager_real_create_uri_for_item (RygelTranscodeManager* self, RygelMediaItem* item, gint thumbnail_index, gint subtitle_index, const char* transcode_target);
@@ -293,7 +293,7 @@ RygelTranscodeManager* rygel_transcode_manager_construct (GType object_type, GEr
 	if (_inner_error_ != NULL) {
 		g_propagate_error (error, _inner_error_);
 		_g_object_unref0 (config);
-		g_object_unref (self);
+		_g_object_unref0 (self);
 		return NULL;
 	}
 #line 41 "rygel-transcode-manager.vala"
@@ -309,7 +309,7 @@ RygelTranscodeManager* rygel_transcode_manager_construct (GType object_type, GEr
 		if (_inner_error_ != NULL) {
 			g_propagate_error (error, _inner_error_);
 			_g_object_unref0 (config);
-			g_object_unref (self);
+			_g_object_unref0 (self);
 			return NULL;
 		}
 #line 42 "rygel-transcode-manager.vala"
@@ -327,7 +327,7 @@ RygelTranscodeManager* rygel_transcode_manager_construct (GType object_type, GEr
 		if (_inner_error_ != NULL) {
 			g_propagate_error (error, _inner_error_);
 			_g_object_unref0 (config);
-			g_object_unref (self);
+			_g_object_unref0 (self);
 			return NULL;
 		}
 #line 45 "rygel-transcode-manager.vala"
@@ -345,7 +345,7 @@ RygelTranscodeManager* rygel_transcode_manager_construct (GType object_type, GEr
 		if (_inner_error_ != NULL) {
 			g_propagate_error (error, _inner_error_);
 			_g_object_unref0 (config);
-			g_object_unref (self);
+			_g_object_unref0 (self);
 			return NULL;
 		}
 #line 48 "rygel-transcode-manager.vala"
@@ -368,7 +368,7 @@ RygelTranscodeManager* rygel_transcode_manager_construct (GType object_type, GEr
 		if (_inner_error_ != NULL) {
 			g_propagate_error (error, _inner_error_);
 			_g_object_unref0 (config);
-			g_object_unref (self);
+			_g_object_unref0 (self);
 			return NULL;
 		}
 #line 53 "rygel-transcode-manager.vala"
@@ -408,7 +408,7 @@ static gpointer _g_object_ref0 (gpointer self) {
 }
 
 
-#line 155 "rygel-media-item.vala"
+#line 171 "rygel-media-item.vala"
 static gint _rygel_media_item_compare_transcoders_gcompare_data_func (void* a, void* b, gpointer self) {
 #line 414 "rygel-transcode-manager.c"
 	gint result;
@@ -441,16 +441,17 @@ static void rygel_transcode_manager_real_add_resources (RygelTranscodeManager* s
 #line 442 "rygel-transcode-manager.c"
 	{
 		GeeIterator* _transcoder_it;
+#line 69 "rygel-transcode-manager.vala"
 		_transcoder_it = gee_abstract_collection_iterator ((GeeAbstractCollection*) self->priv->transcoders);
 #line 69 "rygel-transcode-manager.vala"
 		while (TRUE) {
-#line 448 "rygel-transcode-manager.c"
+#line 449 "rygel-transcode-manager.c"
 			RygelTranscoder* transcoder;
 #line 69 "rygel-transcode-manager.vala"
 			if (!gee_iterator_next (_transcoder_it)) {
 #line 69 "rygel-transcode-manager.vala"
 				break;
-#line 454 "rygel-transcode-manager.c"
+#line 455 "rygel-transcode-manager.c"
 			}
 #line 69 "rygel-transcode-manager.vala"
 			transcoder = (RygelTranscoder*) gee_iterator_get (_transcoder_it);
@@ -458,7 +459,7 @@ static void rygel_transcode_manager_real_add_resources (RygelTranscodeManager* s
 			if (rygel_transcoder_get_distance (transcoder, item) != G_MAXUINT) {
 #line 71 "rygel-transcode-manager.vala"
 				list = g_list_append (list, _g_object_ref0 (transcoder));
-#line 462 "rygel-transcode-manager.c"
+#line 463 "rygel-transcode-manager.c"
 			}
 			_g_object_unref0 (transcoder);
 		}
@@ -466,23 +467,23 @@ static void rygel_transcode_manager_real_add_resources (RygelTranscodeManager* s
 	}
 #line 75 "rygel-transcode-manager.vala"
 	list = g_list_sort_with_data (list, _rygel_media_item_compare_transcoders_gcompare_data_func, item);
-#line 470 "rygel-transcode-manager.c"
+#line 471 "rygel-transcode-manager.c"
 	{
 		GList* transcoder_collection;
 		GList* transcoder_it;
 #line 76 "rygel-transcode-manager.vala"
 		transcoder_collection = list;
-#line 476 "rygel-transcode-manager.c"
+#line 477 "rygel-transcode-manager.c"
 		for (transcoder_it = transcoder_collection; transcoder_it != NULL; transcoder_it = transcoder_it->next) {
 			RygelTranscoder* transcoder;
 #line 76 "rygel-transcode-manager.vala"
 			transcoder = _g_object_ref0 ((RygelTranscoder*) transcoder_it->data);
-#line 481 "rygel-transcode-manager.c"
+#line 482 "rygel-transcode-manager.c"
 			{
 				GUPnPDIDLLiteResource* _tmp0_;
 #line 77 "rygel-transcode-manager.vala"
 				_tmp0_ = rygel_transcoder_add_resource (transcoder, didl_item, item, self, &_inner_error_);
-#line 486 "rygel-transcode-manager.c"
+#line 487 "rygel-transcode-manager.c"
 				_g_object_unref0 (_tmp0_);
 				if (_inner_error_ != NULL) {
 					g_propagate_error (error, _inner_error_);
@@ -502,13 +503,13 @@ static void rygel_transcode_manager_real_add_resources (RygelTranscodeManager* s
 void rygel_transcode_manager_add_resources (RygelTranscodeManager* self, GUPnPDIDLLiteItem* didl_item, RygelMediaItem* item, GError** error) {
 #line 64 "rygel-transcode-manager.vala"
 	RYGEL_TRANSCODE_MANAGER_GET_CLASS (self)->add_resources (self, didl_item, item, error);
-#line 506 "rygel-transcode-manager.c"
+#line 507 "rygel-transcode-manager.c"
 }
 
 
 #line 81 "rygel-transcode-manager.vala"
 RygelTranscoder* rygel_transcode_manager_get_transcoder (RygelTranscodeManager* self, const char* target, GError** error) {
-#line 512 "rygel-transcode-manager.c"
+#line 513 "rygel-transcode-manager.c"
 	RygelTranscoder* result = NULL;
 	GError * _inner_error_;
 	RygelTranscoder* transcoder;
@@ -516,33 +517,34 @@ RygelTranscoder* rygel_transcode_manager_get_transcoder (RygelTranscodeManager* 
 	g_return_val_if_fail (self != NULL, NULL);
 #line 81 "rygel-transcode-manager.vala"
 	g_return_val_if_fail (target != NULL, NULL);
-#line 520 "rygel-transcode-manager.c"
+#line 521 "rygel-transcode-manager.c"
 	_inner_error_ = NULL;
 #line 82 "rygel-transcode-manager.vala"
 	transcoder = NULL;
-#line 524 "rygel-transcode-manager.c"
+#line 525 "rygel-transcode-manager.c"
 	{
 		GeeIterator* _iter_it;
+#line 84 "rygel-transcode-manager.vala"
 		_iter_it = gee_abstract_collection_iterator ((GeeAbstractCollection*) self->priv->transcoders);
 #line 84 "rygel-transcode-manager.vala"
 		while (TRUE) {
-#line 530 "rygel-transcode-manager.c"
+#line 532 "rygel-transcode-manager.c"
 			RygelTranscoder* iter;
 #line 84 "rygel-transcode-manager.vala"
 			if (!gee_iterator_next (_iter_it)) {
 #line 84 "rygel-transcode-manager.vala"
 				break;
-#line 536 "rygel-transcode-manager.c"
+#line 538 "rygel-transcode-manager.c"
 			}
 #line 84 "rygel-transcode-manager.vala"
 			iter = (RygelTranscoder*) gee_iterator_get (_iter_it);
 #line 85 "rygel-transcode-manager.vala"
 			if (rygel_transcoder_can_handle (iter, target)) {
-#line 542 "rygel-transcode-manager.c"
+#line 544 "rygel-transcode-manager.c"
 				RygelTranscoder* _tmp0_;
 #line 86 "rygel-transcode-manager.vala"
 				transcoder = (_tmp0_ = _g_object_ref0 (iter), _g_object_unref0 (transcoder), _tmp0_);
-#line 546 "rygel-transcode-manager.c"
+#line 548 "rygel-transcode-manager.c"
 			}
 			_g_object_unref0 (iter);
 		}
@@ -550,7 +552,7 @@ RygelTranscoder* rygel_transcode_manager_get_transcoder (RygelTranscodeManager* 
 	}
 #line 90 "rygel-transcode-manager.vala"
 	if (transcoder == NULL) {
-#line 554 "rygel-transcode-manager.c"
+#line 556 "rygel-transcode-manager.c"
 		_inner_error_ = g_error_new (RYGEL_HTTP_REQUEST_ERROR, RYGEL_HTTP_REQUEST_ERROR_NOT_FOUND, _ ("No transcoder available for target format '%s'"), target);
 		{
 			g_propagate_error (error, _inner_error_);
@@ -561,13 +563,13 @@ RygelTranscoder* rygel_transcode_manager_get_transcoder (RygelTranscodeManager* 
 	result = transcoder;
 #line 96 "rygel-transcode-manager.vala"
 	return result;
-#line 565 "rygel-transcode-manager.c"
+#line 567 "rygel-transcode-manager.c"
 }
 
 
 #line 99 "rygel-transcode-manager.vala"
 static char* rygel_transcode_manager_real_get_protocol (RygelTranscodeManager* self) {
-#line 571 "rygel-transcode-manager.c"
+#line 573 "rygel-transcode-manager.c"
 	g_return_val_if_fail (self != NULL, NULL);
 	g_critical ("Type `%s' does not implement abstract method `rygel_transcode_manager_get_protocol'", g_type_name (G_TYPE_FROM_INSTANCE (self)));
 	return NULL;
@@ -578,26 +580,27 @@ static char* rygel_transcode_manager_real_get_protocol (RygelTranscodeManager* s
 char* rygel_transcode_manager_get_protocol (RygelTranscodeManager* self) {
 #line 99 "rygel-transcode-manager.vala"
 	return RYGEL_TRANSCODE_MANAGER_GET_CLASS (self)->get_protocol (self);
-#line 582 "rygel-transcode-manager.c"
+#line 584 "rygel-transcode-manager.c"
 }
 
 
 #line 101 "rygel-transcode-manager.vala"
 static char* rygel_transcode_manager_real_get_protocol_info (RygelTranscodeManager* self) {
-#line 588 "rygel-transcode-manager.c"
+#line 590 "rygel-transcode-manager.c"
 	char* result = NULL;
 	char* protocol_info;
 #line 101 "rygel-transcode-manager.vala"
 	g_return_val_if_fail (self != NULL, NULL);
 #line 102 "rygel-transcode-manager.vala"
 	protocol_info = g_strdup ("");
-#line 595 "rygel-transcode-manager.c"
+#line 597 "rygel-transcode-manager.c"
 	{
 		GeeIterator* _transcoder_it;
+#line 104 "rygel-transcode-manager.vala"
 		_transcoder_it = gee_abstract_collection_iterator ((GeeAbstractCollection*) self->priv->transcoders);
 #line 104 "rygel-transcode-manager.vala"
 		while (TRUE) {
-#line 601 "rygel-transcode-manager.c"
+#line 604 "rygel-transcode-manager.c"
 			RygelTranscoder* transcoder;
 			char* _tmp6_;
 			char* _tmp5_;
@@ -609,21 +612,21 @@ static char* rygel_transcode_manager_real_get_protocol_info (RygelTranscodeManag
 			if (!gee_iterator_next (_transcoder_it)) {
 #line 104 "rygel-transcode-manager.vala"
 				break;
-#line 613 "rygel-transcode-manager.c"
+#line 616 "rygel-transcode-manager.c"
 			}
 #line 104 "rygel-transcode-manager.vala"
 			transcoder = (RygelTranscoder*) gee_iterator_get (_transcoder_it);
 #line 105 "rygel-transcode-manager.vala"
 			if (_vala_strcmp0 (protocol_info, "") != 0) {
-#line 619 "rygel-transcode-manager.c"
+#line 622 "rygel-transcode-manager.c"
 				char* _tmp0_;
 #line 106 "rygel-transcode-manager.vala"
 				protocol_info = (_tmp0_ = g_strconcat (protocol_info, ",", NULL), _g_free0 (protocol_info), _tmp0_);
-#line 623 "rygel-transcode-manager.c"
+#line 626 "rygel-transcode-manager.c"
 			}
 #line 108 "rygel-transcode-manager.vala"
 			protocol_info = (_tmp6_ = g_strconcat (protocol_info, _tmp5_ = g_strconcat (_tmp4_ = g_strconcat (_tmp3_ = g_strconcat (_tmp2_ = g_strconcat (_tmp1_ = rygel_transcode_manager_get_protocol (self), ":*:", NULL), rygel_transcoder_get_mime_type (transcoder), NULL), ":DLNA.ORG_PN=", NULL), rygel_transcoder_get_dlna_profile (transcoder), NULL), NULL), _g_free0 (protocol_info), _tmp6_);
-#line 627 "rygel-transcode-manager.c"
+#line 630 "rygel-transcode-manager.c"
 			_g_free0 (_tmp5_);
 			_g_free0 (_tmp4_);
 			_g_free0 (_tmp3_);
@@ -636,7 +639,7 @@ static char* rygel_transcode_manager_real_get_protocol_info (RygelTranscodeManag
 	result = protocol_info;
 #line 113 "rygel-transcode-manager.vala"
 	return result;
-#line 640 "rygel-transcode-manager.c"
+#line 643 "rygel-transcode-manager.c"
 }
 
 
@@ -644,7 +647,7 @@ static char* rygel_transcode_manager_real_get_protocol_info (RygelTranscodeManag
 char* rygel_transcode_manager_get_protocol_info (RygelTranscodeManager* self) {
 #line 101 "rygel-transcode-manager.vala"
 	return RYGEL_TRANSCODE_MANAGER_GET_CLASS (self)->get_protocol_info (self);
-#line 648 "rygel-transcode-manager.c"
+#line 651 "rygel-transcode-manager.c"
 }
 
 

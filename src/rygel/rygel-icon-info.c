@@ -74,7 +74,7 @@ GParamSpec* rygel_param_spec_icon_info (const gchar* name, const gchar* nick, co
 void rygel_value_set_icon_info (GValue* value, gpointer v_object);
 void rygel_value_take_icon_info (GValue* value, gpointer v_object);
 gpointer rygel_value_get_icon_info (const GValue* value);
-GType rygel_icon_info_get_type (void);
+GType rygel_icon_info_get_type (void) G_GNUC_CONST;
 enum  {
 	RYGEL_ICON_INFO_DUMMY_PROPERTY
 };

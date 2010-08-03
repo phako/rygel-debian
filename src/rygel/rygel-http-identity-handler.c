@@ -274,10 +274,9 @@ struct _RygelHTTPRequest {
 struct _RygelHTTPRequestClass {
 	GObjectClass parent_class;
 	void (*handle) (RygelHTTPRequest* self, GAsyncReadyCallback _callback_, gpointer _user_data_);
-	void (*handle_finish) (RygelHTTPRequest* self, GAsyncResult* _res_);
+	void (*handle_finish) (RygelHTTPRequest* self, GAsyncResult* _res_, GError** error);
 	void (*find_item) (RygelHTTPRequest* self, GAsyncReadyCallback _callback_, gpointer _user_data_);
-	void (*find_item_finish) (RygelHTTPRequest* self, GAsyncResult* _res_);
-	void (*handle_error) (RygelHTTPRequest* self, GError* _error_);
+	void (*find_item_finish) (RygelHTTPRequest* self, GAsyncResult* _res_, GError** error);
 };
 
 struct _RygelHTTPGet {
@@ -337,6 +336,7 @@ struct _RygelMediaObject {
 
 struct _RygelMediaObjectClass {
 	GObjectClass parent_class;
+	gint (*compare_by_property) (RygelMediaObject* self, RygelMediaObject* media_object, const char* property);
 };
 
 struct _RygelMediaItem {
@@ -373,12 +373,12 @@ struct _RygelMediaItemClass {
 
 static gpointer rygel_http_identity_handler_parent_class = NULL;
 
-GType rygel_http_get_handler_get_type (void);
-GType rygel_http_request_get_type (void);
-GType rygel_http_get_get_type (void);
+GType rygel_http_get_handler_get_type (void) G_GNUC_CONST;
+GType rygel_http_request_get_type (void) G_GNUC_CONST;
+GType rygel_http_get_get_type (void) G_GNUC_CONST;
 GQuark rygel_http_request_error_quark (void);
-GType rygel_http_response_get_type (void);
-GType rygel_http_identity_handler_get_type (void);
+GType rygel_http_response_get_type (void) G_GNUC_CONST;
+GType rygel_http_identity_handler_get_type (void) G_GNUC_CONST;
 enum  {
 	RYGEL_HTTP_IDENTITY_HANDLER_DUMMY_PROPERTY
 };
@@ -386,29 +386,29 @@ RygelHTTPGetHandler* rygel_http_get_handler_construct (GType object_type);
 void rygel_http_get_handler_set_cancellable (RygelHTTPGetHandler* self, GCancellable* value);
 RygelHTTPIdentityHandler* rygel_http_identity_handler_new (GCancellable* cancellable);
 RygelHTTPIdentityHandler* rygel_http_identity_handler_construct (GType object_type, GCancellable* cancellable);
-GType rygel_state_machine_get_type (void);
-GType rygel_transcode_manager_get_type (void);
-GType rygel_http_server_get_type (void);
-GType rygel_http_item_uri_get_type (void);
-GType rygel_media_object_get_type (void);
-GType rygel_media_item_get_type (void);
+GType rygel_state_machine_get_type (void) G_GNUC_CONST;
+GType rygel_transcode_manager_get_type (void) G_GNUC_CONST;
+GType rygel_http_server_get_type (void) G_GNUC_CONST;
+GType rygel_http_item_uri_get_type (void) G_GNUC_CONST;
+GType rygel_media_object_get_type (void) G_GNUC_CONST;
+GType rygel_media_item_get_type (void) G_GNUC_CONST;
 gpointer rygel_icon_info_ref (gpointer instance);
 void rygel_icon_info_unref (gpointer instance);
 GParamSpec* rygel_param_spec_icon_info (const gchar* name, const gchar* nick, const gchar* blurb, GType object_type, GParamFlags flags);
 void rygel_value_set_icon_info (GValue* value, gpointer v_object);
 void rygel_value_take_icon_info (GValue* value, gpointer v_object);
 gpointer rygel_value_get_icon_info (const GValue* value);
-GType rygel_icon_info_get_type (void);
-GType rygel_thumbnail_get_type (void);
+GType rygel_icon_info_get_type (void) G_GNUC_CONST;
+GType rygel_thumbnail_get_type (void) G_GNUC_CONST;
 gpointer rygel_subtitle_ref (gpointer instance);
 void rygel_subtitle_unref (gpointer instance);
 GParamSpec* rygel_param_spec_subtitle (const gchar* name, const gchar* nick, const gchar* blurb, GType object_type, GParamFlags flags);
 void rygel_value_set_subtitle (GValue* value, gpointer v_object);
 void rygel_value_take_subtitle (GValue* value, gpointer v_object);
 gpointer rygel_value_get_subtitle (const GValue* value);
-GType rygel_subtitle_get_type (void);
-GType rygel_http_seek_get_type (void);
-GType rygel_media_container_get_type (void);
+GType rygel_subtitle_get_type (void) G_GNUC_CONST;
+GType rygel_http_seek_get_type (void) G_GNUC_CONST;
+GType rygel_media_container_get_type (void) G_GNUC_CONST;
 void rygel_http_seek_add_response_headers (RygelHTTPSeek* self);
 void rygel_http_get_handler_add_response_headers (RygelHTTPGetHandler* self, RygelHTTPGet* request, GError** error);
 static void rygel_http_identity_handler_real_add_response_headers (RygelHTTPGetHandler* base, RygelHTTPGet* request, GError** error);
@@ -421,12 +421,12 @@ static GUPnPDIDLLiteResource* rygel_http_identity_handler_real_add_resource (Ryg
 GCancellable* rygel_http_get_handler_get_cancellable (RygelHTTPGetHandler* self);
 RygelSeekableResponse* rygel_seekable_response_new (SoupServer* server, SoupMessage* msg, const char* uri, RygelHTTPSeek* seek, gsize file_length, GCancellable* cancellable);
 RygelSeekableResponse* rygel_seekable_response_construct (GType object_type, SoupServer* server, SoupMessage* msg, const char* uri, RygelHTTPSeek* seek, gsize file_length, GCancellable* cancellable);
-GType rygel_seekable_response_get_type (void);
+GType rygel_seekable_response_get_type (void) G_GNUC_CONST;
 gboolean rygel_media_item_should_stream (RygelMediaItem* self);
 GstElement* rygel_media_item_create_stream_source (RygelMediaItem* self);
 RygelLiveResponse* rygel_live_response_new (SoupServer* server, SoupMessage* msg, const char* name, GstElement* src, RygelHTTPSeek* time_range, GCancellable* cancellable, GError** error);
 RygelLiveResponse* rygel_live_response_construct (GType object_type, SoupServer* server, SoupMessage* msg, const char* name, GstElement* src, RygelHTTPSeek* time_range, GCancellable* cancellable, GError** error);
-GType rygel_live_response_get_type (void);
+GType rygel_live_response_get_type (void) G_GNUC_CONST;
 
 
 
@@ -517,15 +517,15 @@ static RygelHTTPResponse* rygel_http_identity_handler_real_render_body (RygelHTT
 		_tmp0_ = rygel_http_identity_handler_render_body_real (self, request, &_inner_error_);
 #line 519 "rygel-http-identity-handler.c"
 		if (_inner_error_ != NULL) {
-			goto __catch33_g_error;
+			goto __catch29_g_error;
 		}
 		result = _tmp0_;
 #line 57 "rygel-http-identity-handler.vala"
 		return result;
 #line 526 "rygel-http-identity-handler.c"
 	}
-	goto __finally33;
-	__catch33_g_error:
+	goto __finally29;
+	__catch29_g_error:
 	{
 		GError * err;
 		err = _inner_error_;
@@ -534,12 +534,12 @@ static RygelHTTPResponse* rygel_http_identity_handler_real_render_body (RygelHTT
 			_inner_error_ = g_error_new_literal (RYGEL_HTTP_REQUEST_ERROR, RYGEL_HTTP_REQUEST_ERROR_NOT_FOUND, err->message);
 			{
 				_g_error_free0 (err);
-				goto __finally33;
+				goto __finally29;
 			}
 			_g_error_free0 (err);
 		}
 	}
-	__finally33:
+	__finally29:
 	{
 		if (_inner_error_->domain == RYGEL_HTTP_REQUEST_ERROR) {
 			g_propagate_error (error, _inner_error_);

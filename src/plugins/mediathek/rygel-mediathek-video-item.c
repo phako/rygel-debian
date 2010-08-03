@@ -89,14 +89,14 @@ struct _RygelMediathekAsxPlaylistClass {
 static gpointer rygel_mediathek_video_item_parent_class = NULL;
 
 GQuark rygel_mediathek_video_item_error_quark (void);
-GType rygel_mediathek_video_item_get_type (void);
+GType rygel_mediathek_video_item_get_type (void) G_GNUC_CONST;
 enum  {
 	RYGEL_MEDIATHEK_VIDEO_ITEM_DUMMY_PROPERTY
 };
 static RygelMediathekVideoItem* rygel_mediathek_video_item_new (RygelMediaContainer* parent, const char* title);
 static RygelMediathekVideoItem* rygel_mediathek_video_item_construct (GType object_type, RygelMediaContainer* parent, const char* title);
 static gboolean rygel_mediathek_video_item_namespace_ok (xmlNode* node);
-GType rygel_mediathek_asx_playlist_get_type (void);
+GType rygel_mediathek_asx_playlist_get_type (void) G_GNUC_CONST;
 RygelMediathekAsxPlaylist* rygel_mediathek_asx_playlist_new (const char* uri);
 RygelMediathekAsxPlaylist* rygel_mediathek_asx_playlist_construct (GType object_type, const char* uri);
 GQuark rygel_mediathek_asx_playlist_error_quark (void);
@@ -382,14 +382,14 @@ RygelMediathekVideoItem* rygel_mediathek_video_item_create_from_xml (RygelMediaC
 											if (_inner_error_ != NULL) {
 												if (_inner_error_->domain == RYGEL_MEDIATHEK_VIDEO_ITEM_ERROR) {
 													g_propagate_error (error, _inner_error_);
-													_g_free0 (title);
-													_g_object_unref0 (video_item);
 													_g_object_unref0 (asx);
+													_g_object_unref0 (video_item);
+													_g_free0 (title);
 													return NULL;
 												} else {
-													_g_free0 (title);
-													_g_object_unref0 (video_item);
 													_g_object_unref0 (asx);
+													_g_object_unref0 (video_item);
+													_g_free0 (title);
 													g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
 													g_clear_error (&_inner_error_);
 													return NULL;
@@ -412,15 +412,15 @@ RygelMediathekVideoItem* rygel_mediathek_video_item_create_from_xml (RygelMediaC
 								if (_inner_error_->domain == RYGEL_MEDIATHEK_VIDEO_ITEM_ERROR) {
 									g_propagate_error (error, _inner_error_);
 									_g_free0 (msg);
-									_g_free0 (title);
-									_g_object_unref0 (video_item);
 									_g_object_unref0 (asx);
+									_g_object_unref0 (video_item);
+									_g_free0 (title);
 									return NULL;
 								} else {
 									_g_free0 (msg);
-									_g_free0 (title);
-									_g_object_unref0 (video_item);
 									_g_object_unref0 (asx);
+									_g_object_unref0 (video_item);
+									_g_free0 (title);
 									g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
 									g_clear_error (&_inner_error_);
 									return NULL;
@@ -451,14 +451,14 @@ RygelMediathekVideoItem* rygel_mediathek_video_item_create_from_xml (RygelMediaC
 		{
 			if (_inner_error_->domain == RYGEL_MEDIATHEK_VIDEO_ITEM_ERROR) {
 				g_propagate_error (error, _inner_error_);
-				_g_free0 (title);
-				_g_object_unref0 (video_item);
 				_g_object_unref0 (asx);
+				_g_object_unref0 (video_item);
+				_g_free0 (title);
 				return NULL;
 			} else {
-				_g_free0 (title);
-				_g_object_unref0 (video_item);
 				_g_object_unref0 (asx);
+				_g_object_unref0 (video_item);
+				_g_free0 (title);
 				g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
 				g_clear_error (&_inner_error_);
 				return NULL;
@@ -472,14 +472,14 @@ RygelMediathekVideoItem* rygel_mediathek_video_item_create_from_xml (RygelMediaC
 		{
 			if (_inner_error_->domain == RYGEL_MEDIATHEK_VIDEO_ITEM_ERROR) {
 				g_propagate_error (error, _inner_error_);
-				_g_free0 (title);
-				_g_object_unref0 (video_item);
 				_g_object_unref0 (asx);
+				_g_object_unref0 (video_item);
+				_g_free0 (title);
 				return NULL;
 			} else {
-				_g_free0 (title);
-				_g_object_unref0 (video_item);
 				_g_object_unref0 (asx);
+				_g_object_unref0 (video_item);
+				_g_free0 (title);
 				g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
 				g_clear_error (&_inner_error_);
 				return NULL;
@@ -491,32 +491,33 @@ RygelMediathekVideoItem* rygel_mediathek_video_item_create_from_xml (RygelMediaC
 #line 492 "rygel-mediathek-video-item.c"
 	{
 		GeeIterator* _uri_it;
+#line 122 "rygel-mediathek-video-item.vala"
 		_uri_it = gee_abstract_collection_iterator ((GeeAbstractCollection*) asx->uris);
 #line 122 "rygel-mediathek-video-item.vala"
 		while (TRUE) {
-#line 498 "rygel-mediathek-video-item.c"
+#line 499 "rygel-mediathek-video-item.c"
 			char* uri;
 #line 122 "rygel-mediathek-video-item.vala"
 			if (!gee_iterator_next (_uri_it)) {
 #line 122 "rygel-mediathek-video-item.vala"
 				break;
-#line 504 "rygel-mediathek-video-item.c"
+#line 505 "rygel-mediathek-video-item.c"
 			}
 #line 122 "rygel-mediathek-video-item.vala"
 			uri = (char*) gee_iterator_get (_uri_it);
 #line 123 "rygel-mediathek-video-item.vala"
 			rygel_media_item_add_uri ((RygelMediaItem*) video_item, uri, NULL);
-#line 510 "rygel-mediathek-video-item.c"
+#line 511 "rygel-mediathek-video-item.c"
 			_g_free0 (uri);
 		}
 		_g_object_unref0 (_uri_it);
 	}
 	result = video_item;
-	_g_free0 (title);
 	_g_object_unref0 (asx);
+	_g_free0 (title);
 #line 126 "rygel-mediathek-video-item.vala"
 	return result;
-#line 520 "rygel-mediathek-video-item.c"
+#line 521 "rygel-mediathek-video-item.c"
 }
 
 

@@ -98,8 +98,8 @@ struct _RygelTrackerTagsClass {
 
 static gpointer rygel_tracker_tags_parent_class = NULL;
 
-GType rygel_tracker_metadata_values_get_type (void);
-GType rygel_tracker_tags_get_type (void);
+GType rygel_tracker_metadata_values_get_type (void) G_GNUC_CONST;
+GType rygel_tracker_tags_get_type (void) G_GNUC_CONST;
 enum  {
 	RYGEL_TRACKER_TAGS_DUMMY_PROPERTY
 };
@@ -112,7 +112,7 @@ GParamSpec* rygel_tracker_param_spec_item_factory (const gchar* name, const gcha
 void rygel_tracker_value_set_item_factory (GValue* value, gpointer v_object);
 void rygel_tracker_value_take_item_factory (GValue* value, gpointer v_object);
 gpointer rygel_tracker_value_get_item_factory (const GValue* value);
-GType rygel_tracker_item_factory_get_type (void);
+GType rygel_tracker_item_factory_get_type (void) G_GNUC_CONST;
 RygelTrackerMetadataValues* rygel_tracker_metadata_values_new (const char* id, RygelMediaContainer* parent, const char* title, RygelTrackerItemFactory* item_factory, char** key_chain, int key_chain_length1, RygelTrackerMetadataValuesIDFunc id_func, void* id_func_target, RygelTrackerMetadataValuesIDFunc title_func, void* title_func_target, RygelTrackerMetadataValuesFilterFunc filter_func, void* filter_func_target);
 RygelTrackerMetadataValues* rygel_tracker_metadata_values_construct (GType object_type, const char* id, RygelMediaContainer* parent, const char* title, RygelTrackerItemFactory* item_factory, char** key_chain, int key_chain_length1, RygelTrackerMetadataValuesIDFunc id_func, void* id_func_target, RygelTrackerMetadataValuesIDFunc title_func, void* title_func_target, RygelTrackerMetadataValuesFilterFunc filter_func, void* filter_func_target);
 RygelTrackerTags* rygel_tracker_tags_new (RygelMediaContainer* parent, RygelTrackerItemFactory* item_factory);

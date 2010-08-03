@@ -77,8 +77,8 @@ struct _RygelTestAudioItemClass {
 
 static gpointer rygel_test_audio_item_parent_class = NULL;
 
-GType rygel_test_item_get_type (void);
-GType rygel_test_audio_item_get_type (void);
+GType rygel_test_item_get_type (void) G_GNUC_CONST;
+GType rygel_test_audio_item_get_type (void) G_GNUC_CONST;
 enum  {
 	RYGEL_TEST_AUDIO_ITEM_DUMMY_PROPERTY
 };

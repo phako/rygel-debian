@@ -47,7 +47,7 @@ struct _RygelStateMachineIface {
 
 
 
-GType rygel_state_machine_get_type (void);
+GType rygel_state_machine_get_type (void) G_GNUC_CONST;
 void rygel_state_machine_run (RygelStateMachine* self, GAsyncReadyCallback _callback_, gpointer _user_data_);
 void rygel_state_machine_run_finish (RygelStateMachine* self, GAsyncResult* _res_);
 GCancellable* rygel_state_machine_get_cancellable (RygelStateMachine* self);

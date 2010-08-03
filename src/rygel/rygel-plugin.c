@@ -30,6 +30,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <gee.h>
+#include <config.h>
 
 
 #define RYGEL_TYPE_PLUGIN (rygel_plugin_get_type ())
@@ -66,37 +67,6 @@ typedef struct _RygelIconInfoClass RygelIconInfoClass;
 #define _g_object_unref0(var) ((var == NULL) ? NULL : (var = (g_object_unref (var), NULL)))
 typedef struct _RygelIconInfoPrivate RygelIconInfoPrivate;
 #define _rygel_icon_info_unref0(var) ((var == NULL) ? NULL : (var = (rygel_icon_info_unref (var), NULL)))
-
-#define RYGEL_TYPE_CONNECTION_MANAGER (rygel_connection_manager_get_type ())
-#define RYGEL_CONNECTION_MANAGER(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_CONNECTION_MANAGER, RygelConnectionManager))
-#define RYGEL_CONNECTION_MANAGER_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TYPE_CONNECTION_MANAGER, RygelConnectionManagerClass))
-#define RYGEL_IS_CONNECTION_MANAGER(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TYPE_CONNECTION_MANAGER))
-#define RYGEL_IS_CONNECTION_MANAGER_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_TYPE_CONNECTION_MANAGER))
-#define RYGEL_CONNECTION_MANAGER_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_TYPE_CONNECTION_MANAGER, RygelConnectionManagerClass))
-
-typedef struct _RygelConnectionManager RygelConnectionManager;
-typedef struct _RygelConnectionManagerClass RygelConnectionManagerClass;
-
-#define RYGEL_TYPE_SOURCE_CONNECTION_MANAGER (rygel_source_connection_manager_get_type ())
-#define RYGEL_SOURCE_CONNECTION_MANAGER(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_SOURCE_CONNECTION_MANAGER, RygelSourceConnectionManager))
-#define RYGEL_SOURCE_CONNECTION_MANAGER_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TYPE_SOURCE_CONNECTION_MANAGER, RygelSourceConnectionManagerClass))
-#define RYGEL_IS_SOURCE_CONNECTION_MANAGER(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TYPE_SOURCE_CONNECTION_MANAGER))
-#define RYGEL_IS_SOURCE_CONNECTION_MANAGER_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_TYPE_SOURCE_CONNECTION_MANAGER))
-#define RYGEL_SOURCE_CONNECTION_MANAGER_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_TYPE_SOURCE_CONNECTION_MANAGER, RygelSourceConnectionManagerClass))
-
-typedef struct _RygelSourceConnectionManager RygelSourceConnectionManager;
-typedef struct _RygelSourceConnectionManagerClass RygelSourceConnectionManagerClass;
-#define _rygel_resource_info_unref0(var) ((var == NULL) ? NULL : (var = (rygel_resource_info_unref (var), NULL)))
-
-#define RYGEL_TYPE_MEDIA_RECEIVER_REGISTRAR (rygel_media_receiver_registrar_get_type ())
-#define RYGEL_MEDIA_RECEIVER_REGISTRAR(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_MEDIA_RECEIVER_REGISTRAR, RygelMediaReceiverRegistrar))
-#define RYGEL_MEDIA_RECEIVER_REGISTRAR_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TYPE_MEDIA_RECEIVER_REGISTRAR, RygelMediaReceiverRegistrarClass))
-#define RYGEL_IS_MEDIA_RECEIVER_REGISTRAR(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TYPE_MEDIA_RECEIVER_REGISTRAR))
-#define RYGEL_IS_MEDIA_RECEIVER_REGISTRAR_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_TYPE_MEDIA_RECEIVER_REGISTRAR))
-#define RYGEL_MEDIA_RECEIVER_REGISTRAR_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_TYPE_MEDIA_RECEIVER_REGISTRAR, RygelMediaReceiverRegistrarClass))
-
-typedef struct _RygelMediaReceiverRegistrar RygelMediaReceiverRegistrar;
-typedef struct _RygelMediaReceiverRegistrarClass RygelMediaReceiverRegistrarClass;
 typedef struct _RygelResourceInfoPrivate RygelResourceInfoPrivate;
 
 struct _RygelPlugin {
@@ -154,29 +124,28 @@ struct _RygelResourceInfoClass {
 
 static gpointer rygel_plugin_parent_class = NULL;
 
-GType rygel_plugin_get_type (void);
+GType rygel_plugin_get_type (void) G_GNUC_CONST;
 gpointer rygel_resource_info_ref (gpointer instance);
 void rygel_resource_info_unref (gpointer instance);
 GParamSpec* rygel_param_spec_resource_info (const gchar* name, const gchar* nick, const gchar* blurb, GType object_type, GParamFlags flags);
 void rygel_value_set_resource_info (GValue* value, gpointer v_object);
 void rygel_value_take_resource_info (GValue* value, gpointer v_object);
 gpointer rygel_value_get_resource_info (const GValue* value);
-GType rygel_resource_info_get_type (void);
+GType rygel_resource_info_get_type (void) G_GNUC_CONST;
 gpointer rygel_icon_info_ref (gpointer instance);
 void rygel_icon_info_unref (gpointer instance);
 GParamSpec* rygel_param_spec_icon_info (const gchar* name, const gchar* nick, const gchar* blurb, GType object_type, GParamFlags flags);
 void rygel_value_set_icon_info (GValue* value, gpointer v_object);
 void rygel_value_take_icon_info (GValue* value, gpointer v_object);
 gpointer rygel_value_get_icon_info (const GValue* value);
-GType rygel_icon_info_get_type (void);
+GType rygel_icon_info_get_type (void) G_GNUC_CONST;
 #define RYGEL_PLUGIN_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), RYGEL_TYPE_PLUGIN, RygelPluginPrivate))
 enum  {
 	RYGEL_PLUGIN_DUMMY_PROPERTY,
 	RYGEL_PLUGIN_AVAILABLE
 };
-#define RYGEL_PLUGIN_MEDIA_SERVER_DESC_PATH DATA_DIR "/xml/MediaServer2.xml"
-#define RYGEL_PLUGIN_ICON_BIG "file://" ICON_DIR "/256x256/apps/rygel.png"
-#define RYGEL_PLUGIN_ICON_SMALL "file://" ICON_DIR "/32x32/apps/rygel.png"
+#define RYGEL_PLUGIN_ICON_BIG "file://" BIG_ICON_DIR "/rygel.png"
+#define RYGEL_PLUGIN_ICON_SMALL "file://" SMALL_ICON_DIR "/rygel.png"
 #define RYGEL_PLUGIN_ICON_MIME "image/png"
 #define RYGEL_PLUGIN_ICON_DEPTH 32
 #define RYGEL_PLUGIN_ICON_BIG_WIDTH 256
@@ -188,23 +157,7 @@ RygelIconInfo* rygel_icon_info_new (const char* mime_type);
 RygelIconInfo* rygel_icon_info_construct (GType object_type, const char* mime_type);
 RygelPlugin* rygel_plugin_new (const char* desc_path, const char* name, const char* title, const char* description);
 RygelPlugin* rygel_plugin_construct (GType object_type, const char* desc_path, const char* name, const char* title, const char* description);
-#define RYGEL_CONTENT_DIRECTORY_UPNP_ID "urn:upnp-org:serviceId:ContentDirectory"
-#define RYGEL_CONTENT_DIRECTORY_UPNP_TYPE "urn:schemas-upnp-org:service:ContentDirectory:2"
-#define RYGEL_CONTENT_DIRECTORY_DESCRIPTION_PATH "xml/ContentDirectory.xml"
-RygelResourceInfo* rygel_resource_info_new (const char* upnp_id, const char* upnp_type, const char* description_path, GType type);
-RygelResourceInfo* rygel_resource_info_construct (GType object_type, const char* upnp_id, const char* upnp_type, const char* description_path, GType type);
 void rygel_plugin_add_resource (RygelPlugin* self, RygelResourceInfo* resource_info);
-#define RYGEL_CONNECTION_MANAGER_UPNP_ID "urn:upnp-org:serviceId:ConnectionManager"
-#define RYGEL_CONNECTION_MANAGER_UPNP_TYPE "urn:schemas-upnp-org:service:ConnectionManager:2"
-#define RYGEL_CONNECTION_MANAGER_DESCRIPTION_PATH "xml/ConnectionManager.xml"
-GType rygel_connection_manager_get_type (void);
-GType rygel_source_connection_manager_get_type (void);
-#define RYGEL_MEDIA_RECEIVER_REGISTRAR_UPNP_ID "urn:microsoft.com:serviceId:X_MS_MediaReceiverRegistrar"
-#define RYGEL_MEDIA_RECEIVER_REGISTRAR_UPNP_TYPE "urn:microsoft.com:service:X_MS_MediaReceiverRegistrar:1"
-#define RYGEL_MEDIA_RECEIVER_REGISTRAR_DESCRIPTION_PATH "xml/X_MS_MediaReceiverRegistrar1.xml"
-GType rygel_media_receiver_registrar_get_type (void);
-RygelPlugin* rygel_plugin_new_MediaServer (const char* name, const char* title, GType content_dir_type, const char* description);
-RygelPlugin* rygel_plugin_construct_MediaServer (GType object_type, const char* name, const char* title, GType content_dir_type, const char* description);
 void rygel_plugin_add_icon (RygelPlugin* self, RygelIconInfo* icon_info);
 gboolean rygel_plugin_get_available (RygelPlugin* self);
 static void rygel_plugin_finalize (GObject* obj);
@@ -213,9 +166,9 @@ static void rygel_plugin_set_property (GObject * object, guint property_id, cons
 
 
 
-#line 62 "rygel-plugin.vala"
+#line 59 "rygel-plugin.vala"
 RygelPlugin* rygel_plugin_construct (GType object_type, const char* desc_path, const char* name, const char* title, const char* description) {
-#line 219 "rygel-plugin.c"
+#line 172 "rygel-plugin.c"
 	RygelPlugin * self;
 	char* _tmp0_;
 	char* _tmp1_;
@@ -228,134 +181,97 @@ RygelPlugin* rygel_plugin_construct (GType object_type, const char* desc_path, c
 	char* _tmp8_;
 	RygelIconInfo* _tmp9_;
 	char* _tmp10_;
-#line 62 "rygel-plugin.vala"
+#line 59 "rygel-plugin.vala"
 	g_return_val_if_fail (desc_path != NULL, NULL);
-#line 62 "rygel-plugin.vala"
+#line 59 "rygel-plugin.vala"
 	g_return_val_if_fail (name != NULL, NULL);
-#line 236 "rygel-plugin.c"
+#line 189 "rygel-plugin.c"
 	self = g_object_newv (object_type, 0, NULL);
-#line 66 "rygel-plugin.vala"
+#line 63 "rygel-plugin.vala"
 	self->desc_path = (_tmp0_ = g_strdup (desc_path), _g_free0 (self->desc_path), _tmp0_);
-#line 67 "rygel-plugin.vala"
+#line 64 "rygel-plugin.vala"
 	self->name = (_tmp1_ = g_strdup (name), _g_free0 (self->name), _tmp1_);
-#line 68 "rygel-plugin.vala"
+#line 65 "rygel-plugin.vala"
 	self->title = (_tmp2_ = g_strdup (title), _g_free0 (self->title), _tmp2_);
-#line 69 "rygel-plugin.vala"
+#line 66 "rygel-plugin.vala"
 	self->description = (_tmp3_ = g_strdup (description), _g_free0 (self->description), _tmp3_);
-#line 71 "rygel-plugin.vala"
+#line 68 "rygel-plugin.vala"
 	rygel_plugin_set_available (self, TRUE);
-#line 73 "rygel-plugin.vala"
+#line 70 "rygel-plugin.vala"
 	if (title == NULL) {
-#line 250 "rygel-plugin.c"
+#line 203 "rygel-plugin.c"
 		char* _tmp4_;
-#line 74 "rygel-plugin.vala"
+#line 71 "rygel-plugin.vala"
 		self->title = (_tmp4_ = g_strdup (name), _g_free0 (self->title), _tmp4_);
-#line 254 "rygel-plugin.c"
+#line 207 "rygel-plugin.c"
 	}
-#line 77 "rygel-plugin.vala"
+#line 74 "rygel-plugin.vala"
 	self->resource_infos = (_tmp5_ = gee_array_list_new (RYGEL_TYPE_RESOURCE_INFO, (GBoxedCopyFunc) rygel_resource_info_ref, rygel_resource_info_unref, NULL), _g_object_unref0 (self->resource_infos), _tmp5_);
-#line 78 "rygel-plugin.vala"
+#line 75 "rygel-plugin.vala"
 	self->icon_infos = (_tmp6_ = gee_array_list_new (RYGEL_TYPE_ICON_INFO, (GBoxedCopyFunc) rygel_icon_info_ref, rygel_icon_info_unref, NULL), _g_object_unref0 (self->icon_infos), _tmp6_);
-#line 79 "rygel-plugin.vala"
+#line 76 "rygel-plugin.vala"
 	self->default_icons = (_tmp7_ = gee_array_list_new (RYGEL_TYPE_ICON_INFO, (GBoxedCopyFunc) rygel_icon_info_ref, rygel_icon_info_unref, NULL), _g_object_unref0 (self->default_icons), _tmp7_);
-#line 81 "rygel-plugin.vala"
+#line 78 "rygel-plugin.vala"
 	icon = rygel_icon_info_new (RYGEL_PLUGIN_ICON_MIME);
-#line 82 "rygel-plugin.vala"
+#line 79 "rygel-plugin.vala"
 	icon->uri = (_tmp8_ = g_strdup (RYGEL_PLUGIN_ICON_BIG), _g_free0 (icon->uri), _tmp8_);
-#line 83 "rygel-plugin.vala"
+#line 80 "rygel-plugin.vala"
 	icon->width = RYGEL_PLUGIN_ICON_BIG_WIDTH;
-#line 84 "rygel-plugin.vala"
+#line 81 "rygel-plugin.vala"
 	icon->height = RYGEL_PLUGIN_ICON_BIG_HEIGHT;
+#line 82 "rygel-plugin.vala"
+	icon->depth = RYGEL_PLUGIN_ICON_DEPTH;
+#line 83 "rygel-plugin.vala"
+	gee_abstract_collection_add ((GeeAbstractCollection*) self->default_icons, icon);
 #line 85 "rygel-plugin.vala"
-	icon->depth = RYGEL_PLUGIN_ICON_DEPTH;
-#line 86 "rygel-plugin.vala"
-	gee_abstract_collection_add ((GeeAbstractCollection*) self->default_icons, icon);
-#line 88 "rygel-plugin.vala"
 	icon = (_tmp9_ = rygel_icon_info_new (RYGEL_PLUGIN_ICON_MIME), _rygel_icon_info_unref0 (icon), _tmp9_);
-#line 89 "rygel-plugin.vala"
+#line 86 "rygel-plugin.vala"
 	icon->uri = (_tmp10_ = g_strdup (RYGEL_PLUGIN_ICON_SMALL), _g_free0 (icon->uri), _tmp10_);
-#line 90 "rygel-plugin.vala"
+#line 87 "rygel-plugin.vala"
 	icon->width = RYGEL_PLUGIN_ICON_SMALL_WIDTH;
-#line 91 "rygel-plugin.vala"
+#line 88 "rygel-plugin.vala"
 	icon->height = RYGEL_PLUGIN_ICON_SMALL_HEIGHT;
-#line 92 "rygel-plugin.vala"
+#line 89 "rygel-plugin.vala"
 	icon->depth = RYGEL_PLUGIN_ICON_DEPTH;
-#line 93 "rygel-plugin.vala"
+#line 90 "rygel-plugin.vala"
 	gee_abstract_collection_add ((GeeAbstractCollection*) self->default_icons, icon);
-#line 286 "rygel-plugin.c"
+#line 239 "rygel-plugin.c"
 	_rygel_icon_info_unref0 (icon);
 	return self;
 }
 
 
-#line 62 "rygel-plugin.vala"
+#line 59 "rygel-plugin.vala"
 RygelPlugin* rygel_plugin_new (const char* desc_path, const char* name, const char* title, const char* description) {
-#line 62 "rygel-plugin.vala"
+#line 59 "rygel-plugin.vala"
 	return rygel_plugin_construct (RYGEL_TYPE_PLUGIN, desc_path, name, title, description);
-#line 296 "rygel-plugin.c"
+#line 249 "rygel-plugin.c"
 }
 
 
-#line 96 "rygel-plugin.vala"
-RygelPlugin* rygel_plugin_construct_MediaServer (GType object_type, const char* name, const char* title, GType content_dir_type, const char* description) {
-#line 302 "rygel-plugin.c"
-	RygelPlugin * self;
-	RygelResourceInfo* resource_info;
-	RygelResourceInfo* _tmp0_;
-	RygelResourceInfo* _tmp1_;
-#line 96 "rygel-plugin.vala"
-	g_return_val_if_fail (name != NULL, NULL);
-#line 100 "rygel-plugin.vala"
-	self = (RygelPlugin*) rygel_plugin_construct (object_type, RYGEL_PLUGIN_MEDIA_SERVER_DESC_PATH, name, title, description);
-#line 103 "rygel-plugin.vala"
-	resource_info = rygel_resource_info_new (RYGEL_CONTENT_DIRECTORY_UPNP_ID, RYGEL_CONTENT_DIRECTORY_UPNP_TYPE, RYGEL_CONTENT_DIRECTORY_DESCRIPTION_PATH, content_dir_type);
-#line 107 "rygel-plugin.vala"
-	rygel_plugin_add_resource (self, resource_info);
-#line 110 "rygel-plugin.vala"
-	resource_info = (_tmp0_ = rygel_resource_info_new (RYGEL_CONNECTION_MANAGER_UPNP_ID, RYGEL_CONNECTION_MANAGER_UPNP_TYPE, RYGEL_CONNECTION_MANAGER_DESCRIPTION_PATH, RYGEL_TYPE_SOURCE_CONNECTION_MANAGER), _rygel_resource_info_unref0 (resource_info), _tmp0_);
-#line 115 "rygel-plugin.vala"
-	rygel_plugin_add_resource (self, resource_info);
-#line 116 "rygel-plugin.vala"
-	resource_info = (_tmp1_ = rygel_resource_info_new (RYGEL_MEDIA_RECEIVER_REGISTRAR_UPNP_ID, RYGEL_MEDIA_RECEIVER_REGISTRAR_UPNP_TYPE, RYGEL_MEDIA_RECEIVER_REGISTRAR_DESCRIPTION_PATH, RYGEL_TYPE_MEDIA_RECEIVER_REGISTRAR), _rygel_resource_info_unref0 (resource_info), _tmp1_);
-#line 121 "rygel-plugin.vala"
-	rygel_plugin_add_resource (self, resource_info);
-#line 323 "rygel-plugin.c"
-	_rygel_resource_info_unref0 (resource_info);
-	return self;
-}
-
-
-#line 96 "rygel-plugin.vala"
-RygelPlugin* rygel_plugin_new_MediaServer (const char* name, const char* title, GType content_dir_type, const char* description) {
-#line 96 "rygel-plugin.vala"
-	return rygel_plugin_construct_MediaServer (RYGEL_TYPE_PLUGIN, name, title, content_dir_type, description);
-#line 333 "rygel-plugin.c"
-}
-
-
-#line 124 "rygel-plugin.vala"
+#line 93 "rygel-plugin.vala"
 void rygel_plugin_add_resource (RygelPlugin* self, RygelResourceInfo* resource_info) {
-#line 124 "rygel-plugin.vala"
+#line 93 "rygel-plugin.vala"
 	g_return_if_fail (self != NULL);
-#line 124 "rygel-plugin.vala"
+#line 93 "rygel-plugin.vala"
 	g_return_if_fail (resource_info != NULL);
-#line 125 "rygel-plugin.vala"
+#line 94 "rygel-plugin.vala"
 	gee_abstract_collection_add ((GeeAbstractCollection*) self->resource_infos, resource_info);
-#line 126 "rygel-plugin.vala"
+#line 95 "rygel-plugin.vala"
 	gupnp_resource_factory_register_resource_type ((GUPnPResourceFactory*) self, resource_info->upnp_type, resource_info->type);
-#line 347 "rygel-plugin.c"
+#line 263 "rygel-plugin.c"
 }
 
 
-#line 130 "rygel-plugin.vala"
+#line 99 "rygel-plugin.vala"
 void rygel_plugin_add_icon (RygelPlugin* self, RygelIconInfo* icon_info) {
-#line 130 "rygel-plugin.vala"
+#line 99 "rygel-plugin.vala"
 	g_return_if_fail (self != NULL);
-#line 130 "rygel-plugin.vala"
+#line 99 "rygel-plugin.vala"
 	g_return_if_fail (icon_info != NULL);
-#line 131 "rygel-plugin.vala"
+#line 100 "rygel-plugin.vala"
 	gee_abstract_collection_add ((GeeAbstractCollection*) self->icon_infos, icon_info);
-#line 359 "rygel-plugin.c"
+#line 275 "rygel-plugin.c"
 }
 
 
@@ -363,9 +279,9 @@ gboolean rygel_plugin_get_available (RygelPlugin* self) {
 	gboolean result;
 	g_return_val_if_fail (self != NULL, FALSE);
 	result = self->priv->_available;
-#line 55 "rygel-plugin.vala"
+#line 52 "rygel-plugin.vala"
 	return result;
-#line 369 "rygel-plugin.c"
+#line 285 "rygel-plugin.c"
 }
 
 

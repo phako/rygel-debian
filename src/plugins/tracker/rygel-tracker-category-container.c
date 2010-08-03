@@ -87,21 +87,21 @@ struct _RygelTrackerCategoryContainerClass {
 
 static gpointer rygel_tracker_category_container_parent_class = NULL;
 
-GType rygel_tracker_category_container_get_type (void);
+GType rygel_tracker_category_container_get_type (void) G_GNUC_CONST;
 gpointer rygel_tracker_item_factory_ref (gpointer instance);
 void rygel_tracker_item_factory_unref (gpointer instance);
 GParamSpec* rygel_tracker_param_spec_item_factory (const gchar* name, const gchar* nick, const gchar* blurb, GType object_type, GParamFlags flags);
 void rygel_tracker_value_set_item_factory (GValue* value, gpointer v_object);
 void rygel_tracker_value_take_item_factory (GValue* value, gpointer v_object);
 gpointer rygel_tracker_value_get_item_factory (const GValue* value);
-GType rygel_tracker_item_factory_get_type (void);
+GType rygel_tracker_item_factory_get_type (void) G_GNUC_CONST;
 enum  {
 	RYGEL_TRACKER_CATEGORY_CONTAINER_DUMMY_PROPERTY
 };
 RygelTrackerCategoryAllContainer* rygel_tracker_category_all_container_new (RygelTrackerCategoryContainer* parent);
 RygelTrackerCategoryAllContainer* rygel_tracker_category_all_container_construct (GType object_type, RygelTrackerCategoryContainer* parent);
-GType rygel_tracker_search_container_get_type (void);
-GType rygel_tracker_category_all_container_get_type (void);
+GType rygel_tracker_search_container_get_type (void) G_GNUC_CONST;
+GType rygel_tracker_category_all_container_get_type (void) G_GNUC_CONST;
 RygelTrackerCategoryContainer* rygel_tracker_category_container_new (const char* id, RygelMediaContainer* parent, const char* title, RygelTrackerItemFactory* item_factory);
 RygelTrackerCategoryContainer* rygel_tracker_category_container_construct (GType object_type, const char* id, RygelMediaContainer* parent, const char* title, RygelTrackerItemFactory* item_factory);
 static void rygel_tracker_category_container_finalize (GObject* obj);

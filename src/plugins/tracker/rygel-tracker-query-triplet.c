@@ -72,7 +72,7 @@ GParamSpec* rygel_tracker_param_spec_query_triplet (const gchar* name, const gch
 void rygel_tracker_value_set_query_triplet (GValue* value, gpointer v_object);
 void rygel_tracker_value_take_query_triplet (GValue* value, gpointer v_object);
 gpointer rygel_tracker_value_get_query_triplet (const GValue* value);
-GType rygel_tracker_query_triplet_get_type (void);
+GType rygel_tracker_query_triplet_get_type (void) G_GNUC_CONST;
 enum  {
 	RYGEL_TRACKER_QUERY_TRIPLET_DUMMY_PROPERTY
 };

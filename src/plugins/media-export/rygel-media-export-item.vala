@@ -27,151 +27,227 @@ using Gst;
 /**
  * Represents MediaExport item.
  */
-public class Rygel.MediaExport.MediaExportItem : Rygel.MediaItem {
-    private const string TAG_WIDTH = MetadataExtractor.TAG_RYGEL_WIDTH;
-    private const string TAG_HEIGHT = MetadataExtractor.TAG_RYGEL_HEIGHT;
-
-    public static MediaExportItem? create_from_taglist (MediaContainer parent,
-                                                  File           file,
-                                                  Gst.TagList    tag_list) {
-        string id = Checksum.compute_for_string (ChecksumType.MD5,
-                                                 file.get_uri ());
-        int width = -1;
-        int height = -1;
-        string class_guessed = null;
-
-        if (tag_list != null) {
-            string codec;
-
-            if (!tag_list.get_string (TAG_VIDEO_CODEC, out codec)) {
-                if (!tag_list.get_string (TAG_AUDIO_CODEC, out codec)) {
-                    if (tag_list.get_int (TAG_WIDTH, out width) ||
-                        tag_list.get_int (TAG_HEIGHT, out height)) {
-                        class_guessed = Rygel.MediaItem.PHOTO_CLASS;
-                    } else {
-                        // if it has width and height and a duration, assume
-                        // it is a video (to capture the MPEG TS without audio
-                        // case)
-                        int64 duration;
-                        if (tag_list.get_int64 (TAG_DURATION,
-                                                out duration)) {
-                            class_guessed = Rygel.MediaItem.VIDEO_CLASS;
-                        } else {
-                            string content_type;
-                            tag_list.get_string (MetadataExtractor.TAG_RYGEL_MIME,
-                                                 out content_type);
-                            debug (_("File '%s' is of unknown format/type."),
-                                    file.get_uri ());
-                            debug (_("Trying to guess from content type %s"),
-                                    content_type);
-                            if (content_type.has_prefix ("video/")) {
-                                class_guessed = Rygel.MediaItem.VIDEO_CLASS;
-                            } else if (content_type.has_prefix ("audio/")) {
-                                class_guessed = Rygel.MediaItem.AUDIO_CLASS;
-                            } else if (content_type.has_prefix ("image/")) {
-                                class_guessed = Rygel.MediaItem.PHOTO_CLASS;
-                            }
-
-                            if (class_guessed == null) {
-                                class_guessed = Rygel.MediaItem.AUDIO_CLASS;
-                                warning (_("Failed to detect UPnP class for '%s', assuming '%s'"),
-                                         file.get_uri (),
-                                         class_guessed);
-                            }
-                        }
-                    }
-                } else {
-                    // MPEG TS streams seem to miss VIDEO_CODEC; so if we have
-                    // an AUDIO_CODEC and width or height, assume video as
-                    // well
-                    if (tag_list.get_int (TAG_WIDTH, out width) ||
-                        tag_list.get_int (TAG_HEIGHT, out height)) {
-                        class_guessed = Rygel.MediaItem.VIDEO_CLASS;
-                    } else {
-                        class_guessed = Rygel.MediaItem.AUDIO_CLASS;
-                    }
-                }
-            } else {
-                class_guessed = Rygel.MediaItem.VIDEO_CLASS;
-            }
-        } else {
-            // throw error. Taglist can't be empty
-            warning (_("Got empty taglist for file %s"), file.get_uri ());
-
-            return null;
-        }
-
-        return new MediaExportItem (parent,
-                                    id,
-                                    file,
-                                    tag_list,
-                                    class_guessed);
+public class Rygel.MediaExport.Item : Rygel.MediaItem {
+    public static string get_id (File file) {
+        return Checksum.compute_for_string (ChecksumType.MD5,
+                                            file.get_uri ());
     }
 
-    private MediaExportItem (MediaContainer parent,
-                             string         id,
-                             File           file,
-                             Gst.TagList    tag_list,
-                             string         upnp_class) {
-        string title = null;
-        if (upnp_class == Rygel.MediaItem.AUDIO_CLASS ||
-            upnp_class == Rygel.MediaItem.MUSIC_CLASS) {
+    public Item.simple (MediaContainer parent,
+                        File           file,
+                        string         mime,
+                        uint64         size,
+                        uint64         mtime) {
+        var title = file.get_basename ();
+        string upnp_class;
 
-            if (!tag_list.get_string (TAG_TITLE, out title)) {
-                title = file.get_basename ();
-            }
-
+        if (mime.has_prefix ("video/")) {
+            upnp_class = MediaItem.VIDEO_CLASS;
+        } else if (mime.has_prefix ("image/")) {
+            upnp_class = MediaItem.PHOTO_CLASS;
         } else {
+            upnp_class = MediaItem.AUDIO_CLASS;
+        }
+
+        base (get_id (file), parent, title, upnp_class);
+        this.mime_type = mime;
+        this.size = (long) size;
+        this.modified = mtime;
+        this.add_uri (file.get_uri (), null);
+    }
+
+    public static Item? create_from_info (MediaContainer        parent,
+                                          File                  file,
+                                          GUPnP.DLNAInformation dlna_info,
+                                          string                mime,
+                                          uint64                size,
+                                          uint64                mtime) {
+        string id = get_id (file);
+        unowned StreamAudioInformation audio_info = null;
+        unowned StreamVideoInformation video_info = null;
+
+        foreach (unowned StreamInformation stream_info in
+                 dlna_info.info.stream_list) {
+            if (audio_info == null &&
+                stream_info.streamtype == Gst.StreamType.AUDIO) {
+                audio_info = (StreamAudioInformation) stream_info;
+            } else if (video_info == null &&
+                       (stream_info.streamtype == Gst.StreamType.VIDEO ||
+                        stream_info.streamtype == Gst.StreamType.IMAGE)) {
+                video_info = (StreamVideoInformation) stream_info;
+            }
+        }
+
+        if (video_info != null) {
+            if (audio_info == null &&
+                video_info.streamtype == Gst.StreamType.IMAGE) {
+                return new Item.photo (parent,
+                                       id,
+                                       file,
+                                       dlna_info,
+                                       video_info,
+                                       mime,
+                                       size,
+                                       mtime);
+            } else {
+                return new Item.video (parent,
+                                       id,
+                                       file,
+                                       dlna_info,
+                                       video_info,
+                                       audio_info,
+                                       mime,
+                                       size,
+                                       mtime);
+            }
+        } else if (audio_info != null) {
+            return new Item.audio (parent,
+                                   id,
+                                   file,
+                                   dlna_info,
+                                   audio_info,
+                                   mime,
+                                   size,
+                                   mtime);
+        } else {
+            return null;
+        }
+    }
+
+    private Item.video (MediaContainer              parent,
+                        string                      id,
+                        File                        file,
+                        GUPnP.DLNAInformation       dlna_info,
+                        Gst.StreamVideoInformation  video_info,
+                        Gst.StreamAudioInformation? audio_info,
+                        string                      mime,
+                        uint64                      size,
+                        uint64                      mtime) {
+        this (parent,
+              id,
+              file,
+              dlna_info,
+              mime,
+              size,
+              mtime,
+              MediaItem.VIDEO_CLASS);
+
+        this.width = (int) video_info.width;
+        this.height = (int) video_info.height;
+        this.color_depth = (int) video_info.depth;
+
+        if (audio_info != null) {
+            this.n_audio_channels = (int) audio_info.channels;
+            this.sample_freq = (int) audio_info.sample_rate;
+            if (audio_info.tags != null) {
+                uint tmp;
+
+                audio_info.tags.get_uint (TAG_BITRATE, out tmp);
+                this.bitrate = (int) tmp / 8;
+            }
+        }
+    }
+
+    private Item.photo (MediaContainer             parent,
+                        string                     id,
+                        File                       file,
+                        GUPnP.DLNAInformation      dlna_info,
+                        Gst.StreamVideoInformation video_info,
+                        string                     mime,
+                        uint64                     size,
+                        uint64                     mtime) {
+        this (parent,
+              id,
+              file,
+              dlna_info,
+              mime,
+              size,
+              mtime,
+              MediaItem.PHOTO_CLASS);
+
+        this.width = (int) video_info.width;
+        this.height = (int) video_info.height;
+        this.color_depth = (int) video_info.depth;
+    }
+
+    private Item.audio (MediaContainer             parent,
+                        string                     id,
+                        File                       file,
+                        GUPnP.DLNAInformation      dlna_info,
+                        Gst.StreamAudioInformation audio_info,
+                        string                     mime,
+                        uint64                     size,
+                        uint64                     mtime) {
+        this (parent,
+              id,
+              file,
+              dlna_info,
+              mime,
+              size,
+              mtime,
+              MediaItem.MUSIC_CLASS);
+
+        if (audio_info.tags != null) {
+            uint tmp;
+
+            audio_info.tags.get_uint (TAG_BITRATE, out tmp);
+            this.bitrate = (int) tmp / 8;
+        }
+        this.n_audio_channels = (int) audio_info.channels;
+        this.sample_freq = (int) audio_info.sample_rate;
+    }
+
+    private Item (MediaContainer        parent,
+                  string                id,
+                  File                  file,
+                  GUPnP.DLNAInformation dlna_info,
+                  string                mime,
+                  uint64                size,
+                  uint64                mtime,
+                  string                upnp_class) {
+        string title = null;
+
+        if (dlna_info.info.tags == null ||
+            !dlna_info.info.tags.get_string (TAG_TITLE, out title)) {
             title = file.get_basename ();
         }
+
         base (id, parent, title, upnp_class);
 
-        tag_list.get_int (TAG_WIDTH, out this.width);
-        tag_list.get_int (TAG_HEIGHT, out this.height);
-        tag_list.get_int (MetadataExtractor.TAG_RYGEL_DEPTH,
-                          out this.color_depth);
-        uint64 duration;
-        tag_list.get_uint64 (TAG_DURATION, out duration);
-        this.duration = (duration == -1) ? -1 : (long) (duration / 1000000000);
-
-        tag_list.get_int (MetadataExtractor.TAG_RYGEL_CHANNELS,
-                          out this.n_audio_channels);
-
-        tag_list.get_string (TAG_ARTIST, out this.author);
-        tag_list.get_string (TAG_ALBUM, out this.album);
-
-        uint tmp;
-        tag_list.get_uint (TAG_TRACK_NUMBER, out tmp);
-        this.track_number = (int) tmp;
-        tag_list.get_uint (TAG_BITRATE, out tmp);
-        this.bitrate = (int) tmp / 8;
-        tag_list.get_int (MetadataExtractor.TAG_RYGEL_RATE,
-                          out this.sample_freq);
-
-
-        int64 size;
-        tag_list.get_int64 (MetadataExtractor.TAG_RYGEL_SIZE,
-                            out size);
-        this.size = (long) size;
-
-        uint64 mtime;
-        tag_list.get_uint64 (MetadataExtractor.TAG_RYGEL_MTIME,
-                             out mtime);
-        this.modified = (int64) mtime;
-
-        GLib.Date? date;
-        if (tag_list.get_date (TAG_DATE, out date)) {
-            char[] datestr = new char[30];
-            date.strftime (datestr, "%F");
-            this.date = (string) datestr;
+        if (dlna_info.info.duration > 0) {
+            this.duration = dlna_info.info.duration / Gst.SECOND;
         } else {
-            TimeVal tv = { (long) mtime, 0 };
-            this.date = tv.to_iso8601 ();
+            this.duration = -1;
         }
 
+        if (dlna_info.info.tags != null) {
+            dlna_info.info.tags.get_string (TAG_ARTIST, out this.author);
+            dlna_info.info.tags.get_string (TAG_ALBUM, out this.album);
 
-        tag_list.get_string (MetadataExtractor.TAG_RYGEL_MIME,
-                             out this.mime_type);
+            uint tmp;
+            dlna_info.info.tags.get_uint (TAG_TRACK_NUMBER, out tmp);
+            this.track_number = (int) tmp;
+
+            GLib.Date? date;
+            if (dlna_info.info.tags.get_date (TAG_DATE, out date)) {
+                char[] datestr = new char[30];
+                date.strftime (datestr, "%F");
+                this.date = (string) datestr;
+            } else {
+                TimeVal tv = { (long) mtime, 0 };
+                this.date = tv.to_iso8601 ();
+            }
+        }
+
+        this.size = (long) size;
+        this.modified = (int64) mtime;
+
+        if (dlna_info.name != null) {
+            this.dlna_profile = dlna_info.name;
+            this.mime_type = dlna_info.mime;
+        } else {
+            this.mime_type = mime;
+        }
 
         this.add_uri (file.get_uri (), null);
     }

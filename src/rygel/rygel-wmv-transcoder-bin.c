@@ -118,7 +118,7 @@ typedef enum  {
 
 static gpointer rygel_wmv_transcoder_bin_parent_class = NULL;
 
-GType rygel_wmv_transcoder_bin_get_type (void);
+GType rygel_wmv_transcoder_bin_get_type (void) G_GNUC_CONST;
 #define RYGEL_WMV_TRANSCODER_BIN_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), RYGEL_TYPE_WMV_TRANSCODER_BIN, RygelWMVTranscoderBinPrivate))
 enum  {
 	RYGEL_WMV_TRANSCODER_BIN_DUMMY_PROPERTY
@@ -130,12 +130,12 @@ enum  {
 GstElement* rygel_gst_utils_create_element (const char* factoryname, const char* name, GError** error);
 RygelWMATranscoder* rygel_wma_transcoder_new (void);
 RygelWMATranscoder* rygel_wma_transcoder_construct (GType object_type);
-GType rygel_transcoder_get_type (void);
-GType rygel_wma_transcoder_get_type (void);
-GType rygel_media_object_get_type (void);
-GType rygel_media_item_get_type (void);
+GType rygel_transcoder_get_type (void) G_GNUC_CONST;
+GType rygel_wma_transcoder_get_type (void) G_GNUC_CONST;
+GType rygel_media_object_get_type (void) G_GNUC_CONST;
+GType rygel_media_item_get_type (void) G_GNUC_CONST;
 GstElement* rygel_wma_transcoder_create_encoder (RygelWMATranscoder* self, RygelMediaItem* item, const char* src_pad_name, const char* sink_pad_name, GError** error);
-GType rygel_wmv_transcoder_get_type (void);
+GType rygel_wmv_transcoder_get_type (void) G_GNUC_CONST;
 GstElement* rygel_wmv_transcoder_create_encoder (RygelWMVTranscoder* self, RygelMediaItem* item, const char* src_pad_name, const char* sink_pad_name, GError** error);
 static void rygel_wmv_transcoder_bin_decodebin_pad_added (RygelWMVTranscoderBin* self, GstElement* decodebin, GstPad* new_pad);
 static void _rygel_wmv_transcoder_bin_decodebin_pad_added_gst_element_pad_added (GstElement* _sender, GstPad* pad, gpointer self);
@@ -189,7 +189,7 @@ RygelWMVTranscoderBin* rygel_wmv_transcoder_bin_construct (GType object_type, Ry
 #line 190 "rygel-wmv-transcoder-bin.c"
 	if (_inner_error_ != NULL) {
 		g_propagate_error (error, _inner_error_);
-		gst_object_unref (self);
+		_gst_object_unref0 (self);
 		return NULL;
 	}
 #line 45 "rygel-wmv-transcoder-bin.vala"
@@ -199,9 +199,9 @@ RygelWMVTranscoderBin* rygel_wmv_transcoder_bin_construct (GType object_type, Ry
 #line 200 "rygel-wmv-transcoder-bin.c"
 	if (_inner_error_ != NULL) {
 		g_propagate_error (error, _inner_error_);
-		_gst_object_unref0 (decodebin);
 		_g_object_unref0 (wma_transcoder);
-		gst_object_unref (self);
+		_gst_object_unref0 (decodebin);
+		_gst_object_unref0 (self);
 		return NULL;
 	}
 #line 46 "rygel-wmv-transcoder-bin.vala"
@@ -211,9 +211,9 @@ RygelWMVTranscoderBin* rygel_wmv_transcoder_bin_construct (GType object_type, Ry
 #line 212 "rygel-wmv-transcoder-bin.c"
 	if (_inner_error_ != NULL) {
 		g_propagate_error (error, _inner_error_);
-		_gst_object_unref0 (decodebin);
 		_g_object_unref0 (wma_transcoder);
-		gst_object_unref (self);
+		_gst_object_unref0 (decodebin);
+		_gst_object_unref0 (self);
 		return NULL;
 	}
 #line 49 "rygel-wmv-transcoder-bin.vala"
@@ -223,9 +223,9 @@ RygelWMVTranscoderBin* rygel_wmv_transcoder_bin_construct (GType object_type, Ry
 #line 224 "rygel-wmv-transcoder-bin.c"
 	if (_inner_error_ != NULL) {
 		g_propagate_error (error, _inner_error_);
-		_gst_object_unref0 (decodebin);
 		_g_object_unref0 (wma_transcoder);
-		gst_object_unref (self);
+		_gst_object_unref0 (decodebin);
+		_gst_object_unref0 (self);
 		return NULL;
 	}
 #line 50 "rygel-wmv-transcoder-bin.vala"
@@ -337,10 +337,10 @@ static void rygel_wmv_transcoder_bin_decodebin_pad_added (RygelWMVTranscoderBin*
 			enc_pad = (_tmp3_ = _gst_object_ref0 (video_enc_pad), _gst_object_unref0 (enc_pad), _tmp3_);
 #line 339 "rygel-wmv-transcoder-bin.c"
 		} else {
-			_gst_object_unref0 (encoder);
-			_gst_object_unref0 (enc_pad);
-			_gst_object_unref0 (audio_enc_pad);
 			_gst_object_unref0 (video_enc_pad);
+			_gst_object_unref0 (audio_enc_pad);
+			_gst_object_unref0 (enc_pad);
+			_gst_object_unref0 (encoder);
 #line 101 "rygel-wmv-transcoder-bin.vala"
 			return;
 #line 347 "rygel-wmv-transcoder-bin.c"
@@ -359,10 +359,10 @@ static void rygel_wmv_transcoder_bin_decodebin_pad_added (RygelWMVTranscoderBin*
 #line 360 "rygel-wmv-transcoder-bin.c"
 		_g_error_free0 (_error_);
 	}
-	_gst_object_unref0 (encoder);
-	_gst_object_unref0 (enc_pad);
-	_gst_object_unref0 (audio_enc_pad);
 	_gst_object_unref0 (video_enc_pad);
+	_gst_object_unref0 (audio_enc_pad);
+	_gst_object_unref0 (enc_pad);
+	_gst_object_unref0 (encoder);
 }
 
 

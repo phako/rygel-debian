@@ -97,16 +97,6 @@ typedef struct _RygelDIDLLiteWriterClass RygelDIDLLiteWriterClass;
 #define _g_object_unref0(var) ((var == NULL) ? NULL : (var = (g_object_unref (var), NULL)))
 typedef struct _RygelContentDirectoryPrivate RygelContentDirectoryPrivate;
 
-#define RYGEL_TYPE_MEDIA_CONTAINER (rygel_media_container_get_type ())
-#define RYGEL_MEDIA_CONTAINER(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_MEDIA_CONTAINER, RygelMediaContainer))
-#define RYGEL_MEDIA_CONTAINER_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TYPE_MEDIA_CONTAINER, RygelMediaContainerClass))
-#define RYGEL_IS_MEDIA_CONTAINER(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TYPE_MEDIA_CONTAINER))
-#define RYGEL_IS_MEDIA_CONTAINER_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_TYPE_MEDIA_CONTAINER))
-#define RYGEL_MEDIA_CONTAINER_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_TYPE_MEDIA_CONTAINER, RygelMediaContainerClass))
-
-typedef struct _RygelMediaContainer RygelMediaContainer;
-typedef struct _RygelMediaContainerClass RygelMediaContainerClass;
-
 #define RYGEL_TYPE_TRANSCODE_MANAGER (rygel_transcode_manager_get_type ())
 #define RYGEL_TRANSCODE_MANAGER(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_TRANSCODE_MANAGER, RygelTranscodeManager))
 #define RYGEL_TRANSCODE_MANAGER_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TYPE_TRANSCODE_MANAGER, RygelTranscodeManagerClass))
@@ -126,6 +116,16 @@ typedef struct _RygelTranscodeManagerClass RygelTranscodeManagerClass;
 
 typedef struct _RygelHTTPServer RygelHTTPServer;
 typedef struct _RygelHTTPServerClass RygelHTTPServerClass;
+
+#define RYGEL_TYPE_MEDIA_CONTAINER (rygel_media_container_get_type ())
+#define RYGEL_MEDIA_CONTAINER(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_MEDIA_CONTAINER, RygelMediaContainer))
+#define RYGEL_MEDIA_CONTAINER_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TYPE_MEDIA_CONTAINER, RygelMediaContainerClass))
+#define RYGEL_IS_MEDIA_CONTAINER(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TYPE_MEDIA_CONTAINER))
+#define RYGEL_IS_MEDIA_CONTAINER_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_TYPE_MEDIA_CONTAINER))
+#define RYGEL_MEDIA_CONTAINER_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_TYPE_MEDIA_CONTAINER, RygelMediaContainerClass))
+
+typedef struct _RygelMediaContainer RygelMediaContainer;
+typedef struct _RygelMediaContainerClass RygelMediaContainerClass;
 typedef struct _RygelMediaObjectPrivate RygelMediaObjectPrivate;
 typedef struct _RygelMediaItemPrivate RygelMediaItemPrivate;
 
@@ -182,6 +182,16 @@ typedef struct _RygelSearchExpressionClass RygelSearchExpressionClass;
 typedef struct _RygelRelationalExpression RygelRelationalExpression;
 typedef struct _RygelRelationalExpressionClass RygelRelationalExpressionClass;
 typedef struct _RygelSearchExpressionPrivate RygelSearchExpressionPrivate;
+
+#define RYGEL_TYPE_MEDIA_OBJECTS (rygel_media_objects_get_type ())
+#define RYGEL_MEDIA_OBJECTS(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), RYGEL_TYPE_MEDIA_OBJECTS, RygelMediaObjects))
+#define RYGEL_MEDIA_OBJECTS_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), RYGEL_TYPE_MEDIA_OBJECTS, RygelMediaObjectsClass))
+#define RYGEL_IS_MEDIA_OBJECTS(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), RYGEL_TYPE_MEDIA_OBJECTS))
+#define RYGEL_IS_MEDIA_OBJECTS_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), RYGEL_TYPE_MEDIA_OBJECTS))
+#define RYGEL_MEDIA_OBJECTS_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), RYGEL_TYPE_MEDIA_OBJECTS, RygelMediaObjectsClass))
+
+typedef struct _RygelMediaObjects RygelMediaObjects;
+typedef struct _RygelMediaObjectsClass RygelMediaObjectsClass;
 #define _rygel_search_expression_unref0(var) ((var == NULL) ? NULL : (var = (rygel_search_expression_unref (var), NULL)))
 typedef struct _RygelItemCreatorFetchContainerData RygelItemCreatorFetchContainerData;
 
@@ -222,7 +232,6 @@ struct _RygelContentDirectory {
 	GUPnPService parent_instance;
 	RygelContentDirectoryPrivate * priv;
 	char* feature_list;
-	char* sort_caps;
 	RygelHTTPServer* http_server;
 	RygelMediaContainer* root_container;
 	GCancellable* cancellable;
@@ -231,7 +240,6 @@ struct _RygelContentDirectory {
 
 struct _RygelContentDirectoryClass {
 	GUPnPServiceClass parent_class;
-	RygelMediaContainer* (*create_root_container) (RygelContentDirectory* self);
 };
 
 struct _RygelMediaObject {
@@ -246,6 +254,7 @@ struct _RygelMediaObject {
 
 struct _RygelMediaObjectClass {
 	GObjectClass parent_class;
+	gint (*compare_by_property) (RygelMediaObject* self, RygelMediaObject* media_object, const char* property);
 };
 
 struct _RygelMediaItem {
@@ -335,7 +344,7 @@ struct _RygelItemCreatorFetchContainerData {
 	char* _tmp0_;
 	char* _tmp1_;
 	guint total_matches;
-	GeeList* _result_;
+	RygelMediaObjects* _result_;
 	RygelMediaObject* _tmp2_;
 	char* _tmp3_;
 	RygelMediaObject* _tmp4_;
@@ -352,20 +361,20 @@ static gpointer rygel_item_creator_parent_class = NULL;
 static RygelStateMachineIface* rygel_item_creator_rygel_state_machine_parent_iface = NULL;
 
 GQuark rygel_item_creator_error_quark (void);
-GType rygel_state_machine_get_type (void);
-GType rygel_item_creator_get_type (void);
-GType rygel_media_object_get_type (void);
-GType rygel_media_item_get_type (void);
-GType rygel_content_directory_get_type (void);
-GType rygel_didl_lite_writer_get_type (void);
+GType rygel_state_machine_get_type (void) G_GNUC_CONST;
+GType rygel_item_creator_get_type (void) G_GNUC_CONST;
+GType rygel_media_object_get_type (void) G_GNUC_CONST;
+GType rygel_media_item_get_type (void) G_GNUC_CONST;
+GType rygel_content_directory_get_type (void) G_GNUC_CONST;
+GType rygel_didl_lite_writer_get_type (void) G_GNUC_CONST;
 #define RYGEL_ITEM_CREATOR_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), RYGEL_TYPE_ITEM_CREATOR, RygelItemCreatorPrivate))
 enum  {
 	RYGEL_ITEM_CREATOR_DUMMY_PROPERTY,
 	RYGEL_ITEM_CREATOR_CANCELLABLE
 };
-GType rygel_media_container_get_type (void);
-GType rygel_transcode_manager_get_type (void);
-GType rygel_http_server_get_type (void);
+GType rygel_transcode_manager_get_type (void) G_GNUC_CONST;
+GType rygel_http_server_get_type (void) G_GNUC_CONST;
+GType rygel_media_container_get_type (void) G_GNUC_CONST;
 void rygel_state_machine_set_cancellable (RygelStateMachine* self, GCancellable* value);
 RygelDIDLLiteWriter* rygel_didl_lite_writer_new (RygelHTTPServer* http_server);
 RygelDIDLLiteWriter* rygel_didl_lite_writer_construct (GType object_type, RygelHTTPServer* http_server);
@@ -376,8 +385,8 @@ static void rygel_item_creator_real_run (RygelStateMachine* base, GAsyncReadyCal
 static void rygel_item_creator_run_ready (GObject* source_object, GAsyncResult* _res_, gpointer _user_data_);
 static void rygel_item_creator_parse_args (RygelItemCreator* self, GAsyncReadyCallback _callback_, gpointer _user_data_);
 static void rygel_item_creator_parse_args_finish (RygelItemCreator* self, GAsyncResult* _res_, GError** error);
-static void _lambda6_ (GUPnPDIDLLiteItem* didl_item, RygelItemCreator* self);
-static void __lambda6__gupnp_didl_lite_parser_item_available (GUPnPDIDLLiteParser* _sender, GUPnPDIDLLiteItem* item, gpointer self);
+static void _lambda7_ (GUPnPDIDLLiteItem* didl_item, RygelItemCreator* self);
+static void __lambda7__gupnp_didl_lite_parser_item_available (GUPnPDIDLLiteParser* _sender, GUPnPDIDLLiteItem* item, gpointer self);
 static void rygel_item_creator_fetch_container (RygelItemCreator* self, GAsyncReadyCallback _callback_, gpointer _user_data_);
 static RygelMediaContainer* rygel_item_creator_fetch_container_finish (RygelItemCreator* self, GAsyncResult* _res_, GError** error);
 RygelMediaItem* rygel_media_item_new (const char* id, RygelMediaContainer* parent, const char* title, const char* upnp_class);
@@ -389,15 +398,15 @@ GParamSpec* rygel_param_spec_icon_info (const gchar* name, const gchar* nick, co
 void rygel_value_set_icon_info (GValue* value, gpointer v_object);
 void rygel_value_take_icon_info (GValue* value, gpointer v_object);
 gpointer rygel_value_get_icon_info (const GValue* value);
-GType rygel_icon_info_get_type (void);
-GType rygel_thumbnail_get_type (void);
+GType rygel_icon_info_get_type (void) G_GNUC_CONST;
+GType rygel_thumbnail_get_type (void) G_GNUC_CONST;
 gpointer rygel_subtitle_ref (gpointer instance);
 void rygel_subtitle_unref (gpointer instance);
 GParamSpec* rygel_param_spec_subtitle (const gchar* name, const gchar* nick, const gchar* blurb, GType object_type, GParamFlags flags);
 void rygel_value_set_subtitle (GValue* value, gpointer v_object);
 void rygel_value_take_subtitle (GValue* value, gpointer v_object);
 gpointer rygel_value_get_subtitle (const GValue* value);
-GType rygel_subtitle_get_type (void);
+GType rygel_subtitle_get_type (void) G_GNUC_CONST;
 void rygel_media_container_add_item (RygelMediaContainer* self, RygelMediaItem* item, GCancellable* cancellable, GAsyncReadyCallback _callback_, gpointer _user_data_);
 void rygel_media_container_add_item_finish (RygelMediaContainer* self, GAsyncResult* _res_, GError** error);
 GCancellable* rygel_state_machine_get_cancellable (RygelStateMachine* self);
@@ -419,10 +428,11 @@ GParamSpec* rygel_param_spec_search_expression (const gchar* name, const gchar* 
 void rygel_value_set_search_expression (GValue* value, gpointer v_object);
 void rygel_value_take_search_expression (GValue* value, gpointer v_object);
 gpointer rygel_value_get_search_expression (const GValue* value);
-GType rygel_search_expression_get_type (void);
-GType rygel_relational_expression_get_type (void);
+GType rygel_search_expression_get_type (void) G_GNUC_CONST;
+GType rygel_relational_expression_get_type (void) G_GNUC_CONST;
 void rygel_media_container_search (RygelMediaContainer* self, RygelSearchExpression* expression, guint offset, guint max_count, GCancellable* cancellable, GAsyncReadyCallback _callback_, gpointer _user_data_);
-GeeList* rygel_media_container_search_finish (RygelMediaContainer* self, GAsyncResult* _res_, guint* total_matches, GError** error);
+GType rygel_media_objects_get_type (void) G_GNUC_CONST;
+RygelMediaObjects* rygel_media_container_search_finish (RygelMediaContainer* self, GAsyncResult* _res_, guint* total_matches, GError** error);
 void rygel_media_container_find_object (RygelMediaContainer* self, const char* id, GCancellable* cancellable, GAsyncReadyCallback _callback_, gpointer _user_data_);
 RygelMediaObject* rygel_media_container_find_object_finish (RygelMediaContainer* self, GAsyncResult* _res_, GError** error);
 static gboolean rygel_item_creator_fetch_container_co (RygelItemCreatorFetchContainerData* data);
@@ -448,7 +458,7 @@ static gpointer _g_object_ref0 (gpointer self) {
 
 #line 49 "rygel-item-creator.vala"
 RygelItemCreator* rygel_item_creator_construct (GType object_type, RygelContentDirectory* content_dir, GUPnPServiceAction* action) {
-#line 452 "rygel-item-creator.c"
+#line 462 "rygel-item-creator.c"
 	RygelItemCreator * self;
 	RygelContentDirectory* _tmp0_;
 	GUPnPServiceAction* _tmp1_;
@@ -470,7 +480,7 @@ RygelItemCreator* rygel_item_creator_construct (GType object_type, RygelContentD
 	self->priv->didl_writer = (_tmp2_ = rygel_didl_lite_writer_new (content_dir->http_server), _g_object_unref0 (self->priv->didl_writer), _tmp2_);
 #line 55 "rygel-item-creator.vala"
 	self->priv->didl_parser = (_tmp3_ = gupnp_didl_lite_parser_new (), _g_object_unref0 (self->priv->didl_parser), _tmp3_);
-#line 474 "rygel-item-creator.c"
+#line 484 "rygel-item-creator.c"
 	return self;
 }
 
@@ -479,7 +489,7 @@ RygelItemCreator* rygel_item_creator_construct (GType object_type, RygelContentD
 RygelItemCreator* rygel_item_creator_new (RygelContentDirectory* content_dir, GUPnPServiceAction* action) {
 #line 49 "rygel-item-creator.vala"
 	return rygel_item_creator_construct (RYGEL_TYPE_ITEM_CREATOR, content_dir, action);
-#line 483 "rygel-item-creator.c"
+#line 493 "rygel-item-creator.c"
 }
 
 
@@ -518,21 +528,21 @@ static void rygel_item_creator_run_ready (GObject* source_object, GAsyncResult* 
 
 
 #line 62 "rygel-item-creator.vala"
-static void _lambda6_ (GUPnPDIDLLiteItem* didl_item, RygelItemCreator* self) {
-#line 523 "rygel-item-creator.c"
+static void _lambda7_ (GUPnPDIDLLiteItem* didl_item, RygelItemCreator* self) {
+#line 533 "rygel-item-creator.c"
 	GUPnPDIDLLiteItem* _tmp0_;
 #line 62 "rygel-item-creator.vala"
 	g_return_if_fail (didl_item != NULL);
 #line 63 "rygel-item-creator.vala"
 	self->didl_item = (_tmp0_ = _g_object_ref0 (didl_item), _g_object_unref0 (self->didl_item), _tmp0_);
-#line 529 "rygel-item-creator.c"
+#line 539 "rygel-item-creator.c"
 }
 
 
 #line 62 "rygel-item-creator.vala"
-static void __lambda6__gupnp_didl_lite_parser_item_available (GUPnPDIDLLiteParser* _sender, GUPnPDIDLLiteItem* item, gpointer self) {
-#line 535 "rygel-item-creator.c"
-	_lambda6_ (item, self);
+static void __lambda7__gupnp_didl_lite_parser_item_available (GUPnPDIDLLiteParser* _sender, GUPnPDIDLLiteItem* item, gpointer self) {
+#line 545 "rygel-item-creator.c"
+	_lambda7_ (item, self);
 }
 
 
@@ -540,10 +550,10 @@ static gboolean rygel_item_creator_real_run_co (RygelItemCreatorRunData* data) {
 	switch (data->_state_) {
 		case 0:
 		goto _state_0;
-		case 43:
-		goto _state_43;
-		case 44:
-		goto _state_44;
+		case 41:
+		goto _state_41;
+		case 42:
+		goto _state_42;
 		default:
 		g_assert_not_reached ();
 	}
@@ -553,31 +563,31 @@ static gboolean rygel_item_creator_real_run_co (RygelItemCreatorRunData* data) {
 #line 60 "rygel-item-creator.vala"
 			rygel_item_creator_parse_args (data->self, NULL, NULL);
 #line 62 "rygel-item-creator.vala"
-			g_signal_connect_object (data->self->priv->didl_parser, "item-available", (GCallback) __lambda6__gupnp_didl_lite_parser_item_available, data->self, 0);
+			g_signal_connect_object (data->self->priv->didl_parser, "item-available", (GCallback) __lambda7__gupnp_didl_lite_parser_item_available, data->self, 0);
 #line 65 "rygel-item-creator.vala"
 			gupnp_didl_lite_parser_parse_didl (data->self->priv->didl_parser, data->self->elements, &data->_inner_error_);
-#line 560 "rygel-item-creator.c"
+#line 570 "rygel-item-creator.c"
 			if (data->_inner_error_ != NULL) {
-				goto __catch54_g_error;
+				goto __catch52_g_error;
 			}
 #line 66 "rygel-item-creator.vala"
 			if (data->self->didl_item == NULL) {
-#line 566 "rygel-item-creator.c"
+#line 576 "rygel-item-creator.c"
 				data->message = g_strdup (_ ("No items in DIDL-Lite from client: '%s'"));
 				data->_inner_error_ = g_error_new (RYGEL_ITEM_CREATOR_ERROR, RYGEL_ITEM_CREATOR_ERROR_PARSE, data->message, data->self->elements);
 				{
 					_g_free0 (data->message);
-					goto __catch54_g_error;
+					goto __catch52_g_error;
 				}
 				_g_free0 (data->message);
 			}
-			data->_state_ = 43;
+			data->_state_ = 41;
 			rygel_item_creator_fetch_container (data->self, rygel_item_creator_run_ready, data);
 			return FALSE;
-			_state_43:
+			_state_41:
 			data->container = rygel_item_creator_fetch_container_finish (data->self, data->_res_, &data->_inner_error_);
 			if (data->_inner_error_ != NULL) {
-				goto __catch54_g_error;
+				goto __catch52_g_error;
 			}
 #line 74 "rygel-item-creator.vala"
 			data->self->item = (data->_tmp0_ = rygel_media_item_new (gupnp_didl_lite_object_get_id ((GUPnPDIDLLiteObject*) data->self->didl_item), data->container, gupnp_didl_lite_object_get_title ((GUPnPDIDLLiteObject*) data->self->didl_item), gupnp_didl_lite_object_get_upnp_class ((GUPnPDIDLLiteObject*) data->self->didl_item)), _g_object_unref0 (data->self->item), data->_tmp0_);
@@ -585,43 +595,43 @@ static gboolean rygel_item_creator_real_run_co (RygelItemCreatorRunData* data) {
 			data->self->item->mime_type = (data->_tmp1_ = rygel_item_creator_get_generic_mime_type (data->self), _g_free0 (data->self->item->mime_type), data->_tmp1_);
 #line 79 "rygel-item-creator.vala"
 			data->self->item->place_holder = TRUE;
-#line 589 "rygel-item-creator.c"
-			data->_state_ = 44;
+#line 599 "rygel-item-creator.c"
+			data->_state_ = 42;
 			rygel_media_container_add_item (data->container, data->self->item, rygel_state_machine_get_cancellable ((RygelStateMachine*) data->self), rygel_item_creator_run_ready, data);
 			return FALSE;
-			_state_44:
+			_state_42:
 #line 81 "rygel-item-creator.vala"
 			rygel_media_container_add_item_finish (data->container, data->_res_, &data->_inner_error_);
-#line 596 "rygel-item-creator.c"
+#line 606 "rygel-item-creator.c"
 			if (data->_inner_error_ != NULL) {
 				_g_object_unref0 (data->container);
-				goto __catch54_g_error;
+				goto __catch52_g_error;
 			}
 #line 82 "rygel-item-creator.vala"
 			rygel_didl_lite_writer_serialize (data->self->priv->didl_writer, (RygelMediaObject*) data->self->item, &data->_inner_error_);
-#line 603 "rygel-item-creator.c"
+#line 613 "rygel-item-creator.c"
 			if (data->_inner_error_ != NULL) {
 				_g_object_unref0 (data->container);
-				goto __catch54_g_error;
+				goto __catch52_g_error;
 			}
 #line 85 "rygel-item-creator.vala"
 			rygel_item_creator_conclude (data->self);
-#line 610 "rygel-item-creator.c"
+#line 620 "rygel-item-creator.c"
 			_g_object_unref0 (data->container);
 		}
-		goto __finally54;
-		__catch54_g_error:
+		goto __finally52;
+		__catch52_g_error:
 		{
 			data->err = data->_inner_error_;
 			data->_inner_error_ = NULL;
 			{
 #line 87 "rygel-item-creator.vala"
 				rygel_item_creator_handle_error (data->self, data->err);
-#line 621 "rygel-item-creator.c"
+#line 631 "rygel-item-creator.c"
 				_g_error_free0 (data->err);
 			}
 		}
-		__finally54:
+		__finally52:
 		if (data->_inner_error_ != NULL) {
 			g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, data->_inner_error_->message, g_quark_to_string (data->_inner_error_->domain), data->_inner_error_->code);
 			g_clear_error (&data->_inner_error_);
@@ -688,7 +698,7 @@ static gboolean rygel_item_creator_parse_args_co (RygelItemCreatorParseArgsData*
 		gupnp_service_action_get (data->self->priv->action, "ContainerID", G_TYPE_STRING, &data->self->container_id, "Elements", G_TYPE_STRING, &data->self->elements, NULL);
 #line 96 "rygel-item-creator.vala"
 		if (data->self->elements == NULL) {
-#line 692 "rygel-item-creator.c"
+#line 702 "rygel-item-creator.c"
 			data->_inner_error_ = g_error_new_literal (RYGEL_CONTENT_DIRECTORY_ERROR, RYGEL_CONTENT_DIRECTORY_ERROR_BAD_METADATA, _ ("'Elements' argument missing."));
 			{
 				g_simple_async_result_set_from_error (data->_async_result, data->_inner_error_);
@@ -706,7 +716,7 @@ static gboolean rygel_item_creator_parse_args_co (RygelItemCreatorParseArgsData*
 		} else {
 #line 99 "rygel-item-creator.vala"
 			if (g_pattern_match_string (rygel_item_creator_comment_pattern, data->self->elements)) {
-#line 710 "rygel-item-creator.c"
+#line 720 "rygel-item-creator.c"
 				data->_inner_error_ = g_error_new_literal (RYGEL_CONTENT_DIRECTORY_ERROR, RYGEL_CONTENT_DIRECTORY_ERROR_BAD_METADATA, _ ("Comments not allowed in XML"));
 				{
 					g_simple_async_result_set_from_error (data->_async_result, data->_inner_error_);
@@ -725,7 +735,7 @@ static gboolean rygel_item_creator_parse_args_co (RygelItemCreatorParseArgsData*
 		}
 #line 104 "rygel-item-creator.vala"
 		if (data->self->container_id == NULL) {
-#line 729 "rygel-item-creator.c"
+#line 739 "rygel-item-creator.c"
 			data->_inner_error_ = g_error_new_literal (RYGEL_CONTENT_DIRECTORY_ERROR, RYGEL_CONTENT_DIRECTORY_ERROR_NO_SUCH_OBJECT, _ ("No such object"));
 			{
 				g_simple_async_result_set_from_error (data->_async_result, data->_inner_error_);
@@ -798,10 +808,10 @@ static gboolean rygel_item_creator_fetch_container_co (RygelItemCreatorFetchCont
 	switch (data->_state_) {
 		case 0:
 		goto _state_0;
-		case 45:
-		goto _state_45;
-		case 46:
-		goto _state_46;
+		case 43:
+		goto _state_43;
+		case 44:
+		goto _state_44;
 		default:
 		g_assert_not_reached ();
 	}
@@ -810,7 +820,7 @@ static gboolean rygel_item_creator_fetch_container_co (RygelItemCreatorFetchCont
 		data->media_object = NULL;
 #line 114 "rygel-item-creator.vala"
 		if (_vala_strcmp0 (data->self->container_id, "DLNA.ORG_AnyContainer") == 0) {
-#line 814 "rygel-item-creator.c"
+#line 824 "rygel-item-creator.c"
 			data->expression = rygel_relational_expression_new ();
 #line 116 "rygel-item-creator.vala"
 			((RygelSearchExpression*) data->expression)->op = GINT_TO_POINTER (GUPNP_SEARCH_CRITERIA_OP_DERIVED_FROM);
@@ -818,11 +828,11 @@ static gboolean rygel_item_creator_fetch_container_co (RygelItemCreatorFetchCont
 			((RygelSearchExpression*) data->expression)->operand1 = (data->_tmp0_ = g_strdup ("upnp:createClass"), _g_free0 (((RygelSearchExpression*) data->expression)->operand1), data->_tmp0_);
 #line 118 "rygel-item-creator.vala"
 			((RygelSearchExpression*) data->expression)->operand2 = (data->_tmp1_ = g_strdup (gupnp_didl_lite_object_get_upnp_class ((GUPnPDIDLLiteObject*) data->self->didl_item)), _g_free0 (((RygelSearchExpression*) data->expression)->operand2), data->_tmp1_);
-#line 822 "rygel-item-creator.c"
-			data->_state_ = 45;
+#line 832 "rygel-item-creator.c"
+			data->_state_ = 43;
 			rygel_media_container_search (data->self->priv->content_dir->root_container, (RygelSearchExpression*) data->expression, (guint) 0, (guint) 1, rygel_state_machine_get_cancellable ((RygelStateMachine*) data->self), rygel_item_creator_fetch_container_ready, data);
 			return FALSE;
-			_state_45:
+			_state_43:
 			data->_result_ = rygel_media_container_search_finish (data->self->priv->content_dir->root_container, data->_res_, &data->total_matches, &data->_inner_error_);
 			if (data->_inner_error_ != NULL) {
 				g_simple_async_result_set_from_error (data->_async_result, data->_inner_error_);
@@ -842,18 +852,18 @@ static gboolean rygel_item_creator_fetch_container_co (RygelItemCreatorFetchCont
 #line 128 "rygel-item-creator.vala"
 			if (gee_collection_get_size ((GeeCollection*) data->_result_) > 0) {
 #line 129 "rygel-item-creator.vala"
-				data->media_object = (data->_tmp2_ = (RygelMediaObject*) gee_list_get (data->_result_, 0), _g_object_unref0 (data->media_object), data->_tmp2_);
+				data->media_object = (data->_tmp2_ = (RygelMediaObject*) gee_abstract_list_get ((GeeAbstractList*) data->_result_, 0), _g_object_unref0 (data->media_object), data->_tmp2_);
 #line 130 "rygel-item-creator.vala"
 				data->self->container_id = (data->_tmp3_ = g_strdup (data->media_object->id), _g_free0 (data->self->container_id), data->_tmp3_);
-#line 849 "rygel-item-creator.c"
+#line 859 "rygel-item-creator.c"
 			}
-			_rygel_search_expression_unref0 (data->expression);
 			_g_object_unref0 (data->_result_);
+			_rygel_search_expression_unref0 (data->expression);
 		} else {
-			data->_state_ = 46;
+			data->_state_ = 44;
 			rygel_media_container_find_object (data->self->priv->content_dir->root_container, data->self->container_id, rygel_state_machine_get_cancellable ((RygelStateMachine*) data->self), rygel_item_creator_fetch_container_ready, data);
 			return FALSE;
-			_state_46:
+			_state_44:
 			data->_tmp4_ = rygel_media_container_find_object_finish (data->self->priv->content_dir->root_container, data->_res_, &data->_inner_error_);
 			if (data->_inner_error_ != NULL) {
 				g_simple_async_result_set_from_error (data->_async_result, data->_inner_error_);
@@ -871,21 +881,21 @@ static gboolean rygel_item_creator_fetch_container_co (RygelItemCreatorFetchCont
 			}
 #line 133 "rygel-item-creator.vala"
 			data->media_object = (data->_tmp5_ = data->_tmp4_, _g_object_unref0 (data->media_object), data->_tmp5_);
-#line 875 "rygel-item-creator.c"
+#line 885 "rygel-item-creator.c"
 		}
 #line 138 "rygel-item-creator.vala"
 		if (data->media_object == NULL) {
 #line 138 "rygel-item-creator.vala"
 			data->_tmp6_ = TRUE;
-#line 881 "rygel-item-creator.c"
+#line 891 "rygel-item-creator.c"
 		} else {
 #line 138 "rygel-item-creator.vala"
 			data->_tmp6_ = !RYGEL_IS_MEDIA_CONTAINER (data->media_object);
-#line 885 "rygel-item-creator.c"
+#line 895 "rygel-item-creator.c"
 		}
 #line 138 "rygel-item-creator.vala"
 		if (data->_tmp6_) {
-#line 889 "rygel-item-creator.c"
+#line 899 "rygel-item-creator.c"
 			data->_inner_error_ = g_error_new_literal (RYGEL_CONTENT_DIRECTORY_ERROR, RYGEL_CONTENT_DIRECTORY_ERROR_NO_SUCH_OBJECT, _ ("No such object"));
 			{
 				g_simple_async_result_set_from_error (data->_async_result, data->_inner_error_);
@@ -929,7 +939,7 @@ static gboolean rygel_item_creator_fetch_container_co (RygelItemCreatorFetchCont
 
 #line 146 "rygel-item-creator.vala"
 static void rygel_item_creator_conclude (RygelItemCreator* self) {
-#line 933 "rygel-item-creator.c"
+#line 943 "rygel-item-creator.c"
 	char* didl;
 #line 146 "rygel-item-creator.vala"
 	g_return_if_fail (self != NULL);
@@ -941,7 +951,7 @@ static void rygel_item_creator_conclude (RygelItemCreator* self) {
 	gupnp_service_action_return (self->priv->action);
 #line 155 "rygel-item-creator.vala"
 	g_signal_emit_by_name ((RygelStateMachine*) self, "completed");
-#line 945 "rygel-item-creator.c"
+#line 955 "rygel-item-creator.c"
 	_g_free0 (didl);
 }
 
@@ -954,29 +964,29 @@ static void rygel_item_creator_handle_error (RygelItemCreator* self, GError* _er
 	if (_error_->domain == RYGEL_CONTENT_DIRECTORY_ERROR) {
 #line 160 "rygel-item-creator.vala"
 		gupnp_service_action_return_error (self->priv->action, (guint) _error_->code, _error_->message);
-#line 958 "rygel-item-creator.c"
+#line 968 "rygel-item-creator.c"
 	} else {
 #line 162 "rygel-item-creator.vala"
 		gupnp_service_action_return_error (self->priv->action, (guint) 701, _error_->message);
-#line 962 "rygel-item-creator.c"
+#line 972 "rygel-item-creator.c"
 	}
 #line 165 "rygel-item-creator.vala"
 	g_warning (_ ("Failed to create item under '%s': %s"), self->container_id, _error_->message);
 #line 169 "rygel-item-creator.vala"
 	g_signal_emit_by_name ((RygelStateMachine*) self, "completed");
-#line 968 "rygel-item-creator.c"
+#line 978 "rygel-item-creator.c"
 }
 
 
 #line 172 "rygel-item-creator.vala"
 static char* rygel_item_creator_get_generic_mime_type (RygelItemCreator* self) {
-#line 974 "rygel-item-creator.c"
+#line 984 "rygel-item-creator.c"
 	char* result = NULL;
 	GQuark _tmp1_;
 	const char* _tmp0_;
 #line 172 "rygel-item-creator.vala"
 	g_return_val_if_fail (self != NULL, NULL);
-#line 980 "rygel-item-creator.c"
+#line 990 "rygel-item-creator.c"
 	_tmp0_ = ((RygelMediaObject*) self->item)->upnp_class;
 	_tmp1_ = (NULL == _tmp0_) ? 0 : g_quark_from_string (_tmp0_);
 	if (_tmp1_ == g_quark_from_string (RYGEL_MEDIA_ITEM_IMAGE_CLASS))
@@ -986,7 +996,7 @@ static char* rygel_item_creator_get_generic_mime_type (RygelItemCreator* self) {
 			result = g_strdup ("image");
 #line 175 "rygel-item-creator.vala"
 			return result;
-#line 990 "rygel-item-creator.c"
+#line 1000 "rygel-item-creator.c"
 		}
 	} else if (_tmp1_ == g_quark_from_string (RYGEL_MEDIA_ITEM_VIDEO_CLASS))
 	switch (0) {
@@ -995,7 +1005,7 @@ static char* rygel_item_creator_get_generic_mime_type (RygelItemCreator* self) {
 			result = g_strdup ("video");
 #line 177 "rygel-item-creator.vala"
 			return result;
-#line 999 "rygel-item-creator.c"
+#line 1009 "rygel-item-creator.c"
 		}
 	} else
 	switch (0) {
@@ -1004,7 +1014,7 @@ static char* rygel_item_creator_get_generic_mime_type (RygelItemCreator* self) {
 			result = g_strdup ("audio");
 #line 180 "rygel-item-creator.vala"
 			return result;
-#line 1008 "rygel-item-creator.c"
+#line 1018 "rygel-item-creator.c"
 		}
 	}
 }
@@ -1017,7 +1027,7 @@ static GCancellable* rygel_item_creator_real_get_cancellable (RygelStateMachine*
 	result = self->priv->_cancellable;
 #line 47 "rygel-item-creator.vala"
 	return result;
-#line 1021 "rygel-item-creator.c"
+#line 1031 "rygel-item-creator.c"
 }
 
 

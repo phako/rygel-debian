@@ -93,8 +93,8 @@ GParamSpec* rygel_param_spec_search_expression (const gchar* name, const gchar* 
 void rygel_value_set_search_expression (GValue* value, gpointer v_object);
 void rygel_value_take_search_expression (GValue* value, gpointer v_object);
 gpointer rygel_value_get_search_expression (const GValue* value);
-GType rygel_search_expression_get_type (void);
-GType rygel_media_object_get_type (void);
+GType rygel_search_expression_get_type (void) G_GNUC_CONST;
+GType rygel_media_object_get_type (void) G_GNUC_CONST;
 #define RYGEL_SEARCH_EXPRESSION_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), RYGEL_TYPE_SEARCH_EXPRESSION, RygelSearchExpressionPrivate))
 enum  {
 	RYGEL_SEARCH_EXPRESSION_DUMMY_PROPERTY

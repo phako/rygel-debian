@@ -79,7 +79,7 @@ GParamSpec* rygel_param_spec_gst_utils (const gchar* name, const gchar* nick, co
 void rygel_value_set_gst_utils (GValue* value, gpointer v_object);
 void rygel_value_take_gst_utils (GValue* value, gpointer v_object);
 gpointer rygel_value_get_gst_utils (const GValue* value);
-GType rygel_gst_utils_get_type (void);
+GType rygel_gst_utils_get_type (void) G_GNUC_CONST;
 enum  {
 	RYGEL_GST_UTILS_DUMMY_PROPERTY
 };
@@ -266,8 +266,8 @@ static GstElement* rygel_gst_utils_get_best_depay (GList* features, GstCaps* cap
 					relevant_factories = g_list_append (relevant_factories, _gst_object_ref0 (factory));
 #line 268 "rygel-gst-utils.c"
 				}
-				_gst_object_unref0 (feature);
 				_gst_object_unref0 (factory);
+				_gst_object_unref0 (feature);
 			}
 		}
 	}
@@ -286,25 +286,25 @@ static GstElement* rygel_gst_utils_get_best_depay (GList* features, GstCaps* cap
 	factory = _gst_object_ref0 ((GstElementFactory*) relevant_factories->data);
 #line 288 "rygel-gst-utils.c"
 	result = gst_element_factory_make (gst_plugin_feature_get_name ((GstPluginFeature*) factory), NULL);
-	__g_list_free_gst_object_unref0 (relevant_factories);
 	_gst_object_unref0 (factory);
+	__g_list_free_gst_object_unref0 (relevant_factories);
 #line 90 "rygel-gst-utils.vala"
 	return result;
 #line 294 "rygel-gst-utils.c"
 }
 
 
-#line 1144 "glib-2.0.vapi"
+#line 1152 "glib-2.0.vapi"
 static gboolean string_contains (const char* self, const char* needle) {
 #line 300 "rygel-gst-utils.c"
 	gboolean result = FALSE;
-#line 1144 "glib-2.0.vapi"
+#line 1152 "glib-2.0.vapi"
 	g_return_val_if_fail (self != NULL, FALSE);
-#line 1144 "glib-2.0.vapi"
+#line 1152 "glib-2.0.vapi"
 	g_return_val_if_fail (needle != NULL, FALSE);
 #line 306 "rygel-gst-utils.c"
 	result = strstr (self, needle) != NULL;
-#line 1145 "glib-2.0.vapi"
+#line 1153 "glib-2.0.vapi"
 	return result;
 #line 310 "rygel-gst-utils.c"
 }
@@ -348,8 +348,8 @@ static gint rygel_gst_utils_compare_factories (void* a, void* b) {
 	factory_b = _gst_object_ref0 (GST_ELEMENT_FACTORY (b));
 #line 350 "rygel-gst-utils.c"
 	result = (gint) (gst_plugin_feature_get_rank ((GstPluginFeature*) factory_b) - gst_plugin_feature_get_rank ((GstPluginFeature*) factory_a));
-	_gst_object_unref0 (factory_a);
 	_gst_object_unref0 (factory_b);
+	_gst_object_unref0 (factory_a);
 #line 107 "rygel-gst-utils.vala"
 	return result;
 #line 356 "rygel-gst-utils.c"

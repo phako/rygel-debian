@@ -183,6 +183,7 @@ struct _RygelMediaObject {
 
 struct _RygelMediaObjectClass {
 	GObjectClass parent_class;
+	gint (*compare_by_property) (RygelMediaObject* self, RygelMediaObject* media_object, const char* property);
 };
 
 struct _RygelMediaItem {
@@ -224,11 +225,11 @@ typedef enum  {
 
 static gpointer rygel_wma_transcoder_parent_class = NULL;
 
-GType rygel_transcoder_get_type (void);
-GType rygel_media_object_get_type (void);
-GType rygel_media_item_get_type (void);
-GType rygel_transcode_manager_get_type (void);
-GType rygel_wma_transcoder_get_type (void);
+GType rygel_transcoder_get_type (void) G_GNUC_CONST;
+GType rygel_media_object_get_type (void) G_GNUC_CONST;
+GType rygel_media_item_get_type (void) G_GNUC_CONST;
+GType rygel_transcode_manager_get_type (void) G_GNUC_CONST;
+GType rygel_wma_transcoder_get_type (void) G_GNUC_CONST;
 enum  {
 	RYGEL_WMA_TRANSCODER_DUMMY_PROPERTY
 };
@@ -240,11 +241,11 @@ RygelWMATranscoder* rygel_wma_transcoder_new (void);
 RygelWMATranscoder* rygel_wma_transcoder_construct (GType object_type);
 RygelWMATranscoderBin* rygel_wma_transcoder_bin_new (RygelMediaItem* item, GstElement* src, RygelWMATranscoder* transcoder, GError** error);
 RygelWMATranscoderBin* rygel_wma_transcoder_bin_construct (GType object_type, RygelMediaItem* item, GstElement* src, RygelWMATranscoder* transcoder, GError** error);
-GType rygel_wma_transcoder_bin_get_type (void);
+GType rygel_wma_transcoder_bin_get_type (void) G_GNUC_CONST;
 static GstElement* rygel_wma_transcoder_real_create_source (RygelTranscoder* base, RygelMediaItem* item, GstElement* src, GError** error);
 GUPnPDIDLLiteResource* rygel_transcoder_add_resource (RygelTranscoder* self, GUPnPDIDLLiteItem* didl_item, RygelMediaItem* item, RygelTranscodeManager* manager, GError** error);
 static GUPnPDIDLLiteResource* rygel_wma_transcoder_real_add_resource (RygelTranscoder* base, GUPnPDIDLLiteItem* didl_item, RygelMediaItem* item, RygelTranscodeManager* manager, GError** error);
-GType rygel_media_container_get_type (void);
+GType rygel_media_container_get_type (void) G_GNUC_CONST;
 #define RYGEL_MEDIA_ITEM_IMAGE_CLASS "object.item.imageItem"
 gpointer rygel_icon_info_ref (gpointer instance);
 void rygel_icon_info_unref (gpointer instance);
@@ -252,20 +253,20 @@ GParamSpec* rygel_param_spec_icon_info (const gchar* name, const gchar* nick, co
 void rygel_value_set_icon_info (GValue* value, gpointer v_object);
 void rygel_value_take_icon_info (GValue* value, gpointer v_object);
 gpointer rygel_value_get_icon_info (const GValue* value);
-GType rygel_icon_info_get_type (void);
-GType rygel_thumbnail_get_type (void);
+GType rygel_icon_info_get_type (void) G_GNUC_CONST;
+GType rygel_thumbnail_get_type (void) G_GNUC_CONST;
 gpointer rygel_subtitle_ref (gpointer instance);
 void rygel_subtitle_unref (gpointer instance);
 GParamSpec* rygel_param_spec_subtitle (const gchar* name, const gchar* nick, const gchar* blurb, GType object_type, GParamFlags flags);
 void rygel_value_set_subtitle (GValue* value, gpointer v_object);
 void rygel_value_take_subtitle (GValue* value, gpointer v_object);
 gpointer rygel_value_get_subtitle (const GValue* value);
-GType rygel_subtitle_get_type (void);
+GType rygel_subtitle_get_type (void) G_GNUC_CONST;
 static guint rygel_wma_transcoder_real_get_distance (RygelTranscoder* base, RygelMediaItem* item);
-GType endianness_get_type (void);
+GType endianness_get_type (void) G_GNUC_CONST;
 RygelL16Transcoder* rygel_l16_transcoder_new (Endianness endianness);
 RygelL16Transcoder* rygel_l16_transcoder_construct (GType object_type, Endianness endianness);
-GType rygel_l16_transcoder_get_type (void);
+GType rygel_l16_transcoder_get_type (void) G_GNUC_CONST;
 GstElement* rygel_l16_transcoder_create_encoder (RygelL16Transcoder* self, RygelMediaItem* item, const char* src_pad_name, const char* sink_pad_name, GError** error);
 GstElement* rygel_gst_utils_create_element (const char* factoryname, const char* name, GError** error);
 static inline void _dynamic_set_bitrate7 (GstElement* obj, gint value);
@@ -275,11 +276,11 @@ GstElement* rygel_wma_transcoder_create_encoder (RygelWMATranscoder* self, Rygel
 
 #line 30 "rygel-wma-transcoder.vala"
 RygelWMATranscoder* rygel_wma_transcoder_construct (GType object_type) {
-#line 279 "rygel-wma-transcoder.c"
+#line 280 "rygel-wma-transcoder.c"
 	RygelWMATranscoder * self;
 #line 31 "rygel-wma-transcoder.vala"
 	self = (RygelWMATranscoder*) rygel_transcoder_construct (object_type, "audio/x-wma", "WMA", RYGEL_MEDIA_ITEM_AUDIO_CLASS);
-#line 283 "rygel-wma-transcoder.c"
+#line 284 "rygel-wma-transcoder.c"
 	return self;
 }
 
@@ -288,13 +289,13 @@ RygelWMATranscoder* rygel_wma_transcoder_construct (GType object_type) {
 RygelWMATranscoder* rygel_wma_transcoder_new (void) {
 #line 30 "rygel-wma-transcoder.vala"
 	return rygel_wma_transcoder_construct (RYGEL_TYPE_WMA_TRANSCODER);
-#line 292 "rygel-wma-transcoder.c"
+#line 293 "rygel-wma-transcoder.c"
 }
 
 
 #line 34 "rygel-wma-transcoder.vala"
 static GstElement* rygel_wma_transcoder_real_create_source (RygelTranscoder* base, RygelMediaItem* item, GstElement* src, GError** error) {
-#line 298 "rygel-wma-transcoder.c"
+#line 299 "rygel-wma-transcoder.c"
 	RygelWMATranscoder * self;
 	GstElement* result = NULL;
 	GError * _inner_error_;
@@ -304,11 +305,11 @@ static GstElement* rygel_wma_transcoder_real_create_source (RygelTranscoder* bas
 	g_return_val_if_fail (item != NULL, NULL);
 #line 34 "rygel-wma-transcoder.vala"
 	g_return_val_if_fail (src != NULL, NULL);
-#line 308 "rygel-wma-transcoder.c"
+#line 309 "rygel-wma-transcoder.c"
 	_inner_error_ = NULL;
 #line 37 "rygel-wma-transcoder.vala"
 	_tmp0_ = rygel_wma_transcoder_bin_new (item, src, self, &_inner_error_);
-#line 312 "rygel-wma-transcoder.c"
+#line 313 "rygel-wma-transcoder.c"
 	if (_inner_error_ != NULL) {
 		g_propagate_error (error, _inner_error_);
 		return NULL;
@@ -316,13 +317,13 @@ static GstElement* rygel_wma_transcoder_real_create_source (RygelTranscoder* bas
 	result = (GstElement*) _tmp0_;
 #line 37 "rygel-wma-transcoder.vala"
 	return result;
-#line 320 "rygel-wma-transcoder.c"
+#line 321 "rygel-wma-transcoder.c"
 }
 
 
 #line 40 "rygel-wma-transcoder.vala"
 static GUPnPDIDLLiteResource* rygel_wma_transcoder_real_add_resource (RygelTranscoder* base, GUPnPDIDLLiteItem* didl_item, RygelMediaItem* item, RygelTranscodeManager* manager, GError** error) {
-#line 326 "rygel-wma-transcoder.c"
+#line 327 "rygel-wma-transcoder.c"
 	RygelWMATranscoder * self;
 	GUPnPDIDLLiteResource* result = NULL;
 	GError * _inner_error_;
@@ -334,37 +335,37 @@ static GUPnPDIDLLiteResource* rygel_wma_transcoder_real_add_resource (RygelTrans
 	g_return_val_if_fail (item != NULL, NULL);
 #line 40 "rygel-wma-transcoder.vala"
 	g_return_val_if_fail (manager != NULL, NULL);
-#line 338 "rygel-wma-transcoder.c"
+#line 339 "rygel-wma-transcoder.c"
 	_inner_error_ = NULL;
 #line 44 "rygel-wma-transcoder.vala"
 	resource = RYGEL_TRANSCODER_CLASS (rygel_wma_transcoder_parent_class)->add_resource (RYGEL_TRANSCODER (self), didl_item, item, manager, &_inner_error_);
-#line 342 "rygel-wma-transcoder.c"
+#line 343 "rygel-wma-transcoder.c"
 	if (_inner_error_ != NULL) {
 		g_propagate_error (error, _inner_error_);
 		return NULL;
 	}
 #line 45 "rygel-wma-transcoder.vala"
 	if (resource == NULL) {
-#line 349 "rygel-wma-transcoder.c"
+#line 350 "rygel-wma-transcoder.c"
 		result = NULL;
 		_g_object_unref0 (resource);
 #line 46 "rygel-wma-transcoder.vala"
 		return result;
-#line 354 "rygel-wma-transcoder.c"
+#line 355 "rygel-wma-transcoder.c"
 	}
 #line 49 "rygel-wma-transcoder.vala"
 	gupnp_didl_lite_resource_set_bitrate (resource, (RYGEL_WMA_TRANSCODER_BITRATE * 1000) / 8);
-#line 358 "rygel-wma-transcoder.c"
+#line 359 "rygel-wma-transcoder.c"
 	result = resource;
 #line 51 "rygel-wma-transcoder.vala"
 	return result;
-#line 362 "rygel-wma-transcoder.c"
+#line 363 "rygel-wma-transcoder.c"
 }
 
 
 #line 54 "rygel-wma-transcoder.vala"
 static guint rygel_wma_transcoder_real_get_distance (RygelTranscoder* base, RygelMediaItem* item) {
-#line 368 "rygel-wma-transcoder.c"
+#line 369 "rygel-wma-transcoder.c"
 	RygelWMATranscoder * self;
 	guint result = 0U;
 	guint distance = 0U;
@@ -373,11 +374,11 @@ static guint rygel_wma_transcoder_real_get_distance (RygelTranscoder* base, Ryge
 	g_return_val_if_fail (item != NULL, 0U);
 #line 55 "rygel-wma-transcoder.vala"
 	if (g_str_has_prefix (((RygelMediaObject*) item)->upnp_class, RYGEL_MEDIA_ITEM_IMAGE_CLASS)) {
-#line 377 "rygel-wma-transcoder.c"
+#line 378 "rygel-wma-transcoder.c"
 		result = G_MAXUINT;
 #line 56 "rygel-wma-transcoder.vala"
 		return result;
-#line 381 "rygel-wma-transcoder.c"
+#line 382 "rygel-wma-transcoder.c"
 	}
 #line 61 "rygel-wma-transcoder.vala"
 	if (g_str_has_prefix (((RygelMediaObject*) item)->upnp_class, RYGEL_MEDIA_ITEM_AUDIO_CLASS)) {
@@ -387,17 +388,17 @@ static guint rygel_wma_transcoder_real_get_distance (RygelTranscoder* base, Ryge
 		if (item->bitrate > 0) {
 #line 65 "rygel-wma-transcoder.vala"
 			distance = distance + ((guint) abs (item->bitrate - RYGEL_WMA_TRANSCODER_BITRATE));
-#line 391 "rygel-wma-transcoder.c"
+#line 392 "rygel-wma-transcoder.c"
 		}
 	} else {
 #line 68 "rygel-wma-transcoder.vala"
 		distance = G_MAXUINT / 2;
-#line 396 "rygel-wma-transcoder.c"
+#line 397 "rygel-wma-transcoder.c"
 	}
 	result = distance;
 #line 71 "rygel-wma-transcoder.vala"
 	return result;
-#line 401 "rygel-wma-transcoder.c"
+#line 402 "rygel-wma-transcoder.c"
 }
 
 
@@ -413,7 +414,7 @@ static gpointer _gst_object_ref0 (gpointer self) {
 
 #line 74 "rygel-wma-transcoder.vala"
 GstElement* rygel_wma_transcoder_create_encoder (RygelWMATranscoder* self, RygelMediaItem* item, const char* src_pad_name, const char* sink_pad_name, GError** error) {
-#line 417 "rygel-wma-transcoder.c"
+#line 418 "rygel-wma-transcoder.c"
 	GstElement* result = NULL;
 	GError * _inner_error_;
 	RygelL16Transcoder* l16_transcoder;
@@ -428,13 +429,13 @@ GstElement* rygel_wma_transcoder_create_encoder (RygelWMATranscoder* self, Rygel
 	g_return_val_if_fail (self != NULL, NULL);
 #line 74 "rygel-wma-transcoder.vala"
 	g_return_val_if_fail (item != NULL, NULL);
-#line 432 "rygel-wma-transcoder.c"
+#line 433 "rygel-wma-transcoder.c"
 	_inner_error_ = NULL;
 #line 78 "rygel-wma-transcoder.vala"
 	l16_transcoder = rygel_l16_transcoder_new (ENDIANNESS_LITTLE);
 #line 79 "rygel-wma-transcoder.vala"
 	convert = rygel_l16_transcoder_create_encoder (l16_transcoder, item, NULL, RYGEL_WMA_TRANSCODER_CONVERT_SINK_PAD, &_inner_error_);
-#line 438 "rygel-wma-transcoder.c"
+#line 439 "rygel-wma-transcoder.c"
 	if (_inner_error_ != NULL) {
 		g_propagate_error (error, _inner_error_);
 		_g_object_unref0 (l16_transcoder);
@@ -442,11 +443,11 @@ GstElement* rygel_wma_transcoder_create_encoder (RygelWMATranscoder* self, Rygel
 	}
 #line 84 "rygel-wma-transcoder.vala"
 	encoder = rygel_gst_utils_create_element ("ffenc_wmav2", "ffenc_wmav2", &_inner_error_);
-#line 446 "rygel-wma-transcoder.c"
+#line 447 "rygel-wma-transcoder.c"
 	if (_inner_error_ != NULL) {
 		g_propagate_error (error, _inner_error_);
-		_g_object_unref0 (l16_transcoder);
 		_gst_object_unref0 (convert);
+		_g_object_unref0 (l16_transcoder);
 		return NULL;
 	}
 #line 86 "rygel-wma-transcoder.vala"
@@ -469,16 +470,16 @@ GstElement* rygel_wma_transcoder_create_encoder (RygelWMATranscoder* self, Rygel
 	ghost = (_tmp1_ = (GstGhostPad*) gst_ghost_pad_new (src_pad_name, pad), _gst_object_unref0 (ghost), _tmp1_);
 #line 98 "rygel-wma-transcoder.vala"
 	gst_element_add_pad ((GstElement*) bin, _gst_object_ref0 ((GstPad*) ghost));
-#line 473 "rygel-wma-transcoder.c"
+#line 474 "rygel-wma-transcoder.c"
 	result = (GstElement*) bin;
-	_g_object_unref0 (l16_transcoder);
-	_gst_object_unref0 (convert);
-	_gst_object_unref0 (encoder);
-	_gst_object_unref0 (pad);
 	_gst_object_unref0 (ghost);
+	_gst_object_unref0 (pad);
+	_gst_object_unref0 (encoder);
+	_gst_object_unref0 (convert);
+	_g_object_unref0 (l16_transcoder);
 #line 100 "rygel-wma-transcoder.vala"
 	return result;
-#line 482 "rygel-wma-transcoder.c"
+#line 483 "rygel-wma-transcoder.c"
 }
 
 

@@ -29,7 +29,6 @@ public class Rygel.MediaExport.RootContainer : Rygel.MediaExport.DBContainer {
     private HashMap<File, Harvester> harvester;
     private RecursiveFileMonitor monitor;
     private DBusService service;
-    private DynamicContainer dynamic_elements;
     private Gee.List<Harvester> harvester_trash;
 
     private static MediaContainer instance = null;
@@ -45,24 +44,9 @@ public class Rygel.MediaExport.RootContainer : Rygel.MediaExport.DBContainer {
             uris = new ArrayList<string> ();
         }
 
-        // either an error occured or the gconf key is not set
-        if (uris.size == 0) {
-            debug (_("Nothing configured, using XDG special folders"));
-            UserDirectory[] xdg_directories = { UserDirectory.MUSIC,
-                                                UserDirectory.PICTURES,
-                                                UserDirectory.VIDEOS };
-            foreach (var directory in xdg_directories) {
-                var uri = Environment.get_user_special_dir (directory);
-                if (uri != null) {
-                    uris.add (uri);
-                }
-            }
-        }
-
-        var dbus_uris = this.dynamic_elements.get_uris ();
-        if (dbus_uris != null) {
-            uris.add_all (dbus_uris);
-        }
+        try {
+            uris.add_all (this.media_db.get_flagged_uris ("DBUS"));
+        } catch (Error error) {}
 
         return uris;
     }
@@ -82,7 +66,7 @@ public class Rygel.MediaExport.RootContainer : Rygel.MediaExport.DBContainer {
 
     public void add_uri (string uri) {
         var file = File.new_for_commandline_arg (uri);
-        this.harvest (file, this.dynamic_elements);
+        this.harvest (file, this, "DBUS");
     }
 
     public void remove_uri (string uri) {
@@ -193,24 +177,25 @@ public class Rygel.MediaExport.RootContainer : Rygel.MediaExport.DBContainer {
     public override async MediaObject? find_object (string       id,
                                                     Cancellable? cancellable)
                                                     throws Error {
-        if (id.has_prefix (QueryContainer.PREFIX)) {
+        var object = yield base.find_object (id, cancellable);
+
+        if (object == null && id.has_prefix (QueryContainer.PREFIX)) {
             var container = new QueryContainer (this.media_db, id);
             container.parent = this;
 
             return container;
-        } else {
-            return yield base.find_object (id, cancellable);
         }
+
+        return object;
     }
 
-    public override async Gee.List<MediaObject>? search (
-                                        SearchExpression expression,
-                                        uint             offset,
-                                        uint             max_count,
-                                        out uint         total_matches,
-                                        Cancellable?     cancellable)
-                                        throws GLib.Error {
-        Gee.List<MediaObject> list;
+    public override async MediaObjects? search (SearchExpression expression,
+                                                uint             offset,
+                                                uint             max_count,
+                                                out uint         total_matches,
+                                                Cancellable?     cancellable)
+                                                throws GLib.Error {
+        MediaObjects list;
         MediaContainer query_container = null;
         string upnp_class = null;
 
@@ -249,9 +234,13 @@ public class Rygel.MediaExport.RootContainer : Rygel.MediaExport.DBContainer {
 
 
     public string[] get_dynamic_uris () {
-        var dynamic_uris = this.dynamic_elements.get_uris ();
+        try {
+            var uris = this.media_db.get_flagged_uris ("DBUS");
 
-        return dynamic_uris.to_array ();
+            return uris.to_array ();
+        } catch (Error error) { }
+
+        return new string[0];
     }
 
 
@@ -278,16 +267,11 @@ public class Rygel.MediaExport.RootContainer : Rygel.MediaExport.DBContainer {
             warning (_("Failed to create MediaExport DBus service: %s"),
                      err.message);
         }
-        this.dynamic_elements = new DynamicContainer (db, this);
 
         try {
             int64 timestamp;
             if (!this.media_db.exists ("0", out timestamp)) {
                 media_db.save_container (this);
-            }
-
-            if (!this.media_db.exists ("DynamicContainerId", out timestamp)) {
-                media_db.save_container (this.dynamic_elements);
             }
         } catch (Error error) { } // do nothing
 
@@ -341,10 +325,6 @@ public class Rygel.MediaExport.RootContainer : Rygel.MediaExport.DBContainer {
         }
 
         foreach (var id in ids) {
-            if (id == DynamicContainer.ID) {
-                continue;
-            }
-
             debug (_("ID %s no longer in config, deleting..."), id);
             try {
                 this.media_db.remove_by_id (id);
@@ -368,7 +348,9 @@ public class Rygel.MediaExport.RootContainer : Rygel.MediaExport.DBContainer {
         this.harvester_trash.remove (harvester);
     }
 
-    private void harvest (File file, MediaContainer parent = this) {
+    private void harvest (File           file,
+                          MediaContainer parent = this,
+                          string?        flag   = null) {
         if (this.extractor == null) {
             warning (_("No Metadata extractor available. Will not crawl"));
 
@@ -387,7 +369,8 @@ public class Rygel.MediaExport.RootContainer : Rygel.MediaExport.DBContainer {
         var harvester = new Harvester (parent,
                                        this.media_db,
                                        this.extractor,
-                                       this.monitor);
+                                       this.monitor,
+                                       flag);
         harvester.harvested.connect (this.on_file_harvested);
         this.harvester[file] = harvester;
         harvester.harvest (file);

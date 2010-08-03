@@ -213,19 +213,19 @@ GParamSpec* rygel_external_param_spec_plugin_factory (const gchar* name, const g
 void rygel_external_value_set_plugin_factory (GValue* value, gpointer v_object);
 void rygel_external_value_take_plugin_factory (GValue* value, gpointer v_object);
 gpointer rygel_external_value_get_plugin_factory (const GValue* value);
-GType rygel_external_plugin_factory_get_type (void);
+GType rygel_external_plugin_factory_get_type (void) G_GNUC_CONST;
 RygelExternalPluginFactory* rygel_external_plugin_factory_new (RygelPluginLoader* loader, GError** error);
 RygelExternalPluginFactory* rygel_external_plugin_factory_construct (GType object_type, RygelPluginLoader* loader, GError** error);
 void module_init (RygelPluginLoader* loader);
 FreeDesktopDBusObject* free_desktop_dbus_object_dbus_proxy_new (DBusGConnection* connection, const char* name, const char* path);
-GType free_desktop_dbus_object_get_type (void);
+GType free_desktop_dbus_object_get_type (void) G_GNUC_CONST;
 gpointer rygel_external_icon_factory_ref (gpointer instance);
 void rygel_external_icon_factory_unref (gpointer instance);
 GParamSpec* rygel_external_param_spec_icon_factory (const gchar* name, const gchar* nick, const gchar* blurb, GType object_type, GParamFlags flags);
 void rygel_external_value_set_icon_factory (GValue* value, gpointer v_object);
 void rygel_external_value_take_icon_factory (GValue* value, gpointer v_object);
 gpointer rygel_external_value_get_icon_factory (const GValue* value);
-GType rygel_external_icon_factory_get_type (void);
+GType rygel_external_icon_factory_get_type (void) G_GNUC_CONST;
 #define RYGEL_EXTERNAL_PLUGIN_FACTORY_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), RYGEL_EXTERNAL_TYPE_PLUGIN_FACTORY, RygelExternalPluginFactoryPrivate))
 enum  {
 	RYGEL_EXTERNAL_PLUGIN_FACTORY_DUMMY_PROPERTY
@@ -257,7 +257,7 @@ static gboolean rygel_external_plugin_factory_load_activatable_plugins_co (Rygel
 static void rygel_external_plugin_factory_load_plugin_data_free (gpointer _data);
 static void rygel_external_plugin_factory_load_plugin_ready (GObject* source_object, GAsyncResult* _res_, gpointer _user_data_);
 FreeDesktopProperties* free_desktop_properties_dbus_proxy_new (DBusGConnection* connection, const char* name, const char* path);
-GType free_desktop_properties_get_type (void);
+GType free_desktop_properties_get_type (void) G_GNUC_CONST;
 void free_desktop_properties_get_all (FreeDesktopProperties* self, const char* iface, GAsyncReadyCallback _callback_, gpointer _user_data_);
 GHashTable* free_desktop_properties_get_all_finish (FreeDesktopProperties* self, GAsyncResult* _res_, GError** error);
 void rygel_external_icon_factory_create (RygelExternalIconFactory* self, const char* service_name, GHashTable* container_props, GAsyncReadyCallback _callback_, gpointer _user_data_);
@@ -265,7 +265,7 @@ RygelIconInfo* rygel_external_icon_factory_create_finish (RygelExternalIconFacto
 static GValue* _g_value_dup (GValue* self);
 RygelExternalPlugin* rygel_external_plugin_new (const char* service_name, const char* title, guint child_count, gboolean searchable, const char* root_object, RygelIconInfo* icon);
 RygelExternalPlugin* rygel_external_plugin_construct (GType object_type, const char* service_name, const char* title, guint child_count, gboolean searchable, const char* root_object, RygelIconInfo* icon);
-GType rygel_external_plugin_get_type (void);
+GType rygel_external_plugin_get_type (void) G_GNUC_CONST;
 static gboolean rygel_external_plugin_factory_load_plugin_co (RygelExternalPluginFactoryLoadPluginData* data);
 static void rygel_external_plugin_factory_finalize (RygelExternalPluginFactory* obj);
 static void _vala_array_destroy (gpointer array, gint array_length, GDestroyNotify destroy_func);
@@ -349,7 +349,7 @@ RygelExternalPluginFactory* rygel_external_plugin_factory_construct (GType objec
 	if (_inner_error_ != NULL) {
 		if (_inner_error_->domain == DBUS_GERROR) {
 			g_propagate_error (error, _inner_error_);
-			rygel_external_plugin_factory_unref (self);
+			_rygel_external_plugin_factory_unref0 (self);
 			return NULL;
 		} else {
 			g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
@@ -762,16 +762,16 @@ static void rygel_external_plugin_factory_load_plugin_ready (GObject* source_obj
 }
 
 
-#line 1148 "glib-2.0.vapi"
+#line 1156 "glib-2.0.vapi"
 static char* string_replace (const char* self, const char* old, const char* replacement) {
 #line 765 "rygel-external-plugin-factory.c"
 	char* result = NULL;
 	GError * _inner_error_;
-#line 1148 "glib-2.0.vapi"
+#line 1156 "glib-2.0.vapi"
 	g_return_val_if_fail (self != NULL, NULL);
-#line 1148 "glib-2.0.vapi"
+#line 1156 "glib-2.0.vapi"
 	g_return_val_if_fail (old != NULL, NULL);
-#line 1148 "glib-2.0.vapi"
+#line 1156 "glib-2.0.vapi"
 	g_return_val_if_fail (replacement != NULL, NULL);
 #line 774 "rygel-external-plugin-factory.c"
 	_inner_error_ = NULL;
@@ -780,7 +780,7 @@ static char* string_replace (const char* self, const char* old, const char* repl
 		GRegex* _tmp1_;
 		GRegex* regex;
 		char* _tmp2_;
-#line 1150 "glib-2.0.vapi"
+#line 1158 "glib-2.0.vapi"
 		regex = (_tmp1_ = g_regex_new (_tmp0_ = g_regex_escape_string (old, -1), 0, 0, &_inner_error_), _g_free0 (_tmp0_), _tmp1_);
 #line 783 "rygel-external-plugin-factory.c"
 		if (_inner_error_ != NULL) {
@@ -791,7 +791,7 @@ static char* string_replace (const char* self, const char* old, const char* repl
 			g_clear_error (&_inner_error_);
 			return NULL;
 		}
-#line 1151 "glib-2.0.vapi"
+#line 1159 "glib-2.0.vapi"
 		_tmp2_ = g_regex_replace_literal (regex, self, (gssize) (-1), 0, replacement, 0, &_inner_error_);
 #line 794 "rygel-external-plugin-factory.c"
 		if (_inner_error_ != NULL) {
@@ -806,7 +806,7 @@ static char* string_replace (const char* self, const char* old, const char* repl
 		}
 		result = _tmp2_;
 		_g_regex_unref0 (regex);
-#line 1151 "glib-2.0.vapi"
+#line 1159 "glib-2.0.vapi"
 		return result;
 #line 809 "rygel-external-plugin-factory.c"
 	}
@@ -817,7 +817,7 @@ static char* string_replace (const char* self, const char* old, const char* repl
 		e = _inner_error_;
 		_inner_error_ = NULL;
 		{
-#line 1153 "glib-2.0.vapi"
+#line 1161 "glib-2.0.vapi"
 			g_assert_not_reached ();
 #line 820 "rygel-external-plugin-factory.c"
 			_g_error_free0 (e);
@@ -882,10 +882,10 @@ static gboolean rygel_external_plugin_factory_load_plugin_co (RygelExternalPlugi
 				if (data->_inner_error_->domain == DBUS_GERROR) {
 					goto __catch6_dbus_gerror;
 				}
-				_g_free0 (data->root_object);
-				_g_object_unref0 (data->props);
-				_g_hash_table_unref0 (data->object_props);
 				_g_hash_table_unref0 (data->container_props);
+				_g_hash_table_unref0 (data->object_props);
+				_g_object_unref0 (data->props);
+				_g_free0 (data->root_object);
 				g_critical ("file %s: line %d: unexpected error: %s (%s, %d)", __FILE__, __LINE__, data->_inner_error_->message, g_quark_to_string (data->_inner_error_->domain), data->_inner_error_->code);
 				g_clear_error (&data->_inner_error_);
 				return FALSE;
@@ -902,10 +902,10 @@ static gboolean rygel_external_plugin_factory_load_plugin_co (RygelExternalPlugi
 				if (data->_inner_error_->domain == DBUS_GERROR) {
 					goto __catch6_dbus_gerror;
 				}
-				_g_free0 (data->root_object);
-				_g_object_unref0 (data->props);
-				_g_hash_table_unref0 (data->object_props);
 				_g_hash_table_unref0 (data->container_props);
+				_g_hash_table_unref0 (data->object_props);
+				_g_object_unref0 (data->props);
+				_g_free0 (data->root_object);
 				g_critical ("file %s: line %d: unexpected error: %s (%s, %d)", __FILE__, __LINE__, data->_inner_error_->message, g_quark_to_string (data->_inner_error_->domain), data->_inner_error_->code);
 				g_clear_error (&data->_inner_error_);
 				return FALSE;
@@ -925,10 +925,10 @@ static gboolean rygel_external_plugin_factory_load_plugin_co (RygelExternalPlugi
 "plugin %s: %s.", data->service_name, data->err->message);
 #line 923 "rygel-external-plugin-factory.c"
 				_g_error_free0 (data->err);
-				_g_free0 (data->root_object);
-				_g_object_unref0 (data->props);
-				_g_hash_table_unref0 (data->object_props);
 				_g_hash_table_unref0 (data->container_props);
+				_g_hash_table_unref0 (data->object_props);
+				_g_object_unref0 (data->props);
+				_g_free0 (data->root_object);
 				{
 					if (data->_state_ == 0) {
 						g_simple_async_result_complete_in_idle (data->_async_result);
@@ -943,10 +943,10 @@ static gboolean rygel_external_plugin_factory_load_plugin_co (RygelExternalPlugi
 		}
 		__finally6:
 		if (data->_inner_error_ != NULL) {
-			_g_free0 (data->root_object);
-			_g_object_unref0 (data->props);
-			_g_hash_table_unref0 (data->object_props);
 			_g_hash_table_unref0 (data->container_props);
+			_g_hash_table_unref0 (data->object_props);
+			_g_object_unref0 (data->props);
+			_g_free0 (data->root_object);
 			g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, data->_inner_error_->message, g_quark_to_string (data->_inner_error_->domain), data->_inner_error_->code);
 			g_clear_error (&data->_inner_error_);
 			return FALSE;
@@ -973,14 +973,14 @@ static gboolean rygel_external_plugin_factory_load_plugin_co (RygelExternalPlugi
 #line 161 "rygel-external-plugin-factory.vala"
 		rygel_plugin_loader_add_plugin (data->self->priv->loader, (RygelPlugin*) data->plugin);
 #line 972 "rygel-external-plugin-factory.c"
-		_g_free0 (data->root_object);
-		_g_object_unref0 (data->props);
-		_g_hash_table_unref0 (data->object_props);
-		_g_hash_table_unref0 (data->container_props);
-		_rygel_icon_info_unref0 (data->icon);
-		_g_free0 (data->title);
-		_g_free0 (data->value);
 		_g_object_unref0 (data->plugin);
+		_g_free0 (data->value);
+		_g_free0 (data->title);
+		_rygel_icon_info_unref0 (data->icon);
+		_g_hash_table_unref0 (data->container_props);
+		_g_hash_table_unref0 (data->object_props);
+		_g_object_unref0 (data->props);
+		_g_free0 (data->root_object);
 	}
 	{
 		if (data->_state_ == 0) {

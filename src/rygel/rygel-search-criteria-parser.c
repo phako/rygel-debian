@@ -194,21 +194,21 @@ static gpointer rygel_search_criteria_parser_parent_class = NULL;
 static RygelStateMachineIface* rygel_search_criteria_parser_rygel_state_machine_parent_iface = NULL;
 
 GQuark rygel_search_criteria_error_quark (void);
-GType rygel_search_criteria_symbol_get_type (void);
-GType rygel_search_criteria_token_get_type (void);
+GType rygel_search_criteria_symbol_get_type (void) G_GNUC_CONST;
+GType rygel_search_criteria_token_get_type (void) G_GNUC_CONST;
 RygelSearchCriteriaToken* rygel_search_criteria_token_dup (const RygelSearchCriteriaToken* self);
 void rygel_search_criteria_token_free (RygelSearchCriteriaToken* self);
 void rygel_search_criteria_token_copy (const RygelSearchCriteriaToken* self, RygelSearchCriteriaToken* dest);
 void rygel_search_criteria_token_destroy (RygelSearchCriteriaToken* self);
-GType rygel_state_machine_get_type (void);
-GType rygel_search_criteria_parser_get_type (void);
+GType rygel_state_machine_get_type (void) G_GNUC_CONST;
+GType rygel_search_criteria_parser_get_type (void) G_GNUC_CONST;
 gpointer rygel_search_expression_ref (gpointer instance);
 void rygel_search_expression_unref (gpointer instance);
 GParamSpec* rygel_param_spec_search_expression (const gchar* name, const gchar* nick, const gchar* blurb, GType object_type, GParamFlags flags);
 void rygel_value_set_search_expression (GValue* value, gpointer v_object);
 void rygel_value_take_search_expression (GValue* value, gpointer v_object);
 gpointer rygel_value_get_search_expression (const GValue* value);
-GType rygel_search_expression_get_type (void);
+GType rygel_search_expression_get_type (void) G_GNUC_CONST;
 #define RYGEL_SEARCH_CRITERIA_PARSER_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), RYGEL_TYPE_SEARCH_CRITERIA_PARSER, RygelSearchCriteriaParserPrivate))
 enum  {
 	RYGEL_SEARCH_CRITERIA_PARSER_DUMMY_PROPERTY,
@@ -225,13 +225,13 @@ static RygelSearchExpression* rygel_search_criteria_parser_parse_rel_expression 
 static RygelSearchCriteriaSymbol rygel_search_criteria_parser_get_token (RygelSearchCriteriaParser* self);
 RygelLogicalExpression* rygel_logical_expression_new (void);
 RygelLogicalExpression* rygel_logical_expression_construct (GType object_type);
-GType rygel_logical_expression_get_type (void);
-GType rygel_media_object_get_type (void);
-GType rygel_logical_operator_get_type (void);
+GType rygel_logical_expression_get_type (void) G_GNUC_CONST;
+GType rygel_media_object_get_type (void) G_GNUC_CONST;
+GType rygel_logical_operator_get_type (void) G_GNUC_CONST;
 static RygelSearchExpression* rygel_search_criteria_parser_parse_and_expression (RygelSearchCriteriaParser* self, GError** error);
 RygelRelationalExpression* rygel_relational_expression_new (void);
 RygelRelationalExpression* rygel_relational_expression_construct (GType object_type);
-GType rygel_relational_expression_get_type (void);
+GType rygel_relational_expression_get_type (void) G_GNUC_CONST;
 static char* rygel_search_criteria_parser_get_context (RygelSearchCriteriaParser* self);
 static void rygel_search_criteria_parser_finalize (GObject* obj);
 GCancellable* rygel_state_machine_get_cancellable (RygelStateMachine* self);
@@ -413,14 +413,14 @@ static gboolean rygel_search_criteria_parser_real_run_co (RygelSearchCriteriaPar
 		{
 			data->_tmp0_ = rygel_search_criteria_parser_parse_or_expression (data->self, &data->_inner_error_);
 			if (data->_inner_error_ != NULL) {
-				goto __catch55_g_error;
+				goto __catch53_g_error;
 			}
 #line 131 "rygel-search-criteria-parser.vala"
 			data->self->expression = (data->_tmp1_ = data->_tmp0_, _rygel_search_expression_unref0 (data->self->expression), data->_tmp1_);
 #line 421 "rygel-search-criteria-parser.c"
 		}
-		goto __finally55;
-		__catch55_g_error:
+		goto __finally53;
+		__catch53_g_error:
 		{
 			data->err = data->_inner_error_;
 			data->_inner_error_ = NULL;
@@ -431,7 +431,7 @@ static gboolean rygel_search_criteria_parser_real_run_co (RygelSearchCriteriaPar
 				_g_error_free0 (data->err);
 			}
 		}
-		__finally55:
+		__finally53:
 		if (data->_inner_error_ != NULL) {
 			g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, data->_inner_error_->message, g_quark_to_string (data->_inner_error_->domain), data->_inner_error_->code);
 			g_clear_error (&data->_inner_error_);

@@ -92,7 +92,7 @@ static RygelSubtitleManager* rygel_subtitle_manager_manager = NULL;
 static gpointer rygel_subtitle_manager_parent_class = NULL;
 
 GQuark subtitle_manager_error_quark (void);
-GType rygel_subtitle_manager_get_type (void);
+GType rygel_subtitle_manager_get_type (void) G_GNUC_CONST;
 enum  {
 	RYGEL_SUBTITLE_MANAGER_DUMMY_PROPERTY
 };
@@ -107,7 +107,7 @@ GParamSpec* rygel_param_spec_subtitle (const gchar* name, const gchar* nick, con
 void rygel_value_set_subtitle (GValue* value, gpointer v_object);
 void rygel_value_take_subtitle (GValue* value, gpointer v_object);
 gpointer rygel_value_get_subtitle (const GValue* value);
-GType rygel_subtitle_get_type (void);
+GType rygel_subtitle_get_type (void) G_GNUC_CONST;
 RygelSubtitle* rygel_subtitle_manager_get_subtitle (RygelSubtitleManager* self, const char* uri, GError** error);
 static void rygel_subtitle_manager_finalize (GObject* obj);
 
@@ -142,41 +142,41 @@ RygelSubtitleManager* rygel_subtitle_manager_get_default (void) {
 }
 
 
-#line 1077 "glib-2.0.vapi"
+#line 1085 "glib-2.0.vapi"
 static char* string_substring (const char* self, glong offset, glong len) {
 #line 148 "rygel-subtitle-manager.c"
 	char* result = NULL;
 	glong string_length;
 	const char* start;
-#line 1077 "glib-2.0.vapi"
+#line 1085 "glib-2.0.vapi"
 	g_return_val_if_fail (self != NULL, NULL);
-#line 1078 "glib-2.0.vapi"
+#line 1086 "glib-2.0.vapi"
 	string_length = g_utf8_strlen (self, -1);
-#line 1079 "glib-2.0.vapi"
+#line 1087 "glib-2.0.vapi"
 	if (offset < 0) {
-#line 1080 "glib-2.0.vapi"
+#line 1088 "glib-2.0.vapi"
 		offset = string_length + offset;
-#line 1081 "glib-2.0.vapi"
+#line 1089 "glib-2.0.vapi"
 		g_return_val_if_fail (offset >= 0, NULL);
 #line 162 "rygel-subtitle-manager.c"
 	} else {
-#line 1083 "glib-2.0.vapi"
+#line 1091 "glib-2.0.vapi"
 		g_return_val_if_fail (offset <= string_length, NULL);
 #line 166 "rygel-subtitle-manager.c"
 	}
-#line 1085 "glib-2.0.vapi"
+#line 1093 "glib-2.0.vapi"
 	if (len < 0) {
-#line 1086 "glib-2.0.vapi"
+#line 1094 "glib-2.0.vapi"
 		len = string_length - offset;
 #line 172 "rygel-subtitle-manager.c"
 	}
-#line 1088 "glib-2.0.vapi"
+#line 1096 "glib-2.0.vapi"
 	g_return_val_if_fail ((offset + len) <= string_length, NULL);
-#line 1089 "glib-2.0.vapi"
+#line 1097 "glib-2.0.vapi"
 	start = g_utf8_offset_to_pointer (self, offset);
 #line 178 "rygel-subtitle-manager.c"
 	result = g_strndup (start, ((gchar*) g_utf8_offset_to_pointer (start, len)) - ((gchar*) start));
-#line 1090 "glib-2.0.vapi"
+#line 1098 "glib-2.0.vapi"
 	return result;
 #line 182 "rygel-subtitle-manager.c"
 }
@@ -186,7 +186,7 @@ static glong string_get_length (const char* self) {
 	glong result;
 	g_return_val_if_fail (self != NULL, 0L);
 	result = g_utf8_strlen (self, -1);
-#line 1158 "glib-2.0.vapi"
+#line 1166 "glib-2.0.vapi"
 	return result;
 #line 192 "rygel-subtitle-manager.c"
 }
@@ -237,11 +237,11 @@ RygelSubtitle* rygel_subtitle_manager_get_subtitle (RygelSubtitleManager* self, 
 #line 238 "rygel-subtitle-manager.c"
 	if (_inner_error_ != NULL) {
 		g_propagate_error (error, _inner_error_);
-		_g_object_unref0 (video_file);
-		_g_object_unref0 (directory);
-		_g_free0 (filename);
-		_g_free0 (extension);
 		_g_object_unref0 (srt_file);
+		_g_free0 (extension);
+		_g_free0 (filename);
+		_g_object_unref0 (directory);
+		_g_object_unref0 (video_file);
 		return NULL;
 	}
 #line 64 "rygel-subtitle-manager.vala"
@@ -250,12 +250,12 @@ RygelSubtitle* rygel_subtitle_manager_get_subtitle (RygelSubtitleManager* self, 
 		_inner_error_ = g_error_new_literal (SUBTITLE_MANAGER_ERROR, SUBTITLE_MANAGER_ERROR_NO_SUBTITLE, _ ("No subtitle available"));
 		{
 			g_propagate_error (error, _inner_error_);
-			_g_object_unref0 (video_file);
-			_g_object_unref0 (directory);
-			_g_free0 (filename);
-			_g_free0 (extension);
-			_g_object_unref0 (srt_file);
 			_g_object_unref0 (info);
+			_g_object_unref0 (srt_file);
+			_g_free0 (extension);
+			_g_free0 (filename);
+			_g_object_unref0 (directory);
+			_g_object_unref0 (video_file);
 			return NULL;
 		}
 	}
@@ -267,12 +267,12 @@ RygelSubtitle* rygel_subtitle_manager_get_subtitle (RygelSubtitleManager* self, 
 	subtitle->size = (glong) g_file_info_get_attribute_uint64 (info, G_FILE_ATTRIBUTE_STANDARD_SIZE);
 #line 269 "rygel-subtitle-manager.c"
 	result = subtitle;
-	_g_object_unref0 (video_file);
-	_g_object_unref0 (directory);
-	_g_free0 (filename);
-	_g_free0 (extension);
-	_g_object_unref0 (srt_file);
 	_g_object_unref0 (info);
+	_g_object_unref0 (srt_file);
+	_g_free0 (extension);
+	_g_free0 (filename);
+	_g_object_unref0 (directory);
+	_g_object_unref0 (video_file);
 #line 74 "rygel-subtitle-manager.vala"
 	return result;
 #line 279 "rygel-subtitle-manager.c"

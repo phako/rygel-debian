@@ -3,6 +3,34 @@
 [CCode (cprefix = "Rygel", lower_case_cprefix = "rygel_")]
 namespace Rygel {
 	[CCode (cheader_filename = "rygel.h")]
+	public class AVTransport : GUPnP.Service {
+		public const string DESCRIPTION_PATH;
+		public const string LAST_CHANGE_NS;
+		public const string UPNP_ID;
+		public const string UPNP_TYPE;
+		public AVTransport ();
+		public override void constructed ();
+		public string metadata { owned get; set; }
+		public string mode { get; set; }
+		public uint n_tracks { get; set; }
+		public string speed { get; set; }
+		public string status { get; set; }
+		public uint track { get; set; }
+		public string uri { owned get; set; }
+	}
+	[CCode (cheader_filename = "rygel.h")]
+	public class AlbumArt : Rygel.Thumbnail {
+		public AlbumArt ();
+	}
+	[CCode (cheader_filename = "rygel.h")]
+	public class ChangeLog : GLib.Object {
+		public ChangeLog (GUPnP.Service? service, string service_ns);
+		public string finish ();
+		public void log (string variable, string value);
+		public void log_with_channel (string variable, string value, string channel);
+		public GUPnP.Service service { get; set; }
+	}
+	[CCode (cheader_filename = "rygel.h")]
 	public class CmdlineConfig : GLib.Object, Rygel.Configuration {
 		public CmdlineConfig ();
 		public static Rygel.CmdlineConfig get_default ();
@@ -23,7 +51,6 @@ namespace Rygel {
 	public class ContentDirectory : GUPnP.Service {
 		protected string feature_list;
 		public Rygel.MediaContainer root_container;
-		protected string sort_caps;
 		public uint32 system_update_id;
 		public const string DESCRIPTION_PATH;
 		public const string UPNP_ID;
@@ -31,7 +58,6 @@ namespace Rygel {
 		public const string UPNP_TYPE_V1;
 		public ContentDirectory ();
 		public override void constructed ();
-		public virtual Rygel.MediaContainer? create_root_container ();
 	}
 	[CCode (cheader_filename = "rygel.h")]
 	[DBus (name = "org.gnome.Rygel1")]
@@ -72,6 +98,13 @@ namespace Rygel {
 		public void restart ();
 	}
 	[CCode (cheader_filename = "rygel.h")]
+	public class MediaArtStore : GLib.Object {
+		public Rygel.Thumbnail? find_media_art (Rygel.MediaItem item, bool simple = false) throws GLib.Error;
+		public Rygel.Thumbnail? find_media_art_any (Rygel.MediaItem item) throws GLib.Error;
+		public static Rygel.MediaArtStore? get_default ();
+		public GLib.File get_media_art_file (string type, Rygel.MediaItem item, bool simple = false);
+	}
+	[CCode (cheader_filename = "rygel.h")]
 	public abstract class MediaContainer : Rygel.MediaObject {
 		public int child_count;
 		public Gee.ArrayList<string> create_classes;
@@ -79,9 +112,9 @@ namespace Rygel {
 		public MediaContainer (string id, Rygel.MediaContainer? parent, string title, int child_count);
 		public virtual async void add_item (Rygel.MediaItem item, GLib.Cancellable? cancellable) throws GLib.Error;
 		public virtual async Rygel.MediaObject? find_object (string id, GLib.Cancellable? cancellable) throws GLib.Error;
-		public abstract async Gee.List<Rygel.MediaObject>? get_children (uint offset, uint max_count, GLib.Cancellable? cancellable) throws GLib.Error;
+		public abstract async Rygel.MediaObjects? get_children (uint offset, uint max_count, GLib.Cancellable? cancellable) throws GLib.Error;
 		public MediaContainer.root (string title, int child_count);
-		public virtual async Gee.List<Rygel.MediaObject>? search (Rygel.SearchExpression expression, uint offset, uint max_count, out uint total_matches, GLib.Cancellable? cancellable) throws GLib.Error;
+		public virtual async Rygel.MediaObjects? search (Rygel.SearchExpression expression, uint offset, uint max_count, out uint total_matches, GLib.Cancellable? cancellable) throws GLib.Error;
 		public void set_uri (string uri, Gee.ArrayList<string>? create_classes = null);
 		public void updated ();
 		public signal void container_updated (Rygel.MediaContainer container);
@@ -115,6 +148,7 @@ namespace Rygel {
 		public MediaItem (string id, Rygel.MediaContainer parent, string title, string upnp_class);
 		public void add_uri (string uri, Rygel.Thumbnail? thumbnail);
 		public virtual Gst.Element? create_stream_source ();
+		public void lookup_album_art ();
 		public virtual bool should_stream ();
 	}
 	[CCode (cheader_filename = "rygel.h")]
@@ -125,9 +159,16 @@ namespace Rygel {
 		public string upnp_class;
 		public Gee.ArrayList<string> uris;
 		public MediaObject ();
+		protected int compare_string_props (string prop1, string prop2);
 		public async GLib.File? get_writable (GLib.Cancellable? cancellable) throws GLib.Error;
 		public Rygel.MediaContainer parent_ref { get; set; }
 		public string title { get; set; }
+	}
+	[CCode (cheader_filename = "rygel.h")]
+	public class MediaObjects : Gee.ArrayList<Rygel.MediaObject> {
+		public const string SORT_CAPS;
+		public MediaObjects ();
+		public override Gee.List<Rygel.MediaObject>? slice (int start, int stop);
 	}
 	[CCode (cheader_filename = "rygel.h")]
 	public class MediaReceiverRegistrar : GUPnP.Service {
@@ -136,6 +177,16 @@ namespace Rygel {
 		public const string UPNP_TYPE;
 		public MediaReceiverRegistrar ();
 		public override void constructed ();
+	}
+	[CCode (cheader_filename = "rygel.h")]
+	public class MediaRendererPlugin : Rygel.Plugin {
+		public MediaRendererPlugin (string name, string? title, string? description = null);
+		public virtual Rygel.MediaPlayer? get_player ();
+	}
+	[CCode (cheader_filename = "rygel.h")]
+	public class MediaServerPlugin : Rygel.Plugin {
+		public MediaServerPlugin (string name, string? title, string? description = null);
+		public virtual Rygel.MediaContainer? get_root_container (Rygel.ContentDirectory content_dir);
 	}
 	[CCode (cheader_filename = "rygel.h")]
 	public class MetaConfig : GLib.Object, Rygel.Configuration {
@@ -152,7 +203,6 @@ namespace Rygel {
 		public Gee.ArrayList<Rygel.ResourceInfo> resource_infos;
 		public string title;
 		public Plugin (string desc_path, string name, string? title, string? description = null);
-		public Plugin.MediaServer (string name, string? title, GLib.Type content_dir_type, string? description = null);
 		public void add_icon (Rygel.IconInfo icon_info);
 		public void add_resource (Rygel.ResourceInfo resource_info);
 		public bool available { get; set; }
@@ -172,6 +222,17 @@ namespace Rygel {
 		public bool compare_string (string? str);
 		public override bool satisfied_by (Rygel.MediaObject media_object);
 		public override string to_string ();
+	}
+	[CCode (cheader_filename = "rygel.h")]
+	public class RenderingControl : GUPnP.Service {
+		public const string DESCRIPTION_PATH;
+		public const string LAST_CHANGE_NS;
+		public const string UPNP_ID;
+		public const string UPNP_TYPE;
+		public RenderingControl ();
+		public override void constructed ();
+		public bool mute { get; set; }
+		public uint volume { get; set; }
 	}
 	[CCode (ref_function = "rygel_resource_info_ref", unref_function = "rygel_resource_info_unref", cheader_filename = "rygel.h")]
 	public class ResourceInfo {
@@ -202,13 +263,18 @@ namespace Rygel {
 	}
 	[CCode (cheader_filename = "rygel.h")]
 	public class SimpleContainer : Rygel.MediaContainer {
-		public Gee.ArrayList<Rygel.MediaObject> children;
+		public Rygel.MediaObjects children;
 		public SimpleContainer (string id, Rygel.MediaContainer? parent, string title);
 		public void add_child (Rygel.MediaObject child);
 		public void clear ();
-		public override async Gee.List<Rygel.MediaObject>? get_children (uint offset, uint max_count, GLib.Cancellable? cancellable) throws GLib.Error;
+		public override async Rygel.MediaObjects? get_children (uint offset, uint max_count, GLib.Cancellable? cancellable) throws GLib.Error;
 		public void remove_child (Rygel.MediaObject child);
 		public SimpleContainer.root (string title);
+	}
+	[CCode (cheader_filename = "rygel.h")]
+	public class SinkConnectionManager : Rygel.ConnectionManager {
+		public SinkConnectionManager ();
+		public override void constructed ();
 	}
 	[CCode (cheader_filename = "rygel.h")]
 	public class SourceConnectionManager : Rygel.ConnectionManager {
@@ -283,6 +349,17 @@ namespace Rygel {
 		public abstract bool get_transcoding () throws GLib.Error;
 		public abstract bool get_upnp_enabled () throws GLib.Error;
 		public abstract bool get_wmv_transcoder () throws GLib.Error;
+	}
+	[CCode (cheader_filename = "rygel.h")]
+	public interface MediaPlayer : GLib.Object {
+		public abstract string[] get_mime_types ();
+		public abstract string[] get_protocols ();
+		public abstract bool seek (string time);
+		public abstract string duration { owned get; }
+		public abstract string playback_state { get; set; }
+		public abstract string position { owned get; }
+		public abstract string uri { get; set; }
+		public abstract double volume { get; set; }
 	}
 	[CCode (cheader_filename = "rygel.h")]
 	public interface StateMachine : GLib.Object {

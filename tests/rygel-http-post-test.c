@@ -223,10 +223,9 @@ struct _RygelHTTPRequest {
 struct _RygelHTTPRequestClass {
 	GObjectClass parent_class;
 	void (*handle) (RygelHTTPRequest* self, GAsyncReadyCallback _callback_, gpointer _user_data_);
-	void (*handle_finish) (RygelHTTPRequest* self, GAsyncResult* _res_);
+	void (*handle_finish) (RygelHTTPRequest* self, GAsyncResult* _res_, GError** error);
 	void (*find_item) (RygelHTTPRequest* self, GAsyncReadyCallback _callback_, gpointer _user_data_);
-	void (*find_item_finish) (RygelHTTPRequest* self, GAsyncResult* _res_);
-	void (*handle_error) (RygelHTTPRequest* self, GError* _error_);
+	void (*find_item_finish) (RygelHTTPRequest* self, GAsyncResult* _res_, GError** error);
 };
 
 struct _RygelHttpPostTestHandleClientMessageData {
@@ -420,9 +419,9 @@ static RygelStateMachineIface* rygel_http_response_rygel_state_machine_parent_if
 static gpointer rygel_media_object_parent_class = NULL;
 
 GQuark rygel_test_error_quark (void);
-GType rygel_http_post_test_get_type (void);
-GType rygel_http_server_get_type (void);
-GType rygel_http_client_get_type (void);
+GType rygel_http_post_test_get_type (void) G_GNUC_CONST;
+GType rygel_http_server_get_type (void) G_GNUC_CONST;
+GType rygel_http_client_get_type (void) G_GNUC_CONST;
 #define RYGEL_HTTP_POST_TEST_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), RYGEL_TYPE_HTTP_POST_TEST, RygelHTTPPostTestPrivate))
 enum  {
 	RYGEL_HTTP_POST_TEST_DUMMY_PROPERTY
@@ -439,8 +438,8 @@ GParamSpec* rygel_param_spec_media_object (const gchar* name, const gchar* nick,
 void rygel_value_set_media_object (GValue* value, gpointer v_object);
 void rygel_value_take_media_object (GValue* value, gpointer v_object);
 gpointer rygel_value_get_media_object (const GValue* value);
-GType rygel_media_object_get_type (void);
-GType rygel_media_container_get_type (void);
+GType rygel_media_object_get_type (void) G_GNUC_CONST;
+GType rygel_media_container_get_type (void) G_GNUC_CONST;
 char* rygel_http_server_get_uri (RygelHTTPServer* self);
 RygelHTTPClient* rygel_http_client_new (GUPnPContext* context, const char* uri);
 RygelHTTPClient* rygel_http_client_construct (GType object_type, GUPnPContext* context, const char* uri);
@@ -448,7 +447,7 @@ static gboolean rygel_http_post_test_on_timeout (RygelHTTPPostTest* self);
 static gboolean _rygel_http_post_test_on_timeout_gsource_func (gpointer self);
 static void rygel_http_post_test_on_message_received (RygelHTTPPostTest* self, RygelHTTPServer* server, SoupMessage* msg);
 static void _rygel_http_post_test_on_message_received_rygel_http_server_message_received (RygelHTTPServer* _sender, SoupMessage* message, gpointer self);
-GType rygel_state_machine_get_type (void);
+GType rygel_state_machine_get_type (void) G_GNUC_CONST;
 static void rygel_http_post_test_on_client_completed (RygelHTTPPostTest* self, RygelStateMachine* client);
 static void _rygel_http_post_test_on_client_completed_rygel_state_machine_completed (RygelStateMachine* _sender, gpointer self);
 void rygel_state_machine_run (RygelStateMachine* self, GAsyncReadyCallback _callback_, gpointer _user_data_);
@@ -456,8 +455,8 @@ void rygel_state_machine_run_finish (RygelStateMachine* self, GAsyncResult* _res
 static void rygel_http_post_test_real_run (RygelHTTPPostTest* self, GError** error);
 RygelHTTPPost* rygel_http_post_new (RygelHTTPServer* http_server, SoupServer* server, SoupMessage* msg);
 RygelHTTPPost* rygel_http_post_construct (GType object_type, RygelHTTPServer* http_server, SoupServer* server, SoupMessage* msg);
-GType rygel_http_request_get_type (void);
-GType rygel_http_post_get_type (void);
+GType rygel_http_request_get_type (void) G_GNUC_CONST;
+GType rygel_http_post_get_type (void) G_GNUC_CONST;
 static RygelHTTPRequest* rygel_http_post_test_create_request (RygelHTTPPostTest* self, SoupMessage* msg, GError** error);
 static void rygel_http_post_test_check_and_exit (RygelHTTPPostTest* self, GAsyncReadyCallback _callback_, gpointer _user_data_);
 static void rygel_http_post_test_check_and_exit_finish (RygelHTTPPostTest* self, GAsyncResult* _res_);
@@ -465,8 +464,8 @@ static void rygel_http_post_test_handle_client_message (RygelHTTPPostTest* self,
 static void rygel_http_post_test_handle_client_message_finish (RygelHTTPPostTest* self, GAsyncResult* _res_);
 static void rygel_http_post_test_handle_client_message_data_free (gpointer _data);
 static void rygel_http_post_test_handle_client_message_ready (GObject* source_object, GAsyncResult* _res_, gpointer _user_data_);
-GType rygel_http_item_uri_get_type (void);
-GType rygel_media_item_get_type (void);
+GType rygel_http_item_uri_get_type (void) G_GNUC_CONST;
+GType rygel_media_item_get_type (void) G_GNUC_CONST;
 static gboolean rygel_http_post_test_handle_client_message_co (RygelHttpPostTestHandleClientMessageData* data);
 static void rygel_http_post_test_check_and_exit_data_free (gpointer _data);
 static void rygel_http_post_test_check_and_exit_ready (GObject* source_object, GAsyncResult* _res_, gpointer _user_data_);
@@ -544,7 +543,7 @@ static Block3Data* block3_data_ref (Block3Data* _data3_);
 static void block3_data_unref (Block3Data* _data3_);
 static gboolean rygel_media_item_get_writable_co (RygelMediaItemGetWritableData* data);
 static void rygel_media_item_finalize (RygelMediaObject* obj);
-GType rygel_http_response_get_type (void);
+GType rygel_http_response_get_type (void) G_GNUC_CONST;
 #define RYGEL_HTTP_RESPONSE_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), RYGEL_TYPE_HTTP_RESPONSE, RygelHTTPResponsePrivate))
 enum  {
 	RYGEL_HTTP_RESPONSE_DUMMY_PROPERTY,
@@ -579,7 +578,7 @@ GQuark rygel_test_error_quark (void) {
 
 #line 43 "rygel-http-post-test.vala"
 gint rygel_http_post_test_main (char** args, int args_length1) {
-#line 583 "rygel-http-post-test.c"
+#line 582 "rygel-http-post-test.c"
 	gint result = 0;
 	GError * _inner_error_;
 	_inner_error_ = NULL;
@@ -587,7 +586,7 @@ gint rygel_http_post_test_main (char** args, int args_length1) {
 		RygelHTTPPostTest* test;
 #line 45 "rygel-http-post-test.vala"
 		test = rygel_http_post_test_new (&_inner_error_);
-#line 591 "rygel-http-post-test.c"
+#line 590 "rygel-http-post-test.c"
 		if (_inner_error_ != NULL) {
 			if (g_error_matches (_inner_error_, RYGEL_TEST_ERROR, RYGEL_TEST_ERROR_SKIP)) {
 				goto __catch0_rygel_test_error_skip;
@@ -596,7 +595,7 @@ gint rygel_http_post_test_main (char** args, int args_length1) {
 		}
 #line 47 "rygel-http-post-test.vala"
 		rygel_http_post_test_run (test, &_inner_error_);
-#line 600 "rygel-http-post-test.c"
+#line 599 "rygel-http-post-test.c"
 		if (_inner_error_ != NULL) {
 			_g_object_unref0 (test);
 			if (g_error_matches (_inner_error_, RYGEL_TEST_ERROR, RYGEL_TEST_ERROR_SKIP)) {
@@ -617,7 +616,7 @@ gint rygel_http_post_test_main (char** args, int args_length1) {
 			_g_error_free0 (_error_);
 #line 49 "rygel-http-post-test.vala"
 			return result;
-#line 621 "rygel-http-post-test.c"
+#line 620 "rygel-http-post-test.c"
 		}
 	}
 	goto __finally0;
@@ -629,12 +628,12 @@ gint rygel_http_post_test_main (char** args, int args_length1) {
 		{
 #line 51 "rygel-http-post-test.vala"
 			g_critical ("rygel-http-post-test.vala:51: %s", _error_->message);
-#line 633 "rygel-http-post-test.c"
+#line 632 "rygel-http-post-test.c"
 			result = -1;
 			_g_error_free0 (_error_);
 #line 53 "rygel-http-post-test.vala"
 			return result;
-#line 638 "rygel-http-post-test.c"
+#line 637 "rygel-http-post-test.c"
 		}
 	}
 	__finally0:
@@ -646,25 +645,25 @@ gint rygel_http_post_test_main (char** args, int args_length1) {
 	result = 0;
 #line 56 "rygel-http-post-test.vala"
 	return result;
-#line 650 "rygel-http-post-test.c"
+#line 649 "rygel-http-post-test.c"
 }
 
 
 #line 43 "rygel-http-post-test.vala"
 int main (int argc, char ** argv) {
-#line 656 "rygel-http-post-test.c"
+#line 655 "rygel-http-post-test.c"
 	g_thread_init (NULL);
 #line 43 "rygel-http-post-test.vala"
 	g_type_init ();
 #line 43 "rygel-http-post-test.vala"
 	return rygel_http_post_test_main (argv, argc);
-#line 662 "rygel-http-post-test.c"
+#line 661 "rygel-http-post-test.c"
 }
 
 
 #line 59 "rygel-http-post-test.vala"
 RygelHTTPPostTest* rygel_http_post_test_construct (GType object_type, GError** error) {
-#line 668 "rygel-http-post-test.c"
+#line 667 "rygel-http-post-test.c"
 	GError * _inner_error_;
 	RygelHTTPPostTest * self;
 	RygelHTTPServer* _tmp0_;
@@ -677,21 +676,21 @@ RygelHTTPPostTest* rygel_http_post_test_construct (GType object_type, GError** e
 	self = (RygelHTTPPostTest*) g_object_new (object_type, NULL);
 #line 60 "rygel-http-post-test.vala"
 	_tmp0_ = rygel_http_server_new (&_inner_error_);
-#line 681 "rygel-http-post-test.c"
+#line 680 "rygel-http-post-test.c"
 	if (_inner_error_ != NULL) {
 		g_propagate_error (error, _inner_error_);
-		g_object_unref (self);
+		_g_object_unref0 (self);
 		return NULL;
 	}
 #line 60 "rygel-http-post-test.vala"
 	self->server = (_tmp1_ = _tmp0_, _g_object_unref0 (self->server), _tmp1_);
 #line 61 "rygel-http-post-test.vala"
 	self->client = (_tmp3_ = rygel_http_client_new (self->server->context, _tmp2_ = rygel_http_server_get_uri (self->server)), _g_object_unref0 (self->client), _tmp3_);
-#line 691 "rygel-http-post-test.c"
+#line 690 "rygel-http-post-test.c"
 	_g_free0 (_tmp2_);
 #line 63 "rygel-http-post-test.vala"
 	self->priv->main_loop = (_tmp4_ = g_main_loop_new (NULL, FALSE), _g_main_loop_unref0 (self->priv->main_loop), _tmp4_);
-#line 695 "rygel-http-post-test.c"
+#line 694 "rygel-http-post-test.c"
 	return self;
 }
 
@@ -700,13 +699,13 @@ RygelHTTPPostTest* rygel_http_post_test_construct (GType object_type, GError** e
 RygelHTTPPostTest* rygel_http_post_test_new (GError** error) {
 #line 59 "rygel-http-post-test.vala"
 	return rygel_http_post_test_construct (RYGEL_TYPE_HTTP_POST_TEST, error);
-#line 704 "rygel-http-post-test.c"
+#line 703 "rygel-http-post-test.c"
 }
 
 
 #line 114 "rygel-http-post-test.vala"
 static gboolean _rygel_http_post_test_on_timeout_gsource_func (gpointer self) {
-#line 710 "rygel-http-post-test.c"
+#line 709 "rygel-http-post-test.c"
 	gboolean result;
 	result = rygel_http_post_test_on_timeout (self);
 	return result;
@@ -715,14 +714,14 @@ static gboolean _rygel_http_post_test_on_timeout_gsource_func (gpointer self) {
 
 #line 91 "rygel-http-post-test.vala"
 static void _rygel_http_post_test_on_message_received_rygel_http_server_message_received (RygelHTTPServer* _sender, SoupMessage* message, gpointer self) {
-#line 719 "rygel-http-post-test.c"
+#line 718 "rygel-http-post-test.c"
 	rygel_http_post_test_on_message_received (self, _sender, message);
 }
 
 
 #line 86 "rygel-http-post-test.vala"
 static void _rygel_http_post_test_on_client_completed_rygel_state_machine_completed (RygelStateMachine* _sender, gpointer self) {
-#line 726 "rygel-http-post-test.c"
+#line 725 "rygel-http-post-test.c"
 	rygel_http_post_test_on_client_completed (self, _sender);
 }
 
@@ -734,11 +733,11 @@ static gpointer _g_error_copy0 (gpointer self) {
 
 #line 66 "rygel-http-post-test.vala"
 static void rygel_http_post_test_real_run (RygelHTTPPostTest* self, GError** error) {
-#line 738 "rygel-http-post-test.c"
+#line 737 "rygel-http-post-test.c"
 	GError * _inner_error_;
 #line 66 "rygel-http-post-test.vala"
 	g_return_if_fail (self != NULL);
-#line 742 "rygel-http-post-test.c"
+#line 741 "rygel-http-post-test.c"
 	_inner_error_ = NULL;
 #line 67 "rygel-http-post-test.vala"
 	g_timeout_add_seconds_full (G_PRIORITY_DEFAULT, (guint) 3, _rygel_http_post_test_on_timeout_gsource_func, g_object_ref (self), g_object_unref);
@@ -752,7 +751,7 @@ static void rygel_http_post_test_real_run (RygelHTTPPostTest* self, GError** err
 	g_main_loop_run (self->priv->main_loop);
 #line 75 "rygel-http-post-test.vala"
 	if (self->priv->error != NULL) {
-#line 756 "rygel-http-post-test.c"
+#line 755 "rygel-http-post-test.c"
 		_inner_error_ = _g_error_copy0 (self->priv->error);
 		{
 			g_propagate_error (error, _inner_error_);
@@ -766,23 +765,23 @@ static void rygel_http_post_test_real_run (RygelHTTPPostTest* self, GError** err
 void rygel_http_post_test_run (RygelHTTPPostTest* self, GError** error) {
 #line 66 "rygel-http-post-test.vala"
 	RYGEL_HTTP_POST_TEST_GET_CLASS (self)->run (self, error);
-#line 770 "rygel-http-post-test.c"
+#line 769 "rygel-http-post-test.c"
 }
 
 
 #line 80 "rygel-http-post-test.vala"
 static RygelHTTPRequest* rygel_http_post_test_create_request (RygelHTTPPostTest* self, SoupMessage* msg, GError** error) {
-#line 776 "rygel-http-post-test.c"
+#line 775 "rygel-http-post-test.c"
 	RygelHTTPRequest* result = NULL;
 #line 80 "rygel-http-post-test.vala"
 	g_return_val_if_fail (self != NULL, NULL);
 #line 80 "rygel-http-post-test.vala"
 	g_return_val_if_fail (msg != NULL, NULL);
-#line 782 "rygel-http-post-test.c"
+#line 781 "rygel-http-post-test.c"
 	result = (RygelHTTPRequest*) rygel_http_post_new (self->server, gupnp_context_get_server (self->server->context), msg);
 #line 81 "rygel-http-post-test.vala"
 	return result;
-#line 786 "rygel-http-post-test.c"
+#line 785 "rygel-http-post-test.c"
 }
 
 
@@ -796,7 +795,7 @@ static void rygel_http_post_test_on_client_completed (RygelHTTPPostTest* self, R
 	self->priv->client_done = TRUE;
 #line 88 "rygel-http-post-test.vala"
 	rygel_http_post_test_check_and_exit (self, NULL, NULL);
-#line 800 "rygel-http-post-test.c"
+#line 799 "rygel-http-post-test.c"
 }
 
 
@@ -810,7 +809,7 @@ static void rygel_http_post_test_on_message_received (RygelHTTPPostTest* self, R
 	g_return_if_fail (msg != NULL);
 #line 93 "rygel-http-post-test.vala"
 	rygel_http_post_test_handle_client_message (self, msg, NULL, NULL);
-#line 814 "rygel-http-post-test.c"
+#line 813 "rygel-http-post-test.c"
 }
 
 
@@ -881,7 +880,7 @@ static gboolean rygel_http_post_test_handle_client_message_co (RygelHttpPostTest
 			data->self->priv->server_done = TRUE;
 #line 105 "rygel-http-post-test.vala"
 			rygel_http_post_test_check_and_exit (data->self, NULL, NULL);
-#line 885 "rygel-http-post-test.c"
+#line 884 "rygel-http-post-test.c"
 			_g_object_unref0 (data->request);
 		}
 		goto __finally1;
@@ -894,7 +893,7 @@ static gboolean rygel_http_post_test_handle_client_message_co (RygelHttpPostTest
 				data->self->priv->error = (data->_tmp1_ = _g_error_copy0 (data->_error_), _g_error_free0 (data->self->priv->error), data->_tmp1_);
 #line 108 "rygel-http-post-test.vala"
 				g_main_loop_quit (data->self->priv->main_loop);
-#line 898 "rygel-http-post-test.c"
+#line 897 "rygel-http-post-test.c"
 				_g_error_free0 (data->_error_);
 				{
 					if (data->_state_ == 0) {
@@ -929,7 +928,7 @@ static gboolean rygel_http_post_test_handle_client_message_co (RygelHttpPostTest
 
 #line 114 "rygel-http-post-test.vala"
 static gboolean rygel_http_post_test_on_timeout (RygelHTTPPostTest* self) {
-#line 933 "rygel-http-post-test.c"
+#line 932 "rygel-http-post-test.c"
 	gboolean result = FALSE;
 	GError* _tmp0_;
 #line 114 "rygel-http-post-test.vala"
@@ -938,11 +937,11 @@ static gboolean rygel_http_post_test_on_timeout (RygelHTTPPostTest* self) {
 	self->priv->error = (_tmp0_ = g_error_new_literal (RYGEL_TEST_ERROR, RYGEL_TEST_ERROR_TIMEOUT, "Timeout"), _g_error_free0 (self->priv->error), _tmp0_);
 #line 116 "rygel-http-post-test.vala"
 	g_main_loop_quit (self->priv->main_loop);
-#line 942 "rygel-http-post-test.c"
+#line 941 "rygel-http-post-test.c"
 	result = FALSE;
 #line 118 "rygel-http-post-test.vala"
 	return result;
-#line 946 "rygel-http-post-test.c"
+#line 945 "rygel-http-post-test.c"
 }
 
 
@@ -995,15 +994,15 @@ static gboolean rygel_http_post_test_check_and_exit_co (RygelHttpPostTestCheckAn
 		if (data->self->priv->server_done) {
 #line 122 "rygel-http-post-test.vala"
 			data->_tmp0_ = data->self->priv->client_done;
-#line 999 "rygel-http-post-test.c"
+#line 998 "rygel-http-post-test.c"
 		} else {
 #line 122 "rygel-http-post-test.vala"
 			data->_tmp0_ = FALSE;
-#line 1003 "rygel-http-post-test.c"
+#line 1002 "rygel-http-post-test.c"
 		}
 #line 122 "rygel-http-post-test.vala"
 		if (!data->_tmp0_) {
-#line 1007 "rygel-http-post-test.c"
+#line 1006 "rygel-http-post-test.c"
 			{
 				if (data->_state_ == 0) {
 					g_simple_async_result_complete_in_idle (data->_async_result);
@@ -1032,11 +1031,11 @@ static gboolean rygel_http_post_test_check_and_exit_co (RygelHttpPostTestCheckAn
 			_state_3:
 #line 131 "rygel-http-post-test.vala"
 			g_input_stream_read_finish ((GInputStream*) data->stream, data->_res_, &data->_inner_error_);
-#line 1036 "rygel-http-post-test.c"
+#line 1035 "rygel-http-post-test.c"
 			if (data->_inner_error_ != NULL) {
-				_g_object_unref0 (data->file);
-				_g_object_unref0 (data->stream);
 				data->buffer = (g_free (data->buffer), NULL);
+				_g_object_unref0 (data->stream);
+				_g_object_unref0 (data->file);
 				goto __catch2_g_error;
 			}
 			{
@@ -1049,7 +1048,7 @@ static gboolean rygel_http_post_test_check_and_exit_co (RygelHttpPostTestCheckAn
 						if (!data->_tmp2_) {
 #line 135 "rygel-http-post-test.vala"
 							data->i++;
-#line 1053 "rygel-http-post-test.c"
+#line 1052 "rygel-http-post-test.c"
 						}
 #line 135 "rygel-http-post-test.vala"
 						data->_tmp2_ = FALSE;
@@ -1057,17 +1056,17 @@ static gboolean rygel_http_post_test_check_and_exit_co (RygelHttpPostTestCheckAn
 						if (!(data->i < RYGEL_HTTP_CLIENT_LENGTH)) {
 #line 135 "rygel-http-post-test.vala"
 							break;
-#line 1061 "rygel-http-post-test.c"
+#line 1060 "rygel-http-post-test.c"
 						}
 #line 136 "rygel-http-post-test.vala"
 						g_assert (data->buffer[data->i] == data->self->client->content[data->i]);
-#line 1065 "rygel-http-post-test.c"
+#line 1064 "rygel-http-post-test.c"
 					}
 				}
 			}
-			_g_object_unref0 (data->file);
-			_g_object_unref0 (data->stream);
 			data->buffer = (g_free (data->buffer), NULL);
+			_g_object_unref0 (data->stream);
+			_g_object_unref0 (data->file);
 		}
 		goto __finally2;
 		__catch2_g_error:
@@ -1077,7 +1076,7 @@ static gboolean rygel_http_post_test_check_and_exit_co (RygelHttpPostTestCheckAn
 			{
 #line 139 "rygel-http-post-test.vala"
 				data->self->priv->error = (data->_tmp3_ = _g_error_copy0 (data->_error_), _g_error_free0 (data->self->priv->error), data->_tmp3_);
-#line 1081 "rygel-http-post-test.c"
+#line 1080 "rygel-http-post-test.c"
 				_g_error_free0 (data->_error_);
 			}
 		}
@@ -1089,7 +1088,7 @@ static gboolean rygel_http_post_test_check_and_exit_co (RygelHttpPostTestCheckAn
 		}
 #line 142 "rygel-http-post-test.vala"
 		g_main_loop_quit (data->self->priv->main_loop);
-#line 1093 "rygel-http-post-test.c"
+#line 1092 "rygel-http-post-test.c"
 	}
 	{
 		if (data->_state_ == 0) {
@@ -1141,33 +1140,33 @@ GType rygel_http_post_test_get_type (void) {
 
 #line 184 "rygel-http-post-test.vala"
 static void _rygel_http_server_on_request_started_soup_server_request_started (SoupServer* _sender, SoupMessage* msg, SoupClientContext* client, gpointer self) {
-#line 1145 "rygel-http-post-test.c"
+#line 1144 "rygel-http-post-test.c"
 	rygel_http_server_on_request_started (self, _sender, msg, client);
 }
 
 
 #line 168 "rygel-http-post-test.vala"
 RygelHTTPServer* rygel_http_server_construct (GType object_type, GError** error) {
-#line 1152 "rygel-http-post-test.c"
+#line 1151 "rygel-http-post-test.c"
 	GError * _inner_error_;
 	RygelHTTPServer * self;
 	RygelMediaContainer* _tmp2_;
 	_inner_error_ = NULL;
 #line 168 "rygel-http-post-test.vala"
 	self = (RygelHTTPServer*) g_object_new (object_type, NULL);
-#line 1159 "rygel-http-post-test.c"
+#line 1158 "rygel-http-post-test.c"
 	{
 		GUPnPContext* _tmp0_;
 		GUPnPContext* _tmp1_;
 #line 170 "rygel-http-post-test.vala"
 		_tmp0_ = gupnp_context_new (NULL, "lo", (guint) 0, &_inner_error_);
-#line 1165 "rygel-http-post-test.c"
+#line 1164 "rygel-http-post-test.c"
 		if (_inner_error_ != NULL) {
 			goto __catch3_g_error;
 		}
 #line 170 "rygel-http-post-test.vala"
 		self->context = (_tmp1_ = _tmp0_, _g_object_unref0 (self->context), _tmp1_);
-#line 1171 "rygel-http-post-test.c"
+#line 1170 "rygel-http-post-test.c"
 	}
 	goto __finally3;
 	__catch3_g_error:
@@ -1188,7 +1187,7 @@ RygelHTTPServer* rygel_http_server_construct (GType object_type, GError** error)
 	if (_inner_error_ != NULL) {
 		if (_inner_error_->domain == RYGEL_TEST_ERROR) {
 			g_propagate_error (error, _inner_error_);
-			g_object_unref (self);
+			_g_object_unref0 (self);
 			return NULL;
 		} else {
 			g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
@@ -1206,7 +1205,7 @@ RygelHTTPServer* rygel_http_server_construct (GType object_type, GError** error)
 	g_signal_connect_object (gupnp_context_get_server (self->context), "request-started", (GCallback) _rygel_http_server_on_request_started_soup_server_request_started, self, 0);
 #line 181 "rygel-http-post-test.vala"
 	self->root_container = (_tmp2_ = rygel_media_container_new (), _rygel_media_object_unref0 (self->root_container), _tmp2_);
-#line 1210 "rygel-http-post-test.c"
+#line 1209 "rygel-http-post-test.c"
 	return self;
 }
 
@@ -1215,13 +1214,13 @@ RygelHTTPServer* rygel_http_server_construct (GType object_type, GError** error)
 RygelHTTPServer* rygel_http_server_new (GError** error) {
 #line 168 "rygel-http-post-test.vala"
 	return rygel_http_server_construct (RYGEL_TYPE_HTTP_SERVER, error);
-#line 1219 "rygel-http-post-test.c"
+#line 1218 "rygel-http-post-test.c"
 }
 
 
 #line 190 "rygel-http-post-test.vala"
 static void _rygel_http_server_on_got_headers_soup_message_got_headers (SoupMessage* _sender, gpointer self) {
-#line 1225 "rygel-http-post-test.c"
+#line 1224 "rygel-http-post-test.c"
 	rygel_http_server_on_got_headers (self, _sender);
 }
 
@@ -1238,7 +1237,7 @@ static void rygel_http_server_on_request_started (RygelHTTPServer* self, SoupSer
 	g_return_if_fail (client != NULL);
 #line 187 "rygel-http-post-test.vala"
 	g_signal_connect_object (msg, "got-headers", (GCallback) _rygel_http_server_on_got_headers_soup_message_got_headers, self, 0);
-#line 1242 "rygel-http-post-test.c"
+#line 1241 "rygel-http-post-test.c"
 }
 
 
@@ -1250,7 +1249,7 @@ static void rygel_http_server_on_got_headers (RygelHTTPServer* self, SoupMessage
 	g_return_if_fail (msg != NULL);
 #line 191 "rygel-http-post-test.vala"
 	g_signal_emit_by_name (self, "message-received", msg);
-#line 1254 "rygel-http-post-test.c"
+#line 1253 "rygel-http-post-test.c"
 }
 
 
@@ -1260,7 +1259,7 @@ const char* rygel_http_server_get_path_root (RygelHTTPServer* self) {
 	result = RYGEL_HTTP_SERVER_SERVER_PATH;
 #line 150 "rygel-http-post-test.vala"
 	return result;
-#line 1264 "rygel-http-post-test.c"
+#line 1263 "rygel-http-post-test.c"
 }
 
 
@@ -1270,12 +1269,12 @@ char* rygel_http_server_get_uri (RygelHTTPServer* self) {
 	g_return_val_if_fail (self != NULL, NULL);
 #line 159 "rygel-http-post-test.vala"
 	item_uri = rygel_http_item_uri_new (RYGEL_MEDIA_CONTAINER_ITEM_ID, self, -1, -1, NULL);
-#line 1274 "rygel-http-post-test.c"
+#line 1273 "rygel-http-post-test.c"
 	result = rygel_http_item_uri_to_string (item_uri);
 	_g_object_unref0 (item_uri);
 #line 162 "rygel-http-post-test.vala"
 	return result;
-#line 1279 "rygel-http-post-test.c"
+#line 1278 "rygel-http-post-test.c"
 }
 
 
@@ -1333,7 +1332,7 @@ static void rygel_http_server_get_property (GObject * object, guint property_id,
 
 #line 205 "rygel-http-post-test.vala"
 RygelHTTPClient* rygel_http_client_construct (GType object_type, GUPnPContext* context, const char* uri) {
-#line 1337 "rygel-http-post-test.c"
+#line 1336 "rygel-http-post-test.c"
 	RygelHTTPClient * self;
 	GUPnPContext* _tmp0_;
 	gchar* _tmp1_;
@@ -1352,7 +1351,7 @@ RygelHTTPClient* rygel_http_client_construct (GType object_type, GUPnPContext* c
 	self->msg = (_tmp2_ = soup_message_new ("POST", uri), _g_object_unref0 (self->msg), _tmp2_);
 #line 211 "rygel-http-post-test.vala"
 	g_assert (self->msg != NULL);
-#line 1356 "rygel-http-post-test.c"
+#line 1355 "rygel-http-post-test.c"
 	return self;
 }
 
@@ -1361,7 +1360,7 @@ RygelHTTPClient* rygel_http_client_construct (GType object_type, GUPnPContext* c
 RygelHTTPClient* rygel_http_client_new (GUPnPContext* context, const char* uri) {
 #line 205 "rygel-http-post-test.vala"
 	return rygel_http_client_construct (RYGEL_TYPE_HTTP_CLIENT, context, uri);
-#line 1365 "rygel-http-post-test.c"
+#line 1364 "rygel-http-post-test.c"
 }
 
 
@@ -1401,7 +1400,7 @@ static void rygel_http_client_run_ready (GObject* source_object, GAsyncResult* _
 
 #line 214 "rygel-http-post-test.vala"
 static gboolean _rygel_http_client_real_run_co_gsource_func (gpointer self) {
-#line 1405 "rygel-http-post-test.c"
+#line 1404 "rygel-http-post-test.c"
 	gboolean result;
 	result = rygel_http_client_real_run_co (self);
 	return result;
@@ -1410,7 +1409,7 @@ static gboolean _rygel_http_client_real_run_co_gsource_func (gpointer self) {
 
 #line 219 "rygel-http-post-test.vala"
 static void _lambda2_ (SoupSession* session, SoupMessage* msg, Block1Data* _data1_) {
-#line 1414 "rygel-http-post-test.c"
+#line 1413 "rygel-http-post-test.c"
 	RygelHTTPClient * self;
 	self = _data1_->self;
 #line 219 "rygel-http-post-test.vala"
@@ -1419,25 +1418,25 @@ static void _lambda2_ (SoupSession* session, SoupMessage* msg, Block1Data* _data
 	g_return_if_fail (msg != NULL);
 #line 220 "rygel-http-post-test.vala"
 	_data1_->run_continue (_data1_->run_continue_target);
-#line 1423 "rygel-http-post-test.c"
+#line 1422 "rygel-http-post-test.c"
 }
 
 
 #line 219 "rygel-http-post-test.vala"
 static void __lambda2__soup_session_callback (SoupSession* session, SoupMessage* msg, gpointer self) {
-#line 1429 "rygel-http-post-test.c"
+#line 1428 "rygel-http-post-test.c"
 	_lambda2_ (session, msg, self);
 }
 
 
 static Block1Data* block1_data_ref (Block1Data* _data1_) {
-	++_data1_->_ref_count_;
+	g_atomic_int_inc (&_data1_->_ref_count_);
 	return _data1_;
 }
 
 
 static void block1_data_unref (Block1Data* _data1_) {
-	if ((--_data1_->_ref_count_) == 0) {
+	if (g_atomic_int_dec_and_test (&_data1_->_ref_count_)) {
 		_g_object_unref0 (_data1_->self);
 		(_data1_->run_continue_target_destroy_notify == NULL) ? NULL : (_data1_->run_continue_target_destroy_notify (_data1_->run_continue_target), NULL);
 		_data1_->run_continue = NULL;
@@ -1468,14 +1467,14 @@ static gboolean rygel_http_client_real_run_co (RygelHttpClientRunData* data) {
 		soup_message_body_append (data->self->msg->request_body, SOUP_MEMORY_COPY, data->self->content, RYGEL_HTTP_CLIENT_LENGTH);
 #line 219 "rygel-http-post-test.vala"
 		soup_session_queue_message (gupnp_context_get_session (data->self->context), _g_object_ref0 (data->self->msg), __lambda2__soup_session_callback, data->_data1_);
-#line 1472 "rygel-http-post-test.c"
+#line 1471 "rygel-http-post-test.c"
 		data->_state_ = 4;
 		return FALSE;
 		_state_4:
 		;
 #line 225 "rygel-http-post-test.vala"
 		g_signal_emit_by_name ((RygelStateMachine*) data->self, "completed");
-#line 1479 "rygel-http-post-test.c"
+#line 1478 "rygel-http-post-test.c"
 		block1_data_unref (data->_data1_);
 	}
 	{
@@ -1497,7 +1496,7 @@ static GCancellable* rygel_http_client_real_get_cancellable (RygelStateMachine* 
 	result = self->priv->_cancellable;
 #line 203 "rygel-http-post-test.vala"
 	return result;
-#line 1501 "rygel-http-post-test.c"
+#line 1500 "rygel-http-post-test.c"
 }
 
 
@@ -1589,14 +1588,14 @@ static void rygel_http_client_set_property (GObject * object, guint property_id,
 
 #line 234 "rygel-http-post-test.vala"
 RygelMediaContainer* rygel_media_container_construct (GType object_type) {
-#line 1593 "rygel-http-post-test.c"
+#line 1592 "rygel-http-post-test.c"
 	RygelMediaContainer* self;
 	RygelMediaItem* _tmp0_;
 #line 234 "rygel-http-post-test.vala"
 	self = (RygelMediaContainer*) rygel_media_object_construct (object_type);
 #line 235 "rygel-http-post-test.vala"
 	self->item = (_tmp0_ = rygel_media_item_new (RYGEL_MEDIA_CONTAINER_ITEM_ID), _rygel_media_object_unref0 (self->item), _tmp0_);
-#line 1600 "rygel-http-post-test.c"
+#line 1599 "rygel-http-post-test.c"
 	return self;
 }
 
@@ -1605,7 +1604,7 @@ RygelMediaContainer* rygel_media_container_construct (GType object_type) {
 RygelMediaContainer* rygel_media_container_new (void) {
 #line 234 "rygel-http-post-test.vala"
 	return rygel_media_container_construct (RYGEL_TYPE_MEDIA_CONTAINER);
-#line 1609 "rygel-http-post-test.c"
+#line 1608 "rygel-http-post-test.c"
 }
 
 
@@ -1655,7 +1654,7 @@ static void rygel_media_container_find_object_ready (GObject* source_object, GAs
 
 #line 238 "rygel-http-post-test.vala"
 static gboolean _rygel_media_container_find_object_co_gsource_func (gpointer self) {
-#line 1659 "rygel-http-post-test.c"
+#line 1658 "rygel-http-post-test.c"
 	gboolean result;
 	result = rygel_media_container_find_object_co (self);
 	return result;
@@ -1664,23 +1663,23 @@ static gboolean _rygel_media_container_find_object_co_gsource_func (gpointer sel
 
 #line 242 "rygel-http-post-test.vala"
 static gboolean _lambda1_ (Block2Data* _data2_) {
-#line 1668 "rygel-http-post-test.c"
+#line 1667 "rygel-http-post-test.c"
 	RygelMediaContainer * self;
 	gboolean result = FALSE;
 	self = _data2_->self;
 #line 243 "rygel-http-post-test.vala"
 	_data2_->find_object_continue (_data2_->find_object_continue_target);
-#line 1674 "rygel-http-post-test.c"
+#line 1673 "rygel-http-post-test.c"
 	result = FALSE;
 #line 245 "rygel-http-post-test.vala"
 	return result;
-#line 1678 "rygel-http-post-test.c"
+#line 1677 "rygel-http-post-test.c"
 }
 
 
 #line 242 "rygel-http-post-test.vala"
 static gboolean __lambda1__gsource_func (gpointer self) {
-#line 1684 "rygel-http-post-test.c"
+#line 1683 "rygel-http-post-test.c"
 	gboolean result;
 	result = _lambda1_ (self);
 	return result;
@@ -1693,13 +1692,13 @@ static gpointer _rygel_media_object_ref0 (gpointer self) {
 
 
 static Block2Data* block2_data_ref (Block2Data* _data2_) {
-	++_data2_->_ref_count_;
+	g_atomic_int_inc (&_data2_->_ref_count_);
 	return _data2_;
 }
 
 
 static void block2_data_unref (Block2Data* _data2_) {
-	if ((--_data2_->_ref_count_) == 0) {
+	if (g_atomic_int_dec_and_test (&_data2_->_ref_count_)) {
 		_rygel_media_object_unref0 (_data2_->self);
 		(_data2_->find_object_continue_target_destroy_notify == NULL) ? NULL : (_data2_->find_object_continue_target_destroy_notify (_data2_->find_object_continue_target), NULL);
 		_data2_->find_object_continue = NULL;
@@ -1728,14 +1727,14 @@ static gboolean rygel_media_container_find_object_co (RygelMediaContainerFindObj
 		data->_data2_->find_object_continue = (data->_tmp0_ = _rygel_media_container_find_object_co_gsource_func, data->_data2_->find_object_continue_target = data, data->_data2_->find_object_continue_target_destroy_notify = NULL, data->_tmp0_);
 #line 242 "rygel-http-post-test.vala"
 		g_idle_add_full (G_PRIORITY_DEFAULT_IDLE, __lambda1__gsource_func, block2_data_ref (data->_data2_), block2_data_unref);
-#line 1732 "rygel-http-post-test.c"
+#line 1731 "rygel-http-post-test.c"
 		data->_state_ = 5;
 		return FALSE;
 		_state_5:
 		;
 #line 250 "rygel-http-post-test.vala"
 		if (_vala_strcmp0 (data->item_id, RYGEL_MEDIA_CONTAINER_ITEM_ID) == 0) {
-#line 1739 "rygel-http-post-test.c"
+#line 1738 "rygel-http-post-test.c"
 			data->result = _rygel_media_object_ref0 ((RygelMediaObject*) data->self->item);
 			block2_data_unref (data->_data2_);
 			{
@@ -1806,14 +1805,14 @@ GType rygel_media_container_get_type (void) {
 
 #line 267 "rygel-http-post-test.vala"
 RygelMediaItem* rygel_media_item_construct (GType object_type, const char* id) {
-#line 1810 "rygel-http-post-test.c"
+#line 1809 "rygel-http-post-test.c"
 	GError * _inner_error_;
 	RygelMediaItem* self;
 	char* _tmp0_;
 	GFile* _tmp1_;
 #line 267 "rygel-http-post-test.vala"
 	g_return_val_if_fail (id != NULL, NULL);
-#line 1817 "rygel-http-post-test.c"
+#line 1816 "rygel-http-post-test.c"
 	_inner_error_ = NULL;
 #line 267 "rygel-http-post-test.vala"
 	self = (RygelMediaItem*) rygel_media_object_construct (object_type);
@@ -1821,12 +1820,12 @@ RygelMediaItem* rygel_media_item_construct (GType object_type, const char* id) {
 	self->id = (_tmp0_ = g_strdup (id), _g_free0 (self->id), _tmp0_);
 #line 270 "rygel-http-post-test.vala"
 	self->file = (_tmp1_ = g_file_new_for_uri (RYGEL_MEDIA_ITEM_URI), _g_object_unref0 (self->file), _tmp1_);
-#line 1825 "rygel-http-post-test.c"
+#line 1824 "rygel-http-post-test.c"
 	{
 		GFileOutputStream* _tmp2_;
 #line 272 "rygel-http-post-test.vala"
 		_tmp2_ = g_file_replace (self->file, NULL, FALSE, 0, NULL, &_inner_error_);
-#line 1830 "rygel-http-post-test.c"
+#line 1829 "rygel-http-post-test.c"
 		_g_object_unref0 (_tmp2_);
 		if (_inner_error_ != NULL) {
 			if (g_error_matches (_inner_error_, G_IO_ERROR, G_IO_ERROR_EXISTS)) {
@@ -1854,7 +1853,7 @@ RygelMediaItem* rygel_media_item_construct (GType object_type, const char* id) {
 		{
 #line 275 "rygel-http-post-test.vala"
 			g_assert_not_reached ();
-#line 1858 "rygel-http-post-test.c"
+#line 1857 "rygel-http-post-test.c"
 			_g_error_free0 (_error_);
 		}
 	}
@@ -1872,7 +1871,7 @@ RygelMediaItem* rygel_media_item_construct (GType object_type, const char* id) {
 RygelMediaItem* rygel_media_item_new (const char* id) {
 #line 267 "rygel-http-post-test.vala"
 	return rygel_media_item_construct (RYGEL_TYPE_MEDIA_ITEM, id);
-#line 1876 "rygel-http-post-test.c"
+#line 1875 "rygel-http-post-test.c"
 }
 
 
@@ -1920,7 +1919,7 @@ static void rygel_media_item_get_writable_ready (GObject* source_object, GAsyncR
 
 #line 287 "rygel-http-post-test.vala"
 static gboolean _rygel_media_item_get_writable_co_gsource_func (gpointer self) {
-#line 1924 "rygel-http-post-test.c"
+#line 1923 "rygel-http-post-test.c"
 	gboolean result;
 	result = rygel_media_item_get_writable_co (self);
 	return result;
@@ -1929,23 +1928,23 @@ static gboolean _rygel_media_item_get_writable_co_gsource_func (gpointer self) {
 
 #line 290 "rygel-http-post-test.vala"
 static gboolean _lambda0_ (Block3Data* _data3_) {
-#line 1933 "rygel-http-post-test.c"
+#line 1932 "rygel-http-post-test.c"
 	RygelMediaItem * self;
 	gboolean result = FALSE;
 	self = _data3_->self;
 #line 291 "rygel-http-post-test.vala"
 	_data3_->get_writable_continue (_data3_->get_writable_continue_target);
-#line 1939 "rygel-http-post-test.c"
+#line 1938 "rygel-http-post-test.c"
 	result = FALSE;
 #line 293 "rygel-http-post-test.vala"
 	return result;
-#line 1943 "rygel-http-post-test.c"
+#line 1942 "rygel-http-post-test.c"
 }
 
 
 #line 290 "rygel-http-post-test.vala"
 static gboolean __lambda0__gsource_func (gpointer self) {
-#line 1949 "rygel-http-post-test.c"
+#line 1948 "rygel-http-post-test.c"
 	gboolean result;
 	result = _lambda0_ (self);
 	return result;
@@ -1953,13 +1952,13 @@ static gboolean __lambda0__gsource_func (gpointer self) {
 
 
 static Block3Data* block3_data_ref (Block3Data* _data3_) {
-	++_data3_->_ref_count_;
+	g_atomic_int_inc (&_data3_->_ref_count_);
 	return _data3_;
 }
 
 
 static void block3_data_unref (Block3Data* _data3_) {
-	if ((--_data3_->_ref_count_) == 0) {
+	if (g_atomic_int_dec_and_test (&_data3_->_ref_count_)) {
 		_rygel_media_object_unref0 (_data3_->self);
 		(_data3_->get_writable_continue_target_destroy_notify == NULL) ? NULL : (_data3_->get_writable_continue_target_destroy_notify (_data3_->get_writable_continue_target), NULL);
 		_data3_->get_writable_continue = NULL;
@@ -1988,7 +1987,7 @@ static gboolean rygel_media_item_get_writable_co (RygelMediaItemGetWritableData*
 		data->_data3_->get_writable_continue = (data->_tmp0_ = _rygel_media_item_get_writable_co_gsource_func, data->_data3_->get_writable_continue_target = data, data->_data3_->get_writable_continue_target_destroy_notify = NULL, data->_tmp0_);
 #line 290 "rygel-http-post-test.vala"
 		g_idle_add_full (G_PRIORITY_DEFAULT_IDLE, __lambda0__gsource_func, block3_data_ref (data->_data3_), block3_data_unref);
-#line 1992 "rygel-http-post-test.c"
+#line 1991 "rygel-http-post-test.c"
 		data->_state_ = 6;
 		return FALSE;
 		_state_6:
@@ -2039,7 +2038,7 @@ static void rygel_media_item_finalize (RygelMediaObject* obj) {
 		{
 #line 281 "rygel-http-post-test.vala"
 			g_file_delete (self->file, NULL, &_inner_error_);
-#line 2043 "rygel-http-post-test.c"
+#line 2042 "rygel-http-post-test.c"
 			if (_inner_error_ != NULL) {
 				goto __catch5_g_error;
 			}
@@ -2053,7 +2052,7 @@ static void rygel_media_item_finalize (RygelMediaObject* obj) {
 			{
 #line 283 "rygel-http-post-test.vala"
 				g_assert_not_reached ();
-#line 2057 "rygel-http-post-test.c"
+#line 2056 "rygel-http-post-test.c"
 				_g_error_free0 (_error_);
 			}
 		}
@@ -2083,7 +2082,7 @@ GType rygel_media_item_get_type (void) {
 
 #line 308 "rygel-http-post-test.vala"
 RygelHTTPResponse* rygel_http_response_construct (GType object_type, RygelHTTPPost* get_request) {
-#line 2087 "rygel-http-post-test.c"
+#line 2086 "rygel-http-post-test.c"
 	RygelHTTPResponse * self;
 	SoupMessage* _tmp0_;
 	SoupServer* _tmp1_;
@@ -2095,7 +2094,7 @@ RygelHTTPResponse* rygel_http_response_construct (GType object_type, RygelHTTPPo
 	self->priv->msg = (_tmp0_ = _g_object_ref0 (((RygelHTTPRequest*) get_request)->msg), _g_object_unref0 (self->priv->msg), _tmp0_);
 #line 310 "rygel-http-post-test.vala"
 	self->priv->server = (_tmp1_ = _g_object_ref0 (((RygelHTTPRequest*) get_request)->server), _g_object_unref0 (self->priv->server), _tmp1_);
-#line 2099 "rygel-http-post-test.c"
+#line 2098 "rygel-http-post-test.c"
 	return self;
 }
 
@@ -2104,7 +2103,7 @@ RygelHTTPResponse* rygel_http_response_construct (GType object_type, RygelHTTPPo
 RygelHTTPResponse* rygel_http_response_new (RygelHTTPPost* get_request) {
 #line 308 "rygel-http-post-test.vala"
 	return rygel_http_response_construct (RYGEL_TYPE_HTTP_RESPONSE, get_request);
-#line 2108 "rygel-http-post-test.c"
+#line 2107 "rygel-http-post-test.c"
 }
 
 
@@ -2144,7 +2143,7 @@ static void rygel_http_response_run_ready (GObject* source_object, GAsyncResult*
 
 #line 313 "rygel-http-post-test.vala"
 static gboolean _rygel_http_response_real_run_co_gsource_func (gpointer self) {
-#line 2148 "rygel-http-post-test.c"
+#line 2147 "rygel-http-post-test.c"
 	gboolean result;
 	result = rygel_http_response_real_run_co (self);
 	return result;
@@ -2153,23 +2152,23 @@ static gboolean _rygel_http_response_real_run_co_gsource_func (gpointer self) {
 
 #line 316 "rygel-http-post-test.vala"
 static gboolean _lambda3_ (Block4Data* _data4_) {
-#line 2157 "rygel-http-post-test.c"
+#line 2156 "rygel-http-post-test.c"
 	RygelHTTPResponse * self;
 	gboolean result = FALSE;
 	self = _data4_->self;
 #line 317 "rygel-http-post-test.vala"
 	_data4_->run_continue (_data4_->run_continue_target);
-#line 2163 "rygel-http-post-test.c"
+#line 2162 "rygel-http-post-test.c"
 	result = FALSE;
 #line 319 "rygel-http-post-test.vala"
 	return result;
-#line 2167 "rygel-http-post-test.c"
+#line 2166 "rygel-http-post-test.c"
 }
 
 
 #line 316 "rygel-http-post-test.vala"
 static gboolean __lambda3__gsource_func (gpointer self) {
-#line 2173 "rygel-http-post-test.c"
+#line 2172 "rygel-http-post-test.c"
 	gboolean result;
 	result = _lambda3_ (self);
 	return result;
@@ -2177,13 +2176,13 @@ static gboolean __lambda3__gsource_func (gpointer self) {
 
 
 static Block4Data* block4_data_ref (Block4Data* _data4_) {
-	++_data4_->_ref_count_;
+	g_atomic_int_inc (&_data4_->_ref_count_);
 	return _data4_;
 }
 
 
 static void block4_data_unref (Block4Data* _data4_) {
-	if ((--_data4_->_ref_count_) == 0) {
+	if (g_atomic_int_dec_and_test (&_data4_->_ref_count_)) {
 		_g_object_unref0 (_data4_->self);
 		(_data4_->run_continue_target_destroy_notify == NULL) ? NULL : (_data4_->run_continue_target_destroy_notify (_data4_->run_continue_target), NULL);
 		_data4_->run_continue = NULL;
@@ -2212,7 +2211,7 @@ static gboolean rygel_http_response_real_run_co (RygelHttpResponseRunData* data)
 		data->_data4_->run_continue = (data->_tmp0_ = _rygel_http_response_real_run_co_gsource_func, data->_data4_->run_continue_target = data, data->_data4_->run_continue_target_destroy_notify = NULL, data->_tmp0_);
 #line 316 "rygel-http-post-test.vala"
 		g_idle_add_full (G_PRIORITY_DEFAULT_IDLE, __lambda3__gsource_func, block4_data_ref (data->_data4_), block4_data_unref);
-#line 2216 "rygel-http-post-test.c"
+#line 2215 "rygel-http-post-test.c"
 		data->_state_ = 7;
 		return FALSE;
 		_state_7:
@@ -2223,7 +2222,7 @@ static gboolean rygel_http_response_real_run_co (RygelHttpResponseRunData* data)
 		soup_server_unpause_message (data->self->priv->server, data->self->priv->msg);
 #line 327 "rygel-http-post-test.vala"
 		g_signal_emit_by_name ((RygelStateMachine*) data->self, "completed");
-#line 2227 "rygel-http-post-test.c"
+#line 2226 "rygel-http-post-test.c"
 		block4_data_unref (data->_data4_);
 	}
 	{
@@ -2245,7 +2244,7 @@ static GCancellable* rygel_http_response_real_get_cancellable (RygelStateMachine
 	result = self->priv->_cancellable;
 #line 303 "rygel-http-post-test.vala"
 	return result;
-#line 2249 "rygel-http-post-test.c"
+#line 2248 "rygel-http-post-test.c"
 }
 
 
@@ -2336,7 +2335,7 @@ static void rygel_http_response_set_property (GObject * object, guint property_i
 
 #line 331 "rygel-http-post-test.vala"
 RygelMediaObject* rygel_media_object_construct (GType object_type) {
-#line 2340 "rygel-http-post-test.c"
+#line 2339 "rygel-http-post-test.c"
 	RygelMediaObject* self;
 	self = (RygelMediaObject*) g_type_create_instance (object_type);
 	return self;
@@ -2347,7 +2346,7 @@ RygelMediaObject* rygel_media_object_construct (GType object_type) {
 RygelMediaObject* rygel_media_object_new (void) {
 #line 331 "rygel-http-post-test.vala"
 	return rygel_media_object_construct (RYGEL_TYPE_MEDIA_OBJECT);
-#line 2351 "rygel-http-post-test.c"
+#line 2350 "rygel-http-post-test.c"
 }
 
 

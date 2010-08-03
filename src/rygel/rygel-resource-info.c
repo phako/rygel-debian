@@ -72,7 +72,7 @@ GParamSpec* rygel_param_spec_resource_info (const gchar* name, const gchar* nick
 void rygel_value_set_resource_info (GValue* value, gpointer v_object);
 void rygel_value_take_resource_info (GValue* value, gpointer v_object);
 gpointer rygel_value_get_resource_info (const GValue* value);
-GType rygel_resource_info_get_type (void);
+GType rygel_resource_info_get_type (void) G_GNUC_CONST;
 enum  {
 	RYGEL_RESOURCE_INFO_DUMMY_PROPERTY
 };

@@ -61,32 +61,36 @@ struct _RygelHTTPSeekPrivate {
 	gint64 _start;
 	gint64 _stop;
 	gint64 _length;
+	gint64 _total_length;
 };
 
 
 static gpointer rygel_http_seek_parent_class = NULL;
 
 GQuark rygel_http_seek_error_quark (void);
-GType rygel_http_seek_get_type (void);
+GType rygel_http_seek_get_type (void) G_GNUC_CONST;
 #define RYGEL_HTTP_SEEK_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), RYGEL_TYPE_HTTP_SEEK, RygelHTTPSeekPrivate))
 enum  {
 	RYGEL_HTTP_SEEK_DUMMY_PROPERTY,
 	RYGEL_HTTP_SEEK_MSG,
 	RYGEL_HTTP_SEEK_START,
 	RYGEL_HTTP_SEEK_STOP,
-	RYGEL_HTTP_SEEK_LENGTH
+	RYGEL_HTTP_SEEK_LENGTH,
+	RYGEL_HTTP_SEEK_TOTAL_LENGTH
 };
 static void rygel_http_seek_set_msg (RygelHTTPSeek* self, SoupMessage* value);
 static void rygel_http_seek_set_start (RygelHTTPSeek* self, gint64 value);
 static void rygel_http_seek_set_stop (RygelHTTPSeek* self, gint64 value);
+static void rygel_http_seek_set_total_length (RygelHTTPSeek* self, gint64 value);
+gint64 rygel_http_seek_get_length (RygelHTTPSeek* self);
 static void rygel_http_seek_set_length (RygelHTTPSeek* self, gint64 value);
-RygelHTTPSeek* rygel_http_seek_construct (GType object_type, SoupMessage* msg, gint64 start, gint64 stop, gint64 length);
+RygelHTTPSeek* rygel_http_seek_construct (GType object_type, SoupMessage* msg, gint64 start, gint64 stop, gint64 total_length);
 void rygel_http_seek_add_response_headers (RygelHTTPSeek* self);
 static void rygel_http_seek_real_add_response_headers (RygelHTTPSeek* self);
 SoupMessage* rygel_http_seek_get_msg (RygelHTTPSeek* self);
 gint64 rygel_http_seek_get_start (RygelHTTPSeek* self);
 gint64 rygel_http_seek_get_stop (RygelHTTPSeek* self);
-gint64 rygel_http_seek_get_length (RygelHTTPSeek* self);
+gint64 rygel_http_seek_get_total_length (RygelHTTPSeek* self);
 static void rygel_http_seek_finalize (GObject* obj);
 static void rygel_http_seek_get_property (GObject * object, guint property_id, GValue * value, GParamSpec * pspec);
 static void rygel_http_seek_set_property (GObject * object, guint property_id, const GValue * value, GParamSpec * pspec);
@@ -98,46 +102,49 @@ GQuark rygel_http_seek_error_quark (void) {
 }
 
 
-#line 37 "rygel-http-seek_time-seek.vala"
-RygelHTTPSeek* rygel_http_seek_construct (GType object_type, SoupMessage* msg, gint64 start, gint64 stop, gint64 length) {
-#line 104 "rygel-http-seek_time-seek.c"
+#line 38 "rygel-http-seek_time-seek.vala"
+RygelHTTPSeek* rygel_http_seek_construct (GType object_type, SoupMessage* msg, gint64 start, gint64 stop, gint64 total_length) {
+#line 108 "rygel-http-seek_time-seek.c"
 	RygelHTTPSeek * self;
-#line 37 "rygel-http-seek_time-seek.vala"
+#line 38 "rygel-http-seek_time-seek.vala"
 	g_return_val_if_fail (msg != NULL, NULL);
-#line 37 "rygel-http-seek_time-seek.vala"
+#line 38 "rygel-http-seek_time-seek.vala"
 	self = (RygelHTTPSeek*) g_object_new (object_type, NULL);
-#line 41 "rygel-http-seek_time-seek.vala"
-	rygel_http_seek_set_msg (self, msg);
 #line 42 "rygel-http-seek_time-seek.vala"
-	rygel_http_seek_set_start (self, start);
+	rygel_http_seek_set_msg (self, msg);
 #line 43 "rygel-http-seek_time-seek.vala"
-	rygel_http_seek_set_stop (self, stop);
+	rygel_http_seek_set_start (self, start);
 #line 44 "rygel-http-seek_time-seek.vala"
-	rygel_http_seek_set_length (self, length);
-#line 46 "rygel-http-seek_time-seek.vala"
-	if (length > 0) {
+	rygel_http_seek_set_stop (self, stop);
+#line 45 "rygel-http-seek_time-seek.vala"
+	rygel_http_seek_set_total_length (self, total_length);
 #line 47 "rygel-http-seek_time-seek.vala"
-		rygel_http_seek_set_stop (self, CLAMP (stop, start + 1, length - 1));
-#line 122 "rygel-http-seek_time-seek.c"
+	if (self->priv->_length > 0) {
+#line 48 "rygel-http-seek_time-seek.vala"
+		rygel_http_seek_set_stop (self, CLAMP (stop, start + 1, self->priv->_length - 1));
+#line 126 "rygel-http-seek_time-seek.c"
 	}
+#line 51 "rygel-http-seek_time-seek.vala"
+	rygel_http_seek_set_length (self, (stop + 1) - start);
+#line 130 "rygel-http-seek_time-seek.c"
 	return self;
 }
 
 
-#line 51 "rygel-http-seek_time-seek.vala"
+#line 54 "rygel-http-seek_time-seek.vala"
 static void rygel_http_seek_real_add_response_headers (RygelHTTPSeek* self) {
-#line 130 "rygel-http-seek_time-seek.c"
+#line 137 "rygel-http-seek_time-seek.c"
 	g_return_if_fail (self != NULL);
 	g_critical ("Type `%s' does not implement abstract method `rygel_http_seek_add_response_headers'", g_type_name (G_TYPE_FROM_INSTANCE (self)));
 	return;
 }
 
 
-#line 51 "rygel-http-seek_time-seek.vala"
+#line 54 "rygel-http-seek_time-seek.vala"
 void rygel_http_seek_add_response_headers (RygelHTTPSeek* self) {
-#line 51 "rygel-http-seek_time-seek.vala"
+#line 54 "rygel-http-seek_time-seek.vala"
 	RYGEL_HTTP_SEEK_GET_CLASS (self)->add_response_headers (self);
-#line 141 "rygel-http-seek_time-seek.c"
+#line 148 "rygel-http-seek_time-seek.c"
 }
 
 
@@ -147,7 +154,7 @@ SoupMessage* rygel_http_seek_get_msg (RygelHTTPSeek* self) {
 	result = self->priv->_msg;
 #line 30 "rygel-http-seek_time-seek.vala"
 	return result;
-#line 151 "rygel-http-seek_time-seek.c"
+#line 158 "rygel-http-seek_time-seek.c"
 }
 
 
@@ -170,7 +177,7 @@ gint64 rygel_http_seek_get_start (RygelHTTPSeek* self) {
 	result = self->priv->_start;
 #line 33 "rygel-http-seek_time-seek.vala"
 	return result;
-#line 174 "rygel-http-seek_time-seek.c"
+#line 181 "rygel-http-seek_time-seek.c"
 }
 
 
@@ -187,7 +194,7 @@ gint64 rygel_http_seek_get_stop (RygelHTTPSeek* self) {
 	result = self->priv->_stop;
 #line 34 "rygel-http-seek_time-seek.vala"
 	return result;
-#line 191 "rygel-http-seek_time-seek.c"
+#line 198 "rygel-http-seek_time-seek.c"
 }
 
 
@@ -204,7 +211,7 @@ gint64 rygel_http_seek_get_length (RygelHTTPSeek* self) {
 	result = self->priv->_length;
 #line 35 "rygel-http-seek_time-seek.vala"
 	return result;
-#line 208 "rygel-http-seek_time-seek.c"
+#line 215 "rygel-http-seek_time-seek.c"
 }
 
 
@@ -212,6 +219,23 @@ static void rygel_http_seek_set_length (RygelHTTPSeek* self, gint64 value) {
 	g_return_if_fail (self != NULL);
 	self->priv->_length = value;
 	g_object_notify ((GObject *) self, "length");
+}
+
+
+gint64 rygel_http_seek_get_total_length (RygelHTTPSeek* self) {
+	gint64 result;
+	g_return_val_if_fail (self != NULL, 0LL);
+	result = self->priv->_total_length;
+#line 36 "rygel-http-seek_time-seek.vala"
+	return result;
+#line 232 "rygel-http-seek_time-seek.c"
+}
+
+
+static void rygel_http_seek_set_total_length (RygelHTTPSeek* self, gint64 value) {
+	g_return_if_fail (self != NULL);
+	self->priv->_total_length = value;
+	g_object_notify ((GObject *) self, "total-length");
 }
 
 
@@ -226,6 +250,7 @@ static void rygel_http_seek_class_init (RygelHTTPSeekClass * klass) {
 	g_object_class_install_property (G_OBJECT_CLASS (klass), RYGEL_HTTP_SEEK_START, g_param_spec_int64 ("start", "start", "start", G_MININT64, G_MAXINT64, 0, G_PARAM_STATIC_NAME | G_PARAM_STATIC_NICK | G_PARAM_STATIC_BLURB | G_PARAM_READABLE));
 	g_object_class_install_property (G_OBJECT_CLASS (klass), RYGEL_HTTP_SEEK_STOP, g_param_spec_int64 ("stop", "stop", "stop", G_MININT64, G_MAXINT64, 0, G_PARAM_STATIC_NAME | G_PARAM_STATIC_NICK | G_PARAM_STATIC_BLURB | G_PARAM_READABLE));
 	g_object_class_install_property (G_OBJECT_CLASS (klass), RYGEL_HTTP_SEEK_LENGTH, g_param_spec_int64 ("length", "length", "length", G_MININT64, G_MAXINT64, 0, G_PARAM_STATIC_NAME | G_PARAM_STATIC_NICK | G_PARAM_STATIC_BLURB | G_PARAM_READABLE));
+	g_object_class_install_property (G_OBJECT_CLASS (klass), RYGEL_HTTP_SEEK_TOTAL_LENGTH, g_param_spec_int64 ("total-length", "total-length", "total-length", G_MININT64, G_MAXINT64, 0, G_PARAM_STATIC_NAME | G_PARAM_STATIC_NICK | G_PARAM_STATIC_BLURB | G_PARAM_READABLE));
 }
 
 
@@ -270,6 +295,9 @@ static void rygel_http_seek_get_property (GObject * object, guint property_id, G
 		case RYGEL_HTTP_SEEK_LENGTH:
 		g_value_set_int64 (value, rygel_http_seek_get_length (self));
 		break;
+		case RYGEL_HTTP_SEEK_TOTAL_LENGTH:
+		g_value_set_int64 (value, rygel_http_seek_get_total_length (self));
+		break;
 		default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
 		break;
@@ -292,6 +320,9 @@ static void rygel_http_seek_set_property (GObject * object, guint property_id, c
 		break;
 		case RYGEL_HTTP_SEEK_LENGTH:
 		rygel_http_seek_set_length (self, g_value_get_int64 (value));
+		break;
+		case RYGEL_HTTP_SEEK_TOTAL_LENGTH:
+		rygel_http_seek_set_total_length (self, g_value_get_int64 (value));
 		break;
 		default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);

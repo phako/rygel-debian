@@ -179,10 +179,10 @@ static gpointer rygel_http_client_parent_class = NULL;
 static RygelStateMachineIface* rygel_http_client_rygel_state_machine_parent_iface = NULL;
 
 GQuark rygel_test_error_quark (void);
-GType rygel_http_response_test_get_type (void);
-GType rygel_http_response_get_type (void);
-GType rygel_http_server_get_type (void);
-GType rygel_http_client_get_type (void);
+GType rygel_http_response_test_get_type (void) G_GNUC_CONST;
+GType rygel_http_response_get_type (void) G_GNUC_CONST;
+GType rygel_http_server_get_type (void) G_GNUC_CONST;
+GType rygel_http_client_get_type (void) G_GNUC_CONST;
 #define RYGEL_HTTP_RESPONSE_TEST_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), RYGEL_TYPE_HTTP_RESPONSE_TEST, RygelHTTPResponseTestPrivate))
 enum  {
 	RYGEL_HTTP_RESPONSE_TEST_DUMMY_PROPERTY
@@ -202,7 +202,7 @@ static void rygel_http_response_test_on_message_received (RygelHTTPResponseTest*
 static void _rygel_http_response_test_on_message_received_rygel_http_server_message_received (RygelHTTPServer* _sender, SoupMessage* message, gpointer self);
 static void rygel_http_response_test_on_message_aborted (RygelHTTPResponseTest* self, RygelHTTPServer* server, SoupMessage* msg);
 static void _rygel_http_response_test_on_message_aborted_rygel_http_server_message_aborted (RygelHTTPServer* _sender, SoupMessage* message, gpointer self);
-GType rygel_state_machine_get_type (void);
+GType rygel_state_machine_get_type (void) G_GNUC_CONST;
 static void rygel_http_response_test_on_client_completed (RygelHTTPResponseTest* self, RygelStateMachine* client);
 static void _rygel_http_response_test_on_client_completed_rygel_state_machine_completed (RygelStateMachine* _sender, gpointer self);
 void rygel_state_machine_run (RygelStateMachine* self, GAsyncReadyCallback _callback_, gpointer _user_data_);
@@ -284,7 +284,7 @@ RygelHTTPResponseTest* rygel_http_response_test_construct (GType object_type, GC
 #line 285 "rygel-http-response-test_seekable-response.c"
 	if (_inner_error_ != NULL) {
 		g_propagate_error (error, _inner_error_);
-		g_object_unref (self);
+		_g_object_unref0 (self);
 		return NULL;
 	}
 #line 50 "rygel-http-response-test_seekable-response.vala"
@@ -303,30 +303,44 @@ RygelHTTPResponseTest* rygel_http_response_test_construct (GType object_type, GC
 #line 58 "rygel-http-response-test_seekable-response.vala"
 RygelHTTPResponseTest* rygel_http_response_test_construct_complete (GType object_type, GError** error) {
 #line 306 "rygel-http-response-test_seekable-response.c"
+	GError * _inner_error_;
 	RygelHTTPResponseTest * self;
+	_inner_error_ = NULL;
 #line 59 "rygel-http-response-test_seekable-response.vala"
-	self = (RygelHTTPResponseTest*) rygel_http_response_test_construct (object_type, NULL, error);
-#line 310 "rygel-http-response-test_seekable-response.c"
+	self = (RygelHTTPResponseTest*) rygel_http_response_test_construct (object_type, NULL, &_inner_error_);
+#line 312 "rygel-http-response-test_seekable-response.c"
+	if (_inner_error_ != NULL) {
+		g_propagate_error (error, _inner_error_);
+		_g_object_unref0 (self);
+		return NULL;
+	}
 	return self;
 }
 
 
 #line 62 "rygel-http-response-test_seekable-response.vala"
 RygelHTTPResponseTest* rygel_http_response_test_construct_abort (GType object_type, GError** error) {
-#line 317 "rygel-http-response-test_seekable-response.c"
+#line 324 "rygel-http-response-test_seekable-response.c"
+	GError * _inner_error_;
 	RygelHTTPResponseTest * self;
 	GCancellable* _tmp0_;
+	_inner_error_ = NULL;
 #line 63 "rygel-http-response-test_seekable-response.vala"
-	self = (RygelHTTPResponseTest*) rygel_http_response_test_construct (object_type, _tmp0_ = g_cancellable_new (), error);
-#line 322 "rygel-http-response-test_seekable-response.c"
+	self = (RygelHTTPResponseTest*) rygel_http_response_test_construct (object_type, _tmp0_ = g_cancellable_new (), &_inner_error_);
+#line 331 "rygel-http-response-test_seekable-response.c"
 	_g_object_unref0 (_tmp0_);
+	if (_inner_error_ != NULL) {
+		g_propagate_error (error, _inner_error_);
+		_g_object_unref0 (self);
+		return NULL;
+	}
 	return self;
 }
 
 
 #line 125 "rygel-http-response-test_seekable-response.vala"
 static gboolean _rygel_http_response_test_on_timeout_gsource_func (gpointer self) {
-#line 330 "rygel-http-response-test_seekable-response.c"
+#line 344 "rygel-http-response-test_seekable-response.c"
 	gboolean result;
 	result = rygel_http_response_test_on_timeout (self);
 	return result;
@@ -335,21 +349,21 @@ static gboolean _rygel_http_response_test_on_timeout_gsource_func (gpointer self
 
 #line 104 "rygel-http-response-test_seekable-response.vala"
 static void _rygel_http_response_test_on_message_received_rygel_http_server_message_received (RygelHTTPServer* _sender, SoupMessage* message, gpointer self) {
-#line 339 "rygel-http-response-test_seekable-response.c"
+#line 353 "rygel-http-response-test_seekable-response.c"
 	rygel_http_response_test_on_message_received (self, _sender, message);
 }
 
 
 #line 120 "rygel-http-response-test_seekable-response.vala"
 static void _rygel_http_response_test_on_message_aborted_rygel_http_server_message_aborted (RygelHTTPServer* _sender, SoupMessage* message, gpointer self) {
-#line 346 "rygel-http-response-test_seekable-response.c"
+#line 360 "rygel-http-response-test_seekable-response.c"
 	rygel_http_response_test_on_message_aborted (self, _sender, message);
 }
 
 
 #line 88 "rygel-http-response-test_seekable-response.vala"
 static void _rygel_http_response_test_on_client_completed_rygel_state_machine_completed (RygelStateMachine* _sender, gpointer self) {
-#line 353 "rygel-http-response-test_seekable-response.c"
+#line 367 "rygel-http-response-test_seekable-response.c"
 	rygel_http_response_test_on_client_completed (self, _sender);
 }
 
@@ -361,11 +375,11 @@ static gpointer _g_error_copy0 (gpointer self) {
 
 #line 66 "rygel-http-response-test_seekable-response.vala"
 static void rygel_http_response_test_real_run (RygelHTTPResponseTest* self, GError** error) {
-#line 365 "rygel-http-response-test_seekable-response.c"
+#line 379 "rygel-http-response-test_seekable-response.c"
 	GError * _inner_error_;
 #line 66 "rygel-http-response-test_seekable-response.vala"
 	g_return_if_fail (self != NULL);
-#line 369 "rygel-http-response-test_seekable-response.c"
+#line 383 "rygel-http-response-test_seekable-response.c"
 	_inner_error_ = NULL;
 #line 67 "rygel-http-response-test_seekable-response.vala"
 	g_timeout_add_seconds_full (G_PRIORITY_DEFAULT, (guint) 3, _rygel_http_response_test_on_timeout_gsource_func, g_object_ref (self), g_object_unref);
@@ -377,11 +391,11 @@ static void rygel_http_response_test_real_run (RygelHTTPResponseTest* self, GErr
 	if (self->cancellable == NULL) {
 #line 71 "rygel-http-response-test_seekable-response.vala"
 		g_signal_connect_object ((RygelStateMachine*) self->client, "completed", (GCallback) _rygel_http_response_test_on_client_completed_rygel_state_machine_completed, self, 0);
-#line 381 "rygel-http-response-test_seekable-response.c"
+#line 395 "rygel-http-response-test_seekable-response.c"
 	} else {
 #line 73 "rygel-http-response-test_seekable-response.vala"
 		self->priv->client_done = TRUE;
-#line 385 "rygel-http-response-test_seekable-response.c"
+#line 399 "rygel-http-response-test_seekable-response.c"
 	}
 #line 76 "rygel-http-response-test_seekable-response.vala"
 	rygel_state_machine_run ((RygelStateMachine*) self->client, NULL, NULL);
@@ -389,7 +403,7 @@ static void rygel_http_response_test_real_run (RygelHTTPResponseTest* self, GErr
 	g_main_loop_run (self->priv->main_loop);
 #line 80 "rygel-http-response-test_seekable-response.vala"
 	if (self->priv->error != NULL) {
-#line 393 "rygel-http-response-test_seekable-response.c"
+#line 407 "rygel-http-response-test_seekable-response.c"
 		_inner_error_ = _g_error_copy0 (self->priv->error);
 		{
 			g_propagate_error (error, _inner_error_);
@@ -403,13 +417,13 @@ static void rygel_http_response_test_real_run (RygelHTTPResponseTest* self, GErr
 void rygel_http_response_test_run (RygelHTTPResponseTest* self, GError** error) {
 #line 66 "rygel-http-response-test_seekable-response.vala"
 	RYGEL_HTTP_RESPONSE_TEST_GET_CLASS (self)->run (self, error);
-#line 407 "rygel-http-response-test_seekable-response.c"
+#line 421 "rygel-http-response-test_seekable-response.c"
 }
 
 
 #line 85 "rygel-http-response-test_seekable-response.vala"
 static RygelHTTPResponse* rygel_http_response_test_real_create_response (RygelHTTPResponseTest* self, SoupMessage* msg, GError** error) {
-#line 413 "rygel-http-response-test_seekable-response.c"
+#line 427 "rygel-http-response-test_seekable-response.c"
 	g_return_val_if_fail (self != NULL, NULL);
 	g_critical ("Type `%s' does not implement abstract method `rygel_http_response_test_create_response'", g_type_name (G_TYPE_FROM_INSTANCE (self)));
 	return NULL;
@@ -420,7 +434,7 @@ static RygelHTTPResponse* rygel_http_response_test_real_create_response (RygelHT
 RygelHTTPResponse* rygel_http_response_test_create_response (RygelHTTPResponseTest* self, SoupMessage* msg, GError** error) {
 #line 85 "rygel-http-response-test_seekable-response.vala"
 	return RYGEL_HTTP_RESPONSE_TEST_GET_CLASS (self)->create_response (self, msg, error);
-#line 424 "rygel-http-response-test_seekable-response.c"
+#line 438 "rygel-http-response-test_seekable-response.c"
 }
 
 
@@ -434,11 +448,11 @@ static void rygel_http_response_test_on_client_completed (RygelHTTPResponseTest*
 	if (self->priv->server_done) {
 #line 90 "rygel-http-response-test_seekable-response.vala"
 		g_main_loop_quit (self->priv->main_loop);
-#line 438 "rygel-http-response-test_seekable-response.c"
+#line 452 "rygel-http-response-test_seekable-response.c"
 	}
 #line 93 "rygel-http-response-test_seekable-response.vala"
 	self->priv->client_done = TRUE;
-#line 442 "rygel-http-response-test_seekable-response.c"
+#line 456 "rygel-http-response-test_seekable-response.c"
 }
 
 
@@ -452,24 +466,24 @@ static void rygel_http_response_test_on_response_completed (RygelHTTPResponseTes
 	if (self->priv->client_done) {
 #line 98 "rygel-http-response-test_seekable-response.vala"
 		g_main_loop_quit (self->priv->main_loop);
-#line 456 "rygel-http-response-test_seekable-response.c"
+#line 470 "rygel-http-response-test_seekable-response.c"
 	}
 #line 101 "rygel-http-response-test_seekable-response.vala"
 	self->priv->server_done = TRUE;
-#line 460 "rygel-http-response-test_seekable-response.c"
+#line 474 "rygel-http-response-test_seekable-response.c"
 }
 
 
 #line 96 "rygel-http-response-test_seekable-response.vala"
 static void _rygel_http_response_test_on_response_completed_rygel_state_machine_completed (RygelStateMachine* _sender, gpointer self) {
-#line 466 "rygel-http-response-test_seekable-response.c"
+#line 480 "rygel-http-response-test_seekable-response.c"
 	rygel_http_response_test_on_response_completed (self, _sender);
 }
 
 
 #line 104 "rygel-http-response-test_seekable-response.vala"
 static void rygel_http_response_test_on_message_received (RygelHTTPResponseTest* self, RygelHTTPServer* server, SoupMessage* msg) {
-#line 473 "rygel-http-response-test_seekable-response.c"
+#line 487 "rygel-http-response-test_seekable-response.c"
 	GError * _inner_error_;
 #line 104 "rygel-http-response-test_seekable-response.vala"
 	g_return_if_fail (self != NULL);
@@ -477,13 +491,13 @@ static void rygel_http_response_test_on_message_received (RygelHTTPResponseTest*
 	g_return_if_fail (server != NULL);
 #line 104 "rygel-http-response-test_seekable-response.vala"
 	g_return_if_fail (msg != NULL);
-#line 481 "rygel-http-response-test_seekable-response.c"
+#line 495 "rygel-http-response-test_seekable-response.c"
 	_inner_error_ = NULL;
 	{
 		RygelHTTPResponse* response;
 #line 107 "rygel-http-response-test_seekable-response.vala"
 		response = rygel_http_response_test_create_response (self, msg, &_inner_error_);
-#line 487 "rygel-http-response-test_seekable-response.c"
+#line 501 "rygel-http-response-test_seekable-response.c"
 		if (_inner_error_ != NULL) {
 			goto __catch5_g_error;
 		}
@@ -491,7 +505,7 @@ static void rygel_http_response_test_on_message_received (RygelHTTPResponseTest*
 		rygel_http_response_run (response, NULL, NULL);
 #line 111 "rygel-http-response-test_seekable-response.vala"
 		g_signal_connect_object ((RygelStateMachine*) response, "completed", (GCallback) _rygel_http_response_test_on_response_completed_rygel_state_machine_completed, self, 0);
-#line 495 "rygel-http-response-test_seekable-response.c"
+#line 509 "rygel-http-response-test_seekable-response.c"
 		_g_object_unref0 (response);
 	}
 	goto __finally5;
@@ -506,11 +520,11 @@ static void rygel_http_response_test_on_message_received (RygelHTTPResponseTest*
 			self->priv->error = (_tmp0_ = _g_error_copy0 (_error_), _g_error_free0 (self->priv->error), _tmp0_);
 #line 114 "rygel-http-response-test_seekable-response.vala"
 			g_main_loop_quit (self->priv->main_loop);
-#line 510 "rygel-http-response-test_seekable-response.c"
+#line 524 "rygel-http-response-test_seekable-response.c"
 			_g_error_free0 (_error_);
 #line 116 "rygel-http-response-test_seekable-response.vala"
 			return;
-#line 514 "rygel-http-response-test_seekable-response.c"
+#line 528 "rygel-http-response-test_seekable-response.c"
 		}
 	}
 	__finally5:
@@ -532,13 +546,13 @@ static void rygel_http_response_test_on_message_aborted (RygelHTTPResponseTest* 
 	g_return_if_fail (msg != NULL);
 #line 122 "rygel-http-response-test_seekable-response.vala"
 	g_cancellable_cancel (self->cancellable);
-#line 536 "rygel-http-response-test_seekable-response.c"
+#line 550 "rygel-http-response-test_seekable-response.c"
 }
 
 
 #line 125 "rygel-http-response-test_seekable-response.vala"
 static gboolean rygel_http_response_test_on_timeout (RygelHTTPResponseTest* self) {
-#line 542 "rygel-http-response-test_seekable-response.c"
+#line 556 "rygel-http-response-test_seekable-response.c"
 	gboolean result = FALSE;
 	GError* _tmp0_;
 #line 125 "rygel-http-response-test_seekable-response.vala"
@@ -547,11 +561,11 @@ static gboolean rygel_http_response_test_on_timeout (RygelHTTPResponseTest* self
 	self->priv->error = (_tmp0_ = g_error_new_literal (RYGEL_TEST_ERROR, RYGEL_TEST_ERROR_TIMEOUT, "Timeout"), _g_error_free0 (self->priv->error), _tmp0_);
 #line 127 "rygel-http-response-test_seekable-response.vala"
 	g_main_loop_quit (self->priv->main_loop);
-#line 551 "rygel-http-response-test_seekable-response.c"
+#line 565 "rygel-http-response-test_seekable-response.c"
 	result = FALSE;
 #line 129 "rygel-http-response-test_seekable-response.vala"
 	return result;
-#line 555 "rygel-http-response-test_seekable-response.c"
+#line 569 "rygel-http-response-test_seekable-response.c"
 }
 
 
@@ -595,39 +609,39 @@ GType rygel_http_response_test_get_type (void) {
 
 #line 164 "rygel-http-response-test_seekable-response.vala"
 static void _rygel_http_server_server_cb_soup_server_callback (SoupServer* server, SoupMessage* msg, const char* path, GHashTable* query, SoupClientContext* client, gpointer self) {
-#line 599 "rygel-http-response-test_seekable-response.c"
+#line 613 "rygel-http-response-test_seekable-response.c"
 	rygel_http_server_server_cb (self, server, msg, path, query, client);
 }
 
 
 #line 173 "rygel-http-response-test_seekable-response.vala"
 static void _rygel_http_server_on_request_aborted_soup_server_request_aborted (SoupServer* _sender, SoupMessage* msg, SoupClientContext* client, gpointer self) {
-#line 606 "rygel-http-response-test_seekable-response.c"
+#line 620 "rygel-http-response-test_seekable-response.c"
 	rygel_http_server_on_request_aborted (self, _sender, msg, client);
 }
 
 
 #line 149 "rygel-http-response-test_seekable-response.vala"
 RygelHTTPServer* rygel_http_server_construct (GType object_type, GError** error) {
-#line 613 "rygel-http-response-test_seekable-response.c"
+#line 627 "rygel-http-response-test_seekable-response.c"
 	GError * _inner_error_;
 	RygelHTTPServer * self;
 	_inner_error_ = NULL;
 #line 149 "rygel-http-response-test_seekable-response.vala"
 	self = (RygelHTTPServer*) g_object_new (object_type, NULL);
-#line 619 "rygel-http-response-test_seekable-response.c"
+#line 633 "rygel-http-response-test_seekable-response.c"
 	{
 		GUPnPContext* _tmp0_;
 		GUPnPContext* _tmp1_;
 #line 151 "rygel-http-response-test_seekable-response.vala"
 		_tmp0_ = gupnp_context_new (NULL, "lo", (guint) 0, &_inner_error_);
-#line 625 "rygel-http-response-test_seekable-response.c"
+#line 639 "rygel-http-response-test_seekable-response.c"
 		if (_inner_error_ != NULL) {
 			goto __catch6_g_error;
 		}
 #line 151 "rygel-http-response-test_seekable-response.vala"
 		self->context = (_tmp1_ = _tmp0_, _g_object_unref0 (self->context), _tmp1_);
-#line 631 "rygel-http-response-test_seekable-response.c"
+#line 645 "rygel-http-response-test_seekable-response.c"
 	}
 	goto __finally6;
 	__catch6_g_error:
@@ -648,7 +662,7 @@ RygelHTTPServer* rygel_http_server_construct (GType object_type, GError** error)
 	if (_inner_error_ != NULL) {
 		if (_inner_error_->domain == RYGEL_TEST_ERROR) {
 			g_propagate_error (error, _inner_error_);
-			g_object_unref (self);
+			_g_object_unref0 (self);
 			return NULL;
 		} else {
 			g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
@@ -666,7 +680,7 @@ RygelHTTPServer* rygel_http_server_construct (GType object_type, GError** error)
 	soup_server_add_handler (gupnp_context_get_server (self->context), RYGEL_HTTP_SERVER_SERVER_PATH, _rygel_http_server_server_cb_soup_server_callback, g_object_ref (self), g_object_unref);
 #line 161 "rygel-http-response-test_seekable-response.vala"
 	g_signal_connect_object (gupnp_context_get_server (self->context), "request-aborted", (GCallback) _rygel_http_server_on_request_aborted_soup_server_request_aborted, self, 0);
-#line 670 "rygel-http-response-test_seekable-response.c"
+#line 684 "rygel-http-response-test_seekable-response.c"
 	return self;
 }
 
@@ -675,7 +689,7 @@ RygelHTTPServer* rygel_http_server_construct (GType object_type, GError** error)
 RygelHTTPServer* rygel_http_server_new (GError** error) {
 #line 149 "rygel-http-response-test_seekable-response.vala"
 	return rygel_http_server_construct (RYGEL_TYPE_HTTP_SERVER, error);
-#line 679 "rygel-http-response-test_seekable-response.c"
+#line 693 "rygel-http-response-test_seekable-response.c"
 }
 
 
@@ -695,7 +709,7 @@ static void rygel_http_server_server_cb (RygelHTTPServer* self, SoupServer* serv
 	soup_server_pause_message (gupnp_context_get_server (self->context), msg);
 #line 170 "rygel-http-response-test_seekable-response.vala"
 	g_signal_emit_by_name (self, "message-received", msg);
-#line 699 "rygel-http-response-test_seekable-response.c"
+#line 713 "rygel-http-response-test_seekable-response.c"
 }
 
 
@@ -711,7 +725,7 @@ static void rygel_http_server_on_request_aborted (RygelHTTPServer* self, SoupSer
 	g_return_if_fail (client != NULL);
 #line 176 "rygel-http-response-test_seekable-response.vala"
 	g_signal_emit_by_name (self, "message-aborted", message);
-#line 715 "rygel-http-response-test_seekable-response.c"
+#line 729 "rygel-http-response-test_seekable-response.c"
 }
 
 
@@ -726,7 +740,7 @@ char* rygel_http_server_get_uri (RygelHTTPServer* self) {
 	result = (_tmp4_ = g_strconcat (_tmp3_ = g_strconcat (_tmp1_ = g_strconcat (_tmp0_ = g_strconcat ("http://", gssdp_client_get_host_ip ((GSSDPClient*) self->context), NULL), ":", NULL), _tmp2_ = g_strdup_printf ("%u", gupnp_context_get_port (self->context)), NULL), RYGEL_HTTP_SERVER_SERVER_PATH, NULL), _g_free0 (_tmp3_), _g_free0 (_tmp2_), _g_free0 (_tmp1_), _g_free0 (_tmp0_), _tmp4_);
 #line 139 "rygel-http-response-test_seekable-response.vala"
 	return result;
-#line 730 "rygel-http-response-test_seekable-response.c"
+#line 744 "rygel-http-response-test_seekable-response.c"
 }
 
 
@@ -780,14 +794,14 @@ static void rygel_http_server_get_property (GObject * object, guint property_id,
 
 #line 230 "rygel-http-response-test_seekable-response.vala"
 static void _rygel_http_client_on_cancelled_g_cancellable_cancelled (GCancellable* _sender, gpointer self) {
-#line 784 "rygel-http-response-test_seekable-response.c"
+#line 798 "rygel-http-response-test_seekable-response.c"
 	rygel_http_client_on_cancelled (self, _sender);
 }
 
 
 #line 187 "rygel-http-response-test_seekable-response.vala"
 RygelHTTPClient* rygel_http_client_construct (GType object_type, GUPnPContext* context, const char* uri, gsize total_bytes, gboolean active) {
-#line 791 "rygel-http-response-test_seekable-response.c"
+#line 805 "rygel-http-response-test_seekable-response.c"
 	RygelHTTPClient * self;
 	GUPnPContext* _tmp0_;
 	SoupMessage* _tmp1_;
@@ -809,15 +823,15 @@ RygelHTTPClient* rygel_http_client_construct (GType object_type, GUPnPContext* c
 	soup_message_body_set_accumulate (self->msg->response_body, FALSE);
 #line 198 "rygel-http-response-test_seekable-response.vala"
 	if (active) {
-#line 813 "rygel-http-response-test_seekable-response.c"
+#line 827 "rygel-http-response-test_seekable-response.c"
 		GCancellable* _tmp2_;
 #line 199 "rygel-http-response-test_seekable-response.vala"
 		rygel_state_machine_set_cancellable ((RygelStateMachine*) self, _tmp2_ = g_cancellable_new ());
-#line 817 "rygel-http-response-test_seekable-response.c"
+#line 831 "rygel-http-response-test_seekable-response.c"
 		_g_object_unref0 (_tmp2_);
 #line 200 "rygel-http-response-test_seekable-response.vala"
 		g_signal_connect_object (rygel_state_machine_get_cancellable ((RygelStateMachine*) self), "cancelled", (GCallback) _rygel_http_client_on_cancelled_g_cancellable_cancelled, self, 0);
-#line 821 "rygel-http-response-test_seekable-response.c"
+#line 835 "rygel-http-response-test_seekable-response.c"
 	}
 	return self;
 }
@@ -827,7 +841,7 @@ RygelHTTPClient* rygel_http_client_construct (GType object_type, GUPnPContext* c
 RygelHTTPClient* rygel_http_client_new (GUPnPContext* context, const char* uri, gsize total_bytes, gboolean active) {
 #line 187 "rygel-http-response-test_seekable-response.vala"
 	return rygel_http_client_construct (RYGEL_TYPE_HTTP_CLIENT, context, uri, total_bytes, active);
-#line 831 "rygel-http-response-test_seekable-response.c"
+#line 845 "rygel-http-response-test_seekable-response.c"
 }
 
 
@@ -867,7 +881,7 @@ static void rygel_http_client_run_ready (GObject* source_object, GAsyncResult* _
 
 #line 204 "rygel-http-response-test_seekable-response.vala"
 static gboolean _rygel_http_client_real_run_co_gsource_func (gpointer self) {
-#line 871 "rygel-http-response-test_seekable-response.c"
+#line 885 "rygel-http-response-test_seekable-response.c"
 	gboolean result;
 	result = rygel_http_client_real_run_co (self);
 	return result;
@@ -876,7 +890,7 @@ static gboolean _rygel_http_client_real_run_co_gsource_func (gpointer self) {
 
 #line 208 "rygel-http-response-test_seekable-response.vala"
 static void _lambda0_ (SoupMessage* msg, SoupBuffer* chunk, Block1Data* _data1_) {
-#line 880 "rygel-http-response-test_seekable-response.c"
+#line 894 "rygel-http-response-test_seekable-response.c"
 	RygelHTTPClient * self;
 	gboolean _tmp0_ = FALSE;
 	self = _data1_->self;
@@ -890,11 +904,11 @@ static void _lambda0_ (SoupMessage* msg, SoupBuffer* chunk, Block1Data* _data1_)
 	if (_data1_->bytes_received >= self->total_bytes) {
 #line 212 "rygel-http-response-test_seekable-response.vala"
 		_tmp0_ = rygel_state_machine_get_cancellable ((RygelStateMachine*) self) != NULL;
-#line 894 "rygel-http-response-test_seekable-response.c"
+#line 908 "rygel-http-response-test_seekable-response.c"
 	} else {
 #line 211 "rygel-http-response-test_seekable-response.vala"
 		_tmp0_ = FALSE;
-#line 898 "rygel-http-response-test_seekable-response.c"
+#line 912 "rygel-http-response-test_seekable-response.c"
 	}
 #line 211 "rygel-http-response-test_seekable-response.vala"
 	if (_tmp0_) {
@@ -902,21 +916,21 @@ static void _lambda0_ (SoupMessage* msg, SoupBuffer* chunk, Block1Data* _data1_)
 		_data1_->bytes_received = CLAMP (_data1_->bytes_received, (gsize) 0, self->total_bytes);
 #line 215 "rygel-http-response-test_seekable-response.vala"
 		g_cancellable_cancel (rygel_state_machine_get_cancellable ((RygelStateMachine*) self));
-#line 906 "rygel-http-response-test_seekable-response.c"
+#line 920 "rygel-http-response-test_seekable-response.c"
 	}
 }
 
 
 #line 208 "rygel-http-response-test_seekable-response.vala"
 static void __lambda0__soup_message_got_chunk (SoupMessage* _sender, SoupBuffer* chunk, gpointer self) {
-#line 913 "rygel-http-response-test_seekable-response.c"
+#line 927 "rygel-http-response-test_seekable-response.c"
 	_lambda0_ (_sender, chunk, self);
 }
 
 
 #line 219 "rygel-http-response-test_seekable-response.vala"
 static void _lambda1_ (SoupSession* session, SoupMessage* msg, Block1Data* _data1_) {
-#line 920 "rygel-http-response-test_seekable-response.c"
+#line 934 "rygel-http-response-test_seekable-response.c"
 	RygelHTTPClient * self;
 	self = _data1_->self;
 #line 219 "rygel-http-response-test_seekable-response.vala"
@@ -927,25 +941,25 @@ static void _lambda1_ (SoupSession* session, SoupMessage* msg, Block1Data* _data
 	g_assert (_data1_->bytes_received == self->total_bytes);
 #line 222 "rygel-http-response-test_seekable-response.vala"
 	_data1_->run_continue (_data1_->run_continue_target);
-#line 931 "rygel-http-response-test_seekable-response.c"
+#line 945 "rygel-http-response-test_seekable-response.c"
 }
 
 
 #line 219 "rygel-http-response-test_seekable-response.vala"
 static void __lambda1__soup_session_callback (SoupSession* session, SoupMessage* msg, gpointer self) {
-#line 937 "rygel-http-response-test_seekable-response.c"
+#line 951 "rygel-http-response-test_seekable-response.c"
 	_lambda1_ (session, msg, self);
 }
 
 
 static Block1Data* block1_data_ref (Block1Data* _data1_) {
-	++_data1_->_ref_count_;
+	g_atomic_int_inc (&_data1_->_ref_count_);
 	return _data1_;
 }
 
 
 static void block1_data_unref (Block1Data* _data1_) {
-	if ((--_data1_->_ref_count_) == 0) {
+	if (g_atomic_int_dec_and_test (&_data1_->_ref_count_)) {
 		_g_object_unref0 (_data1_->self);
 		(_data1_->run_continue_target_destroy_notify == NULL) ? NULL : (_data1_->run_continue_target_destroy_notify (_data1_->run_continue_target), NULL);
 		_data1_->run_continue = NULL;
@@ -977,14 +991,14 @@ static gboolean rygel_http_client_real_run_co (RygelHttpClientRunData* data) {
 		g_signal_connect_data (data->self->msg, "got-chunk", (GCallback) __lambda0__soup_message_got_chunk, block1_data_ref (data->_data1_), (GClosureNotify) block1_data_unref, 0);
 #line 219 "rygel-http-response-test_seekable-response.vala"
 		soup_session_queue_message (gupnp_context_get_session (data->self->context), _g_object_ref0 (data->self->msg), __lambda1__soup_session_callback, data->_data1_);
-#line 981 "rygel-http-response-test_seekable-response.c"
+#line 995 "rygel-http-response-test_seekable-response.c"
 		data->_state_ = 10;
 		return FALSE;
 		_state_10:
 		;
 #line 227 "rygel-http-response-test_seekable-response.vala"
 		g_signal_emit_by_name ((RygelStateMachine*) data->self, "completed");
-#line 988 "rygel-http-response-test_seekable-response.c"
+#line 1002 "rygel-http-response-test_seekable-response.c"
 		block1_data_unref (data->_data1_);
 	}
 	{
@@ -1009,7 +1023,7 @@ static void rygel_http_client_on_cancelled (RygelHTTPClient* self, GCancellable*
 	soup_session_cancel_message (gupnp_context_get_session (self->context), self->msg, (guint) SOUP_STATUS_CANCELLED);
 #line 233 "rygel-http-response-test_seekable-response.vala"
 	g_signal_emit_by_name ((RygelStateMachine*) self, "completed");
-#line 1013 "rygel-http-response-test_seekable-response.c"
+#line 1027 "rygel-http-response-test_seekable-response.c"
 }
 
 
@@ -1020,7 +1034,7 @@ static GCancellable* rygel_http_client_real_get_cancellable (RygelStateMachine* 
 	result = self->priv->_cancellable;
 #line 185 "rygel-http-response-test_seekable-response.vala"
 	return result;
-#line 1024 "rygel-http-response-test_seekable-response.c"
+#line 1038 "rygel-http-response-test_seekable-response.c"
 }
 
 

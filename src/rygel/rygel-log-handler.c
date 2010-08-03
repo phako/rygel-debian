@@ -111,8 +111,8 @@ static RygelLogHandler* rygel_log_handler_log_handler;
 static RygelLogHandler* rygel_log_handler_log_handler = NULL;
 static gpointer rygel_log_handler_parent_class = NULL;
 
-GType rygel_log_level_get_type (void);
-GType rygel_log_handler_get_type (void);
+GType rygel_log_level_get_type (void) G_GNUC_CONST;
+GType rygel_log_handler_get_type (void) G_GNUC_CONST;
 enum  {
 	RYGEL_LOG_HANDLER_DUMMY_PROPERTY
 };
@@ -120,9 +120,9 @@ enum  {
 static RygelLogHandler* rygel_log_handler_new (void);
 static RygelLogHandler* rygel_log_handler_construct (GType object_type);
 RygelLogHandler* rygel_log_handler_get_default (void);
-GType rygel_meta_config_get_type (void);
+GType rygel_meta_config_get_type (void) G_GNUC_CONST;
 RygelMetaConfig* rygel_meta_config_get_default (void);
-GType rygel_configuration_get_type (void);
+GType rygel_configuration_get_type (void) G_GNUC_CONST;
 RygelLogLevel rygel_configuration_get_log_level (RygelConfiguration* self, GError** error);
 static GLogLevelFlags rygel_log_handler_log_level_to_flags (RygelLogHandler* self, RygelLogLevel level);
 static void rygel_log_handler_log_func (RygelLogHandler* self, const char* log_domain, GLogLevelFlags log_levels, const char* message);
@@ -192,14 +192,14 @@ static RygelLogHandler* rygel_log_handler_construct (GType object_type) {
 		_tmp0_ = rygel_configuration_get_log_level ((RygelConfiguration*) config, &_inner_error_);
 #line 194 "rygel-log-handler.c"
 		if (_inner_error_ != NULL) {
-			goto __catch56_g_error;
+			goto __catch54_g_error;
 		}
 #line 58 "rygel-log-handler.vala"
 		self->levels = rygel_log_handler_log_level_to_flags (self, _tmp0_);
 #line 200 "rygel-log-handler.c"
 	}
-	goto __finally56;
-	__catch56_g_error:
+	goto __finally54;
+	__catch54_g_error:
 	{
 		GError * err;
 		err = _inner_error_;
@@ -213,7 +213,7 @@ static RygelLogHandler* rygel_log_handler_construct (GType object_type) {
 			_g_error_free0 (err);
 		}
 	}
-	__finally56:
+	__finally54:
 	if (_inner_error_ != NULL) {
 		_g_object_unref0 (config);
 		g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);

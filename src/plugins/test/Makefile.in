@@ -37,7 +37,7 @@ host_triplet = @host@
 subdir = src/plugins/test
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in \
 	librygel_test_la_vala.stamp rygel-test-audio-item.c \
-	rygel-test-content-dir.c rygel-test-item.c rygel-test-plugin.c \
+	rygel-test-item.c rygel-test-plugin.c \
 	rygel-test-root-container.c rygel-test-video-item.c
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/intltool.m4 \
@@ -78,10 +78,9 @@ librygel_test_la_DEPENDENCIES = $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 	$(am__DEPENDENCIES_1)
-am_librygel_test_la_OBJECTS = rygel-test-content-dir.lo \
-	rygel-test-root-container.lo rygel-test-item.lo \
-	rygel-test-audio-item.lo rygel-test-video-item.lo \
-	rygel-test-plugin.lo
+am_librygel_test_la_OBJECTS = rygel-test-root-container.lo \
+	rygel-test-item.lo rygel-test-audio-item.lo \
+	rygel-test-video-item.lo rygel-test-plugin.lo
 librygel_test_la_OBJECTS = $(am_librygel_test_la_OBJECTS)
 AM_V_lt = $(am__v_lt_$(V))
 am__v_lt_ = $(am__v_lt_$(AM_DEFAULT_VERBOSITY))
@@ -190,6 +189,8 @@ LIBGSTREAMER_LIBS = @LIBGSTREAMER_LIBS@
 LIBGUPNP_AV_CFLAGS = @LIBGUPNP_AV_CFLAGS@
 LIBGUPNP_AV_LIBS = @LIBGUPNP_AV_LIBS@
 LIBGUPNP_CFLAGS = @LIBGUPNP_CFLAGS@
+LIBGUPNP_DLNA_CFLAGS = @LIBGUPNP_DLNA_CFLAGS@
+LIBGUPNP_DLNA_LIBS = @LIBGUPNP_DLNA_LIBS@
 LIBGUPNP_LIBS = @LIBGUPNP_LIBS@
 LIBOBJS = @LIBOBJS@
 LIBS = @LIBS@
@@ -305,8 +306,7 @@ AM_CFLAGS = $(LIBGUPNP_CFLAGS) \
 	    -I$(top_srcdir)/src/rygel -DDATA_DIR='"$(shareddir)"' \
 	    -include config.h
 
-librygel_test_la_SOURCES = rygel-test-content-dir.vala \
-			   rygel-test-root-container.vala \
+librygel_test_la_SOURCES = rygel-test-root-container.vala \
 			   rygel-test-item.vala \
 			   rygel-test-audio-item.vala \
 			   rygel-test-video-item.vala \
@@ -402,7 +402,6 @@ distclean-compile:
 	-rm -f *.tab.c
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-test-audio-item.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-test-content-dir.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-test-item.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-test-plugin.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/rygel-test-root-container.Plo@am__quote@
@@ -431,11 +430,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$<' object='$@' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LTCOMPILE) -c -o $@ $<
-$(srcdir)/rygel-test-content-dir.c: $(srcdir)/librygel_test_la_vala.stamp
-	@if test -f $@; then :; else \
-	  rm -f $(srcdir)/librygel_test_la_vala.stamp; \
-	  $(am__cd) $(srcdir) && $(MAKE) $(AM_MAKEFLAGS) librygel_test_la_vala.stamp; \
-	fi
 $(srcdir)/rygel-test-root-container.c: $(srcdir)/librygel_test_la_vala.stamp
 	@if test -f $@; then :; else \
 	  rm -f $(srcdir)/librygel_test_la_vala.stamp; \
@@ -587,7 +581,6 @@ maintainer-clean-generic:
 	@echo "it deletes files that may require special tools to rebuild."
 	-rm -f librygel_test_la_vala.stamp
 	-rm -f rygel-test-audio-item.c
-	-rm -f rygel-test-content-dir.c
 	-rm -f rygel-test-item.c
 	-rm -f rygel-test-plugin.c
 	-rm -f rygel-test-root-container.c

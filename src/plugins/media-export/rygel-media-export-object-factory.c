@@ -115,20 +115,20 @@ struct _RygelMediaExportObjectFactoryClass {
 
 static gpointer rygel_media_export_object_factory_parent_class = NULL;
 
-GType rygel_media_export_db_object_factory_get_type (void);
-GType rygel_media_export_media_cache_get_type (void);
-GType rygel_media_export_object_factory_get_type (void);
+GType rygel_media_export_db_object_factory_get_type (void) G_GNUC_CONST;
+GType rygel_media_export_media_cache_get_type (void) G_GNUC_CONST;
+GType rygel_media_export_object_factory_get_type (void) G_GNUC_CONST;
 enum  {
 	RYGEL_MEDIA_EXPORT_OBJECT_FACTORY_DUMMY_PROPERTY
 };
 #define RYGEL_MEDIA_EXPORT_QUERY_CONTAINER_PREFIX "virtual-container:"
 RygelMediaExportQueryContainer* rygel_media_export_query_container_new (RygelMediaExportMediaCache* media_db, const char* id, const char* name);
 RygelMediaExportQueryContainer* rygel_media_export_query_container_construct (GType object_type, RygelMediaExportMediaCache* media_db, const char* id, const char* name);
-GType rygel_media_export_db_container_get_type (void);
-GType rygel_media_export_query_container_get_type (void);
+GType rygel_media_export_db_container_get_type (void) G_GNUC_CONST;
+GType rygel_media_export_query_container_get_type (void) G_GNUC_CONST;
 RygelMediaExportWritableContainer* rygel_media_export_writable_container_new (RygelMediaExportMediaCache* media_db, const char* id, const char* title);
 RygelMediaExportWritableContainer* rygel_media_export_writable_container_construct (GType object_type, RygelMediaExportMediaCache* media_db, const char* id, const char* title);
-GType rygel_media_export_writable_container_get_type (void);
+GType rygel_media_export_writable_container_get_type (void) G_GNUC_CONST;
 static RygelMediaContainer* rygel_media_export_object_factory_real_get_container (RygelMediaExportDBObjectFactory* base, RygelMediaExportMediaCache* media_db, const char* id, const char* title, guint child_count);
 RygelMediaExportDBObjectFactory* rygel_media_export_db_object_factory_new (void);
 RygelMediaExportDBObjectFactory* rygel_media_export_db_object_factory_construct (GType object_type);

@@ -81,8 +81,8 @@ struct _RygelConfigurationIface {
 
 
 GQuark rygel_configuration_error_quark (void);
-GType rygel_log_level_get_type (void);
-GType rygel_configuration_get_type (void);
+GType rygel_log_level_get_type (void) G_GNUC_CONST;
+GType rygel_configuration_get_type (void) G_GNUC_CONST;
 gboolean rygel_configuration_get_upnp_enabled (RygelConfiguration* self, GError** error);
 char* rygel_configuration_get_interface (RygelConfiguration* self, GError** error);
 gint rygel_configuration_get_port (RygelConfiguration* self, GError** error);

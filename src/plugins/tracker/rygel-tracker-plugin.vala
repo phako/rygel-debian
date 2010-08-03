@@ -22,17 +22,16 @@
 
 using Gee;
 
-public class Rygel.Tracker.Plugin : Rygel.Plugin {
+public class Rygel.Tracker.Plugin : Rygel.MediaServerPlugin {
     // class-wide constants
     private const string ICON = BuildConfig.DATA_DIR + // Path
                                 "/icons/hicolor/48x48/apps/tracker.png";
 
     public Plugin () {
-        base.MediaServer ("Tracker",
-                           // @REALNAME@ is substituted for user's real name
-                           // and it doesn't need translation.
-                          _("@REALNAME@'s media"),
-                          typeof (Tracker.ContentDirectory));
+        base ("Tracker",
+              // @REALNAME@ is substituted for user's real name
+              // and it doesn't need translation.
+              _("@REALNAME@'s media"));
 
         var icon_info = new IconInfo ("image/png");
 
@@ -46,6 +45,11 @@ public class Rygel.Tracker.Plugin : Rygel.Plugin {
         } catch (ConvertError err) {
             warning (_("Error creating URI from %s: %s"), ICON, err.message);
         }
+    }
+
+    public override MediaContainer? get_root_container (
+                                        ContentDirectory content_dir) {
+        return new RootContainer (this.title);
     }
 }
 

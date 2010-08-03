@@ -105,7 +105,7 @@ typedef enum  {
 
 static gpointer rygel_wma_transcoder_bin_parent_class = NULL;
 
-GType rygel_wma_transcoder_bin_get_type (void);
+GType rygel_wma_transcoder_bin_get_type (void) G_GNUC_CONST;
 #define RYGEL_WMA_TRANSCODER_BIN_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), RYGEL_TYPE_WMA_TRANSCODER_BIN, RygelWMATranscoderBinPrivate))
 enum  {
 	RYGEL_WMA_TRANSCODER_BIN_DUMMY_PROPERTY
@@ -114,10 +114,10 @@ enum  {
 #define RYGEL_WMA_TRANSCODER_BIN_AUDIO_SRC_PAD "audio-src-pad"
 #define RYGEL_WMA_TRANSCODER_BIN_AUDIO_SINK_PAD "audio-sink-pad"
 GstElement* rygel_gst_utils_create_element (const char* factoryname, const char* name, GError** error);
-GType rygel_transcoder_get_type (void);
-GType rygel_wma_transcoder_get_type (void);
-GType rygel_media_object_get_type (void);
-GType rygel_media_item_get_type (void);
+GType rygel_transcoder_get_type (void) G_GNUC_CONST;
+GType rygel_wma_transcoder_get_type (void) G_GNUC_CONST;
+GType rygel_media_object_get_type (void) G_GNUC_CONST;
+GType rygel_media_item_get_type (void) G_GNUC_CONST;
 GstElement* rygel_wma_transcoder_create_encoder (RygelWMATranscoder* self, RygelMediaItem* item, const char* src_pad_name, const char* sink_pad_name, GError** error);
 static void rygel_wma_transcoder_bin_decodebin_pad_added (RygelWMATranscoderBin* self, GstElement* decodebin, GstPad* new_pad);
 static void _rygel_wma_transcoder_bin_decodebin_pad_added_gst_element_pad_added (GstElement* _sender, GstPad* pad, gpointer self);
@@ -165,7 +165,7 @@ RygelWMATranscoderBin* rygel_wma_transcoder_bin_construct (GType object_type, Ry
 #line 166 "rygel-wma-transcoder-bin.c"
 	if (_inner_error_ != NULL) {
 		g_propagate_error (error, _inner_error_);
-		gst_object_unref (self);
+		_gst_object_unref0 (self);
 		return NULL;
 	}
 #line 37 "rygel-wma-transcoder-bin.vala"
@@ -174,7 +174,7 @@ RygelWMATranscoderBin* rygel_wma_transcoder_bin_construct (GType object_type, Ry
 	if (_inner_error_ != NULL) {
 		g_propagate_error (error, _inner_error_);
 		_gst_object_unref0 (decodebin);
-		gst_object_unref (self);
+		_gst_object_unref0 (self);
 		return NULL;
 	}
 #line 37 "rygel-wma-transcoder-bin.vala"

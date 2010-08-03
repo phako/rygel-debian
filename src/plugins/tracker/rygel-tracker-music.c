@@ -121,31 +121,31 @@ typedef char* (*RygelTrackerMetadataValuesFilterFunc) (const char* variable, con
 
 static gpointer rygel_tracker_music_parent_class = NULL;
 
-GType rygel_tracker_category_container_get_type (void);
+GType rygel_tracker_category_container_get_type (void) G_GNUC_CONST;
 gpointer rygel_tracker_item_factory_ref (gpointer instance);
 void rygel_tracker_item_factory_unref (gpointer instance);
 GParamSpec* rygel_tracker_param_spec_item_factory (const gchar* name, const gchar* nick, const gchar* blurb, GType object_type, GParamFlags flags);
 void rygel_tracker_value_set_item_factory (GValue* value, gpointer v_object);
 void rygel_tracker_value_take_item_factory (GValue* value, gpointer v_object);
 gpointer rygel_tracker_value_get_item_factory (const GValue* value);
-GType rygel_tracker_item_factory_get_type (void);
-GType rygel_tracker_music_get_type (void);
+GType rygel_tracker_item_factory_get_type (void) G_GNUC_CONST;
+GType rygel_tracker_music_get_type (void) G_GNUC_CONST;
 enum  {
 	RYGEL_TRACKER_MUSIC_DUMMY_PROPERTY
 };
 RygelTrackerMusicItemFactory* rygel_tracker_music_item_factory_new (void);
 RygelTrackerMusicItemFactory* rygel_tracker_music_item_factory_construct (GType object_type);
-GType rygel_tracker_music_item_factory_get_type (void);
+GType rygel_tracker_music_item_factory_get_type (void) G_GNUC_CONST;
 RygelTrackerCategoryContainer* rygel_tracker_category_container_new (const char* id, RygelMediaContainer* parent, const char* title, RygelTrackerItemFactory* item_factory);
 RygelTrackerCategoryContainer* rygel_tracker_category_container_construct (GType object_type, const char* id, RygelMediaContainer* parent, const char* title, RygelTrackerItemFactory* item_factory);
 char* rygel_tracker_metadata_values_default_id_func (const char* value);
 char* rygel_tracker_metadata_values_default_filter_func (const char* variable, const char* value);
 RygelTrackerMetadataValues* rygel_tracker_metadata_values_new (const char* id, RygelMediaContainer* parent, const char* title, RygelTrackerItemFactory* item_factory, char** key_chain, int key_chain_length1, RygelTrackerMetadataValuesIDFunc id_func, void* id_func_target, RygelTrackerMetadataValuesIDFunc title_func, void* title_func_target, RygelTrackerMetadataValuesFilterFunc filter_func, void* filter_func_target);
 RygelTrackerMetadataValues* rygel_tracker_metadata_values_construct (GType object_type, const char* id, RygelMediaContainer* parent, const char* title, RygelTrackerItemFactory* item_factory, char** key_chain, int key_chain_length1, RygelTrackerMetadataValuesIDFunc id_func, void* id_func_target, RygelTrackerMetadataValuesIDFunc title_func, void* title_func_target, RygelTrackerMetadataValuesFilterFunc filter_func, void* filter_func_target);
-GType rygel_tracker_metadata_values_get_type (void);
+GType rygel_tracker_metadata_values_get_type (void) G_GNUC_CONST;
 RygelTrackerTags* rygel_tracker_tags_new (RygelMediaContainer* parent, RygelTrackerItemFactory* item_factory);
 RygelTrackerTags* rygel_tracker_tags_construct (GType object_type, RygelMediaContainer* parent, RygelTrackerItemFactory* item_factory);
-GType rygel_tracker_tags_get_type (void);
+GType rygel_tracker_tags_get_type (void) G_GNUC_CONST;
 RygelTrackerMusic* rygel_tracker_music_new (const char* id, RygelMediaContainer* parent, const char* title);
 RygelTrackerMusic* rygel_tracker_music_construct (GType object_type, const char* id, RygelMediaContainer* parent, const char* title);
 static void _vala_array_destroy (gpointer array, gint array_length, GDestroyNotify destroy_func);

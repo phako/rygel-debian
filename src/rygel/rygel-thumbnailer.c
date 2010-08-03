@@ -29,6 +29,7 @@
 #include <string.h>
 #include <gio/gio.h>
 #include <glib/gi18n-lib.h>
+#include <libgupnp-av/gupnp-av.h>
 
 
 #define RYGEL_TYPE_THUMBNAILER (rygel_thumbnailer_get_type ())
@@ -113,6 +114,7 @@ struct _RygelThumbnail {
 
 struct _RygelThumbnailClass {
 	RygelIconInfoClass parent_class;
+	GUPnPDIDLLiteResource* (*add_resource) (RygelThumbnail* self, GUPnPDIDLLiteItem* didl_item, const char* protocol);
 };
 
 
@@ -123,15 +125,15 @@ static gboolean rygel_thumbnailer_first_time = TRUE;
 static gpointer rygel_thumbnailer_parent_class = NULL;
 
 GQuark thumbnailer_error_quark (void);
-GType rygel_thumbnailer_get_type (void);
+GType rygel_thumbnailer_get_type (void) G_GNUC_CONST;
 gpointer rygel_icon_info_ref (gpointer instance);
 void rygel_icon_info_unref (gpointer instance);
 GParamSpec* rygel_param_spec_icon_info (const gchar* name, const gchar* nick, const gchar* blurb, GType object_type, GParamFlags flags);
 void rygel_value_set_icon_info (GValue* value, gpointer v_object);
 void rygel_value_take_icon_info (GValue* value, gpointer v_object);
 gpointer rygel_value_get_icon_info (const GValue* value);
-GType rygel_icon_info_get_type (void);
-GType rygel_thumbnail_get_type (void);
+GType rygel_icon_info_get_type (void) G_GNUC_CONST;
+GType rygel_thumbnail_get_type (void) G_GNUC_CONST;
 #define RYGEL_THUMBNAILER_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), RYGEL_TYPE_THUMBNAILER, RygelThumbnailerPrivate))
 enum  {
 	RYGEL_THUMBNAILER_DUMMY_PROPERTY
@@ -153,7 +155,7 @@ GQuark thumbnailer_error_quark (void) {
 
 #line 42 "rygel-thumbnailer.vala"
 static RygelThumbnailer* rygel_thumbnailer_construct (GType object_type, GError** error) {
-#line 157 "rygel-thumbnailer.c"
+#line 159 "rygel-thumbnailer.c"
 	GError * _inner_error_;
 	RygelThumbnailer * self;
 	char* dir;
@@ -171,7 +173,7 @@ static RygelThumbnailer* rygel_thumbnailer_construct (GType object_type, GError*
 	self->priv->template = (_tmp0_ = rygel_thumbnail_new ("image/jpeg", "JPEG_TN"), _rygel_icon_info_unref0 (self->priv->template), _tmp0_);
 #line 49 "rygel-thumbnailer.vala"
 	if (!g_file_query_exists (file, NULL)) {
-#line 175 "rygel-thumbnailer.c"
+#line 177 "rygel-thumbnailer.c"
 		char* _tmp1_;
 		GFile* _tmp2_;
 #line 50 "rygel-thumbnailer.vala"
@@ -180,24 +182,24 @@ static RygelThumbnailer* rygel_thumbnailer_construct (GType object_type, GError*
 		file = (_tmp2_ = g_file_new_for_path (dir), _g_object_unref0 (file), _tmp2_);
 #line 55 "rygel-thumbnailer.vala"
 		if (!g_file_query_exists (file, NULL)) {
-#line 184 "rygel-thumbnailer.c"
+#line 186 "rygel-thumbnailer.c"
 			char* message;
 #line 56 "rygel-thumbnailer.vala"
 			message = g_strdup (_ ("Failed to find thumbnails folder."));
-#line 188 "rygel-thumbnailer.c"
+#line 190 "rygel-thumbnailer.c"
 			_inner_error_ = g_error_new_literal (THUMBNAILER_ERROR, THUMBNAILER_ERROR_NO_DIR, message);
 			{
 				if (_inner_error_->domain == THUMBNAILER_ERROR) {
 					g_propagate_error (error, _inner_error_);
 					_g_free0 (message);
-					_g_free0 (dir);
 					_g_object_unref0 (file);
-					g_object_unref (self);
+					_g_free0 (dir);
+					_g_object_unref0 (self);
 					return NULL;
 				} else {
 					_g_free0 (message);
-					_g_free0 (dir);
 					_g_object_unref0 (file);
+					_g_free0 (dir);
 					g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
 					g_clear_error (&_inner_error_);
 					return NULL;
@@ -220,7 +222,7 @@ static RygelThumbnailer* rygel_thumbnailer_construct (GType object_type, GError*
 			((RygelIconInfo*) self->priv->template)->depth = 32;
 #line 65 "rygel-thumbnailer.vala"
 			self->priv->extension = (_tmp5_ = g_strdup (".png"), _g_free0 (self->priv->extension), _tmp5_);
-#line 224 "rygel-thumbnailer.c"
+#line 226 "rygel-thumbnailer.c"
 		}
 	} else {
 		char* _tmp6_;
@@ -232,13 +234,13 @@ static RygelThumbnailer* rygel_thumbnailer_construct (GType object_type, GError*
 		((RygelIconInfo*) self->priv->template)->depth = 24;
 #line 71 "rygel-thumbnailer.vala"
 		self->priv->extension = (_tmp6_ = g_strdup (".jpeg"), _g_free0 (self->priv->extension), _tmp6_);
-#line 236 "rygel-thumbnailer.c"
+#line 238 "rygel-thumbnailer.c"
 	}
 #line 74 "rygel-thumbnailer.vala"
 	self->directory = (_tmp7_ = g_strdup (dir), _g_free0 (self->directory), _tmp7_);
-#line 240 "rygel-thumbnailer.c"
-	_g_free0 (dir);
+#line 242 "rygel-thumbnailer.c"
 	_g_object_unref0 (file);
+	_g_free0 (dir);
 	return self;
 }
 
@@ -247,7 +249,7 @@ static RygelThumbnailer* rygel_thumbnailer_construct (GType object_type, GError*
 static RygelThumbnailer* rygel_thumbnailer_new (GError** error) {
 #line 42 "rygel-thumbnailer.vala"
 	return rygel_thumbnailer_construct (RYGEL_TYPE_THUMBNAILER, error);
-#line 251 "rygel-thumbnailer.c"
+#line 253 "rygel-thumbnailer.c"
 }
 
 
@@ -258,22 +260,22 @@ static gpointer _g_object_ref0 (gpointer self) {
 
 #line 77 "rygel-thumbnailer.vala"
 RygelThumbnailer* rygel_thumbnailer_get_default (void) {
-#line 262 "rygel-thumbnailer.c"
+#line 264 "rygel-thumbnailer.c"
 	RygelThumbnailer* result = NULL;
 	GError * _inner_error_;
 	_inner_error_ = NULL;
 #line 78 "rygel-thumbnailer.vala"
 	if (rygel_thumbnailer_first_time) {
-#line 268 "rygel-thumbnailer.c"
+#line 270 "rygel-thumbnailer.c"
 		{
 			RygelThumbnailer* _tmp0_;
 			RygelThumbnailer* _tmp1_;
 #line 80 "rygel-thumbnailer.vala"
 			_tmp0_ = rygel_thumbnailer_new (&_inner_error_);
-#line 274 "rygel-thumbnailer.c"
+#line 276 "rygel-thumbnailer.c"
 			if (_inner_error_ != NULL) {
 				if (_inner_error_->domain == THUMBNAILER_ERROR) {
-					goto __catch46_thumbnailer_error;
+					goto __catch43_thumbnailer_error;
 				}
 				g_critical ("file %s: line %d: unexpected error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
 				g_clear_error (&_inner_error_);
@@ -281,10 +283,10 @@ RygelThumbnailer* rygel_thumbnailer_get_default (void) {
 			}
 #line 80 "rygel-thumbnailer.vala"
 			rygel_thumbnailer_thumbnailer = (_tmp1_ = _tmp0_, _g_object_unref0 (rygel_thumbnailer_thumbnailer), _tmp1_);
-#line 285 "rygel-thumbnailer.c"
+#line 287 "rygel-thumbnailer.c"
 		}
-		goto __finally46;
-		__catch46_thumbnailer_error:
+		goto __finally43;
+		__catch43_thumbnailer_error:
 		{
 			GError * err;
 			err = _inner_error_;
@@ -292,11 +294,11 @@ RygelThumbnailer* rygel_thumbnailer_get_default (void) {
 			{
 #line 82 "rygel-thumbnailer.vala"
 				g_warning (_ ("No thumbnailer available: %s"), err->message);
-#line 296 "rygel-thumbnailer.c"
+#line 298 "rygel-thumbnailer.c"
 				_g_error_free0 (err);
 			}
 		}
-		__finally46:
+		__finally43:
 		if (_inner_error_ != NULL) {
 			g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
 			g_clear_error (&_inner_error_);
@@ -304,18 +306,18 @@ RygelThumbnailer* rygel_thumbnailer_get_default (void) {
 		}
 #line 85 "rygel-thumbnailer.vala"
 		rygel_thumbnailer_first_time = FALSE;
-#line 308 "rygel-thumbnailer.c"
+#line 310 "rygel-thumbnailer.c"
 	}
 	result = _g_object_ref0 (rygel_thumbnailer_thumbnailer);
 #line 88 "rygel-thumbnailer.vala"
 	return result;
-#line 313 "rygel-thumbnailer.c"
+#line 315 "rygel-thumbnailer.c"
 }
 
 
 #line 91 "rygel-thumbnailer.vala"
 RygelThumbnail* rygel_thumbnailer_get_thumbnail (RygelThumbnailer* self, const char* uri, GError** error) {
-#line 319 "rygel-thumbnailer.c"
+#line 321 "rygel-thumbnailer.c"
 	RygelThumbnail* result = NULL;
 	GError * _inner_error_;
 	RygelThumbnail* thumbnail;
@@ -332,7 +334,7 @@ RygelThumbnail* rygel_thumbnailer_get_thumbnail (RygelThumbnailer* self, const c
 	g_return_val_if_fail (self != NULL, NULL);
 #line 91 "rygel-thumbnailer.vala"
 	g_return_val_if_fail (uri != NULL, NULL);
-#line 336 "rygel-thumbnailer.c"
+#line 338 "rygel-thumbnailer.c"
 	_inner_error_ = NULL;
 #line 92 "rygel-thumbnailer.vala"
 	thumbnail = NULL;
@@ -344,26 +346,26 @@ RygelThumbnail* rygel_thumbnailer_get_thumbnail (RygelThumbnailer* self, const c
 	file = g_file_new_for_path (full_path);
 #line 99 "rygel-thumbnailer.vala"
 	info = g_file_query_info (file, G_FILE_ATTRIBUTE_ACCESS_CAN_READ "," G_FILE_ATTRIBUTE_STANDARD_SIZE, G_FILE_QUERY_INFO_NONE, NULL, &_inner_error_);
-#line 348 "rygel-thumbnailer.c"
+#line 350 "rygel-thumbnailer.c"
 	if (_inner_error_ != NULL) {
 		g_propagate_error (error, _inner_error_);
-		_rygel_icon_info_unref0 (thumbnail);
-		_g_free0 (path);
-		_g_free0 (full_path);
 		_g_object_unref0 (file);
+		_g_free0 (full_path);
+		_g_free0 (path);
+		_rygel_icon_info_unref0 (thumbnail);
 		return NULL;
 	}
 #line 104 "rygel-thumbnailer.vala"
 	if (!g_file_info_get_attribute_boolean (info, G_FILE_ATTRIBUTE_ACCESS_CAN_READ)) {
-#line 359 "rygel-thumbnailer.c"
+#line 361 "rygel-thumbnailer.c"
 		_inner_error_ = g_error_new_literal (THUMBNAILER_ERROR, THUMBNAILER_ERROR_NO_THUMBNAIL, _ ("No thumbnail available"));
 		{
 			g_propagate_error (error, _inner_error_);
-			_rygel_icon_info_unref0 (thumbnail);
-			_g_free0 (path);
-			_g_free0 (full_path);
-			_g_object_unref0 (file);
 			_g_object_unref0 (info);
+			_g_object_unref0 (file);
+			_g_free0 (full_path);
+			_g_free0 (path);
+			_rygel_icon_info_unref0 (thumbnail);
 			return NULL;
 		}
 	}
@@ -377,29 +379,29 @@ RygelThumbnail* rygel_thumbnailer_get_thumbnail (RygelThumbnailer* self, const c
 	((RygelIconInfo*) thumbnail)->depth = ((RygelIconInfo*) self->priv->template)->depth;
 #line 113 "rygel-thumbnailer.vala"
 	_tmp3_ = g_filename_to_uri (full_path, NULL, &_inner_error_);
-#line 381 "rygel-thumbnailer.c"
+#line 383 "rygel-thumbnailer.c"
 	if (_inner_error_ != NULL) {
 		g_propagate_error (error, _inner_error_);
-		_rygel_icon_info_unref0 (thumbnail);
-		_g_free0 (path);
-		_g_free0 (full_path);
-		_g_object_unref0 (file);
 		_g_object_unref0 (info);
+		_g_object_unref0 (file);
+		_g_free0 (full_path);
+		_g_free0 (path);
+		_rygel_icon_info_unref0 (thumbnail);
 		return NULL;
 	}
 #line 113 "rygel-thumbnailer.vala"
 	((RygelIconInfo*) thumbnail)->uri = (_tmp4_ = _tmp3_, _g_free0 (((RygelIconInfo*) thumbnail)->uri), _tmp4_);
 #line 114 "rygel-thumbnailer.vala"
 	((RygelIconInfo*) thumbnail)->size = (glong) g_file_info_get_attribute_uint64 (info, G_FILE_ATTRIBUTE_STANDARD_SIZE);
-#line 395 "rygel-thumbnailer.c"
+#line 397 "rygel-thumbnailer.c"
 	result = thumbnail;
-	_g_free0 (path);
-	_g_free0 (full_path);
-	_g_object_unref0 (file);
 	_g_object_unref0 (info);
+	_g_object_unref0 (file);
+	_g_free0 (full_path);
+	_g_free0 (path);
 #line 117 "rygel-thumbnailer.vala"
 	return result;
-#line 403 "rygel-thumbnailer.c"
+#line 405 "rygel-thumbnailer.c"
 }
 
 

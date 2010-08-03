@@ -142,9 +142,9 @@ static RygelMetaConfig* rygel_meta_config_meta_config = NULL;
 static gpointer rygel_meta_config_parent_class = NULL;
 static RygelConfigurationIface* rygel_meta_config_rygel_configuration_parent_iface = NULL;
 
-GType rygel_log_level_get_type (void);
-GType rygel_configuration_get_type (void);
-GType rygel_meta_config_get_type (void);
+GType rygel_log_level_get_type (void) G_GNUC_CONST;
+GType rygel_configuration_get_type (void) G_GNUC_CONST;
+GType rygel_meta_config_get_type (void) G_GNUC_CONST;
 #define RYGEL_META_CONFIG_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), RYGEL_TYPE_META_CONFIG, RygelMetaConfigPrivate))
 enum  {
 	RYGEL_META_CONFIG_DUMMY_PROPERTY
@@ -152,11 +152,11 @@ enum  {
 RygelMetaConfig* rygel_meta_config_new (void);
 RygelMetaConfig* rygel_meta_config_construct (GType object_type);
 RygelMetaConfig* rygel_meta_config_get_default (void);
-GType rygel_cmdline_config_get_type (void);
+GType rygel_cmdline_config_get_type (void) G_GNUC_CONST;
 RygelCmdlineConfig* rygel_cmdline_config_get_default (void);
-GType rygel_environment_config_get_type (void);
+GType rygel_environment_config_get_type (void) G_GNUC_CONST;
 RygelEnvironmentConfig* rygel_environment_config_get_default (void);
-GType rygel_user_config_get_type (void);
+GType rygel_user_config_get_type (void) G_GNUC_CONST;
 RygelUserConfig* rygel_user_config_get_default (GError** error);
 gboolean rygel_configuration_get_upnp_enabled (RygelConfiguration* self, GError** error);
 GQuark rygel_configuration_error_quark (void);
@@ -303,25 +303,26 @@ static gboolean rygel_meta_config_real_get_upnp_enabled (RygelConfiguration* bas
 #line 304 "rygel-meta-config.c"
 	{
 		GeeIterator* _config_it;
+#line 65 "rygel-meta-config.vala"
 		_config_it = gee_abstract_collection_iterator ((GeeAbstractCollection*) self->priv->configs);
 #line 65 "rygel-meta-config.vala"
 		while (TRUE) {
-#line 310 "rygel-meta-config.c"
+#line 311 "rygel-meta-config.c"
 			RygelConfiguration* config;
 #line 65 "rygel-meta-config.vala"
 			if (!gee_iterator_next (_config_it)) {
 #line 65 "rygel-meta-config.vala"
 				break;
-#line 316 "rygel-meta-config.c"
+#line 317 "rygel-meta-config.c"
 			}
 #line 65 "rygel-meta-config.vala"
 			config = (RygelConfiguration*) gee_iterator_get (_config_it);
-#line 320 "rygel-meta-config.c"
+#line 321 "rygel-meta-config.c"
 			{
 				gboolean _tmp0_;
 #line 67 "rygel-meta-config.vala"
 				_tmp0_ = rygel_configuration_get_upnp_enabled (config, &_inner_error_);
-#line 325 "rygel-meta-config.c"
+#line 326 "rygel-meta-config.c"
 				if (_inner_error_ != NULL) {
 					goto __catch8_g_error;
 				}
@@ -329,11 +330,11 @@ static gboolean rygel_meta_config_real_get_upnp_enabled (RygelConfiguration* bas
 				val = _tmp0_;
 #line 68 "rygel-meta-config.vala"
 				unavailable = FALSE;
-#line 333 "rygel-meta-config.c"
+#line 334 "rygel-meta-config.c"
 				_g_object_unref0 (config);
 #line 69 "rygel-meta-config.vala"
 				break;
-#line 337 "rygel-meta-config.c"
+#line 338 "rygel-meta-config.c"
 			}
 			goto __finally8;
 			__catch8_g_error:
@@ -358,7 +359,7 @@ static gboolean rygel_meta_config_real_get_upnp_enabled (RygelConfiguration* bas
 	}
 #line 73 "rygel-meta-config.vala"
 	if (unavailable) {
-#line 362 "rygel-meta-config.c"
+#line 363 "rygel-meta-config.c"
 		_inner_error_ = g_error_new_literal (RYGEL_CONFIGURATION_ERROR, RYGEL_CONFIGURATION_ERROR_NO_VALUE_SET, _ ("No value available"));
 		{
 			g_propagate_error (error, _inner_error_);
@@ -368,13 +369,13 @@ static gboolean rygel_meta_config_real_get_upnp_enabled (RygelConfiguration* bas
 	result = val;
 #line 77 "rygel-meta-config.vala"
 	return result;
-#line 372 "rygel-meta-config.c"
+#line 373 "rygel-meta-config.c"
 }
 
 
 #line 80 "rygel-meta-config.vala"
 static char* rygel_meta_config_real_get_interface (RygelConfiguration* base, GError** error) {
-#line 378 "rygel-meta-config.c"
+#line 379 "rygel-meta-config.c"
 	RygelMetaConfig * self;
 	char* result = NULL;
 	GError * _inner_error_;
@@ -386,29 +387,30 @@ static char* rygel_meta_config_real_get_interface (RygelConfiguration* base, GEr
 	val = NULL;
 #line 82 "rygel-meta-config.vala"
 	unavailable = TRUE;
-#line 390 "rygel-meta-config.c"
+#line 391 "rygel-meta-config.c"
 	{
 		GeeIterator* _config_it;
+#line 84 "rygel-meta-config.vala"
 		_config_it = gee_abstract_collection_iterator ((GeeAbstractCollection*) self->priv->configs);
 #line 84 "rygel-meta-config.vala"
 		while (TRUE) {
-#line 396 "rygel-meta-config.c"
+#line 398 "rygel-meta-config.c"
 			RygelConfiguration* config;
 #line 84 "rygel-meta-config.vala"
 			if (!gee_iterator_next (_config_it)) {
 #line 84 "rygel-meta-config.vala"
 				break;
-#line 402 "rygel-meta-config.c"
+#line 404 "rygel-meta-config.c"
 			}
 #line 84 "rygel-meta-config.vala"
 			config = (RygelConfiguration*) gee_iterator_get (_config_it);
-#line 406 "rygel-meta-config.c"
+#line 408 "rygel-meta-config.c"
 			{
 				char* _tmp0_;
 				char* _tmp1_;
 #line 86 "rygel-meta-config.vala"
 				_tmp0_ = rygel_configuration_get_interface (config, &_inner_error_);
-#line 412 "rygel-meta-config.c"
+#line 414 "rygel-meta-config.c"
 				if (_inner_error_ != NULL) {
 					goto __catch9_g_error;
 				}
@@ -416,11 +418,11 @@ static char* rygel_meta_config_real_get_interface (RygelConfiguration* base, GEr
 				val = (_tmp1_ = _tmp0_, _g_free0 (val), _tmp1_);
 #line 87 "rygel-meta-config.vala"
 				unavailable = FALSE;
-#line 420 "rygel-meta-config.c"
+#line 422 "rygel-meta-config.c"
 				_g_object_unref0 (config);
 #line 88 "rygel-meta-config.vala"
 				break;
-#line 424 "rygel-meta-config.c"
+#line 426 "rygel-meta-config.c"
 			}
 			goto __finally9;
 			__catch9_g_error:
@@ -446,7 +448,7 @@ static char* rygel_meta_config_real_get_interface (RygelConfiguration* base, GEr
 	}
 #line 92 "rygel-meta-config.vala"
 	if (unavailable) {
-#line 450 "rygel-meta-config.c"
+#line 452 "rygel-meta-config.c"
 		_inner_error_ = g_error_new_literal (RYGEL_CONFIGURATION_ERROR, RYGEL_CONFIGURATION_ERROR_NO_VALUE_SET, _ ("No value available"));
 		{
 			g_propagate_error (error, _inner_error_);
@@ -457,13 +459,13 @@ static char* rygel_meta_config_real_get_interface (RygelConfiguration* base, GEr
 	result = val;
 #line 96 "rygel-meta-config.vala"
 	return result;
-#line 461 "rygel-meta-config.c"
+#line 463 "rygel-meta-config.c"
 }
 
 
 #line 99 "rygel-meta-config.vala"
 static gint rygel_meta_config_real_get_port (RygelConfiguration* base, GError** error) {
-#line 467 "rygel-meta-config.c"
+#line 469 "rygel-meta-config.c"
 	RygelMetaConfig * self;
 	gint result = 0;
 	GError * _inner_error_;
@@ -475,28 +477,29 @@ static gint rygel_meta_config_real_get_port (RygelConfiguration* base, GError** 
 	val = 0;
 #line 101 "rygel-meta-config.vala"
 	unavailable = TRUE;
-#line 479 "rygel-meta-config.c"
+#line 481 "rygel-meta-config.c"
 	{
 		GeeIterator* _config_it;
+#line 103 "rygel-meta-config.vala"
 		_config_it = gee_abstract_collection_iterator ((GeeAbstractCollection*) self->priv->configs);
 #line 103 "rygel-meta-config.vala"
 		while (TRUE) {
-#line 485 "rygel-meta-config.c"
+#line 488 "rygel-meta-config.c"
 			RygelConfiguration* config;
 #line 103 "rygel-meta-config.vala"
 			if (!gee_iterator_next (_config_it)) {
 #line 103 "rygel-meta-config.vala"
 				break;
-#line 491 "rygel-meta-config.c"
+#line 494 "rygel-meta-config.c"
 			}
 #line 103 "rygel-meta-config.vala"
 			config = (RygelConfiguration*) gee_iterator_get (_config_it);
-#line 495 "rygel-meta-config.c"
+#line 498 "rygel-meta-config.c"
 			{
 				gint _tmp0_;
 #line 105 "rygel-meta-config.vala"
 				_tmp0_ = rygel_configuration_get_port (config, &_inner_error_);
-#line 500 "rygel-meta-config.c"
+#line 503 "rygel-meta-config.c"
 				if (_inner_error_ != NULL) {
 					goto __catch10_g_error;
 				}
@@ -504,11 +507,11 @@ static gint rygel_meta_config_real_get_port (RygelConfiguration* base, GError** 
 				val = _tmp0_;
 #line 106 "rygel-meta-config.vala"
 				unavailable = FALSE;
-#line 508 "rygel-meta-config.c"
+#line 511 "rygel-meta-config.c"
 				_g_object_unref0 (config);
 #line 107 "rygel-meta-config.vala"
 				break;
-#line 512 "rygel-meta-config.c"
+#line 515 "rygel-meta-config.c"
 			}
 			goto __finally10;
 			__catch10_g_error:
@@ -533,7 +536,7 @@ static gint rygel_meta_config_real_get_port (RygelConfiguration* base, GError** 
 	}
 #line 111 "rygel-meta-config.vala"
 	if (unavailable) {
-#line 537 "rygel-meta-config.c"
+#line 540 "rygel-meta-config.c"
 		_inner_error_ = g_error_new_literal (RYGEL_CONFIGURATION_ERROR, RYGEL_CONFIGURATION_ERROR_NO_VALUE_SET, _ ("No value available"));
 		{
 			g_propagate_error (error, _inner_error_);
@@ -543,13 +546,13 @@ static gint rygel_meta_config_real_get_port (RygelConfiguration* base, GError** 
 	result = val;
 #line 115 "rygel-meta-config.vala"
 	return result;
-#line 547 "rygel-meta-config.c"
+#line 550 "rygel-meta-config.c"
 }
 
 
 #line 118 "rygel-meta-config.vala"
 static gboolean rygel_meta_config_real_get_transcoding (RygelConfiguration* base, GError** error) {
-#line 553 "rygel-meta-config.c"
+#line 556 "rygel-meta-config.c"
 	RygelMetaConfig * self;
 	gboolean result = FALSE;
 	GError * _inner_error_;
@@ -561,28 +564,29 @@ static gboolean rygel_meta_config_real_get_transcoding (RygelConfiguration* base
 	val = TRUE;
 #line 120 "rygel-meta-config.vala"
 	unavailable = TRUE;
-#line 565 "rygel-meta-config.c"
+#line 568 "rygel-meta-config.c"
 	{
 		GeeIterator* _config_it;
+#line 122 "rygel-meta-config.vala"
 		_config_it = gee_abstract_collection_iterator ((GeeAbstractCollection*) self->priv->configs);
 #line 122 "rygel-meta-config.vala"
 		while (TRUE) {
-#line 571 "rygel-meta-config.c"
+#line 575 "rygel-meta-config.c"
 			RygelConfiguration* config;
 #line 122 "rygel-meta-config.vala"
 			if (!gee_iterator_next (_config_it)) {
 #line 122 "rygel-meta-config.vala"
 				break;
-#line 577 "rygel-meta-config.c"
+#line 581 "rygel-meta-config.c"
 			}
 #line 122 "rygel-meta-config.vala"
 			config = (RygelConfiguration*) gee_iterator_get (_config_it);
-#line 581 "rygel-meta-config.c"
+#line 585 "rygel-meta-config.c"
 			{
 				gboolean _tmp0_;
 #line 124 "rygel-meta-config.vala"
 				_tmp0_ = rygel_configuration_get_transcoding (config, &_inner_error_);
-#line 586 "rygel-meta-config.c"
+#line 590 "rygel-meta-config.c"
 				if (_inner_error_ != NULL) {
 					goto __catch11_g_error;
 				}
@@ -590,11 +594,11 @@ static gboolean rygel_meta_config_real_get_transcoding (RygelConfiguration* base
 				val = _tmp0_;
 #line 125 "rygel-meta-config.vala"
 				unavailable = FALSE;
-#line 594 "rygel-meta-config.c"
+#line 598 "rygel-meta-config.c"
 				_g_object_unref0 (config);
 #line 126 "rygel-meta-config.vala"
 				break;
-#line 598 "rygel-meta-config.c"
+#line 602 "rygel-meta-config.c"
 			}
 			goto __finally11;
 			__catch11_g_error:
@@ -619,7 +623,7 @@ static gboolean rygel_meta_config_real_get_transcoding (RygelConfiguration* base
 	}
 #line 130 "rygel-meta-config.vala"
 	if (unavailable) {
-#line 623 "rygel-meta-config.c"
+#line 627 "rygel-meta-config.c"
 		_inner_error_ = g_error_new_literal (RYGEL_CONFIGURATION_ERROR, RYGEL_CONFIGURATION_ERROR_NO_VALUE_SET, _ ("No value available"));
 		{
 			g_propagate_error (error, _inner_error_);
@@ -629,13 +633,13 @@ static gboolean rygel_meta_config_real_get_transcoding (RygelConfiguration* base
 	result = val;
 #line 134 "rygel-meta-config.vala"
 	return result;
-#line 633 "rygel-meta-config.c"
+#line 637 "rygel-meta-config.c"
 }
 
 
 #line 137 "rygel-meta-config.vala"
 static gboolean rygel_meta_config_real_get_mp3_transcoder (RygelConfiguration* base, GError** error) {
-#line 639 "rygel-meta-config.c"
+#line 643 "rygel-meta-config.c"
 	RygelMetaConfig * self;
 	gboolean result = FALSE;
 	GError * _inner_error_;
@@ -647,28 +651,29 @@ static gboolean rygel_meta_config_real_get_mp3_transcoder (RygelConfiguration* b
 	val = TRUE;
 #line 139 "rygel-meta-config.vala"
 	unavailable = TRUE;
-#line 651 "rygel-meta-config.c"
+#line 655 "rygel-meta-config.c"
 	{
 		GeeIterator* _config_it;
+#line 141 "rygel-meta-config.vala"
 		_config_it = gee_abstract_collection_iterator ((GeeAbstractCollection*) self->priv->configs);
 #line 141 "rygel-meta-config.vala"
 		while (TRUE) {
-#line 657 "rygel-meta-config.c"
+#line 662 "rygel-meta-config.c"
 			RygelConfiguration* config;
 #line 141 "rygel-meta-config.vala"
 			if (!gee_iterator_next (_config_it)) {
 #line 141 "rygel-meta-config.vala"
 				break;
-#line 663 "rygel-meta-config.c"
+#line 668 "rygel-meta-config.c"
 			}
 #line 141 "rygel-meta-config.vala"
 			config = (RygelConfiguration*) gee_iterator_get (_config_it);
-#line 667 "rygel-meta-config.c"
+#line 672 "rygel-meta-config.c"
 			{
 				gboolean _tmp0_;
 #line 143 "rygel-meta-config.vala"
 				_tmp0_ = rygel_configuration_get_mp3_transcoder (config, &_inner_error_);
-#line 672 "rygel-meta-config.c"
+#line 677 "rygel-meta-config.c"
 				if (_inner_error_ != NULL) {
 					goto __catch12_g_error;
 				}
@@ -676,11 +681,11 @@ static gboolean rygel_meta_config_real_get_mp3_transcoder (RygelConfiguration* b
 				val = _tmp0_;
 #line 144 "rygel-meta-config.vala"
 				unavailable = FALSE;
-#line 680 "rygel-meta-config.c"
+#line 685 "rygel-meta-config.c"
 				_g_object_unref0 (config);
 #line 145 "rygel-meta-config.vala"
 				break;
-#line 684 "rygel-meta-config.c"
+#line 689 "rygel-meta-config.c"
 			}
 			goto __finally12;
 			__catch12_g_error:
@@ -705,7 +710,7 @@ static gboolean rygel_meta_config_real_get_mp3_transcoder (RygelConfiguration* b
 	}
 #line 149 "rygel-meta-config.vala"
 	if (unavailable) {
-#line 709 "rygel-meta-config.c"
+#line 714 "rygel-meta-config.c"
 		_inner_error_ = g_error_new_literal (RYGEL_CONFIGURATION_ERROR, RYGEL_CONFIGURATION_ERROR_NO_VALUE_SET, _ ("No value available"));
 		{
 			g_propagate_error (error, _inner_error_);
@@ -715,13 +720,13 @@ static gboolean rygel_meta_config_real_get_mp3_transcoder (RygelConfiguration* b
 	result = val;
 #line 153 "rygel-meta-config.vala"
 	return result;
-#line 719 "rygel-meta-config.c"
+#line 724 "rygel-meta-config.c"
 }
 
 
 #line 156 "rygel-meta-config.vala"
 static gboolean rygel_meta_config_real_get_mp2ts_transcoder (RygelConfiguration* base, GError** error) {
-#line 725 "rygel-meta-config.c"
+#line 730 "rygel-meta-config.c"
 	RygelMetaConfig * self;
 	gboolean result = FALSE;
 	GError * _inner_error_;
@@ -733,28 +738,29 @@ static gboolean rygel_meta_config_real_get_mp2ts_transcoder (RygelConfiguration*
 	val = TRUE;
 #line 158 "rygel-meta-config.vala"
 	unavailable = TRUE;
-#line 737 "rygel-meta-config.c"
+#line 742 "rygel-meta-config.c"
 	{
 		GeeIterator* _config_it;
+#line 160 "rygel-meta-config.vala"
 		_config_it = gee_abstract_collection_iterator ((GeeAbstractCollection*) self->priv->configs);
 #line 160 "rygel-meta-config.vala"
 		while (TRUE) {
-#line 743 "rygel-meta-config.c"
+#line 749 "rygel-meta-config.c"
 			RygelConfiguration* config;
 #line 160 "rygel-meta-config.vala"
 			if (!gee_iterator_next (_config_it)) {
 #line 160 "rygel-meta-config.vala"
 				break;
-#line 749 "rygel-meta-config.c"
+#line 755 "rygel-meta-config.c"
 			}
 #line 160 "rygel-meta-config.vala"
 			config = (RygelConfiguration*) gee_iterator_get (_config_it);
-#line 753 "rygel-meta-config.c"
+#line 759 "rygel-meta-config.c"
 			{
 				gboolean _tmp0_;
 #line 162 "rygel-meta-config.vala"
 				_tmp0_ = rygel_configuration_get_mp2ts_transcoder (config, &_inner_error_);
-#line 758 "rygel-meta-config.c"
+#line 764 "rygel-meta-config.c"
 				if (_inner_error_ != NULL) {
 					goto __catch13_g_error;
 				}
@@ -762,11 +768,11 @@ static gboolean rygel_meta_config_real_get_mp2ts_transcoder (RygelConfiguration*
 				val = _tmp0_;
 #line 163 "rygel-meta-config.vala"
 				unavailable = FALSE;
-#line 766 "rygel-meta-config.c"
+#line 772 "rygel-meta-config.c"
 				_g_object_unref0 (config);
 #line 164 "rygel-meta-config.vala"
 				break;
-#line 770 "rygel-meta-config.c"
+#line 776 "rygel-meta-config.c"
 			}
 			goto __finally13;
 			__catch13_g_error:
@@ -791,7 +797,7 @@ static gboolean rygel_meta_config_real_get_mp2ts_transcoder (RygelConfiguration*
 	}
 #line 168 "rygel-meta-config.vala"
 	if (unavailable) {
-#line 795 "rygel-meta-config.c"
+#line 801 "rygel-meta-config.c"
 		_inner_error_ = g_error_new_literal (RYGEL_CONFIGURATION_ERROR, RYGEL_CONFIGURATION_ERROR_NO_VALUE_SET, _ ("No value available"));
 		{
 			g_propagate_error (error, _inner_error_);
@@ -801,13 +807,13 @@ static gboolean rygel_meta_config_real_get_mp2ts_transcoder (RygelConfiguration*
 	result = val;
 #line 172 "rygel-meta-config.vala"
 	return result;
-#line 805 "rygel-meta-config.c"
+#line 811 "rygel-meta-config.c"
 }
 
 
 #line 175 "rygel-meta-config.vala"
 static gboolean rygel_meta_config_real_get_lpcm_transcoder (RygelConfiguration* base, GError** error) {
-#line 811 "rygel-meta-config.c"
+#line 817 "rygel-meta-config.c"
 	RygelMetaConfig * self;
 	gboolean result = FALSE;
 	GError * _inner_error_;
@@ -819,28 +825,29 @@ static gboolean rygel_meta_config_real_get_lpcm_transcoder (RygelConfiguration* 
 	val = TRUE;
 #line 177 "rygel-meta-config.vala"
 	unavailable = TRUE;
-#line 823 "rygel-meta-config.c"
+#line 829 "rygel-meta-config.c"
 	{
 		GeeIterator* _config_it;
+#line 179 "rygel-meta-config.vala"
 		_config_it = gee_abstract_collection_iterator ((GeeAbstractCollection*) self->priv->configs);
 #line 179 "rygel-meta-config.vala"
 		while (TRUE) {
-#line 829 "rygel-meta-config.c"
+#line 836 "rygel-meta-config.c"
 			RygelConfiguration* config;
 #line 179 "rygel-meta-config.vala"
 			if (!gee_iterator_next (_config_it)) {
 #line 179 "rygel-meta-config.vala"
 				break;
-#line 835 "rygel-meta-config.c"
+#line 842 "rygel-meta-config.c"
 			}
 #line 179 "rygel-meta-config.vala"
 			config = (RygelConfiguration*) gee_iterator_get (_config_it);
-#line 839 "rygel-meta-config.c"
+#line 846 "rygel-meta-config.c"
 			{
 				gboolean _tmp0_;
 #line 181 "rygel-meta-config.vala"
 				_tmp0_ = rygel_configuration_get_lpcm_transcoder (config, &_inner_error_);
-#line 844 "rygel-meta-config.c"
+#line 851 "rygel-meta-config.c"
 				if (_inner_error_ != NULL) {
 					goto __catch14_g_error;
 				}
@@ -848,11 +855,11 @@ static gboolean rygel_meta_config_real_get_lpcm_transcoder (RygelConfiguration* 
 				val = _tmp0_;
 #line 182 "rygel-meta-config.vala"
 				unavailable = FALSE;
-#line 852 "rygel-meta-config.c"
+#line 859 "rygel-meta-config.c"
 				_g_object_unref0 (config);
 #line 183 "rygel-meta-config.vala"
 				break;
-#line 856 "rygel-meta-config.c"
+#line 863 "rygel-meta-config.c"
 			}
 			goto __finally14;
 			__catch14_g_error:
@@ -877,7 +884,7 @@ static gboolean rygel_meta_config_real_get_lpcm_transcoder (RygelConfiguration* 
 	}
 #line 187 "rygel-meta-config.vala"
 	if (unavailable) {
-#line 881 "rygel-meta-config.c"
+#line 888 "rygel-meta-config.c"
 		_inner_error_ = g_error_new_literal (RYGEL_CONFIGURATION_ERROR, RYGEL_CONFIGURATION_ERROR_NO_VALUE_SET, _ ("No value available"));
 		{
 			g_propagate_error (error, _inner_error_);
@@ -887,13 +894,13 @@ static gboolean rygel_meta_config_real_get_lpcm_transcoder (RygelConfiguration* 
 	result = val;
 #line 191 "rygel-meta-config.vala"
 	return result;
-#line 891 "rygel-meta-config.c"
+#line 898 "rygel-meta-config.c"
 }
 
 
 #line 194 "rygel-meta-config.vala"
 static gboolean rygel_meta_config_real_get_wmv_transcoder (RygelConfiguration* base, GError** error) {
-#line 897 "rygel-meta-config.c"
+#line 904 "rygel-meta-config.c"
 	RygelMetaConfig * self;
 	gboolean result = FALSE;
 	GError * _inner_error_;
@@ -905,28 +912,29 @@ static gboolean rygel_meta_config_real_get_wmv_transcoder (RygelConfiguration* b
 	val = TRUE;
 #line 196 "rygel-meta-config.vala"
 	unavailable = TRUE;
-#line 909 "rygel-meta-config.c"
+#line 916 "rygel-meta-config.c"
 	{
 		GeeIterator* _config_it;
+#line 198 "rygel-meta-config.vala"
 		_config_it = gee_abstract_collection_iterator ((GeeAbstractCollection*) self->priv->configs);
 #line 198 "rygel-meta-config.vala"
 		while (TRUE) {
-#line 915 "rygel-meta-config.c"
+#line 923 "rygel-meta-config.c"
 			RygelConfiguration* config;
 #line 198 "rygel-meta-config.vala"
 			if (!gee_iterator_next (_config_it)) {
 #line 198 "rygel-meta-config.vala"
 				break;
-#line 921 "rygel-meta-config.c"
+#line 929 "rygel-meta-config.c"
 			}
 #line 198 "rygel-meta-config.vala"
 			config = (RygelConfiguration*) gee_iterator_get (_config_it);
-#line 925 "rygel-meta-config.c"
+#line 933 "rygel-meta-config.c"
 			{
 				gboolean _tmp0_;
 #line 200 "rygel-meta-config.vala"
 				_tmp0_ = rygel_configuration_get_wmv_transcoder (config, &_inner_error_);
-#line 930 "rygel-meta-config.c"
+#line 938 "rygel-meta-config.c"
 				if (_inner_error_ != NULL) {
 					goto __catch15_g_error;
 				}
@@ -934,11 +942,11 @@ static gboolean rygel_meta_config_real_get_wmv_transcoder (RygelConfiguration* b
 				val = _tmp0_;
 #line 201 "rygel-meta-config.vala"
 				unavailable = FALSE;
-#line 938 "rygel-meta-config.c"
+#line 946 "rygel-meta-config.c"
 				_g_object_unref0 (config);
 #line 202 "rygel-meta-config.vala"
 				break;
-#line 942 "rygel-meta-config.c"
+#line 950 "rygel-meta-config.c"
 			}
 			goto __finally15;
 			__catch15_g_error:
@@ -963,7 +971,7 @@ static gboolean rygel_meta_config_real_get_wmv_transcoder (RygelConfiguration* b
 	}
 #line 206 "rygel-meta-config.vala"
 	if (unavailable) {
-#line 967 "rygel-meta-config.c"
+#line 975 "rygel-meta-config.c"
 		_inner_error_ = g_error_new_literal (RYGEL_CONFIGURATION_ERROR, RYGEL_CONFIGURATION_ERROR_NO_VALUE_SET, _ ("No value available"));
 		{
 			g_propagate_error (error, _inner_error_);
@@ -973,13 +981,13 @@ static gboolean rygel_meta_config_real_get_wmv_transcoder (RygelConfiguration* b
 	result = val;
 #line 210 "rygel-meta-config.vala"
 	return result;
-#line 977 "rygel-meta-config.c"
+#line 985 "rygel-meta-config.c"
 }
 
 
 #line 213 "rygel-meta-config.vala"
 static RygelLogLevel rygel_meta_config_real_get_log_level (RygelConfiguration* base, GError** error) {
-#line 983 "rygel-meta-config.c"
+#line 991 "rygel-meta-config.c"
 	RygelMetaConfig * self;
 	RygelLogLevel result = 0;
 	GError * _inner_error_;
@@ -991,28 +999,29 @@ static RygelLogLevel rygel_meta_config_real_get_log_level (RygelConfiguration* b
 	val = RYGEL_LOG_LEVEL_DEFAULT;
 #line 215 "rygel-meta-config.vala"
 	unavailable = TRUE;
-#line 995 "rygel-meta-config.c"
+#line 1003 "rygel-meta-config.c"
 	{
 		GeeIterator* _config_it;
+#line 217 "rygel-meta-config.vala"
 		_config_it = gee_abstract_collection_iterator ((GeeAbstractCollection*) self->priv->configs);
 #line 217 "rygel-meta-config.vala"
 		while (TRUE) {
-#line 1001 "rygel-meta-config.c"
+#line 1010 "rygel-meta-config.c"
 			RygelConfiguration* config;
 #line 217 "rygel-meta-config.vala"
 			if (!gee_iterator_next (_config_it)) {
 #line 217 "rygel-meta-config.vala"
 				break;
-#line 1007 "rygel-meta-config.c"
+#line 1016 "rygel-meta-config.c"
 			}
 #line 217 "rygel-meta-config.vala"
 			config = (RygelConfiguration*) gee_iterator_get (_config_it);
-#line 1011 "rygel-meta-config.c"
+#line 1020 "rygel-meta-config.c"
 			{
 				RygelLogLevel _tmp0_;
 #line 219 "rygel-meta-config.vala"
 				_tmp0_ = rygel_configuration_get_log_level (config, &_inner_error_);
-#line 1016 "rygel-meta-config.c"
+#line 1025 "rygel-meta-config.c"
 				if (_inner_error_ != NULL) {
 					goto __catch16_g_error;
 				}
@@ -1020,11 +1029,11 @@ static RygelLogLevel rygel_meta_config_real_get_log_level (RygelConfiguration* b
 				val = _tmp0_;
 #line 220 "rygel-meta-config.vala"
 				unavailable = FALSE;
-#line 1024 "rygel-meta-config.c"
+#line 1033 "rygel-meta-config.c"
 				_g_object_unref0 (config);
 #line 221 "rygel-meta-config.vala"
 				break;
-#line 1028 "rygel-meta-config.c"
+#line 1037 "rygel-meta-config.c"
 			}
 			goto __finally16;
 			__catch16_g_error:
@@ -1049,7 +1058,7 @@ static RygelLogLevel rygel_meta_config_real_get_log_level (RygelConfiguration* b
 	}
 #line 225 "rygel-meta-config.vala"
 	if (unavailable) {
-#line 1053 "rygel-meta-config.c"
+#line 1062 "rygel-meta-config.c"
 		_inner_error_ = g_error_new_literal (RYGEL_CONFIGURATION_ERROR, RYGEL_CONFIGURATION_ERROR_NO_VALUE_SET, _ ("No value available"));
 		{
 			g_propagate_error (error, _inner_error_);
@@ -1059,13 +1068,13 @@ static RygelLogLevel rygel_meta_config_real_get_log_level (RygelConfiguration* b
 	result = val;
 #line 229 "rygel-meta-config.vala"
 	return result;
-#line 1063 "rygel-meta-config.c"
+#line 1072 "rygel-meta-config.c"
 }
 
 
 #line 232 "rygel-meta-config.vala"
 static char* rygel_meta_config_real_get_plugin_path (RygelConfiguration* base, GError** error) {
-#line 1069 "rygel-meta-config.c"
+#line 1078 "rygel-meta-config.c"
 	RygelMetaConfig * self;
 	char* result = NULL;
 	GError * _inner_error_;
@@ -1077,29 +1086,30 @@ static char* rygel_meta_config_real_get_plugin_path (RygelConfiguration* base, G
 	val = NULL;
 #line 234 "rygel-meta-config.vala"
 	unavailable = TRUE;
-#line 1081 "rygel-meta-config.c"
+#line 1090 "rygel-meta-config.c"
 	{
 		GeeIterator* _config_it;
+#line 236 "rygel-meta-config.vala"
 		_config_it = gee_abstract_collection_iterator ((GeeAbstractCollection*) self->priv->configs);
 #line 236 "rygel-meta-config.vala"
 		while (TRUE) {
-#line 1087 "rygel-meta-config.c"
+#line 1097 "rygel-meta-config.c"
 			RygelConfiguration* config;
 #line 236 "rygel-meta-config.vala"
 			if (!gee_iterator_next (_config_it)) {
 #line 236 "rygel-meta-config.vala"
 				break;
-#line 1093 "rygel-meta-config.c"
+#line 1103 "rygel-meta-config.c"
 			}
 #line 236 "rygel-meta-config.vala"
 			config = (RygelConfiguration*) gee_iterator_get (_config_it);
-#line 1097 "rygel-meta-config.c"
+#line 1107 "rygel-meta-config.c"
 			{
 				char* _tmp0_;
 				char* _tmp1_;
 #line 238 "rygel-meta-config.vala"
 				_tmp0_ = rygel_configuration_get_plugin_path (config, &_inner_error_);
-#line 1103 "rygel-meta-config.c"
+#line 1113 "rygel-meta-config.c"
 				if (_inner_error_ != NULL) {
 					goto __catch17_g_error;
 				}
@@ -1107,11 +1117,11 @@ static char* rygel_meta_config_real_get_plugin_path (RygelConfiguration* base, G
 				val = (_tmp1_ = _tmp0_, _g_free0 (val), _tmp1_);
 #line 239 "rygel-meta-config.vala"
 				unavailable = FALSE;
-#line 1111 "rygel-meta-config.c"
+#line 1121 "rygel-meta-config.c"
 				_g_object_unref0 (config);
 #line 240 "rygel-meta-config.vala"
 				break;
-#line 1115 "rygel-meta-config.c"
+#line 1125 "rygel-meta-config.c"
 			}
 			goto __finally17;
 			__catch17_g_error:
@@ -1137,7 +1147,7 @@ static char* rygel_meta_config_real_get_plugin_path (RygelConfiguration* base, G
 	}
 #line 244 "rygel-meta-config.vala"
 	if (unavailable) {
-#line 1141 "rygel-meta-config.c"
+#line 1151 "rygel-meta-config.c"
 		_inner_error_ = g_error_new_literal (RYGEL_CONFIGURATION_ERROR, RYGEL_CONFIGURATION_ERROR_NO_VALUE_SET, "No value available");
 		{
 			g_propagate_error (error, _inner_error_);
@@ -1148,13 +1158,13 @@ static char* rygel_meta_config_real_get_plugin_path (RygelConfiguration* base, G
 	result = val;
 #line 248 "rygel-meta-config.vala"
 	return result;
-#line 1152 "rygel-meta-config.c"
+#line 1162 "rygel-meta-config.c"
 }
 
 
 #line 251 "rygel-meta-config.vala"
 static gboolean rygel_meta_config_real_get_enabled (RygelConfiguration* base, const char* section, GError** error) {
-#line 1158 "rygel-meta-config.c"
+#line 1168 "rygel-meta-config.c"
 	RygelMetaConfig * self;
 	gboolean result = FALSE;
 	GError * _inner_error_;
@@ -1163,34 +1173,35 @@ static gboolean rygel_meta_config_real_get_enabled (RygelConfiguration* base, co
 	self = (RygelMetaConfig*) base;
 #line 251 "rygel-meta-config.vala"
 	g_return_val_if_fail (section != NULL, FALSE);
-#line 1167 "rygel-meta-config.c"
+#line 1177 "rygel-meta-config.c"
 	_inner_error_ = NULL;
 #line 252 "rygel-meta-config.vala"
 	val = TRUE;
 #line 253 "rygel-meta-config.vala"
 	unavailable = TRUE;
-#line 1173 "rygel-meta-config.c"
+#line 1183 "rygel-meta-config.c"
 	{
 		GeeIterator* _config_it;
+#line 255 "rygel-meta-config.vala"
 		_config_it = gee_abstract_collection_iterator ((GeeAbstractCollection*) self->priv->configs);
 #line 255 "rygel-meta-config.vala"
 		while (TRUE) {
-#line 1179 "rygel-meta-config.c"
+#line 1190 "rygel-meta-config.c"
 			RygelConfiguration* config;
 #line 255 "rygel-meta-config.vala"
 			if (!gee_iterator_next (_config_it)) {
 #line 255 "rygel-meta-config.vala"
 				break;
-#line 1185 "rygel-meta-config.c"
+#line 1196 "rygel-meta-config.c"
 			}
 #line 255 "rygel-meta-config.vala"
 			config = (RygelConfiguration*) gee_iterator_get (_config_it);
-#line 1189 "rygel-meta-config.c"
+#line 1200 "rygel-meta-config.c"
 			{
 				gboolean _tmp0_;
 #line 257 "rygel-meta-config.vala"
 				_tmp0_ = rygel_configuration_get_enabled (config, section, &_inner_error_);
-#line 1194 "rygel-meta-config.c"
+#line 1205 "rygel-meta-config.c"
 				if (_inner_error_ != NULL) {
 					goto __catch18_g_error;
 				}
@@ -1198,11 +1209,11 @@ static gboolean rygel_meta_config_real_get_enabled (RygelConfiguration* base, co
 				val = _tmp0_;
 #line 258 "rygel-meta-config.vala"
 				unavailable = FALSE;
-#line 1202 "rygel-meta-config.c"
+#line 1213 "rygel-meta-config.c"
 				_g_object_unref0 (config);
 #line 259 "rygel-meta-config.vala"
 				break;
-#line 1206 "rygel-meta-config.c"
+#line 1217 "rygel-meta-config.c"
 			}
 			goto __finally18;
 			__catch18_g_error:
@@ -1227,7 +1238,7 @@ static gboolean rygel_meta_config_real_get_enabled (RygelConfiguration* base, co
 	}
 #line 263 "rygel-meta-config.vala"
 	if (unavailable) {
-#line 1231 "rygel-meta-config.c"
+#line 1242 "rygel-meta-config.c"
 		_inner_error_ = g_error_new (RYGEL_CONFIGURATION_ERROR, RYGEL_CONFIGURATION_ERROR_NO_VALUE_SET, _ ("No value set for '%s/enabled'"), section);
 		{
 			g_propagate_error (error, _inner_error_);
@@ -1237,13 +1248,13 @@ static gboolean rygel_meta_config_real_get_enabled (RygelConfiguration* base, co
 	result = val;
 #line 269 "rygel-meta-config.vala"
 	return result;
-#line 1241 "rygel-meta-config.c"
+#line 1252 "rygel-meta-config.c"
 }
 
 
 #line 272 "rygel-meta-config.vala"
 static char* rygel_meta_config_real_get_title (RygelConfiguration* base, const char* section, GError** error) {
-#line 1247 "rygel-meta-config.c"
+#line 1258 "rygel-meta-config.c"
 	RygelMetaConfig * self;
 	char* result = NULL;
 	GError * _inner_error_;
@@ -1251,43 +1262,44 @@ static char* rygel_meta_config_real_get_title (RygelConfiguration* base, const c
 	self = (RygelMetaConfig*) base;
 #line 272 "rygel-meta-config.vala"
 	g_return_val_if_fail (section != NULL, NULL);
-#line 1255 "rygel-meta-config.c"
+#line 1266 "rygel-meta-config.c"
 	_inner_error_ = NULL;
 #line 273 "rygel-meta-config.vala"
 	val = NULL;
-#line 1259 "rygel-meta-config.c"
+#line 1270 "rygel-meta-config.c"
 	{
 		GeeIterator* _config_it;
+#line 275 "rygel-meta-config.vala"
 		_config_it = gee_abstract_collection_iterator ((GeeAbstractCollection*) self->priv->configs);
 #line 275 "rygel-meta-config.vala"
 		while (TRUE) {
-#line 1265 "rygel-meta-config.c"
+#line 1277 "rygel-meta-config.c"
 			RygelConfiguration* config;
 #line 275 "rygel-meta-config.vala"
 			if (!gee_iterator_next (_config_it)) {
 #line 275 "rygel-meta-config.vala"
 				break;
-#line 1271 "rygel-meta-config.c"
+#line 1283 "rygel-meta-config.c"
 			}
 #line 275 "rygel-meta-config.vala"
 			config = (RygelConfiguration*) gee_iterator_get (_config_it);
-#line 1275 "rygel-meta-config.c"
+#line 1287 "rygel-meta-config.c"
 			{
 				char* _tmp0_;
 				char* _tmp1_;
 #line 277 "rygel-meta-config.vala"
 				_tmp0_ = rygel_configuration_get_title (config, section, &_inner_error_);
-#line 1281 "rygel-meta-config.c"
+#line 1293 "rygel-meta-config.c"
 				if (_inner_error_ != NULL) {
 					goto __catch19_g_error;
 				}
 #line 277 "rygel-meta-config.vala"
 				val = (_tmp1_ = _tmp0_, _g_free0 (val), _tmp1_);
-#line 1287 "rygel-meta-config.c"
+#line 1299 "rygel-meta-config.c"
 				_g_object_unref0 (config);
 #line 278 "rygel-meta-config.vala"
 				break;
-#line 1291 "rygel-meta-config.c"
+#line 1303 "rygel-meta-config.c"
 			}
 			goto __finally19;
 			__catch19_g_error:
@@ -1313,7 +1325,7 @@ static char* rygel_meta_config_real_get_title (RygelConfiguration* base, const c
 	}
 #line 282 "rygel-meta-config.vala"
 	if (val == NULL) {
-#line 1317 "rygel-meta-config.c"
+#line 1329 "rygel-meta-config.c"
 		_inner_error_ = g_error_new (RYGEL_CONFIGURATION_ERROR, RYGEL_CONFIGURATION_ERROR_NO_VALUE_SET, _ ("No value set for '%s/enabled'"), section);
 		{
 			g_propagate_error (error, _inner_error_);
@@ -1324,13 +1336,13 @@ static char* rygel_meta_config_real_get_title (RygelConfiguration* base, const c
 	result = val;
 #line 288 "rygel-meta-config.vala"
 	return result;
-#line 1328 "rygel-meta-config.c"
+#line 1340 "rygel-meta-config.c"
 }
 
 
 #line 291 "rygel-meta-config.vala"
 static char* rygel_meta_config_real_get_string (RygelConfiguration* base, const char* section, const char* key, GError** error) {
-#line 1334 "rygel-meta-config.c"
+#line 1346 "rygel-meta-config.c"
 	RygelMetaConfig * self;
 	char* result = NULL;
 	GError * _inner_error_;
@@ -1340,43 +1352,44 @@ static char* rygel_meta_config_real_get_string (RygelConfiguration* base, const 
 	g_return_val_if_fail (section != NULL, NULL);
 #line 291 "rygel-meta-config.vala"
 	g_return_val_if_fail (key != NULL, NULL);
-#line 1344 "rygel-meta-config.c"
+#line 1356 "rygel-meta-config.c"
 	_inner_error_ = NULL;
 #line 293 "rygel-meta-config.vala"
 	val = NULL;
-#line 1348 "rygel-meta-config.c"
+#line 1360 "rygel-meta-config.c"
 	{
 		GeeIterator* _config_it;
+#line 295 "rygel-meta-config.vala"
 		_config_it = gee_abstract_collection_iterator ((GeeAbstractCollection*) self->priv->configs);
 #line 295 "rygel-meta-config.vala"
 		while (TRUE) {
-#line 1354 "rygel-meta-config.c"
+#line 1367 "rygel-meta-config.c"
 			RygelConfiguration* config;
 #line 295 "rygel-meta-config.vala"
 			if (!gee_iterator_next (_config_it)) {
 #line 295 "rygel-meta-config.vala"
 				break;
-#line 1360 "rygel-meta-config.c"
+#line 1373 "rygel-meta-config.c"
 			}
 #line 295 "rygel-meta-config.vala"
 			config = (RygelConfiguration*) gee_iterator_get (_config_it);
-#line 1364 "rygel-meta-config.c"
+#line 1377 "rygel-meta-config.c"
 			{
 				char* _tmp0_;
 				char* _tmp1_;
 #line 297 "rygel-meta-config.vala"
 				_tmp0_ = rygel_configuration_get_string (config, section, key, &_inner_error_);
-#line 1370 "rygel-meta-config.c"
+#line 1383 "rygel-meta-config.c"
 				if (_inner_error_ != NULL) {
 					goto __catch20_g_error;
 				}
 #line 297 "rygel-meta-config.vala"
 				val = (_tmp1_ = _tmp0_, _g_free0 (val), _tmp1_);
-#line 1376 "rygel-meta-config.c"
+#line 1389 "rygel-meta-config.c"
 				_g_object_unref0 (config);
 #line 298 "rygel-meta-config.vala"
 				break;
-#line 1380 "rygel-meta-config.c"
+#line 1393 "rygel-meta-config.c"
 			}
 			goto __finally20;
 			__catch20_g_error:
@@ -1402,7 +1415,7 @@ static char* rygel_meta_config_real_get_string (RygelConfiguration* base, const 
 	}
 #line 302 "rygel-meta-config.vala"
 	if (val == NULL) {
-#line 1406 "rygel-meta-config.c"
+#line 1419 "rygel-meta-config.c"
 		_inner_error_ = g_error_new (RYGEL_CONFIGURATION_ERROR, RYGEL_CONFIGURATION_ERROR_NO_VALUE_SET, _ ("No value available for '%s/%s'"), section, key);
 		{
 			g_propagate_error (error, _inner_error_);
@@ -1413,13 +1426,13 @@ static char* rygel_meta_config_real_get_string (RygelConfiguration* base, const 
 	result = val;
 #line 309 "rygel-meta-config.vala"
 	return result;
-#line 1417 "rygel-meta-config.c"
+#line 1430 "rygel-meta-config.c"
 }
 
 
 #line 312 "rygel-meta-config.vala"
 static GeeArrayList* rygel_meta_config_real_get_string_list (RygelConfiguration* base, const char* section, const char* key, GError** error) {
-#line 1423 "rygel-meta-config.c"
+#line 1436 "rygel-meta-config.c"
 	RygelMetaConfig * self;
 	GeeArrayList* result = NULL;
 	GError * _inner_error_;
@@ -1429,43 +1442,44 @@ static GeeArrayList* rygel_meta_config_real_get_string_list (RygelConfiguration*
 	g_return_val_if_fail (section != NULL, NULL);
 #line 312 "rygel-meta-config.vala"
 	g_return_val_if_fail (key != NULL, NULL);
-#line 1433 "rygel-meta-config.c"
+#line 1446 "rygel-meta-config.c"
 	_inner_error_ = NULL;
 #line 315 "rygel-meta-config.vala"
 	val = NULL;
-#line 1437 "rygel-meta-config.c"
+#line 1450 "rygel-meta-config.c"
 	{
 		GeeIterator* _config_it;
+#line 317 "rygel-meta-config.vala"
 		_config_it = gee_abstract_collection_iterator ((GeeAbstractCollection*) self->priv->configs);
 #line 317 "rygel-meta-config.vala"
 		while (TRUE) {
-#line 1443 "rygel-meta-config.c"
+#line 1457 "rygel-meta-config.c"
 			RygelConfiguration* config;
 #line 317 "rygel-meta-config.vala"
 			if (!gee_iterator_next (_config_it)) {
 #line 317 "rygel-meta-config.vala"
 				break;
-#line 1449 "rygel-meta-config.c"
+#line 1463 "rygel-meta-config.c"
 			}
 #line 317 "rygel-meta-config.vala"
 			config = (RygelConfiguration*) gee_iterator_get (_config_it);
-#line 1453 "rygel-meta-config.c"
+#line 1467 "rygel-meta-config.c"
 			{
 				GeeArrayList* _tmp0_;
 				GeeArrayList* _tmp1_;
 #line 319 "rygel-meta-config.vala"
 				_tmp0_ = rygel_configuration_get_string_list (config, section, key, &_inner_error_);
-#line 1459 "rygel-meta-config.c"
+#line 1473 "rygel-meta-config.c"
 				if (_inner_error_ != NULL) {
 					goto __catch21_g_error;
 				}
 #line 319 "rygel-meta-config.vala"
 				val = (_tmp1_ = _tmp0_, _g_object_unref0 (val), _tmp1_);
-#line 1465 "rygel-meta-config.c"
+#line 1479 "rygel-meta-config.c"
 				_g_object_unref0 (config);
 #line 320 "rygel-meta-config.vala"
 				break;
-#line 1469 "rygel-meta-config.c"
+#line 1483 "rygel-meta-config.c"
 			}
 			goto __finally21;
 			__catch21_g_error:
@@ -1491,7 +1505,7 @@ static GeeArrayList* rygel_meta_config_real_get_string_list (RygelConfiguration*
 	}
 #line 324 "rygel-meta-config.vala"
 	if (val == NULL) {
-#line 1495 "rygel-meta-config.c"
+#line 1509 "rygel-meta-config.c"
 		_inner_error_ = g_error_new (RYGEL_CONFIGURATION_ERROR, RYGEL_CONFIGURATION_ERROR_NO_VALUE_SET, _ ("No value available for '%s/%s'"), section, key);
 		{
 			g_propagate_error (error, _inner_error_);
@@ -1502,13 +1516,13 @@ static GeeArrayList* rygel_meta_config_real_get_string_list (RygelConfiguration*
 	result = val;
 #line 331 "rygel-meta-config.vala"
 	return result;
-#line 1506 "rygel-meta-config.c"
+#line 1520 "rygel-meta-config.c"
 }
 
 
 #line 334 "rygel-meta-config.vala"
 static gint rygel_meta_config_real_get_int (RygelConfiguration* base, const char* section, const char* key, gint min, gint max, GError** error) {
-#line 1512 "rygel-meta-config.c"
+#line 1526 "rygel-meta-config.c"
 	RygelMetaConfig * self;
 	gint result = 0;
 	GError * _inner_error_;
@@ -1519,34 +1533,35 @@ static gint rygel_meta_config_real_get_int (RygelConfiguration* base, const char
 	g_return_val_if_fail (section != NULL, 0);
 #line 334 "rygel-meta-config.vala"
 	g_return_val_if_fail (key != NULL, 0);
-#line 1523 "rygel-meta-config.c"
+#line 1537 "rygel-meta-config.c"
 	_inner_error_ = NULL;
 #line 339 "rygel-meta-config.vala"
 	val = 0;
 #line 340 "rygel-meta-config.vala"
 	unavailable = TRUE;
-#line 1529 "rygel-meta-config.c"
+#line 1543 "rygel-meta-config.c"
 	{
 		GeeIterator* _config_it;
+#line 342 "rygel-meta-config.vala"
 		_config_it = gee_abstract_collection_iterator ((GeeAbstractCollection*) self->priv->configs);
 #line 342 "rygel-meta-config.vala"
 		while (TRUE) {
-#line 1535 "rygel-meta-config.c"
+#line 1550 "rygel-meta-config.c"
 			RygelConfiguration* config;
 #line 342 "rygel-meta-config.vala"
 			if (!gee_iterator_next (_config_it)) {
 #line 342 "rygel-meta-config.vala"
 				break;
-#line 1541 "rygel-meta-config.c"
+#line 1556 "rygel-meta-config.c"
 			}
 #line 342 "rygel-meta-config.vala"
 			config = (RygelConfiguration*) gee_iterator_get (_config_it);
-#line 1545 "rygel-meta-config.c"
+#line 1560 "rygel-meta-config.c"
 			{
 				gint _tmp0_;
 #line 344 "rygel-meta-config.vala"
 				_tmp0_ = rygel_configuration_get_int (config, section, key, min, max, &_inner_error_);
-#line 1550 "rygel-meta-config.c"
+#line 1565 "rygel-meta-config.c"
 				if (_inner_error_ != NULL) {
 					goto __catch22_g_error;
 				}
@@ -1554,11 +1569,11 @@ static gint rygel_meta_config_real_get_int (RygelConfiguration* base, const char
 				val = _tmp0_;
 #line 345 "rygel-meta-config.vala"
 				unavailable = FALSE;
-#line 1558 "rygel-meta-config.c"
+#line 1573 "rygel-meta-config.c"
 				_g_object_unref0 (config);
 #line 346 "rygel-meta-config.vala"
 				break;
-#line 1562 "rygel-meta-config.c"
+#line 1577 "rygel-meta-config.c"
 			}
 			goto __finally22;
 			__catch22_g_error:
@@ -1583,7 +1598,7 @@ static gint rygel_meta_config_real_get_int (RygelConfiguration* base, const char
 	}
 #line 350 "rygel-meta-config.vala"
 	if (unavailable) {
-#line 1587 "rygel-meta-config.c"
+#line 1602 "rygel-meta-config.c"
 		_inner_error_ = g_error_new (RYGEL_CONFIGURATION_ERROR, RYGEL_CONFIGURATION_ERROR_NO_VALUE_SET, _ ("No value available for '%s/%s'"), section, key);
 		{
 			g_propagate_error (error, _inner_error_);
@@ -1593,13 +1608,13 @@ static gint rygel_meta_config_real_get_int (RygelConfiguration* base, const char
 	result = val;
 #line 357 "rygel-meta-config.vala"
 	return result;
-#line 1597 "rygel-meta-config.c"
+#line 1612 "rygel-meta-config.c"
 }
 
 
 #line 360 "rygel-meta-config.vala"
 static GeeArrayList* rygel_meta_config_real_get_int_list (RygelConfiguration* base, const char* section, const char* key, GError** error) {
-#line 1603 "rygel-meta-config.c"
+#line 1618 "rygel-meta-config.c"
 	RygelMetaConfig * self;
 	GeeArrayList* result = NULL;
 	GError * _inner_error_;
@@ -1609,43 +1624,44 @@ static GeeArrayList* rygel_meta_config_real_get_int_list (RygelConfiguration* ba
 	g_return_val_if_fail (section != NULL, NULL);
 #line 360 "rygel-meta-config.vala"
 	g_return_val_if_fail (key != NULL, NULL);
-#line 1613 "rygel-meta-config.c"
+#line 1628 "rygel-meta-config.c"
 	_inner_error_ = NULL;
 #line 363 "rygel-meta-config.vala"
 	val = NULL;
-#line 1617 "rygel-meta-config.c"
+#line 1632 "rygel-meta-config.c"
 	{
 		GeeIterator* _config_it;
+#line 365 "rygel-meta-config.vala"
 		_config_it = gee_abstract_collection_iterator ((GeeAbstractCollection*) self->priv->configs);
 #line 365 "rygel-meta-config.vala"
 		while (TRUE) {
-#line 1623 "rygel-meta-config.c"
+#line 1639 "rygel-meta-config.c"
 			RygelConfiguration* config;
 #line 365 "rygel-meta-config.vala"
 			if (!gee_iterator_next (_config_it)) {
 #line 365 "rygel-meta-config.vala"
 				break;
-#line 1629 "rygel-meta-config.c"
+#line 1645 "rygel-meta-config.c"
 			}
 #line 365 "rygel-meta-config.vala"
 			config = (RygelConfiguration*) gee_iterator_get (_config_it);
-#line 1633 "rygel-meta-config.c"
+#line 1649 "rygel-meta-config.c"
 			{
 				GeeArrayList* _tmp0_;
 				GeeArrayList* _tmp1_;
 #line 367 "rygel-meta-config.vala"
 				_tmp0_ = rygel_configuration_get_int_list (config, section, key, &_inner_error_);
-#line 1639 "rygel-meta-config.c"
+#line 1655 "rygel-meta-config.c"
 				if (_inner_error_ != NULL) {
 					goto __catch23_g_error;
 				}
 #line 367 "rygel-meta-config.vala"
 				val = (_tmp1_ = _tmp0_, _g_object_unref0 (val), _tmp1_);
-#line 1645 "rygel-meta-config.c"
+#line 1661 "rygel-meta-config.c"
 				_g_object_unref0 (config);
 #line 368 "rygel-meta-config.vala"
 				break;
-#line 1649 "rygel-meta-config.c"
+#line 1665 "rygel-meta-config.c"
 			}
 			goto __finally23;
 			__catch23_g_error:
@@ -1671,7 +1687,7 @@ static GeeArrayList* rygel_meta_config_real_get_int_list (RygelConfiguration* ba
 	}
 #line 372 "rygel-meta-config.vala"
 	if (val == NULL) {
-#line 1675 "rygel-meta-config.c"
+#line 1691 "rygel-meta-config.c"
 		_inner_error_ = g_error_new (RYGEL_CONFIGURATION_ERROR, RYGEL_CONFIGURATION_ERROR_NO_VALUE_SET, _ ("No value available for '%s/%s'"), section, key);
 		{
 			g_propagate_error (error, _inner_error_);
@@ -1682,13 +1698,13 @@ static GeeArrayList* rygel_meta_config_real_get_int_list (RygelConfiguration* ba
 	result = val;
 #line 379 "rygel-meta-config.vala"
 	return result;
-#line 1686 "rygel-meta-config.c"
+#line 1702 "rygel-meta-config.c"
 }
 
 
 #line 382 "rygel-meta-config.vala"
 static gboolean rygel_meta_config_real_get_bool (RygelConfiguration* base, const char* section, const char* key, GError** error) {
-#line 1692 "rygel-meta-config.c"
+#line 1708 "rygel-meta-config.c"
 	RygelMetaConfig * self;
 	gboolean result = FALSE;
 	GError * _inner_error_;
@@ -1699,34 +1715,35 @@ static gboolean rygel_meta_config_real_get_bool (RygelConfiguration* base, const
 	g_return_val_if_fail (section != NULL, FALSE);
 #line 382 "rygel-meta-config.vala"
 	g_return_val_if_fail (key != NULL, FALSE);
-#line 1703 "rygel-meta-config.c"
+#line 1719 "rygel-meta-config.c"
 	_inner_error_ = NULL;
 #line 385 "rygel-meta-config.vala"
 	val = FALSE;
 #line 386 "rygel-meta-config.vala"
 	unavailable = TRUE;
-#line 1709 "rygel-meta-config.c"
+#line 1725 "rygel-meta-config.c"
 	{
 		GeeIterator* _config_it;
+#line 388 "rygel-meta-config.vala"
 		_config_it = gee_abstract_collection_iterator ((GeeAbstractCollection*) self->priv->configs);
 #line 388 "rygel-meta-config.vala"
 		while (TRUE) {
-#line 1715 "rygel-meta-config.c"
+#line 1732 "rygel-meta-config.c"
 			RygelConfiguration* config;
 #line 388 "rygel-meta-config.vala"
 			if (!gee_iterator_next (_config_it)) {
 #line 388 "rygel-meta-config.vala"
 				break;
-#line 1721 "rygel-meta-config.c"
+#line 1738 "rygel-meta-config.c"
 			}
 #line 388 "rygel-meta-config.vala"
 			config = (RygelConfiguration*) gee_iterator_get (_config_it);
-#line 1725 "rygel-meta-config.c"
+#line 1742 "rygel-meta-config.c"
 			{
 				gboolean _tmp0_;
 #line 390 "rygel-meta-config.vala"
 				_tmp0_ = rygel_configuration_get_bool (config, section, key, &_inner_error_);
-#line 1730 "rygel-meta-config.c"
+#line 1747 "rygel-meta-config.c"
 				if (_inner_error_ != NULL) {
 					goto __catch24_g_error;
 				}
@@ -1734,11 +1751,11 @@ static gboolean rygel_meta_config_real_get_bool (RygelConfiguration* base, const
 				val = _tmp0_;
 #line 391 "rygel-meta-config.vala"
 				unavailable = FALSE;
-#line 1738 "rygel-meta-config.c"
+#line 1755 "rygel-meta-config.c"
 				_g_object_unref0 (config);
 #line 392 "rygel-meta-config.vala"
 				break;
-#line 1742 "rygel-meta-config.c"
+#line 1759 "rygel-meta-config.c"
 			}
 			goto __finally24;
 			__catch24_g_error:
@@ -1763,7 +1780,7 @@ static gboolean rygel_meta_config_real_get_bool (RygelConfiguration* base, const
 	}
 #line 396 "rygel-meta-config.vala"
 	if (unavailable) {
-#line 1767 "rygel-meta-config.c"
+#line 1784 "rygel-meta-config.c"
 		_inner_error_ = g_error_new (RYGEL_CONFIGURATION_ERROR, RYGEL_CONFIGURATION_ERROR_NO_VALUE_SET, _ ("No value available for '%s/%s'"), section, key);
 		{
 			g_propagate_error (error, _inner_error_);
@@ -1773,7 +1790,7 @@ static gboolean rygel_meta_config_real_get_bool (RygelConfiguration* base, const
 	result = val;
 #line 403 "rygel-meta-config.vala"
 	return result;
-#line 1777 "rygel-meta-config.c"
+#line 1794 "rygel-meta-config.c"
 }
 
 

@@ -69,6 +69,7 @@ struct _RygelMediaObject {
 
 struct _RygelMediaObjectClass {
 	GObjectClass parent_class;
+	gint (*compare_by_property) (RygelMediaObject* self, RygelMediaObject* media_object, const char* property);
 };
 
 struct _RygelMediaObjectPrivate {
@@ -93,8 +94,8 @@ struct _RygelMediaObjectGetWritableData {
 
 static gpointer rygel_media_object_parent_class = NULL;
 
-GType rygel_media_object_get_type (void);
-GType rygel_media_container_get_type (void);
+GType rygel_media_object_get_type (void) G_GNUC_CONST;
+GType rygel_media_container_get_type (void) G_GNUC_CONST;
 #define RYGEL_MEDIA_OBJECT_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), RYGEL_TYPE_MEDIA_OBJECT, RygelMediaObjectPrivate))
 enum  {
 	RYGEL_MEDIA_OBJECT_DUMMY_PROPERTY,
@@ -106,10 +107,13 @@ static void rygel_media_object_get_writable_ready (GObject* source_object, GAsyn
 void rygel_media_object_get_writable (RygelMediaObject* self, GCancellable* cancellable, GAsyncReadyCallback _callback_, gpointer _user_data_);
 GFile* rygel_media_object_get_writable_finish (RygelMediaObject* self, GAsyncResult* _res_, GError** error);
 static gboolean rygel_media_object_get_writable_co (RygelMediaObjectGetWritableData* data);
+gint rygel_media_object_compare_string_props (RygelMediaObject* self, const char* prop1, const char* prop2);
+const char* rygel_media_object_get_title (RygelMediaObject* self);
+gint rygel_media_object_compare_by_property (RygelMediaObject* self, RygelMediaObject* media_object, const char* property);
+static gint rygel_media_object_real_compare_by_property (RygelMediaObject* self, RygelMediaObject* media_object, const char* property);
 RygelMediaObject* rygel_media_object_construct (GType object_type);
 RygelMediaContainer* rygel_media_object_get_parent_ref (RygelMediaObject* self);
 void rygel_media_object_set_parent_ref (RygelMediaObject* self, RygelMediaContainer* value);
-const char* rygel_media_object_get_title (RygelMediaObject* self);
 void rygel_media_object_set_title (RygelMediaObject* self, const char* value);
 static GObject * rygel_media_object_constructor (GType type, guint n_construct_properties, GObjectConstructParam * construct_properties);
 static void rygel_media_object_finalize (GObject* obj);
@@ -184,7 +188,7 @@ static gboolean rygel_media_object_get_writable_co (RygelMediaObjectGetWritableD
 				if (!gee_iterator_next (data->_uri_it)) {
 #line 82 "rygel-media-object.vala"
 					break;
-#line 188 "rygel-media-object.c"
+#line 192 "rygel-media-object.c"
 				}
 				data->uri = (char*) gee_iterator_get (data->_uri_it);
 				data->file = g_file_new_for_uri (data->uri);
@@ -196,8 +200,8 @@ static gboolean rygel_media_object_get_writable_co (RygelMediaObjectGetWritableD
 				if (data->_inner_error_ != NULL) {
 					g_simple_async_result_set_from_error (data->_async_result, data->_inner_error_);
 					g_error_free (data->_inner_error_);
-					_g_free0 (data->uri);
 					_g_object_unref0 (data->file);
+					_g_free0 (data->uri);
 					_g_object_unref0 (data->_uri_it);
 					{
 						if (data->_state_ == 0) {
@@ -211,10 +215,10 @@ static gboolean rygel_media_object_get_writable_co (RygelMediaObjectGetWritableD
 				}
 #line 90 "rygel-media-object.vala"
 				if (g_file_info_get_attribute_boolean (data->info, G_FILE_ATTRIBUTE_ACCESS_CAN_WRITE)) {
-#line 215 "rygel-media-object.c"
+#line 219 "rygel-media-object.c"
 					data->result = data->file;
-					_g_free0 (data->uri);
 					_g_object_unref0 (data->info);
+					_g_free0 (data->uri);
 					_g_object_unref0 (data->_uri_it);
 					{
 						if (data->_state_ == 0) {
@@ -226,9 +230,9 @@ static gboolean rygel_media_object_get_writable_co (RygelMediaObjectGetWritableD
 						return FALSE;
 					}
 				}
-				_g_free0 (data->uri);
-				_g_object_unref0 (data->file);
 				_g_object_unref0 (data->info);
+				_g_object_unref0 (data->file);
+				_g_free0 (data->uri);
 			}
 			_g_object_unref0 (data->_uri_it);
 		}
@@ -255,9 +259,120 @@ static gboolean rygel_media_object_get_writable_co (RygelMediaObjectGetWritableD
 }
 
 
+#line 98 "rygel-media-object.vala"
+static gint rygel_media_object_real_compare_by_property (RygelMediaObject* self, RygelMediaObject* media_object, const char* property) {
+#line 265 "rygel-media-object.c"
+	gint result = 0;
+	GQuark _tmp1_;
+	const char* _tmp0_;
+	static GQuark _tmp1__label0 = 0;
+	static GQuark _tmp1__label1 = 0;
+	static GQuark _tmp1__label2 = 0;
+	static GQuark _tmp1__label3 = 0;
+#line 98 "rygel-media-object.vala"
+	g_return_val_if_fail (self != NULL, 0);
+#line 98 "rygel-media-object.vala"
+	g_return_val_if_fail (media_object != NULL, 0);
+#line 98 "rygel-media-object.vala"
+	g_return_val_if_fail (property != NULL, 0);
+#line 279 "rygel-media-object.c"
+	_tmp0_ = property;
+	_tmp1_ = (NULL == _tmp0_) ? 0 : g_quark_from_string (_tmp0_);
+	if (_tmp1_ == ((0 != _tmp1__label0) ? _tmp1__label0 : (_tmp1__label0 = g_quark_from_static_string ("@id"))))
+	switch (0) {
+		default:
+		{
+			result = rygel_media_object_compare_string_props (self, self->id, media_object->id);
+#line 102 "rygel-media-object.vala"
+			return result;
+#line 289 "rygel-media-object.c"
+		}
+	} else if (_tmp1_ == ((0 != _tmp1__label1) ? _tmp1__label1 : (_tmp1__label1 = g_quark_from_static_string ("@parentID"))))
+	switch (0) {
+		default:
+		{
+			result = rygel_media_object_compare_string_props (self, ((RygelMediaObject*) self->parent)->id, ((RygelMediaObject*) media_object->parent)->id);
+#line 104 "rygel-media-object.vala"
+			return result;
+#line 298 "rygel-media-object.c"
+		}
+	} else if (_tmp1_ == ((0 != _tmp1__label2) ? _tmp1__label2 : (_tmp1__label2 = g_quark_from_static_string ("dc:title"))))
+	switch (0) {
+		default:
+		{
+			result = rygel_media_object_compare_string_props (self, rygel_media_object_get_title (self), rygel_media_object_get_title (media_object));
+#line 107 "rygel-media-object.vala"
+			return result;
+#line 307 "rygel-media-object.c"
+		}
+	} else if (_tmp1_ == ((0 != _tmp1__label3) ? _tmp1__label3 : (_tmp1__label3 = g_quark_from_static_string ("upnp:class"))))
+	switch (0) {
+		default:
+		{
+			result = rygel_media_object_compare_string_props (self, self->upnp_class, media_object->upnp_class);
+#line 109 "rygel-media-object.vala"
+			return result;
+#line 316 "rygel-media-object.c"
+		}
+	} else
+	switch (0) {
+		default:
+		{
+			result = 0;
+#line 112 "rygel-media-object.vala"
+			return result;
+#line 325 "rygel-media-object.c"
+		}
+	}
+}
+
+
+#line 98 "rygel-media-object.vala"
+gint rygel_media_object_compare_by_property (RygelMediaObject* self, RygelMediaObject* media_object, const char* property) {
+#line 98 "rygel-media-object.vala"
+	return RYGEL_MEDIA_OBJECT_GET_CLASS (self)->compare_by_property (self, media_object, property);
+#line 335 "rygel-media-object.c"
+}
+
+
+#line 116 "rygel-media-object.vala"
+gint rygel_media_object_compare_string_props (RygelMediaObject* self, const char* prop1, const char* prop2) {
+#line 341 "rygel-media-object.c"
+	gint result = 0;
+#line 116 "rygel-media-object.vala"
+	g_return_val_if_fail (self != NULL, 0);
+#line 116 "rygel-media-object.vala"
+	g_return_val_if_fail (prop1 != NULL, 0);
+#line 116 "rygel-media-object.vala"
+	g_return_val_if_fail (prop2 != NULL, 0);
+#line 117 "rygel-media-object.vala"
+	if (prop1 == NULL) {
+#line 351 "rygel-media-object.c"
+		result = -1;
+#line 118 "rygel-media-object.vala"
+		return result;
+#line 355 "rygel-media-object.c"
+	} else {
+#line 119 "rygel-media-object.vala"
+		if (prop2 == NULL) {
+#line 359 "rygel-media-object.c"
+			result = 1;
+#line 120 "rygel-media-object.vala"
+			return result;
+#line 363 "rygel-media-object.c"
+		} else {
+			result = g_utf8_collate (prop1, prop2);
+#line 122 "rygel-media-object.vala"
+			return result;
+#line 368 "rygel-media-object.c"
+		}
+	}
+}
+
+
 #line 29 "rygel-media-object.vala"
 RygelMediaObject* rygel_media_object_construct (GType object_type) {
-#line 261 "rygel-media-object.c"
+#line 376 "rygel-media-object.c"
 	RygelMediaObject * self;
 	self = g_object_newv (object_type, 0, NULL);
 	return self;
@@ -270,7 +385,7 @@ RygelMediaContainer* rygel_media_object_get_parent_ref (RygelMediaObject* self) 
 	result = self->priv->_parent_ref;
 #line 47 "rygel-media-object.vala"
 	return result;
-#line 274 "rygel-media-object.c"
+#line 389 "rygel-media-object.c"
 }
 
 
@@ -281,7 +396,7 @@ void rygel_media_object_set_parent_ref (RygelMediaObject* self, RygelMediaContai
 	self->parent = value;
 #line 52 "rygel-media-object.vala"
 	self->priv->_parent_ref = (_tmp0_ = _g_object_ref0 (value), _g_object_unref0 (self->priv->_parent_ref), _tmp0_);
-#line 285 "rygel-media-object.c"
+#line 400 "rygel-media-object.c"
 	g_object_notify ((GObject *) self, "parent-ref");
 }
 
@@ -292,46 +407,46 @@ const char* rygel_media_object_get_title (RygelMediaObject* self) {
 	result = self->priv->_title;
 #line 59 "rygel-media-object.vala"
 	return result;
-#line 296 "rygel-media-object.c"
+#line 411 "rygel-media-object.c"
 }
 
 
-#line 1148 "glib-2.0.vapi"
+#line 1156 "glib-2.0.vapi"
 static char* string_replace (const char* self, const char* old, const char* replacement) {
-#line 302 "rygel-media-object.c"
+#line 417 "rygel-media-object.c"
 	char* result = NULL;
 	GError * _inner_error_;
-#line 1148 "glib-2.0.vapi"
+#line 1156 "glib-2.0.vapi"
 	g_return_val_if_fail (self != NULL, NULL);
-#line 1148 "glib-2.0.vapi"
+#line 1156 "glib-2.0.vapi"
 	g_return_val_if_fail (old != NULL, NULL);
-#line 1148 "glib-2.0.vapi"
+#line 1156 "glib-2.0.vapi"
 	g_return_val_if_fail (replacement != NULL, NULL);
-#line 311 "rygel-media-object.c"
+#line 426 "rygel-media-object.c"
 	_inner_error_ = NULL;
 	{
 		char* _tmp0_;
 		GRegex* _tmp1_;
 		GRegex* regex;
 		char* _tmp2_;
-#line 1150 "glib-2.0.vapi"
+#line 1158 "glib-2.0.vapi"
 		regex = (_tmp1_ = g_regex_new (_tmp0_ = g_regex_escape_string (old, -1), 0, 0, &_inner_error_), _g_free0 (_tmp0_), _tmp1_);
-#line 320 "rygel-media-object.c"
+#line 435 "rygel-media-object.c"
 		if (_inner_error_ != NULL) {
 			if (_inner_error_->domain == G_REGEX_ERROR) {
-				goto __catch43_g_regex_error;
+				goto __catch39_g_regex_error;
 			}
 			g_critical ("file %s: line %d: unexpected error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
 			g_clear_error (&_inner_error_);
 			return NULL;
 		}
-#line 1151 "glib-2.0.vapi"
+#line 1159 "glib-2.0.vapi"
 		_tmp2_ = g_regex_replace_literal (regex, self, (gssize) (-1), 0, replacement, 0, &_inner_error_);
-#line 331 "rygel-media-object.c"
+#line 446 "rygel-media-object.c"
 		if (_inner_error_ != NULL) {
 			_g_regex_unref0 (regex);
 			if (_inner_error_->domain == G_REGEX_ERROR) {
-				goto __catch43_g_regex_error;
+				goto __catch39_g_regex_error;
 			}
 			_g_regex_unref0 (regex);
 			g_critical ("file %s: line %d: unexpected error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
@@ -340,24 +455,24 @@ static char* string_replace (const char* self, const char* old, const char* repl
 		}
 		result = _tmp2_;
 		_g_regex_unref0 (regex);
-#line 1151 "glib-2.0.vapi"
+#line 1159 "glib-2.0.vapi"
 		return result;
-#line 346 "rygel-media-object.c"
+#line 461 "rygel-media-object.c"
 	}
-	goto __finally43;
-	__catch43_g_regex_error:
+	goto __finally39;
+	__catch39_g_regex_error:
 	{
 		GError * e;
 		e = _inner_error_;
 		_inner_error_ = NULL;
 		{
-#line 1153 "glib-2.0.vapi"
+#line 1161 "glib-2.0.vapi"
 			g_assert_not_reached ();
-#line 357 "rygel-media-object.c"
+#line 472 "rygel-media-object.c"
 			_g_error_free0 (e);
 		}
 	}
-	__finally43:
+	__finally39:
 	if (_inner_error_ != NULL) {
 		g_critical ("file %s: line %d: uncaught error: %s (%s, %d)", __FILE__, __LINE__, _inner_error_->message, g_quark_to_string (_inner_error_->domain), _inner_error_->code);
 		g_clear_error (&_inner_error_);
@@ -377,7 +492,7 @@ void rygel_media_object_set_title (RygelMediaObject* self, const char* value) {
 	self->priv->_title = (_tmp1_ = string_replace (self->priv->_title, "@USERNAME@", g_get_user_name ()), _g_free0 (self->priv->_title), _tmp1_);
 #line 67 "rygel-media-object.vala"
 	self->priv->_title = (_tmp2_ = string_replace (self->priv->_title, "@HOSTNAME@", g_get_host_name ()), _g_free0 (self->priv->_title), _tmp2_);
-#line 381 "rygel-media-object.c"
+#line 496 "rygel-media-object.c"
 	g_object_notify ((GObject *) self, "title");
 }
 
@@ -393,7 +508,7 @@ static GObject * rygel_media_object_constructor (GType type, guint n_construct_p
 		GeeArrayList* _tmp0_;
 #line 73 "rygel-media-object.vala"
 		self->uris = (_tmp0_ = gee_array_list_new (G_TYPE_STRING, (GBoxedCopyFunc) g_strdup, g_free, NULL), _g_object_unref0 (self->uris), _tmp0_);
-#line 397 "rygel-media-object.c"
+#line 512 "rygel-media-object.c"
 	}
 	return obj;
 }
@@ -402,6 +517,7 @@ static GObject * rygel_media_object_constructor (GType type, guint n_construct_p
 static void rygel_media_object_class_init (RygelMediaObjectClass * klass) {
 	rygel_media_object_parent_class = g_type_class_peek_parent (klass);
 	g_type_class_add_private (klass, sizeof (RygelMediaObjectPrivate));
+	RYGEL_MEDIA_OBJECT_CLASS (klass)->compare_by_property = rygel_media_object_real_compare_by_property;
 	G_OBJECT_CLASS (klass)->get_property = rygel_media_object_get_property;
 	G_OBJECT_CLASS (klass)->set_property = rygel_media_object_set_property;
 	G_OBJECT_CLASS (klass)->constructor = rygel_media_object_constructor;

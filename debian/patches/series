@@ -1,4 +1,2 @@
 0001-rygel.conf-enabled-by-default.patch
 0002-enable-rygel-by-default-in-maemo-config-as-well.patch
-1000-rygel-revert-gtk3.patch
-1001-rygel-autoconf.patch

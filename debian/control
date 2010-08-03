@@ -120,7 +120,8 @@ Description: GNOME UPnP/DLNA services - GStreamer Media Renderer plugin
    * Based on GUPnP.
    * Written (mostly) in Vala language.
  .
- This package provides a MediaRenderer plugin.
+ This package provides a MediaRenderer plugin. This plugin has been
+ renamed to Playbin.
 
 Package: rygel-gst-launch
 Architecture: any

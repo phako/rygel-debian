@@ -141,3 +141,97 @@ Description: GNOME UPnP/DLNA services - gst-launch plugin
  .
  This package provides a gst-launch plugin that enables using a
  custom GStreamer pipeline as a DLNA service/UPnP device.
+
+Package: rygel-dbg
+Architecture: any
+Depends: rygel (= ${binary:Version})
+Description: GNOME UPnP/DLNA services
+ Rygel is a collection of DLNA (UPnP AV) services (devices in UPnP speak),
+ implemented through a plug-in mechanism. Important facts and features:
+   * APIs to ease the implementation of AV devices (currently only
+     MediaServer V 2.0 specification).
+   * Audio and Video Transcoding: source format could be anything
+     GStreamer's decodebin2 can handle but output formats are currently
+     limited to: mp3, PCM and MPEG TS. Fortunately the transcoding
+     framework is flexible enough to easily add more transcoding targets.
+   * Specifically designed for GNOME (Mobile).
+   * Based on GUPnP.
+   * Written (mostly) in Vala language.
+ .
+ This package contains the debug symbols for rygel and the plugins:
+   * media-export
+   * external
+
+Package: rygel-mediathek-dbg
+Architecture: any
+Depends: rygel-mediathek (= ${binary:Version})
+Description: GNOME UPnP/DLNA services - Mediathek plugin
+ Rygel is a collection of DLNA (UPnP AV) services (devices in UPnP speak),
+ implemented through a plug-in mechanism. Important facts and features:
+   * APIs to ease the implementation of AV devices (currently only
+     MediaServer V 2.0 specification).
+   * Audio and Video Transcoding: source format could be anything
+     GStreamer's decodebin2 can handle but output formats are currently
+     limited to: mp3, PCM and MPEG TS. Fortunately the transcoding
+     framework is flexible enough to easily add more transcoding targets.
+   * Specifically designed for GNOME (Mobile).
+   * Based on GUPnP.
+   * Written (mostly) in Vala language.
+ .
+ This package provides the debug symbols for the rygel-mediathek plugin.
+
+Package: rygel-tracker-dbg
+Architecture: any
+Depends: rygel-tracker (= ${binary:Version})
+Description: GNOME UPnP/DLNA services - Tracker plugin
+ Rygel is a collection of DLNA (UPnP AV) services (devices in UPnP speak),
+ implemented through a plug-in mechanism. Important facts and features:
+   * APIs to ease the implementation of AV devices (currently only
+     MediaServer V 2.0 specification).
+   * Audio and Video Transcoding: source format could be anything
+     GStreamer's decodebin2 can handle but output formats are currently
+     limited to: mp3, PCM and MPEG TS. Fortunately the transcoding
+     framework is flexible enough to easily add more transcoding targets.
+   * Specifically designed for GNOME (Mobile).
+   * Based on GUPnP.
+   * Written (mostly) in Vala language.
+ .
+ This package provides the debug symbols for the rygel-tracker plugin.
+
+Package: rygel-gst-renderer-dbg
+Architecture: any
+Depends: rygel-gst-renderer (= ${binary:Version})
+Description: GNOME UPnP/DLNA services - GStreamer Media Renderer plugin
+ Rygel is a collection of DLNA (UPnP AV) services (devices in UPnP speak),
+ implemented through a plug-in mechanism. Important facts and features:
+   * APIs to ease the implementation of AV devices (currently only
+     MediaServer V 2.0 specification).
+   * Audio and Video Transcoding: source format could be anything
+     GStreamer's decodebin2 can handle but output formats are currently
+     limited to: mp3, PCM and MPEG TS. Fortunately the transcoding
+     framework is flexible enough to easily add more transcoding targets.
+   * Specifically designed for GNOME (Mobile).
+   * Based on GUPnP.
+   * Written (mostly) in Vala language.
+ .
+ This package provides the debug symbols for the rygel-gst-renderer
+ plugin.
+
+Package: rygel-gst-launch-dbg
+Architecture: any
+Depends: rygel-gst-launch (= ${binary:Version})
+Description: GNOME UPnP/DLNA services - gst-launch plugin
+ Rygel is a collection of DLNA (UPnP AV) services (devices in UPnP speak),
+ implemented through a plug-in mechanism. Important facts and features:
+   * APIs to ease the implementation of AV devices (currently only
+     MediaServer V 2.0 specification).
+   * Audio and Video Transcoding: source format could be anything
+     GStreamer's decodebin2 can handle but output formats are currently
+     limited to: mp3, PCM and MPEG TS. Fortunately the transcoding
+     framework is flexible enough to easily add more transcoding targets.
+   * Specifically designed for GNOME (Mobile).
+   * Based on GUPnP.
+   * Written (mostly) in Vala language.
+ .
+ This package provides the debug symbols for the rygel-gst-launch
+ plugin.

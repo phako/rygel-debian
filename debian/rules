@@ -75,7 +75,7 @@ binary-common:
 	dh_installexamples
 	dh_installman
 	dh_link
-	dh_strip
+	dh_strip -k
 	dh_compress
 	dh_fixperms
 	dh_makeshlibs -X /usr/lib/rygel-1.0/
@@ -87,9 +87,22 @@ binary-common:
 
 binary-indep: build-indep install-indep
 	$(MAKE) -f debian/rules DH_OPTIONS=-i binary-common
+	dh_builddeb
 
 binary-arch: build-arch install-arch
 	$(MAKE) -f debian/rules DH_OPTIONS=-s binary-common
+	mkdir -p debian/rygel-dbg/usr/lib
+	mv -v debian/rygel/usr/lib/debug/ debian/rygel-dbg/usr/lib
+	mkdir -p debian/rygel-mediathek-dbg/usr/lib
+	mv -v debian/rygel-mediathek/usr/lib/debug/ debian/rygel-mediathek-dbg/usr/lib
+	mkdir -p debian/rygel-tracker-dbg/usr/lib
+	mv -v debian/rygel-tracker/usr/lib/debug/ debian/rygel-tracker-dbg/usr/lib
+	mkdir -p debian/rygel-gst-renderer-dbg/usr/lib
+	mv -v debian/rygel-gst-renderer/usr/lib/debug/ debian/rygel-gst-renderer-dbg/usr/lib
+	mkdir -p debian/rygel-gst-launch-dbg/usr/lib
+	mv -v debian/rygel-gst-launch/usr/lib/debug/ debian/rygel-gst-launch-dbg/usr/lib
+	dh_builddeb
+
 
 binary: binary-arch binary-indep
 
